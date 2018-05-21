@@ -3,7 +3,13 @@
 .RData
 .Ruserdata
 README.Rmd
+
 CASTfxn_LibraryCreation.Rmd
+
 CASTfxn_LibraryCreation.nb.html
+
 CASTfxn.Rproj
+
 .Rbuildignore
+NEWS.rmd
+NEWS.rmd

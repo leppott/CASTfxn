@@ -4,13 +4,19 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-05-21 11:04:21
+    #> Last Update: 2018-05-21 12:08:53
 
 # Planned Updates
 
   - None at this time.
 
 # Version History
+
+## v0.1.0.9002
+
+2017-05-27
+
+  - Knit README.RMD so README.md will display on GitHub.
 
 ## v0.1.0.9001
 
