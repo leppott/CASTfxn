@@ -4,13 +4,31 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-05-21 12:08:53
+    #> Last Update: 2018-06-05 15:19:24
 
 # Planned Updates
 
   - None at this time.
 
 # Version History
+
+## v0.1.0.9003
+
+2017-06-05
+
+  - SSD function, non-functional at this point
+      - raw data
+      - Process raw data script
+      - data\_SSD.rda in data folder
+      - SSD function script
+      - data.R, add description of data
+  - Remove hello function
+  - Add CoOccur function.
+      - raw data
+      - process raw data script
+      - data\_CoOccur in data folder
+      - CoOccur script
+      - data.R, add description of data
 
 ## v0.1.0.9002
 

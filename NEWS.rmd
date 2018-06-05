@@ -26,6 +26,23 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## v0.1.0.9003
+2017-06-05
+
+* SSD function, non-functional at this point
+    + raw data
+    + Process raw data script
+    + data_SSD.rda in data folder
+    + SSD function script
+    + data.R, add description of data
+* Remove hello function
+* Add CoOccur function.
+    + raw data
+    + process raw data script
+    + data_CoOccur in data folder
+    + CoOccur script
+    + data.R, add description of data
+
 ## v0.1.0.9002
 2017-05-27
 

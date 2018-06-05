@@ -14,3 +14,9 @@ LazyData: true
 VignetteBuilder: knitr
 URL: https://github.com/leppott/CASTfxn
 RoxygenNote: 6.0.1
+Imports:
+  dplyr,
+  ggplot2,
+  replyr,
+  wrapr, 
+  gridExtra
