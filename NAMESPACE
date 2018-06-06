@@ -2,4 +2,5 @@
 
 export(CoOccur)
 export(getChemDataSubsets)
+export(getClusterInfo)
 export(getSiteInfo)

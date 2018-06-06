@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 09:42:17
+    #> Last Update: 2018-06-06 10:14:25
 
 # Planned Updates
 
@@ -17,10 +17,6 @@ NEWS
 
   - Functions from Ann
     
-      - getSiteInfo (summary info including lat/long, ref status,
-        cluster membership, samps from site, maps)
-      - getChemDataSubsets (summary information about chems)
-      - getClusterInfo (summary cluster information)
       - getStressorID (box plots of each stressor, grouped by category)
       - getBMImatches (matched chem/bmi samples)
       - getAlgMatches (matched chem/algal samples)
@@ -30,6 +26,14 @@ NEWS
       - getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9007
+
+2017-06-06
+
+  - Add function getClusterInfo
+  - SSD.R
+      - Remove “conf=0.95” from qnorm function.
 
 ## v0.1.0.9006
 

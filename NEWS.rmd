@@ -29,9 +29,6 @@ cat(paste0("Last Update: ",Sys.time()))
     + Retain scoring from both sets of plots in a table.
 
 * Functions from Ann
-    + getSiteInfo (summary info including lat/long, ref status, cluster membership, samps from site, maps)
-    + getChemDataSubsets (summary information about chems)
-    + getClusterInfo (summary cluster information)
     + getStressorID (box plots of each stressor, grouped by category)
     + getBMImatches (matched chem/bmi samples)
     + getAlgMatches (matched chem/algal samples)
@@ -41,6 +38,13 @@ cat(paste0("Last Update: ",Sys.time()))
     + getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9007
+2017-06-06
+
+* Add function getClusterInfo
+* SSD.R
+    + Remove "conf=0.95" from qnorm function.
 
 ## v0.1.0.9006
 2017-06-06

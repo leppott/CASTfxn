@@ -71,7 +71,8 @@ SSD <- function(Data, EndPoint, TaxaName, ExposureAmount, Conc_1_Mean_Standardiz
   DF.TRIAL.P <- DF.TRIAL.P %>% dplyr::mutate(LogMean = log10(Conc_1_Mean_Standardized)
                                              , Rank = rank(Conc_1_Mean_Standardized)
                                              , Proportion = (Rank-0.05)/length(Species)
-                                             , Probit = qnorm(Proportion, mean=5, sd=1, conf=0.95) )
+                                             #, Probit = qnorm(Proportion, mean=5, sd=1, conf=0.95) )
+                                             , Probit = qnorm(Proportion, mean=5, sd=1) )
   
   sloperesult <- lm(Probit ~ LogMean, data=DF.TRIAL.P, conf=0.95)
   Slope <- sloperesult$coefficients[2]
