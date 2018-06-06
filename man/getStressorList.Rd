@@ -28,6 +28,7 @@ getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem,
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory with box plots.
+Also returns a list of stressors; stressors and site.stressor.pctrank.
 }
 \description{
 Get stressor list.

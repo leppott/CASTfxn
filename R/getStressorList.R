@@ -15,6 +15,7 @@
 #' @param probsLow probabilities, low
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
+#' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
 #' @examples
 #' #No example at this time.
@@ -110,5 +111,6 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   }
   stressorlist <- stressor
   myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank)
-  
+  #
+  return(myStressors)
 } # FUN end

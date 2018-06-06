@@ -1,7 +1,7 @@
 Package: CASTfxn
 Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
-Version: 0.1.0.9014
+Version: 0.1.0.9015
 Author: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),

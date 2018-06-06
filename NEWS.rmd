@@ -39,10 +39,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## v0.1.0.9015
+2017-06-06
+
+* Fix StressorList return value.  Issue #2.
+
 ## v0.1.0.9014
 2017-06-06
 
-* Fix SSD function.
+* Fix SSD function.  Issue #3.
 
 ## v0.1.0.9013
 2017-06-06
