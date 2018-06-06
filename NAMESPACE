@@ -2,6 +2,7 @@
 
 export(CoOccur)
 export(getBMIMatches)
+export(getBMIStressorResponses)
 export(getChemDataSubsets)
 export(getClusterInfo)
 export(getSiteInfo)
