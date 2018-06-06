@@ -42,6 +42,20 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## v0.1.0.9005
+2017-06-06
+
+* Add function getSiteInfo.
+* Add Imports to DESCRIPTION.
+    + maps
+    + maptools
+    + raster
+    + RColorBrewer
+    + reshape
+    + rgdal
+    + rgeos
+    + RgoogleMaps
+
 ## v0.1.0.9004
 2017-06-06
 
