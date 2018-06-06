@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 09:15:03
+    #> Last Update: 2018-06-06 09:42:17
 
 # Planned Updates
 
@@ -30,6 +30,12 @@ NEWS
       - getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9006
+
+2017-06-06
+
+  - Add function getChemDataSubsets
 
 ## v0.1.0.9005
 
