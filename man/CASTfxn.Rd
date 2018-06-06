@@ -29,6 +29,6 @@ getStressorList
 
 getStressorSpecificRegressions
 
-SSD
+SSDplot
 }
 

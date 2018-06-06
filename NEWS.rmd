@@ -28,16 +28,13 @@ cat(paste0("Last Update: ",Sys.time()))
     + Add scoring to 2nd set of plots.
     + Retain scoring from both sets of plots in a table.
 
-* Functions from Ann
-    + getStressorID (box plots of each stressor, grouped by category)
-    + getBMImatches (matched chem/bmi samples)
-    + getAlgMatches (matched chem/algal samples)
-    + getBMIstressorResponses (regressions)
-    + getAlgStressorResponses (regressions)
-    + getStressorSpecificRegressions (%Fines)
-    + getSSDs (pesticides, metals)
-
 # Version History
+
+## v0.1.0.9016
+2017-06-06
+
+* Rename SSD function to SSDplot due to conflict with stats::SSD.
+* Update CASTfxn.R for function name change.
 
 ## v0.1.0.9015
 2017-06-06

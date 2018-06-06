@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 14:59:50
+    #> Last Update: 2018-06-06 16:00:15
 
 # Planned Updates
 
@@ -15,17 +15,14 @@ NEWS
       - Add scoring to 2nd set of plots.
       - Retain scoring from both sets of plots in a table.
 
-  - Functions from Ann
-    
-      - getStressorID (box plots of each stressor, grouped by category)
-      - getBMImatches (matched chem/bmi samples)
-      - getAlgMatches (matched chem/algal samples)
-      - getBMIstressorResponses (regressions)
-      - getAlgStressorResponses (regressions)
-      - getStressorSpecificRegressions (%Fines)
-      - getSSDs (pesticides, metals)
-
 # Version History
+
+## v0.1.0.9016
+
+2017-06-06
+
+  - Rename SSD function to SSDplot due to conflict with stats::SSD.
+  - Update CASTfxn.R for function name change.
 
 ## v0.1.0.9015
 

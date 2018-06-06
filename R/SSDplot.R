@@ -31,11 +31,11 @@
 #' myTaxa <- "Taxa"
 #' myExp  <- "Exposure_mgperL"
 #' # Run function
-#' SSD(myDF, myRT, myTaxa, myExp)
+#' SSDplot(myDF, myRT, myTaxa, myExp)
 #' # can save output to a file
 #' 
 #' @export
-SSD <- function(Data, ResponseType, Taxa, Exposure) {
+SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   #
   
   # Define col names for dplyr

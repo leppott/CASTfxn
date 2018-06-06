@@ -22,7 +22,7 @@
 #' 
 #' getStressorSpecificRegressions
 #' 
-#' SSD
+#' SSDplot
 #'
 #' @docType package
 #' @name CASTfxn
