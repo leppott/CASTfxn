@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 10:14:25
+    #> Last Update: 2018-06-06 10:31:45
 
 # Planned Updates
 
@@ -27,11 +27,17 @@ NEWS
 
 # Version History
 
+## v0.1.0.9008
+
+2017-06-06
+
+  - Add function getStressorList.
+
 ## v0.1.0.9007
 
 2017-06-06
 
-  - Add function getClusterInfo
+  - Add function getClusterInfo.
   - SSD.R
       - Remove “conf=0.95” from qnorm function.
 
@@ -39,7 +45,7 @@ NEWS
 
 2017-06-06
 
-  - Add function getChemDataSubsets
+  - Add function getChemDataSubsets.
 
 ## v0.1.0.9005
 

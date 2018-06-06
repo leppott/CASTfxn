@@ -39,17 +39,22 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## v0.1.0.9008
+2017-06-06
+
+* Add function getStressorList.
+
 ## v0.1.0.9007
 2017-06-06
 
-* Add function getClusterInfo
+* Add function getClusterInfo.
 * SSD.R
     + Remove "conf=0.95" from qnorm function.
 
 ## v0.1.0.9006
 2017-06-06
 
-* Add function getChemDataSubsets
+* Add function getChemDataSubsets.
 
 ## v0.1.0.9005
 2017-06-06
