@@ -45,18 +45,39 @@ Saves PDF of plots to user defined directory.
 Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data
 }
 \details{
-CAST yada yada yada
+Derive evidence fo spatial/temporal co-occurrence.
 
-box plot using sites in the same group
+Are higher levels of the stressor observed where and when the biological effect occurs?
+Box plots are used to show the distribution of the stressor levels at compartors 
+sites with better biological condition.  
 
-scatter plot of .... 
+Samples are scored:
+
+1. Supports the case for candidate cause.  Stressor levels at the test sites are above the 75th percentile of comparator sites having higher biological quality.
+
+0. Indeterminate.  Stressor levels at the test site are below the 50th percentile of comparator sites having higher biological quality.
+
+-1. Weakens the case for the candidate cause.  Stressor levels at the test sites are between the 50th and 75th percentile of comparator sites having higher biological quality.
+
+Derive Evidence for Stressor-Response Relationships from Field Observational Studies.
+
+Stressor-response from field observational studies:  Is the level of the stressor sufficient to explain the level of biological effect observed at the site?  
+
+Using all comparator sites, fit logistical regression curve of the probability of poor condition (i.e., poor California index score) as a function of stressor level. 
+Compare stressor levels from test site to levels corresponding to median (50%) and low (20%) probabilities of observing poor condition.
+
+1. Supports the case for the candidate cause.  Stressor levels at the test site are above the lower confidence limit  (LCL) corresponding to 50% probability of observing poor condition 
+
+0. Indeterminate.  Stressor levels at the test site are between the LCL corresponding to 50% probability of observing poor condition and the UCL corresponding to 20% probability of observing poor condition. 
+
+-1. Weakens the case for the candidate cause.  Stressor levels at the test site are below the upper confidence limit (UCL) corresponding to 20% probability of observing poor condition. 
 
 Cut function is used to assign narrative categories and degraded status based on provided biological score.
-Ensures criteria are applied the same.
+Ensures criteria are applied the same across all sites.
 
 Only a single biological measurement is used.  But multiple stressors can be used.
 
-Uses the libraries dplyr, replyr, ggplot2, and gridExtra.
+Uses the libraries dplyr, replyr, wrapr, ggplot2, and gridExtra.
 }
 \examples{
 #Load Data
@@ -65,7 +86,6 @@ df.data <- data_CoOccur
 col.Group     <- "Group"
 col.Bio       <- "CSCI"
 col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
-col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L")
 col.ID        <- c("StationID_Master")
 #
 Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)

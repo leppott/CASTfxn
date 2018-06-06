@@ -24,7 +24,30 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * None at this time.
 
+* CoOccur function.
+    + Add scoring to 2nd set of plots.
+    + Retain scoring from both sets of plots in a table.
+
+* Functions from Ann
+    + getSiteInfo (summary info including lat/long, ref status, cluster membership, samps from site, maps)
+    + getChemDataSubsets (summary information about chems)
+    + getClusterInfo (summary cluster information)
+    + getStressorID (box plots of each stressor, grouped by category)
+    + getBMImatches (matched chem/bmi samples)
+    + getAlgMatches (matched chem/algal samples)
+    + getBMIstressorResponses (regressions)
+    + getAlgStressorResponses (regressions)
+    + getStressorSpecificRegressions (%Fines)
+    + getSSDs (pesticides, metals)
+
 # Version History
+
+## v0.1.0.9004
+2017-06-06
+
+* CoOccur function.
+    + Update example.  Remove 2nd Stressors line.
+    + Update details from Sue Norton presentation 2017-06-05.
 
 ## v0.1.0.9003
 2017-06-05
