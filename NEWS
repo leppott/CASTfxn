@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 10:31:45
+    #> Last Update: 2018-06-06 11:39:33
 
 # Planned Updates
 
@@ -26,6 +26,12 @@ NEWS
       - getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9009
+
+2017-06-06
+
+  - Add function getBMImatches.
 
 ## v0.1.0.9008
 
