@@ -4,21 +4,19 @@
 \alias{SSD}
 \title{Species Sentivity Distribution (SSD) Plots}
 \usage{
-SSD(Data, EndPoint, TaxaName, ExposureAmount, Conc_1_Mean_Standardized)
+SSD(Data, ResponseType, Taxa, Exposure)
 }
 \arguments{
 \item{Data}{species data set name}
 
-\item{EndPoint}{column containing endpoint}
+\item{ResponseType}{column containing endpoint}
 
-\item{TaxaName}{column containing taxa names}
+\item{Taxa}{column containing taxa names}
 
-\item{ExposureAmount}{column containing Exposure amount}
-
-\item{Conc_1_Mean_Standardized}{column containing amount of taxa}
+\item{Exposure}{column containing Exposure amount}
 }
 \value{
-ABC
+An SSD plot.
 }
 \description{
 Generates plots of the proportion of species affected at different exposure levels in laboratory toxicity tests.
@@ -28,4 +26,14 @@ https://www.epa.gov/caddis-vol4/ssd-plots
 }
 \examples{
 #Load Data
+df.SSD <- data_SSD
+# define parameters
+myDF   <- df.SSD
+myRT   <- "ResponseType"
+myTaxa <- "Taxa"
+myExp  <- "Exposure_mgperL"
+# Run function
+SSD(myDF, myRT, myTaxa, myExp)
+# can save output to a file
+
 }

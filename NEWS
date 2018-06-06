@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 12:35:36
+    #> Last Update: 2018-06-06 14:55:34
 
 # Planned Updates
 
@@ -26,6 +26,12 @@ NEWS
       - getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9014
+
+2017-06-06
+
+  - Fix SSD function.
 
 ## v0.1.0.9013
 
