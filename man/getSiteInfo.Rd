@@ -22,6 +22,8 @@ Get site info of provided siteID.
 }
 \details{
 Summary info including lat/long, ref status, cluster membership, samps from site, maps
+
+Requires package rgdal.
 }
 \examples{
 #No example at this time.

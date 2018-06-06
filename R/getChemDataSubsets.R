@@ -2,7 +2,9 @@
 #' 
 #' @description Get chemical data subsets.
 #' 
-#' @details Summary information about chems
+#' @details Summary information about chems.
+#' 
+#' Uses package reshape.
 #' 
 #' @param TargetSiteID SiteID
 #' @param comid NHD+ COMID
@@ -13,7 +15,7 @@
 #' , all.chems, cluster.chem, and site.chem.
 #' 
 #' @examples
-#' #No example at this time.
+#' #No example at this time. 
 #' 
 #' @export
 getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU) {
@@ -52,7 +54,7 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU)
   # all.chems is the list of target site chems across all sites in dataset (all clusters)
   all.chems <- subset(data.chem.raw, ConvertTo %in% chems$ConvertTo)
   all.chems2 <- all.chems[,c("ChemSampleID","ConvertTo","ResultValue")]
-  all.chems3 = cast(all.chems2, ChemSampleID ~ ConvertTo, mean)
+  all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean)
   
   
   # chem.tab2 is the list of target site chems at sites in the target site cluster
@@ -64,10 +66,10 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU)
   
   cluster.chem.tab3 <- cluster.chem.tab2[,c("ChemSampleID","ConvertTo","ResultValue")]
   cluster.chem.samps <- unique(cluster.chem.tab2[,c("StationID_Master","ChemSampleID")])
-  cluster.chem.tab4 = cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean)
+  cluster.chem.tab4 <- reshape::cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean)
   cluster.chem.tab5 = merge(cluster.chem.samps, cluster.chem.tab4, by.x = "ChemSampleID", by.y = "ChemSampleID")
   site.chem3 <- site.chem2[,c("ChemSampleID", "ConvertTo", "ResultValue")]
-  site.chem4 = cast(site.chem3, ChemSampleID ~ ConvertTo, mean)
+  site.chem4 <- reshape::cast(site.chem3, ChemSampleID ~ ConvertTo, mean)
   
   mySubsets <- list(ref.sites = refSiteIDs, ref.reaches = refSiteCOMIDs, cluster.samps = cluster.chem.samps
                     , chem.info = chems.groups.sort, all.chems = all.chems3

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 16:00:15
+    #> Last Update: 2018-06-06 16:50:01
 
 # Planned Updates
 
@@ -16,6 +16,16 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## v0.1.0.9016
+
+2017-06-06
+
+  - Update functions for package dependencies, e.g., readOGR to
+    rgdal::readOGR.
+      - getSiteInfo; rgdal
+      - getChemDataSubsets; reshape
+      - getStressorList; dplyr
 
 ## v0.1.0.9016
 

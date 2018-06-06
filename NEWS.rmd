@@ -33,6 +33,14 @@ cat(paste0("Last Update: ",Sys.time()))
 ## v0.1.0.9016
 2017-06-06
 
+* Update functions for package dependencies, e.g., readOGR to rgdal::readOGR.
+    + getSiteInfo; rgdal
+    + getChemDataSubsets; reshape
+    + getStressorList; dplyr
+
+## v0.1.0.9016
+2017-06-06
+
 * Rename SSD function to SSDplot due to conflict with stats::SSD.
 * Update CASTfxn.R for function name change.
 

@@ -18,7 +18,7 @@
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
 #' @examples
-#' #No example at this time.
+#' #No example at this time. 
 #' 
 #' @export
 getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
@@ -82,7 +82,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     }
     
   }
-  chem.pctrank <- apply(cluster.chem[,3:ncol(cluster.chem)], 2, function(x) percent_rank(x))
+  chem.pctrank <- apply(cluster.chem[,3:ncol(cluster.chem)], 2, function(x) dplyr::percent_rank(x))
   data.chem.pctrank <- as.data.frame(chem.pctrank)
   data.chem.pctrank <- cbind(cluster.chem$StationID_Master,
                              cluster.chem$ChemSampleID,data.chem.pctrank)

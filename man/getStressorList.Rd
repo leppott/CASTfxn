@@ -37,6 +37,6 @@ Get stressor list.
 Box plots of each stressor, grouped by category.
 }
 \examples{
-#No example at this time.
+#No example at this time. 
 
 }

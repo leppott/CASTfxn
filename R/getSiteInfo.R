@@ -4,6 +4,8 @@
 #' 
 #' @details Summary info including lat/long, ref status, cluster membership, samps from site, maps
 #' 
+#' Requires package rgdal. 
+#' 
 #' @param TargetSiteID SiteID
 #' @param clustertype Cluster
 #' @param useLU Use LandUse.  Default = FALSE.
@@ -61,21 +63,21 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   }
   
   # Read spatial layers for background
-  flowline <- readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-  outline <- readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+  flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+  outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
   
   # Project site data to USGS Albers Equal Area
   usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 
-  +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-  +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+                +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+                +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
   df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
-  proj.mySite <- project(cbind(df.plotSite[,"FinalLongitude"], 
+  proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"], 
                                df.plotSite[,"FinalLatitude"]), usgs.aea)
-  proj.plot.cl <- project(cbind(df.plot.cl[,"FinalLongitude"], 
+  proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"], 
                                 df.plot.cl[,"FinalLatitude"]), usgs.aea)
-  proj.refSites <- project(cbind(data.refSites[,"FinalLongitude"], 
+  proj.refSites <- rgdal::project(cbind(data.refSites[,"FinalLongitude"], 
                                  data.refSites[,"FinalLatitude"]), usgs.aea)
-  proj.allSites <- project(cbind(data.Stations.Info[,"FinalLongitude"],
+  proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
                                  data.Stations.Info[,"FinalLatitude"]), usgs.aea)
   
   # plot map
@@ -83,16 +85,16 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
        width = 4*ppi, height = 4*ppi, pointsize = 6,
        quality=100, bg="white", res=ppi)
-  plot(outline, col="white", border="black", lwd=1)
-  plot(flowline, add = TRUE, col="light blue", lwd=0.5)
-  
-  points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
-  points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
-  points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
-  points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
+    plot(outline, col="white", border="black", lwd=1)
+    plot(flowline, add = TRUE, col="light blue", lwd=0.5)
+    
+    points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
+    points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
+    points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
+    points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
   dev.off()
   
-  
+  #
   mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, BMImetrics = myBMImetrics
                         , AlgMetrics = myAlgaeMetrics, ReachInfo = myReachInfo
                         , COMID = myCOMID, ClustIDs = myClustIDs, impair = myImpairments

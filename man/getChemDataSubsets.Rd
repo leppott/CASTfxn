@@ -23,9 +23,11 @@ A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
 Get chemical data subsets.
 }
 \details{
-Summary information about chems
+Summary information about chems.
+
+Uses package reshape.
 }
 \examples{
-#No example at this time.
+#No example at this time. 
 
 }
