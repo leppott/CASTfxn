@@ -34,6 +34,20 @@
 #' SSDplot(myDF, myRT, myTaxa, myExp)
 #' # can save output to a file
 #' 
+#' #~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' 
+#' # 2nd example
+#' df.SSD <- data_SSD_permethrin
+#  # define parameters
+#' myDF   <- df.SSD
+#' myRT   <- "ResponseType"
+#' myTaxa <- "Taxa"
+#' myExp  <- "Exposure"
+#' # Add missing column
+#' myDF[,myRT] <- "LC50"
+#' # Run function
+#' SSDplot(myDF, myRT, myTaxa, myExp)
+#' 
 #' @export
 SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   #
@@ -52,15 +66,15 @@ SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   
   #names( DF.TRIAL.P)[names( DF.TRIAL.P) == 'Group.1'] <- 'Species' ###changes column name from group.1 to species
   DF.TRIAL.P <- DF.TRIAL.P[order(DF.TRIAL.P$Conc_1_Mean_Standardized),] ## orders dataset by mean values
-  DF.TRIAL.P <- DF.TRIAL.P[complete.cases(DF.TRIAL.P), ]##removes na values
+  DF.TRIAL.P <- DF.TRIAL.P[stats::complete.cases(DF.TRIAL.P), ]##removes na values
   
   #
   DF.TRIAL.P$LogMean = log10(DF.TRIAL.P$Conc_1_Mean_Standardized)
   DF.TRIAL.P$Rank = rank(DF.TRIAL.P$Conc_1_Mean_Standardized)
   DF.TRIAL.P$Proportion = ((DF.TRIAL.P$Rank-0.05)/length(DF.TRIAL.P$Taxa))
-  DF.TRIAL.P$Probit = qnorm(DF.TRIAL.P$Proportion, mean=5, sd=1)
+  DF.TRIAL.P$Probit = stats::qnorm(DF.TRIAL.P$Proportion, mean=5, sd=1)
   
-  sloperesult <- lm(Probit ~ LogMean, data=DF.TRIAL.P)
+  sloperesult <- stats::lm(Probit ~ LogMean, data=DF.TRIAL.P)
   Slope <- sloperesult$coefficients[2]
   Intercept <- sloperesult$coefficients[1]
   DF.TRIAL.P %>% dplyr::mutate(Log10CentralTendency=(Probit-Intercept)/Slope
@@ -104,7 +118,7 @@ SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
     ggplot2::geom_text(data = df.Final.Product
                        , ggplot2::aes(x = Conc_1_Mean_Standardized
                        , y = Proportion, label = Taxa)
-                       , size = 3.5, hjust="inward", check_overlap = TRUE, vjust="inward") +
+                       , size = 3, hjust="right", nudge_x = -0.05) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_log10(breaks = c(0.1, 1, 10, 100, 1000)
                            , limits = c(0.003, max(df.Final.Product$Conc_1_Mean_Standardized))) +

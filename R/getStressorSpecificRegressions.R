@@ -63,9 +63,9 @@ getStressorSpecificRegressions <- function(matchedData) {
         totabund.bySample <- merge(totabund.cat.bySamp, totabund.bySamp
                                    , by.x = "BMISampID", by.y = "BMISampID")
         totabund.bySample <- subset(totabund.bySample, totabund.bySample[,"SampleAbundance"] != "0")
-        write.table(totabund.bySample, file="data/data.totabund.bySample.tab"
+        utils::write.table(totabund.bySample, file="data/data.totabund.bySample.tab"
                     , quote = FALSE, sep="\t", row.names = FALSE, col.names = TRUE)
-        data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
+        data.SSTV.totabund <- utils::read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
         all.SSTV.totabund <- cbind(data.SSTV.totabund
                                    , data.SSTV.totabund[,"SensTaxa"]/data.SSTV.totabund[,"SampleAbundance"]
                                    , data.SSTV.totabund[,"TolTaxa"]/data.SSTV.totabund[,"SampleAbundance"])
@@ -74,7 +74,7 @@ getStressorSpecificRegressions <- function(matchedData) {
         all.SSTV.abund <- all.SSTV.abund[, c("StationID_Master"
                                              , "ChemSampleID", SSTV.analyte
                                              , "SensRelAbund", "TolRelAbund")]
-        good.SSTV.abund <- all.SSTV.abund[complete.cases(all.SSTV.abund),]
+        good.SSTV.abund <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
         all.ref.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% ref.sites)
         cl.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$ChemSampleID %in% cl.match.b$ChemSampleID)
         cl.ref.SSTV.abund <- subset(cl.SSTV.abund, cl.SSTV.abund$StationID_Master %in% ref.sites)
@@ -93,11 +93,11 @@ getStressorSpecificRegressions <- function(matchedData) {
           ppi<-300
           varFileOut = paste0("Results/SSTV.SR.",TargetSiteID
                               , ".")
-          jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
+          grDevices::jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
                                 respName, ".jpg", sep = ""), 
                width = 4*ppi, height = 3*ppi, quality=100, 
                pointsize=8, res = ppi)
-          par(cex.main=0.8,cex.lab=0.6,font.main=2, font.lab=2)
+          graphics::par(cex.main=0.8,cex.lab=0.6,font.main=2, font.lab=2)
           if (log.yn == TRUE) {
             df.plot1 <- cbind(log10(df.plot1[,1]),df.plot1[,2])
             df.plot2 <- cbind(log10(df.plot2[,1]),df.plot2[,2])
@@ -126,7 +126,7 @@ getStressorSpecificRegressions <- function(matchedData) {
           }
           # There should never be a case where either x or y are always NA for all data
           if (length(df.plot1) > 0) {
-            plot(df.plot1[,2]~df.plot1[,1],main=varMain, 
+            graphics::plot(df.plot1[,2]~df.plot1[,1],main=varMain, 
                  xlab=varxlab,ylab=respText, col="darkgrey", 
                  pch=1, cex = 0.8, cex.lab=0.6, cex.main = 0.8, 
                  font.main = 2, font.lab = 2)
@@ -134,29 +134,29 @@ getStressorSpecificRegressions <- function(matchedData) {
             next
           }
           if (length(df.plot2) > 0) {
-            points(df.plot2[,2]~df.plot2[,1], 
+            graphics::points(df.plot2[,2]~df.plot2[,1], 
                    col="blue", pch=16, cex = 0.8) # blue solid dots
           }
           if (length(df.plot3) > 0) {
-            points(df.plot3[,2]~df.plot3[,1], 
+            graphics::points(df.plot3[,2]~df.plot3[,1], 
                    col="cyan4", pch=2, cex = 0.8) # Red open triangles
           }
           if (length(df.plot4) > 0) {
-            points(df.plot4[,2]~df.plot4[,1], 
+            graphics::points(df.plot4[,2]~df.plot4[,1], 
                    col="blue", pch=17, cex = 0.8) # Solid blue triangles
           }
           if (length(df.plot5) > 0) {
-            points(df.plot5[,2]~df.plot5[,1], 
+            graphics::points(df.plot5[,2]~df.plot5[,1], 
                    col="red", pch=19, cex = 1.0) # black solid dots
           }
           
-          cl.x.sd <- sd(df.plot3[,1])
-          cl.y.sd <- sd(df.plot3[,2])
+          cl.x.sd <- stats::sd(df.plot3[,1])
+          cl.y.sd <- stats::sd(df.plot3[,2])
           #Check for vertical line
           if (!is.na(df.plot3)) {
             if (df.plot3 == 0) {
               print(paste("Vertical line for", SSTV.analyte, respName, sep=" "))
-              flush.console()
+              utils::flush.console()
               next     #It's okay to plot the points, but not the regression line
             }
           }
@@ -164,7 +164,7 @@ getStressorSpecificRegressions <- function(matchedData) {
           if (!is.na(df.plot3)) {
             if (df.plot3 == 0) {
               print(paste("Horizontal line for", SSTV.analyte, respName, sep=" "))
-              flush.console()
+              utils::flush.console()
               next     #It's okay to plot the points, but not the regression line
             }
           }    
@@ -172,29 +172,29 @@ getStressorSpecificRegressions <- function(matchedData) {
           #Linear Regression (uses cluster data -- all sites in the cluster)
           varY <- df.plot3[,2]
           varX <- df.plot3[,1]
-          fit = lm(varY~varX)
-          pred.int = predict(fit,interval="prediction",level=predint)
+          fit = stats::lm(varY~varX)
+          pred.int = stats::predict(fit,interval="prediction",level=predint)
           fitted.values = pred.int[,1]
           pred.lower = pred.int[,2]
           pred.upper = pred.int[,3]
           
-          abline(lm(varY~varX), col="cyan4", lwd=1.5)
-          abline(lm(pred.lower~varX), col="cyan4", lwd=1)
-          abline(lm(pred.upper~varX), col="cyan4", lwd=1)
+          graphics::abline(stats::lm(varY~varX), col="cyan4", lwd=1.5)
+          graphics::abline(stats::lm(pred.lower~varX), col="cyan4", lwd=1)
+          graphics::abline(stats::lm(pred.upper~varX), col="cyan4", lwd=1)
           # 
-          slope <- summary(lm(varY~varX))[[4]][[2]]
-          intercept <- summary(lm(varY~varX))[[4]][[1]]
-          pval_intercept <- summary(lm(varY~varX))[[4]][[7]]
-          pval_slope <- summary(lm(varY~varX))[[4]][[8]]
+          slope <- summary(stats::lm(varY~varX))[[4]][[2]]
+          intercept <- summary(stats::lm(varY~varX))[[4]][[1]]
+          pval_intercept <- summary(stats::lm(varY~varX))[[4]][[7]]
+          pval_slope <- summary(stats::lm(varY~varX))[[4]][[8]]
           slope = signif(slope, 3)
           intercept = signif(intercept, 3)
           pval_intercept = signif(pval_intercept, 3)
           pval = signif(pval_slope, 3)
           # # r? text and legend
-          r = cor(varX, varY, method="pearson",use="pairwise.complete.obs")
+          r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
           r2 = formatC(r^2,format="f",digits=3)
           # 
-          c1S <- (cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
+          c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
           df.corr = data.frame(cbind(SSTV.analyte, respName, signif(c1S$statistic,2)
                                      , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
           # # Create results data frame
@@ -212,25 +212,25 @@ getStressorSpecificRegressions <- function(matchedData) {
             symbshape <- c(1, 16, 2, 17, 19)
             symbcol <- c("grey", "blue", "cyan4", "blue", "red")
             symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-            legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
+            graphics::legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
                                                        , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
                                                        ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
                    , col = c("black"), cex=0.6)
-            legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+            graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
           }
           
-          dev.off()
+          grDevices::dev.off()
           print(paste(SSTV.analyte, respName, sep="\t"))
-          flush.console()
+          utils::flush.console()
           
           varFlag <- 0
           
         }  # End For loop over responses
-        graphics.off()
+        grDevices::graphics.off()
         
       }  # End For loop over stressors
       SSTVfile <- paste("Results/", TargetSiteID, ".SSTVCorrs.txt", sep="")
-      write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,row.names=FALSE,col.names=TRUE)
+      utils::write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,row.names=FALSE,col.names=TRUE)
     }
   }    
 }

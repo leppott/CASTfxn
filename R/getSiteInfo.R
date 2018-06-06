@@ -82,17 +82,17 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   
   # plot map
   ppi <- 300
-  jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
+  grDevices::jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
        width = 4*ppi, height = 4*ppi, pointsize = 6,
        quality=100, bg="white", res=ppi)
-    plot(outline, col="white", border="black", lwd=1)
-    plot(flowline, add = TRUE, col="light blue", lwd=0.5)
+    graphics::plot(outline, col="white", border="black", lwd=1)
+    graphics::plot(flowline, add = TRUE, col="light blue", lwd=0.5)
     
-    points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
-    points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
-    points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
-    points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
-  dev.off()
+    graphics::points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
+    graphics::points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
+    graphics::points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
+    graphics::points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
+  grDevices::dev.off()
   
   #
   mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, BMImetrics = myBMImetrics

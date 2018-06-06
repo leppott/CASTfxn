@@ -11,7 +11,7 @@ wd <- getwd() # assume is package directory
 # 1. Get data and process#####
 # 1.1. Import Data
 myFile <- "data_CoOccur.tsv"
-df <- read.delim(file.path(wd, "data-raw", myFile))
+df <- utils::read.delim(file.path(wd, "data-raw", myFile))
 
 
 # 1.2. Process Data

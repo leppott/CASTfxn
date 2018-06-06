@@ -36,4 +36,17 @@ myExp  <- "Exposure_mgperL"
 SSDplot(myDF, myRT, myTaxa, myExp)
 # can save output to a file
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# 2nd example
+df.SSD <- data_SSD_permethrin
+myDF   <- df.SSD
+myRT   <- "ResponseType"
+myTaxa <- "Taxa"
+myExp  <- "Exposure"
+# Add missing column
+myDF[,myRT] <- "LC50"
+# Run function
+SSDplot(myDF, myRT, myTaxa, myExp)
+
 }

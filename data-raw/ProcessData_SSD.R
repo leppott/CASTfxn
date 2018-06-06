@@ -13,6 +13,8 @@ wd <- getwd() # assume is package directory
 myFile <- "data_SSD.csv"
 df <- read.csv(file.path(wd, "data-raw", myFile))
 
+fn.2 <- "data_SSD_permethrin.csv"
+df.2 <- read.csv(file.path(wd, "data-raw", fn.2))
 
 # 1.2. Process Data
 View(df)
@@ -26,3 +28,6 @@ str(df)
 #
 data_SSD <- df
 devtools::use_data(data_SSD, overwrite = TRUE)
+
+data_SSD_permethrin <- df.2
+devtools::use_data(data_SSD_permethrin, overwrite=TRUE)

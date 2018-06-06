@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 16:50:01
+    #> Last Update: 2018-06-06 18:07:06
 
 # Planned Updates
 
@@ -17,7 +17,23 @@ NEWS
 
 # Version History
 
-## v0.1.0.9016
+## v0.1.0.9018
+
+2017-06-06
+
+  - Check issues addressed:
+      - Depends R \>= 2.1.0
+      - no visible global function definition (multiple)
+      - Add to Imports; graphics, grDevices, stats, utils
+  - Check issues not addressed:
+      - data\_CoOccur, non-ASCII characters in column names.
+      - Undocumented object “cluster” in getChemDataSubsets
+      - no visible binding for global variable (multiple)
+  - SSDplot
+      - Add second dataset and example.
+      - Modify text; font size and justification
+
+## v0.1.0.9017
 
 2017-06-06
 

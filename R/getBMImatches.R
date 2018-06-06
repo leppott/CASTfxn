@@ -26,7 +26,7 @@ getBMIMatches <- function(stressors, list.data) {
   useChemSamps <- all.chems$ChemSampleID
   mUseSamps <- intersect(useChemSamps, data.SampSummary$ChemSampleID)
   
-  mbmi.Samps <- na.omit(data.SampSummary[,c("ChemSampleID","BMI.Metrics.SampID")])
+  mbmi.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID","BMI.Metrics.SampID")])
   mbmi.use.samps <- subset(mbmi.Samps, mbmi.Samps$ChemSampleID %in% mUseSamps)
   
   # bmi stressor data to use: all.mbmi.stress, cl.mbmi.stress, and site.stress

@@ -140,7 +140,7 @@ CoOccur <- function(df.data, ID.plot=NULL
   
   # Write to PDF
   fn.pdf <- paste0("CoOccurrence_", myDateTime,".pdf")
-  pdf(file=fn.pdf, width=6, height=8)
+  grDevices::pdf(file=fn.pdf, width=6, height=8)
   
   # Analysis for each "test" sample
   for (i in ID.plot){##FOR.i.START
@@ -184,10 +184,10 @@ CoOccur <- function(df.data, ID.plot=NULL
                     , "; Stressors, ", j.num, "/", j.len, ", ", j, "."))
        #
        df.i[,paste0("n_",j)] <- sum(!is.na(df.comp[,j]))
-       #df.i[,paste0("q20_",j)] <- quantile(df.comp[,j], probs=0.20, na.rm=TRUE)
-       df.i[,paste0("q25_",j)] <- quantile(df.comp[,j], probs=0.25, na.rm=TRUE)
-       df.i[,paste0("q50_",j)] <- quantile(df.comp[,j], probs=0.50, na.rm=TRUE)
-       df.i[,paste0("q75_",j)] <- quantile(df.comp[,j], probs=0.75, na.rm=TRUE)
+       #df.i[,paste0("q20_",j)] <- stats::quantile(df.comp[,j], probs=0.20, na.rm=TRUE)
+       df.i[,paste0("q25_",j)] <- stats::quantile(df.comp[,j], probs=0.25, na.rm=TRUE)
+       df.i[,paste0("q50_",j)] <- stats::quantile(df.comp[,j], probs=0.50, na.rm=TRUE)
+       df.i[,paste0("q75_",j)] <- stats::quantile(df.comp[,j], probs=0.75, na.rm=TRUE)
        # Comp Score
        df.i[,paste0("Sc_Comp_",j)] <- ifelse(df.i[,j] > df.i[,paste0("q75_",j)],1
                                              , ifelse(df.i[,j] < df.i[,paste0("q50_",j)],-1,0))
@@ -245,7 +245,7 @@ CoOccur <- function(df.data, ID.plot=NULL
        col.glm <- c(col.Bio, col.Bio.Deg, j)
        #df.comp.glm <- df.comp[complete.cases(df.comp[,col.glm]), col.glm]
        
-       df.comp.glm <- df.data[complete.cases(df.comp[,col.glm]), col.glm] 
+       df.comp.glm <- df.data[stats::complete.cases(df.comp[,col.glm]), col.glm] 
        
        # logr <- glm(df.comp.glm[,col.Bio.Deg] ~ df.comp.glm[,j], family=binomial)
        # plot(df.comp.glm[,j], df.comp.glm[, col.Bio.Deg], ylim=c(0,2))
@@ -263,12 +263,12 @@ CoOccur <- function(df.data, ID.plot=NULL
        #
        
        # QC
-       if(sum(complete.cases(df.plot))>0){##IF.complete.cases.START
+       if(sum(stats::complete.cases(df.plot))>0){##IF.complete.cases.START
          #
-         fit <- glm(y.name ~ x, data=df.plot, family=binomial)
+         fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
          # create data for curve
          newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100))
-         newdat$y.name <- predict(fit, newdata=newdat, type="response") #se.fit=TRUE
+         newdat$y.name <- stats::predict(fit, newdata=newdat, type="response") #se.fit=TRUE
          # type=response is for probabilities.
          
          # plot2, ggplot
@@ -315,7 +315,7 @@ CoOccur <- function(df.data, ID.plot=NULL
        # ## Note that calculating standard errors for predictions on the logit scale, and then
        # # transforming, is better practice than getting standard errors directly on the
        # # probability scale.
-       # pred <- predict(fit, newdata=newdat, se.fit=TRUE)
+       # pred <- stats::predict(fit, newdata=newdat, se.fit=TRUE)
        # mySeq <- seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100)
        # library(car)
        # lines(mySeq, logit(pred$fit), col="blue")
@@ -362,7 +362,7 @@ CoOccur <- function(df.data, ID.plot=NULL
        # # 
        # # 
        # # plot(df.comp[,j], df.comp[,col.Bio.Deg], ylim=c(0,2))
-       # # curve(predict(logr, data.frame(df.comp[, j])=x,type="response"), add=TRUE)
+       # # curve(stats::predict(logr, data.frame(df.comp[, j])=x,type="response"), add=TRUE)
        # # 
        # # curve(predict.glm(logr, newdata=df.comp[,j], type="response"), add=TRUE)
        # # # predict fails
@@ -370,7 +370,7 @@ CoOccur <- function(df.data, ID.plot=NULL
        # # # 
        # # logr <- glm(CSCI.Status ~ SpecCond_uf_µS_cm, data=df.comp, family=binomial)
        # # plot(df.comp$SpecCond_uf_µS_cm, df.comp$CSCI.Status, ylim=c(0,2))
-       # # curve(predict(logr, data.frame(SpecCond_uf_µS_cm[1:78]=x), type="response"), add=TRUE)
+       # # curve(stats::predict(logr, data.frame(SpecCond_uf_µS_cm[1:78]=x), type="response"), add=TRUE)
        # # 
        # # 
        # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,7 +383,7 @@ CoOccur <- function(df.data, ID.plot=NULL
        # # dat <- subset(mtcars, select=c(mpg, am, vs))
        # # logr_vm <- glm(vs ~ mpg, data=dat, family=binomial)
        # # plot(dat$mpg, dat$vs, xlab=j, main=i, ylab="Relative Probability of Degraded Condition")
-       # # curve(predict(logr_vm, data.frame(mpg=x), type="response"), add=TRUE)
+       # # curve(stats::predict(logr_vm, data.frame(mpg=x), type="response"), add=TRUE)
        # # # ab line (fake)
        # # Range.j <- max(df.comp[,j], na.rm=TRUE) - min(df.comp[,j], na.rm=TRUE)
        # # PctRange.i <- (df.i[,j] - min(df.comp[,j], na.rm=TRUE)) / Range.j
@@ -417,7 +417,7 @@ CoOccur <- function(df.data, ID.plot=NULL
   }##FOR.i.END 
   
 
-  dev.off()
+  grDevices::dev.off()
   #
   
 }##FUNCTION.END

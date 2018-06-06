@@ -47,4 +47,16 @@
 #' }
 #' @source example data
 "data_CoOccur"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title SSD example data (permethrin)
+#' 
+#' @description A dataset with example benthic macroinvertebrate data for permethrin to be used with the SSD function.
+#' 
+#' @format A data frame with 48 rows and 2 variables:
+#' \describe{
+#'           \item{Taxa}{Taxa}
+#'           \item{Exposure}{Exposure_mgperL}
+#' }
+#' @source example data
+"data_SSD_permethrin"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
