@@ -1,0 +1,182 @@
+#' @title Algae Stressor Responses
+#' 
+#' @description Get Algae stressor resonses.
+#' 
+#' @details Algae stressor regressions.
+#' 
+#' @param stressors stressors
+#' @param list.MatchAlgData list of matched Algae and stressor data.
+#' 
+#' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
+#' 
+#' @examples
+#' #No example at this time.
+#' 
+#' @export
+getAlgStressorResponses <- function(stressors, list.MatchAlgData) {
+  
+  for (p in 1:length(stressors)) {
+    stressName <- stressors[p]
+    if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC")) {
+      log.yn <- FALSE
+    } else {
+      log.yn <- TRUE
+    }
+    varFlag <- 1
+    for (r in 4:length(AlgResp)) {
+      respName <- AlgResp[r]
+      
+      #get all data to plot
+      all.xvar<- list.MatchAlgData[["all.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
+      all.yvar<- list.MatchAlgData[["all.a.rsp"]][,c("StationCode","StationDateRep", respName)]
+      df.plot1 <- merge(all.xvar[,2:3],all.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      all.df.plot <- df.plot1[complete.cases(df.plot1),2:3]
+      
+      #get all ref   data to plot
+      all.ref.xvar <- subset(all.xvar, all.xvar$StationID_Master %in% ref.sites)
+      all.ref.yvar <- subset(all.yvar, all.yvar$StationCode %in% ref.sites)
+      df.plot2 <- merge(all.ref.xvar[,2:3],all.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      all.ref.df.plot <- df.plot2[complete.cases(df.plot2),2:3]
+      
+      #get all cluster data to plot
+      cl.xvar<- list.MatchAlgData[["cl.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
+      cl.yvar<- list.MatchAlgData[["cl.a.rsp"]][,c("StationCode","StationDateRep", respName)]
+      df.plot3 <- merge(cl.xvar[,2:3],cl.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      cl.df.plot <- df.plot3[complete.cases(df.plot3),2:3]
+      
+      #get all cluster ref data to plot
+      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StationCode %in% ref.sites)
+      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StationCode %in% ref.sites)
+      df.plot4 <- merge(cl.ref.xvar[,2:3],cl.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      cl.ref.df.plot <- df.plot4[complete.cases(df.plot4),2:3]
+      
+      #get target site data to plot
+      site.xvar<- list.MatchAlgData[["site.a.str"]][,c("Algae.Metrics.SampID", stressName)]
+      site.yvar<- list.MatchAlgData[["site.a.rsp"]][,c("StationDateRep", respName)]
+      df.plot5 <- merge(site.xvar,site.yvar, by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      site.df.plot <- df.plot5[complete.cases(df.plot5),2:3]
+      
+      ppi<-300
+      varFileOut = paste0("Results/Alg.SR.",TargetSiteID
+                          , ".")
+      jpeg(filename = paste(varFileOut, stressName, "_", respName, ".jpg", 
+                            sep = ""), width = 4*ppi, height = 3*ppi,
+           quality=100, pointsize=8, res = ppi)
+      par(cex.main=1.0,cex.lab=0.9,font.main=2, font.lab=2)
+      if (log.yn == TRUE) {
+        all.df.plot <- cbind(log10(all.df.plot[,1]),all.df.plot[,2])
+        all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]),all.ref.df.plot[,2])
+        cl.df.plot <- cbind(log10(cl.df.plot[,1]),cl.df.plot[,2])
+        cl.ref.df.plot <- cbind(log10(cl.ref.df.plot[,1]),cl.ref.df.plot[,2])
+        site.df.plot <- cbind(log10(site.df.plot[,1]),site.df.plot[,2])
+      }
+      
+      varMain <- paste("Linear regression of", stressName, "on", respName
+                       , "for", TargetSiteID, "\n","with", paste(predint*100, "th", sep= "")
+                       , "percentile prediction interval", sep = " ")
+      if (log.yn == TRUE) {
+        varxlab <- paste("Log10", stressName)
+      } else {
+        varxlab <- stressName
+      }
+      # There should never be a case where either x or y are always NA for all data
+      if (length(all.ref.df.plot) > 0) {
+        plot(all.df.plot[,2]~all.df.plot[,1],
+             main=varMain, xlab=varxlab,ylab=respName, 
+             col="darkgrey", pch=1, cex=0.8, cex.axis=0.8)
+      } else {
+        next
+      }
+      if (length(all.ref.df.plot) > 0) {
+        points(all.ref.df.plot[,2]~all.ref.df.plot[,1], 
+               col="blue", pch=16, cex=0.8) # blue solid dots
+      }
+      if (length(cl.df.plot) > 0) {
+        points(cl.df.plot[,2]~cl.df.plot[,1], 
+               col="cyan4", pch=2, cex=0.8) # Red open triangles
+      }
+      if (length(cl.ref.df.plot) > 0) {
+        points(cl.ref.df.plot[,2]~cl.ref.df.plot[,1], 
+               col="blue", pch=17, cex=0.8) # Solid blue triangles
+      }
+      if (length(site.df.plot) > 0) {
+        points(site.df.plot[,2]~site.df.plot[,1], 
+               col="red", pch=19, cex = 1.0) # black solid dots
+      }
+      
+      cl.x.sd <- sd(cl.df.plot[,1])
+      cl.y.sd <- sd(cl.df.plot[,2])
+      #Check for vertical line
+      if (!is.na(cl.x.sd)) {
+        if (cl.x.sd == 0) {
+          print(paste("Vertical line for", stressName, respName, sep=" "))
+          flush.console()
+          next     #It's okay to plot the points, but not the regression line
+        }
+      }
+      #Check for horizontal line
+      if (!is.na(cl.y.sd)) {
+        if (cl.y.sd == 0) {
+          print(paste("Horizontal line for", stressName, respName, sep=" "))
+          flush.console()
+          next     #It's okay to plot the points, but not the regression line
+        }
+      }    
+      
+      #Linear Regression (uses cluster data -- all sites in the cluster)
+      varY <- cl.df.plot[,2]
+      varX <- cl.df.plot[,1]
+      fit = lm(varY~varX)
+      pred.int = predict(fit,interval="prediction",level=predint)
+      fitted.values = pred.int[,1]
+      pred.lower = pred.int[,2]
+      pred.upper = pred.int[,3]
+      
+      abline(lm(varY~varX), col="cyan4", lwd=1.5)
+      abline(lm(pred.lower~varX), col="cyan4", lwd=1.0)
+      abline(lm(pred.upper~varX), col="cyan4", lwd=1.0)
+      # 
+      slope <- summary(lm(varY~varX))[[4]][[2]]
+      intercept <- summary(lm(varY~varX))[[4]][[1]]
+      pval_intercept <- summary(lm(varY~varX))[[4]][[7]]
+      pval_slope <- summary(lm(varY~varX))[[4]][[8]]
+      slope = signif(slope, 3)
+      intercept = signif(intercept, 3)
+      pval_intercept = signif(pval_intercept, 3)
+      pval = signif(pval_slope, 3)
+      # # r? text and legend
+      r = cor(varX, varY, method="pearson",use="pairwise.complete.obs")
+      r2 = formatC(r^2,format="f",digits=3)
+      # 
+      c1S <- (cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
+      df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
+                                 , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
+      # # Create results data frame
+      if (varFlag==1) {  #First time through loop
+        df.CorrTable <- c(df.corr)
+      } # IF, END
+      df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+      pval.corr = signif(c1S$p.value,2)
+      
+      #Print equation, r2, and p-value
+      if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
+        eqn <- paste("Cluster regression\n"
+                     , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
+                     ,"p-value = ",pval.corr,"\n","n = ",length(varX),"\n")
+        symbshape <- c(1, 16, 2, 17, 19)
+        symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
+        symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
+        legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
+                                                   , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
+                                                   ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
+               , col = c("black"), cex=0.6)
+        legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+      }
+      dev.off()
+      varFlag <- 0
+    }
+    graphics.off()
+  }
+  write.table(df.CorrTable,file="StressRespCorrs.Algae.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
+  
+}
