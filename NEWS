@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 12:19:52
+    #> Last Update: 2018-06-06 12:35:36
 
 # Planned Updates
 
@@ -26,6 +26,12 @@ NEWS
       - getSSDs (pesticides, metals)
 
 # Version History
+
+## v0.1.0.9013
+
+2017-06-06
+
+  - Add CASTfxn.R so the package has a help file.
 
 ## v0.1.0.9012
 
