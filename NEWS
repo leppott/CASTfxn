@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-06 18:07:06
+    #> Last Update: 2018-06-07 09:09:18
 
 # Planned Updates
 
@@ -17,9 +17,11 @@ NEWS
 
 # Version History
 
-## v0.1.0.9018
+## Changes in Version 0.1.0.9019 (2017-06-07)
 
-2017-06-06
+  - Modify format of NEWS file. Issue \#1.
+
+## Changes in Version 0.1.0.9018 (2017-06-06)
 
   - Check issues addressed:
       - Depends R \>= 2.1.0
@@ -33,9 +35,7 @@ NEWS
       - Add second dataset and example.
       - Modify text; font size and justification
 
-## v0.1.0.9017
-
-2017-06-06
+## Changes in Version 0.1.0.9017 (2017-06-06)
 
   - Update functions for package dependencies, e.g., readOGR to
     rgdal::readOGR.
@@ -43,78 +43,54 @@ NEWS
       - getChemDataSubsets; reshape
       - getStressorList; dplyr
 
-## v0.1.0.9016
-
-2017-06-06
+## Changes in Version 0.1.0.9016 (2017-06-06)
 
   - Rename SSD function to SSDplot due to conflict with stats::SSD.
   - Update CASTfxn.R for function name change.
 
-## v0.1.0.9015
-
-2017-06-06
+## Changes in Version 0.1.0.9015 (2017-06-06)
 
   - Fix StressorList return value. Issue \#2.
 
-## v0.1.0.9014
-
-2017-06-06
+## Changes in Version 0.1.0.9014 (2017-06-06)
 
   - Fix SSD function. Issue \#3.
 
-## v0.1.0.9013
-
-2017-06-06
+## Changes in Version 0.1.0.9013 (2017-06-06)
 
   - Add CASTfxn.R so the package has a help file.
 
-## v0.1.0.9012
-
-2017-06-06
+## Changes in Version 0.1.0.9012 (2017-06-06)
 
   - Add function getStressorSpecificRegressions.
 
-## v0.1.0.9011
-
-2017-06-06
+## Changes in Version 0.1.0.9011 (2017-06-06)
 
   - Add function getAlgStressorResponses.
 
-## v0.1.0.9010
-
-2017-06-06
+## Changes in Version 0.1.0.9010 (2017-06-06)
 
   - Add function getBMIStressorResponses.
 
-## v0.1.0.9009
-
-2017-06-06
+## Changes in Version 0.1.0.9009 (2017-06-06)
 
   - Add function getBMImatches.
 
-## v0.1.0.9008
-
-2017-06-06
+## Changes in Version 0.1.0.9008 (2017-06-06)
 
   - Add function getStressorList.
 
-## v0.1.0.9007
-
-2017-06-06
+## Changes in Version 0.1.0.9007 (2017-06-06)
 
   - Add function getClusterInfo.
   - SSD.R
       - Remove “conf=0.95” from qnorm function.
 
-## v0.1.0.9006
-
-2017-06-06
+## Changes in Version 0.1.0.9006 (2017-06-06)
 
   - Add function getChemDataSubsets.
 
-## v0.1.0.9005
-
-2017-06-06
+## Changes in Version 0.1.0.9005 (2017-06-06)
 
   - Add function getSiteInfo.
   - Add Imports to DESCRIPTION.
@@ -127,17 +103,13 @@ NEWS
       - rgeos
       - RgoogleMaps
 
-## v0.1.0.9004
-
-2017-06-06
+## Changes in Version 0.1.0.9004 (2017-06-06)
 
   - CoOccur function.
       - Update example. Remove 2nd Stressors line.
       - Update details from Sue Norton presentation 2017-06-05.
 
-## v0.1.0.9003
-
-2017-06-05
+## Changes in Version 0.1.0.9003 (2017-06-05)
 
   - SSD function, non-functional at this point
       - raw data
@@ -153,15 +125,11 @@ NEWS
       - CoOccur script
       - data.R, add description of data
 
-## v0.1.0.9002
-
-2017-05-27
+## Changes in Version 0.1.0.9002 (2017-05-27)
 
   - Knit README.RMD so README.md will display on GitHub.
 
-## v0.1.0.9001
-
-2017-05-27
+## Changes in Version 0.1.0.9001 (2017-05-27)
 
   - Added basic package structure.
       - Folders (data, data-raw, inst/doc, inst/extdata, man, R,
@@ -169,8 +137,6 @@ NEWS
       - NEWS, README
   - Update DESCRIPTION, NEWS, and README
 
-## v0.1.0
-
-2017-05-27
+## Changes in Version 0.1.0 (2017-05-27)
 
   - Initial commit on GitHub.
