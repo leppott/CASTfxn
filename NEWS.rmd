@@ -30,6 +30,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9020 (2017-06-07)
+
+* SSDplot
+    + Add 3rd dataset so can QC against USEPA ssd generator Excel file.
+    + Change proportion formula; rank-0.05 to rank-0.5 to match USEPA
+    + Change "Species" to "Taxa" in 2 locations in the code.
+
 ## Changes in Version 0.1.0.9019 (2017-06-07)
 
 * Modify format of NEWS file.  Issue #1.

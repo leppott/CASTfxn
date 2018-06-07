@@ -6,7 +6,7 @@
 #' @format A data frame with 16 rows and 28 variables:
 #' \describe{
 #'           \item{Taxa}{Taxa}
-#'           \item{Exposure_mgperL}{Exposure_mgperL}
+#'           \item{Exposure_mgperL}{Exposure mg/L}
 #'           \item{ExposureRange}{ExposureRange}
 #'           \item{OrganismStatus}{OrganismStatus}
 #'           \item{ResponseType}{ResponseType}
@@ -47,16 +47,32 @@
 #' }
 #' @source example data
 "data_CoOccur"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @title SSD example data (permethrin)
 #' 
 #' @description A dataset with example benthic macroinvertebrate data for permethrin to be used with the SSD function.
 #' 
 #' @format A data frame with 48 rows and 2 variables:
 #' \describe{
-#'           \item{Taxa}{Taxa}
-#'           \item{Exposure}{Exposure_mgperL}
+#'           \item{Taxa}{Taxa names}
+#'           \item{Exposure}{Exposure mg/L}
 #' }
 #' @source example data
 "data_SSD_permethrin"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title SSD example data (genorator file)
+#' 
+#' @description A dataset with example benthic macroinvertebrate data from 
+#' USEPA ssd_generator_v1.xlsm file to be used with the SSD function.
+#' 
+#' https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
+#' 
+#' @format A data frame with 5 rows and 3 variables:
+#' \describe{
+#'           \item{Taxa}{Taxa names}
+#'           \item{Exposure}{Exposure mg/L}
+#'           \item{ResponseType}{Response type; LC50}
+#' }
+#' @source example data
+"data_SSD_generator"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

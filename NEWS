@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-07 09:09:18
+    #> Last Update: 2018-06-07 11:26:19
 
 # Planned Updates
 
@@ -16,6 +16,14 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9020 (2017-06-07)
+
+  - SSDplot
+      - Add 3rd dataset so can QC against USEPA ssd generator Excel
+        file.
+      - Change proportion formula; rank-0.05 to rank-0.5 to match USEPA
+      - Change “Species” to “Taxa” in 2 locations in the code.
 
 ## Changes in Version 0.1.0.9019 (2017-06-07)
 

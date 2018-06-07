@@ -25,10 +25,9 @@ Generates plots of the proportion of species affected at different exposure leve
 https://www.epa.gov/caddis-vol4/ssd-plots
 }
 \examples{
-#Load Data
-df.SSD <- data_SSD
-# define parameters
-myDF   <- df.SSD
+# Example 1
+# Define parameters
+myDF   <- data_SSD
 myRT   <- "ResponseType"
 myTaxa <- "Taxa"
 myExp  <- "Exposure_mgperL"
@@ -38,9 +37,8 @@ SSDplot(myDF, myRT, myTaxa, myExp)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# 2nd example
-df.SSD <- data_SSD_permethrin
-myDF   <- df.SSD
+# Example 2
+myDF   <- data_SSD_permethrin
 myRT   <- "ResponseType"
 myTaxa <- "Taxa"
 myExp  <- "Exposure"
@@ -49,4 +47,16 @@ myDF[,myRT] <- "LC50"
 # Run function
 SSDplot(myDF, myRT, myTaxa, myExp)
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Example 3
+# https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
+# ssd_generator_v1.xlsm
+myDF <- data_SSD_generator
+myRT   <- "ResponseType"
+myTaxa <- "Taxa"
+myExp  <- "Exposure"
+# Run function
+SSDplot(myDF, myRT, myTaxa, myExp)
+ 
 }

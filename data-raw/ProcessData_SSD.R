@@ -16,6 +16,9 @@ df <- read.csv(file.path(wd, "data-raw", myFile))
 fn.2 <- "data_SSD_permethrin.csv"
 df.2 <- read.csv(file.path(wd, "data-raw", fn.2))
 
+fn.3 <- "data_SSD_generator.csv"
+df.3 <- read.csv(file.path(wd, "data-raw", fn.3))
+
 # 1.2. Process Data
 View(df)
 # QC check
@@ -31,3 +34,6 @@ devtools::use_data(data_SSD, overwrite = TRUE)
 
 data_SSD_permethrin <- df.2
 devtools::use_data(data_SSD_permethrin, overwrite=TRUE)
+
+data_SSD_generator <- df.3
+devtools::use_data(data_SSD_generator, overwrite=TRUE)

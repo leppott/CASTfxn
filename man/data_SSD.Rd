@@ -7,7 +7,7 @@
 \format{A data frame with 16 rows and 28 variables:
 \describe{
           \item{Taxa}{Taxa}
-          \item{Exposure_mgperL}{Exposure_mgperL}
+          \item{Exposure_mgperL}{Exposure mg/L}
           \item{ExposureRange}{ExposureRange}
           \item{OrganismStatus}{OrganismStatus}
           \item{ResponseType}{ResponseType}

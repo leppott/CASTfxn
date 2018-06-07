@@ -23,10 +23,9 @@
 #' @return An SSD plot.
 #' 
 #' @examples
-#' #Load Data
-#' df.SSD <- data_SSD
-#' # define parameters
-#' myDF   <- df.SSD
+#' # Example 1
+#' # Define parameters
+#' myDF   <- data_SSD
 #' myRT   <- "ResponseType"
 #' myTaxa <- "Taxa"
 #' myExp  <- "Exposure_mgperL"
@@ -36,10 +35,9 @@
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' 
-#' # 2nd example
-#' df.SSD <- data_SSD_permethrin
-#  # define parameters
-#' myDF   <- df.SSD
+#' # Example 2
+#  # Define parameters
+#' myDF   <- data_SSD_permethrin
 #' myRT   <- "ResponseType"
 #' myTaxa <- "Taxa"
 #' myExp  <- "Exposure"
@@ -48,63 +46,85 @@
 #' # Run function
 #' SSDplot(myDF, myRT, myTaxa, myExp)
 #' 
+#' #~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' 
+#' # Example 3
+#' # https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
+#' # ssd_generator_v1.xlsm
+#' myDF <- data_SSD_generator
+#' myRT   <- "ResponseType"
+#' myTaxa <- "Taxa"
+#' myExp  <- "Exposure"
+#' # Run function
+#' SSDplot(myDF, myRT, myTaxa, myExp)
+#'  
+# QC
+# library(CASTfxn)
+# Data <- data_SSD_generator
+# ResponseType <- "ResponseType"
+# Taxa <- "Taxa"
+# Exposure <- "Exposure"
+#
 #' @export
 SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   #
   
   # Define col names for dplyr
   names(Data)[names(Data)==ResponseType] <- "ResponseType"
-  names(Data)[names(Data)==Taxa] <- "Taxa"
-  names(Data)[names(Data)==Exposure] <- "Exposure"
+  names(Data)[names(Data)==Taxa]         <- "Taxa"
+  names(Data)[names(Data)==Exposure]     <- "Exposure"
   
   # define pipe
   `%>%` <- dplyr::`%>%`
   
+  # Calculate geometric mean
   DF.TRIAL.P <- as.data.frame(Data %>% 
                                 dplyr::group_by(Taxa, ResponseType) %>% 
                                 dplyr::summarize(Conc_1_Mean_Standardized = psych::geometric.mean(Exposure)))
   
-  #names( DF.TRIAL.P)[names( DF.TRIAL.P) == 'Group.1'] <- 'Species' ###changes column name from group.1 to species
+  #
   DF.TRIAL.P <- DF.TRIAL.P[order(DF.TRIAL.P$Conc_1_Mean_Standardized),] ## orders dataset by mean values
   DF.TRIAL.P <- DF.TRIAL.P[stats::complete.cases(DF.TRIAL.P), ]##removes na values
   
   #
-  DF.TRIAL.P$LogMean = log10(DF.TRIAL.P$Conc_1_Mean_Standardized)
-  DF.TRIAL.P$Rank = rank(DF.TRIAL.P$Conc_1_Mean_Standardized)
-  DF.TRIAL.P$Proportion = ((DF.TRIAL.P$Rank-0.05)/length(DF.TRIAL.P$Taxa))
-  DF.TRIAL.P$Probit = stats::qnorm(DF.TRIAL.P$Proportion, mean=5, sd=1)
+  DF.TRIAL.P$LogMean    <- log10(DF.TRIAL.P$Conc_1_Mean_Standardized)
+  DF.TRIAL.P$Rank       <- rank(DF.TRIAL.P$Conc_1_Mean_Standardized)
+  # USEPA file has 0.5, Diana had .05
+  DF.TRIAL.P$Proportion <- (DF.TRIAL.P$Rank-0.5)/length(DF.TRIAL.P$Taxa)
+  DF.TRIAL.P$Probit     <- stats::qnorm(DF.TRIAL.P$Proportion, mean=5, sd=1)
   
+  #
   sloperesult <- stats::lm(Probit ~ LogMean, data=DF.TRIAL.P)
-  Slope <- sloperesult$coefficients[2]
-  Intercept <- sloperesult$coefficients[1]
-  DF.TRIAL.P %>% dplyr::mutate(Log10CentralTendency=(Probit-Intercept)/Slope
-                               , MSE=(Log10CentralTendency-LogMean)^2 )
-  DF.TRIAL.P <- dplyr::mutate(DF.TRIAL.P,Log10CentralTendency=(Probit-Intercept)/Slope)
-  DF.TRIAL.P <- dplyr::mutate(DF.TRIAL.P,MSE=(Log10CentralTendency-LogMean)^2)
+  Slope       <- sloperesult$coefficients[2]
+  Intercept   <- sloperesult$coefficients[1]
+  # DF.TRIAL.P %>% dplyr::mutate(Log10CentralTendency=(Probit-Intercept)/Slope
+  #                              , MSE=(Log10CentralTendency-LogMean)^2 )
+  # duplicative of above but above not assigned
+  DF.TRIAL.P <- dplyr::mutate(DF.TRIAL.P, Log10CentralTendency=(Probit-Intercept)/Slope)
+  # (Log10mean(Obs) - Pred)^2  # number ok but not really MSE
+  DF.TRIAL.P <- dplyr::mutate(DF.TRIAL.P, MSE=(Log10CentralTendency-LogMean)^2)
   SumofMSE <- sum(DF.TRIAL.P$MSE)/length(DF.TRIAL.P$Taxa)
-
-  DF.TRIAL.P <- dplyr::mutate(DF.TRIAL.P,ProbitSquared=(Probit)^2)
+  
+  #
+  DF.TRIAL.P         <- dplyr::mutate(DF.TRIAL.P,ProbitSquared=(Probit)^2)
   SumofProbitSquared <- sum(DF.TRIAL.P$ProbitSquared)
-  AvgSumSquareProbit <- sum(DF.TRIAL.P$Probit)^2/length(DF.TRIAL.P$Species)
-  cssq <- SumofProbitSquared-AvgSumSquareProbit
-  GrandMean <- mean(DF.TRIAL.P$LogMean)
-  df.Final.Product <- dplyr::mutate(DF.TRIAL.P, PointError = 
+  AvgSumSquareProbit <- sum(DF.TRIAL.P$Probit)^2/length(DF.TRIAL.P$Taxa)
+  cssq               <- SumofProbitSquared-AvgSumSquareProbit
+  GrandMean          <- mean(DF.TRIAL.P$LogMean)
+  df.Final.Product   <- dplyr::mutate(DF.TRIAL.P, PointError = 
                                       (SumofMSE/(Slope^2)) * 
-                                      (1+(1/length(DF.TRIAL.P$Species)) + 
+                                      (1+(1/length(DF.TRIAL.P$Taxa)) + 
                                          ((Log10CentralTendency-GrandMean)^2)/cssq))
   df.Final.Product <- dplyr::mutate(df.Final.Product
                                     , log10UpperPI=(Log10CentralTendency) + ((2.02)*(sqrt(PointError))))
-  
-  
   df.Final.Product <- dplyr::mutate(df.Final.Product,log10LowerPI=(Log10CentralTendency) 
                                     - ((2.02)*(sqrt(PointError))))
   df.Final.Product <- dplyr::mutate(df.Final.Product,LowerPI=10^(log10LowerPI))
   df.Final.Product <- dplyr::mutate(df.Final.Product,UppererPI=10^(log10UpperPI))
   df.Final.Product <- dplyr::mutate(df.Final.Product,CentralTendency=10^(Log10CentralTendency))
   
-  
-  # graph 
-  taxalist <- unique(df.Final.Product$Taxa)
+  # plot 
+  #taxalist <- unique(df.Final.Product$Taxa)  # not used
   
   p1 <- ggplot2::ggplot() +
     ggplot2::geom_point(data = df.Final.Product
