@@ -17,6 +17,24 @@ Get stressor specific regressions.
 }
 \details{
 Percent fines.
+
+Required objects:
+
+* data.SampSummary
+
+* data.bmi.taxa.raw
+
+* myDir.Data
+
+* TargetSiteID
+
+* predint
+
+* varLegLoc
+
+* varInset
+
+* varLegOpp
 }
 \examples{
 #No example at this time.

@@ -4,6 +4,12 @@
 #' 
 #' @details Box plots of each stressor, grouped by category.
 #' 
+#' Required objects:
+#' 
+#' * clustertype
+#' 
+#' * useLU
+#' 
 #' @param TargetSiteID Site ID
 #' @param site.Clusters Clusters
 #' @param chem.info chem information

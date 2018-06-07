@@ -4,6 +4,12 @@
 #' 
 #' @details Matched chem/bmi samples.
 #' 
+#' Required objects:
+#' 
+#' * data.SampSummary
+#' 
+#' * data.chem.raw
+#' 
 #' @param stressors stressors
 #' @param list.data data list
 #' 

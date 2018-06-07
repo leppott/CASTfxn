@@ -23,7 +23,21 @@ Get site info of provided siteID.
 \details{
 Summary info including lat/long, ref status, cluster membership, samps from site, maps
 
-Requires package rgdal.
+Requires package rgdal. 
+
+Required objects:
+
+* data.Stations.Info
+
+* data.SampSumamry
+
+* data.bmi.metrics
+
+* data.algae.metrics
+
+* data.cluster
+
+* data.mod
 }
 \examples{
 #No example at this time.

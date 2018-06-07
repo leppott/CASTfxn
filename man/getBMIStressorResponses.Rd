@@ -19,6 +19,20 @@ Get BMI stressor resonses.
 }
 \details{
 BMI stressor regressions.
+
+Required objects:
+
+* BMIresp
+
+* TargetSiteID
+
+* predint
+
+* varLegLoc
+
+* varInset
+
+* varLegOpp
 }
 \examples{
 #No example at this time.

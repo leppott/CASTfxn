@@ -6,6 +6,20 @@
 #' 
 #' Requires package rgdal. 
 #' 
+#' Required objects:
+#' 
+#' * data.Stations.Info
+#' 
+#' * data.SampSumamry
+#' 
+#' * data.bmi.metrics
+#' 
+#' * data.algae.metrics
+#' 
+#' * data.cluster
+#' 
+#' * data.mod
+#' 
 #' @param TargetSiteID SiteID
 #' @param clustertype Cluster
 #' @param useLU Use LandUse.  Default = FALSE.

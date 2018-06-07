@@ -19,6 +19,20 @@ Get Algae stressor resonses.
 }
 \details{
 Algae stressor regressions.
+
+Required objects:
+
+* AlgResp
+
+* TargetSiteID
+
+* predint
+
+* varLegLoc
+
+* varInset
+
+* varLegOpp
 }
 \examples{
 #No example at this time.

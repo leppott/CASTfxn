@@ -26,6 +26,12 @@ Get cluster information.
 }
 \details{
 Summary cluster information
+
+Required objects:
+
+* TargetSiteID
+
+* data.cluster
 }
 \examples{
 #No example at this time.

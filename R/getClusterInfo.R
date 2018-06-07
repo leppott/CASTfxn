@@ -4,6 +4,12 @@
 #' 
 #' @details Summary cluster information
 #' 
+#' Required objects:
+#' 
+#' * TargetSiteID
+#' 
+#' * data.cluster
+#'  
 #' @param site.COMID SiteID
 #' @param clustertype Cluster type.
 #' @param siteClusters site clusters.

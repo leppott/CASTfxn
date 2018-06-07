@@ -20,6 +20,12 @@ Get BMI and chem sample matches.
 }
 \details{
 Matched chem/bmi samples.
+
+Required objects:
+
+* data.SampSummary
+
+* data.chem.raw
 }
 \examples{
 #No example at this time.

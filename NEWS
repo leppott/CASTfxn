@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-07 11:26:19
+    #> Last Update: 2018-06-07 14:31:06
 
 # Planned Updates
 
@@ -16,6 +16,10 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9021 (2017-06-07)
+
+  - Add data requirements to “get” functions in the “details” section.
 
 ## Changes in Version 0.1.0.9020 (2017-06-07)
 

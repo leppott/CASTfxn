@@ -35,6 +35,12 @@ Get stressor list.
 }
 \details{
 Box plots of each stressor, grouped by category.
+
+Required objects:
+
+* clustertype
+
+* useLU
 }
 \examples{
 #No example at this time. 

@@ -30,6 +30,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9021 (2017-06-07)
+
+* Add data requirements to "get" functions in the "details" section.
+
 ## Changes in Version 0.1.0.9020 (2017-06-07)
 
 * SSDplot

@@ -4,6 +4,20 @@
 #' 
 #' @details Algae stressor regressions.
 #' 
+#' Required objects:
+#' 
+#' * AlgResp
+#' 
+#' * TargetSiteID
+#' 
+#' * predint
+#' 
+#' * varLegLoc
+#' 
+#' * varInset
+#' 
+#' * varLegOpp
+#' 
 #' @param stressors stressors
 #' @param list.MatchAlgData list of matched Algae and stressor data.
 #' 

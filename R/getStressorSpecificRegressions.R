@@ -4,6 +4,24 @@
 #' 
 #' @details Percent fines.
 #' 
+#' Required objects:
+#' 
+#' * data.SampSummary
+#' 
+#' * data.bmi.taxa.raw
+#' 
+#' * myDir.Data
+#' 
+#' * TargetSiteID
+#' 
+#' * predint
+#' 
+#' * varLegLoc
+#' 
+#' * varInset
+#' 
+#' * varLegOpp
+#'  
 #' @param matchedData matched biological and chemical stressor data.
 #' 
 #' @return Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.

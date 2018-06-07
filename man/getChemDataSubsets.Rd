@@ -26,6 +26,16 @@ Get chemical data subsets.
 Summary information about chems.
 
 Uses package reshape.
+
+Required objects:
+
+* data.cluster
+
+* data.Stations.Info
+
+* data.chem.raw
+
+* data.chem.info
 }
 \examples{
 #No example at this time. 

@@ -4,6 +4,20 @@
 #' 
 #' @details BMI stressor regressions.
 #' 
+#' Required objects:
+#' 
+#' * BMIresp
+#' 
+#' * TargetSiteID
+#' 
+#' * predint
+#' 
+#' * varLegLoc
+#' 
+#' * varInset
+#' 
+#' * varLegOpp
+#' 
 #' @param stressors stressors
 #' @param list.MatchBMIData list of matched BMI and stressor data.
 #' 

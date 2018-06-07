@@ -6,6 +6,16 @@
 #' 
 #' Uses package reshape.
 #' 
+#' Required objects:
+#' 
+#' * data.cluster
+#' 
+#' * data.Stations.Info
+#' 
+#' * data.chem.raw
+#' 
+#' * data.chem.info
+#' 
 #' @param TargetSiteID SiteID
 #' @param comid NHD+ COMID
 #' @param clustertype Cluster
