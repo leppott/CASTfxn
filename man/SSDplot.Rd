@@ -49,7 +49,7 @@ SSDplot(myDF, myRT, myTaxa, myExp)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Example 3
+# Example 3 
 # https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
 # ssd_generator_v1.xlsm
 myDF <- data_SSD_generator

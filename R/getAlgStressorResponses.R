@@ -10,24 +10,65 @@
 #' 
 #' * TargetSiteID
 #' 
-#' * predint
-#' 
-#' * varLegLoc
-#' 
-#' * varInset
-#' 
-#' * varLegOpp
-#' 
 #' @param stressors stressors
 #' @param list.MatchAlgData list of matched Algae and stressor data.
 #' 
 #' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 #' 
 #' @examples
-#' #No example at this time.
+#' predint <- 0.75
+#' varLegLoc <- "topright"
+#' 
+#' TargetSiteID <- "SDR-MLS"
+#' clustertype <- "H6"
+#' useLU <- FALSE
+#' 
+#' \dontrun{
+#' CurrentDir<-getwd()
+#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
+#' 
+#' data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
+#' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)-3])
+#' 
+#' # Run getSiteInfo
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' 
+#' # Run getChemDataSubsets
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' chem.info <- list.data$chem.info
+#' cluster.chem <- list.data$cluster.chem
+#' cluster.samps <- list.data$cluster.samps
+#' ref.sites <- list.data$ref.sites
+#' site.chem <- list.data$site.chem
+#' 
+#' # set cutoff for possible stressor identification
+#' probsLow <- 0.10
+#' probsHigh <- 0.90#' 
+#' 
+#' # Run getStressorList
+#' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+#'                                  , cluster.samps, ref.sites, site.chem
+#'                                  , probsHigh, probsLow)
+#' stressors <- list.stressors$stressors
+#' 
+#' # Run getAlgMatches
+#' list.MatchAlgData <- getAlgMatches(stressors, list.data)
+#' 
+#' getAlgStressorResponses(stressors, list.MatchAlgData)
+#' }
 #' 
 #' @export
-getAlgStressorResponses <- function(stressors, list.MatchAlgData) {
+getAlgStressorResponses <- function(stressors, list.MatchAlgData
+                                    , predint=0.75, varLegLoc="topright") {
+  
+  # helper
+  RegPlotSet <- getRegPlotSet(varLegLoc)
+  varInset  <- RegPlotSet[1]
+  varSpacer <- RegPlotSet[2]
+  varLegOpp <- RegPlotSet[3]
+  
   
   for (p in 1:length(stressors)) {
     stressName <- stressors[p]

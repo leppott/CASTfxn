@@ -13,6 +13,8 @@ Custom functions for CAST.
 
 CoOccur
 
+getAlgmatches
+
 getAlgStressorResponses
 
 getBMImatches
@@ -22,6 +24,8 @@ getBMIStressorResponses
 getChemDataSubsets
 
 getClusterInfo
+
+getRegPlotSet
 
 getSiteInfo
 

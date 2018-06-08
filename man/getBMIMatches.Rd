@@ -23,11 +23,50 @@ Matched chem/bmi samples.
 
 Required objects:
 
-* data.SampSummary
+* data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.chem.raw
+* data.chem.raw; StationID_Master, ChemSampleID
 }
 \examples{
-#No example at this time.
+
+TargetSiteID <- "SDR-MLS"
+clustertype <- "H6"
+useLU <- FALSE
+
+\dontrun{
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# Run getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90#' 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+stressors <- list.stressors$stressors
+
+
+data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+                               , na.strings = c(""," "))
+data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep="")
+                                  , na.strings = c(""," "))
+
+list.MatchBMIData <- getBMIMatches(stressors, list.data)
+}
 
 }

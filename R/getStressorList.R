@@ -8,8 +8,6 @@
 #' 
 #' * clustertype
 #' 
-#' * useLU
-#' 
 #' @param TargetSiteID Site ID
 #' @param site.Clusters Clusters
 #' @param chem.info chem information
@@ -24,12 +22,41 @@
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
 #' @examples
-#' #No example at this time. 
+#'
+#' TargetSiteID <- "SDR-MLS"
+#' clustertype <- "H6"
+#' useLU <- FALSE
+#' 
+#' \dontrun{
+#' CurrentDir<-getwd()
+#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
+#' 
+#' # Run getSiteInfo
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' 
+#' # Run getChemDataSubsets
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' chem.info <- list.data$chem.info
+#' cluster.chem <- list.data$cluster.chem
+#' cluster.samps <- list.data$cluster.samps
+#' ref.sites <- list.data$ref.sites
+#' site.chem <- list.data$site.chem
+#' 
+#' # set cutoff for possible stressor identification
+#' probsLow <- 0.10
+#' probsHigh <- 0.90#' 
+#' 
+#' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+#'                                  , cluster.samps, ref.sites, site.chem
+#'                                  , probsHigh, probsLow)
+#' }
 #' 
 #' @export
 getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
                             , cluster.samps, ref.sites, site.chem
-                            , probsHigh, probsLow) {
+                            , probsHigh, probsLow, useLU=FALSE) {
   
   stations <- TargetSiteID
   nolu.cluster <- paste(clustertype, "_noland", sep="")

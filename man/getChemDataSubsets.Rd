@@ -29,15 +29,36 @@ Uses package reshape.
 
 Required objects:
 
-* data.cluster
+* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 
-* data.Stations.Info
+* data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 
-* data.chem.raw
+* data.chem.raw; StationID_Master, ChemSampleID
 
-* data.chem.info
+* data.chem.info; Analyte
 }
 \examples{
-#No example at this time. 
+
+TargetSiteID <- "SDR-MLS"
+clustertype <- "H6"
+useLU <- FALSE
+
+\dontrun{ 
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+}
 
 }

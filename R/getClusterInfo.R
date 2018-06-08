@@ -8,7 +8,7 @@
 #' 
 #' * TargetSiteID
 #' 
-#' * data.cluster
+#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
 #' @param site.COMID SiteID
 #' @param clustertype Cluster type.
@@ -19,7 +19,28 @@
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
 #' @examples
-#' #No example at this time.
+#' 
+#' TargetSiteID <- "SDR-MLS"
+#' clustertype <- "H6"
+#' useLU <- FALSE
+#' 
+#' \dontrun{
+#' CurrentDir<-getwd()
+#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
+#' 
+#' # Run getSiteInfo
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' 
+#' # Run getChemDataSubsets
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' ref.reaches <- list.data$ref.reaches
+#' 
+#' data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+#' 
+#' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
+#' }
 #' 
 #' @export
 getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, useLU = FALSE) {

@@ -27,19 +27,40 @@ Requires package rgdal.
 
 Required objects:
 
-* data.Stations.Info
+* data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 
-* data.SampSumamry
+* data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.bmi.metrics
+* data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
 
-* data.algae.metrics
+* data.bmi.metrics; StationID_Master, CollDate, CSCI, O_E, MMI_Score
 
-* data.cluster
+* data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 
-* data.mod
+* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+
+* data.mod; COMID, ReachModStatus, ModReason
 }
 \examples{
-#No example at this time.
+TargetSiteID <- "SDR-MLS"
+clustertype <- "H6"
+useLU <- FALSE
 
+\dontrun{
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+                               , na.strings = c(""," "))
+data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
+data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
+data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
+data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
+ 
+data.Stations.Info <- read
+ 
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+}
 }

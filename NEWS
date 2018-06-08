@@ -4,22 +4,28 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-07 14:31:06
+    #> Last Update: 2018-06-08 10:29:08
 
 # Planned Updates
 
   - None at this time.
 
+# Future Updates
+
   - CoOccur function.
-    
       - Add scoring to 2nd set of plots.
       - Retain scoring from both sets of plots in a table.
 
 # Version History
 
-## Changes in Version 0.1.0.9021 (2017-06-07)
+## Changes in Version 0.1.0.9021 (2017-06-08)
 
   - Add data requirements to “get” functions in the “details” section.
+      - Include column names for required imports
+  - Add helper function getRegPlotSet.
+  - Add examples but mark as “dont’ run”. Issue \#5.
+  - Add function getAlgMatches.
+      - Include return value.
 
 ## Changes in Version 0.1.0.9020 (2017-06-07)
 

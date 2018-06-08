@@ -2,11 +2,13 @@
 
 export(CoOccur)
 export(SSDplot)
+export(getAlgMatches)
 export(getAlgStressorResponses)
 export(getBMIMatches)
 export(getBMIStressorResponses)
 export(getChemDataSubsets)
 export(getClusterInfo)
+export(getRegPlotSet)
 export(getSiteInfo)
 export(getStressorList)
 export(getStressorSpecificRegressions)

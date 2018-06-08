@@ -4,7 +4,8 @@
 \alias{getBMIStressorResponses}
 \title{BMI Stressor Responses}
 \usage{
-getBMIStressorResponses(stressors, list.MatchBMIData)
+getBMIStressorResponses(stressors, list.MatchBMIData, predint = 0.75,
+  varLegLoc = "topright")
 }
 \arguments{
 \item{stressors}{stressors}
@@ -25,16 +26,48 @@ Required objects:
 * BMIresp
 
 * TargetSiteID
-
-* predint
-
-* varLegLoc
-
-* varInset
-
-* varLegOpp
 }
 \examples{
-#No example at this time.
+predint <- 0.75
+varLegLoc <- "topright"
+BMIresp <- c("CSCI", "O_E", "MMI_Score", "ClingerTaxaPct", "ColeopteraTaxaPct"
+             , "EPTTaxaPct", "ShredderTaxa", "TaxaRichness")
+             
+TargetSiteID <- "SDR-MLS"
+clustertype <- "H6"
+useLU <- FALSE
+
+\dontrun{
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# Run getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90#' 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+stressors <- list.stressors$stressors
+
+# Run getBMIMatches
+list.MatchBMIData <- getBMIMatches(stressors, list.data)       
+             
+getBMIStressorResponses(stressors, list.MatchBMIData)
+}
 
 }

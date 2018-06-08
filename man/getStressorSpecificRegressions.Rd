@@ -4,7 +4,8 @@
 \alias{getStressorSpecificRegressions}
 \title{Stressor Specific Regressions}
 \usage{
-getStressorSpecificRegressions(matchedData)
+getStressorSpecificRegressions(matchedData, predint = 0.75,
+  varLegLoc = "topright")
 }
 \arguments{
 \item{matchedData}{matched biological and chemical stressor data.}
@@ -20,23 +21,66 @@ Percent fines.
 
 Required objects:
 
-* data.SampSummary
+* data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.bmi.taxa.raw
+* data.bmi.taxa.raw; BMISampID
+
+* data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
+
+* data.SSTV.totabund; BMISampID, StationID_Master, ChemSampleID, SSTV.analyte
+, SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
 
 * myDir.Data
 
 * TargetSiteID
-
-* predint
-
-* varLegLoc
-
-* varInset
-
-* varLegOpp
 }
 \examples{
-#No example at this time.
+predint <- 0.75
+varLegLoc <- "topright"
+
+TargetSiteID <- "SDR-MLS"
+clustertype <- "H6"
+useLU <- FALSE
+
+\dontrun{
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# Run getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90#' 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+stressors <- list.stressors$stressors
+
+# Run getBMIMatches
+list.MatchBMIData <- getBMIMatches(stressors, list.data)   
+
+data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+                               , na.strings = c(""," "))
+data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+getStressorSpecificRegressions(list.MatchBMIData)
+}
 
 }

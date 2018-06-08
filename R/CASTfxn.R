@@ -6,6 +6,8 @@
 #' 
 #' CoOccur
 #' 
+#' getAlgmatches
+#' 
 #' getAlgStressorResponses
 #' 
 #' getBMImatches
@@ -15,6 +17,8 @@
 #' getChemDataSubsets
 #' 
 #' getClusterInfo
+#' 
+#' getRegPlotSet
 #' 
 #' getSiteInfo
 #' 
