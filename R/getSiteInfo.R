@@ -10,7 +10,7 @@
 #' 
 #' * data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 #' 
-#' * data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
 #' * data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
 #' 
@@ -30,27 +30,34 @@
 #' , BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
 #' 
 #' @examples
-#' TargetSiteID <- "SDR-MLS"
+#' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "H6"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
-#' data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
-#'                                , na.strings = c(""," "))
-#' data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
-#' data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
-#' data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#' data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
-#' data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
-#'  
-#' data.Stations.Info <- read
+#' # data import, example
+#' #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+#' #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+#' #                               , na.strings = c(""," "))
+#' #data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
+#' #data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
+#' #data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
+#' #data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+#' #data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
+#' 
+#' # data, example included with package
+#' data.Stations.Info <- data_Sites
+#' data.SampSummary   <- data_SampSummary
+#' data.303d.ComID    <- data_303d
+#' data.bmi.metrics   <- data_BMIMetrics
+#' data.algae.metrics <- data_AlgMetrics
+#' data.cluster       <- data_Cluster_Hi
+#' data.mod           <- data_ReachMod
 #'  
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
-#'}
+#
 #' @export
 getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   #
@@ -98,36 +105,43 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   }
   
   # Read spatial layers for background
-  flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-  outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
   
-  # Project site data to USGS Albers Equal Area
-  usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 
-                +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-                +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-  df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
-  proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"], 
-                               df.plotSite[,"FinalLatitude"]), usgs.aea)
-  proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"], 
-                                df.plot.cl[,"FinalLatitude"]), usgs.aea)
-  proj.refSites <- rgdal::project(cbind(data.refSites[,"FinalLongitude"], 
-                                 data.refSites[,"FinalLatitude"]), usgs.aea)
-  proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
-                                 data.Stations.Info[,"FinalLatitude"]), usgs.aea)
-  
-  # plot map
-  ppi <- 300
-  grDevices::jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
-       width = 4*ppi, height = 4*ppi, pointsize = 6,
-       quality=100, bg="white", res=ppi)
-    graphics::plot(outline, col="white", border="black", lwd=1)
-    graphics::plot(flowline, add = TRUE, col="light blue", lwd=0.5)
-    
-    graphics::points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
-    graphics::points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
-    graphics::points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
-    graphics::points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
-  grDevices::dev.off()
+  # # San Diego
+  # flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+  # outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+  # # AZ
+  # # flowline <- rgdal::readOGR(dsn="P:\\GIS\\AZ\\data", layer="AZ_NHDFlowline_Network")
+  # # outline <- rgdal::readOGR(dsn="P:\\GIS\\AZ\\data", layer="AZ_State")
+  # 
+  # 
+  # 
+  # # Project site data to USGS Albers Equal Area
+  # usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 
+  #               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+  #               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+  # df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
+  # proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"], 
+  #                              df.plotSite[,"FinalLatitude"]), usgs.aea)
+  # proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"], 
+  #                               df.plot.cl[,"FinalLatitude"]), usgs.aea)
+  # proj.refSites <- rgdal::project(cbind(data.refSites[,"FinalLongitude"], 
+  #                                data.refSites[,"FinalLatitude"]), usgs.aea)
+  # proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
+  #                                data.Stations.Info[,"FinalLatitude"]), usgs.aea)
+  # 
+  # # plot map
+  # ppi <- 300
+  # grDevices::jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
+  #      width = 4*ppi, height = 4*ppi, pointsize = 6,
+  #      quality=100, bg="white", res=ppi)
+  #   graphics::plot(outline, col="white", border="black", lwd=1)
+  #   graphics::plot(flowline, add = TRUE, col="light blue", lwd=0.5)
+  #   
+  #   graphics::points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
+  #   graphics::points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.6)
+  #   graphics::points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=19, cex=0.6)
+  #   graphics::points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
+  # grDevices::dev.off()
   
   #
   mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, BMImetrics = myBMImetrics

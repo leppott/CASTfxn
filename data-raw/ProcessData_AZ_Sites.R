@@ -1,0 +1,36 @@
+# Prepare data for example for AZ, Sites
+#
+# Erik.Leppo@tetratech.com
+# 20180611
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# 0. Prep####
+wd <- getwd() # assume is package directory
+#library(devtools)
+
+# 1. Get data and process#####
+# 1.1. Import Data
+myFile <- "AZSitesFinal.tab"
+df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
+
+# Modify Names to match existing code
+df$StationID_Master <- df$STATION_CD
+df$FinalLatitude <- df$LATITUDE
+df$FinalLongitude <- df$LONGITUDE
+df$WaterbodyName <- df$STATION_NAME
+df$GIS_County <- df$COUNTY_NAME
+df$CARefSite_2017 <- df$ReferenceStatus
+df$COMID_NHD2 <- df$COMID
+
+# 1.2. Process Data
+View(df)
+# QC check
+dim(df)
+# structure
+str(df)
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 2. Save as RDA for use in package####
+#
+data_Sites <- df
+devtools::use_data(data_Sites, overwrite = TRUE)

@@ -1,0 +1,285 @@
+ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	Category	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID
+TOTAL	BOD	MG/L	BOD_uf_mg_L	Bacteria	1	0						1
+TOTAL	E. COLI	CFU/100	Ecoli_uf_CFU_100	Bacteria	1	0						1
+TOTAL	E. COLI	MG/L	Ecoli_uf_mg_L	Bacteria	1	0						0
+TOTAL	"ALKALINITY, PHENOLPHTHALEIN"	MG/L	Alkalinity_phenolphthalein_uf_mg_L	Ions	1	0						1
+CALCULATED	CALCIUM CARBONATE	MG/L	CaCO3_calc_mg_L	Ions	1	0						1
+DISSOLVED	CALCIUM CARBONATE	MG/L	CaCO3_f_mg_L	Ions	1	0						1
+STANDARD	CALCIUM CARBONATE	MG/L	CaCO3_mg_L	Ions	1	0						1
+OTHER	CALCIUM CARBONATE	MG/L	CaCO3_other_mg_L	Ions	1	0						1
+TOTAL	CALCIUM CARBONATE	MG/L	CaCO3_uf_mg_L	Ions	1	0						1
+DISSOLVED	CALCIUM	MG/L	Calcium_f_mg_L	Ions	1	0						1
+TOTAL	CALCIUM	MG/L	Calcium_uf_mg_L	Ions	1	0						1
+TOTAL	CARBONATE	MG/L	Carbonate_uf_mg_L	Ions	1	0						1
+TOTAL	CHLORIDE	MG/L	Chloride_uf_mg_L	Ions	1	0						1
+OTHER	CHLORINE	MG/L	Chlorine_other_mg_L	Ions	1	0						1
+TOTAL	CHLORINE	MG/L	Chlorine_uf_mg_L	Ions	1	0						1
+TOTAL	CYANIDE	MG/L	Cyanide_uf_mg_L	Ions	1	0						1
+DISSOLVED	FLUORIDE	MG/L	Fluoride_f_mg_L	Ions	1	0						1
+TOTAL	FLUORIDE	MG/L	Fluoride_uf_mg_L	Ions	1	0						1
+CALCULATED	HARDNESS (CACO3 + MGCO3)	MG/L	Hardness_CaCO3_MgCO3_calc_mg_L	Ions	1	0						1
+DISSOLVED	HARDNESS (CACO3 + MGCO3)	MG/L	Hardness_CaCO3_MgCO3_f_mg_L	Ions	1	0						1
+TOTAL	HYDROGEN CARBONATE	MG/L	HydrogenCarbonate_uf_mg_L	Ions	1	0						1
+DISSOLVED	POTASSIUM	MG/L	Potassium_f_mg_L	Ions	1	0						1
+TOTAL	POTASSIUM	MG/L	Potassium_uf_mg_L	Ions	1	0						1
+DISSOLVED	SODIUM	MG/L	Sodium_f_mg_L	Ions	1	0						1
+TOTAL	SODIUM	MG/L	Sodium_uf_mg_L	Ions	1	0						1
+TOTAL	SULFATE	MG/L	Sulfate_uf_mg_L	Ions	1	0						1
+DISSOLVED	ALUMINUM	MG/L	Aluminum_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	ALUMINUM	UG/L	Aluminum_uf_ug_L	Metals_metalloids	1	0						1
+DISSOLVED	ANTIMONY	MG/L	Antimony_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	ANTIMONY	MG/L	Antimony_uf_mg_L	Metals_metalloids	1	0						1
+CALCULATED	"ARSENIC, INORGANIC"	MG/KG	Arsenic_inorg_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	"ARSENIC, INORGANIC"	UG/L	Arsenic_inorg_f_ug_L	Metals_metalloids	1	1						1
+SUSPENDED	"ARSENIC, INORGANIC"	UG/L	Arsenic_inorg_susp_ug_L	Metals_metalloids	1	1						1
+TOTAL	"ARSENIC, INORGANIC"	UG/L	Arsenic_inorg_uf_ug_L	Metals_metalloids	1	1						1
+CALCULATED	BARIUM AND COMPOUNDS	MG/KG	Barium_cmpds_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	BARIUM AND COMPOUNDS	UG/L	Barium_cmpds_f_ug_L	Metals_metalloids	1	0						1
+TOTAL	BARIUM AND COMPOUNDS	UG/L	Barium_cmpds_uf_ug_L	Metals_metalloids	1	0						1
+CALCULATED	BERYLLIUM AND COMPOUNDS	MG/KG	Beryllium_cmpds_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	BERYLLIUM AND COMPOUNDS	MG/L	Beryllium_cmpds_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	BERYLLIUM AND COMPOUNDS	MG/L	Beryllium_cmpds_uf_mg_L	Metals_metalloids	1	0						1
+DISSOLVED	BORON (BORON AND BORATES ONLY)	MG/L	Boron_borates_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	BORON (BORON AND BORATES ONLY)	MG/L	Boron_borates_uf_mg_L	Metals_metalloids	1	0						1
+CALCULATED	CADMIUM	MG/KG	Cadmium_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	CADMIUM	MG/L	Cadmium_f_mg_L	Metals_metalloids	1	1						1
+TOTAL	CADMIUM	MG/L	Cadmium_uf_mg_L	Metals_metalloids	1	1						1
+CALCULATED	CHROMIUM	MG/KG	Chromium_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	CHROMIUM	MG/L	Chromium_f_mg_L	Metals_metalloids	1	1						1
+STANDARD	CHROMIUM	MG/L	Chromium_mg_L	Metals_metalloids	1	1						1
+TOTAL	CHROMIUM	MG/L	Chromium_uf_mg_L	Metals_metalloids	1	1						1
+DISSOLVED	COBALT	MG/L	Cobalt_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	COBALT	UG/L	Cobalt_uf_ug_L	Metals_metalloids	1	0						1
+DISSOLVED	COPPER	UG/L	Copper_f_ug_L	Metals_metalloids	1	1						1
+TOTAL	COPPER	MG/KG	Copper_uf_mg_kg	Metals_metalloids	1	0						0
+TOTAL	COPPER	UG/L	Copper_uf_ug_L	Metals_metalloids	1	1						1
+DISSOLVED	IRON	MG/L	Iron_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	IRON	UG/L	Iron_uf_ug_L	Metals_metalloids	1	0						1
+TOTAL	LEAD AND COMPOUNDS (INORGANIC)	MG/L	Lead_cmpdsInorg_uf_mg_L	Metals_metalloids	1	1						1
+CALCULATED	LEAD AND COMPOUNDS (INORGANIC)	MG/KG	Lead_cmpdsInorg_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	LEAD AND COMPOUNDS (INORGANIC)	MG/L	Lead_cmpdsInorg_f_mg_L	Metals_metalloids	1	1						1
+SUSPENDED	LEAD AND COMPOUNDS (INORGANIC)	MG/L	Lead_cmpdsInorg_susp_mg_L	Metals_metalloids	1	1						1
+DISSOLVED	MAGNESIUM	MG/L	Magnesium_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	MAGNESIUM	MG/L	Magnesium_uf_mg_L	Metals_metalloids	1	0						1
+DISSOLVED	MANGANESE	UG/L	Manganese_f_ug_L	Metals_metalloids	1	0						1
+TOTAL	MANGANESE	UG/L	Manganese_uf_ug_L	Metals_metalloids	1	0						1
+CALCULATED	"MERCURY, ELEMENTAL"	MG/KG	Mercury_elemental_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	"MERCURY, ELEMENTAL"	MG/L	Mercury_elemental_f_mg_L	Metals_metalloids	1	1						1
+SUSPENDED	"MERCURY, ELEMENTAL"	MG/KG	Mercury_elemental_susp_mg_kg	Metals_metalloids	1	0						0
+TOTAL	"MERCURY, ELEMENTAL"	MG/L	Mercury_elemental_uf_mg_L	Metals_metalloids	1	1						1
+TOTAL	"MERCURY, ELEMENTAL"	NG/G	Mercury_elemental_uf_ng_g	Metals_metalloids	1	0						0
+TOTAL	METHYLMERCURY	NG/G	Methylmercury_uf_ng_g	Metals_metalloids	1	0						0
+TOTAL	METHYLMERCURY	NG/L	Methylmercury_uf_ng_L	Metals_metalloids	1	1						1
+DISSOLVED	MOLYBDENUM	MG/L	Molybdenum_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	MOLYBDENUM	UG/L	Molybdenum_uf_ug_L	Metals_metalloids	1	0						1
+CALCULATED	NICKEL	MG/KG	Nickel_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	NICKEL	MG/L	Nickel_f_mg_L	Metals_metalloids	1	1						1
+TOTAL	NICKEL	UG/L	Nickel_uf_ug_L	Metals_metalloids	1	1						1
+CALCULATED	SELENIUM AND COMPOUNDS	MG/KG	Selenium_cmpds_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	SELENIUM AND COMPOUNDS	MG/L	Selenium_cmpds_f_mg_L	Metals_metalloids	1	1						1
+TOTAL	SELENIUM AND COMPOUNDS	MG/L	Selenium_cmpds_uf_mg_L	Metals_metalloids	1	1						1
+CALCULATED	SILVER	MG/KG	Silver_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	SILVER	MG/L	Silver_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	SILVER	MG/L	Silver_uf_mg_L	Metals_metalloids	1	0						1
+DISSOLVED	STRONTIUM	MG/L	Strontium_f_mg_L	Metals_metalloids	1	0						1
+DISSOLVED	THALLIUM	MG/L	Thallium_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	THALLIUM	MG/L	Thallium_uf_mg_L	Metals_metalloids	1	0						1
+DISSOLVED	"URANIUM, NATURAL"	UG/L	Uranium_natural_f_ug_L	Metals_metalloids	1	0						1
+TOTAL	"URANIUM, NATURAL"	UG/L	Uranium_Natural_uf_ug_L	Metals_metalloids	1	0						1
+DISSOLVED	VANADIUM	MG/L	Vanadium_f_mg_L	Metals_metalloids	1	0						1
+TOTAL	VANADIUM	MG/L	Vanadium_uf_mg_L	Metals_metalloids	1	0						1
+CALCULATED	ZINC	MG/KG	Zinc_calc_mg_kg	Metals_metalloids	1	0						0
+DISSOLVED	ZINC	MG/L	Zinc_f_mg_L	Metals_metalloids	1	1						1
+TOTAL	ZINC	MG/L	Zinc_uf_mg_L	Metals_metalloids	1	1						1
+CALCULATED	AMMONIA AS NITROGEN	MG/KG	Ammonia_N_calc_mg_kg	Nutrients	1	0						1
+CALCULATED	CARBON	PERCENT	Carbon_calc_%	Nutrients	1	0						1
+DISSOLVED	CARBON	MG/L	Carbon_f_mg_L	Nutrients	1	0						1
+TOTAL	CARBON	MG/L	Carbon_uf_mg_L	Nutrients	1	0						1
+TOTAL	CHLOROPHYLL  A	UG/L	Chlorophyll_a_uf_ug_L	Nutrients	1	0						1
+CALCULATED	KJELDAHL NITROGEN	MG/KG	Kjeldahl_N_calc_mg_kg	Nutrients	1	0						0
+TOTAL	KJELDAHL NITROGEN	MG/L	Kjeldahl_N_uf_mg_L	Nutrients	1	0						1
+TOTAL	AMMONIA AS NITROGEN	MG/L	NH3_N_uf_mg_L	Nutrients	1	0						1
+TOTAL	NITROGEN	MG/L	Nitrogen_uf_mg_L	Nutrients	1	0						1
+TOTAL	NITRITE AS N	MG/L	NO2_N_uf_mg_L	Nutrients	1	0						1
+CALCULATED	NITRATE + NITRITE	MG/KG	NO2NO3_calc_mg_kg	Nutrients	1	0						0
+TOTAL	NITRATE AS N	MG/L	NO3_N_uf_mg_L	Nutrients	1	0						1
+TOTAL	NITRATE + NITRITE	MG/L	NO3NO2_uf_mg_L	Nutrients	1	0						1
+TOTAL	PHEOPHYTIN  A	UG/L	PheophytinA_uf_ug_L	Nutrients	1	0						1
+CALCULATED	PHOSPHORUS	MG/KG	Phosphorus_calc_mg_kg	Nutrients	1	0						0
+TOTAL	PHOSPHORUS	MG/L	Phosphorus_uf_mg_L	Nutrients	1	0						1
+TOTAL	SILICA	MG/L	Silica_uf_mg_L	Nutrients	1	0						1
+TOTAL	SILICON	UG/L	Silicon_uf_ug_L	Nutrients	1	0						1
+TOTAL	"2,4-DIMETHYLPHENOL"	UG/L	24Dimethylphenol_uf_ug_L	Organic	1	0						1
+TOTAL	"2,4-DINITROPHENOL"	UG/L	24Dinitrophenol_uf_ug_L	Organic	1	0						1
+TOTAL	"2,4-DINITROTOLUENE"	UG/L	24Dinitrotoluene_uf_ug_L	Organic	1	0						1
+TOTAL	"2,6-DINITROTOLUENE"	UG/L	26Dinitrotoluene_uf_ug_L	Organic	1	0						1
+TOTAL	2-METHYLPHENOL	UG/L	2Methylphenol_uf_ug_L	Organic	1	0						1
+TOTAL	"ANILINE, 2-NITRO-"	UG/L	2Nitroaniline_uf_ug_L	Organic	1	0						1
+TOTAL	2-NITROPHENOL	UG/L	2Nitrophenol_uf_ug_L	Organic	1	0						1
+TOTAL	"ANILINE, 3-NITRO-"	UG/L	3Nitroaniline_uf_ug_L	Organic	1	0						1
+TOTAL	4-METHYLPHENOL	UG/L	4Methylphenol_uf_ug_L	Organic	1	0						1
+TOTAL	"ANILINE, 4-NITRO"	UG/L	4Nitroaniline_uf_ug_L	Organic	1	0						1
+TOTAL	ANILINE	UG/L	Aniline_uf_ug_L	Organic	1	0						1
+TOTAL	AZOBENZENE	UG/L	Azobenzene_uf_ug_L	Organic	1	0						1
+TOTAL	BENZOIC ACID	UG/L	BenzoicAcid_uf_ug_L	Organic	1	0						1
+TOTAL	BENZYL ALCOHOL	UG/L	BenzylAlcohol_uf_ug_L	Organic	1	0						1
+DISSOLVED	CAFFEINE	MG/L	Caffeine_f_mg_L	Organic	1	0						1
+TOTAL	CARBAZOLE	UG/L	Carbazole_uf_ug_L	Organic	1	0						1
+TOTAL	DIBENZOFURAN	UG/L	Dibenzofuran_uf_ug_L	Organic	1	0						1
+TOTAL	ISOPHORONE	UG/L	Isophorone_uf_ug_L	Organic	1	0						1
+TOTAL	N-NITROSODI-N-PROPYLAMINE	UG/L	N_nitrosodi_N_propylamine_uf_ug_L	Organic	1	0						1
+TOTAL	N-NITROSODIPHENYLAMINE	UG/L	N_nitrosodiphenylamine_uf_ug_L	Organic	1	0						1
+TOTAL	NITROBENZENE	UG/L	Nitrobenzene_uf_ug_L	Organic	1	0						1
+TOTAL	P-NITROPHENOL	UG/L	p_Nitrophenol_uf_ug_L	Organic	1	0						1
+TOTAL	PHENOL	UG/L	Phenol_uf_ug_L	Organic	1	0						1
+TOTAL	ALDRIN	UG/L	Aldrin_uf_ug_L	Organochlorine	1	0						1
+TOTAL	ALPHA-HEXACHLOROCYCLOHEXANE	UG/L	alphaHexachlorocyclohexane_uf_ug_L	Organochlorine	1	0						1
+TOTAL	BETA-HEXACHLOROCYCLOHEXANE	UG/L	betaHexachlorocyclohexane_uf_ug_L	Organochlorine	1	0						1
+TOTAL	CHLORDANE-CIS ISOMER	UG/L	Chlordane_cis_uf_ug_L	Organochlorine	1	0						1
+TOTAL	"CHLORDANE,GAMMA"	UG/L	Chlordane_gamma_uf_ug_L	Organochlorine	1	0						1
+TOTAL	CHLORDANE	UG/L	Chlordane_uf_ug_L	Organochlorine	1	0						1
+TOTAL	DELTA-HEXACHLOROCYCLOHEXANE	UG/L	deltaHexachlorocyclohexane_uf_ug_L	Organochlorine	1	0						1
+TOTAL	DIELDRIN	UG/L	Dieldrin_uf_ug_L	Organochlorine	1	0						1
+TOTAL	"ENDOSULFAN, ALPHA"	UG/L	Endosulfan_alpha_uf_ug_L	Organochlorine	1	0						1
+TOTAL	"ENDOSULFAN, BETA"	UG/L	Endosulfan_beta_uf_ug_L	Organochlorine	1	0						1
+TOTAL	ENDOSULFAN SULFATE	UG/L	EndosulfanSulfate_uf_ug_L	Organochlorine	1	0						1
+TOTAL	ENDRIN	UG/L	Endrin_uf_ug_L	Organochlorine	1	0						1
+TOTAL	ENDRIN ALDEHYDE	UG/L	EndrinAldehyde_uf_ug_L	Organochlorine	1	0						1
+TOTAL	ENDRIN KETONE	UG/L	EndrinKetone_uf_ug_L	Organochlorine	1	0						1
+TOTAL	GAMMA-HEXACHLOROCYCLOHEXANE	UG/L	gammaHexachlorocyclohexane_uf_ug_L	Organochlorine	1	0						1
+TOTAL	HEPTACHLOR	UG/L	Heptachlor_uf_ug_L	Organochlorine	1	0						1
+TOTAL	HEPTACHLOR EPOXIDE	UG/L	HeptachlorEpoxide_uf_ug_L	Organochlorine	1	0						1
+TOTAL	HEXACHLOROBENZENE	UG/L	Hexachlorobenzene_uf_ug_L	Organochlorine	1	0						1
+TOTAL	HEXACHLOROCYCLOPENTADIENE	UG/L	Hexachlorocyclopentadiene_uf_ug_L	Organochlorine	1	0						1
+TOTAL	METHOXYCHLOR	UG/L	Methoxychlor_uf_ug_L	Organochlorine	1	0						1
+TOTAL	PARACHLOROMETA CRESOL	UG/L	ParachlorometaCresol_uf_ug_L	Organochlorine	1	0						1
+TOTAL	TOXAPHENE	UG/L	Toxaphene_uf_ug_L	Organochlorine	1	0						1
+TOTAL	"1,2,4-TRICHLOROBENZENE"	UG/L	124Trichlorobenzene_uf_ug_L	Organohalide	1	0						1
+TOTAL	"1,2-DICHLOROBENZENE"	UG/L	12Dichlorobenzene_uf_ug_L	Organohalide	1	0						1
+TOTAL	"1,3-DICHLOROBENZENE"	UG/L	13Dichlorobenzene_uf_ug_L	Organohalide	1	0						1
+TOTAL	"1,4-DICHLOROBENZENE"	UG/L	14Dichlorobenzene_uf_ug_L	Organohalide	1	0						1
+TOTAL	"2,4,5-TRICHLOROPHENOL"	UG/L	245Trichlorophenol_uf_ug_L	Organohalide	1	0						1
+TOTAL	"2,4,6-TRICHLOROPHENOL"	UG/L	246Trichlorophenol_uf_ug_L	Organohalide	1	0						1
+TOTAL	"2,4-DICHLOROPHENOL"	UG/L	24Dichlorophenol_uf_ug_L	Organohalide	1	0						1
+TOTAL	2-CHLOROPHENOL	UG/L	2Chlorophenol_uf_ug_L	Organohalide	1	0						1
+TOTAL	"3,3'-DICHLOROBENZIDINE"	UG/L	33primeDichlorobenzidine_uf_ug_L	Organohalide	1	0						1
+TOTAL	4-CHLOROPHENYL PHENYL ETHER	UG/L	4Chlorophenylphenylether_uf_ug_L	Organohalide	1	0						1
+TOTAL	BIS(2CHLOROETHOXY)METHANE	UG/L	Bis_2chloroethoxy_methane_uf_ug_L	Organohalide	1	0						1
+TOTAL	BIS(2-CHLOROISOPROPYL) ETHER	UG/L	Bis_2chloroisopropyl_ether_uf_ug_L	Organohalide	1	0						1
+TOTAL	BIS(CHLOROETHYL)ETHER	UG/L	Bis_chloroethyl_ether_uf_ug_L	Organohalide	1	0						1
+TOTAL	DINITRO-O-CRESOL	UG/L	Dinitro_o_cresol_uf_ug_L	Organohalide	1	0						1
+TOTAL	HEXACHLOROBUTADIENE	UG/L	Hexachlorobutadiene_uf_ug_L	Organohalide	1	0						1
+TOTAL	HEXACHLOROETHANE	UG/L	Hexachloroethane_uf_ug_L	Organohalide	1	0						1
+TOTAL	P-BROMODIPHENYL ETHER	UG/L	p_BromodiphenylEther_uf_ug_L	Organohalide	1	0						1
+TOTAL	P-CHLOROANILINE	UG/L	p_Chloroaniline_uf_ug_L	Organohalide	1	0						1
+TOTAL	"P,P'-DICHLORODIPHENYLDICHLOROETHANE"	UG/L	p_p_primeDichlorodiphenyldichloroethane_uf_ug_L	Organohalide	1	0						1
+TOTAL	"P,P'-DICHLORODIPHENYLDICHLOROETHYLENE"	UG/L	p_p_primeDichlorodiphenyldichloroethylene_uf_ug_L	Organohalide	1	0						1
+TOTAL	"P,P'-DICHLORODIPHENYLTRICHLOROETHANE"	UG/L	p_p_primeDichlorodiphenyltrichloroethane_uf_ug_L	Organohalide	1	0						1
+TOTAL	PENTACHLOROPHENOL	UG/L	Pentachlorophenol_uf_ug_L	Organohalide	1	0						1
+TOTAL	PERCHLORATE	UG/L	Perchlorate_uf_ug_L	Organohalide	1	0						1
+TOTAL	BOLSTAR	UG/L	Bolstar_uf_ug_L	Organophosphate	1	0						1
+TOTAL	CHLORPYRIFOS	UG/L	Chlorpyrifos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	COUMAPHOS	UG/L	Coumaphos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	DEMETON-O	UG/L	Demeton_o_uf_ug_L	Organophosphate	1	0						1
+TOTAL	"DEMETON-S, TOTAL"	UG/L	Demeton_s_total_uf_ug_L	Organophosphate	1	0						1
+TOTAL	DIAZINON	UG/L	Diazinon_uf_ug_L	Organophosphate	1	0						1
+TOTAL	DICHLORVOS	UG/L	Dichlorvos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	DIMETHOATE	UG/L	Dimethoate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	DISULFOTON	UG/L	Disulfoton_uf_ug_L	Organophosphate	1	0						1
+STANDARD	ETHOPROP	UG/L	Ethoprop_std_ug_L	Organophosphate	1	0						1
+TOTAL	ETHYL P-NITROPHENYL PHENYLPHOSPHOROTHIOATE	UG/L	Ethyl_p_nitrophenylPhenylphosphorothioate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	FENSULFOTHION	UG/L	Fensulfothion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	FENTHION	UG/L	Fenthion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	MALATHION	UG/L	Malathion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	MERPHOS	UG/L	Merphos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	METHYL AZINPHOS	UG/L	MethylAzinphos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	METHYL PARATHION	UG/L	MethylParathion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	MEVINPHOS	UG/L	Mevinphos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	MONOCROTOPHOS	UG/L	Monocrotophos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	NALED	UG/L	Naled_uf_ug_L	Organophosphate	1	0						1
+TOTAL	PARATHION	UG/L	Parathion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	PHORATE	UG/L	Phorate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	RONNEL	UG/L	Ronnel_uf_ug_L	Organophosphate	1	0						1
+TOTAL	TETRACHLOROVINPHOS	UG/L	Tetrachlorovinphos_uf_ug_L	Organophosphate	1	0						1
+TOTAL	TETRAETHYLDITHIOPYROPHOSPHATE	UG/L	Tetraethyldithiopyrophosphate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	TETRAETHYLPYROPHOSPHATE	UG/L	Tetraethylpyrophosphate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	TOKUTHION	UG/L	Tokuthion_uf_ug_L	Organophosphate	1	0						1
+TOTAL	TRICHLORONATE	UG/L	Trichloronate_uf_ug_L	Organophosphate	1	0						1
+TOTAL	"NAPHTHALENE, 2-METHYL-"	UG/L	2Methylnaphthalene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	ACENAPHTHENE	UG/L	Acenaphthene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	ACENAPHTHYLENE	UG/L	Acenaphthylene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	ANTHRACENE	UG/L	Anthracene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BENZ[A]ANTHRACENE	UG/L	Benzo_a_antracene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BENZO[A]PYRENE	UG/L	Benzo_a_pyrene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BENZO[B]FLUORANTHENE	UG/L	Benzo_b_flouranthene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	"BENZO[G,H,I]PERYLENE"	UG/L	Benzo_ghi_perylene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BENZO[K]FLUORANTHENE	UG/L	Benzo_k_fluoranthene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BETA-CHLORONAPHTHALENE	UG/L	betaChloronapthalene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	BUTYL BENZYL PHTHALATE	UG/L	ButylBenzylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	CHRYSENE	UG/L	Chrysene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	DI(2-ETHYLHEXYL)PHTHALATE	UG/L	Di_2ethylhexylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	DI-N-OCTYL PHTHALATE	UG/L	Di_n_octylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	"DIBENZ[A,H]ANTHRACENE"	UG/L	Dibenz_ah_anthracene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	DIBUTYL PHTHALATE	UG/L	DibutylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	DIETHYL PHTHALATE	UG/L	DiethylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	DIMETHYL PHTHALATE	UG/L	DimethylPhthalate_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	FLUORANTHENE	UG/L	Fluoranthene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	FLUORENE	UG/L	Fluorene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	"INDENO[1,2,3-CD]PYRENE"	UG/L	Indeno_123cd_pyrene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	NAPHTHALENE	UG/L	Naphthalene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	PHENANTHRENE	UG/L	Phenanthrene_uf_ug_L	PAHs & Phthalates	1	0						1
+TOTAL	PYRENE	UG/L	Pyrene_uf_ug_L	PAHs & Phthalates	1	0						1
+CALCULATED	"ALPHA, GROSS AS U NATURAL"	PCI/L	Alpha_grossAsUNatural_calc_pCi_L	Radiation	1	0						1
+TOTAL	"ALPHA, GROSS AS U NATURAL"	PCI/L	Alpha_grossAsUNatural_uf_pCi_L	Radiation	1	0						1
+TOTAL	BARIUM AND COMPOUNDS	PCI/L	Barium_cmpds_uf_pCi_L	Radiation	1	0						1
+CALCULATED	BETA RADIATION	PCI/L	Beta_radiation_calc_pCi_L	Radiation	1	0						1
+TOTAL	BETA RADIATION	PCI/L	Beta_radiation_uf_pCi_L	Radiation	1	0						1
+DISSOLVED	BISMUTH	PCI/L	Bismuth_f_pCi_L	Radiation	1	0						1
+TOTAL	CESIUM 134	PCI/L	Cesium_134_uf_pCi_L	Radiation	1	0						1
+TOTAL	CESIUM-137	PCI/L	Cesium_137_uf_pCi_L	Radiation	1	0						1
+TOTAL	COBALT-58	PCI/L	Cobalt_58_uf_pCi_L	Radiation	1	0						1
+TOTAL	COBALT 60	PCI/L	Cobalt_60_uf_pCi_L	Radiation	1	0						1
+TOTAL	IODINE 131	PCI/L	Iodine_131_uf_pCi_L	Radiation	1	0						1
+TOTAL	IRON 59	PCI/L	Iron_59_uf_pCi_L	Radiation	1	0						1
+TOTAL	LANTHANUM 140	PCI/L	Lanthanum_140_uf_pCi_L	Radiation	1	0						1
+TOTAL	LEAD 214	PCI/L	Lead_214_uf_pCi_L	Radiation	1	0						1
+TOTAL	MANGANESE 54	PCI/L	Manganese_54_uf_pCi_L	Radiation	1	0						1
+TOTAL	NIOBIUM 95	PCI/L	Niobium_95_uf_pCi_L	Radiation	1	0						1
+TOTAL	POTASSIUM-40	PCI/L	Potassium_40_uf_pCi_L	Radiation	1	0						1
+CALCULATED	"RADIUM 226,228"	PCI/L	Radium_226_228_calc_pCi_L	Radiation	1	0						1
+TOTAL	"RADIUM 226,228"	PCI/L	Radium_226_228_uf_pCi_L	Radiation	1	0						1
+TOTAL	RADIUM 226	PCI/L	Radium_226_uf_pCi_L	Radiation	1	0						1
+DISSOLVED	RADIUM 228	PCI/L	Radium_228_f_pCi_L	Radiation	1	0						1
+TOTAL	RADIUM 228	PCI/L	Radium_228_uf_pCi_L	Radiation	1	0						1
+TOTAL	THALLIUM-208	PCI/L	Thallium_208_uf_pCi_L	Radiation	1	0						1
+TOTAL	"URANIUM, NATURAL"	PCI/L	Uranium_Natural_uf_pCi_L	Radiation	1	0						1
+TOTAL	ZINC 65	PCI/L	Zinc_65_uf_pCi_L	Radiation	1	0						1
+TOTAL	ZIRCONIUM 95	PCI/L	Zirconium_95_uf_pCi_L	Radiation	1	0						1
+STANDARD	BAROMETRIC PRESSURE	MMHG	BarometricPressure_mmHg	Water quality	0	0						0
+CALCULATED	CROSS-SECTIONAL AREA	OTHERS	CrossSectionalArea_calc	Water quality	0	0						0
+STANDARD	DEPTH	FT	Depth_ft	Water quality	0	0						0
+STANDARD	DISSOLVED OXYGEN	PERCENT	DO_f_%	Water quality	0	0						0
+DISSOLVED	DISSOLVED OXYGEN	MG/L	DO_f_mg_L	Water quality	1	0						1
+CALCULATED	FLOW	CFS	Flow_calc_cfs	Water quality	1	0						1
+STANDARD	FLOW	CFS	Flow_cfs	Water quality	1	0						1
+TOTAL	FLOW	CFS	Flow_cfs	Water quality	1	0						1
+TOTAL	FLOW	FT/SEC	Flow_ft_sec	Water quality	1	0						0
+STANDARD	PH	SU	pH_SU	Water quality	0	0						1
+TOTAL	PH	SU	pH_SU	Water quality	0	0						1
+TOTAL	OXIDATION REDUCTION POTENTIAL	MVOLTS	RedoxPotential_uf_mV	Water quality	0	0						0
+CALCULATED	SOLIDS IN SEDIMENT	PERCENT	SolidsInSediment_calc_%	Water quality	0	0						0
+OTHER	SPECIFIC CONDUCTIVITY	UMHOS/CM	SpecCond_umhos_cm	Water quality	1	0	SpecCondTolVal	1	2	5	6	1
+STANDARD	SPECIFIC CONDUCTIVITY	UMHOS/CM	SpecCond_umhos_cm	Water quality	1	0	SpecCondTolVal	1	2	5	6	1
+STANDARD	STREAM WIDTH	FT	StreamWidth_ft	Water quality	1	0						0
+STANDARD	TEMPERATURE	DEG C	Temp_degC	Water quality	0	0						1
+TOTAL	TEMPERATURE	DEG C	Temp_degC	Water quality	0	0						1
+STANDARD	TEMPERATURE	DEG F	Temp_degF	Water quality	0	0						1
+SUSPENDED - COARSE FRACTION	SUSPENDED SOLIDS / SEDIMENTS	MG/L	TSS_coarse_susp_mg_L	Water quality	1	0						1
+SUSPENDED - FINE FRACTION	SUSPENDED SOLIDS / SEDIMENTS	MG/L	TSS_fine_susp_mg_L	Water quality	1	0						1
+SUSPENDED	SUSPENDED SEDIMENT CONCENTRATION	MG/L	TSS_susp_mg_L	Water quality	1	0						1
+SUSPENDED	SUSPENDED SOLIDS / SEDIMENTS	MG/L	TSS_susp_mg_L	Water quality	1	0						1
+STANDARD	TURBIDITY	NTU	Turbidity_NTU	Water quality	1	0						1
+TOTAL	TURBIDITY	NTU	Turbidity_NTU	Water quality	1	0						1
+TOTAL	WATER VELOCITY	FT/SEC	Velocity_ft_sec	Water quality	1	0						1
+CALCULATED	TOTAL DISSOLVED SOLIDS	MG/L	TDS_calc_mg_L	Water quality	1	0						1
+DISSOLVED	TOTAL DISSOLVED SOLIDS	MG/L	TDS_f_mg_L	Water quality	1	0						1

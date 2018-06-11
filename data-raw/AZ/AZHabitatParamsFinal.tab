@@ -1,0 +1,232 @@
+HabParamName	Description	Unit	NewHabParam	NewHabDescription	Datatype	UseInStressorID	SSTV	SensMin	SensMax	TolMin	TolMax
+AGS	"Algal slime on rocks, wood, etc. (not filamentous)"	NA	AGS	"Algal slime on rocks, wood, etc. (not filamentous)"	text	1					
+Algae	Algae Identification list	NA	Algae	Algae Identification list	text	0					
+Algae_Richness	Algae Richness as Nutrient Indicator	NA	AlgaeRichness	Algae Richness as Nutrient Indicator	numeric	1					
+AlgaeSampleHabTypes	Types of Algal Samples and Sample Locations	NA	AlgaeSampleHabTypes	Types of Algal Samples and Sample Locations	text	0					
+Aquatic_Plants	Macrophyte identification list	NA	AquaticPlants	Macrophyte identification list	text	0					
+Aquatic_Vegetation	Aquatic Vegetation by Rosgen-Pfankuch method	NA	AquaticVegetation	Aquatic Vegetation by Rosgen-Pfankuch method	text	1					
+ASC - Algal slime type	Algal slime type 1thin 2heavy 3brown 4green	NA	ASC_AlgalSlimeType	Algal slime type 1thin 2heavy 3brown 4green	text	0					
+Aspect	compass point	NA	Aspect	compass point	text	0					
+AVP	Macrophytes covering streambed throughout the reach	NA	AVP	Macrophytes covering streambed throughout the reach	text	1					
+AVP_100pts	Percent macrophytes based on 100 point plant ID(2011 - present)	NA	AVP100pts	Percent macrophytes based on 100 point plant ID(2011 - present)	numeric	1					
+AWE	Appearance at Waters Edge	NA	AWE	Appearance at Waters Edge	text	0					
+Bankfull_max_depth_(ft)	Bankfull Max Depth	NA	BankfullMaxDepth_ft	Bankfull Max Depth	numeric	0					
+Bankfull_mean_depth_(ft)	Bankfull Mean Depth	NA	BankfullMeanDepth_ft	Bankfull Mean Depth	numeric	0					
+Bankfull_width_(ft)	Bankfull Width	NA	BankfullWidth_ft	Bankfull Width	numeric	0					
+Bank_Rock_Content	Bank Rock Content by Rosgen-Pfankuch method	NA	BankRockContent	Bank Rock Content by Rosgen-Pfankuch method	text	0					
+Bank_stability_categories	Bank_stability - Hab.Index 2001-present	NA	BankStabilityCategories	Bank_stability - Hab.Index 2001-present	text	0					
+Bar Development and Deposition	Bar Development and Deposition	NA	BarDevelopmentDeposition	Bar Development and Deposition	text	0					
+Bottom Deposits	Pfankuch Bottom Deposits/Bottom size distribution	NA	BottomDeposits	"Pfankuch Bottom Deposits, Bottom size distribution"	text	0					
+Bottom_Lat	"Latitude at the bottom of the reach, decimal degrees in NAD 83"	NA	BottomLat	"Latitude at the bottom of the reach, decimal degrees in NAD 83"	numeric	0					
+Bottom_Long	"Longitude at the bottom of the reach, decimal degrees in NAD 83"	NA	BottomLong	"Longitude at the bottom of the reach, decimal degrees in NAD 83"	numeric	0					
+Brightness	Brightness by Rosgen-Pfankuch method	NA	Brightness	Brightness by Rosgen-Pfankuch method	text	0					
+Bullfrog_Presence	Bullfrog Presence	NA	BullfrogPresence	Bullfrog Presence	text	1					
+Canopy_Density_(%)	Percent Canopy Density	%	CanopyDensity_pct	Percent Canopy Density	numeric	0					
+Canopy_Density_Flag	Flag for Percent Canopy Density	NA	CanopyDensityFlag	Flag for Percent Canopy Density	text	0					
+CAP	Channel_Pattern	NA	CAP	Channel_Pattern	text	0					
+CFO	Crayfish presence	NA	CFO	Crayfish presence	text	1					
+Channel Capacity	Channel Capacity	NA	ChannelCapacity	Channel Capacity	text	0					
+Channel_Capacity_Rosgen	Channel Capacity by Rosgen-Pfankuch method	NA	ChannelCapacityRosgen	Channel Capacity by Rosgen-Pfankuch method	text	0					
+CloudCover	Cloud Cover (%)	NA	CloudCover	Cloud Cover (%)	numeric	0					
+CS	Channel Shape - Hab.Index 1992-1996	NA	CS	Channel Shape - Hab.Index 1992-1996	numeric	0					
+Cutting_LB	Cutting_LB	NA	CuttingLB	Cutting_LB	text	0					
+Cutting_RB	Cutting_RB	NA	CuttingRB	Cutting_RB	text	0					
+Cutting_Rosgen	Cutting by Rosgen-Pfankuch method	NA	CuttingRosgen	Cutting by Rosgen-Pfankuch method	text	0					
+D100_Reach	"Particle size, 100th percentile (Reach pebble count)"	NA	D100_Reach	"Particle size, 100th percentile (Reach pebble count)"	numeric	0					
+D100_Riffle	"Particle size, 100th percentile (Riffle pebble count)"	NA	D100_Riffle	"Particle size, 100th percentile (Riffle pebble count)"	numeric	0					
+D15 (Reach)	"Particle size, 15th percentile (Reach pebble count)"	NA	D15_Reach	"Particle size, 15th percentile (Reach pebble count)"	numeric	0					
+D15 (RIFFLE PC.)	"Particle size, 15th percentile (RIFFLE PC.)"	NA	D15_Riffle	"Particle size, 15th percentile (RIFFLE PC.)"	numeric	0					
+D50 (Reach)	"Particle size, 50th percentile (Reach pebble count)"	NA	D50_Reach	"Particle size, 50th percentile (Reach pebble count)"	numeric	0					
+D50(RIFFLE PC.)	"Particle size, 50th percentile (RIFFLE PC.)"	NA	D50_Riffle	"Particle size, 50th percentile (RIFFLE PC.)"	numeric	0					
+D85 (Reach)	"Particle size, 85th percentile (Reach pebble count)"	NA	D85_Reach	"Particle size, 85th percentile (Reach pebble count)"	numeric	0					
+D85 (RIFFLE PC.)	"Particle size, 85th percentile (RIFFLE PC.)"	NA	D85_Riffle	"Particle size, 85th percentile (RIFFLE PC.)"	numeric	0					
+Debris Jam	Debris Jam	NA	DebrisJam	Debris Jam	text	0					
+DFB	Depositional features	NA	DFB	Depositional features	text	0					
+Discharge_(cfs)	Discharge	NA	Discharge_cfs	Discharge	numeric	0					
+"Discharge(float,cfs)"	"Discharge, float method, cfs"	NA	Discharge_float_cfs	"Discharge, float method, cfs"	numeric	0					
+Distance units	Units for distance in the study reach	NA	DistanceUnits	Units for distance in the study reach	text	0					
+DO_%Saturation	Dissolved Oxygen %Saturation as Nutrient Indicator	%	DO_pctSaturation	Dissolved Oxygen %Saturation as Nutrient Indicator	numeric	0					
+DominantTreeSpecies	Dominant Tree Species	NA	DominantTreeSpecies	Dominant Tree Species	text	0					
+Embeddedness	Pfankuch Embeddedness	NA	Embeddedness	Pfankuch Embeddedness	text	0					
+Embeddedness-RBP (EM)	Embeddedness - Hab.Index 1992-1996	NA	Embeddedness_RBP_EM	Embeddedness - Hab.Index 1992-1996	numeric	1					
+Embeddedness_category	Embeddedness_category - Hab.index 2001-present	NA	EmbeddednessCategory	Embeddedness_category - Hab.index 2001-present	text	0					
+Embedded_reach	Embeddedness - reach	%	EmbeddedReach	Embeddedness - reach	numeric	1					
+Embedded_riffle_100count	"Embedded_riffle_100count (2004, 2005)"	NA	EmbeddedRiffle_100count	"Embedded_riffle_100count (2004, 2005)"	numeric	1					
+Embedded_riffle_100count_3categories	Embedded_riffle_100count_3categories (2006-2008)	%	EmbeddedRiffle_100count_3categories	Embedded_riffle_100count_3categories (2006-2008)	numeric	1					
+Embedded_riffle_30count	Embeddedness_riffles_measured 30 count (2001-3)	NA	EmbeddedRiffle_30count	Embeddedness_riffles_measured 30 count (2001-3)	numeric	1					
+Embedded_riffle_visual	Visual estimate for riffle embeddedness (2009-present)	%	EmbeddedRiffle_Visual	Visual estimate for riffle embeddedness (2009-present)	numeric	1					
+EMP	Siltation in Pools - Hab.Index 1997-2000	NA	EMP	Siltation in Pools - Hab.Index 1997-2000	text	1					
+EMR	Embeddedness - Hab.Index 1997-2000	NA	EMR	Embeddedness - Hab.Index 1997-2000	text	1					
+Entrenchment_Ratio	Entrenchment Ratio = floodprone W/bankfull W	NA	EntrenchmentRatio	Entrenchment Ratio = floodprone width:bankfull width	numeric	0					
+Extent_riffle_habitat	Extent_riffle_habitat - Hab.Index 2001-present	NA	ExtentRiffleHabitat	Extent_riffle_habitat - Hab.Index 2001-present	text	0					
+FAC	Floating mats of algae - Color	NA	FAC	Floating mats of algae - Color	text	1					
+FAF	Floating algae (detached clumps/mats) floating downstream	NA	FAF	Floating algae (detached clumps or mats) floating downstream	text	1					
+Field_Notes	Field_notes-comments	NA	FieldNotes	Field_notes-comments	text	0					
+Filamentous Algae_abund	Filamentous Algae_abund (2003-2004)	NA	FilamAlgae_abund	Filamentous Algae_abund (2003-2004)	text	1					
+Filam_algae_%	Filam_algae_% (2001-2002)	NA	FilamAlgae_pct	Filam_algae_% (2001-2002)	numeric	1					
+Final Pfankuch Score	Final Pfankuch Score (Sum x 1.226)	NA	FinalPfankuchScore	Final Pfankuch Score (Sum x 1.226)	numeric	0					
+Fines_percent_<2mm (REACH)	Fines_percent_<2mm (REACH Pebble count)	%	Fines_lt2mm_pct_Reach	Fines_percent_<2mm (REACH Pebble count)	numeric	1	Fines_LowElev				
+Fines_percent_<2mm (RIFFLE)	Fines_percent_<2mm (RIFFLE)	%	Fines_lt2mm_pct_Riffle	Fines_percent_<2mm (RIFFLE)	numeric	1	Fines_HighElev				
+FLO	Bankfull-extreme events (decision criteria)	NA	FLO	Bankfull-extreme events (decision criteria)	text	0					
+FloatingOM	Floating leaves or other organic mater (not algae)	NA	FloatingOM	Floating leaves or other organic mater (not algae)	text	0					
+Floodprone_depth_(ft)	Floodprone Depth (ft)	NA	FloodproneDepth_ft	Floodprone Depth (ft)	numeric	0					
+Floodprone_width_(ft)	Floodprone Width (ft)	NA	FloodproneWidth_ft	Floodprone Width (ft)	numeric	0					
+Floodprone_Width_Method	Method used to obtain floodprone width	NA	FloodproneWidthMethod	Method used to obtain floodprone width	text	0					
+FloodWidth	Flood Width (evidence in last month)	NA	FloodWidth	Flood Width (evidence in last month)	numeric	0					
+FlowAvgDepth(ft)	Average depth of flow measurements	NA	FlowAvgDepth_ft	Average depth of flow measurements	numeric	0					
+"FlowAvgVelocity(M-Mc,ft/s)"	Average Velocity - Marsh-McBirney Method	NA	FlowAvgVelocity_MMc_ft_sec	Average Velocity - Marsh-McBirney Method	numeric	0					
+FlowFeature	"Was the Marsh-McBirney measurement taken from riffle, run, or pool?"	NA	FlowFeature	"Was the Marsh-McBirney measurement taken from riffle, run, or pool"	text	0					
+Flow regime category	flow regime categories	NA	FlowRegimeCategory	flow regime categories	text	0					
+FlowWidth(ft)	Distance across stream reach for flow measurement	NA	FlowWidth_ft	Distance across stream reach for flow measurement	numeric	0					
+FLR	Flow regime	NA	FLR	Flow regime	text	0					
+FSO	Fish presence	NA	FSO	Fish presence	text	0					
+FSS	"Fish size 1small<=2\, 2medium, 3large>7\"""""	NA	FSS	"Fish size 1small<=2, 2medium, 3large>7"	text	0					
+GAB	General appearance Banks	NA	GAB	General appearance Banks	text	0					
+GAS	General appearance stream Channel	NA	GAS	General appearance stream Channel	text	0					
+GI	Grazing Impacts - Hab.Index 1992-1996	NA	GI	Grazing Impacts - Hab.Index 1992-1996	numeric	0					
+Habitat % of ideal	Habitat % of ideal	%	Habitat_pct_ofIdeal	Habitat % of ideal	numeric	1					
+Habitat_Rating	Sum of Habitat Category Scores	NA	HabitatRating	Sum of Habitat Category Scores	text	1					
+Habitat_Score	"Sum of Scores, Calculated metric"	NA	HabitatScore	"Sum of Scores, Calculated metric"	numeric	1					
+Instream_Habitat_Score	"Sum of Scores, Calculated metric"	NA	InstreamHabitatScore	"Sum of Scores, Calculated metric"	numeric	1					
+Landform Slope	Landform Slope	NA	LandformSlope	Landform Slope	text	1					
+LB	Lower Bank Channel Capacity - Hab.Index 1992-1996	NA	LB	Lower Bank Channel Capacity - Hab.Index 1992-1996	numeric	0					
+LEP-alive	Leopard frogs - number alive	NA	LeopardFrogs_alive	Leopard frogs - number alive	numeric	1					
+LEP-dead	Leopard frogs - number dead	NA	LeopardFrogs_dead	Leopard frogs - number dead	numeric	1					
+Macroinvert_field split	Macroinvert_field split - %sample preserved	NA	MacroInvert_FieldSplit	Macroinvert_field split - %sample preserved	numeric	1					
+Macrophyte_abund	Macrophyte_abund (2003-2004)	NA	MacrophyteAbund	Macrophyte_abund (2003-2004)	text	1					
+Macrophyte_Richness	Macrophyte Richness as Nutrient Indicator	NA	MacrophyteRichness	Macrophyte Richness as Nutrient Indicator	numeric	1					
+Macrophytes_%cover	Macrophytes_%cover (2001-2002)	NA	Macrophytes_pctCover	Macrophytes_%cover (2001-2002)	numeric	1					
+MacroSampleHabTypes	Types of Macroinvertebrate Samples and Sample Locations	NA	MacroSampleHabTypes	Types of Macroinvertebrate Samples and Sample Locations	text	1					
+Mass Wasting	Mass Wasting	NA	MassWasting	Mass Wasting	text	0					
+NonPoint_Source_Comments	NonPoint_Source_Comments	NA	NonPointSource_Comments	NonPoint_Source_Comments	text	0					
+NPS_Codes_New	"Updated NPS codes (direct and watershed sources combined through FY14, watershed sources only starting FY15)"	NA	NPS_CodesNew	"Updated NPS codes (direct and watershed sources combined through FY14, watershed sources only starting FY15)"	text	0					
+NPS_DirectSource	Non-point sources at the site (direct sources)	NA	NPS_DirectSource	Non-point sources at the site (direct sources)	text	0					
+Obstructions to Flow	Obstructions to Flow	NA	ObstructionsFlow	Obstructions to Flow	text	0					
+ORD	Organic debris-channel blockages	%	ORD	Organic debris-channel blockages	text	0					
+Particle_Consolidation	Consolidation of particles by Rosgen-Pfankuch method	NA	ParticleConsolidation	Consolidation of particles by Rosgen-Pfankuch method	text	0					
+pctAlgae10m	%algae cover within 10m of the site	NA	pctAlgae10m	%algae cover within 10m of the site	numeric	1					
+pctMacrophyte10m	%macrophyte cover within 10m of the site	%	pctMacrophyte10m	%macrophyte cover within 10m of the site	numeric	1					
+Pebble_Count_Comment	Comment for reach pebble count data	NA	PebbleCount_Comment	Comment for reach pebble count data	text	0					
+Pebble_Count_Estimated_Tally	Estimated tally for reach pebble count	NA	PebbleCount_EstimatedTally	Estimated tally for reach pebble count	numeric	0					
+PFA	Percent filamentous algae - Filamentous Algae Covering Streambed throughout the reach	NA	PFA	Percent filamentous algae - Filamentous Algae Covering Streambed throughout the reach	text	1					
+PFA_100pts	Percent filamentous algae based on 100 point plant ID (2011 - present)	NA	PFA100pts	Percent filamentous algae based on 100 point plant ID (2011 - present)	numeric	1					
+Pfankuch Rating	Pfankuch Rating	NA	PfankuchRating	Pfankuch Rating	text	0					
+Pfankuch_Rating_Rosgen	Pfankuch rating by Rosgen-Pfankuch method	NA	PfankuchRatingRosgen	Pfankuch rating by Rosgen-Pfankuch method	text	0					
+Pfankuch Standadized Score	Pfankuch Standadized Score 0-100	NA	PfankuchStandardizedScore	Pfankuch Standadized Score 0-100	numeric	0					
+PFC	PFC Category	NA	PFC	PFC Category	text	0					
+PFC_1	"1)  Floodplain is inundated in \relatively frequent\"" events (1-3 years)"""	NA	PFC_01	1)  Floodplain is inundated in relatively frequent events (1-3 years)	text	0					
+PFC_2	2)  Active/stable beaver dams present	NA	PFC_02	2)  Active or stable beaver dams present	text	0					
+PFC_3	"3)  Sinuosity, width/depth ratio, and gradient are in balance with the landscape setting (i.e., landform, geology, and bioclimatic region)"	NA	PFC_03	"3)  Sinuosity, width:depth ratio, and gradient are in balance with the landscape setting (i.e., landform, geology, and bioclimatic region)"	text	0					
+PFC_4	4)  Riparian zone is widening or has achieved its potential extent.	NA	PFC_04	4)  Riparian zone is widening or has achieved its potential extent.	text	0					
+PFC_5	5)  The upland watershed is not contributing to riparian degradation	NA	PFC_05	5)  The upland watershed is not contributing to riparian degradation	text	0					
+PFC_6	6)  Diverse (3) age structure of vegetation (Recruitment for maintenance/recovery)	NA	PFC_06	6)  Diverse (3) age structure of vegetation (Recruitment for maintenance and recovery)	text	0					
+PFC_7	7)  Diverse composition of vegetation (For maintenance/recovery)	NA	PFC_07	7)  Diverse composition of vegetation (For maintenance and recovery)	text	0					
+PFC_8	8)  Species present indicate maintenance of riparian soil moisture characteristics	NA	PFC_08	8)  Species present indicate maintenance of riparian soil moisture characteristics	text	0					
+PFC_9	9)  Streambank vegetation is comprised of those plants or plant communities that have root masses capable of withstanding high streamflow events	NA	PFC_09	9)  Streambank vegetation is comprised of those plants or plant communities that have root masses capable of withstanding high streamflow events	text	0					
+PFC_10	10)  Riparian plants exhibit high vigor	NA	PFC_10	10)  Riparian plants exhibit high vigor	text	0					
+PFC_11	11)  Adequate vegetative cover present to protect banks and dissipate energy during high flows	NA	PFC_11	11)  Adequate vegetative cover present to protect banks and dissipate energy during high flows	text	0					
+PFC_12	12)  Plant communities in the riparian area are an adequate source of coarse and/or large woody debris	NA	PFC_12	12)  Plant communities in the riparian area are an adequate source of coarse or large woody debris	text	0					
+PFC_13	"13)  Floodplain and channel characteristics (i.e., rocks, coarse and/or large woody debris) adequate to dissipate energy"	NA	PFC_13	"13)  Floodplain and channel characteristics (i.e., rocks, coarse or large woody debris) adequate to dissipate energy"	text	0					
+PFC_14	14)  Point bars are revegetating	NA	PFC_14	14)  Point bars are revegetating	text	0					
+PFC_15	15)  Lateral stream movement is associated with natural sinuosity	NA	PFC_15	15)  Lateral stream movement is associated with natural sinuosity	text	0					
+PFC_16	16)  System is vertically stable	NA	PFC_16	16)  System is vertically stable	text	0					
+PFC_17	"17)  Stream is in balance with the water and sediment being supplied by the watershed (i.e., no excessive erosion or deposition)"	NA	PFC_17	"17)  Stream is in balance with the water and sediment being supplied by the watershed (i.e., no excessive erosion or deposition)"	text	0					
+PFC_%_Ideal	Proper Functioning Condition- % of ideal score	NA	PFC_pct_Ideal	Proper Functioning Condition- % of ideal score	numeric	1					
+PFC_Remarks	PFC Comment field	NA	PFC_Remarks	PFC Comment field	text	0					
+PFC_Score	Proper Functioning Condition-Functional Rating Score	NA	PFC_Score	Proper Functioning Condition-Functional Rating Score	numeric	0					
+PFC_Score 1997-1999	Proper Functioning Condition-Functional Rating Score 1997-1999	NA	PFC_score_1997_1999	Proper Functioning Condition-Functional Rating Score 1997-1999	numeric	0					
+pH	pH as Nutrient Indicator	NA	pH	pH as Nutrient Indicator	numeric	0					
+Plant_Cover	% Plant Cover (Algae + Macrophytes) as Nutrient Indicator	%	PlantCover	% Plant Cover (Algae + Macrophytes) as Nutrient Indicator	numeric	1					
+Plant_Diversity	Plant Diversity as Nutrient Indicator	NA	PlantDiversity	Plant Diversity as Nutrient Indicator	numeric	1					
+Pool_paces_or_feet	Measure of Pool habitat in the study reach	NA	Pool_paces_or_feet	Measure of Pool habitat in the study reach	numeric	0					
+Pool_%	Percent Pool habitat w/in stream reach	%	Pool_pct	Percent Pool habitat within stream reach	numeric	0					
+Pool_Condition	Pool Condition (%) as Nutrient Indicator	%	PoolCondition	Pool Condition (%) as Nutrient Indicator	numeric	1					
+POS	Pool Substrate Composition - Hab.Index 1997-2000	NA	POS	Pool Substrate Composition - Hab.Index 1997-2000	text	0					
+PR	Pool/Riffle Ratio - Hab.Index 1992-1996	NA	PR	Pool:Riffle Ratio - Hab.Index 1992-1996	numeric	0					
+PRA	primary riparian assoc	NA	PRA	primary riparian assoc	text	0					
+Precipitation_current	Precipitation_current	NA	Precipitation_Current	Precipitation_current	text	0					
+Precipitation_previous24hr	Precipitation_previous24hr	NA	Precipitation_Previous24hr	Precipitation_previous24hr	text	0					
+PS	Pool Substrate - Hab.Index 1992-1996	NA	PS	Pool Substrate - Hab.Index 1992-1996	numeric	0					
+Reach_Length	Reach length in feet	ft	ReachLength	Reach length in feet	numeric	0					
+RFE	Recent Flood evidence	NA	RFE	Recent Flood evidence	text	0					
+Riffle_paces_or_feet	Measure of Riffle habitat in the study reach	NA	Riffle_paces_or_feet	Measure of Riffle habitat in the study reach	numeric	0					
+Riffle_%	Percent Riffle Habitat w/in the stream reach	%	Riffle_pct	Percent Riffle Habitat within the stream reach	numeric	0					
+Riffle_habitat_quality	Riffle_habitat_quality - Hab.Index 2001-present	NA	RiffleHabitatQuality	Riffle_habitat_quality - Hab.Index 2001-present	text	0					
+Riffle_Length-width_ratio	Riffle_Length-width_ratio	NA	RiffleLengthWidthRatio	Riffle_Length-width_ratio	numeric	0					
+RifflePoolRatio	Riffle / Pool Ratio	NA	RifflePoolRatio	Riffle:Pool Ratio	numeric	0					
+Riparian_Association	Riparian_Association	NA	RiparianAssociation	Riparian_Association	text	0					
+Riparian_Trees	Riparian tree species list	NA	RiparianTrees	Riparian tree species list	text	0					
+Riparian_Veg_Cover_Bare_soil	Riparian_Veg_Cover_Bare_soil	NA	RiparianVegCover_BareSoil	Riparian_Veg_Cover_Bare_soil	numeric	0					
+Riparian_Veg_Cover_Canopy	Riparian_Veg_Cover_Canopy	NA	RiparianVegCover_Canopy	Riparian_Veg_Cover_Canopy	numeric	0					
+Riparian_Veg_Cover_Groundcover	Riparian_Veg_Cover_Groundcover	NA	RiparianVegCover_Groundcover	Riparian_Veg_Cover_Groundcover	numeric	0					
+Riparian_Veg_Cover_Understory	Riparian_Veg_Cover_Understory	NA	RiparianVegCover_Understory	Riparian_Veg_Cover_Understory	numeric	0					
+Rock_Angularity	Rock Angularity by Rosgen-Pfankuch method	NA	RockAngularity	Rock Angularity by Rosgen-Pfankuch method	text	0					
+RosgenBankfullIndicators	Bankfull Indicators Used	NA	RosgenBankfullIndicators	Bankfull Indicators Used	text	0					
+RosgenCorrFactor	Bankfull mean depth correction factor	NA	RosgenCorrFactor	Bankfull mean depth correction factor	numeric	0					
+RosgenPredXSection	Predicted Cross-section Area for Rosgen classification	NA	RosgenPredXSection	Predicted Cross-section Area for Rosgen classification	numeric	0					
+RosgenRegionalCurve	Which regional curve used?	NA	RosgenRegionalCurve	Which regional curve used	text	0					
+RosgenSlope	Slope for Stream Type Identification	NA	RosgenSlope	Slope for Stream Type Identification	numeric	0					
+Rosgen Stream type	Rosgen stream type classification	NA	RosgenStreamType	Rosgen stream type classification	text	0					
+Rosgen Substrate D50 Category	1 - 6 rating from coarse to fine	NA	RosgenSubstrateD50Category	1 - 6 rating from coarse to fine	text	0					
+RosgenValleyType	Valley type I - X	NA	RosgenValleyType	Valley type I - X	text	0					
+RosgenXSectionArea	Cross-section Area for Rosgen classification (not predicted)	NA	RosgenXSectionArea	Cross-section Area for Rosgen classification (not predicted)	numeric	0					
+RPR	Regeneration Potential of Riparian Trees	NA	RPR	Regeneration Potential of Riparian Trees	text	0					
+RS	Riffle Substrate/Cover - Hab.Index 1992-1996	NA	RS	Riffle Substrate - Cover - Hab.Index 1992-1996	numeric	0					
+RSV	riffle substrate variety - Hab.Index 1997-2000	NA	RSV	riffle substrate variety - Hab.Index 1997-2000	text	0					
+Run_paces_or_feet	Measure of Riun habitat in the study reach	NA	Run_paces_or_feet	Measure of Run habitat in the study reach	numeric	0					
+Run_%	Run_both_dep&erosional_%	%	Run_pct	"Run, both depositional and erosional, pct"	numeric	0					
+Run_Depositional_%	Percent Depositional Run Habitat within the stream reach	NA	RunDepositional_pct	Percent Depositional Run Habitat within the stream reach	numeric	0					
+Run_Erosional_%	Percent Erosional Run Habitat within the stream reach	NA	RunErosional_pct	Percent Erosional Run Habitat within the stream reach	numeric	0					
+RW	Riparian Width - Hab.Index 1992-1996	NA	RW	Riparian Width - Hab.Index 1992-1996	numeric	0					
+SC	Streamside Cover - Hab.Index 1992-1996	NA	SC	Streamside Cover - Hab.Index 1992-1996	numeric	0					
+Scouring_Deposition	Scouring and deposition by Rosgen-Pfankuch method	NA	ScouringDeposition	Scouring and deposition by Rosgen-Pfankuch method	text	0					
+Sediment_deposition_reach	Sediment_deposition_reach - Hab.Index 2001-present	NA	SedimentDeposition_Reach	Sediment_deposition_reach - Hab.Index 2001-present	text	0					
+Sediment Supply Condition	Sediment Supply Condition	NA	SedimentSupplyCondition	Sediment Supply Condition	text	0					
+SFO	Sunfish presence	NA	SFO	Sunfish presence	text	0					
+SH	Shade Condition - Hab.Index 1992-1996	NA	SH	Shade Condition - Hab.Index 1992-1996	numeric	0					
+SHQ_Cobble	Cobble - Segment Habitat Quality	NA	SHQ_Cobble	Cobble - Segment Habitat Quality	text	0					
+SHQ_FilamAlgaeBeds	Filamentous algae beds - Segment Habitat Quality	NA	SHQ_FilamAlgaeBeds	Filamentous algae beds - Segment Habitat Quality	text	1					
+SHQ_LeafPacks	Leaf packs - Segment Habitat Quality	NA	SHQ_LeafPacks	Leaf packs - Segment Habitat Quality	text	0					
+SHQ_MacrophyteBeds	Macrophyte beds - Segment Habitat Quality	NA	SHQ_MacrophyteBeds	Macrophyte beds - Segment Habitat Quality	text	1					
+SHQ_RootMasses	Root masses - Segment Habitat Quality	NA	SHQ_RootMasses	Root masses - Segment Habitat Quality	text	0					
+SHQ_SandDomSubstrate	Sand dominated substrate - Segment Habitat Quality	NA	SHQ_SandDomSubstrate	Sand dominated substrate - Segment Habitat Quality	text	0					
+SHQ_SubmergLogsSnares	Submerged logs / snares - Segment Habitat Quality	NA	SHQ_SubmergLogsSnares	"Submerged logs, snares - Segment Habitat Quality"	text	0					
+"SHQ_UndercutBanks
+Leaf packs
+Root masses
+Macrophyte beds
+Submerged logs / snares
+Sand dominated substrate
+Filamentous algae beds"	"Undercut banks - Segment Habitat Quality
+Leaf packs
+Root masses
+Macrophyte beds
+Submerged logs / snares
+Sand dominated substrate
+Filamentous algae beds"	NA	SHQ_UndercutBanks	Undercut banks - Segment Habitat Quality	text	0					
+Sinuosity	Sinuosity	NA	Sinuosity	Sinuosity	numeric	0					
+Size_classes_number (REACH)	Size_classes_number (REACH pebble count)	NA	SizeClassesNumber_Reach	Size_classes_number (REACH pebble count)	numeric	0					
+Size_classes_number (RIFFLE)	Size_classes_number (RIFFLE)	NA	SizeClassesNumber_Riffle	Size_classes_number (RIFFLE)	numeric	0					
+SSC	streamside cover	NA	SSC	streamside cover	text	0					
+SST	Substrate type (decision criteria)	NA	SST	Substrate type (decision criteria)	text	0					
+Standadized Score_Rosgen	Rosgen-Pfankuch Standadized Score 0-100	NA	StandardizedScore_Rosgen	Rosgen-Pfankuch Standadized Score 0-100	numeric	0					
+SteambedOM	Leaves or other organic matter on streambed	NA	SteambedOM	Leaves or other organic matter on streambed	text	0					
+Stream Bed Stability	Stream Bed Stability	NA	StreamBedStability	Stream Bed Stability	text	0					
+Stream_Type_Confidence	Confidence level for Rosgen stream type	NA	StreamType_Confidence	Confidence level for Rosgen stream type	text	0					
+Sum of Scores	"Sum of Scores, Pfankuch"	NA	SumOfScores	"Sum of Scores, Pfankuch"	numeric	0					
+Sum_Scores_Rosgen	Sum of scored by Rosgen-Pfankuch method	NA	SumScores_Rosgen	Sum of scored by Rosgen-Pfankuch method	numeric	0					
+Surface Protection	Surface Protection	NA	SurfaceProtection	Surface Protection	text	0					
+SVR	Stream variety (decision criteria)	NA	SVR	Stream variety (decision criteria)	text	0					
+Top_Lat	"Latitude at the top of the reach, decimal degrees in NAD 83"	NA	TopLat	"Latitude at the top of the reach, decimal degrees in NAD 83"	numeric	0					
+Top_Long	"Longitude at the top of the reach, decimal degrees in NAD 83"	NA	TopLong	"Longitude at the top of the reach, decimal degrees in NAD 83"	numeric	0					
+UB	Upper Bank Stability - Hab.Index 1992-1996	NA	UB	Upper Bank Stability - Hab.Index 1992-1996	numeric	0					
+USGSDischarge	USGS Discharge	NA	USGSDischarge	USGS Discharge	numeric	0					
+USGSGageHeight	USGS Gage Height	NA	USGSGageHeight	USGS Gage Height	numeric	0					
+VD	Velocity/Depth - Hab.Index 1992-1996	NA	VD	Velocity:Depth Habitat Index 1992-1996	numeric	0					
+Vegetation formations	"Desert, Grassland, Chaparral, Woodland, etc."	NA	VegetationFormations	"Desert, Grassland, Chaparral, Woodland, etc."	text	0					
+Vegetative Bank Protection	Pfankuch Vegetative Bank Protection	NA	VegetativeBankProtection	Pfankuch Vegetative Bank Protection	text	0					
+VLD	Velocity/Depth - Hab.Index 1997-2000	NA	VLD	Velocity:Depth Habitat Index 1997-2000	text	0					
+WAP	Water appearance/clarity	NA	WAP	Water appearance and clarity	text	0					
+Width - Depth Ratio	Pfankuch Width - Depth Ratio	NA	WidthDepthRatio_Pfankuch	Pfankuch Width - Depth Ratio	text	0					
+W/D_Ratio	Width/Depth Ratio	NA	WidthDepthRatio	Width:Depth ratio	numeric	0					
+WOD	Water odor	NA	WOD	Water odor	text	0					

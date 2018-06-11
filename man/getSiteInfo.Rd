@@ -29,7 +29,7 @@ Required objects:
 
 * data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 
-* data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
 * data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
 
@@ -42,25 +42,31 @@ Required objects:
 * data.mod; COMID, ReachModStatus, ModReason
 }
 \examples{
-TargetSiteID <- "SDR-MLS"
+TargetSiteID <- "SRCKN001.61"
 clustertype <- "H6"
 useLU <- FALSE
 
-\dontrun{
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
-data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
-data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
-                               , na.strings = c(""," "))
-data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
-data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
-data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
-data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
- 
-data.Stations.Info <- read
+# data import, example
+#data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+#data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+#                               , na.strings = c(""," "))
+#data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
+#data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
+#data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
+#data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+#data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
+
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
  
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
-}
 }

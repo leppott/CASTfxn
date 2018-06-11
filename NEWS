@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-08 10:29:08
+    #> Last Update: 2018-06-11 15:43:10
 
 # Planned Updates
 
@@ -17,6 +17,14 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9022 (2017-06-11)
+
+  - Add AZ data to “data-raw” and “data”. Issue \#5.
+  - getSiteInfo.R
+      - Add example datasets (include description in data.R)
+      - Turn off mapping.
+      - Turn off “donotrun” in example.
 
 ## Changes in Version 0.1.0.9021 (2017-06-08)
 
