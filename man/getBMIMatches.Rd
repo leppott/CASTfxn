@@ -66,7 +66,7 @@ site.chem <- list.data$site.chem
 
 # set cutoff for possible stressor identification
 probsLow <- 0.10
-probsHigh <- 0.90#' 
+probsHigh <- 0.90
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem

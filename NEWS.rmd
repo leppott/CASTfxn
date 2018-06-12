@@ -32,6 +32,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9026 (2017-06-12)
+
+* Add data_BMIcounts.
+    + Update data.R.
+    + Update getStressorSpecificRegressions example.
+
 ## Changes in Version 0.1.0.9025 (2017-06-12)
 
 * Modify examples for TargetSite and getSiteInfo.  Issue #5

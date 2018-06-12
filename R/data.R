@@ -165,7 +165,7 @@
 #' @format A data frame with 3,577 rows and 7 variables:
 #' \describe{
 #'           \item{StationID_Master}{Station ID}
-#'           \item{ColLDate}{Station ID}
+#'           \item{CollDate}{Station ID}
 #'           \item{Station_Date}{combined StationID and Date}
 #'           \item{ChemCampID}{SampleID, Chem}
 #'           \item{PhabSampID}{SampleID, Phab}
@@ -174,4 +174,20 @@
 #' }
 #' @source example data
 "data_SampSummary"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title Benthic Macroinvertebrate counts example data
+#' 
+#' @description A dataset with example benthic macroinvertebrate (BMI) counts 
+#' for use with the getStresssorSpecificRegressions function.
+#' 
+#' @format A data frame with 57,012 rows and 22 variables:
+#' \describe{
+#'           \item{StationID}{Station ID}
+#'           \item{Lat_Dec}{Latitude, decimal degrees}
+#'           \item{Long_Dec}{Longitude, decimal degrees}
+#' }
+#' @source example data
+"data_BMIcounts"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

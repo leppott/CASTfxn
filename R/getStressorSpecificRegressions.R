@@ -64,7 +64,7 @@
 #' 
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
-#' probsHigh <- 0.90#' 
+#' probsHigh <- 0.90 
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
@@ -76,11 +76,11 @@
 #' list.MatchBMIData <- getBMIMatches(stressors, list.data)   
 #' 
 #' # data import, example
-#' data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+#' # data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' 
 #' # data, example included with package
-#' 
+#' data.bmi.taxa.raw <- data_BMIcounts
 #' 
 #' getStressorSpecificRegressions(list.MatchBMIData)
 #' }

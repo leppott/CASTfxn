@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-12 08:42:28
+    #> Last Update: 2018-06-12 09:52:44
 
 # Planned Updates
 
@@ -17,6 +17,12 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9026 (2017-06-12)
+
+  - Add data\_BMIcounts.
+      - Update data.R.
+      - Update getStressorSpecificRegressions example.
 
 ## Changes in Version 0.1.0.9025 (2017-06-12)
 

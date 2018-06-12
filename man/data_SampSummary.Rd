@@ -7,7 +7,7 @@
 \format{A data frame with 3,577 rows and 7 variables:
 \describe{
           \item{StationID_Master}{Station ID}
-          \item{ColLDate}{Station ID}
+          \item{CollDate}{Station ID}
           \item{Station_Date}{combined StationID and Date}
           \item{ChemCampID}{SampleID, Chem}
           \item{PhabSampID}{SampleID, Phab}
