@@ -19,7 +19,7 @@
 #' @param TargetSiteID SiteID
 #' @param comid NHD+ COMID
 #' @param clustertype Cluster
-#' @param useLU Use LandUse.
+#' @param useLU Use LandUse.  Default = FALSE.
 #' 
 #' @return A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
 #' , all.chems, cluster.chem, and site.chem.
@@ -63,7 +63,7 @@
 # cluster <- site.Clusters
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @export
-getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU) {
+getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=FALSE) {
   #Create subsets for target sites, ref sites in cluster, all sites in cluster
   site.COMID <- comid
   site.Clusters <- cluster
@@ -101,13 +101,27 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU)
   all.chems2 <- all.chems[,c("ChemSampleID","ConvertTo","ResultValue")]
   all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean)
   
+
   
   # chem.tab2 is the list of target site chems at sites in the target site cluster
   if (useLU == TRUE) {
-    cluster.chem.tab2 <- subset(all.chems, all.chems[,lu.cluster]==site.lu[,1])
+    # QC, 20180612
+    if (is.na(site.lu[,1])) {
+      # do not proceed
+      # no cluster assignment
+      stop(paste0("No cluster assignment for ", TargetSiteID))
+    }
+    cluster.chem.tab2 <- subset(all.chems, all.chems[, lu.cluster]==site.lu[,1])
   } else {
-    cluster.chem.tab2 <- subset(all.chems, all.chems[,nolu.cluster]==site.nolu[,1])
+    # QC, 20180612
+    if (is.na(site.nolu[,1])) {
+      # do not proceed
+      # no cluster assignment
+      stop(paste0("No cluster assignment for ", TargetSiteID))
+    }
+    cluster.chem.tab2 <- subset(all.chems, all.chems[, nolu.cluster]==site.nolu[,1])
   }
+  # Get error if no cluster info (i.e., if is.na(site.lu[,1]))
   
   cluster.chem.tab3 <- cluster.chem.tab2[,c("ChemSampleID","ConvertTo","ResultValue")]
   cluster.chem.samps <- unique(cluster.chem.tab2[,c("StationID_Master","ChemSampleID")])

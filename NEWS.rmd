@@ -32,6 +32,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9024 (2017-06-12)
+
+* getChemDataSubset
+    + default useLU to FALSE.
+    + Error if no cluster information.   Added "stop" condition.
+
 ## Changes in Version 0.1.0.9023 (2017-06-11)
 
 * Update example in getChemDataSubset. Issue #5.

@@ -4,7 +4,7 @@
 \alias{getChemDataSubsets}
 \title{Chemical Data Subsets}
 \usage{
-getChemDataSubsets(TargetSiteID, comid, cluster, clustertype, useLU)
+getChemDataSubsets(TargetSiteID, comid, cluster, clustertype, useLU = FALSE)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
@@ -13,7 +13,7 @@ getChemDataSubsets(TargetSiteID, comid, cluster, clustertype, useLU)
 
 \item{clustertype}{Cluster}
 
-\item{useLU}{Use LandUse.}
+\item{useLU}{Use LandUse.  Default = FALSE.}
 }
 \value{
 A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
