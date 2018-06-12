@@ -32,6 +32,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9023 (2017-06-11)
+
+* Update example in getChemDataSubset. Issue #5.
+    + Create data_ChemInfo
+    + Create data_Chem
+    + Remove "dontrun" in example.
+
 ## Changes in Version 0.1.0.9022 (2017-06-11)
 
 * Add AZ data to "data-raw" and "data". Issue #5.
