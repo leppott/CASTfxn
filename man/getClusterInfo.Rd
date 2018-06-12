@@ -35,7 +35,7 @@ Required objects:
 }
 \examples{
 
-TargetSiteID <- "SDR-MLS"
+TargetSiteID <- "SRCKN001.61"
 clustertype <- "H6"
 useLU <- FALSE
 
@@ -44,15 +44,27 @@ CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
 # Run getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 
 # Run getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+#
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#
 ref.reaches <- list.data$ref.reaches
-
-data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
 
 getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
 }

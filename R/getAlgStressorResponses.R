@@ -19,7 +19,7 @@
 #' predint <- 0.75
 #' varLegLoc <- "topright"
 #' 
-#' TargetSiteID <- "SDR-MLS"
+#' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "H6"
 #' useLU <- FALSE
 #' 
@@ -31,12 +31,26 @@
 #' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)-3])
 #' 
 #' # Run getSiteInfo
+#' # data, example included with package
+#' data.Stations.Info <- data_Sites
+#' data.SampSummary   <- data_SampSummary
+#' data.303d.ComID    <- data_303d
+#' data.bmi.metrics   <- data_BMIMetrics
+#' data.algae.metrics <- data_AlgMetrics
+#' data.cluster       <- data_Cluster_Hi
+#' data.mod           <- data_ReachMod
+#' #
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
 #' # Run getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' # data, example included with package
+#' data.chem.raw <- data_Chem
+#' data.chem.info <- data_ChemInfo
+#' #
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' #
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -45,7 +59,7 @@
 #' 
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
-#' probsHigh <- 0.90#' 
+#' probsHigh <- 0.90
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem

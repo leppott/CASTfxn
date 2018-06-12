@@ -32,6 +32,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9025 (2017-06-12)
+
+* Modify examples for TargetSite and getSiteInfo.  Issue #5
+    + getAlgmatches, getAlgStressorResponses, getBMImatches, getBMIStressorResponses
+    , getClusterInfo, getStressorList, getStressorSpecificRegressions.
+* Modify examples for file imports vs. included datasets.  Issue #5
+    + getAlgmatches, getBMImatches, getClusterInfo, getStressorSpecificRegressions
+
 ## Changes in Version 0.1.0.9024 (2017-06-12)
 
 * getChemDataSubset

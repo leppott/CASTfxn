@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-12 07:40:10
+    #> Last Update: 2018-06-12 08:42:28
 
 # Planned Updates
 
@@ -17,6 +17,16 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9025 (2017-06-12)
+
+  - Modify examples for TargetSite and getSiteInfo. Issue \#5
+      - getAlgmatches, getAlgStressorResponses, getBMImatches,
+        getBMIStressorResponses , getClusterInfo, getStressorList,
+        getStressorSpecificRegressions.
+  - Modify examples for file imports vs. included datasets. Issue \#5
+      - getAlgmatches, getBMImatches, getClusterInfo,
+        getStressorSpecificRegressions
 
 ## Changes in Version 0.1.0.9024 (2017-06-12)
 
