@@ -26,6 +26,10 @@ df$W___AGRIC <- as.character(NA)
 df$W___URBAN <- as.character(NA)
 df$W___FOREST <- as.character(NA)
 
+df$clust_noland <- df$clust
+df$clust_land <- df$clust
+
+myCol %in% names(df)
 
 # 1.2. Process Data
 View(df)

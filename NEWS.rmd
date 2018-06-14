@@ -32,6 +32,26 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9028 (2017-06-14)
+
+* GIS data.
+    + Standardize projection for GIS layers.
+    + getSiteInfo; modify plot and projection used for layers.
+* getSiteInfo
+    + modify "cluster" data column.
+* Examples, change clustertype "H6" to "5"
+    + getAlgMatches
+    + getAlgStressorResponse
+    + getBMIMatches
+    + getBMIStressorResponses
+    + getCheDataSubsests
+    + getClsuterInfo
+    + getSiteInfo
+    + getStressorList
+    + getStressorSpecificRegressions
+* data_Sites
+    + Modify reference to match code.
+
 ## Changes in Version 0.1.0.9027 (2017-06-14)
 
 * Add GIS data.

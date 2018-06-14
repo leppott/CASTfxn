@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-14 11:09:22
+    #> Last Update: 2018-06-14 15:43:21
 
 # Planned Updates
 
@@ -17,6 +17,26 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9028 (2017-06-14)
+
+  - GIS data.
+      - Standardize projection for GIS layers.
+      - getSiteInfo; modify plot and projection used for layers.
+  - getSiteInfo
+      - modify “cluster” data column.
+  - Examples, change clustertype “H6” to “5”
+      - getAlgMatches
+      - getAlgStressorResponse
+      - getBMIMatches
+      - getBMIStressorResponses
+      - getCheDataSubsests
+      - getClsuterInfo
+      - getSiteInfo
+      - getStressorList
+      - getStressorSpecificRegressions
+  - data\_Sites
+      - Modify reference to match code.
 
 ## Changes in Version 0.1.0.9027 (2017-06-14)
 

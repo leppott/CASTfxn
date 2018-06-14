@@ -34,7 +34,7 @@ BMIresp <- c("CSCI", "O_E", "MMI_Score", "ClingerTaxaPct", "ColeopteraTaxaPct"
              , "EPTTaxaPct", "ShredderTaxa", "TaxaRichness")
              
 TargetSiteID <- "SRCKN001.61"
-clustertype <- "H6"
+clustertype <- "5"
 useLU <- FALSE
 
 \dontrun{
@@ -70,7 +70,7 @@ site.chem <- list.data$site.chem
 
 # set cutoff for possible stressor identification
 probsLow <- 0.10
-probsHigh <- 0.90#' 
+probsHigh <- 0.90 
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem

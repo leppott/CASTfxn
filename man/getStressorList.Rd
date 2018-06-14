@@ -43,7 +43,7 @@ Required objects:
 \examples{
 
 TargetSiteID <- "SRCKN001.61"
-clustertype <- "H6"
+clustertype <- "5"
 useLU <- FALSE
 
 \dontrun{

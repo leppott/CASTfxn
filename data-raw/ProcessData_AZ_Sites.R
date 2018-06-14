@@ -19,8 +19,12 @@ df$FinalLatitude <- df$LATITUDE
 df$FinalLongitude <- df$LONGITUDE
 df$WaterbodyName <- df$STATION_NAME
 df$GIS_County <- df$COUNTY_NAME
-df$CARefSite_2017 <- df$ReferenceStatus
+df$CARefSite_2017 <- tolower(df$ReferenceStatus)
 df$COMID_NHD2 <- df$COMID
+
+#
+df$CARefSite_2017[df$CARefSite_2017=="reference"] <- 1
+
 
 # 1.2. Process Data
 View(df)
