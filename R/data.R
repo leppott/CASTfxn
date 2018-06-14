@@ -191,3 +191,39 @@
 #' @source example data
 "data_BMIcounts"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title NHD+ flow line example data, AZ high gradient
+#' 
+#' @description A dataset with example GIS flow line data 
+#' for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 5,658 elements, 87.7 Mb:
+#' \describe{
+#' }
+#' @source example data
+"data_GIS_Flow_HI"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title NHD+ flow line example data, AZ low gradient
+#' 
+#' @description A dataset with example GIS flow line data 
+#' for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 9,981 elements, 162.9 Mb:
+#' \describe{
+#' }
+#' @source example data
+"data_GIS_Flow_LO"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title AZ state outline
+#' 
+#' @description A dataset with example GIS state outline of Arizona  
+#' for use with the getSiteInfo function.
+#' 
+#' @source example data
+"data_GIS_AZ_Outline"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-12 09:52:44
+    #> Last Update: 2018-06-14 11:09:22
 
 # Planned Updates
 
@@ -17,6 +17,23 @@ NEWS
       - Retain scoring from both sets of plots in a table.
 
 # Version History
+
+## Changes in Version 0.1.0.9027 (2017-06-14)
+
+  - Add GIS data.
+      - data.R
+      - data\_GIS\_Flow\_HI
+      - data\_GIS\_Flow\_LO
+      - data\_GIS\_AZ\_Outline
+  - Update getSiteInfo map.
+      - Uncomment map code.
+      - Change graphics::plot to sp::plot.
+  - Revised data\_SampSummary.
+  - Revise SampIDs in other files to match format in SampSummary.
+      - data\_AlgMetrics
+      - data\_BMIcounts
+      - data\_BMIMetrics
+      - data\_Chem
 
 ## Changes in Version 0.1.0.9026 (2017-06-12)
 

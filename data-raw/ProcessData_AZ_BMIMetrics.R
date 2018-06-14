@@ -17,11 +17,13 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 myCol <- c("StationID_Master", "CollDate", "CSCI", "O_E", "MMI_Score")
 myCol %in% names(df)
 # add columns
-df$StationID_Master <- df$StationID
-df$CollDate         <- as.Date(df$BenCollDate)
-df$CSCI             <- df$IBI
-df$O_E              <- as.character(NA)
-df$MMI_Score        <- df$IBI
+df$StationID_Master   <- df$StationID
+df$CollDate           <- as.Date(df$BenCollDate)
+df$BMISampID          <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
+df$BMI.Metrics.SampID <- df$BMISampID
+df$CSCI               <- df$IBI
+df$O_E                <- as.character(NA)
+df$MMI_Score          <- df$IBI
 
 
 # 1.2. Process Data

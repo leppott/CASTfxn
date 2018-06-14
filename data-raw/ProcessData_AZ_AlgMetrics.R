@@ -18,6 +18,7 @@ df <- unique(df.bmi[,c("StationID", "BenCollDate")])
 df$StationCode <- df$StationID
 df$SampleDate <- as.Date(df$BenCollDate)
 df <- df[,c(3,4)]
+df$Algae.Metrics.SampID <- as.character(NA)
 df$H20 <- as.character(NA)
 df$D18 <- as.character(NA)
 df$S2 <- as.character(NA)

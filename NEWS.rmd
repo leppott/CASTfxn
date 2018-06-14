@@ -32,6 +32,23 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9027 (2017-06-14)
+
+* Add GIS data.
+    + data.R
+    + data_GIS_Flow_HI
+    + data_GIS_Flow_LO
+    + data_GIS_AZ_Outline
+* Update getSiteInfo map.
+    + Uncomment map code.
+    + Change graphics::plot to sp::plot.
+* Revised data_SampSummary.
+* Revise SampIDs in other files to match format in SampSummary.
+    + data_AlgMetrics
+    + data_BMIcounts
+    + data_BMIMetrics
+    + data_Chem
+
 ## Changes in Version 0.1.0.9026 (2017-06-12)
 
 * Add data_BMIcounts.

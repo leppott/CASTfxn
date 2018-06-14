@@ -11,8 +11,18 @@ library(readxl)
 
 # 1. Get data and process#####
 # 1.1. Import Data
-myFile <- "SampSummary_Test.xlsx"
-df <- read_excel(file.path(wd, "data-raw", "AZ", myFile), sheet="data.SampSummary")
+# myFile <- "SampSummary_Test.xlsx"
+# df0 <- read_excel(file.path(wd, "data-raw", "AZ", myFile), sheet="data.SampSummary")
+myFile <- "AZSiteSummary.tab"
+df <- read.delim(file.path(wd, "data-raw", "AZ", myFile), stringsAsFactors = FALSE)
+
+# Modify format
+df$CollDate <- as.Date(df$CollDate)
+
+# Add columns
+df$StationID_Master <- df$StationID
+df$Station_Date <- df$CollDate
+
 
 # 1.2. Process Data
 View(df)

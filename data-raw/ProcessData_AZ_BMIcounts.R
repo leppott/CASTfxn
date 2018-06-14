@@ -13,9 +13,12 @@ wd <- getwd() # assume is package directory
 myFile <- "AZBenthicCountsFinal.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
+# format
+df$CollDate <- as.Date(df$CollDate)
 # add columns
 df$StationID_Master <- df$StationID
-df$BMISampID        <- paste(df$BenSampID, df$RepNum, sep="_")
+df$BMISampID        <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
+df$BMI.Metrics.SampID <- df$BMISampID
 
 # 1.2. Process Data
 View(df)
