@@ -55,11 +55,19 @@
 #' data.algae.metrics <- data_AlgMetrics
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
-#'  
+#'
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #
 #' @export
 getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
+  #
+  # check for and create (if necessary) "Results" subdirectory of working directory
+  wd <- getwd()
+  dir.sub <- "Results"
+  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+         , dir.create(file.path(wd, dir.sub))
+         , FALSE)
   #
   mySiteInfo <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
                                    ,c("FinalLatitude","FinalLongitude","WaterbodyName"

@@ -25,7 +25,6 @@
 #' , all.chems, cluster.chem, and site.chem.
 #' 
 #' @examples
-#' 
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
@@ -56,7 +55,7 @@
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' 
-#' # Run Function
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 # QC
@@ -65,6 +64,14 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @export
 getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=FALSE) {
+  #
+  # check for and create (if necessary) "Results" subdirectory of working directory
+  wd <- getwd()
+  dir.sub <- "Results"
+  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+         , dir.create(file.path(wd, dir.sub))
+         , FALSE)
+  #
   #Create subsets for target sites, ref sites in cluster, all sites in cluster
   site.COMID <- comid
   site.Clusters <- cluster

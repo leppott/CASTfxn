@@ -38,7 +38,6 @@ Required objects:
 * data.chem.info; Analyte
 }
 \examples{
-
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
@@ -69,6 +68,6 @@ site.Clusters <- list.SiteSummary$ClustIDs
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
-# Run Function
+# Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
 }

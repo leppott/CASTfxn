@@ -62,6 +62,14 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
     stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
   }
   
+  # check for and create (if necessary) "Results" subdirectory of working directory
+  wd <- getwd()
+  dir.sub <- "Results"
+  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+         , dir.create(file.path(wd, dir.sub))
+         , FALSE)
+  #
+  
   data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
   df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs,]
   

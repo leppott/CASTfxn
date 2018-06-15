@@ -41,13 +41,3 @@ myJPG <- paste0("map.SRCKN001.61.jpg")
 img <- load.image(file.path(getwd(), "Results", myJPG))
 plot(img)
 
-## ----QCRaw_base, eval=FALSE----------------------------------------------
-#  
-
-## ----QCRaw_timeoffset, eval=FALSE----------------------------------------
-#  
-
-## ----Aggregate, eval=FALSE-----------------------------------------------
-#  
-#  
-

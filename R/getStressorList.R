@@ -22,12 +22,10 @@
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
 #' @examples
-#'
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
@@ -43,15 +41,20 @@
 #' #
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
-#' # Run getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' 
+#' # data import, example 
+#' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+#' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' #
+#' 
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
+#' # 
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -62,16 +65,23 @@
 #' probsLow <- 0.10
 #' probsHigh <- 0.90 
 #' 
+#' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
-#' }
-#' 
+#                                  
 #' @export
 getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
                             , cluster.samps, ref.sites, site.chem
                             , probsHigh, probsLow, useLU=FALSE) {
-  
+  #
+  # check for and create (if necessary) "Results" subdirectory of working directory
+  wd <- getwd()
+  dir.sub <- "Results"
+  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+         , dir.create(file.path(wd, dir.sub))
+         , FALSE)
+  #
   stations <- TargetSiteID
   nolu.cluster <- paste(clustertype, "_noland", sep="")
   lu.cluster <- paste(clustertype, "_land", sep="")

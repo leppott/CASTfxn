@@ -77,6 +77,13 @@
 getAlgStressorResponses <- function(stressors, list.MatchAlgData
                                     , predint=0.75, varLegLoc="topright") {
   
+  # check for and create (if necessary) "Results" subdirectory of working directory
+  wd <- getwd()
+  dir.sub <- "Results"
+  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+         , dir.create(file.path(wd, dir.sub))
+         , FALSE)
+  #
   # helper
   RegPlotSet <- getRegPlotSet(varLegLoc)
   varInset  <- RegPlotSet[1]

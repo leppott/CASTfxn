@@ -67,6 +67,7 @@ data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
- 
+
+# Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 }
