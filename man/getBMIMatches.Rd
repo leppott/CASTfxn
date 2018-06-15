@@ -28,16 +28,14 @@ Required objects:
 * data.chem.raw; StationID_Master, ChemSampleID
 }
 \examples{
-
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
 
-\dontrun{
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
-# Run getSiteInfo
+# datasets getSiteInfo
 # data, example included with package
 data.Stations.Info <- data_Sites
 data.SampSummary   <- data_SampSummary
@@ -47,17 +45,25 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
+# Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 
-# Run getChemDataSubsets
+# datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
+
+# data import, example 
+# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
-#
+
+# Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#
+
+# datasets getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -66,16 +72,18 @@ site.chem <- list.data$site.chem
 
 # set cutoff for possible stressor identification
 probsLow <- 0.10
-probsHigh <- 0.90
+probsHigh <- 0.90 
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
-stressors <- list.stressors$stressors
+                                 
+# datasets getBMIMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
 
+# Run getBMIMatches
 list.MatchBMIData <- getBMIMatches(stressors, list.data)
-}
-
 }

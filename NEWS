@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-15 14:48:19
+    #> Last Update: 2018-06-15 15:33:32
 
 # Planned Updates
 
@@ -18,6 +18,11 @@ NEWS
   - Convert site map to ggplot.
 
 # Version History
+
+## Changes in Version 0.1.0.9033 (2017-06-15)
+
+  - Update examples. Issue \#5.
+      - getBMImatches
 
 ## Changes in Version 0.1.0.9032 (2017-06-15)
 
