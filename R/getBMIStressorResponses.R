@@ -1,6 +1,6 @@
 #' @title BMI Stressor Responses
 #' 
-#' @description Get BMI stressor resonses.
+#' @description Get BMI stressor responses.
 #' 
 #' @details BMI stressor regressions.
 #' 

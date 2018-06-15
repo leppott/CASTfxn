@@ -1,6 +1,6 @@
 #' @title Algae Stressor Responses
 #' 
-#' @description Get Algae stressor resonses.
+#' @description Get Algae stressor responses.
 #' 
 #' @details Algae stressor regressions.
 #' 

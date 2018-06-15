@@ -16,7 +16,7 @@ getAlgStressorResponses(stressors, list.MatchAlgData, predint = 0.75,
 A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 }
 \description{
-Get Algae stressor resonses.
+Get Algae stressor responses.
 }
 \details{
 Algae stressor regressions.

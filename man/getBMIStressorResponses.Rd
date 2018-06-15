@@ -16,7 +16,7 @@ getBMIStressorResponses(stressors, list.MatchBMIData, predint = 0.75,
 A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 }
 \description{
-Get BMI stressor resonses.
+Get BMI stressor responses.
 }
 \details{
 BMI stressor regressions.

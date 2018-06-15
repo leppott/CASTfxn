@@ -1,0 +1,179 @@
+---
+title: "CASTfxn Vignette"
+author: "Erik W. Leppo"
+date: "`r Sys.Date()`"
+output: 
+rmarkdown::html_vignette:
+vignette: >
+  %\VignetteIndexEntry{ContDataQC_Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+`CASTfxn` was created by Tetra Tech, Inc. for in 2018 to support the Causal Assessment Screening Tool.  This tool aides data managers to more quickly analyze large amounts of data for causal assessment.  It is not meant to be the final arbiter.  But it can aid in the filtering the data.
+
+It is envisioned that this library can be a living package and will add additional functions and routines in the future.
+
+Many of the examples in this vignette are included in the examples in the corresponding functions.  Each function in the `CASTfxn` library includes example data.
+
+The typical user of this package is envisioned as a data manager familiar with the structure of the data being used as well as the process of causal assessment.  A basic understanding in the use of R is recommended.
+
+# Installation
+The R library is saved on GitHub for ease of updating and distribution.  Issues can be tracked, fixed, and code made available for download.  Current users can update the library using the same code used to install the library (see below).  Devtools is required for the installation.
+
+```{r LoadPkg, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("leppott/CASTfxn")
+```
+
+To install a specific version of the tool the release can be added to the install command.  For example to install version 9.2 (not a valid version at this point) the code would be install_github("leppott/CASTfxn@v9.2").
+
+To contact the authors directly email Erik.Leppo@tetratech.com or Ann.Lincoln@tetratech.com.
+
+# Contents
+1. Preparing Raw Data
+
+2. CASTfxn Operations
+
+# Preparing Raw Data
+The `CASTfxn` library makes some assumptions on file names and structure.
+
+## File Names
+The details section of each function names the files and required fields necessary to run that function.
+
+## File Formats
+The package does not import any files so there is no standard file format.  The user is expected to have the ability and skill to import the files into R.
+
+## File Structure
+The first line are the field (column) headers.  
+
+# CASTfxn Functions
+There is no single overall function but a series of functions.
+
+## Operations
+The operations of the `CASTfxn` package are listed below but will be explained in more detail in their own section.
+
+* getSiteInfo
+* getChemDataSubsets
+* getClusterInfo
+* getBMImatches
+* getBMStressorResponses
+* getAlgmatches
+* getAlgStressorResonses
+* getStressorList
+* getStressorSpecificRegressions
+* SSDplot
+* CoOccur
+
+
+The library assumes that there are the following folders in the working directory:
+
+* Results
+
+The folder "Results" is for some of the outputs.
+
+SOme of the functions assume that some datasets not included in the function parameters are loaded into the global environment.  These are mentioned in the Details section of each function.  It is anticipated that a future version of the package will explicitly list these datasets in the parameters of each function.
+
+### getSiteInfo
+The getSiteInfo function is below.  The commented section is an examle of importing (reading) files into R.  The example works with data that is saved as part of the package.
+
+```{r getSiteInfo, echo=TRUE}
+library(CASTfxn)
+
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# data import, example
+#data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+#data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
+#                               , na.strings = c(""," "))
+#data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
+#data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
+#data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
+#data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
+#data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
+
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+ 
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+```
+
+The code below opens in an R plot window the jpg saved in the previous example.  But it requires the `imager` package.  This is a replotting of the image.  Viewing the JPG is an external viewer will open the file to the correct scale.
+
+```{r OpenJPG, echo=TRUE}
+#install.packages("imager")
+library("imager")
+myJPG <- paste0("map.SRCKN001.61.jpg")
+img <- load.image(file.path(getwd(), "Results", myJPG))
+plot(img)
+```
+Show the actual image.
+
+![Alt text](./Results/map.SRCKN001.61.jpg)
+
+
+### getChemDataSubsets
+This is operation is the main focus of the `ContDataQC` library.  The raw continuous data files are examined for multiple QC tests and the results saved in a new data file (CSV) and a summary report (DOCX file) are generated.
+
+```{r QCRaw_base, eval=FALSE}
+
+```
+
+In some cases two sensors are used (one for air and one for water) and the timing of the sampling is off between the two.  The library handles this fine.  Example data below.  For this example the report output was changed to "html".
+
+```{r QCRaw_timeoffset, eval=FALSE}
+
+```
+
+### getClusterInfo
+After QC the files are ready for analysis.  The Aggregate operation allows the user to combine (or split) files across time periods.  No report format was specified so the default "docx" format will be generated.
+
+```{r Aggregate, eval=FALSE} 
+
+
+```
+
+### getBMImatches
+
+Get BMI and chem sample matches.
+
+### getBMIStressorResponses
+
+Get BMI stressor responses.
+
+### getAlgmatches
+
+Get Algae and chem sample matches.
+
+### getAlgStressorResonses
+
+Algae stressor regressions.
+
+### getStressorList
+
+Box plots of each stressor, grouped by category.
+
+### getStressorSpecificRegressions
+
+Get stressor specific regressions.
+
+### SSDplot
+
+Generates plots of the proportion of species affected at different exposure levels in laboratory toxicity tests.
+
+### CoOccur
+
+Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data

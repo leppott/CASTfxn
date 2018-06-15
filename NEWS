@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-14 15:43:21
+    #> Last Update: 2018-06-15 09:21:19
 
 # Planned Updates
 
@@ -15,8 +15,16 @@ NEWS
   - CoOccur function.
       - Add scoring to 2nd set of plots.
       - Retain scoring from both sets of plots in a table.
+  - Convert site map to ggplot.
 
 # Version History
+
+## Changes in Version 0.1.0.9029 (2017-06-15)
+
+  - Add vignette.
+      - Add package `imager` to Suggests in DESCRIPTION.
+      - Basic outline.
+      - getSiteInfo function.
 
 ## Changes in Version 0.1.0.9028 (2017-06-14)
 
