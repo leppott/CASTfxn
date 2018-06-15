@@ -29,7 +29,7 @@
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -39,8 +39,10 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
 #' 
@@ -54,7 +56,8 @@
 #' 
 #' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' # 
+#' 
+#' # datasets getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps

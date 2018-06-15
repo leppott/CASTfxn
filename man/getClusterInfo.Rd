@@ -42,7 +42,7 @@ useLU <- FALSE
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
-# Run getSiteInfo
+# datasets getSiteInfo
 # data, example included with package
 data.Stations.Info <- data_Sites
 data.SampSummary   <- data_SampSummary
@@ -52,19 +52,25 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
+# Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
  
-# Run getChemDataSubsets
+# datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
-#
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#
-ref.reaches <- list.data$ref.reaches
 
+#
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getClusterInfo
+ref.reaches <- list.data$ref.reaches
+refSiteCOMIDs <- list.data$ref.reaches
+
+# Run getClusterInfo
 getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
 
 }

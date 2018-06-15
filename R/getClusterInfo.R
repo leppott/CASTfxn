@@ -27,7 +27,7 @@
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -37,31 +37,30 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' 
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #'  
-#' # Run getChemDataSubsets
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
+#'
 #' #
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
-#' ref.reaches <- list.data$ref.reaches
 #' 
+#' # datasets getClusterInfo
+#' ref.reaches <- list.data$ref.reaches
+#' refSiteCOMIDs <- list.data$ref.reaches
+#' 
+#' # Run getClusterInfo
 #' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
 #' 
 #' @export
 getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, useLU = FALSE) {
-  nolu.cluster <- paste(clustertype, "_noland", sep="")
-  lu.cluster <- paste(clustertype, "_land", sep="")
-  if (length(siteClusters)==0) {
-    # do not proceed
-    # no cluster assignment
-    stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
-  }
-  
+  #
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
@@ -69,6 +68,16 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
          , dir.create(file.path(wd, dir.sub))
          , FALSE)
   #
+  #nolu.cluster <- paste(clustertype, "_noland", sep="")
+  #lu.cluster <- paste(clustertype, "_land", sep="")
+  nolu.cluster <- "clust_noland"
+  lu.cluster <- "clust_land"
+  #
+  if (length(site.Clusters)==0) {
+    # do not proceed
+    # no cluster assignment
+    stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
+  }
   
   data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
   df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs,]
@@ -79,12 +88,15 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
        quality = 100, bg = "white", res = ppi)
     #
     if (useLU == FALSE) {##IF.useLU.START
-      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","MAXELEVSMO")
-      varnames <- c("WS Area", "WS Precipitation","Mean Temp", "Slope", "Max Elevation")
+      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","ElevWs")
+      varnames <- c("WS Area", "WS Precipitation","Mean Temp", "Slope", "WS Elevation")
       graphics::par(mfrow = c(2,3), mar = c(2,4,1,1))
       df.plot <- data.cluster
       df.plot.2 <- data.cluster.mySites
       for(ii in 1:length(selvar)) {##FOR.ii.START
+        # QC
+       # print(paste0(ii,"; ",selvar[ii]))
+        #
         myY <- df.plot[,selvar[ii]]
         myX <- df.plot[,nolu.cluster]
         graphics::boxplot(myY~myX, main = "Clusters w/o Land Use", xlab ="Cluster"
@@ -104,8 +116,8 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
       }##FOR.ii.END
     } else {
       data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
-      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","MAXELEVSMO")
-      varnames <- c("W_Area", "WS Precipitation","Mean Temp", "Slope", "Max Elevation")
+      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","ElevWs")
+      varnames <- c("W_Area", "WS Precipitation","Mean Temp", "Slope", "WS Elevation")
       graphics::par(mfrow = c(2,3), mar = c(2,4,1,1))
       df.plot <- data.cluster
       df.plot.2 <- data.cluster.mySites
