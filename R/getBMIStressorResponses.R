@@ -18,18 +18,18 @@
 #' @examples
 #' predint <- 0.75
 #' varLegLoc <- "topright"
-#' BMIresp <- c("CSCI", "O_E", "MMI_Score", "ClingerTaxaPct", "ColeopteraTaxaPct"
-#'              , "EPTTaxaPct", "ShredderTaxa", "TaxaRichness")
+#' BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+#'              , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+#'              , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
 #'              
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -39,17 +39,25 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
-#' # Run getChemDataSubsets
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' 
+#' # data import, example 
+#' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+#' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' #
+#' 
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
+#' 
+#' # datasets getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -64,14 +72,18 @@
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
-#' stressors <- list.stressors$stressors
+#'                                  
+#' # datasets getBMIMatches
+#' ## remove "none"
+#' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#' 
 #' 
 #' # Run getBMIMatches
-#' list.MatchBMIData <- getBMIMatches(stressors, list.data)       
-#'              
+#' list.MatchBMIData <- getBMIMatches(stressors, list.data)     
+#'   
+#' # Reun getBMIStressorResponses           
 #' getBMIStressorResponses(stressors, list.MatchBMIData)
-#' }
-#' 
+#
 #' @export
 getBMIStressorResponses <- function(stressors, list.MatchBMIData
                                     , predint=0.75, varLegLoc="topright") {
@@ -90,6 +102,8 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
   varLegOpp <- RegPlotSet[3]
   
   for (p in 1:length(stressors)) {
+    # QC
+    #print(p)
     stressName <- stressors[p]
     varFlag <- 1
     if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC")) {
@@ -99,7 +113,9 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
     }
     for (r in 1: length(BMIresp)) {
       respName <- BMIresp[r]
-      
+      # QC
+      print (r)
+      #flush.console()
       #get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
       all.yvar<- list.MatchBMIData[["all.b.rsp"]][,c("StationID_Master","BMI.Metrics.SampID", respName)]
@@ -234,22 +250,24 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       
       #Print equation, r2, and p-value
       if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-        eqn <- paste("Cluster regression\n"
-                     , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-                     ,"p-value = ",pval.corr,"\n","n = ",length(varX),"\n")
-        symbshape <- c(1, 16, 2, 17, 19)
-        symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
-        symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-        graphics::legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
-                                                   , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-                                                   ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
-               , col = c("black"), cex=0.6)
-        graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
-      }
+        # eqn <- paste("Cluster regression\n"
+        #              , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
+        #              ,"p-value = ",pval.corr,"\n","n = ",length(varX),"\n")
+        # symbshape <- c(1, 16, 2, 17, 19)
+        # symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
+        # symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
+        # graphics::legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
+        #                                            , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
+        #                                            ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
+        #        , col = c("black"), cex=0.6)
+        #graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+      }##IF.length.END
+      #
       grDevices::dev.off()
+      #
       varFlag <- 0
-    }
+    }##FOR.r.END
     grDevices::graphics.off()
-  }
+  }##FOR.p.END
   utils::write.table(df.CorrTable,file="StressRespCorrs.BMI.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
-}
+}##FUNCTION.END

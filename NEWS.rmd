@@ -34,6 +34,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9034 (2017-06-15)
+
+* Update examples.  Issue #5.
+    + getBMIStressorResponses
+
 ## Changes in Version 0.1.0.9033 (2017-06-15)
 
 * Update examples.  Issue #5.
