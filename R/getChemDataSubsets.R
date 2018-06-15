@@ -48,7 +48,7 @@
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
 #' 
-#' # data import, example#' 
+#' # data import, example 
 #' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
 #' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
 #' 
@@ -56,6 +56,7 @@
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' 
+#' # Run Function
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 # QC
@@ -67,8 +68,10 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=
   #Create subsets for target sites, ref sites in cluster, all sites in cluster
   site.COMID <- comid
   site.Clusters <- cluster
-  nolu.cluster <- paste(clustertype, "_noland", sep="")
-  lu.cluster <- paste(clustertype, "_land", sep="")
+  # nolu.cluster <- paste(clustertype, "_noland", sep="")
+  # lu.cluster <- paste(clustertype, "_land", sep="")
+  nolu.cluster <- "clust_noland"
+  lu.cluster <- "clust_land"
   
   #Create a vector of Reference Site IDs
   data.refSites <- subset(data.Stations.Info,CARefSite_2017==1,
@@ -76,9 +79,9 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=
   refSiteIDs <- as.vector(unique(data.refSites[,"StationID_Master"]))
   refSiteCOMIDs <- as.vector(unique(data.refSites[,"COMID_NHD2"]))
   
-  data.clusterIDs <- data.cluster[,c("COMID",nolu.cluster,lu.cluster)]
+  data.clusterIDs <- data.cluster[,c("COMID", nolu.cluster, lu.cluster)]
   data.Stations.Clusters <- merge(data.Stations.Info, data.clusterIDs, by.x="COMID_NHD2",by.y="COMID")
-  data.Stations.ClustIDs <- data.Stations.Clusters[,c("StationID_Master",nolu.cluster,lu.cluster)]
+  data.Stations.ClustIDs <- data.Stations.Clusters[,c("StationID_Master", nolu.cluster, lu.cluster)]
   data.chem.raw <- merge(data.chem.raw, data.Stations.ClustIDs, by.x="StationID_Master", by.y="StationID_Master")
   
   #Create stressor data cross-tabs
@@ -98,10 +101,10 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=
   
   # all.chems is the list of target site chems across all sites in dataset (all clusters)
   all.chems <- subset(data.chem.raw, ConvertTo %in% chems$ConvertTo)
+  # Erik, 20180615  (same result) all.chems <- data.chem.raw[data.chem.raw$ConvertTo %in% chems$ConvertTo, ]
   all.chems2 <- all.chems[,c("ChemSampleID","ConvertTo","ResultValue")]
-  all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean)
+  all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
   
-
   
   # chem.tab2 is the list of target site chems at sites in the target site cluster
   if (useLU == TRUE) {
@@ -125,10 +128,10 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=
   
   cluster.chem.tab3 <- cluster.chem.tab2[,c("ChemSampleID","ConvertTo","ResultValue")]
   cluster.chem.samps <- unique(cluster.chem.tab2[,c("StationID_Master","ChemSampleID")])
-  cluster.chem.tab4 <- reshape::cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean)
+  cluster.chem.tab4 <- reshape::cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
   cluster.chem.tab5 = merge(cluster.chem.samps, cluster.chem.tab4, by.x = "ChemSampleID", by.y = "ChemSampleID")
   site.chem3 <- site.chem2[,c("ChemSampleID", "ConvertTo", "ResultValue")]
-  site.chem4 <- reshape::cast(site.chem3, ChemSampleID ~ ConvertTo, mean)
+  site.chem4 <- reshape::cast(site.chem3, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
   
   mySubsets <- list(ref.sites = refSiteIDs, ref.reaches = refSiteCOMIDs, cluster.samps = cluster.chem.samps
                     , chem.info = chems.groups.sort, all.chems = all.chems3

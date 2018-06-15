@@ -61,7 +61,7 @@ list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
 
-# data import, example#' 
+# data import, example 
 # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
 # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
 
@@ -69,5 +69,6 @@ site.Clusters <- list.SiteSummary$ClustIDs
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
+# Run Function
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
 }

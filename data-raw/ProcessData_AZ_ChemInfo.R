@@ -16,6 +16,7 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 # Modify Names to match existing code
 df$Analyte <- df$StdParamName
 df$GroupNum <- as.numeric(df$Category)
+df$GroupName <- df$Category
 
 # 1.2. Process Data
 View(df)

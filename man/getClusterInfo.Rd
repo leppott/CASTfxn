@@ -39,7 +39,6 @@ TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
 
-\dontrun{
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
@@ -52,9 +51,9 @@ data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+ 
 # Run getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
@@ -67,6 +66,5 @@ list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, cluster
 ref.reaches <- list.data$ref.reaches
 
 getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
-}
 
 }

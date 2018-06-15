@@ -126,49 +126,84 @@ Show the actual image.
 
 
 ### getChemDataSubsets
-This is operation is the main focus of the `ContDataQC` library.  The raw continuous data files are examined for multiple QC tests and the results saved in a new data file (CSV) and a summary report (DOCX file) are generated.
 
-```{r QCRaw_base, eval=FALSE}
+Get chemical data subsets.
 
-```
+Requires the output of:
 
-In some cases two sensors are used (one for air and one for water) and the timing of the sampling is off between the two.  The library handles this fine.  Example data below.  For this example the report output was changed to "html".
-
-```{r QCRaw_timeoffset, eval=FALSE}
-
-```
-
-### getClusterInfo
-After QC the files are ready for analysis.  The Aggregate operation allows the user to combine (or split) files across time periods.  No report format was specified so the default "docx" format will be generated.
-
-```{r Aggregate, eval=FALSE} 
-
-
-```
-
-### getBMImatches
-
-Get BMI and chem sample matches.
-
-### getBMIStressorResponses
-
-Get BMI stressor responses.
-
-### getAlgmatches
-
-Get Algae and chem sample matches.
-
-### getAlgStressorResonses
-
-Algae stressor regressions.
+* getSiteInfo
 
 ### getStressorList
 
 Box plots of each stressor, grouped by category.
 
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+
+### getClusterInfo
+
+Summary cluster information.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+
+### getBMImatches
+
+Get BMI and chem sample matches.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+
+### getBMIStressorResponses
+
+Get BMI stressor responses.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+* getBMImatches
+
+### getAlgMatches
+
+Get Algae and chem sample matches.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+
+### getAlgStressorResonses
+
+Algae stressor regressions.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+* getAlgMatches
+
 ### getStressorSpecificRegressions
 
 Get stressor specific regressions.
+
+Requires the output of:
+
+* getSiteInfo
+* getChemDataSubsets
+* getStressorList
+* getBMImatches
 
 ### SSDplot
 

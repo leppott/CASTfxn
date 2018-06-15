@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-15 09:21:19
+    #> Last Update: 2018-06-15 11:24:00
 
 # Planned Updates
 
@@ -18,6 +18,15 @@ NEWS
   - Convert site map to ggplot.
 
 # Version History
+
+## Changes in Version 0.1.0.9030 (2017-06-15)
+
+  - Update examples. Issue \#5.
+      - getChemDataSubsets
+  - Update data.R.
+      - data\_Chem
+      - data\_ChemInfo (update data with GroupName)
+      - data\_Cluster\_Hi
 
 ## Changes in Version 0.1.0.9029 (2017-06-15)
 

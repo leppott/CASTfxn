@@ -24,7 +24,6 @@
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
@@ -37,9 +36,9 @@
 #' data.algae.metrics <- data_AlgMetrics
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
-#' #
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#'  
 #' # Run getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
@@ -52,7 +51,6 @@
 #' ref.reaches <- list.data$ref.reaches
 #' 
 #' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
-#' }
 #' 
 #' @export
 getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, useLU = FALSE) {

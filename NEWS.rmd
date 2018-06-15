@@ -34,6 +34,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9030 (2017-06-15)
+
+* Update examples.  Issue #5.
+    + getChemDataSubsets
+* Update data.R.
+    + data_Chem
+    + data_ChemInfo (update data with GroupName)
+    + data_Cluster_Hi
+
 ## Changes in Version 0.1.0.9029 (2017-06-15)
 
 * Add vignette.

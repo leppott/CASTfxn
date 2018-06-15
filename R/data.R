@@ -127,7 +127,7 @@
 #'           \item{COMID}{NHDplus COMID}
 #' }
 #' @source example data
-"data_303d"
+"data_Cluster_Hi"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # NEEDS MORE ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,4 +226,23 @@
 #' 
 #' @source example data
 "data_GIS_AZ_Outline"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title Chem data
+#' 
+#' @description Chem data
+#' 
+#' @source example data
+"data_Chem"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title Chem Parameters
+#' 
+#' @description Chem Parameters
+#' 
+#' @source example data
+"data_ChemInfo"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,7 +3,6 @@
 \docType{data}
 \name{data_303d}
 \alias{data_303d}
-\alias{data_303d}
 \title{303d listing example data}
 \format{A data frame with 2,244 rows and 4 variables:
 \describe{
@@ -14,17 +13,11 @@
 }}
 \source{
 example data
-
-example data
 }
 \usage{
-data_303d
-
 data_303d
 }
 \description{
 A dataset with example 303d listings for use with the getSiteInfo function.
-
-A dataset with example cluster data for use with the getSiteInfo function.
 }
 \keyword{datasets}
