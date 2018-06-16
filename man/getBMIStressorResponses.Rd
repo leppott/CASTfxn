@@ -89,10 +89,9 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
-
 # Run getBMIMatches
 list.MatchBMIData <- getBMIMatches(stressors, list.data)     
   
-# Reun getBMIStressorResponses           
+# Run getBMIStressorResponses           
 getBMIStressorResponses(stressors, list.MatchBMIData)
 }

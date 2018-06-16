@@ -34,8 +34,7 @@
 #' CurrentDir <- getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' \dontrun{ 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -45,17 +44,25 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
-#' # Run getChemDataSubsets
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' 
+#' # data import, example 
+#' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+#' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' #
+#' 
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
+#'
+#' # datasets getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -70,21 +77,28 @@
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
-#' stressors <- list.stressors$stressors
+#'                                  
+#' # datasets getBMIMatches
+#' ## remove "none"
+#' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' 
 #' # Run getBMIMatches
-#' list.MatchBMIData <- getBMIMatches(stressors, list.data)   
-#' 
+#' list.MatchBMIData <- getBMIMatches(stressors, list.data)  
+#'   
+#' # datasets getStressorSpecificRegressions
 #' # data import, example
 #' # data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
-#' 
+#' #
 #' # data, example included with package
 #' data.bmi.taxa.raw <- data_BMIcounts
 #' 
+#' # Run getStressorSpecificRegressions
 #' getStressorSpecificRegressions(list.MatchBMIData)
-#' }
-#' 
+#~~~~~~~~~~~~~~~~
+# QC
+# matchedData <- list.MatchBMIData
+#
 #' @export
 getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc="topright") {
   #
@@ -104,9 +118,9 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc=
   SSTV <- subset(data.chem.info, SSTV != 0, c("Analyte", "SSTV", "SensMin"
                                               , "SensMax", "TolMin", "TolMax"))
   
-  if (nrow(SSTV) != 0) {
+  if (nrow(SSTV) != 0) {##IF.SSTV.START
     stressor.SSTV <- subset(SSTV, Analyte %in% stressors)
-    if (nrow(stressor.SSTV) != 0) {
+    if (nrow(stressor.SSTV) != 0) {##IF.stressor.SSTV.START
       
       for (tv in 1:nrow(stressor.SSTV)) {        # Currently only valid for SpecCond
         SSTV.analyte <- as.vector(SSTV$Analyte)
@@ -318,6 +332,6 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc=
       }  # End For loop over stressors
       SSTVfile <- paste("Results/", TargetSiteID, ".SSTVCorrs.txt", sep="")
       utils::write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,row.names=FALSE,col.names=TRUE)
-    }
-  }    
-}
+    }##IF.stressor.SSTV.END
+  }##IF.SSTV.END    
+}##FUNCTION.END

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-15 16:22:16
+    #> Last Update: 2018-06-16 09:05:08
 
 # Planned Updates
 
@@ -13,11 +13,22 @@ NEWS
 # Future Updates
 
   - CoOccur function.
+    
       - Add scoring to 2nd set of plots.
       - Retain scoring from both sets of plots in a table.
+
   - Convert site map to ggplot.
 
+  - input file data.SSTV.totabund for the function
+    getStressorSpecificRegressions.
+
 # Version History
+
+## Changes in Version 0.1.0.9035 (2017-06-16)
+
+  - Update examples. Issue \#5.
+      - getStressorSpecificRegressions
+      - Need input file data.SSTV.totabund
 
 ## Changes in Version 0.1.0.9034 (2017-06-15)
 

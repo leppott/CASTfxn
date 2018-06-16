@@ -32,7 +32,15 @@ cat(paste0("Last Update: ",Sys.time()))
     
 * Convert site map to ggplot.
 
+* input file data.SSTV.totabund for the function getStressorSpecificRegressions.
+
 # Version History
+
+## Changes in Version 0.1.0.9035 (2017-06-16)
+
+* Update examples.  Issue #5.
+    + getStressorSpecificRegressions
+    + Need input file data.SSTV.totabund
 
 ## Changes in Version 0.1.0.9034 (2017-06-15)
 
