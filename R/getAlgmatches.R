@@ -22,11 +22,10 @@
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -36,17 +35,21 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
-#' # Run getChemDataSubsets
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' #
+#' 
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
+#' 
+#' # datasets getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -61,10 +64,13 @@
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
-#' stressors <- list.stressors$stressors
+#'                                  
+#' # datasets getAlgMatches
+#' ## remove "none"
+#' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #'
+#' # Run getAlgMatches
 #' list.MatchAlgData <- getAlgMatches(stressors, list.data)
-#' }
 #' 
 #' @export
 getAlgMatches <- function(stressors, list.data) {
@@ -95,9 +101,9 @@ getAlgMatches <- function(stressors, list.data) {
   site.malg.stress <- subset(all.malg.stress, ChemSampleID %in% site.chem$ChemSampleID)
   
   # alg response data to use: all.malg.resp, cl.malg.resp, and site.malg.resp
-  all.malg.resp <- subset(data.algae.metrics, StationDateRep %in% malg.use.samps$Algae.Metrics.SampID)
-  cl.malg.resp <- subset(all.malg.resp, StationDateRep %in% cl.chems$ChemSampleID)
-  site.malg.resp <- subset(all.malg.resp, StationDateRep %in% site.chem$ChemSampleID)
+  all.malg.resp <- subset(data.algae.metrics, Algae.Metrics.SampID %in% malg.use.samps$Algae.Metrics.SampID)
+  cl.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% cl.chems$ChemSampleID)
+  site.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% site.chem$ChemSampleID)
   
   myMatchData <- list(all.a.str = all.malg.stress
                       , cl.a.str = cl.malg.stress

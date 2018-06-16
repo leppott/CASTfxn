@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-16 09:05:08
+    #> Last Update: 2018-06-16 09:44:15
 
 # Planned Updates
 
@@ -22,7 +22,18 @@ NEWS
   - input file data.SSTV.totabund for the function
     getStressorSpecificRegressions.
 
+  - Scores to files
+
+  - Hightlight “better” bio sites
+
+  - StreamCat data. Boxplots with jitter points.
+
 # Version History
+
+## Changes in Version 0.1.0.9036 (2017-06-16)
+
+  - Update examples. Issue \#5.
+      - getAlgMatches
 
 ## Changes in Version 0.1.0.9035 (2017-06-16)
 
