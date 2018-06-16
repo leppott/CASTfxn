@@ -23,14 +23,10 @@
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' \dontrun{
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
 #' 
-#' data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)-3])
-#' 
-#' # Run getSiteInfo
+#' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -40,17 +36,21 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 #' 
-#' # Run getChemDataSubsets
+#' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' #
+#' 
+#' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#' #
+#' 
+#' # datasets getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -59,20 +59,29 @@
 #' 
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
-#' probsHigh <- 0.90
+#' probsHigh <- 0.90 
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
-#' stressors <- list.stressors$stressors
-#' 
+#'                                  
+#' # datasets getAlgMatches
+#' ## remove "none"
+#' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#'
 #' # Run getAlgMatches
 #' list.MatchAlgData <- getAlgMatches(stressors, list.data)
 #' 
-#' getAlgStressorResponses(stressors, list.MatchAlgData)
-#' }
+#' # data getAltStressorResponses
+#' data.algae.metrics <- data_AlgMetrics
+#' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
+#' predint <- 0.75
+#' varLegLoc <- "topright"
 #' 
+#' # Run getAlgStressorResponses
+#' getAlgStressorResponses(stressors, list.MatchAlgData)
+#
 #' @export
 getAlgStressorResponses <- function(stressors, list.MatchAlgData
                                     , predint=0.75, varLegLoc="topright") {
@@ -99,37 +108,38 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       log.yn <- TRUE
     }
     varFlag <- 1
-    for (r in 4:length(AlgResp)) {
+    #for (r in 4:length(AlgResp)) {
+    for (r in 1:length(AlgResp)) {
       respName <- AlgResp[r]
       
       #get all data to plot
       all.xvar<- list.MatchAlgData[["all.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
-      all.yvar<- list.MatchAlgData[["all.a.rsp"]][,c("StationCode","StationDateRep", respName)]
-      df.plot1 <- merge(all.xvar[,2:3],all.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      all.yvar<- list.MatchAlgData[["all.a.rsp"]][,c("StationCode","Algae.Metrics.SampID", respName)]
+      df.plot1 <- merge(all.xvar[,2:3],all.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       all.df.plot <- df.plot1[stats::complete.cases(df.plot1),2:3]
       
       #get all ref   data to plot
       all.ref.xvar <- subset(all.xvar, all.xvar$StationID_Master %in% ref.sites)
-      all.ref.yvar <- subset(all.yvar, all.yvar$StationCode %in% ref.sites)
-      df.plot2 <- merge(all.ref.xvar[,2:3],all.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      all.ref.yvar <- subset(all.yvar, all.yvar$Algae.Metrics.SampID %in% ref.sites)
+      df.plot2 <- merge(all.ref.xvar[,2:3],all.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       all.ref.df.plot <- df.plot2[stats::complete.cases(df.plot2),2:3]
       
       #get all cluster data to plot
       cl.xvar<- list.MatchAlgData[["cl.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
-      cl.yvar<- list.MatchAlgData[["cl.a.rsp"]][,c("StationCode","StationDateRep", respName)]
-      df.plot3 <- merge(cl.xvar[,2:3],cl.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      cl.yvar<- list.MatchAlgData[["cl.a.rsp"]][,c("StationCode","Algae.Metrics.SampID", respName)]
+      df.plot3 <- merge(cl.xvar[,2:3],cl.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       cl.df.plot <- df.plot3[stats::complete.cases(df.plot3),2:3]
       
       #get all cluster ref data to plot
-      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StationCode %in% ref.sites)
-      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StationCode %in% ref.sites)
-      df.plot4 <- merge(cl.ref.xvar[,2:3],cl.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      cl.ref.xvar <- subset(cl.xvar, cl.xvar$Algae.Metrics.SampID %in% ref.sites)
+      cl.ref.yvar <- subset(cl.yvar, cl.yvar$Algae.Metrics.SampID %in% ref.sites)
+      df.plot4 <- merge(cl.ref.xvar[,2:3],cl.ref.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       cl.ref.df.plot <- df.plot4[stats::complete.cases(df.plot4),2:3]
       
       #get target site data to plot
       site.xvar<- list.MatchAlgData[["site.a.str"]][,c("Algae.Metrics.SampID", stressName)]
-      site.yvar<- list.MatchAlgData[["site.a.rsp"]][,c("StationDateRep", respName)]
-      df.plot5 <- merge(site.xvar,site.yvar, by.x = "Algae.Metrics.SampID", by.y = "StationDateRep")
+      site.yvar<- list.MatchAlgData[["site.a.rsp"]][,c("Algae.Metrics.SampID", respName)]
+      df.plot5 <- merge(site.xvar,site.yvar, by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
       
       ppi<-300

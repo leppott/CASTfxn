@@ -17,7 +17,6 @@
 #' , and site.b.rsp.
 #' 
 #' @examples
-#' 
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE

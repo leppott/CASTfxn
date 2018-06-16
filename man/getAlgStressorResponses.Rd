@@ -35,14 +35,10 @@ TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
 
-\dontrun{
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
-data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)-3])
-
-# Run getSiteInfo
+# datasets getSiteInfo
 # data, example included with package
 data.Stations.Info <- data_Sites
 data.SampSummary   <- data_SampSummary
@@ -52,17 +48,21 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
+# Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 
-# Run getChemDataSubsets
+# datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
+
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
-#
+
+# Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
-#
+
+# datasets getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -71,18 +71,26 @@ site.chem <- list.data$site.chem
 
 # set cutoff for possible stressor identification
 probsLow <- 0.10
-probsHigh <- 0.90
+probsHigh <- 0.90 
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
-stressors <- list.stressors$stressors
+                                 
+# datasets getAlgMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
 # Run getAlgMatches
 list.MatchAlgData <- getAlgMatches(stressors, list.data)
 
-getAlgStressorResponses(stressors, list.MatchAlgData)
-}
+# data getAltStressorResponses
+data.algae.metrics <- data_AlgMetrics
+AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
+predint <- 0.75
+varLegLoc <- "topright"
 
+# Run getAlgStressorResponses
+getAlgStressorResponses(stressors, list.MatchAlgData)
 }
