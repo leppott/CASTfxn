@@ -23,11 +23,11 @@ Required objects:
 
 * data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.bmi.taxa.raw; BMISampID
+* data.bmi.taxa.raw; BMI.Metrics.SampID
 
 * data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 
-* data.SSTV.totabund; BMISampID, StationID_Master, ChemSampleID, SSTV.analyte
+* data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, ChemSampleID, SSTV.analyte
 , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
 
 * myDir.Data
@@ -99,10 +99,11 @@ list.MatchBMIData <- getBMIMatches(stressors, list.data)
 # datasets getStressorSpecificRegressions
 # data import, example
 # data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
-data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
+# data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #
 # data, example included with package
 data.bmi.taxa.raw <- data_BMIcounts
+data.SSTV.totabund <- data_BMIRelAbund
 
 # Run getStressorSpecificRegressions
 getStressorSpecificRegressions(list.MatchBMIData)

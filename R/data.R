@@ -236,7 +236,6 @@
 #' @source example data
 "data_Chem"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 # NEEDS MORE ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @title Chem Parameters
@@ -245,4 +244,26 @@
 #' 
 #' @source example data
 "data_ChemInfo"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title BMI Relative Abundance
+#' 
+#' @description Benthic Macroinvertebrate, Relative Abundances
+#' 
+#' #' @format A data frame with 55,319 rows and 11 variables
+#' \describe{
+#'           \item{StationID}{Station ID}
+#'           \item{BenSampID}{BenSampID}
+#'           \item{RepNum}{RepNum}
+#'           \item{CollDate}{Sample collection date; YYYY-MM-DD}
+#'           \item{SampleID}{SampleID}
+#'           \item{FinalID}{FinalID}
+#'           \item{RelAbundInds}{Relative abundance}
+#'           \item{StationID_Master}{StationID_Master}
+#'           \item{Station_Date}{Station_Date}
+#'           \item{BMISampID}{BMISampID}
+#'           \item{BMI.Metrics.SampID}{BMI.Metrics.SampID}
+#' }
+#' 
+#' @source example data
+"data_BMIRelAbund"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

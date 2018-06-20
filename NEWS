@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-16 11:51:47
+    #> Last Update: 2018-06-20 14:47:19
 
 # Planned Updates
 
@@ -29,6 +29,17 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9038 (2017-06-20)
+
+  - Update examples. Issue \#5.
+      - getStressorSpecificRegressions
+      - Use BMIRelAbund.rda for data.SSTV.totabund
+      - Replace BenSampID with BMI.Metrics.SampID
+      - Not finished. Not working.
+  - Add data file; BMIRelAbund.rda
+      - Include in data-raw and Data.R
+      - Data for data.SSTV.totabund in getStressorSpecificRegressions.
 
 ## Changes in Version 0.1.0.9037 (2017-06-16)
 

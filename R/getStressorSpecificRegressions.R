@@ -8,11 +8,11 @@
 #' 
 #' * data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
-#' * data.bmi.taxa.raw; BMISampID
+#' * data.bmi.taxa.raw; BMI.Metrics.SampID
 #' 
 #' * data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 #' 
-#' * data.SSTV.totabund; BMISampID, StationID_Master, ChemSampleID, SSTV.analyte
+#' * data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, ChemSampleID, SSTV.analyte
 #' , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
 #' 
 #' * myDir.Data
@@ -88,10 +88,11 @@
 #' # datasets getStressorSpecificRegressions
 #' # data import, example
 #' # data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
-#' data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
+#' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' #
 #' # data, example included with package
 #' data.bmi.taxa.raw <- data_BMIcounts
+#' data.SSTV.totabund <- data_BMIRelAbund
 #' 
 #' # Run getStressorSpecificRegressions
 #' getStressorSpecificRegressions(list.MatchBMIData)
@@ -125,36 +126,54 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc=
       for (tv in 1:nrow(stressor.SSTV)) {        # Currently only valid for SpecCond
         SSTV.analyte <- as.vector(SSTV$Analyte)
         SSTV.name <- as.vector(SSTV$SSTV)
-        if (SSTV.analyte %in% c("DO_uf_mg_L", "pH", "Temp_degC")) {
+        # 20180620, more than one (add sum)
+        if (sum(SSTV.analyte %in% c("DO_uf_mg_L", "pH", "Temp_degC"))>0) {
           log.yn <- FALSE
         } else {
           log.yn <- TRUE
         }
         # get all the matched sample data for this stressor
+        # 20180620, match names
+        SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in% names(matchedData$all.b.str)]
         all.match.b <- matchedData$all.b.str[,c("StationID_Master"
-                                                , "ChemSampleID", "BMI.Metrics.SampID", SSTV.analyte)]
+                                                , "ChemSampleID", "BMI.Metrics.SampID", SSTV.analyte.match.all.b.str)]
         cl.match.b <- matchedData$cl.b.str[,c("StationID_Master"
                                               , "ChemSampleID", "BMI.Metrics.SampID")]
+        # 20180620, added
+        SSTV.analyte.match.all.SSTV.str <- SSTV.analyte[SSTV.analyte %in% names(matchedData$all.SSTV.str)]
         all.SSTV.str <- all.match.b[c("StationID_Master", "ChemSampleID"
-                                      , "BMI.Metrics.SampID", SSTV.analyte)]
+                                      , "BMI.Metrics.SampID", SSTV.analyte.match.all.SSTV.str)]
         # get all the matched taxonomic data
-        SSTV.bmi.samps <- merge(data.SampSummary[,c("BMI.Metrics.SampID", "BMISampID")]
-                                , all.SSTV.str, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
-        SSTV.bmi.taxa <- merge(SSTV.bmi.samps["BMISampID"], data.bmi.taxa.raw
-                               , by.x="BMISampID", by.y = "BMISampleID")
+        # 20180620, merge(data.SampSummary[,c("BMI.Metrics.SampID", "BMISampID")]
+        temp1 <- as.data.frame(data.SampSummary[,"BMI.Metrics.SampID"])
+        names(temp1) <- "BMI.Metrics.SampID"
+        SSTV.bmi.samps <- merge(temp1, all.SSTV.str, by = "BMI.Metrics.SampID")
         
-        totabund.bySamp <- tapply(SSTV.bmi.taxa$SumOfResult_Value
-                                  , SSTV.bmi.taxa$BMISampID, sum)
+        temp2 <- as.data.frame(SSTV.bmi.samps[,"BMI.Metrics.SampID"])
+        names(temp2) <- "BMI.Metrics.SampID"
+        SSTV.bmi.taxa <- merge(temp2, data.bmi.taxa.raw, by="BMI.Metrics.SampID")
+        
+        totabund.bySamp <- tapply(SSTV.bmi.taxa$Individuals
+                                  , SSTV.bmi.taxa$BMI.Metrics.SampID, sum)
         totabund.bySamp <- cbind(row.names(totabund.bySamp), totabund.bySamp)
         row.names(totabund.bySamp) <- NULL
-        colnames(totabund.bySamp)[1] <- "BMISampID"
+        colnames(totabund.bySamp)[1] <- "BMI.Metrics.SampID"
         colnames(totabund.bySamp)[2] <- "SampleAbundance"
         totabund.bySamp[is.na(totabund.bySamp)] <- 0  # if sum = NA, then sum = zero  (OKAY)
-        totabund.bySampTV <- with(SSTV.bmi.taxa, tapply(SSTV.bmi.taxa$SumOfResult_Value
-                                                        , list(SSTV.bmi.taxa$BMISampID, SSTV.bmi.taxa$SpecCondTolVal), sum))
+        
+        
+        
+        
+        # SpecCondTolVal doesn't exist
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        totabund.bySampTV <- with(SSTV.bmi.taxa, tapply(SSTV.bmi.taxa$Individuals
+                                                        , list(SSTV.bmi.taxa$BMI.Metrics.SampID
+                                                               , SSTV.bmi.taxa$SpecCondTolVal), sum))
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
         totabund.bySampTV <- cbind(row.names(totabund.bySampTV), totabund.bySampTV)
         totabund.bySampTV[is.na(totabund.bySampTV)] <- 0  # if sum = NA, then sum = zero
-        colnames(totabund.bySampTV)[1] <- "BMISampID"
+        colnames(totabund.bySampTV)[1] <- "BMI.Metrics.SampID"
         colnames(totabund.bySampTV)[2:7] <- c("TV1", "TV2", "TV3", "TV4"
                                               , "TV5", "TV6")
         totabund.cat.bySamp <- cbind(totabund.bySampTV, (as.numeric(totabund.bySampTV[,"TV1"])
@@ -162,7 +181,7 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc=
                                                                                                     + as.numeric(totabund.bySampTV[,"TV6"])))
         colnames(totabund.cat.bySamp)[8:9] <- c("SensTaxa", "TolTaxa")
         totabund.bySample <- merge(totabund.cat.bySamp, totabund.bySamp
-                                   , by.x = "BMISampID", by.y = "BMISampID")
+                                   , by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
         totabund.bySample <- subset(totabund.bySample, totabund.bySample[,"SampleAbundance"] != "0")
         utils::write.table(totabund.bySample, file="data/data.totabund.bySample.tab"
                     , quote = FALSE, sep="\t", row.names = FALSE, col.names = TRUE)
@@ -171,7 +190,7 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75, varLegLoc=
                                    , data.SSTV.totabund[,"SensTaxa"]/data.SSTV.totabund[,"SampleAbundance"]
                                    , data.SSTV.totabund[,"TolTaxa"]/data.SSTV.totabund[,"SampleAbundance"])
         colnames(all.SSTV.totabund)[11:12] <- c("SensRelAbund", "TolRelAbund")
-        all.SSTV.abund <- merge(SSTV.bmi.samps, all.SSTV.totabund, by.x = "BMISampID", by.y = "BMISampID")
+        all.SSTV.abund <- merge(SSTV.bmi.samps, all.SSTV.totabund, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
         all.SSTV.abund <- all.SSTV.abund[, c("StationID_Master"
                                              , "ChemSampleID", SSTV.analyte
                                              , "SensRelAbund", "TolRelAbund")]
