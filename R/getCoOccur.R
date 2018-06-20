@@ -78,13 +78,13 @@
 #' #
 #' ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
-#' CoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+#' getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
 #'         , dir.plots=getwd()
 #'         )
 #' 
 #' @export
-CoOccur <- function(df.data, ID.plot=NULL
+getCoOccur <- function(df.data, ID.plot=NULL
                     , col.ID, col.Group, col.Bio, col.Stressors
                     , Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)
                     , Bio.Nar.Lab=c("very likely altered", "likely altered"

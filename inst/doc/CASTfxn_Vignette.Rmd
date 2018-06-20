@@ -64,8 +64,8 @@ The operations of the `CASTfxn` package are listed below but will be explained i
 * getAlgStressorResonses
 * getStressorList
 * getStressorSpecificRegressions
-* SSDplot
-* CoOccur
+* getSSDplot
+* getCoOccur
 
 
 The library assumes that there are the following folders in the working directory:
@@ -205,10 +205,10 @@ Requires the output of:
 * getStressorList
 * getBMImatches
 
-### SSDplot
+### getSSDplot
 
 Generates plots of the proportion of species affected at different exposure levels in laboratory toxicity tests.
 
-### CoOccur
+### getCoOccur
 
 Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data

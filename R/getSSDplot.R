@@ -30,7 +30,7 @@
 #' myTaxa <- "Taxa"
 #' myExp  <- "Exposure_mgperL"
 #' # Run function
-#' SSDplot(myDF, myRT, myTaxa, myExp)
+#' getSSDplot(myDF, myRT, myTaxa, myExp)
 #' # can save output to a file
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,7 +44,7 @@
 #' # Add missing column
 #' myDF[,myRT] <- "LC50"
 #' # Run function
-#' SSDplot(myDF, myRT, myTaxa, myExp)
+#' getSSDplot(myDF, myRT, myTaxa, myExp)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' 
@@ -56,7 +56,7 @@
 #' myTaxa <- "Taxa"
 #' myExp  <- "Exposure"
 #' # Run function
-#' SSDplot(myDF, myRT, myTaxa, myExp)
+#' getSSDplot(myDF, myRT, myTaxa, myExp)
 #'  
 # QC
 # library(CASTfxn)
@@ -66,7 +66,7 @@
 # Exposure <- "Exposure"
 #
 #' @export
-SSDplot <- function(Data, ResponseType, Taxa, Exposure) {
+getSSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   #
   
   # Define col names for dplyr
