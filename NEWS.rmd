@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9041 (2017-06-21)
+
+* getSSDplot examples.
+    + Assign return plots to variables.
+    + Additional example to demonstrate adding points to the plot.
+
 ## Changes in Version 0.1.0.9040 (2017-06-21)
 
 * Scoring output.

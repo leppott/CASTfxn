@@ -32,7 +32,8 @@ myRT   <- "ResponseType"
 myTaxa <- "Taxa"
 myExp  <- "Exposure_mgperL"
 # Run function
-getSSDplot(myDF, myRT, myTaxa, myExp)
+p1 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+p1
 # can save output to a file
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +46,8 @@ myExp  <- "Exposure"
 # Add missing column
 myDF[,myRT] <- "LC50"
 # Run function
-getSSDplot(myDF, myRT, myTaxa, myExp)
+p2 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+p2
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -57,6 +59,23 @@ myRT   <- "ResponseType"
 myTaxa <- "Taxa"
 myExp  <- "Exposure"
 # Run function
-getSSDplot(myDF, myRT, myTaxa, myExp)
+p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+p3
  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+# Example 2_mod 
+# (same plot as #2 above)
+library(ggplot2)
+# create points
+analyte <- c(0.05, 0.5, 5)
+abund <- c(0, 1/3, 2/3)
+taxon <- c("Baetis", "Cricotopus", "Simulium")
+df.site <- data.frame(analyte, abund, taxon)
+# add points to plot and add title (centered)
+p2 + 
+  geom_point(data=df.site, aes(x=analyte, y=abund), colour="blue", size = 2) + 
+  geom_text(data=df.site, aes(x=analyte, y=abund, label=taxon), hjust="left", nudge_x=0.05, colour="blue") + 
+  labs(title="Cluster SSD with site specific taxa") + theme(plot.title=element_text(hjust=0.5))
+  
 }
