@@ -110,10 +110,10 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
     } else {
       log.yn <- TRUE
     }
-    for (r in 1: length(BMIresp)) {
-      respName <- BMIresp[r]
+    for (q in 1: length(BMIresp)) {
+      respName <- BMIresp[q]
       # QC
-      print (r)
+      print (q)
       #flush.console()
       #get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
@@ -153,11 +153,11 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
            height = 3 * ppi, quality=100, pointsize=8, res = ppi)
       graphics::par(cex.main=1.0,cex.lab=0.9,font.main=2, font.lab=2)
       if (log.yn == TRUE) {
-        all.df.plot <- cbind(log10(all.df.plot[,1]),all.df.plot[,2])
-        all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]),all.ref.df.plot[,2])
-        cl.df.plot <- cbind(log10(cl.df.plot[,1]),cl.df.plot[,2])
-        cl.ref.df.plot <- cbind(log10(cl.ref.df.plot[,1]),cl.ref.df.plot[,2])
-        site.df.plot <- cbind(log10(site.df.plot[,1]),site.df.plot[,2])
+        all.df.plot     <- cbind(log10(all.df.plot[,1]), all.df.plot[,2])
+        all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]), all.ref.df.plot[,2])
+        cl.df.plot      <- cbind(log10(cl.df.plot[,1]), cl.df.plot[,2])
+        cl.ref.df.plot  <- cbind(log10(cl.ref.df.plot[,1]), cl.ref.df.plot[,2])
+        site.df.plot    <- cbind(log10(site.df.plot[,1]), site.df.plot[,2])
       }
       
       varMain <- paste("Linear regression of", stressName, "on", respName
@@ -237,6 +237,11 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
       r2 = formatC(r^2,format="f",digits=3)
       # 
+      # 20180621, scoring
+      slope.dir <- sign(slope) #1 = positive, -1 = negative
+      
+      
+      #
       c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
       df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
                                  , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))

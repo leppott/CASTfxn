@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-21 14:50:30
+    #> Last Update: 2018-06-21 15:28:45
 
 # Planned Updates
 
@@ -29,6 +29,13 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9043 (2017-06-21)
+
+  - getBMIStressorResponses
+      - Review for scoring.
+      - Change loop variable from r to q to avoid conflict with r and
+        r2.
 
 ## Changes in Version 0.1.0.9042 (2017-06-21)
 
