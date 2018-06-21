@@ -22,13 +22,15 @@ Default is first entry in df.data[, col.ID]}
 
 \item{col.Bio}{df.data column with biological numeric value.}
 
-\item{col.Stressors}{df.data column(s) with stressor variable(s); can be single or multiple.}
+\item{col.Stressors}{df.data column(s) with stressor variable(s); can be 
+single or multiple.}
 
 \item{Bio.Nar.Brk}{Biological assessment narrative, cut function breaks. 
 Default = c(-2, 0.62, 0.799, 0.919, 2)}
 
 \item{Bio.Nar.Lab}{Biological assessment narrative, cut function labels. 
-Default = c("very likely altered", "likely altered", "possibly altered ", "likely intact")}
+Default = c("very likely altered", "likely altered", "possibly altered ", 
+"likely intact")}
 
 \item{Bio.Deg.Brk}{Biological assessment degraded status, cut function breaks. 
 Default = c(-2, 0.799, 2)}
@@ -39,43 +41,66 @@ Default = c("Degraded", "Good")}
 \item{dir.plots}{Directory to save plots.  Default = working directory}
 }
 \value{
-Saves PDF of plots and a scores files (tab separated) to user defined directory.
+Saves PDF of plots and a scores files (tab separated) to user defined
+ directory.
 }
 \description{
-Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data
+Generates a PDF with 2 plots per site for co-occurrence of 
+measured chem and bio data
 }
 \details{
 Derive evidence fo spatial/temporal co-occurrence.
 
-Are higher levels of the stressor observed where and when the biological effect occurs?
+Are higher levels of the stressor observed where and when the biological 
+effect occurs?
+
 Box plots are used to show the distribution of the stressor levels at compartor 
 sites with better biological condition.  
 
 Samples are scored:
 
-1. Supports the case for candidate cause.  Stressor levels at the test sites are above the 75th percentile of comparator sites having higher biological quality.
+1. Supports the case for candidate cause.  Stressor levels at the test sites 
+are above the 75th percentile of comparator sites having higher biological 
+quality.
 
-0. Indeterminate.  Stressor levels at the test site are below the 50th percentile of comparator sites having higher biological quality.
+0. Indeterminate.  Stressor levels at the test site are below the 50th 
+percentile of comparator sites having higher biological quality.
 
--1. Weakens the case for the candidate cause.  Stressor levels at the test sites are between the 50th and 75th percentile of comparator sites having higher biological quality.
+-1. Weakens the case for the candidate cause.  Stressor levels at the test 
+sites are between the 50th and 75th percentile of comparator sites having 
+higher biological quality.
 
-Derive Evidence for Stressor-Response Relationships from Field Observational Studies.
+Derive Evidence for Stressor-Response Relationships from Field Observational 
+Studies.
 
-Stressor-response from field observational studies:  Is the level of the stressor sufficient to explain the level of biological effect observed at the site?  
+Stressor-response from field observational studies:  Is the level of the 
+stressor sufficient to explain the level of biological effect observed at the
+ site?  
 
-Using all comparator sites, fit logistical regression curve of the probability of poor condition (i.e., poor California index score) as a function of stressor level. 
-Compare stressor levels from test site to levels corresponding to median (50%) and low (20%) probabilities of observing poor condition.
+Using all comparator sites, fit logistical regression curve of the probability 
+of poor condition (i.e., poor California index score) as a function of 
+stressor level.  Compare stressor levels from test site to levels 
+corresponding to median (50%) and low (20%) probabilities of observing poor 
+condition.
 
-1. Supports the case for the candidate cause.  Stressor levels at the test site are above the lower confidence limit  (LCL) corresponding to 50% probability of observing poor condition 
+1. Supports the case for the candidate cause.  Stressor levels at the test 
+site are above the lower confidence limit  (LCL) corresponding to 50% 
+probability of observing poor condition 
 
-0. Indeterminate.  Stressor levels at the test site are between the LCL corresponding to 50% probability of observing poor condition and the UCL corresponding to 20% probability of observing poor condition. 
+0. Indeterminate.  Stressor levels at the test site are between the LCL 
+corresponding to 50% probability of observing poor condition and the UCL 
+corresponding to 20% probability of observing poor condition. 
 
--1. Weakens the case for the candidate cause.  Stressor levels at the test site are below the upper confidence limit (UCL) corresponding to 20% probability of observing poor condition. 
+-1. Weakens the case for the candidate cause.  Stressor levels at the test 
+site are below the upper confidence limit (UCL) corresponding to 20% 
+probability of observing poor condition. 
 
-Cut function is used to assign narrative categories and degraded status based on provided biological score.
+Cut function is used to assign narrative categories and degraded status based 
+on provided biological score.
 Ensures criteria are applied the same across all sites.
 
-Only a single biological measurement is used.  But multiple stressors can be used.
+Only a single biological measurement is used.  But multiple stressors can be
+ used.
 
 Uses the libraries dplyr, replyr, wrapr, ggplot2, and gridExtra.
 }

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-21 13:33:20
+    #> Last Update: 2018-06-21 14:50:30
 
 # Planned Updates
 
@@ -29,6 +29,11 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9042 (2017-06-21)
+
+  - getCoOccur
+      - Fix help file with too wide text.
 
 ## Changes in Version 0.1.0.9041 (2017-06-21)
 

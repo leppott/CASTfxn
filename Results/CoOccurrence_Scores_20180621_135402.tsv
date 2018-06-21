@@ -1,0 +1,13 @@
+"StationID_Master"	"Group"	"CSCI"	"Bio.Nar"	"Bio.Deg"	"Param_Name"	"Param_Value"	"n"	"q25"	"q50"	"q75"	"Sc_Comp"
+"SMC08335"	4	0.88	"possibly altered "	"Good"	"SpecCond_uf_µS_cm"	868	61	1238	1857	2400	-1
+"SMC08335"	4	0.88	"possibly altered "	"Good"	"TN_uf_mg_L"	0.35	35	0.45	1.15	2.835	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"DO_uf_mg_L"	8.95	40	7.5	9.27	10.48	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	594	78	1095	1765.5	2731	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	1471	78	1095	1765.5	2731	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2244	78	1095	1765.5	2731	0
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2678	78	1095	1765.5	2731	0
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2879	78	1095	1765.5	2731	1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"TN_uf_mg_L"	0.85	43	0.835	2.22	6.3	-1
+"911TCAM01"	2	1.06	"likely intact"	"Good"	"DO_uf_mg_L"	5.78	25	5.7	7.75	9.03	-1
+"911TCAM01"	2	1.06	"likely intact"	"Good"	"SpecCond_uf_µS_cm"	1370	51	905	1431	2089	-1
+"911TCAM01"	2	1.06	"likely intact"	"Good"	"TN_uf_mg_L"	0.61	33	0.45	1.01	3.2	-1

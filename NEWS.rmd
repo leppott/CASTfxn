@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+
+## Changes in Version 0.1.0.9042 (2017-06-21)
+
+* getCoOccur
+    + Fix help file with too wide text.
+
 ## Changes in Version 0.1.0.9041 (2017-06-21)
 
 * getSSDplot examples.
