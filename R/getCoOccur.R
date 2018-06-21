@@ -10,7 +10,7 @@
 #' @details Derive evidence fo spatial/temporal co-occurrence.
 #' 
 #' Are higher levels of the stressor observed where and when the biological effect occurs?
-#' Box plots are used to show the distribution of the stressor levels at compartors 
+#' Box plots are used to show the distribution of the stressor levels at compartor 
 #' sites with better biological condition.  
 #' 
 #' Samples are scored:
@@ -58,7 +58,7 @@
 #' Default = c("Degraded", "Good")
 #' @param dir.plots Directory to save plots.  Default = working directory
 #'
-#' @return Saves PDF of plots to user defined directory.
+#' @return Saves PDF of plots and a scores files (tab separated) to user defined directory.
 #' 
 #' @examples
 #' #Load Data
@@ -69,20 +69,28 @@
 #' col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
 #' col.ID        <- c("StationID_Master")
 #' #
-#' Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)
-#' Bio.Nar.Lab=c("very likely altered", "likely altered"
+#' Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
+#' Bio.Nar.Lab <- c("very likely altered", "likely altered"
 #'                 , "possibly altered ", "likely intact")
-#' Bio.Deg.Brk=c(-2, 0.799, 2)
-#' Bio.Deg.Lab=c("Degraded", "Good")
-#' dir.plots=getwd()
+#' Bio.Deg.Brk <- c(-2, 0.799, 2)
+#' Bio.Deg.Lab <- c("Degraded", "Good")
+#' dir.plots <- file.path(getwd(), "Results")
 #' #
 #' ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
 #' getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-#'         , dir.plots=getwd()
+#'         , dir.plots
 #'         )
-#' 
+#~~~~~~~~~~~~~
+# QC
+# check for and create (if necessary) "Results" subdirectory of working directory
+# wd <- getwd()
+# dir.sub <- "Results"
+# ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
+#        , dir.create(file.path(wd, dir.sub))
+#        , FALSE)
+#~~~~~~~~~~~~~
 #' @export
 getCoOccur <- function(df.data, ID.plot=NULL
                     , col.ID, col.Group, col.Bio, col.Stressors
@@ -121,6 +129,41 @@ getCoOccur <- function(df.data, ID.plot=NULL
   }##IF.isnull.ID.END
   
   
+  # Create Score Output File
+  df.scores <- df.data[, col.KEEP]
+  # # Add necessary Fields
+  # for (jj in col.Stressors){##FOR.jj.START
+  #   df.scores[,paste0("n_",jj)]       <- as.character(NA)
+  #   df.scores[,paste0("q25_",jj)]     <- as.character(NA)
+  #   df.scores[,paste0("q50_",jj)]     <- as.character(NA)
+  #   df.scores[,paste0("q75_",jj)]     <- as.character(NA)
+  #   df.scores[,paste0("Sc_Comp_",jj)] <- as.character(NA)
+  # }##FOR.jj.END
+  # could use apply
+  
+  # Add columns
+  df.scores[, "Param_Name"] <- as.character(NA)
+  df.scores[, "Param_Value"] <- as.numeric(NA)
+  df.scores[, "n"]       <- as.character(NA)
+  df.scores[, "q25"]     <- as.character(NA)
+  df.scores[, "q50"]     <- as.character(NA)
+  df.scores[, "q75"]     <- as.character(NA)
+  df.scores[, "Sc_Comp"] <- as.character(NA)
+  # Remove columns
+  col.remove <- names(df.scores) %in% col.Stressors
+  df.scores <- df.scores[, !col.remove]
+  
+  
+  #
+  # remove all rows
+  df.scores <- df.scores[0, ]
+  #
+  fn.scores <- file.path(dir.plots, paste0("CoOccurrence_Scores_", myDateTime,".tsv"))
+  write.table(df.scores, file=fn.scores
+              , col.names = TRUE, row.names=FALSE, sep="\t")
+  
+  
+  
   #par
 #  par.orig <- par(no.readonly=TRUE)
   # reset with "par(par.orig)"
@@ -140,7 +183,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
   
   # Write to PDF
   fn.pdf <- paste0("CoOccurrence_", myDateTime,".pdf")
-  grDevices::pdf(file=fn.pdf, width=6, height=8)
+  grDevices::pdf(file=file.path(dir.plots, fn.pdf), width=6, height=8)
   
   # Analysis for each "test" sample
   for (i in ID.plot){##FOR.i.START
@@ -167,6 +210,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
           df.comp.bio.better <- df.comp %>% dplyr::filter(COL.BIO>i.Bio)
         })
     
+
   
     # j <- col.Stressors[2]
   
@@ -200,6 +244,28 @@ getCoOccur <- function(df.data, ID.plot=NULL
        # order values by j then get multiple comp scores
        df.i.n <- df.i[!is.na(df.i[,j]), ]
        df.i.n <- df.i.n[order(df.i.n[,j]), ]
+       
+       
+       if (nrow(df.i.n)!=0){##IF.nrow.START
+         # Save to Score/Results file
+         df.i.n[, "Param_Name"]  <- j
+         df.i.n[, "Param_Value"] <- df.i.n[, j]
+         df.i.n[, "n"]           <- df.i.n[, paste0("n_",j)]
+         df.i.n[, "q25"]         <- df.i.n[, paste0("q25_",j)]
+         df.i.n[, "q50"]         <- df.i.n[, paste0("q50_",j)]
+         df.i.n[, "q75"]         <- df.i.n[, paste0("q75_",j)]
+         df.i.n[, "Sc_Comp"]     <- df.i.n[, paste0("Sc_Comp_",j)]
+         # df.i.n append to output (only keep matching columns)
+         df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))], all.y=TRUE)
+         # Save
+         write.table(df.scores.i.n, file=fn.scores
+                     , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
+         # Remove
+         rm(df.scores.i.n)
+       } else {
+         # no data
+       }##IF.nrow.END
+       
        
        
        # # QC Check

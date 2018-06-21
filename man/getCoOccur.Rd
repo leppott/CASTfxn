@@ -39,7 +39,7 @@ Default = c("Degraded", "Good")}
 \item{dir.plots}{Directory to save plots.  Default = working directory}
 }
 \value{
-Saves PDF of plots to user defined directory.
+Saves PDF of plots and a scores files (tab separated) to user defined directory.
 }
 \description{
 Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data
@@ -48,7 +48,7 @@ Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio
 Derive evidence fo spatial/temporal co-occurrence.
 
 Are higher levels of the stressor observed where and when the biological effect occurs?
-Box plots are used to show the distribution of the stressor levels at compartors 
+Box plots are used to show the distribution of the stressor levels at compartor 
 sites with better biological condition.  
 
 Samples are scored:
@@ -88,18 +88,17 @@ col.Bio       <- "CSCI"
 col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
 col.ID        <- c("StationID_Master")
 #
-Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)
-Bio.Nar.Lab=c("very likely altered", "likely altered"
+Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
+Bio.Nar.Lab <- c("very likely altered", "likely altered"
                 , "possibly altered ", "likely intact")
-Bio.Deg.Brk=c(-2, 0.799, 2)
-Bio.Deg.Lab=c("Degraded", "Good")
-dir.plots=getwd()
+Bio.Deg.Brk <- c(-2, 0.799, 2)
+Bio.Deg.Lab <- c("Degraded", "Good")
+dir.plots <- file.path(getwd(), "Results")
 #
 ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
 getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , dir.plots=getwd()
+        , dir.plots
         )
-
 }
