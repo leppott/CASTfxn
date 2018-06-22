@@ -13,6 +13,7 @@ wd <- getwd() # assume is package directory
 myFile <- "data_CoOccur.tsv"
 df <- utils::read.delim(file.path(wd, "data-raw", myFile))
 
+# no elevation as this example data is from San Diego not AZ
 
 # 1.2. Process Data
 View(df)

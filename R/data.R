@@ -131,6 +131,19 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # NEEDS MORE ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @title Low  elevation cluster example data
+#' 
+#' @description A dataset with example cluster data for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 10,593 rows and 98 variables:
+#' \describe{
+#'           \item{COMID}{NHDplus COMID}
+#' }
+#' @source example data
+"data_Cluster_Lo"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# NEEDS MORE ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @title Benthic macroinvertebrate metrics example data
 #' 
 #' @description A dataset with example benthic macroinvertebrate (BMI) metric

@@ -20,6 +20,14 @@ df$StationID_Master <- df$StationID
 df$BMISampID        <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
 df$BMI.Metrics.SampID <- df$BMISampID
 
+# Add elevation category (20180622)
+## use Sites
+ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
+dim(df)
+df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
+dim(df)
+table(df$ElevCategory, useNA="ifany")
+
 # 1.2. Process Data
 View(df)
 # QC check

@@ -19,6 +19,21 @@ df <- data.frame(COMID=sort(unique(df.sites$COMID)), ReachModStatus=NA, ModReaso
 df$ReachModStatus <- as.character(NA)
 df$ModReason <- as.character(NA)
 
+
+# Add elevation category (20180622)
+## use Hi/Lo cluster
+dim(df)
+ec.hi.COMID <- data_Cluster_Hi$COMID
+ec.lo.COMID <- data_Cluster_Lo$COMID
+boo.hi <- df$COMID %in% ec.hi.COMID
+boo.lo <- df$COMID %in% ec.lo.COMID
+df$ElevCategory <- as.character(NA)
+df[boo.hi, "ElevCategory"] <- "HI"
+df[boo.lo, "ElevCategory"] <- "LO"
+dim(df)
+table(df$ElevCategory, useNA="ifany")
+
+
 # 1.2. Process Data
 View(df)
 # QC check

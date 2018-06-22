@@ -25,6 +25,16 @@ df$COMID_NHD2 <- df$COMID
 #
 df$CARefSite_2017[df$CARefSite_2017=="reference"] <- 1
 
+# Add elevation category (20180622)
+## use Hi/Lo cluster
+ec.hi.COMID <- data_Cluster_Hi$COMID
+ec.lo.COMID <- data_Cluster_Lo$COMID
+boo.hi <- df$COMID %in% ec.hi.COMID
+boo.lo <- df$COMID %in% ec.lo.COMID
+df$ElevCategory <- as.character(NA)
+df[boo.hi, "ElevCategory"] <- "HI"
+df[boo.lo, "ElevCategory"] <- "LO"
+
 
 # 1.2. Process Data
 View(df)

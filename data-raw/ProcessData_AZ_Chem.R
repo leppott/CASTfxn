@@ -22,6 +22,16 @@ df$StationID_Master <- df$SITE_ID
 df$ResultValue <- df$FinalResultValue
 df$ConvertTo <- df$Analyte
 
+
+# Add elevation category (20180622)
+## use Sites
+ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
+dim(df)
+df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
+dim(df)
+table(df$ElevCategory, useNA="ifany")
+
+
 # 1.2. Process Data
 View(df)
 # QC check

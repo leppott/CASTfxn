@@ -22,6 +22,19 @@ df$POLLUTANT <- as.character(NA)
 df$FINAL.LISTING.DECISION <- as.character(NA)
 
 
+# Add elevation category (20180622)
+## use Hi/Lo cluster
+dim(df)
+ec.hi.COMID <- data_Cluster_Hi$COMID
+ec.lo.COMID <- data_Cluster_Lo$COMID
+boo.hi <- df$ComID %in% ec.hi.COMID
+boo.lo <- df$ComID %in% ec.lo.COMID
+df$ElevCategory <- as.character(NA)
+df[boo.hi, "ElevCategory"] <- "HI"
+df[boo.lo, "ElevCategory"] <- "LO"
+dim(df)
+table(df$ElevCategory, useNA="ifany")
+
 # 1.2. Process Data
 View(df)
 # QC check

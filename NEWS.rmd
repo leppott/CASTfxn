@@ -42,12 +42,37 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9044 (2017-06-22)
+
+* Add dataset "data_Cluster_Lo".
+    + Add to data-raw and to data.R
+* Add "ElevCategory" (HI or LO) to each data file in data-raw.
+    + data_303d
+    + data_AlgMetrics
+    + data_BMIMetrics
+    + data_BMIRelAbund
+    + data_BMIcounts
+    + data_Chem
+    + data_Cluster_Hi
+    + data_Cluster_Lo
+    + data_ReachMod
+    + data_SampSummary
+    + data_Sites
+* Files not modified:
+    + data_ChemInfo
+    + data_CoOccur
+    + data_GIS_Flow_HI
+    + data_GIS_Flow_LO
+    + data_GIS_AZ_Outline
+    + data_SSD
+    + data_SSD_generator
+    + data_SSD_permethrin
+
 ## Changes in Version 0.1.0.9043 (2017-06-21)
 
 * getBMIStressorResponses
     + Review for scoring.
     + Change loop variable from r to q to avoid conflict with r and r2.
-    
 
 ## Changes in Version 0.1.0.9042 (2017-06-21)
 

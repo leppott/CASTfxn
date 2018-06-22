@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-21 15:28:45
+    #> Last Update: 2018-06-22 14:56:22
 
 # Planned Updates
 
@@ -29,6 +29,32 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9044 (2017-06-22)
+
+  - Add dataset “data\_Cluster\_Lo”.
+      - Add to data-raw and to data.R
+  - Add “ElevCategory” (HI or LO) to each data file in data-raw.
+      - data\_303d
+      - data\_AlgMetrics
+      - data\_BMIMetrics
+      - data\_BMIRelAbund
+      - data\_BMIcounts
+      - data\_Chem
+      - data\_Cluster\_Hi
+      - data\_Cluster\_Lo
+      - data\_ReachMod
+      - data\_SampSummary
+      - data\_Sites
+  - Files not modified:
+      - data\_ChemInfo
+      - data\_CoOccur
+      - data\_GIS\_Flow\_HI
+      - data\_GIS\_Flow\_LO
+      - data\_GIS\_AZ\_Outline
+      - data\_SSD
+      - data\_SSD\_generator
+      - data\_SSD\_permethrin
 
 ## Changes in Version 0.1.0.9043 (2017-06-21)
 

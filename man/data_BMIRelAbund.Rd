@@ -4,7 +4,7 @@
 \name{data_BMIRelAbund}
 \alias{data_BMIRelAbund}
 \title{BMI Relative Abundance}
-\format{An object of class \code{data.frame} with 55319 rows and 11 columns.}
+\format{An object of class \code{data.frame} with 55319 rows and 12 columns.}
 \source{
 example data
 }
