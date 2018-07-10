@@ -44,6 +44,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 ## Changes in Version 0.1.0.9100 (2018-07-10)
 
+* getClusterInfo
+    + Add QC print output to code.
+    + Added QC check to ensure Y data for box plot is not all NA or is not non-numeric.
+
+## Changes in Version 0.1.0.9100 (2018-07-10)
+
 * Use Ann's fork of CASTfxn as basis for fork in my repository.
 * Jumping ahead to version "9100" to differentiate.
 * Update NEWS
