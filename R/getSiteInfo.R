@@ -65,15 +65,18 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
   mySiteInfo <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
                                    ,c("FinalLatitude","FinalLongitude","WaterbodyName"
-                                      ,"GIS_County","CARefSite_2017","COMID_NHD2")]
+                                      ,"GIS_County","CARefSite_2017","COMID_NHD2"
+                                      ,"ElevCategory")]
   data.refSites <- subset(data.Stations.Info, CARefSite_2017==1,
-                          select= c(StationID_Master,FinalLatitude,FinalLongitude,COMID_NHD2))
+                          select= c(StationID_Master,FinalLatitude,
+                                    FinalLongitude,COMID_NHD2))
   #nolu.cluster <- paste(clustertype, "_noland", sep="")
   #lu.cluster <- paste(clustertype, "_land", sep="")
   
@@ -86,9 +89,9 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
                                  ,"BMI.Metrics.SampID","Algae.Metrics.SampID")]
   # get response information (CSCI, H20, etc)
   myBMImetrics <- data.bmi.metrics[data.bmi.metrics[,"StationID_Master"]==TargetSiteID
-                                   ,c("CollDate","CSCI","O_E","MMI_Score")]
-  myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationCode"]==TargetSiteID
-                                       ,c("SampleDate","H20","D18","S2")]
+                                   ,c("CollDate","IBI")]
+  myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
+                                       ,c("SampleDate")]
   # get COMID 
   myCOMID <- mySiteInfo$COMID_NHD2
   myWBName <- mySiteInfo$WaterbodyName
@@ -156,9 +159,9 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   # 
   # plot map
   ppi <- 300
-  grDevices::jpeg(filename = paste0("Results/map.",TargetSiteID, ".jpg"),
-       width = 4*ppi, height = 4*ppi, pointsize = 6,
-       quality=100, bg="white", res=ppi)
+  grDevices::jpeg(filename = paste0("Results/",TargetSiteID, "/", TargetSiteID, 
+                    ".map.jpg"), width = 4*ppi, height = 4*ppi, pointsize = 6,
+                    quality=100, bg="white", res=ppi)
     # lines
     sp::plot(outline, col="white", border="black", lwd=1.5, main=TargetSiteID)
     sp::plot(flowline.hi, add = TRUE, col="light blue", lwd=0.5)

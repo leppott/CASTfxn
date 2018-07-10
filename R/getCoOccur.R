@@ -127,6 +127,13 @@ getCoOccur <- function(df.data, ID.plot=NULL
                     , dir.plots=getwd()
                     ) {##FUNCTION.START
   #
+  wd = getwd()
+  dir.sub <- "Results"
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
+         , FALSE)
+  #  
   # define pipe
   `%>%` <- dplyr::`%>%`
   
@@ -135,7 +142,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
   col.Bio.Nar   <- "Bio.Nar"
   col.Bio.Deg   <- "Bio.Deg"
   #
-  col.KEEP      <- c(col.ID, col.Group, col.Bio, col.Bio.Nar, col.Bio.Deg,  col.Stressors)
+  col.KEEP      <- c(col.ID, col.Group, col.Bio, col.Bio.Nar, col.Bio.Deg, col.Stressors)
   #
   # Assign Bio Narrative and Status
   df.data[, col.Bio.Nar] <- cut(df.data[,col.Bio]
@@ -177,18 +184,15 @@ getCoOccur <- function(df.data, ID.plot=NULL
   # Remove columns
   col.remove <- names(df.scores) %in% col.Stressors
   df.scores <- df.scores[, !col.remove]
-  
-  
+
   #
   # remove all rows
   df.scores <- df.scores[0, ]
   #
-  fn.scores <- file.path(dir.plots, paste0("CoOccurrence_Scores_", myDateTime,".tsv"))
+  fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence_Scores_", myDateTime,".tsv"))
   write.table(df.scores, file=fn.scores
               , col.names = TRUE, row.names=FALSE, sep="\t")
-  
-  
-  
+
   #par
 #  par.orig <- par(no.readonly=TRUE)
   # reset with "par(par.orig)"
@@ -207,8 +211,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
  # i <- ID.plot[2]
   
   # Write to PDF
-  fn.pdf <- paste0("CoOccurrence_", myDateTime,".pdf")
-  grDevices::pdf(file=file.path(dir.plots, fn.pdf), width=6, height=8)
+  fn.pdf <- paste0(TargetSiteID, "_CoOccurrence_", myDateTime,".pdf")
+  grDevices::pdf(file=file.path(wd,dir.sub,dir.sub2,fn.pdf), width=6, height=8)
   
   # Analysis for each "test" sample
   for (i in ID.plot){##FOR.i.START
@@ -219,8 +223,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
     df.i <- df.data[df.data[,col.ID]==i, col.KEEP]
     i.Group <- df.i[,col.Group][1]
     i.Bio <- mean(df.data[df.data[,col.ID]==i, col.Bio], na.rm=TRUE)
-    
-    
+
     # Filter for selected variables
     
     mapping <- c(COL.GROUP=col.Group, COL.BIO=col.Bio)
@@ -234,11 +237,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
         , expr={
           df.comp.bio.better <- df.comp %>% dplyr::filter(COL.BIO>i.Bio)
         })
-    
 
-  
     # j <- col.Stressors[2]
-  
 
      #
  #    par(mfrow=c(3,2))
@@ -263,13 +263,10 @@ getCoOccur <- function(df.data, ID.plot=NULL
        df.i[is.na(df.i[,j]), paste0("Sc_Comp_",j)] <- NA
        
        # Plots
-       
-       
        # Need to filter df.i to get rid of NA for "j" (stressor)
        # order values by j then get multiple comp scores
        df.i.n <- df.i[!is.na(df.i[,j]), ]
        df.i.n <- df.i.n[order(df.i.n[,j]), ]
-       
        
        if (nrow(df.i.n)!=0){##IF.nrow.START
          # Save to Score/Results file
@@ -290,15 +287,12 @@ getCoOccur <- function(df.data, ID.plot=NULL
        } else {
          # no data
        }##IF.nrow.END
-       
-       
-       
+
        # # QC Check
        # if(nrow(df.i.n)==0){##IF.nrow.START
        #   break
        # }##IF.nrow.END
-       
-       
+
        ## Box Plot of Comparator Sites (with better bio)
        lab.Score <- paste0("Score = ", paste0(df.i.n[, paste0("Sc_Comp_", j)], collapse=", "))
        lab.N     <- paste0("n = ",df.i[,paste0("n_",j)][1])
@@ -328,9 +322,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5))
        
        ## Logistic Regression (all comparator sites)
-       
-       
-       
+
        # #~~~~~~~~~~~~~~~~~~~
        # (plot with all sites not just by group)
        col.glm <- c(col.Bio, col.Bio.Deg, j)
@@ -379,14 +371,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
          # no plot 2
          gridExtra::grid.arrange(p1, ncol=1, nrow=2 )
          
-         
        }##IF.complete.cases.END
-       
-       
-       
-     
-       
-       
+
        # # plot 2, R
        # plot(y.name~x, data=df.plot, xlab=j, ylab="Relative Probability of Degraded Condition"
        #      , main=i)
@@ -395,12 +381,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
        # abline(h=0.2, col="gray", lty=2)
        # abline(h=0.5, col="gray", lty=2)
        
-       
 
-       
-       
-       
-       
        # # Confidence Limits
        # ## http://www.stat.cmu.edu/~cshalizi/402/lectures/16-glm-practicals/lecture-16.pdf
        # ## Note that calculating standard errors for predictions on the logit scale, and then

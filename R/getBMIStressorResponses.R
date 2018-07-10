@@ -86,12 +86,13 @@
 #' @export
 getBMIStressorResponses <- function(stressors, list.MatchBMIData
                                     , predint=0.75, varLegLoc="topright") {
-  
+
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
   # helper
@@ -100,28 +101,32 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
+  BMIresp <- colnames(list.MatchBMIData[["all.b.rsp"]])[8:ncol(list.MatchBMIData[["all.b.rsp"]])]
+  
   for (p in 1:length(stressors)) {
     # QC
-    #print(p)
+    # print(p)
     stressName <- stressors[p]
     varFlag <- 1
-    if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC")) {
+    varFlag.b <- 1
+    if (stressName %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_calc_cfs",
+                          "Flow_cfs")) {
       log.yn <- FALSE
     } else {
       log.yn <- TRUE
     }
-    for (q in 1: length(BMIresp)) {
+    for (q in 1:length(BMIresp)) { 
       respName <- BMIresp[q]
       # QC
-      print (q)
-      #flush.console()
-      #get all data to plot
+      # print (q)
+      # get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
       all.yvar<- list.MatchBMIData[["all.b.rsp"]][,c("StationID_Master","BMI.Metrics.SampID", respName)]
       df.plot1 <- merge(all.xvar[,2:3],all.yvar[,2:3], by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
+      if (nrow(df.plot1[stats::complete.cases(df.plot1),2:3]) < 20) { next }
       all.df.plot <- df.plot1[stats::complete.cases(df.plot1),2:3]
-      
-      #get all ref   data to plot
+
+      #get all ref data to plot
       all.ref.xvar <- subset(all.xvar, all.xvar$StationID_Master %in% ref.sites)
       all.ref.yvar <- subset(all.yvar, all.yvar$StationID_Master %in% ref.sites)
       df.plot2 <- merge(all.ref.xvar[,2:3],all.ref.yvar[,2:3], by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
@@ -146,12 +151,12 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
       
       ppi<-300
-      varFileOut = paste0("Results/BMI.SR.",TargetSiteID
-                          , ".")
+      varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, "BMI.SR.")
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
                             ".jpg", sep = ""), width = 4 * ppi, 
            height = 3 * ppi, quality=100, pointsize=8, res = ppi)
-      graphics::par(cex.main=1.0,cex.lab=0.9,font.main=2, font.lab=2)
+      graphics::par(cex.main=0.8,cex.lab=0.7,font.main=2, font.lab=2
+                    , mar=c(6,4,4,2)+0.1)
       if (log.yn == TRUE) {
         all.df.plot     <- cbind(log10(all.df.plot[,1]), all.df.plot[,2])
         all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]), all.ref.df.plot[,2])
@@ -182,7 +187,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       }
       if (length(cl.df.plot) > 0) {
         graphics::points(cl.df.plot[,2]~cl.df.plot[,1], 
-               col="cyan4", pch=2, cex = 0.8) # Black open triangles
+               col="cyan4", pch=2, cex = 0.8) # Cyan open triangles
       }
       if (length(cl.ref.df.plot) > 0) {
         graphics::points(cl.ref.df.plot[,2]~cl.ref.df.plot[,1], 
@@ -190,7 +195,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       }
       if (length(site.df.plot) > 0) {
         graphics::points(site.df.plot[,2]~site.df.plot[,1], 
-               col="red", pch=19, cex = 1.0) # black solid dots
+               col="red", pch=19, cex = 1.0)  # Red solid dots
       }
       
       cl.x.sd <- stats::sd(cl.df.plot[,1])
@@ -233,14 +238,10 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       intercept = signif(intercept, 3)
       pval_intercept = signif(pval_intercept, 3)
       pval = signif(pval_slope, 3)
-      # # r? text and legend
+      # r2 text and legend
       r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
       r2 = formatC(r^2,format="f",digits=3)
-      # 
-      # 20180621, scoring
-      slope.dir <- sign(slope) #1 = positive, -1 = negative
-      
-      
+
       #
       c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
       df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
@@ -254,24 +255,60 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       
       #Print equation, r2, and p-value
       if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-        # eqn <- paste("Cluster regression\n"
-        #              , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-        #              ,"p-value = ",pval.corr,"\n","n = ",length(varX),"\n")
-        # symbshape <- c(1, 16, 2, 17, 19)
-        # symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
-        # symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-        # graphics::legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
-        #                                            , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-        #                                            ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
-        #        , col = c("black"), cex=0.6)
-        #graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+        eqn <- paste("Cluster regression: ", "y =", slope, "x +", intercept
+                       , "; ", "r2 =", r2, "; ", "p-value =", pval.corr
+                       ,"; ","n =",length(varX))
+        symbshape <- c(1, 16, 2, 17, 19)
+        symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
+        symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", 
+                      TargetSiteID)
+        graphics::mtext(eqn, side=1, line=4, bty="n", col=c("black"), cex=0.6)
+        graphics::legend(varLegOpp, symbname, pch=symbshape, col=symbcol
+                         , cex=0.6, lwd="1", bg="white")
       }##IF.length.END
+      #
+      
+      # 20180621, scoring
+      slope.dir <- sign(slope) #1 = positive, -1 = negative
+      # exp.dir <- data.lkp.dir[stressName,respName]
+      exp.dir <- -1
+
+      for (f in 1:length(site.df.plot)) {
+        # Generate scores based on slope, significance value, and r2
+        if ((length(cl.df.plot)>=5) && (abs(pval.corr)<=0.1) && (r2>=0.1)) {
+            if (slope.dir == exp.dir) {
+                print("Got here--score = 1")
+                sr.score = 1
+            } else if (slope.dir != exp.dir) {
+                print("Got here--score = -1")
+                sr.score = -1
+            } else {
+                print("Got here--score inconclusive")
+                sr.score = 1
+            }
+        } else {
+            print("Got here--scores equal 0.")
+            sr.score = 0
+        }
+        df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID, # "Group" = cluster,
+                        "Param_Name"=stressName,"BMI_Metric"=respName,
+                        "n"=length(site.df.plot),#"Param_Value"=varXprime[f],
+                        #"BMI_MetricValue"=varYprime[f],
+                        "SR_Score"=sr.score))
+        if (varFlag.b==1) { # First time through this loop
+            df.sc.sr <- rbind(df.temp2)
+        } else {
+            df.sc.sr <- rbind(df.sc.sr, df.temp2)
+        }
+        varFlag.b <- 0 # Set varFlag.b to zero
+      }##FOR.f.END
       #
       grDevices::dev.off()
       #
       varFlag <- 0
-    }##FOR.r.END
+    }##FOR.q.END
     grDevices::graphics.off()
   }##FOR.p.END
   utils::write.table(df.CorrTable,file="StressRespCorrs.BMI.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
+  # utils::write.table(df.sc.sr,file="StressRespScores.BMI.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
 }##FUNCTION.END

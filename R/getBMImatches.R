@@ -78,7 +78,14 @@ getBMIMatches <- function(stressors, list.data) {
   all.chems <- list.data[["all.chems"]]
   cl.chems <- list.data[["cluster.chem"]]
   site.chem <- list.data[["site.chem"]]
-  
+
+  if (nrow(list.SiteSummary$BMImetrics)==0) {
+      # No BMI Responses Found
+      print(paste0("No BMI response data available for ", TargetSiteID,
+                  ". Regression data illustrate cluster relationships only."))
+      flush.console()
+  }
+
   # get sample matches mbmi indicates match betw chem & bmi; malg indicates match betw chem and algae
   # need to omit ChemSampleIDs not in all.chems from mbmi.Samps and malg.Samps
   # These aren't in all.chems, because they don't have data corresponding to the site data
@@ -90,16 +97,20 @@ getBMIMatches <- function(stressors, list.data) {
   
   # bmi stressor data to use: all.mbmi.stress, cl.mbmi.stress, and site.stress
   all.str.samps <- all.chems[,c("ChemSampleID", stressors)]
+  all.str.samps[is.na(all.str.samps)] <- NA
   all.stress <- merge(unique(data.chem.raw[,c("StationID_Master", "ChemSampleID")])
                       , all.str.samps, by.x = "ChemSampleID", by.y = "ChemSampleID")
+  all.stress <- all.stress[,colSums(is.na(all.stress)) < nrow(all.stress)]
   all.mbmi.stress <- subset(all.stress, ChemSampleID %in% mbmi.use.samps$ChemSampleID)
-  all.mbmi.stress <- merge(mbmi.use.samps, all.mbmi.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
+  all.mbmi.stress <- merge(mbmi.use.samps, all.mbmi.stress, by.x = "ChemSampleID", 
+                           by.y = "ChemSampleID")
   cl.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% cl.chems$ChemSampleID)
   site.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% site.chem$ChemSampleID)
   
   # bmi response data to use: all.mbmi.resp, cl.mbmi.resp, and site.mbmi.resp
   all.resp <- subset(data.bmi.metrics, BMISampID %in% mbmi.use.samps$BMI.Metrics.SampID)
-  all.mbmi.resp <- merge(mbmi.use.samps, all.resp, by.x = "BMI.Metrics.SampID", by.y = "BMISampID")
+  all.mbmi.resp <- merge(mbmi.use.samps, all.resp, by.x = "BMI.Metrics.SampID", 
+                         by.y = "BMI.Metrics.SampID")
   cl.mbmi.resp <- subset(all.mbmi.resp, ChemSampleID %in% cl.chems$ChemSampleID)
   site.mbmi.resp <- subset(all.mbmi.resp, ChemSampleID %in% site.chem$ChemSampleID)
   

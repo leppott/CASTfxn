@@ -280,6 +280,6 @@ SUSPENDED	SUSPENDED SEDIMENT CONCENTRATION	MG/L	TSS_susp_mg_L	Water quality	1	0	
 SUSPENDED	SUSPENDED SOLIDS / SEDIMENTS	MG/L	TSS_susp_mg_L	Water quality	1	0						1
 STANDARD	TURBIDITY	NTU	Turbidity_NTU	Water quality	1	0						1
 TOTAL	TURBIDITY	NTU	Turbidity_NTU	Water quality	1	0						1
-TOTAL	WATER VELOCITY	FT/SEC	Velocity_ft_sec	Water quality	1	0						1
+TOTAL	WATER VELOCITY	FT/SEC	Velocity_ft_sec	Water quality	1	0						0
 CALCULATED	TOTAL DISSOLVED SOLIDS	MG/L	TDS_calc_mg_L	Water quality	1	0						1
 DISSOLVED	TOTAL DISSOLVED SOLIDS	MG/L	TDS_f_mg_L	Water quality	1	0						1

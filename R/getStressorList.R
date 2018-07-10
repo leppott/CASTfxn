@@ -81,13 +81,14 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
   stations <- TargetSiteID
-  nolu.cluster <- paste(clustertype, "_noland", sep="")
-  lu.cluster <- paste(clustertype, "_land", sep="")
+  nolu.cluster <- "clust_noland"
+  lu.cluster <- "clust_land"
   
   cluster.chem.data <- cluster.chem[3:ncol(cluster.chem)]
   cluster.ref.chem <- subset(cluster.chem, cluster.chem$StationID_Master %in% ref.sites)
@@ -107,10 +108,10 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     gpcoolvar <- subset(coolvar, coolvar %in% gpchems$ConvertTo)
     n <- length(gpcoolvar)
     if(n>0) { ##FOR.n.START
-      grDevices::jpeg(filename = paste0("Results/boxes.example.",TargetSiteID
-                             , ".", groupnames[g,], ".jpg"), width = 4*ppi
-           , height = 3*ppi, pointsize = 8
-           , quality = 100, bg = "white", res = ppi)
+      grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
+                    ".boxes.", groupnames[g,], ".jpg"), width = 4*ppi,
+                    height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
+                    res = ppi)
       maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
       graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
       if (useLU == TRUE) {
@@ -122,7 +123,6 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
            xlim = c(0,1), cex.lab = 0.8)
       graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
-      # axis(1, at = seq(0,1, 0.2),labels = seq(0,1, 0.2))
       graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
       for(i in 1:n) {
         xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
@@ -149,8 +149,9 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   colnames(data.chem.pctrank)[1] <- "StationID_Master"
   colnames(data.chem.pctrank)[2] <- "ChemSampleID"
   row.names(data.chem.pctrank) <- NULL
-  utils::write.table(data.chem.pctrank, file = paste("Results/chem.pctrank.",
-                                              TargetSiteID,".txt", sep=""),sep="\t", col.names=TRUE)
+  utils::write.table(data.chem.pctrank, file = paste("Results/",TargetSiteID,
+                    "/",TargetSiteID,"chem.pctrank.txt", sep=""),sep="\t", 
+                    col.names=TRUE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
   stressor <- c("none")
   for (c in 3:ncol(site.pctrank)) {
@@ -158,8 +159,8 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     bad <- is.na(site.pctrank[,c])
     check <- site.pctrank[,c]
     good <- check[!bad]
-    maxSiteVal <- max(good)
-    minSiteVal <- min(good)
+    maxSiteVal <- max(good, na.rm = TRUE)
+    minSiteVal <- min(good, na.rm = TRUE)
     if ((chemname == "DO_uf_mg_L") || (chemname == "pH")) {
       if (minSiteVal <= probsLow) {
         stressor <- c(stressor, chemname)

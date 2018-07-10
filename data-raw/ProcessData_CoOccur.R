@@ -10,7 +10,7 @@ wd <- getwd() # assume is package directory
 
 # 1. Get data and process#####
 # 1.1. Import Data
-myFile <- "data_CoOccur.tsv"
+myFile <- "AZ/AZ_data_CoOccur.tsv"
 df <- utils::read.delim(file.path(wd, "data-raw", myFile))
 
 # no elevation as this example data is from San Diego not AZ
