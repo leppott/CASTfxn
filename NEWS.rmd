@@ -42,7 +42,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-## Changes in Version 0.1.0.9100 (2018-07-10)
+## Changes in Version 0.1.0.9102 (2018-07-11)
+
+* getBMIStressorResponses
+    + More detailed console message.
+* getStressorSpecificRegressions.
+    + Modify QC check for horizontal and vertical lines.
+    + Fix error with inset value for legend by using as.numeric.
+
+## Changes in Version 0.1.0.9101 (2018-07-10)
 
 * getClusterInfo
     + Add QC print output to code.

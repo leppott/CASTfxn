@@ -106,6 +106,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
   for (p in 1:length(stressors)) {
     # QC
     # print(p)
+    p.len <- length(stressors)
     stressName <- stressors[p]
     varFlag <- 1
     varFlag.b <- 1
@@ -119,6 +120,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       respName <- BMIresp[q]
       # QC
       # print (q)
+      q.len <- length(BMIresp)
       # get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
       all.yvar<- list.MatchBMIData[["all.b.rsp"]][,c("StationID_Master","BMI.Metrics.SampID", respName)]
@@ -276,18 +278,19 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       for (f in 1:length(site.df.plot)) {
         # Generate scores based on slope, significance value, and r2
         if ((length(cl.df.plot)>=5) && (abs(pval.corr)<=0.1) && (r2>=0.1)) {
+          # print to console p (stressName) and q (respName)
             if (slope.dir == exp.dir) {
-                print("Got here--score = 1")
+                print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1"))
                 sr.score = 1
             } else if (slope.dir != exp.dir) {
-                print("Got here--score = -1")
+                print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
                 sr.score = -1
             } else {
-                print("Got here--score inconclusive")
+                print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
                 sr.score = 1
             }
         } else {
-            print("Got here--scores equal 0.")
+            print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
             sr.score = 0
         }
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID, # "Group" = cluster,

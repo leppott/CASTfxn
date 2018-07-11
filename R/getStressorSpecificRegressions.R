@@ -258,17 +258,20 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75,
           
           cl.x.sd <- stats::sd(df.plot3[,1])
           cl.y.sd <- stats::sd(df.plot3[,2])
+          
+          # fix from df.plot3 to sum(df.plot3) for vert and horiz
+          # and !is.na to sum(is.na)
           #Check for vertical line
-          if (!is.na(df.plot3)) {
-            if (df.plot3 == 0) {
+          if (sum(!is.na(df.plot3))==0) {
+            if (sum(df.plot3) == 0) {
               print(paste("Vertical line for", SSTV.analyte, respName, sep=" "))
               utils::flush.console()
               next     #It's okay to plot the points, but not the regression line
             }
           }
           #Check for horizontal line
-          if (!is.na(df.plot3)) {
-            if (df.plot3 == 0) {
+          if (sum(!is.na(df.plot3))==0) {
+            if (sum(df.plot3) == 0) {
               print(paste("Horizontal line for", SSTV.analyte, respName, sep=" "))
               utils::flush.console()
               next     #It's okay to plot the points, but not the regression line
@@ -319,7 +322,7 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75,
             symbcol <- c("grey", "blue", "cyan4", "blue", "red")
             symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
             graphics::mtext(eqn, side=1, line = 4, bty="n", col = c("black"), cex=0.6)
-            graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+            graphics::legend(varLegOpp, inset=as.numeric(varInset), symbname, pch=symbshape, col=symbcol, cex=0.6)
           }
           
           grDevices::dev.off()
