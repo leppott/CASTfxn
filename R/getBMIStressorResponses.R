@@ -316,6 +316,6 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
                     "StressRespCorrs.BMI.txt"),sep="\t",quote=FALSE,
                     row.names=FALSE,col.names=TRUE)
   utils::write.table(df.sc.sr,file.path(wd,dir.sub,dir.sub2,
-                    "StressRespScores.BMI.txt",sep="\t",quote=FALSE,
+                    "StressRespScores.BMI.txt"),sep="\t",quote=FALSE,
                     row.names=FALSE,col.names=TRUE)  
 }##FUNCTION.END
