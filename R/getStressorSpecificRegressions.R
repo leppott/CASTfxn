@@ -118,7 +118,7 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75,
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
-  df.SSTV <- subset(data.chem.info, SSTV != 0, c("StdParamName", "SSTV", "SensMin"
+  df.SSTV <- subset(data.chem.info2, SSTV != 0, c("StdParamName", "SSTV", "SensMin"
                                               , "SensMax", "TolMin", "TolMax"))
   colnames(df.SSTV)[1] <- "Analyte"
 
