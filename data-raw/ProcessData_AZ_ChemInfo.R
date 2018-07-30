@@ -17,6 +17,7 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 df$Analyte <- df$StdParamName
 df$GroupNum <- as.numeric(df$Category)
 df$GroupName <- df$Category
+df <- df[df$UseInStressorID==1,]
 
 # 1.2. Process Data
 View(df)

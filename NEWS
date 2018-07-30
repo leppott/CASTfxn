@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-06-22 14:56:22
+    #> Last Update: 2018-07-11 11:09:18
 
 # Planned Updates
 
@@ -29,6 +29,47 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9102 (2018-07-11)
+
+  - getBMIStressorResponses
+      - More detailed console message.
+  - getStressorSpecificRegressions.
+      - Modify QC check for horizontal and vertical lines.
+      - Fix error with inset value for legend by using as.numeric.
+
+## Changes in Version 0.1.0.9101 (2018-07-10)
+
+  - getClusterInfo
+      - Add QC print output to code.
+      - Added QC check to ensure Y data for box plot is not all NA or is
+        not non-numeric.
+
+## Changes in Version 0.1.0.9100 (2018-07-10)
+
+  - Use Ann’s fork of CASTfxn as basis for fork in my repository.
+  - Jumping ahead to version “9100” to differentiate.
+  - Update NEWS
+  - getBMImatches
+      - lines 85:86
+      - Missing closing paren for print.
+  - getclusterInfo
+      - lines 95:96
+      - Missing a comma in paste.
+  - getStressorSpecificRegressions
+      - lines 128:129
+      - Missing closing paren for print.
+  - TargetSiteID
+      - Used in functions but is not a parameter.  
+      - Assumed in the global environment.
+      - QC checks fail.
+      - Parameter in function call, example, and stop message if doesn’t
+        exist.
+      - Add to the following functions:
+      - getBMImatches (lines 85:86) \[really just missing a
+        parenthesis\]
+      - getClusterInfo (lines 95:96)
+  - Will need to follow up with examples in other functions.
 
 ## Changes in Version 0.1.0.9044 (2017-06-22)
 

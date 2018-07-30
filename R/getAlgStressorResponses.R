@@ -89,8 +89,9 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
   # helper
@@ -99,10 +100,12 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
-  
+  AlgResp <- colnames(list.MatchAlgData[["all.a.resp"]])[5:ncol(list.MatchAlgData[["all.a.resp"]])]
+
   for (p in 1:length(stressors)) {
     stressName <- stressors[p]
-    if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC")) {
+    if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC", "Flow_cfs", 
+                          "Flow_calc_cfs")) {
       log.yn <- FALSE
     } else {
       log.yn <- TRUE
@@ -143,12 +146,12 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
       
       ppi<-300
-      varFileOut = paste0("Results/Alg.SR.",TargetSiteID
-                          , ".")
+      varFileOut = paste0("Results/",TargetSiteID,"/", TargetSiteID, "Alg.SR.")
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName, ".jpg", 
-                            sep = ""), width = 4*ppi, height = 3*ppi,
-           quality=100, pointsize=8, res = ppi)
-      graphics::par(cex.main=1.0,cex.lab=0.9,font.main=2, font.lab=2)
+                        sep = ""), width = 4*ppi, height = 3*ppi, 
+                      quality=100, pointsize=8, res = ppi)
+      graphics::par(cex.main=1.0,cex.lab=0.9,font.main=2, font.lab=2
+                    , mar=c(6,4,4,2)+0.1)
       if (log.yn == TRUE) {
         all.df.plot <- cbind(log10(all.df.plot[,1]),all.df.plot[,2])
         all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]),all.ref.df.plot[,2])
@@ -157,8 +160,7 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
         site.df.plot <- cbind(log10(site.df.plot[,1]),site.df.plot[,2])
       }
       
-      varMain <- paste("Linear regression of", stressName, "on", respName
-                       , "for", TargetSiteID, "\n","with", paste(predint*100, "th", sep= "")
+      varMain <- paste(TargetSiteID, "\n","with", paste(predint*100, "th", sep= "")
                        , "percentile prediction interval", sep = " ")
       if (log.yn == TRUE) {
         varxlab <- paste("Log10", stressName)
@@ -246,16 +248,13 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       
       #Print equation, r2, and p-value
       if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-        eqn <- paste("Cluster regression\n"
-                     , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-                     ,"p-value = ",pval.corr,"\n","n = ",length(varX),"\n")
+        eqn <- paste("Cluster regression: "
+                     , "y =", slope, "x +", intercept, "; ", "r2 = ",r2,"; "
+                     ,"p-value =",pval.corr,"; ","n =",length(varX),"\n")
         symbshape <- c(1, 16, 2, 17, 19)
         symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
         symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-        graphics::legend(varLegLoc, inset = varInset, (paste("Cluster regression\n"
-                                                   , "y = ", slope, "x + ", intercept, "\n", "r? = ",r2,"\n"
-                                                   ,"p-value = ",pval.corr,"\n","n = ",length(varX))), bty="n"
-               , col = c("black"), cex=0.6)
+        graphics::mtext(eqn, side=1, line=4, bty="n", col = c("black"), cex=0.6)
         graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
       }
       grDevices::dev.off()

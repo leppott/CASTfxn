@@ -79,6 +79,14 @@ getAlgMatches <- function(stressors, list.data) {
   site.chem <- list.data[["site.chem"]]
   ref.sites <- list.data[["ref.sites"]]
   
+  if (nrow(list.SiteSummary$AlgMetrics)==0) {
+      # No Algae Responses Found
+      print(paste("No algae response data available for ", TargetSiteID,
+                  ". Regression data illustrate cluster relationships only.",
+                  sep = ""))
+      flush.console()
+  }
+  
   # get sample matches mbmi indicates match betw chem & bmi; malg indicates match betw chem and algae
   # need to omit ChemSampleIDs not in all.chems from mbmi.Samps and malg.Samps
   # These aren't in all.chems, because they don't have data corresponding to the site data

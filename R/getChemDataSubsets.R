@@ -68,8 +68,9 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
   #Create subsets for target sites, ref sites in cluster, all sites in cluster

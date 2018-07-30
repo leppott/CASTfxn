@@ -59,19 +59,15 @@
 #' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, useLU = FALSE) {
-  #
+getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, 
+                           useLU = FALSE) {
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-         , dir.create(file.path(wd, dir.sub))
+  dir.sub2 <- TargetSiteID
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
-  #
-  #nolu.cluster <- paste(clustertype, "_noland", sep="")
-  #lu.cluster <- paste(clustertype, "_land", sep="")
-  nolu.cluster <- "clust_noland"
-  lu.cluster <- "clust_land"
   #
   if (length(site.Clusters)==0) {
     # do not proceed
@@ -79,68 +75,64 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
     stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
   }
   
+  if (useLU == FALSE) {##IF.useLU.START
+    varMain = "Clusters w/o Land Use"
+    cluster <- "clust_noland"
+  } else {
+    varMain = "Clusters w/ Land Use"
+    cluster <- "clust_land"
+  }
+  
   data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
   df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs,]
-  
+  df.plot.2 <- data.cluster.mySites
+  df.plot <- data.cluster
+
   ppi<-300
-  grDevices::jpeg(filename = paste0("Results/cluster.example.",TargetSiteID, ".jpg"),
-       width = 4*ppi, height = 3*ppi, pointsize = 8,
-       quality = 100, bg = "white", res = ppi)
+  for (i in 2:ncol(data.cluster.mySites)) {
     #
-    if (useLU == FALSE) {##IF.useLU.START
-      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","ElevWs")
-      varnames <- c("WS Area", "WS Precipitation","Mean Temp", "Slope", "WS Elevation")
-      graphics::par(mfrow = c(2,3), mar = c(2,4,1,1))
-      df.plot <- data.cluster
-      df.plot.2 <- data.cluster.mySites
-      for(ii in 1:length(selvar)) {##FOR.ii.START
-        # QC
-       # print(paste0(ii,"; ",selvar[ii]))
+    varYlab <- colnames(data.cluster.mySites)[i]
+    #
+    # QC
+    i.num <- i -1
+    i.len <- ncol(data.cluster.mySites) - 1
+    i.var <- varYlab
+    print(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
+    flush.console()
+    #
+    myY <- df.plot[,i]
+    myX <- df.plot[,cluster]
+    #
+    # QC
+    if(sum(!is.na(myY))==0 || is.numeric(myY)==FALSE){##IF.myY.START
+      print("No data, next")
+      flush.console()
+      next
+    }##IF.myY.END
+    #
+    grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
+                                      TargetSiteID,".",varYlab,".jpg"),
+                width = 4*ppi, height = 3*ppi, pointsize = 8,
+                quality = 100, bg = "white", res = ppi)
         #
-        myY <- df.plot[,selvar[ii]]
-        myX <- df.plot[,nolu.cluster]
-        graphics::boxplot(myY~myX, main = "Clusters w/o Land Use", xlab ="Cluster"
-                , ylab = varnames[ii], medlwd = 0.8, boxwex = 0.5, boxlty = 1
+        graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
+                , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
                 , boxlwd = 0.8, col ="lightgray")
         #~~~~~~~~~~~~~
         # add points to plots for reference sites
-        myY <- df.plot.3[,selvar[ii]]
-        myX <- df.plot.3[,nolu.cluster]
+        myY <- df.plot.3[,i]
+        myX <- df.plot.3[,cluster]
         graphics::points(myX,myY,col="blue",cex=0.7,pch=19)
         #~~~~~~~~~~~~~
         # add points to plots for selected sites
-        myY <- df.plot.2[,selvar[ii]]
-        myX <- df.plot.2[,nolu.cluster]
+        myY <- df.plot.2[,i]
+        myX <- df.plot.2[,cluster]
         graphics::points(myX,myY,col="red",cex=0.8,pch=19)
-        #~~~~~~~~~~~~~
-      }##FOR.ii.END
-    } else {
-      data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
-      selvar <- c("WsAreaSqKm","PrecipWs","TmeanWs","SLOPE","ElevWs")
-      varnames <- c("W_Area", "WS Precipitation","Mean Temp", "Slope", "WS Elevation")
-      graphics::par(mfrow = c(2,3), mar = c(2,4,1,1))
-      df.plot <- data.cluster
-      df.plot.2 <- data.cluster.mySites
-      for(ii in 1:length(selvar)) {##FOR.ii.START
-        myY <- df.plot[,selvar[ii]]
-        myX <- df.plot[,lu.cluster]
-        graphics::boxplot(myY~myX, main = "Clusters w/Land Use", xlab ="Cluster"
-                , ylab = varnames[ii], medlwd = 0.8, boxwex = 0.5, boxlty = 1
-                , boxlwd = 0.8, col ="lightgray")
-        #~~~~~~~~~~~~~
-        # add points to plots for reference sites
-        myY <- df.plot.3[,selvar[ii]]
-        myX <- df.plot.3[,lu.cluster]
-        graphics::points(myX,myY,col="blue",cex=0.7,pch=19)
-        #~~~~~~~~~~~~~
-        # add points to plots for selected sites
-        myY <- df.plot.2[,selvar[ii]]
-        myX <- df.plot.2[,lu.cluster]
-        graphics::points(myX,myY,col="red",cex=0.8,pch=19)
-        #~~~~~~~~~~~~~
-      }##FOR.ii.END
-      #
-    }##IF.useLU.END
+        #
+    grDevices::dev.off() ##JPEG.END
     #
-  grDevices::dev.off()  ##JPEG.END
+  }
+  #
+  grDevices::graphics.off()  
+  #
 }
