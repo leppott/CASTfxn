@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-07-11 11:09:18
+    #> Last Update: 2018-08-02 11:56:18
 
 # Planned Updates
 
@@ -29,6 +29,20 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9103 (2018-08-02)
+
+  - DESCRIPTION
+      - Add authors in plain text
+  - CASTfxn.R
+      - Revise with names of functions.
+  - Vignette
+      - Add output descriptions.
+  - getStressorList
+      - Add dot to filename of output after SiteID
+      - SiteID.chem.pctrank.txt
+  - getClusterInfo
+      - Added “.cluster.” after SiteID to output plot names.
 
 ## Changes in Version 0.1.0.9102 (2018-07-11)
 
