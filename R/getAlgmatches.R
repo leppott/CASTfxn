@@ -111,7 +111,7 @@ getAlgMatches <- function(stressors, list.data) {
   
   # alg response data to use: all.malg.resp, cl.malg.resp, and site.malg.resp
   all.malg.resp <- subset(data.algae.metrics, Algae.Metrics.SampID %in% 
-                              malg.use.samps$Algae.Metrics.SampID)
+                              malg.use.samps$ChemSampleID)
   cl.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% 
                              cl.chems$ChemSampleID)
   site.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% 
