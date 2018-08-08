@@ -91,7 +91,7 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   myBMImetrics <- data.bmi.metrics[data.bmi.metrics[,"StationID_Master"]==TargetSiteID
                                    ,c("CollDate","IBI")]
   myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
-                                       ,c("CollDate")]
+                                       ,"CollDate",5:6]
   # get COMID 
   myCOMID <- mySiteInfo$COMID_NHD2
   myWBName <- mySiteInfo$WaterbodyName
