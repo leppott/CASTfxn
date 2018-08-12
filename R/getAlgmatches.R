@@ -96,7 +96,11 @@ getAlgMatches <- function(stressors, list.data) {
   malg.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID",
                                                    "Algae.Metrics.SampID")])
   malg.use.samps <- subset(malg.Samps, malg.Samps$ChemSampleID %in% mUseSamps)
-  
+  malg.use.samps$Algae.Metrics.SampID <- 
+      stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_EMAP")
+  malg.use.samps$Algae.Metrics.SampID <- 
+      stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_Multihabitat")
+
   # bmi stressor data to use: all.malg.stress, cl.malg.stress, and site.malg.stress
   all.str.samps <- all.chems[,c("ChemSampleID", stressors)]
   all.stress <- merge(unique(data.chem.raw[,c("StationID_Master","ChemSampleID")])
@@ -111,11 +115,21 @@ getAlgMatches <- function(stressors, list.data) {
   
   # alg response data to use: all.malg.resp, cl.malg.resp, and site.malg.resp
   all.malg.resp <- subset(data.algae.metrics, Algae.Metrics.SampID %in% 
-                              malg.use.samps$ChemSampleID)
+                              malg.use.samps$Algae.Metrics.SampID)
+  cl.chems1 <- merge(cl.chems, all.malg.resp[,c("StationID_Master", 
+                     "Algae.Metrics.SampID")], by.x = "StationID_Master", 
+                     by.y = "StationID_Master")
   cl.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% 
-                             cl.chems$ChemSampleID)
+                             cl.chems1$Algae.Metrics.SampID)
+  site.chem1 <- as.data.frame(stringr::str_remove(site.chem$ChemSampleID, 
+                                                  "_\\d{4}\\-\\d{2}\\-\\d{2}"))
+  colnames(site.chem1)[1] <- "StationID_Master"
+  site.chem1 <- merge(site.chem1, all.malg.resp[,c("StationID_Master",
+                      "Algae.Metrics.SampID")], by.x = "StationID_Master",
+                      by.y = "StationID_Master")
+  site.chem1 <- unique(site.chem1)
   site.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% 
-                             site.chem$ChemSampleID)
+                             site.chem1$Algae.Metrics.SampID)
   
   myMatchData <- list(all.a.str = all.malg.stress
                       , cl.a.str = cl.malg.stress
