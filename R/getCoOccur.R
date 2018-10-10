@@ -220,7 +220,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
     grDevices::pdf(file=file.path(wd,dir.sub,dir.sub2,fn.pdf), width=6, height=8)
     #
     fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence_Scores_", myDateTime,".tsv"))
-    write.table(df.scores, file=fn.scores
+    utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
     i.num <- match(i, ID.plot)
@@ -286,7 +286,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
          # df.i.n append to output (only keep matching columns)
          df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))], all.y=TRUE)
          # Save
-         write.table(df.scores.i.n, file=fn.scores
+         utils::write.table(df.scores.i.n, file=fn.scores
                      , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
          # Remove
          rm(df.scores.i.n)

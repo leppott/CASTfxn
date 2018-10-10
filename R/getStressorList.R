@@ -109,7 +109,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     n <- length(gpcoolvar)
     if(n>0) { ##FOR.n.START
       grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
-                    ".boxes.", groupnames[g,], ".jpg"), width = 4*ppi,
+                    ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
                     height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
                     res = ppi)
       maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")

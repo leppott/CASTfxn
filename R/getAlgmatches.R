@@ -84,7 +84,7 @@ getAlgMatches <- function(stressors, list.data) {
       print(paste("No algae response data available for ", TargetSiteID,
                   ". Regression data illustrate cluster relationships only.",
                   sep = ""))
-      flush.console()
+      utils::flush.console()
   }
   
   # get sample matches mbmi indicates match betw chem & bmi; malg indicates match betw chem and algae

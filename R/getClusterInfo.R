@@ -98,7 +98,7 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
     i.len <- ncol(data.cluster.mySites) - 1
     i.var <- varYlab
     print(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
-    flush.console()
+    utils::flush.console()
     #
     myY <- df.plot[,i]
     myX <- df.plot[,cluster]
@@ -106,7 +106,7 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
     # QC
     if(sum(!is.na(myY))==0 || is.numeric(myY)==FALSE){##IF.myY.START
       print("No data, next")
-      flush.console()
+      utils::flush.console()
       next
     }##IF.myY.END
     #

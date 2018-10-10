@@ -83,7 +83,7 @@ getBMIMatches <- function(stressors, list.data) {
       # No BMI Responses Found
       print(paste0("No BMI response data available for ", TargetSiteID,
                   ". Regression data illustrate cluster relationships only."))
-      flush.console()
+      utils::flush.console()
   }
 
   # get sample matches mbmi indicates match betw chem & bmi; malg indicates match betw chem and algae

@@ -42,6 +42,24 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9108 (2018-10-10)
+
+* Vignette.
+    + Fix errors.
+* DESCRIPTION
+    + Change R Depends from 2.1.0 to 2.10
+    + Add Imports for sp and stringr
+* Add utils:: for missing cases:
+    + flush.console
+    + write.table
+* Non-standard names
+    + getStressorList
+        - boxes.water quality.x.jpg
+        - Use make.names when build file names.
+        - Don't need to adjust data.
+    + Occurs in raw data; AZChemInfoFinal.tab
+        - Category
+
 ## Changes in Version 0.1.0.9107 (2018-10-10)
 
 * getSiteInfo

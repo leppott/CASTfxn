@@ -258,7 +258,7 @@ And plots are created and saved per stressor group.  The "nutrient" plot is show
 TargetSiteID <- "SRCKN001.61"
 # filename
 fn.pctrank <- file.path(getwd(), "Results", TargetSiteID
-                        , paste0(TargetSiteID, "chem.pctrank.txt"))
+                        , paste0(TargetSiteID, ".chem.pctrank.txt"))
 # read
 df.pctrank <- read.delim(fn.pctrank)
 # Structure
@@ -1079,7 +1079,7 @@ stressors <- list.stressors$stressors
 if ((length(stressors) == 1) && stressors[1] == "none") {
     # No stressors returned
     print(paste("No stressors identified for site", TargetSiteID, sep = " "))
-    flush.console()
+    utils::flush.console()
 } else {
   #
     stressors <- c(stressors[2:length(stressors)])

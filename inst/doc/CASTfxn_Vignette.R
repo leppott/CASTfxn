@@ -12,8 +12,9 @@ library(CASTfxn)
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
+dir_results <- file.path(getwd(), "Results")
 
-CurrentDir<-getwd()
+CurrentDir <- getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
 # data, example included with package
@@ -25,7 +26,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
  
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
 
 ## ----Output_getSiteInfo_str----------------------------------------------
 str(list.SiteSummary)
@@ -128,7 +129,7 @@ str(list.stressors)
 TargetSiteID <- "SRCKN001.61"
 # filename
 fn.pctrank <- file.path(getwd(), "Results", TargetSiteID
-                        , paste0(TargetSiteID, "chem.pctrank.txt"))
+                        , paste0(TargetSiteID, ".chem.pctrank.txt"))
 # read
 df.pctrank <- read.delim(fn.pctrank)
 # Structure
@@ -529,6 +530,45 @@ myExp  <- "Exposure"
 p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 p3
 
+## ----ex_getCoOccur, eval=FALSE-------------------------------------------
+#  #Load Data
+#  df.data <- data_CoOccur
+#  #
+#  col.Group     <- "Group"
+#  col.Bio       <- "CSCI"
+#  col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
+#  col.ID        <- c("StationID_Master")
+#  #
+#  Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
+#  Bio.Nar.Lab <- c("very likely altered", "likely altered"
+#                  , "possibly altered ", "likely intact")
+#  Bio.Deg.Brk <- c(-2, 0.799, 2)
+#  Bio.Deg.Lab <- c("Degraded", "Good")
+#  dir.plots <- file.path(getwd(), "Results")
+#  #
+#  ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
+#  #
+#  getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+#          , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
+#          , dir.plots
+#          )
+
+## ----Output_getCoOccur---------------------------------------------------
+dir.pkg <- file.path(path.package("CASTfxn"), "extdata")
+fn.pdf <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_20180802_123825.pdf")
+fn.tsv <- file.path(dir.pkg, "901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv")
+fn.jpg <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_DO.jpg")
+#
+# Open PDF
+#system(paste0("open ",fn.pdf, ""))
+#
+# data table
+df.tsv <- read.delim(fn.tsv)
+kable(df.tsv, caption="CoOccurence Scores")
+#
+# image
+#include_graphics(fn.jpg)
+
 ## ----Output, eval=FALSE--------------------------------------------------
 #  # Install CASTfxn ####
 #  # library(devtools)
@@ -676,7 +716,7 @@ p3
 #  if ((length(stressors) == 1) && stressors[1] == "none") {
 #      # No stressors returned
 #      print(paste("No stressors identified for site", TargetSiteID, sep = " "))
-#      flush.console()
+#      utils::flush.console()
 #  } else {
 #    #
 #      stressors <- c(stressors[2:length(stressors)])

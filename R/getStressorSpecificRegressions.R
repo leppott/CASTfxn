@@ -126,7 +126,7 @@ getStressorSpecificRegressions <- function(matchedData, predint=0.75,
     # No BMI Responses Found
     print(paste0("No BMI response data available for ", TargetSiteID, 
                  ". Regression data illustrate cluster relationships only."))
-    flush.console()
+    utils::flush.console()
   }
     
   if (nrow(df.SSTV) != 0) {##IF.SSTV.START
