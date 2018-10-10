@@ -42,6 +42,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9107 (2018-10-10)
+
+* getSiteInfo
+    + Add user defined "Results" folder.  Issue #13
+    + Check for it and if not present create it.
+    + Makes the function more generic.  Issue #4
+
 ## Changes in Version 0.1.0.9106 (2018-10-10)
 
 * Merged Vignette branch (v0.1.0.9104) in previous committ (0.1.0.9105).

@@ -8,9 +8,11 @@
 #' 
 #' Required objects:
 #' 
-#' * data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
+#' * data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude
+#' , WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 #' 
-#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
+#' , BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
 #' * data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
 #' 
@@ -18,24 +20,32 @@
 #' 
 #' * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 #' 
-#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
+#' , W___AGRIC, W___URBAN, W___FOREST
 #' 
 #' * data.mod; COMID, ReachModStatus, ModReason
+#' 
+#' Will create output folder dir_results if it doesn't already exist.  The default is "Results".  
+#' A subdirectory is created for each SiteID.
 #' 
 #' @param TargetSiteID SiteID
 #' @param clustertype Cluster
 #' @param useLU Use LandUse.  Default = FALSE.
+#' @param dir_results Directory for results.  Default = "Results".
 #' 
-#' @return A jpg map to the "Results" directory of the working directory.  And a summary list; SiteInfo, Samps
-#' , BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+#' @return A jpg map to a folder named by the SiteID in the user supplied dir_results 
+#' folder (default is "Results" folder in the working directory).  Also produced 
+#' is a summary list; SiteInfo, Samps, BMImetrics, AlgMetrics, ReachInfo, COMID
+#' , ClustIDs, impair, and mods.
 #' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
+#' dir_results <- file.path(getwd(), "Results")
 #' 
 #' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
+#' myDir.Data <- file.path(CurrentDir, "data")
 #' 
 #' # data import, example
 #' #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
@@ -57,17 +67,21 @@
 #' data.mod           <- data_ReachMod
 #'
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
 #
 #' @export
-getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
+getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE
+                        , dir_results = file.path(getwd(), "Results")) {
   #
-  # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- getwd()
-  dir.sub <- "Results"
+  # check for and create (if necessary) dir_results and SiteID subdirectory
+  #wd <- getwd()
+  #dir.sub <- "Results"
   dir.sub2 <- TargetSiteID
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2))
+  ifelse(!dir.exists(dir_results)==TRUE
+         , dir.create(dir_results)
+         , FALSE)
+  ifelse(!dir.exists(file.path(dir_results, dir.sub2))==TRUE
+         , dir.create(file.path(dir_results, dir.sub2))
          , FALSE)
   #
   mySiteInfo <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
@@ -90,8 +104,11 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   # get response information (CSCI, H20, etc)
   myBMImetrics <- data.bmi.metrics[data.bmi.metrics[,"StationID_Master"]==TargetSiteID
                                    ,c("CollDate","IBI")]
+  # myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
+  #                                      ,c("CollDate","PollTolClass.1.tot")]
   myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
-                                       ,c("CollDate","PollTolClass.1.tot")]
+                                       ,]
+  
   # get COMID 
   myCOMID <- mySiteInfo$COMID_NHD2
   myWBName <- mySiteInfo$WaterbodyName
@@ -180,9 +197,14 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE) {
   grDevices::dev.off()
   
   #
-  mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, BMImetrics = myBMImetrics
-                        , AlgMetrics = myAlgaeMetrics, ReachInfo = myReachInfo
-                        , COMID = myCOMID, ClustIDs = myClustIDs, impair = myImpairments
+  mySiteSummary <- list(SiteInfo = mySiteInfo
+                        , Samps = mySamps
+                        , BMImetrics = myBMImetrics
+                        , AlgMetrics = myAlgaeMetrics
+                        , ReachInfo = myReachInfo
+                        , COMID = myCOMID
+                        , ClustIDs = myClustIDs
+                        , impair = myImpairments
                         , mods = myReachMods)
   return(mySiteSummary)
 }

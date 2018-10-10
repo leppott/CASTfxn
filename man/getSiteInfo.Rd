@@ -4,7 +4,8 @@
 \alias{getSiteInfo}
 \title{Site Info}
 \usage{
-getSiteInfo(TargetSiteID, clustertype, useLU = FALSE)
+getSiteInfo(TargetSiteID, clustertype, useLU = FALSE,
+  dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
@@ -12,10 +13,14 @@ getSiteInfo(TargetSiteID, clustertype, useLU = FALSE)
 \item{clustertype}{Cluster}
 
 \item{useLU}{Use LandUse.  Default = FALSE.}
+
+\item{dir_results}{Directory for results.  Default = "Results".}
 }
 \value{
-A jpg map to the "Results" directory of the working directory.  And a summary list; SiteInfo, Samps
-, BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+A jpg map to a folder named by the SiteID in the user supplied dir_results 
+folder (default is "Results" folder in the working directory).  Also produced 
+is a summary list; SiteInfo, Samps, BMImetrics, AlgMetrics, ReachInfo, COMID
+, ClustIDs, impair, and mods.
 }
 \description{
 Get site info of provided siteID.
@@ -27,9 +32,11 @@ Requires package rgdal.
 
 Required objects:
 
-* data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
+* data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude
+, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 
-* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
+, BMI.Metrics.SampID, Algae.Metrics.SampID
 
 * data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
 
@@ -37,17 +44,22 @@ Required objects:
 
 * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 
-* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
+, W___AGRIC, W___URBAN, W___FOREST
 
 * data.mod; COMID, ReachModStatus, ModReason
+
+Will create output folder dir_results if it doesn't already exist.  The default is "Results".  
+A subdirectory is created for each SiteID.
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
+dir_results <- file.path(getwd(), "Results")
 
 CurrentDir<-getwd()
-myDir.Data <- paste(CurrentDir,"data/",sep="/")
+myDir.Data <- file.path(CurrentDir, "data")
 
 # data import, example
 #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
@@ -69,5 +81,5 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
 }

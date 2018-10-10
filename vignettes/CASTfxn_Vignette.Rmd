@@ -94,8 +94,9 @@ saved as SitID.map.jpg, e.g., SRCKN001.61.map.jpg.
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
+dir_results <- file.path(getwd(), "Results")
 
-CurrentDir<-getwd()
+CurrentDir <- getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
 # data, example included with package
@@ -107,7 +108,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
  
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
 ```
 The structure of the data is below.
 ```{r Output_getSiteInfo_str}
