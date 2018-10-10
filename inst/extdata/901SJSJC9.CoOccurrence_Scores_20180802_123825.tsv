@@ -1,0 +1,8 @@
+"StationID_Master"	"Group"	"CSCI"	"Bio.Nar"	"Bio.Deg"	"Param_Name"	"Param_Value"	"n"	"q25"	"q50"	"q75"	"Sc_Comp"
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"DO_uf_mg_L"	8.95	40	7.5	9.27	10.48	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	594	78	1095	1765.5	2731	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	1471	78	1095	1765.5	2731	-1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2244	78	1095	1765.5	2731	0
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2678	78	1095	1765.5	2731	0
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"SpecCond_uf_µS_cm"	2879	78	1095	1765.5	2731	1
+"901SJSJC9"	3	0.57	"very likely altered"	"Degraded"	"TN_uf_mg_L"	0.85	43	0.835	2.22	6.3	-1

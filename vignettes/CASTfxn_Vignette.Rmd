@@ -839,7 +839,9 @@ https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-advanced-analyses-
 
 Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data.
 
-Saves PDF of plots and a scores files (tab separated) to user defined directory.
+Saves PDF of plots and a scores files (tab separated) to user defined directory.  Each SiteID is a different directory.
+
+The example data for this function is from a different state from the other example data so SiteID's and stressor data will not match.
 
 ```{r ex_getCoOccur, eval=FALSE}
 #Load Data
@@ -864,6 +866,61 @@ getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
         , dir.plots
         )
 ```
+
+
+The output is a PDF with a box plot of **within** cluster data for a single 
+parameter where the biological score was better than the test site.  Points are 
+the data that contribute to the box plot but are color coded by biological 
+condition; Degraded (gray) and Good (cyan).  The red dashed line represents the 
+parameter value of the test site.  If there are multiple lines then there are 
+multiple samples for the test site.  The x-axis has the name of the parameter, 
+the number of comparator sites (n), and the cooccurrence score for the site.
+
+Samples are scored:
+
+1. Supports the case for candidate cause. Stressor levels at the test sites are above the 75th percentile of comparator sites having higher biological quality.
+
+0. Indeterminate. Stressor levels at the test site are below the 50th percentile of comparator sites having higher biological quality.
+
+-1. Weakens the case for the candidate cause. Stressor levels at the test sites are between the 50th and 75th percentile of comparator sites having higher biological quality.
+
+
+The second plot is the relative probablity of degraded condition.  The red dashed 
+line is the value of the parameter at the test site.  The lines are the 20th and
+50th percentiles.
+
+The scores text file has the biological score, cluster, parameter, value,  
+statistics for the cluster (number of samples, 25th-, 50th-, and 75th-percentiles), 
+and the cooccurence score.
+
+(In ext data folder)
+901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv
+
+901SJSJC9_CoOccurrence_20180802_123825.pdf
+
+system('open "901SJSJC9_CoOccurrence_20180802_123825.pdf")
+
+file.path(path.package("CASTfxn"), "extdata")
+```{r Output_getCoOccur}
+dir.pkg <- file.path(path.package("CASTfxn"), "extdata")
+fn.pdf <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_20180802_123825.pdf")
+fn.tsv <- file.path(dir.pkg, "901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv")
+fn.jpg <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_DO.jpg")
+#
+# Open PDF
+#system(paste0("open ",fn.pdf, ""))
+#
+# data table
+df.tsv <- read.delim(fn.tsv)
+kable(df.tsv, caption="CoOccurence Scores")
+#
+# image
+#include_graphics(fn.jpg)
+```
+
+
+```
+
 
 # Output
 
