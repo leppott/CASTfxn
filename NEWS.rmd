@@ -42,6 +42,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9106 (2018-10-10)
+
+* Merged Vignette branch (v0.1.0.9104) in previous committ (0.1.0.9105).
+* Added project to TravisCI.
+* ReadMe
+    + Add badges.
+
 ## Changes in Version 0.1.0.9104 (2018-08-02)
 
 * getCoOccur
