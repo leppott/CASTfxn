@@ -83,7 +83,7 @@
 #' @param dir.plots Directory to save plots.  Default = working directory
 #'
 #' @return Saves PDF of plots and a scores files (tab separated) to user defined
-#'  directory.
+#'  directory.  A sub-directory is created for each SiteID in ID.plot.
 #' 
 #' @examples
 #' #Load Data
@@ -127,13 +127,6 @@ getCoOccur <- function(df.data, ID.plot=NULL
                     , dir.plots=getwd()
                     ) {##FUNCTION.START
   #
-  wd = getwd()
-  dir.sub <- "Results"
-  dir.sub2 <- TargetSiteID
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2))
-         , FALSE)
-  #  
   # define pipe
   `%>%` <- dplyr::`%>%`
   
@@ -184,14 +177,12 @@ getCoOccur <- function(df.data, ID.plot=NULL
   # Remove columns
   col.remove <- names(df.scores) %in% col.Stressors
   df.scores <- df.scores[, !col.remove]
-
+  
   #
   # remove all rows
   df.scores <- df.scores[0, ]
-  #
-  fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence_Scores_", myDateTime,".tsv"))
-  write.table(df.scores, file=fn.scores
-              , col.names = TRUE, row.names=FALSE, sep="\t")
+  
+  
 
   #par
 #  par.orig <- par(no.readonly=TRUE)
@@ -210,12 +201,27 @@ getCoOccur <- function(df.data, ID.plot=NULL
   
  # i <- ID.plot[2]
   
-  # Write to PDF
-  fn.pdf <- paste0(TargetSiteID, "_CoOccurrence_", myDateTime,".pdf")
-  grDevices::pdf(file=file.path(wd,dir.sub,dir.sub2,fn.pdf), width=6, height=8)
+
   
   # Analysis for each "test" sample
   for (i in ID.plot){##FOR.i.START
+    #
+    TargetSiteID <- i
+    #
+    wd = getwd()
+    dir.sub <- "Results"
+    dir.sub2 <- TargetSiteID
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+           , dir.create(file.path(wd, dir.sub, dir.sub2))
+           , FALSE)
+    #
+    # Write to PDF
+    fn.pdf <- paste0(TargetSiteID, "_CoOccurrence_", myDateTime,".pdf")
+    grDevices::pdf(file=file.path(wd,dir.sub,dir.sub2,fn.pdf), width=6, height=8)
+    #
+    fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence_Scores_", myDateTime,".tsv"))
+    write.table(df.scores, file=fn.scores
+                , col.names = TRUE, row.names=FALSE, sep="\t")
     #
     i.num <- match(i, ID.plot)
     i.len <- length(ID.plot)
@@ -483,13 +489,13 @@ getCoOccur <- function(df.data, ID.plot=NULL
      #
  #    par(par.orig)
      #
-  #   dev.off()
+    grDevices::dev.off()
   
      #
   }##FOR.i.END 
   
 
-  grDevices::dev.off()
+  #grDevices::dev.off()
   #
   
 }##FUNCTION.END

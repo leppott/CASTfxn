@@ -4,8 +4,6 @@
 #' 
 #' @section CASTfxn functions:
 #' 
-#' CoOccur
-#' 
 #' getAlgmatches
 #' 
 #' getAlgStressorResponses
@@ -18,16 +16,18 @@
 #' 
 #' getClusterInfo
 #' 
+#' getCoOccur
+#' 
 #' getRegPlotSet
 #' 
 #' getSiteInfo
+#' 
+#' getSSDplot
 #' 
 #' getStressorList
 #' 
 #' getStressorSpecificRegressions
 #' 
-#' SSDplot
-#'
 #' @docType package
 #' @name CASTfxn
 NULL

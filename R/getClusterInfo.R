@@ -111,7 +111,7 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
     }##IF.myY.END
     #
     grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
-                                      TargetSiteID,".",varYlab,".jpg"),
+                                      TargetSiteID,".cluster.",varYlab,".jpg"),
                 width = 4*ppi, height = 3*ppi, pointsize = 8,
                 quality = 100, bg = "white", res = ppi)
         #

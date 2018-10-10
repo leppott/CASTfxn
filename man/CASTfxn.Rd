@@ -11,8 +11,6 @@ Custom functions for CAST.
 \section{CASTfxn functions}{
 
 
-CoOccur
-
 getAlgmatches
 
 getAlgStressorResponses
@@ -25,14 +23,16 @@ getChemDataSubsets
 
 getClusterInfo
 
+getCoOccur
+
 getRegPlotSet
 
 getSiteInfo
 
+getSSDplot
+
 getStressorList
 
 getStressorSpecificRegressions
-
-SSDplot
 }
 

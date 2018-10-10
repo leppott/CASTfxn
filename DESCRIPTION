@@ -1,13 +1,15 @@
 Package: CASTfxn
 Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
-Version: 0.1.0.9102
+Description: Functions and other tools associated with the Causal Assessment 
+    Screening Tool.  Used to more quickly assess stressors to a list of sites.
+Version: 0.1.0.9104
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),
   person("Diana","Sagua", role="dtc"))
+Author: Erik W Leppo [aut, cre], Ann Roseberry Lincoln [ctb], Diana Sagua [dtc]
 Maintainer: Erik Leppo <Erik.Leppo@tetratech.com>
-Description: Functions and other tools associated with the Causal Assessment Screening Tool.
 License: MIT
 Encoding: UTF-8
 LazyData: true

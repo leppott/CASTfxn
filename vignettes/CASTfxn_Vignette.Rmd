@@ -10,6 +10,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r Setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+library(knitr)
+library(CASTfxn)
+```
+
 # Introduction
 `CASTfxn` was created by Tetra Tech, Inc. for in 2018 to support the Causal Assessment Screening Tool.  This tool aides data managers to more quickly analyze large amounts of data for causal assessment.  It is not meant to be the final arbiter.  But it can aid in the filtering the data.
 
@@ -53,7 +59,10 @@ The first line are the field (column) headers.
 There is no single overall function but a series of functions.
 
 ## Operations
-The operations of the `CASTfxn` package are listed below but will be explained in more detail in their own section.
+The operations of the `CASTfxn` package are listed below but will be explained 
+in more detail in their own section.  The functions are listed not in 
+alphabetical order but in the order the functions are intended to run.  That is, 
+some functions require the output from other functions.
 
 * getSiteInfo
 * getChemDataSubsets
@@ -67,37 +76,27 @@ The operations of the `CASTfxn` package are listed below but will be explained i
 * getSSDplot
 * getCoOccur
 
-
 The library assumes that there are the following folders in the working directory:
 
 * Results
 
 The folder "Results" is for some of the outputs.
 
-SOme of the functions assume that some datasets not included in the function parameters are loaded into the global environment.  These are mentioned in the Details section of each function.  It is anticipated that a future version of the package will explicitly list these datasets in the parameters of each function.
+Some of the functions assume that some datasets not included in the function parameters are loaded into the global environment.  These are mentioned in the Details section of each function.  It is anticipated that a future version of the package will explicitly list these datasets in the parameters of each function.
 
 ### getSiteInfo
-The getSiteInfo function is below.  The commented section is an examle of importing (reading) files into R.  The example works with data that is saved as part of the package.
+Output is a jpg map to the "Results" directory of the working directory. And a summary list; SiteInfo, Samps , BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
 
-```{r getSiteInfo, echo=TRUE}
-library(CASTfxn)
+The summary list is returned to the console.  It is not saved to file.  The map is 
+saved as SitID.map.jpg, e.g., SRCKN001.61.map.jpg.
 
+```{r ex_getSiteInfo}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
-
-# data import, example
-#data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
-#data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
-#                               , na.strings = c(""," "))
-#data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
-#data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
-#data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
-#data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
 
 # data, example included with package
 data.Stations.Info <- data_Sites
@@ -110,20 +109,25 @@ data.mod           <- data_ReachMod
  
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
 ```
-
-The code below opens in an R plot window the jpg saved in the previous example.  But it requires the `imager` package.  This is a replotting of the image.  Viewing the JPG is an external viewer will open the file to the correct scale.
-
-```{r OpenJPG, echo=TRUE}
-#install.packages("imager")
-library("imager")
-myJPG <- paste0("map.SRCKN001.61.jpg")
-img <- load.image(file.path(getwd(), "Results", myJPG))
-plot(img)
+The structure of the data is below.
+```{r Output_getSiteInfo_str}
+str(list.SiteSummary)
 ```
-Show the actual image.
 
-![Alt text](./Results/map.SRCKN001.61.jpg)
+The map (shown below) includes:
+* state border (black line)
+* NHDplus flowlines (light blue lines)
+* all sites (dark gray close circles)
+* cluster sites (cyan  closed circles)
+* reference sites (blue open circles)
+* target site (red closed triangle)
 
+```{r Output_getSiteInfo_JPG, echo=TRUE}
+TargetSiteID <- "SRCKN001.61"
+myJPG <- paste0(TargetSiteID,".map.jpg")
+fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
+include_graphics(fn.img)
+```
 
 ### getChemDataSubsets
 
@@ -133,6 +137,43 @@ Requires the output of:
 
 * getSiteInfo
 
+The return is a summary list; ref.sites, ref.reaches, cluster.samps, chem.info , all.chems, cluster.chem, and site.chem.
+
+```{r ex_getChemDataSubsets}
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# Run getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+```
+The structure of the data is below.
+```{r Output_getChemDataSubsets_str}
+str(list.data)
+```
+
 ### getStressorList
 
 Box plots of each stressor, grouped by category.
@@ -141,6 +182,116 @@ Requires the output of:
 
 * getSiteInfo
 * getChemDataSubsets
+
+Returns a jpeg in the "Results" subdirectory of the working directory with box 
+plots. Also returns a list of stressors; stressors and site.stressor.pctrank.
+
+The plots are named as SiteID.boxes.category.jpg, e.g.,
+SRCKN001.61.boxes.Nutrients.jpg.
+
+```{r ex_getStressorList, warning=FALSE}
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data import, example 
+# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+```
+
+The structure of the returned data is below.
+```{r Output_getStressorList_str}
+str(list.stressors)
+```
+
+One text file is created.
+
+* SRCKN001.61.chem.pctrank.txt
+
+And plots are created and saved per stressor group.  The "nutrient" plot is shown below.
+
+```{r Output_getStressorList_txt}
+TargetSiteID <- "SRCKN001.61"
+# filename
+fn.pctrank <- file.path(getwd(), "Results", TargetSiteID
+                        , paste0(TargetSiteID, "chem.pctrank.txt"))
+# read
+df.pctrank <- read.delim(fn.pctrank)
+# Structure
+str(df.pctrank)
+# create table
+# first 6 rows and columns
+kable(df.pctrank[1:6, 1:6], caption="partial table")
+# box plot
+myJPG <- paste0(TargetSiteID,".boxes.Nutrients.jpg")
+fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
+include_graphics(fn.img)
+```
+
+* The stressor categories are:
+    + Bacteria
+    + Ions
+    + Metals_metalloids
+    + Nutrients
+    + Water quality
+ 
+* The data ploted is only **within** cluster data (denoted on the x-axis).
+
+* Stressors are on the y-axis and correspond to column names in the data.
+
+* The x-axis is percent rank (0-1).
+
+* Box and whisker plots have the following attributes:
+   + boxes are 25th and 75th percentiles
+   + box line is 50th percentile (median)
+   + whiskers are non-outlier min and max
+   + outliers (black open circles)
+   + Outliers are ouside of 1.5*IQR (Interquartile Range, 75th-25th percentile)
+   + Cluster reference sites (blue closed squares)
+   + Test site data (red closed circles)
 
 ### getClusterInfo
 
@@ -152,6 +303,81 @@ Requires the output of:
 * getChemDataSubsets
 * getStressorList
 
+The return is a jpeg in the "Results" subdirectory of the working directory.  
+The plots are names with SiteID.cluster.parameter.jpg, e.g., 
+SRCKN001.61.cluster.ElevWs.jpg.
+
+In this case example 95 plots are created.
+
+```{r ex_getClusterInfo}
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+ 
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+#
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getClusterInfo
+ref.reaches <- list.data$ref.reaches
+refSiteCOMIDs <- list.data$ref.reaches
+
+# Run getClusterInfo
+getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
+```
+For each variable in the test data set a "Ws" (Watershed) and "Cat" (Catchment) version are created.  This is how the variables exist in the data.
+
+* Ws = watershed = entire upstream area
+
+* Cat = catchment = local polygon associated with reach
+
+```{r Output_getClusterInfo_txt}
+TargetSiteID <- "SRCKN001.61"
+myJPG <- paste0(TargetSiteID,".cluster.ElevWs.jpg")
+fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
+include_graphics(fn.img)
+```
+
+* The data ploted is **between** cluster data (clusters are denoted on the x-axis).
+
+* Stressors are on the y-axis and correspond to column names in the data.
+    + Ws = watershed (entire upstream area)
+    + Cat = catchment (local polygon in NHDplus associated with reach)
+
+* The x-axis is the range of values in the data.
+
+* Box and whisker plots have the following attributes:
+   + boxes are 25th and 75th percentiles
+   + box line is 50th percentile (median)
+   + whiskers are non-outlier min and max
+   + outliers (black open circles)
+   + Outliers are ouside of 1.5*IQR (Interquartile Range, 75th-25th percentile)
+   + Cluster reference sites (blue closed squares)
+   + Test site data (red closed circles)
+
 ### getBMImatches
 
 Get BMI and chem sample matches.
@@ -161,6 +387,71 @@ Requires the output of:
 * getSiteInfo
 * getChemDataSubsets
 * getStressorList
+
+The return is a summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp
+, cl.b.rsp, and site.b.rsp.  No files are created or saved.
+
+```{r Ex_getBMImatches}
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+                                 
+# datasets getBMIMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+
+
+# Run getBMIMatches
+list.MatchBMIData <- getBMIMatches(stressors, list.data)
+```
+
+The structure of the returned data is below.
+```{r Output_BMIMatches_str}
+str(list.MatchBMIData)
+```
 
 ### getBMIStressorResponses
 
@@ -173,6 +464,86 @@ Requires the output of:
 * getStressorList
 * getBMImatches
 
+The return is jpg in "Results" folder of working directory for each parameter. And a tab-delimited text file of stressor correlations.
+
+Each parameter is plotted and scored.  SCORING = ???????
+
+The jpg files are in teh format of SiteID.BMI.SR.parameter.jpg, e.g., 
+SRCKN001.61BMI.SR.Arsenic_inorg_uf_ug_L_DipTaxSPL_Sc.jpg.
+
+The text file is in the format of ......
+
+```{r ex_getBMIStressorResponses, eval=FALSE}
+predint <- 0.75
+varLegLoc <- "topright"
+BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
+             
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+                                 
+# datasets getBMIMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+
+# Run getBMIMatches
+list.MatchBMIData <- getBMIMatches(stressors, list.data)     
+  
+# Run getBMIStressorResponses           
+getBMIStressorResponses(stressors, list.MatchBMIData)
+```
+
+
+The structure of the returned data is below.
+```{r Output_BMIStressorResponses, eval=FALSE}
+str(list.MatchBMIData)
+```
+
 ### getAlgMatches
 
 Get Algae and chem sample matches.
@@ -183,7 +554,73 @@ Requires the output of:
 * getChemDataSubsets
 * getStressorList
 
-### getAlgStressorResonses
+The return is a summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp, 
+cl.b.rsp , and site.b.rsp.
+
+The example data included with the package does not include algal data so no outputs are produced.  The output is similar to getBMImatches.
+
+```{r ex_getAlgMatches, eval=FALSE}
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+                                 
+# datasets getAlgMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+
+# Run getAlgMatches
+list.MatchAlgData <- getAlgMatches(stressors, list.data)
+```
+
+The structure of the returned data is below.
+```{r Output_getAlgMatches_str, eval=FALSE}
+str(list.MatchAlgData)
+```
+
+### getAlgStressorResponses
 
 Algae stressor regressions.
 
@@ -193,6 +630,84 @@ Requires the output of:
 * getChemDataSubsets
 * getStressorList
 * getAlgMatches
+
+The return is a jpg in "Results" folder of working directory for each paramter. 
+And a tab-delimited text file of stressor correlations.
+
+The example data included with the package does not include algal data so no outputs are produced.  The output is similar to getBMIStressorResponses
+
+```{r ex_getAlgStressorResponses, eval=FALSE}
+predint <- 0.75
+varLegLoc <- "topright"
+
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir<-getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+                                 
+# datasets getAlgMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+
+# Run getAlgMatches
+list.MatchAlgData <- getAlgMatches(stressors, list.data)
+
+# data getAltStressorResponses
+data.algae.metrics <- data_AlgMetrics
+AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
+predint <- 0.75
+varLegLoc <- "topright"
+
+# Run getAlgStressorResponses
+getAlgStressorResponses(stressors, list.MatchAlgData)
+```
+
+The structure of the returned data is below.
+```{r Output_getAlgStressorResonses_str, eval=FALSE}
+str(list.MatchAlgData)
+```
 
 ### getStressorSpecificRegressions
 
@@ -205,10 +720,458 @@ Requires the output of:
 * getStressorList
 * getBMImatches
 
+The return is Jpeg files to "Results" folder in working directory. And a 
+tab-delimited text file.
+
+```{r ex_getStressorSpecificRegressions, eval=FALSE}
+predint <- 0.75
+varLegLoc <- "topright"
+
+TargetSiteID <- "SRCKN001.61"
+clustertype <- "5"
+useLU <- FALSE
+
+CurrentDir <- getwd()
+myDir.Data <- paste(CurrentDir,"data/",sep="/")
+
+# datasets getSiteInfo
+# data, example included with package
+data.Stations.Info <- data_Sites
+data.SampSummary   <- data_SampSummary
+data.303d.ComID    <- data_303d
+data.bmi.metrics   <- data_BMIMetrics
+data.algae.metrics <- data_AlgMetrics
+data.cluster       <- data_Cluster_Hi
+data.mod           <- data_ReachMod
+#
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+
+# datasets getChemDataSubsets
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+
+# data import, example 
+# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+
+# data, example included with package
+data.chem.raw <- data_Chem
+data.chem.info <- data_ChemInfo
+
+# Run getChemDataSubsets
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+
+# datasets getStressorList
+chem.info <- list.data$chem.info
+cluster.chem <- list.data$cluster.chem
+cluster.samps <- list.data$cluster.samps
+ref.sites <- list.data$ref.sites
+site.chem <- list.data$site.chem
+
+# set cutoff for possible stressor identification
+probsLow <- 0.10
+probsHigh <- 0.90 
+
+# Run getStressorList
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                 , cluster.samps, ref.sites, site.chem
+                                 , probsHigh, probsLow)
+                                 
+# datasets getBMIMatches
+## remove "none"
+stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+
+# Run getBMIMatches
+list.MatchBMIData <- getBMIMatches(stressors, list.data)  
+  
+# datasets getStressorSpecificRegressions
+# data import, example
+# data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+# data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
+#
+# data, example included with package
+data.bmi.taxa.raw <- data_BMIcounts
+data.SSTV.totabund <- data_BMIRelAbund
+
+# Run getStressorSpecificRegressions
+getStressorSpecificRegressions(list.MatchBMIData)
+```
+
+
+The structure of the returned data is below.
+```{r Output_getStressorSpecificRegressions_str, eval=FALSE}
+str(list.MatchAlgData)
+```
+
+
 ### getSSDplot
+Species Sensitify Distribution (SSD) plots
 
 Generates plots of the proportion of species affected at different exposure levels in laboratory toxicity tests.
 
+Plots are generated from a single set of inputs.  They are created with ggplot 
+and are returned to the console as a variable (e.g., "p1").  It is up to the 
+user to save the output.
+
+The plot below reproduces the plot contained in the ssd_generator_v1.xlsm file 
+on the CADDIS website.
+
+```{r Output_getSSDplot, warnings=FALSE}
+# Example 3 
+# https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
+# ssd_generator_v1.xlsm
+myDF <- data_SSD_generator
+myRT   <- "ResponseType"
+myTaxa <- "Taxa"
+myExp  <- "Exposure"
+# Run function
+p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+p3
+```
+
+For information on interpretation see the CADDIS website.
+
+https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-advanced-analyses-controlling-for-natural-variability#tab-5
+
+
 ### getCoOccur
 
-Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data
+Generates a PDF with 2 plots per site for co-occurrence of measured chem and bio data.
+
+Saves PDF of plots and a scores files (tab separated) to user defined directory.  Each SiteID is a different directory.
+
+The example data for this function is from a different state from the other example data so SiteID's and stressor data will not match.
+
+```{r ex_getCoOccur, eval=FALSE}
+#Load Data
+df.data <- data_CoOccur
+#
+col.Group     <- "Group"
+col.Bio       <- "CSCI"
+col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
+col.ID        <- c("StationID_Master")
+#
+Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
+Bio.Nar.Lab <- c("very likely altered", "likely altered"
+                , "possibly altered ", "likely intact")
+Bio.Deg.Brk <- c(-2, 0.799, 2)
+Bio.Deg.Lab <- c("Degraded", "Good")
+dir.plots <- file.path(getwd(), "Results")
+#
+ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
+#
+getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+        , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
+        , dir.plots
+        )
+```
+
+
+The output is a PDF with a box plot of **within** cluster data for a single 
+parameter where the biological score was better than the test site.  Points are 
+the data that contribute to the box plot but are color coded by biological 
+condition; Degraded (gray) and Good (cyan).  The red dashed line represents the 
+parameter value of the test site.  If there are multiple lines then there are 
+multiple samples for the test site.  The x-axis has the name of the parameter, 
+the number of comparator sites (n), and the cooccurrence score for the site.
+
+Samples are scored:
+
+1. Supports the case for candidate cause. Stressor levels at the test sites are above the 75th percentile of comparator sites having higher biological quality.
+
+0. Indeterminate. Stressor levels at the test site are below the 50th percentile of comparator sites having higher biological quality.
+
+-1. Weakens the case for the candidate cause. Stressor levels at the test sites are between the 50th and 75th percentile of comparator sites having higher biological quality.
+
+
+The second plot is the relative probablity of degraded condition.  The red dashed 
+line is the value of the parameter at the test site.  The lines are the 20th and
+50th percentiles.
+
+The scores text file has the biological score, cluster, parameter, value,  
+statistics for the cluster (number of samples, 25th-, 50th-, and 75th-percentiles), 
+and the cooccurence score.
+
+(In ext data folder)
+901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv
+
+901SJSJC9_CoOccurrence_20180802_123825.pdf
+
+system('open "901SJSJC9_CoOccurrence_20180802_123825.pdf")
+
+file.path(path.package("CASTfxn"), "extdata")
+```{r Output_getCoOccur}
+dir.pkg <- file.path(path.package("CASTfxn"), "extdata")
+fn.pdf <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_20180802_123825.pdf")
+fn.tsv <- file.path(dir.pkg, "901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv")
+fn.jpg <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_DO.jpg")
+#
+# Open PDF
+#system(paste0("open ",fn.pdf, ""))
+#
+# data table
+df.tsv <- read.delim(fn.tsv)
+kable(df.tsv, caption="CoOccurence Scores")
+#
+# image
+#include_graphics(fn.jpg)
+```
+
+
+```
+
+
+# Output
+
+It is up to the user to interpret the output of CAST.  CAST is meant as a 
+screening tool so the user will need to use best professional judgment to draw
+any conclusions.
+
+## Code
+Example code is below to generate the outputs from each of the CAST functions.
+This example uses a mix of the internal example data files and user files.
+```{r Output, eval=FALSE}
+# Install CASTfxn ####
+# library(devtools)
+# install_github("ALincolnTt/CASTfxn")
+
+# Set up ####
+library(CASTfxn)
+library(readxl)
+
+#Dir.Base <- "C:/Users/ann.lincoln/OneDrive - Tetra Tech, Inc/_ActiveProjects/AZ/RCodeData/ChemData"
+#Dir.Base <- "P:/Current/OtherGov/City of San Diego/FY2018/CAST_2018/QC_20180705/data"
+Dir.Base <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/vignettes/Results"
+#setwd("C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn_Ann\\CASTfxn")
+
+#Dir.Base <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\SanDiego\\Results"
+setwd(Dir.Base)
+
+# Site Selection ####
+TargetSiteID <- "LCNUT011.29"  # "VRELL009.02"
+TargetElevation <- "HI"
+
+# Read Files ####
+#Read all data files
+data.SampSummary <- data_SampSummary
+data.mod         <- data_ReachMod
+data.chem.info   <- data_ChemInfo
+data.303d.ComID  <- data_303d
+
+# Subset ####
+# These need subsetting
+if (TargetElevation == "HI") {
+    data.cluster   <- data_Cluster_Hi
+    fn.coOccur.hi  <- file.path(Dir.Base,"AZCoOccurData_HI.tab")
+    data.coOccur   <- read.table(fn.coOccur.hi, header = TRUE, sep = "\t")
+    ibi.thresholds <- c(45,52)
+} else {
+    data.cluster   <- data_Cluster_Lo
+    fn.coOccur.lo  <- file.path(Dir.Base, "AZCoOccurData_LO.tab")
+    data.coOccur   <- read.table(fn.coOccur.lo, header = TRUE, sep = "\t")
+    ibi.thresholds <- c(39,50)
+}
+
+# CAST, Stations ####
+data.Stations.Info <- data_Sites
+data.Stations.Info <- data.Stations.Info[data.Stations.Info$ElevCategory == TargetElevation,]
+
+# CAST, Chem ####
+## Use data rather than example file
+data.chem.raw <- data_Chem
+#
+fn.cheminfo2   <- file.path(Dir.Base, "AZStressorInfoFinal.xlsx")
+data.chem.info2 <- read_excel(fn.cheminfo2, sheet = 1, skip = 0)
+# #
+# fn.chem <- file.path(Dir.Base, "AZStressorDataFinal.tab")
+# data.chem.raw <- read.delim(fn.chem, na.strings = "NA")
+#
+analytes      <- data.chem.info$StdParamName[data.chem.info$UseInStressorID == 1]
+data.chem.raw <- data.chem.raw[data.chem.raw$StdParamName %in% analytes,]
+data.chem.raw <- data.chem.raw[data.chem.raw$ElevCategory == TargetElevation,]
+
+# CAST, BMI, metrics ####
+data.bmi.metrics <- data_BMIMetrics
+data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$ElevCategory == TargetElevation,]
+data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$StationID_Master != "VROAK042.78",]
+data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$StationID_Master != "SRHAG007.47",]
+data.bmi.metrics <- data.bmi.metrics[,c("StationID_Master","BMISampID",
+                                        "BMI.Metrics.SampID","CollDate",
+                                        "ElevCategory","NarRat","IBI",
+                                        "TotalTaxSPL_Sc","DipTaxSPL_Sc",
+                                        "IntolTaxSPL_Sc","HBISPL_Sc","PlecoPct_Sc",
+                                        "ScrapPctSPL_Sc","ScrapTaxSPL_Sc",
+                                        "TrichTax_Sc","EphemTax_Sc","EphemPct_Sc",
+                                        "Dom01PctSPL_Sc")]
+data.bmi.metrics <- data.bmi.metrics[, unlist(lapply(data.bmi.metrics, 
+                                      function(x) !all(is.na(x))))]
+
+# CAST, Alg, metrics ####
+fn.alg.metrics     <- file.path(Dir.Base, "AZAlgaeMetrics.tab")
+data.algae.metrics <- read.table(fn.alg.metrics, header = TRUE, sep = "\t")
+data.algae.metrics <- data.algae.metrics[!is.na(data.algae.metrics),]
+
+# CAST, misc ####
+fn.bmi.raw        <- file.path(Dir.Base, "AZBenthicCountsFinal.tab")
+data.bmi.taxa.raw <- read.table(fn.bmi.raw, header = TRUE, sep = "\t")
+
+fn.MT.bmi   <- file.path(Dir.Base, "AZBenthicMasterTaxa.tab")
+data.MT.bmi <- read.table(fn.MT.bmi, header = TRUE, sep = "\t", 
+                          stringsAsFactors = FALSE)
+
+# read LkpDir (.tab file)
+# fn.lkpdir <- "C:/Users/ann.lincoln/OneDrive - Tetra Tech, Inc/_ActiveProjects/AZ/RCodeData/ChemData/AZLkpDir.tab"
+# data.lkp.dir <- read.table(fn.lkpdir, header = TRUE, sep = "\t", 
+#                            col.names = c("StdParamName","DipTaxSPL_Sc",
+#                                          "Dom01PctSPL_Sc","EphemPct_Sc",
+#                                          "EphemTax_Sc","HBISPL_Sc","IBI",
+#                                          "IntolTaxSPL_Sc","PlecoPct_Sc",
+#                                          "ScrapPctSPL_Sc","ScrapTaxSPL_Sc",
+#                                          "TotalTaxSPL_Sc","TrichTax_Sc"),
+#                            colClasses = c("character","numeric","numeric", 
+#                                           "numeric","numeric","numeric","numeric",
+#                                           "numeric","numeric","numeric",
+#                                           "numeric","numeric","numeric"))
+# data.lkp.dir <- data_LkpDir
+
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU=FALSE)
+# Returns: mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, 
+                                            # BMImetrics = myBMImetrics, 
+                                            # AlgMetrics = myAlgaeMetrics, 
+                                            # ReachInfo = myReachInfo, 
+                                            # COMID = myCOMID, 
+                                            # ClustIDs = myClustIDs)
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
+SiteInfo <- list.SiteSummary$SiteInfo
+
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, 
+                                clustertype, useLU=FALSE)
+# mySubsets <- list(ref.sites = refSiteIDs, 
+                    # ref.reaches = refSiteCOMIDs, 
+                    # cluster.samps = cluster.chem.samps, 
+                    # chem.info = chems.groups.sort, 
+                    # all.chems = all.chems3, 
+                    # cluster.chem = cluster.chem.tab5, 
+                    # site.chem = site.chem4)
+ref.sites <- list.data$ref.sites
+ref.reaches <- list.data$ref.reaches
+cluster.samps <- list.data$cluster.samps
+cluster.chem <- list.data$cluster.chem
+site.chem <- list.data$site.chem
+chem.info <- list.data$chem.info
+
+# Get Cluster Info
+getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU=FALSE)
+
+# CAST, Stressors ####
+# Get Stressor List
+list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, 
+                                  cluster.chem, cluster.samps, ref.sites, 
+                                  site.chem, probsHigh=0.75, probsLow=0.25, 
+                                  useLU=FALSE)
+# myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank)
+
+stressors <- list.stressors$stressors
+
+if ((length(stressors) == 1) && stressors[1] == "none") {
+    # No stressors returned
+    print(paste("No stressors identified for site", TargetSiteID, sep = " "))
+    flush.console()
+} else {
+  #
+    stressors <- c(stressors[2:length(stressors)])
+    # Get BMI matches
+    list.MatchBMIData <- getBMIMatches(stressors, list.data)
+    # myBMIMatchData <- list(all.b.str = all.mbmi.stress
+    #                        , cl.b.str = cl.mbmi.stress
+    #                        , site.b.str = site.mbmi.stress
+    #                        , all.b.rsp = all.mbmi.resp
+    #                        , cl.b.rsp = cl.mbmi.resp
+    #                        , site.b.rsp = site.mbmi.resp)
+        
+    # Get BMI Stressor Responses
+    getBMIStressorResponses(stressors, list.MatchBMIData)
+        
+    if (TargetSiteID %in% unique(data.coOccur$StationID_Master)) {
+        getCoOccur(data.coOccur, ID.plot=TargetSiteID, col.ID="StationID_Master"
+                , col.Group="Group", col.Bio="IBI", col.Stressors=c(stressors)
+                , Bio.Nar.Brk=c(0, ibi.thresholds, 100)
+                , Bio.Nar.Lab=c("Impaired","Marginal","Good")
+                , Bio.Deg.Brk=c(0, min(ibi.thresholds), 100)
+                , Bio.Deg.Lab=c("Impaired", "Good"))
+    }
+        
+    # Get Stressor-specific regressions
+    predint <- 0.75
+    varLegLoc <- "topright"
+    myDir.Data <- getwd()
+    # read in relative abundance file
+    fn.RelAbund <- "AZ_Benthics_RelAbund.xlsx"
+    BMIRelAbund <- read_excel(fn.RelAbund, sheet=1)
+    #data.SSTV.totabund <- data_BMIRelAbund
+    data.SSTV.totabund <- BMIRelAbund
+    
+    getStressorSpecificRegressions(list.MatchBMIData, predint, varLegLoc)
+    # }
+    
+    # Erik, 20180712, commented out since no data
+    # list.MatchAlgData <- getAlgMatches(stressors, list.data)
+    # # myAlgMatchData <- list(all.a.str = all.malg.stress
+    # #                        , cl.a.str = cl.malg.stress
+    # #                        , site.a.str = site.malg.stress
+    # #                        , all.a.rsp = all.malg.resp
+    # #                        , cl.a.rsp = cl.malg.resp
+    # #                        , site.a.rsp = site.malg.resp)
+    # 
+    # # Get Algal Stressor Responses
+    # getAlgStressorResponses(stressors, list.MatchAlgData)
+
+    # getSSDs
+    #getSSDplot(Data, ResponseType, Taxa, Exposure)
+    myDF <- data_SSD_generator
+    myRT   <- "ResponseType"
+    myTaxa <- "Taxa"
+    myExp  <- "Exposure"
+    # Run function
+    p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+    
+}
+```
+
+
+
+
+
+
+# EXTRA
+
+* Stressor Response
+    + Scatterplots of stressor (x-axis) and reponse variable (e.g., Dip tax).
+    + 75th percentile prediction interval
+    + line equation, r2, p-value, and n
+    + all sites (gray open circle)
+    + all reference (blue small closed circle)
+    + cluster data (green open triangle)
+    + cluster reference (blue closed triangle)
+    + test site (red closed circle)
+    
+* Text files
+    + LCBIL000.15chem.pctrank.txt
+    + cluster? sites
+    + percent rank of chemistry parameters
+    + StressRespCorrs.BMI.txt
+    + Stressor and Response Variables, includes (V3, V4, V5, and r2).
+    + StressRespScores.BMI.txt
+    + Stressor and Benthic Macroinvertebrate Index variables
+    + n and Stressor Response Score
+    + 0 = ??
+    
+    
+Describe for each output type:
+1. Format and number.
+2. describe the format (e.g., plot).
+3. how to interpret
+
+

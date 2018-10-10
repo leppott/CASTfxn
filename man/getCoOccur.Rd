@@ -42,7 +42,7 @@ Default = c("Degraded", "Good")}
 }
 \value{
 Saves PDF of plots and a scores files (tab separated) to user defined
- directory.
+ directory.  A sub-directory is created for each SiteID in ID.plot.
 }
 \description{
 Generates a PDF with 2 plots per site for co-occurrence of 
