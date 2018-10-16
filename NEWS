@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-10-10 15:28:10
+    #> Last Update: 2018-10-16 09:59:10
 
 # Planned Updates
 
@@ -29,6 +29,10 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9109 (2018-10-16)
+
+  - Add getElev function.
 
 ## Changes in Version 0.1.0.9108 (2018-10-10)
 
