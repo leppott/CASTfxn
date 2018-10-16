@@ -4,11 +4,32 @@
 \name{data_BMIcounts}
 \alias{data_BMIcounts}
 \title{Benthic Macroinvertebrate counts example data}
-\format{A data frame with 57,012 rows and 22 variables:
+\format{A data frame with 57,012 rows and 24 variables:
 \describe{
-          \item{StationID}{Station ID}
-          \item{Lat_Dec}{Latitude, decimal degrees}
-          \item{Long_Dec}{Longitude, decimal degrees}
+          \item{\code{StationID_Master}}{a factor with levels }
+          \item{\code{StationID}}{Station ID}
+          \item{\code{Lat_Dec}}{Latitude, decimal degrees}
+          \item{\code{Long_Dec}}{Longitude, decimal degrees}
+          \item{\code{StreamType}}{a factor with levels \code{Effluent} \code{Perennial}}
+          \item{\code{WBID}}{a factor with levels }
+          \item{\code{Elevation}}{a numeric vector}
+          \item{\code{InvertReg}}{a factor with levels \code{cold} \code{Cold} \code{warm} \code{Warm}}
+          \item{\code{BenSampID}}{a numeric vector}
+          \item{\code{RepNum}}{a numeric vector}
+          \item{\code{CollDate}}{a Date}
+          \item{\code{Comments}}{a factor with levels }
+          \item{\code{CollMeth}}{a factor with levels \code{ADEQ Riffle bugs} \code{ADEQ Riffle Bugs} \code{EMAP Multihab bugs}}
+          \item{\code{FieldGearID}}{a factor with levels \code{D-frame di}}
+          \item{\code{Habitat}}{a factor with levels \code{Edge} \code{Multi-habitat} \code{Pool} \code{Riffle} \code{Run}}
+          \item{\code{WQX_FinalID}}{a factor with levels }
+          \item{\code{FinalID}}{a factor with levels }
+          \item{\code{Individuals}}{a numeric vector}
+          \item{\code{IndividualsCorrected}}{a numeric vector}
+          \item{\code{LargeRare}}{a logical vector}
+          \item{\code{Stage}}{a factor with levels \code{A} \code{ei} \code{eI} \code{i} \code{L} \code{p} \code{P} \code{x} \code{X}}
+          \item{\code{BMISampID}}{a character vector}
+          \item{\code{BMI.Metrics.SampID}}{a character vector}
+          \item{\code{ElevCategory}}{a character vector}
 }}
 \source{
 example data

@@ -4,9 +4,39 @@
 \name{data_BMIMetrics}
 \alias{data_BMIMetrics}
 \title{Benthic macroinvertebrate metrics example data}
-\format{A data frame with 957 rows and 29 variables:
+\format{A data frame with 957 rows and 32 variables:
 \describe{
-          \item{COMID}{NHDplus COMID}
+          \item{\code{StationID_Master}}{a factor with levels }
+          \item{\code{Year}}{a numeric vector}
+          \item{\code{Index}}{a factor with levels \code{Sp} \code{Su}}
+          \item{\code{BenSampID}}{a numeric vector}
+          \item{\code{RepNum}}{a numeric vector}
+          \item{\code{Lat_Dec}}{a numeric vector}
+          \item{\code{Long_Dec}}{a numeric vector}
+          \item{\code{InvertReg}}{a factor with levels \code{cold} \code{warm}}
+          \item{\code{StreamType}}{a factor with levels \code{Effluent} \code{Perennial}}
+          \item{\code{ActivityCategory}}{a factor with levels \code{Field Replicate} \code{Routine Sample}}
+          \item{\code{BenCollDate}}{a factor with levels }
+          \item{\code{NarRat}}{a factor with levels \code{Inconclusive} \code{Meets} \code{Violates}}
+          \item{\code{IBI}}{a numeric vector}
+          \item{\code{TotalTaxSPL_Sc}}{a numeric vector}
+          \item{\code{DipTaxSPL_Sc}}{a numeric vector}
+          \item{\code{IntolTaxSPL_Sc}}{a numeric vector}
+          \item{\code{HBISPL_Sc}}{a numeric vector}
+          \item{\code{PlecoPct_Sc}}{a numeric vector}
+          \item{\code{ScrapPctSPL_Sc}}{a numeric vector}
+          \item{\code{ScrapTaxSPL_Sc}}{a numeric vector}
+          \item{\code{TrichTax_Sc}}{a numeric vector}
+          \item{\code{EphemTax_Sc}}{a numeric vector}
+          \item{\code{EphemPct_Sc}}{a numeric vector}
+          \item{\code{Dom01PctSPL_Sc}}{a numeric vector}
+          \item{\code{CollDate}}{a Date}
+          \item{\code{BMISampID}}{a character vector}
+          \item{\code{BMI.Metrics.SampID}}{a character vector}
+          \item{\code{CSCI}}{a numeric vector}
+          \item{\code{O_E}}{a character vector}
+          \item{\code{MMI_Score}}{a numeric vector}
+          \item{\code{ElevCategory}}{a character vector}
 }}
 \source{
 example data

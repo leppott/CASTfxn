@@ -4,7 +4,83 @@
 \name{data_GIS_AZ_Outline}
 \alias{data_GIS_AZ_Outline}
 \title{AZ state outline}
-\format{An object of class \code{SpatialPolygonsDataFrame} with 1 rows and 51 columns.}
+\format{Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
+
+\describe{
+..@ data       :'data.frame':	1 obs. of  51 variables:
+ .. ..$ AREA      : num 113713
+.. ..$ STATE_NAME: Factor w/ 1 level "Arizona": 1
+.. ..$ STATE_FIPS: Factor w/ 1 level "04": 1
+.. ..$ SUB_REGION: Factor w/ 1 level "Mtn": 1
+.. ..$ STATE_ABBR: Factor w/ 1 level "AZ": 1
+.. ..$ POP1990   : Factor w/ 1 level "3665228": 1
+.. ..$ POP1999   : Factor w/ 1 level "4790311": 1
+.. ..$ POP90_SQMI: int 32
+.. ..$ HOUSEHOLDS: int 1368843
+.. ..$ MALES     : int 1810691
+.. ..$ FEMALES   : int 1854537
+.. ..$ WHITE     : int 2963186
+.. ..$ BLACK     : int 110524
+.. ..$ AMERI_ES  : int 203527
+.. ..$ ASIAN_PI  : int 55206
+.. ..$ OTHER     : int 332785
+.. ..$ HISPANIC  : int 688338
+.. ..$ AGE_UNDER5: int 292859
+.. ..$ AGE_5_17  : int 688260
+.. ..$ AGE_18_29 : int 710728
+.. ..$ AGE_30_49 : int 1038130
+.. ..$ AGE_50_64 : int 456477
+.. ..$ AGE_65_UP : int 478774
+.. ..$ NEVERMARRY: int 723628
+.. ..$ MARRIED   : int 1576632
+.. ..$ SEPARATED : int 57025
+.. ..$ WIDOWED   : int 182501
+.. ..$ DIVORCED  : int 292486
+.. ..$ HSEHLD_1_M: int 148181
+.. ..$ HSEHLD_1_F: int 189500
+.. ..$ MARHH_CHD : int 348392
+.. ..$ MARHH_NO_C: int 399414
+.. ..$ MHH_CHILD : int 29655
+.. ..$ FHH_CHILD : int 99609
+.. ..$ HSE_UNITS : int 1659430
+
+.. ..$ VACANT    : int 290587
+. ..$ OWNER_OCC : int 878561
+.. ..$ RENTER_OCC: int 490282
+.. ..$ MEDIAN_VAL: int 80100
+.. ..$ MEDIANRENT: int 370
+.. ..$ UNITS_1DET: int 867884
+.. ..$ UNITS_1ATT: int 109989
+.. ..$ UNITS2    : int 28826
+.. ..$ UNITS3_9  : int 120656
+.. ..$ UNITS10_49: int 153822
+.. ..$ UNITS50_UP: int 103386
+.. ..$ MOBILEHOME: int 250597
+.. ..$ NO_FARMS87: int 7669
+.. ..$ AVG_SIZE87: int 4732
+.. ..$ CROP_ACR87: int 1453852
+.. ..$ AVG_SALE87: int 212354
+..@ polygons   :List of 1
+.. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+.. .. .. ..@ Polygons :List of 1
+.. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+.. .. .. .. .. .. ..@ labpt  : num [1:2] -1363532 -559198
+.. .. .. .. .. .. ..@ area   : num 2.95e+11
+.. .. .. .. .. .. ..@ hole   : logi FALSE
+.. .. .. .. .. .. ..@ ringDir: int 1
+.. .. .. .. .. .. ..@ coords : num [1:153, 1:2] -1637983 -1641135 -1645795 -1647744 -1648474 ...
+.. .. .. ..@ plotOrder: int 1
+.. .. .. ..@ labpt    : num [1:2] -1363532 -559198
+.. .. .. ..@ ID       : chr "0"
+.. .. .. ..@ area     : num 2.95e+11
+..@ plotOrder  : int 1
+..@ bbox       : num [1:2, 1:2] -1676669 -931786 -1094035 -209591
+.. ..- attr(*, "dimnames")=List of 2
+.. .. ..$ : chr [1:2] "x" "y"
+.. .. ..$ : chr [1:2] "min" "max"
+..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
+.. .. ..@ projargs: chr "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+}}
 \source{
 example data
 }

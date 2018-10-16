@@ -4,17 +4,7 @@
 \name{data_BMIRelAbund}
 \alias{data_BMIRelAbund}
 \title{BMI Relative Abundance}
-\format{An object of class \code{data.frame} with 55319 rows and 12 columns.}
-\source{
-example data
-}
-\usage{
-data_BMIRelAbund
-}
-\description{
-Benthic Macroinvertebrate, Relative Abundances
-
-#' @format A data frame with 55,319 rows and 11 variables
+\format{A data frame with 55,319 rows and 11 variables
 \describe{
           \item{StationID}{Station ID}
           \item{BenSampID}{BenSampID}
@@ -27,6 +17,14 @@ Benthic Macroinvertebrate, Relative Abundances
           \item{Station_Date}{Station_Date}
           \item{BMISampID}{BMISampID}
           \item{BMI.Metrics.SampID}{BMI.Metrics.SampID}
+}}
+\source{
+example data
 }
+\usage{
+data_BMIRelAbund
+}
+\description{
+Benthic Macroinvertebrate, Relative Abundances
 }
 \keyword{datasets}

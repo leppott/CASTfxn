@@ -3,7 +3,7 @@
 \docType{data}
 \name{data_SSD_generator}
 \alias{data_SSD_generator}
-\title{SSD example data (genorator file)}
+\title{SSD example data (generator file)}
 \format{A data frame with 5 rows and 3 variables:
 \describe{
           \item{Taxa}{Taxa names}

@@ -4,7 +4,22 @@
 \name{data_ChemInfo}
 \alias{data_ChemInfo}
 \title{Chem Parameters}
-\format{An object of class \code{data.frame} with 284 rows and 16 columns.}
+\format{A data frame with 284 observations on the following 16 variables.
+\describe{
+          \item{\code{ANALYSIS_TYPE}}{a factor with levels }
+          \item{\code{FinalUnit}}{a factor with levels }
+          \item{\code{LogTransf}}{a numeric vector}
+          \item{\code{SSD}}{a numeric vector}
+          \item{\code{SSTV}}{a factor with levels \code{} \code{SpecCondTolVal}}
+          \item{\code{SensMin}}{a numeric vector}
+          \item{\code{SensMax}}{a numeric vector}
+          \item{\code{TolMin}}{a numeric vector}
+          \item{\code{TolMax}}{a numeric vector}
+          \item{\code{UseInStressorID}}{a numeric vector}
+          \item{\code{Analyte}}{a factor with levels }
+          \item{\code{GroupNum}}{a numeric vector}
+          \item{\code{GroupName}}{a factor with levels \code{Bacteria} \code{Ions} \code{Metals_metalloids} \code{Nutrients} \code{Organic} \code{Organochlorine} \code{Organohalide} \code{Organophosphate} \code{PAHs & Phthalates} \code{Radiation} \code{Water quality}}
+}}
 \source{
 example data
 }

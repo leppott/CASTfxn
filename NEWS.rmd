@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9110 (2018-10-16)
+
+* data.R
+    + data_SSD_generator, correct typo.  Issue #11.
+    + Add more details to other data sets.
+
 ## Changes in Version 0.1.0.9109 (2018-10-16)
 
 * Add getElev function.
