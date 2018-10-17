@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9112 (2018-10-17)
+
+* data.R
+    + Remove non-ASCII characters so the package will build properly.
+    + Chemical names and units combinations were the culprit; n=334.
+
 ## Changes in Version 0.1.0.9111 (2018-10-17)
 
 * Elevation Vignette.

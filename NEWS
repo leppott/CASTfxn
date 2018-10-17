@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-10-17 10:32:46
+    #> Last Update: 2018-10-17 15:18:36
 
 # Planned Updates
 
@@ -29,6 +29,12 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9112 (2018-10-17)
+
+  - data.R
+      - Remove non-ASCII characters so the package will build properly.
+      - Chemical names and units combinations were the culprit; n=334.
 
 ## Changes in Version 0.1.0.9111 (2018-10-17)
 

@@ -18,425 +18,425 @@
           \item{\code{Group}}{a numeric vector}
           \item{\code{CollDate}}{a factor with levels }
           \item{\code{Acenaphthene_ng_g}}{a numeric vector}
-          \item{\samp{Acenaphthene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Acenaphthene_uf__L}}{a numeric vector}
           \item{\code{Acenaphthylene_ng_g}}{a numeric vector}
-          \item{\samp{Acenaphthylene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Acenaphthylene_uf__L}}{a numeric vector}
           \item{\code{AFDM_Algae_Particulate_g_m2}}{a numeric vector}
-          \item{\samp{Ag_f_֧_L}}{a numeric vector}
-          \item{\samp{Ag_uf_֧_L}}{a numeric vector}
+          \item{\samp{Ag_f__L}}{a numeric vector}
+          \item{\samp{Ag_uf__L}}{a numeric vector}
           \item{\code{Ag_uf_mg_kg}}{a numeric vector}
-          \item{\samp{Al_f_֧_L}}{a numeric vector}
-          \item{\samp{Al_uf_֧_L}}{a numeric vector}
+          \item{\samp{Al_f__L}}{a numeric vector}
+          \item{\samp{Al_uf__L}}{a numeric vector}
           \item{\code{Al_uf_mg_kg}}{a numeric vector}
           \item{\code{Aldrin_ng_g}}{a numeric vector}
           \item{\code{Aldrin_ppb}}{a numeric vector}
-          \item{\samp{Aldrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Aldrin_uf__L}}{a numeric vector}
           \item{\code{Alkalinity_mg_L}}{a numeric vector}
           \item{\code{AlkalinityCaCO3_f_mg_L}}{a numeric vector}
           \item{\code{AlkalinityCaCO3_uf_mg_L}}{a numeric vector}
           \item{\code{Allethrin_ng_g}}{a numeric vector}
-          \item{\samp{Allethrin_uf_֧_L}}{a numeric vector}
-          \item{\samp{Ametryn_uf_֧_L}}{a numeric vector}
+          \item{\samp{Allethrin_uf__L}}{a numeric vector}
+          \item{\samp{Ametryn_uf__L}}{a numeric vector}
           \item{\code{Ametryne_ppb}}{a logical vector}
-          \item{\samp{AnatoxinA_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{AnatoxinA_uf_֧_L}}{a numeric vector}
+          \item{\samp{AnatoxinA_Particulate__L}}{a numeric vector}
+          \item{\samp{AnatoxinA_uf__L}}{a numeric vector}
           \item{\samp{ANC_uf_֥q_L}}{a numeric vector}
-          \item{\samp{Anthracene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Anthracene_uf__L}}{a numeric vector}
           \item{\code{Anthracene_uf_ng_g}}{a numeric vector}
           \item{\code{As_f_mg_L}}{a numeric vector}
           \item{\code{As_uf_mg_kg}}{a numeric vector}
           \item{\code{As_uf_mg_L}}{a numeric vector}
           \item{\code{Aspon_ppb}}{a logical vector}
-          \item{\samp{Aspon_uf_֧_L}}{a numeric vector}
+          \item{\samp{Aspon_uf__L}}{a numeric vector}
           \item{\code{Atraton_ppb}}{a numeric vector}
-          \item{\samp{Atraton_uf_֧_L}}{a numeric vector}
+          \item{\samp{Atraton_uf__L}}{a numeric vector}
           \item{\code{Atrazine_ppb}}{a numeric vector}
-          \item{\samp{Atrazine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Azinphos.ethyl_uf_֧_L}}{a numeric vector}
-          \item{\samp{Azinphos.methyl_uf_֧_L}}{a numeric vector}
+          \item{\samp{Atrazine_uf__L}}{a numeric vector}
+          \item{\samp{Azinphos.ethyl_uf__L}}{a numeric vector}
+          \item{\samp{Azinphos.methyl_uf__L}}{a numeric vector}
           \item{\code{AzinphosEthyl_ppb}}{a logical vector}
           \item{\code{AzinphosMethyl_ppb}}{a logical vector}
           \item{\code{B_uf_mg_L}}{a numeric vector}
           \item{\code{Ba_uf_mg_kg}}{a numeric vector}
           \item{\code{Be_uf_mg_kg}}{a numeric vector}
           \item{\code{Benz.a.anthracene_ng_g}}{a numeric vector}
-          \item{\samp{Benz.a.anthracene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Benzene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benz.a.anthracene_uf__L}}{a numeric vector}
+          \item{\samp{Benzene_uf__L}}{a numeric vector}
           \item{\code{Benzo.a.pyrene_ng_g}}{a numeric vector}
-          \item{\samp{Benzo.a.pyrene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benzo.a.pyrene_uf__L}}{a numeric vector}
           \item{\code{Benzo.b.fluoranthene_ng_g}}{a numeric vector}
-          \item{\samp{Benzo.b.fluoranthene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benzo.b.fluoranthene_uf__L}}{a numeric vector}
           \item{\code{Benzo.e.pyrene_ng_g}}{a numeric vector}
-          \item{\samp{Benzo.e.pyrene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benzo.e.pyrene_uf__L}}{a numeric vector}
           \item{\code{Benzo.g.h.i.perylene_ng_g}}{a numeric vector}
-          \item{\samp{Benzo.g.h.i.perylene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benzo.g.h.i.perylene_uf__L}}{a numeric vector}
           \item{\code{Benzo.k.fluoranthene_ng_g}}{a numeric vector}
-          \item{\samp{Benzo.k.fluoranthene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Benzo.k.fluoranthene_uf__L}}{a numeric vector}
           \item{\code{Bicarbonate_HCO3_mg_L}}{a numeric vector}
           \item{\code{Bifenthrin_ng_g}}{a numeric vector}
-          \item{\samp{Bifenthrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Bifenthrin_uf__L}}{a numeric vector}
           \item{\code{Biphenyl_ng_g}}{a numeric vector}
-          \item{\samp{Biphenyl_uf_֧_L}}{a numeric vector}
+          \item{\samp{Biphenyl_uf__L}}{a numeric vector}
           \item{\code{BOD_mg_L}}{a numeric vector}
           \item{\code{Bolstar_ng_g}}{a numeric vector}
-          \item{\samp{Bolstar_uf_֧_L}}{a numeric vector}
-          \item{\samp{Bromobenzene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Bromochloromethane_uf_֧_L}}{a numeric vector}
-          \item{\samp{Bromodichloromethane_uf_֧_L}}{a numeric vector}
-          \item{\samp{Bromoform_uf_֧_L}}{a numeric vector}
-          \item{\samp{Butylbenzene_n_uf_֧_L}}{a numeric vector}
-          \item{\samp{Butylbenzene_sec_uf_֧_L}}{a numeric vector}
-          \item{\samp{Butylbenzene_tert_uf_֧_L}}{a numeric vector}
+          \item{\samp{Bolstar_uf__L}}{a numeric vector}
+          \item{\samp{Bromobenzene_uf__L}}{a numeric vector}
+          \item{\samp{Bromochloromethane_uf__L}}{a numeric vector}
+          \item{\samp{Bromodichloromethane_uf__L}}{a numeric vector}
+          \item{\samp{Bromoform_uf__L}}{a numeric vector}
+          \item{\samp{Butylbenzene_n_uf__L}}{a numeric vector}
+          \item{\samp{Butylbenzene_sec_uf__L}}{a numeric vector}
+          \item{\samp{Butylbenzene_tert_uf__L}}{a numeric vector}
           \item{\code{Ca_f_mg_L}}{a numeric vector}
           \item{\code{Ca_uf_mg_L}}{a numeric vector}
-          \item{\samp{Caffeine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Carbadox_uf_֧_L}}{a numeric vector}
-          \item{\samp{Carbamazepine_uf_֧_L}}{a numeric vector}
+          \item{\samp{Caffeine_uf__L}}{a numeric vector}
+          \item{\samp{Carbadox_uf__L}}{a numeric vector}
+          \item{\samp{Carbamazepine_uf__L}}{a numeric vector}
           \item{\code{Carbonate_CaCO3_mg_L}}{a numeric vector}
-          \item{\samp{CarbonTetrachloride_uf_֧_L}}{a numeric vector}
+          \item{\samp{CarbonTetrachloride_uf__L}}{a numeric vector}
           \item{\code{Carbophenothion_ppb}}{a numeric vector}
-          \item{\samp{Carbophenothion_uf_֧_L}}{a numeric vector}
-          \item{\samp{Cd_֧_g}}{a numeric vector}
+          \item{\samp{Carbophenothion_uf__L}}{a numeric vector}
+          \item{\samp{Cd__g}}{a numeric vector}
           \item{\code{Cd_f_mg_L}}{a numeric vector}
           \item{\code{Cd_uf_mg_L}}{a numeric vector}
           \item{\code{CHECK.THIS}}{a numeric vector}
           \item{\code{Chlor_a_mg_m2}}{a numeric vector}
           \item{\code{Chlor_a_mg_m3}}{a numeric vector}
-          \item{\samp{Chlor_a_Particulate_֧_L}}{a numeric vector}
+          \item{\samp{Chlor_a_Particulate__L}}{a numeric vector}
           \item{\code{Chlor_a_Particulate_mg_m2}}{a numeric vector}
           \item{\code{Chlordane_alpha_ng_g}}{a numeric vector}
           \item{\code{Chlordane_cis_ng_g}}{a numeric vector}
-          \item{\samp{Chlordane_cis_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlordane_cis_uf__L}}{a numeric vector}
           \item{\code{Chlordane_trans_ng_g}}{a numeric vector}
-          \item{\samp{Chlordane_trans_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chlordene_alpha_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlordane_trans_uf__L}}{a numeric vector}
+          \item{\samp{Chlordene_alpha_uf__L}}{a numeric vector}
           \item{\code{Chlordene_cis_ng_g}}{a numeric vector}
-          \item{\samp{Chlordene_cis_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlordene_cis_uf__L}}{a numeric vector}
           \item{\code{Chlordene_gamma_ng_g}}{a numeric vector}
-          \item{\samp{Chlordene_gamma_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlordene_gamma_uf__L}}{a numeric vector}
           \item{\code{Chlordene_trans_ng_g}}{a numeric vector}
-          \item{\samp{Chlordene_trans_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlordene_trans_uf__L}}{a numeric vector}
           \item{\code{Chlorfenvinphos_ppb}}{a logical vector}
-          \item{\samp{Chlorfenvinphos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chlorobenzene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chloroform_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chlorotoluene_2_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chlorotoluene_4_uf_֧_L}}{a numeric vector}
-          \item{\samp{Chlorpyrifos_֧_L}}{a numeric vector}
+          \item{\samp{Chlorfenvinphos_uf__L}}{a numeric vector}
+          \item{\samp{Chlorobenzene_uf__L}}{a numeric vector}
+          \item{\samp{Chloroform_uf__L}}{a numeric vector}
+          \item{\samp{Chlorotoluene_2_uf__L}}{a numeric vector}
+          \item{\samp{Chlorotoluene_4_uf__L}}{a numeric vector}
+          \item{\samp{Chlorpyrifos__L}}{a numeric vector}
           \item{\code{Chlorpyrifos_methyl_ng_g}}{a numeric vector}
-          \item{\samp{Chlorpyrifos_methyl_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlorpyrifos_methyl_uf__L}}{a numeric vector}
           \item{\code{Chlorpyrifos_ng_g}}{a numeric vector}
-          \item{\samp{Chlorpyrifos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlorpyrifos_uf__L}}{a numeric vector}
           \item{\code{ChlorpyrifosMethyl_ppb}}{a logical vector}
-          \item{\samp{Chlortetracycline_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chlortetracycline_uf__L}}{a numeric vector}
           \item{\code{ChlorthalDimethyl_ppb}}{a logical vector}
           \item{\code{Chrysene_ng_g}}{a numeric vector}
-          \item{\samp{Chrysene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chrysene_uf__L}}{a numeric vector}
           \item{\code{Chrysenes_C1_ng_g}}{a numeric vector}
-          \item{\samp{Chrysenes_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chrysenes_C1_uf__L}}{a numeric vector}
           \item{\code{Chrysenes_C2_ng_g}}{a numeric vector}
-          \item{\samp{Chrysenes_C2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chrysenes_C2_uf__L}}{a numeric vector}
           \item{\code{Chrysenes_C3_ng_g}}{a numeric vector}
-          \item{\samp{Chrysenes_C3_uf_֧_L}}{a numeric vector}
+          \item{\samp{Chrysenes_C3_uf__L}}{a numeric vector}
           \item{\code{Cinerin1_ng_g}}{a logical vector}
           \item{\code{Cinerin2_ng_g}}{a logical vector}
           \item{\code{Ciodrin_ppb}}{a logical vector}
-          \item{\samp{Ciodrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Ciodrin_uf__L}}{a numeric vector}
           \item{\code{Cl_f_mg_L}}{a numeric vector}
           \item{\code{COD_mg_L}}{a numeric vector}
           \item{\code{Coliform_Fecal_MPN_100mL}}{a numeric vector}
           \item{\code{Coliform_Total_MPN_100mL}}{a numeric vector}
           \item{\code{Color_True_CU}}{a numeric vector}
           \item{\code{Coumaphos_ppb}}{a logical vector}
-          \item{\samp{Coumaphos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Cr_֧_g}}{a numeric vector}
+          \item{\samp{Coumaphos_uf__L}}{a numeric vector}
+          \item{\samp{Cr__g}}{a numeric vector}
           \item{\code{Cr_f_mg_L}}{a numeric vector}
           \item{\code{Cr_uf_mg_L}}{a numeric vector}
-          \item{\samp{Cu_֧_g}}{a numeric vector}
+          \item{\samp{Cu__g}}{a numeric vector}
           \item{\code{Cu_f_mg_L}}{a numeric vector}
           \item{\code{Cu_uf_mg_L}}{a numeric vector}
           \item{\code{Cyfluthrin_ng_g}}{a numeric vector}
-          \item{\samp{Cyfluthrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Cyfluthrin_uf__L}}{a numeric vector}
           \item{\code{Cyhalothrin_lambda_ng_g}}{a numeric vector}
           \item{\code{Cyhalothrin_lambda_ppb}}{a numeric vector}
-          \item{\samp{Cyhalothrin_lambda_uf_֧_L}}{a numeric vector}
+          \item{\samp{Cyhalothrin_lambda_uf__L}}{a numeric vector}
           \item{\code{Cypermethrin_ng_g}}{a numeric vector}
-          \item{\samp{Cypermethrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Cypermethrin_uf__L}}{a numeric vector}
           \item{\code{Dacthal_ng_g}}{a numeric vector}
-          \item{\samp{Dacthal_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dacthal_uf__L}}{a numeric vector}
           \item{\code{Danitol_ng_g}}{a numeric vector}
-          \item{\samp{Danitol_uf_֧_L}}{a numeric vector}
+          \item{\samp{Danitol_uf__L}}{a numeric vector}
           \item{\code{DCBP.p.p.._ng_g}}{a numeric vector}
           \item{\code{DDD.o.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDD.o.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDD.o.p.._uf__L}}{a numeric vector}
           \item{\code{DDD.p.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDD.p.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDD.p.p.._uf__L}}{a numeric vector}
           \item{\code{DDE.o.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDE.o.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDE.o.p.._uf__L}}{a numeric vector}
           \item{\code{DDE.p.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDE.p.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDE.p.p.._uf__L}}{a numeric vector}
           \item{\code{DDMU.p.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDMU.p.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDMU.p.p.._uf__L}}{a numeric vector}
           \item{\code{DDT.o.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDT.o.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDT.o.p.._uf__L}}{a numeric vector}
           \item{\code{DDT.p.p.._ng_g}}{a numeric vector}
-          \item{\samp{DDT.p.p.._uf_֧_L}}{a numeric vector}
+          \item{\samp{DDT.p.p.._uf__L}}{a numeric vector}
           \item{\code{DDTs_Total_ng_g}}{a numeric vector}
           \item{\code{DDVP_ppb}}{a logical vector}
           \item{\code{Deltamethrin_ng_g}}{a numeric vector}
-          \item{\samp{Deltamethrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Deltamethrin_uf__L}}{a numeric vector}
           \item{\code{DeltamethrinTralomethrin_ng_g}}{a numeric vector}
-          \item{\samp{DeltamethrinTralomethrin_uf_֧_L}}{a numeric vector}
-          \item{\samp{Demeton_o_uf_֧_L}}{a numeric vector}
+          \item{\samp{DeltamethrinTralomethrin_uf__L}}{a numeric vector}
+          \item{\samp{Demeton_o_uf__L}}{a numeric vector}
           \item{\code{Demeton_s_ng_g}}{a numeric vector}
-          \item{\samp{Demeton_s_uf_֧_L}}{a numeric vector}
+          \item{\samp{Demeton_s_uf__L}}{a numeric vector}
           \item{\code{Demeton_ug_L}}{a logical vector}
-          \item{\samp{DesmethylLR_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{DesmethylLR_uf_֧_L}}{a numeric vector}
-          \item{\samp{DesmethylRR_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{DesmethylRR_uf_֧_L}}{a numeric vector}
+          \item{\samp{DesmethylLR_Particulate__L}}{a numeric vector}
+          \item{\samp{DesmethylLR_uf__L}}{a numeric vector}
+          \item{\samp{DesmethylRR_Particulate__L}}{a numeric vector}
+          \item{\samp{DesmethylRR_uf__L}}{a numeric vector}
           \item{\code{Diazinon_ng_g}}{a numeric vector}
-          \item{\samp{Diazinon_uf_֧_L}}{a numeric vector}
+          \item{\samp{Diazinon_uf__L}}{a numeric vector}
           \item{\code{Diazinon_ug_L}}{a numeric vector}
           \item{\code{Dibenz.a.h.anthracene_ng_g}}{a numeric vector}
-          \item{\samp{Dibenz.a.h.anthracene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dibenz.a.h.anthracene_uf__L}}{a numeric vector}
           \item{\code{Dibenzothiophene_ng_g}}{a numeric vector}
-          \item{\samp{Dibenzothiophene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dibenzothiophene_uf__L}}{a numeric vector}
           \item{\code{Dibenzothiophenes_C1_ng_g}}{a numeric vector}
-          \item{\samp{Dibenzothiophenes_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dibenzothiophenes_C1_uf__L}}{a numeric vector}
           \item{\code{Dibenzothiophenes_C2_ng_g}}{a numeric vector}
-          \item{\samp{Dibenzothiophenes_C2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dibenzothiophenes_C2_uf__L}}{a numeric vector}
           \item{\code{Dibenzothiophenes_C3_ng_g}}{a numeric vector}
-          \item{\samp{Dibenzothiophenes_C3_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dibromo.3.Chloropropane_1.2..DBCP._uf_֧_L}}{a numeric vector}
-          \item{\samp{Dibromochloromethane_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dibromoethane_12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dibromomethane_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dibenzothiophenes_C3_uf__L}}{a numeric vector}
+          \item{\samp{Dibromo.3.Chloropropane_1.2..DBCP._uf__L}}{a numeric vector}
+          \item{\samp{Dibromochloromethane_uf__L}}{a numeric vector}
+          \item{\samp{Dibromoethane_12_uf__L}}{a numeric vector}
+          \item{\samp{Dibromomethane_uf__L}}{a numeric vector}
           \item{\code{Dibutyltin_Sn_ng_g}}{a numeric vector}
           \item{\code{DIC_f_mg_L}}{a numeric vector}
           \item{\code{Dichlofenthion_ng_g}}{a numeric vector}
           \item{\code{Dichlofenthion_ppb}}{a logical vector}
-          \item{\samp{Dichlofenthion_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichlorobenzene_12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichlorobenzene_13_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichlorobenzene_14_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloroethane_11_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloroethane_12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloroethylene_11_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloroethylene_cis_12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloroethylene_trans_.12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloropropane_12_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloropropane_13_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloropropane_22_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dichloropropene_11_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dichlofenthion_uf__L}}{a numeric vector}
+          \item{\samp{Dichlorobenzene_12_uf__L}}{a numeric vector}
+          \item{\samp{Dichlorobenzene_13_uf__L}}{a numeric vector}
+          \item{\samp{Dichlorobenzene_14_uf__L}}{a numeric vector}
+          \item{\samp{Dichloroethane_11_uf__L}}{a numeric vector}
+          \item{\samp{Dichloroethane_12_uf__L}}{a numeric vector}
+          \item{\samp{Dichloroethylene_11_uf__L}}{a numeric vector}
+          \item{\samp{Dichloroethylene_cis_12_uf__L}}{a numeric vector}
+          \item{\samp{Dichloroethylene_trans_.12_uf__L}}{a numeric vector}
+          \item{\samp{Dichloropropane_12_uf__L}}{a numeric vector}
+          \item{\samp{Dichloropropane_13_uf__L}}{a numeric vector}
+          \item{\samp{Dichloropropane_22_uf__L}}{a numeric vector}
+          \item{\samp{Dichloropropene_11_uf__L}}{a numeric vector}
           \item{\code{Dichlorvos_ng_g}}{a numeric vector}
-          \item{\samp{Dichlorvos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dichlorvos_uf__L}}{a numeric vector}
           \item{\code{Dicrotophos_ppb}}{a logical vector}
-          \item{\samp{Dicrotophos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dicrotophos_uf__L}}{a numeric vector}
           \item{\code{Dieldrin_ng_g}}{a numeric vector}
           \item{\code{Dieldrin_ppb}}{a logical vector}
-          \item{\samp{Dieldrin_uf_֧_L}}{a numeric vector}
-          \item{\samp{Dimethoate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dieldrin_uf__L}}{a numeric vector}
+          \item{\samp{Dimethoate_uf__L}}{a numeric vector}
           \item{\code{Dimethylnaphthalene_2.6_ng_g}}{a numeric vector}
-          \item{\samp{Dimethylnaphthalene_26_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dimethylnaphthalene_26_uf__L}}{a numeric vector}
           \item{\code{Dimethylphenanthrene_3.6_ng_g}}{a numeric vector}
-          \item{\samp{Dimethylphenanthrene_36_uf_֧_L}}{a numeric vector}
+          \item{\samp{Dimethylphenanthrene_36_uf__L}}{a numeric vector}
           \item{\code{Dioxathion._ng_g}}{a numeric vector}
-          \item{\samp{Dioxathion._uf_֧_L}}{a numeric vector}
+          \item{\samp{Dioxathion._uf__L}}{a numeric vector}
           \item{\code{Dioxathion_ppb}}{a numeric vector}
-          \item{\samp{Disulfoton_uf_֧_L}}{a numeric vector}
+          \item{\samp{Disulfoton_uf__L}}{a numeric vector}
           \item{\code{DO_uf_mg_L}}{a numeric vector}
           \item{\code{DOC_f_mg_L}}{a numeric vector}
-          \item{\samp{DomoicAcid_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{DomoicAcid_uf_֧_L}}{a numeric vector}
-          \item{\samp{Doxycycline_uf_֧_L}}{a numeric vector}
+          \item{\samp{DomoicAcid_Particulate__L}}{a numeric vector}
+          \item{\samp{DomoicAcid_uf__L}}{a numeric vector}
+          \item{\samp{Doxycycline_uf__L}}{a numeric vector}
           \item{\code{DP_f_mg_L}}{a numeric vector}
           \item{\code{DP_P_mg_L}}{a numeric vector}
           \item{\code{E_coli_MPN_100_mL}}{a numeric vector}
           \item{\code{Endosulfan_I_ng_g}}{a numeric vector}
-          \item{\samp{Endosulfan_I_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endosulfan_I_uf__L}}{a numeric vector}
           \item{\code{Endosulfan_II_ng_g}}{a numeric vector}
           \item{\code{Endosulfan_II_ppb}}{a logical vector}
-          \item{\samp{Endosulfan_II_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endosulfan_II_uf__L}}{a numeric vector}
           \item{\code{Endosulfan_ppb}}{a logical vector}
           \item{\code{Endosulfan_sulfate_ng_g}}{a numeric vector}
           \item{\code{Endosulfan_Sulfate_ppb}}{a logical vector}
-          \item{\samp{Endosulfan_sulfate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endosulfan_sulfate_uf__L}}{a numeric vector}
           \item{\code{Endrin_Aldehyde_ng_g}}{a numeric vector}
           \item{\code{Endrin_Aldehyde_ppb}}{a numeric vector}
-          \item{\samp{Endrin_Aldehyde_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endrin_Aldehyde_uf__L}}{a numeric vector}
           \item{\code{Endrin_Ketone_ng_g}}{a numeric vector}
           \item{\code{Endrin_Ketone_ppb}}{a logical vector}
-          \item{\samp{Endrin_Ketone_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endrin_Ketone_uf__L}}{a numeric vector}
           \item{\code{Endrin_ppb}}{a logical vector}
-          \item{\samp{Endrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Endrin_uf__L}}{a numeric vector}
           \item{\code{Endrin_uf_ng_g}}{a numeric vector}
           \item{\code{Enterococci_MPN_100mL}}{a numeric vector}
           \item{\code{Enterococcus_MPN_100_mL}}{a numeric vector}
-          \item{\samp{Erythromycin_H2O_uf_֧_L}}{a numeric vector}
+          \item{\samp{Erythromycin_H2O_uf__L}}{a numeric vector}
           \item{\code{Esfenvalerate_ng_g}}{a numeric vector}
-          \item{\samp{Esfenvalerate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Esfenvalerate_uf__L}}{a numeric vector}
           \item{\code{EsfenvalerateFenvalerate_ng_g}}{a numeric vector}
-          \item{\samp{EsfenvalerateFenvalerate_uf_֧_L}}{a numeric vector}
-          \item{\samp{EsfenvalerateFenvalerate1_uf_֧_L}}{a logical vector}
-          \item{\samp{EsfenvalerateFenvalerate2_uf_֧_L}}{a logical vector}
-          \item{\samp{Estradiol_17beta_uf_֧_L}}{a numeric vector}
+          \item{\samp{EsfenvalerateFenvalerate_uf__L}}{a numeric vector}
+          \item{\samp{EsfenvalerateFenvalerate1_uf__L}}{a logical vector}
+          \item{\samp{EsfenvalerateFenvalerate2_uf__L}}{a logical vector}
+          \item{\samp{Estradiol_17beta_uf__L}}{a numeric vector}
           \item{\code{Ethion_ng_g}}{a numeric vector}
           \item{\code{Ethion_ppb}}{a logical vector}
-          \item{\samp{Ethion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Ethion_uf__L}}{a numeric vector}
           \item{\code{Ethoprop_ng_g}}{a numeric vector}
           \item{\code{Ethoprop_ppb}}{a logical vector}
-          \item{\samp{Ethoprop_uf_֧_L}}{a numeric vector}
-          \item{\samp{Ethylbenzene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Ethoprop_uf__L}}{a numeric vector}
+          \item{\samp{Ethylbenzene_uf__L}}{a numeric vector}
           \item{\code{F_uf_mg_L}}{a numeric vector}
           \item{\code{Famphur_ppb}}{a logical vector}
-          \item{\samp{Famphur_uf_֧_L}}{a numeric vector}
-          \item{\samp{Fe_֧_g}}{a numeric vector}
-          \item{\samp{Fe_f_֧_L}}{a numeric vector}
-          \item{\samp{Fe_uf_֧_L}}{a numeric vector}
+          \item{\samp{Famphur_uf__L}}{a numeric vector}
+          \item{\samp{Fe__g}}{a numeric vector}
+          \item{\samp{Fe_f__L}}{a numeric vector}
+          \item{\samp{Fe_uf__L}}{a numeric vector}
           \item{\code{Fenchlorphos_ng_g}}{a numeric vector}
-          \item{\samp{Fenchlorphos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fenchlorphos_uf__L}}{a numeric vector}
           \item{\code{Fenitrothion_ng_g}}{a numeric vector}
-          \item{\samp{Fenitrothion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fenitrothion_uf__L}}{a numeric vector}
           \item{\code{Fenpropathrin_ppb}}{a logical vector}
-          \item{\samp{Fenpropathrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fenpropathrin_uf__L}}{a numeric vector}
           \item{\code{Fensulfothion_ng_g}}{a numeric vector}
-          \item{\samp{Fensulfothion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fensulfothion_uf__L}}{a numeric vector}
           \item{\code{Fenthion_ng_g}}{a numeric vector}
-          \item{\samp{Fenthion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fenthion_uf__L}}{a numeric vector}
           \item{\code{Fenvalerate_ng_g}}{a numeric vector}
-          \item{\samp{Fenvalerate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fenvalerate_uf__L}}{a numeric vector}
           \item{\code{Fipronil_ng_g}}{a numeric vector}
           \item{\code{FipronilDesulfinyl_ng_g}}{a numeric vector}
           \item{\code{FipronilSulfide_ng_g}}{a numeric vector}
           \item{\code{FipronilSulfone_ng_g}}{a numeric vector}
           \item{\code{Fluoranthene_ng_g}}{a numeric vector}
-          \item{\samp{Fluoranthene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fluoranthene_uf__L}}{a numeric vector}
           \item{\code{FluoranthenePyrenes_C1_ng_g}}{a numeric vector}
-          \item{\samp{FluoranthenePyrenes_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{FluoranthenePyrenes_C1_uf__L}}{a numeric vector}
           \item{\code{Fluorene_ng_g}}{a numeric vector}
-          \item{\samp{Fluorene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fluorene_uf__L}}{a numeric vector}
           \item{\code{Fluorenes_C1_ng_g}}{a numeric vector}
-          \item{\samp{Fluorenes_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fluorenes_C1_uf__L}}{a numeric vector}
           \item{\code{Fluorenes_C2_ng_g}}{a numeric vector}
-          \item{\samp{Fluorenes_C2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fluorenes_C2_uf__L}}{a numeric vector}
           \item{\code{Fluorenes_C3_ng_g}}{a numeric vector}
-          \item{\samp{Fluorenes_C3_uf_֧_L}}{a numeric vector}
-          \item{\samp{Fluoxetine_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fluorenes_C3_uf__L}}{a numeric vector}
+          \item{\samp{Fluoxetine_uf__L}}{a numeric vector}
           \item{\code{Fluvalinate_ng_g}}{a numeric vector}
           \item{\code{Fluvalinate_uf_ng_L}}{a numeric vector}
           \item{\code{Fonofos_ng_g}}{a numeric vector}
           \item{\code{Fonofos_ppb}}{a logical vector}
-          \item{\samp{Fonofos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Gemfibrozil_uf_֧_L}}{a numeric vector}
+          \item{\samp{Fonofos_uf__L}}{a numeric vector}
+          \item{\samp{Gemfibrozil_uf__L}}{a numeric vector}
           \item{\code{Hardness_CaCO3_f_mg_L}}{a numeric vector}
           \item{\code{Hardness_CaCO3_uf_mg_L}}{a numeric vector}
           \item{\code{HCH_alpha._ng_g}}{a numeric vector}
-          \item{\samp{HCH_alpha._uf_֧_L}}{a numeric vector}
+          \item{\samp{HCH_alpha._uf__L}}{a numeric vector}
           \item{\code{HCH_beta_ng_g}}{a numeric vector}
-          \item{\samp{HCH_beta_uf_֧_L}}{a numeric vector}
+          \item{\samp{HCH_beta_uf__L}}{a numeric vector}
           \item{\code{HCH_delta_ng_g}}{a numeric vector}
-          \item{\samp{HCH_delta_uf_֧_L}}{a numeric vector}
+          \item{\samp{HCH_delta_uf__L}}{a numeric vector}
           \item{\code{HCH_gamma_ng_g}}{a numeric vector}
-          \item{\samp{HCH_gamma_uf_֧_L}}{a numeric vector}
+          \item{\samp{HCH_gamma_uf__L}}{a numeric vector}
           \item{\code{Heptachlor_epoxide_ng_g}}{a numeric vector}
-          \item{\samp{Heptachlor_epoxide_uf_֧_L}}{a numeric vector}
+          \item{\samp{Heptachlor_epoxide_uf__L}}{a numeric vector}
           \item{\code{Heptachlor_ng_g}}{a numeric vector}
           \item{\code{Heptachlor_ppb}}{a logical vector}
-          \item{\samp{Heptachlor_uf_֧_L}}{a numeric vector}
+          \item{\samp{Heptachlor_uf__L}}{a numeric vector}
           \item{\code{HeptachlorEpoxide_ppb}}{a logical vector}
           \item{\code{Hexachlorobenzene_ng_g}}{a numeric vector}
           \item{\code{Hexachlorobenzene_ppb}}{a logical vector}
-          \item{\samp{Hexachlorobenzene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Hexachlorobutadiene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Hg_֧_g}}{a numeric vector}
+          \item{\samp{Hexachlorobenzene_uf__L}}{a numeric vector}
+          \item{\samp{Hexachlorobutadiene_uf__L}}{a numeric vector}
+          \item{\samp{Hg__g}}{a numeric vector}
           \item{\code{Hg_f_ng_L}}{a numeric vector}
           \item{\code{Hg_uf_mg_kg_FishTissue}}{a numeric vector}
           \item{\code{Hg_uf_ng_L}}{a numeric vector}
           \item{\code{HydroxideAlk_CaCO3_mg_L}}{a numeric vector}
-          \item{\samp{Ibuprofen_uf_֧_L}}{a numeric vector}
+          \item{\samp{Ibuprofen_uf__L}}{a numeric vector}
           \item{\code{Indeno.1.2.3.c.d.pyrene_ng_g}}{a numeric vector}
-          \item{\samp{Indeno.123cd.pyrene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Isopropylbenzene_uf_֧_L}}{a numeric vector}
-          \item{\samp{Isopropyltoluene_p_uf_֧_L}}{a numeric vector}
+          \item{\samp{Indeno.123cd.pyrene_uf__L}}{a numeric vector}
+          \item{\samp{Isopropylbenzene_uf__L}}{a numeric vector}
+          \item{\samp{Isopropyltoluene_p_uf__L}}{a numeric vector}
           \item{\code{Jasmoline1_ng_g}}{a logical vector}
           \item{\code{Jasmoline2_ng_g}}{a logical vector}
           \item{\code{K_f_mg_L}}{a numeric vector}
           \item{\code{K_uf_mg_L}}{a numeric vector}
           \item{\code{Leptophos_ppb}}{a logical vector}
-          \item{\samp{Leptophos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Lincomycin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Leptophos_uf__L}}{a numeric vector}
+          \item{\samp{Lincomycin_uf__L}}{a numeric vector}
           \item{\code{Malathion_ng_g}}{a numeric vector}
-          \item{\samp{Malathion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Malathion_uf__L}}{a numeric vector}
           \item{\code{Malathion_ug_L}}{a numeric vector}
           \item{\code{MBAS_mg_L}}{a numeric vector}
           \item{\code{MBAS_uf_mg_L}}{a numeric vector}
           \item{\code{MeanAlkalinity}}{a numeric vector}
           \item{\code{Merphos_ng_g}}{a numeric vector}
-          \item{\samp{Merphos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Methidathion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Merphos_uf__L}}{a numeric vector}
+          \item{\samp{Methidathion_uf__L}}{a numeric vector}
           \item{\code{Methoxychlor_ng_g}}{a numeric vector}
           \item{\code{Methoxychlor_ppb}}{a logical vector}
-          \item{\samp{Methoxychlor_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methoxychlor_uf__L}}{a numeric vector}
           \item{\code{Methyldibenzothiophene_4_ng_g}}{a numeric vector}
-          \item{\samp{Methyldibenzothiophene_4_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methyldibenzothiophene_4_uf__L}}{a numeric vector}
           \item{\code{Methylfluoranthene_2_ng_g}}{a numeric vector}
-          \item{\samp{Methylfluoranthene_2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methylfluoranthene_2_uf__L}}{a numeric vector}
           \item{\code{Methylfluorene_1_ng_g}}{a numeric vector}
-          \item{\samp{Methylfluorene_1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methylfluorene_1_uf__L}}{a numeric vector}
           \item{\code{Methylnaphthalene_1_ng_g}}{a numeric vector}
-          \item{\samp{Methylnaphthalene_1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methylnaphthalene_1_uf__L}}{a numeric vector}
           \item{\code{Methylnaphthalene_2_ng_g}}{a numeric vector}
-          \item{\samp{Methylnaphthalene_2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methylnaphthalene_2_uf__L}}{a numeric vector}
           \item{\code{Methylphenanthrene_1_ng_g}}{a numeric vector}
-          \item{\samp{Methylphenanthrene_1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Methylphenanthrene_1_uf__L}}{a numeric vector}
           \item{\code{Mevinphos_ng_g}}{a numeric vector}
           \item{\code{Mevinphos_ppb}}{a numeric vector}
-          \item{\samp{Mevinphos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Mevinphos_uf__L}}{a numeric vector}
           \item{\code{Mg_f_mg_L}}{a numeric vector}
           \item{\code{Mg_uf_mg_L}}{a numeric vector}
-          \item{\samp{MicrocystinLA_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLA_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLF_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLF_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLR_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLR_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLW_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLW_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLY_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinLY_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinRR_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinRR_uf_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinYR_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{MicrocystinYR_uf_֧_L}}{a numeric vector}
+          \item{\samp{MicrocystinLA_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinLA_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinLF_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinLF_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinLR_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinLR_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinLW_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinLW_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinLY_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinLY_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinRR_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinRR_uf__L}}{a numeric vector}
+          \item{\samp{MicrocystinYR_Particulate__L}}{a numeric vector}
+          \item{\samp{MicrocystinYR_uf__L}}{a numeric vector}
           \item{\code{Mirex_ng_g}}{a numeric vector}
           \item{\code{Mirex_ppb}}{a logical vector}
-          \item{\samp{Mirex_uf_֧_L}}{a numeric vector}
-          \item{\samp{Mn_֧_g}}{a numeric vector}
-          \item{\samp{Mn_f_֧_L}}{a numeric vector}
-          \item{\samp{Mn_uf_֧_L}}{a numeric vector}
+          \item{\samp{Mirex_uf__L}}{a numeric vector}
+          \item{\samp{Mn__g}}{a numeric vector}
+          \item{\samp{Mn_f__L}}{a numeric vector}
+          \item{\samp{Mn_uf__L}}{a numeric vector}
           \item{\code{Molinate_ppb}}{a logical vector}
-          \item{\samp{Molinate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Molinate_uf__L}}{a numeric vector}
           \item{\code{Monobutyltin_Sn_ng_g}}{a numeric vector}
-          \item{\samp{MTBE_uf_֧_L}}{a numeric vector}
+          \item{\samp{MTBE_uf__L}}{a numeric vector}
           \item{\code{Na_f_mg_L}}{a numeric vector}
           \item{\code{Na_uf_mg_L}}{a numeric vector}
           \item{\code{Naled_ppb}}{a logical vector}
-          \item{\samp{Naled_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naled_uf__L}}{a numeric vector}
           \item{\code{Naphthalene_ng_g}}{a numeric vector}
-          \item{\samp{Naphthalene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naphthalene_uf__L}}{a numeric vector}
           \item{\code{Naphthalenes_C1_ng_g}}{a numeric vector}
-          \item{\samp{Naphthalenes_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naphthalenes_C1_uf__L}}{a numeric vector}
           \item{\code{Naphthalenes_C2_ng_g}}{a numeric vector}
-          \item{\samp{Naphthalenes_C2_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naphthalenes_C2_uf__L}}{a numeric vector}
           \item{\code{Naphthalenes_C3_ng_g}}{a numeric vector}
-          \item{\samp{Naphthalenes_C3_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naphthalenes_C3_uf__L}}{a numeric vector}
           \item{\code{Naphthalenes_C4_ng_g}}{a numeric vector}
-          \item{\samp{Naphthalenes_C4_uf_֧_L}}{a numeric vector}
+          \item{\samp{Naphthalenes_C4_uf__L}}{a numeric vector}
           \item{\code{NH3_N_f_mg_L}}{a numeric vector}
           \item{\code{NH3_N_mg_kg_ww}}{a numeric vector}
           \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
-          \item{\samp{Ni_֧_g}}{a numeric vector}
+          \item{\samp{Ni__g}}{a numeric vector}
           \item{\code{Ni_f_mg_L}}{a numeric vector}
           \item{\code{Ni_uf_mg_L}}{a numeric vector}
           \item{\code{NO2_N_f_mg_L}}{a numeric vector}
@@ -445,32 +445,32 @@
           \item{\code{NO2NO3_N_uf_mg_L}}{a numeric vector}
           \item{\code{NO3_N_f_mg_L}}{a numeric vector}
           \item{\code{NO3_N_uf_mg_L}}{a numeric vector}
-          \item{\samp{Nodularin_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{Nodularin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Nodularin_Particulate__L}}{a numeric vector}
+          \item{\samp{Nodularin_uf__L}}{a numeric vector}
           \item{\code{Nonachlor_cis_ng_g}}{a numeric vector}
-          \item{\samp{Nonachlor_cis_uf_֧_L}}{a numeric vector}
+          \item{\samp{Nonachlor_cis_uf__L}}{a numeric vector}
           \item{\code{Nonachlor_trans_ng_g}}{a numeric vector}
-          \item{\samp{Nonachlor_trans_uf_֧_L}}{a numeric vector}
-          \item{\samp{Nonylphenol_uf_֧_L}}{a numeric vector}
-          \item{\samp{Nonylphenolethoxylate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Nonachlor_trans_uf__L}}{a numeric vector}
+          \item{\samp{Nonylphenol_uf__L}}{a numeric vector}
+          \item{\samp{Nonylphenolethoxylate_uf__L}}{a numeric vector}
           \item{\code{O2Sat_uf_.}}{a numeric vector}
           \item{\code{Oil_Grease_mg_L}}{a numeric vector}
-          \item{\samp{OkadaicAcid_Particulate_֧_L}}{a numeric vector}
-          \item{\samp{OkadaicAcid_uf_֧_L}}{a numeric vector}
+          \item{\samp{OkadaicAcid_Particulate__L}}{a numeric vector}
+          \item{\samp{OkadaicAcid_uf__L}}{a numeric vector}
           \item{\code{oPO4_P_f_mg_L}}{a numeric vector}
           \item{\code{oPO4_P_uf_mg_L}}{a numeric vector}
           \item{\code{Oxadiazon_ng_g}}{a numeric vector}
           \item{\code{Oxadiazon_ppb}}{a numeric vector}
-          \item{\samp{Oxadiazon_uf_֧_L}}{a numeric vector}
+          \item{\samp{Oxadiazon_uf__L}}{a numeric vector}
           \item{\code{Oxychlordane_ng_g}}{a numeric vector}
-          \item{\samp{Oxychlordane_uf_֧_L}}{a numeric vector}
-          \item{\samp{Oxytetracycline_uf_֧_L}}{a numeric vector}
+          \item{\samp{Oxychlordane_uf__L}}{a numeric vector}
+          \item{\samp{Oxytetracycline_uf__L}}{a numeric vector}
           \item{\code{PAHs_ng_g}}{a numeric vector}
           \item{\code{Parathion_Ethyl_ng_g}}{a numeric vector}
-          \item{\samp{Parathion_Ethyl_uf_֧_L}}{a numeric vector}
+          \item{\samp{Parathion_Ethyl_uf__L}}{a numeric vector}
           \item{\code{Parathion_Methyl_ng_g}}{a numeric vector}
-          \item{\samp{Parathion_Methyl_uf_֧_L}}{a numeric vector}
-          \item{\samp{Pb_֧_g}}{a numeric vector}
+          \item{\samp{Parathion_Methyl_uf__L}}{a numeric vector}
+          \item{\samp{Pb__g}}{a numeric vector}
           \item{\code{Pb_f_mg_L}}{a numeric vector}
           \item{\code{Pb_uf_mg_L}}{a numeric vector}
           \item{\code{PBDE017_ng_g}}{a numeric vector}
@@ -490,259 +490,259 @@
           \item{\code{PCB_AROCLOR_1254_ng_g}}{a numeric vector}
           \item{\code{PCB_AROCLOR_1260_ng_g}}{a numeric vector}
           \item{\code{PCB003_ng_g}}{a numeric vector}
-          \item{\samp{PCB005_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB005_uf__L}}{a numeric vector}
           \item{\code{PCB008_ng_g}}{a numeric vector}
-          \item{\samp{PCB008_uf_֧_L}}{a numeric vector}
-          \item{\samp{PCB015_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB008_uf__L}}{a numeric vector}
+          \item{\samp{PCB015_uf__L}}{a numeric vector}
           \item{\code{PCB018_ng_g}}{a numeric vector}
-          \item{\samp{PCB018_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB018_uf__L}}{a numeric vector}
           \item{\code{PCB027_ng_g}}{a numeric vector}
-          \item{\samp{PCB027_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB027_uf__L}}{a numeric vector}
           \item{\code{PCB028_ng_g}}{a numeric vector}
-          \item{\samp{PCB028_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB028_uf__L}}{a numeric vector}
           \item{\code{PCB029_ng_g}}{a numeric vector}
-          \item{\samp{PCB029_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB029_uf__L}}{a numeric vector}
           \item{\code{PCB031_ng_g}}{a numeric vector}
-          \item{\samp{PCB031_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB031_uf__L}}{a numeric vector}
           \item{\code{PCB033_ng_g}}{a numeric vector}
-          \item{\samp{PCB033_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB033_uf__L}}{a numeric vector}
           \item{\code{PCB037_ng_g}}{a numeric vector}
           \item{\code{PCB044_ng_g}}{a numeric vector}
-          \item{\samp{PCB044_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB044_uf__L}}{a numeric vector}
           \item{\code{PCB049_ng_g}}{a numeric vector}
-          \item{\samp{PCB049_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB049_uf__L}}{a numeric vector}
           \item{\code{PCB052_ng_g}}{a numeric vector}
-          \item{\samp{PCB052_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB052_uf__L}}{a numeric vector}
           \item{\code{PCB056_ng_g}}{a numeric vector}
-          \item{\samp{PCB056_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB056_uf__L}}{a numeric vector}
           \item{\code{PCB060_ng_g}}{a numeric vector}
-          \item{\samp{PCB060_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB060_uf__L}}{a numeric vector}
           \item{\code{PCB064_ng_g}}{a numeric vector}
           \item{\code{PCB066_ng_g}}{a numeric vector}
-          \item{\samp{PCB066_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB066_uf__L}}{a numeric vector}
           \item{\code{PCB070_ng_g}}{a numeric vector}
-          \item{\samp{PCB070_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB070_uf__L}}{a numeric vector}
           \item{\code{PCB074_ng_g}}{a numeric vector}
-          \item{\samp{PCB074_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB074_uf__L}}{a numeric vector}
           \item{\code{PCB077_ng_g}}{a numeric vector}
-          \item{\samp{PCB077_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB077_uf__L}}{a numeric vector}
           \item{\code{PCB081_ng_g}}{a numeric vector}
           \item{\code{PCB087_ng_g}}{a numeric vector}
-          \item{\samp{PCB087_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB087_uf__L}}{a numeric vector}
           \item{\code{PCB095_ng_g}}{a numeric vector}
-          \item{\samp{PCB095_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB095_uf__L}}{a numeric vector}
           \item{\code{PCB097_ng_g}}{a numeric vector}
-          \item{\samp{PCB097_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB097_uf__L}}{a numeric vector}
           \item{\code{PCB099_ng_g}}{a numeric vector}
-          \item{\samp{PCB099_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB099_uf__L}}{a numeric vector}
           \item{\code{PCB101_ng_g}}{a numeric vector}
-          \item{\samp{PCB101_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB101_uf__L}}{a numeric vector}
           \item{\code{PCB105_ng_g}}{a numeric vector}
-          \item{\samp{PCB105_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB105_uf__L}}{a numeric vector}
           \item{\code{PCB110_ng_g}}{a numeric vector}
-          \item{\samp{PCB110_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB110_uf__L}}{a numeric vector}
           \item{\code{PCB114_ng_g}}{a numeric vector}
-          \item{\samp{PCB114_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB114_uf__L}}{a numeric vector}
           \item{\code{PCB118_ng_g}}{a numeric vector}
-          \item{\samp{PCB118_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB118_uf__L}}{a numeric vector}
           \item{\code{PCB119_ng_g}}{a numeric vector}
           \item{\code{PCB123_ng_g}}{a numeric vector}
           \item{\code{PCB126_ng_g}}{a numeric vector}
-          \item{\samp{PCB126_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB126_uf__L}}{a numeric vector}
           \item{\code{PCB128_ng_g}}{a numeric vector}
-          \item{\samp{PCB128_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB128_uf__L}}{a numeric vector}
           \item{\code{PCB137_ng_g}}{a numeric vector}
-          \item{\samp{PCB137_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB137_uf__L}}{a numeric vector}
           \item{\code{PCB138_ng_g}}{a numeric vector}
-          \item{\samp{PCB138_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB138_uf__L}}{a numeric vector}
           \item{\code{PCB141_ng_g}}{a numeric vector}
-          \item{\samp{PCB141_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB141_uf__L}}{a numeric vector}
           \item{\code{PCB146_ng_g}}{a numeric vector}
           \item{\code{PCB149_ng_g}}{a numeric vector}
-          \item{\samp{PCB149_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB149_uf__L}}{a numeric vector}
           \item{\code{PCB151_ng_g}}{a numeric vector}
-          \item{\samp{PCB151_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB151_uf__L}}{a numeric vector}
           \item{\code{PCB153_ng_g}}{a numeric vector}
-          \item{\samp{PCB153_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB153_uf__L}}{a numeric vector}
           \item{\code{PCB156_ng_g}}{a numeric vector}
-          \item{\samp{PCB156_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB156_uf__L}}{a numeric vector}
           \item{\code{PCB157_ng_g}}{a numeric vector}
-          \item{\samp{PCB157_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB157_uf__L}}{a numeric vector}
           \item{\code{PCB158_ng_g}}{a numeric vector}
-          \item{\samp{PCB158_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB158_uf__L}}{a numeric vector}
           \item{\code{PCB167_ng_g}}{a numeric vector}
           \item{\code{PCB168_132_ng_g}}{a numeric vector}
           \item{\code{PCB168_ng_g}}{a numeric vector}
           \item{\code{PCB169_ng_g}}{a numeric vector}
           \item{\code{PCB170_ng_g}}{a numeric vector}
-          \item{\samp{PCB170_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB170_uf__L}}{a numeric vector}
           \item{\code{PCB174_ng_g}}{a numeric vector}
-          \item{\samp{PCB174_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB174_uf__L}}{a numeric vector}
           \item{\code{PCB177_ng_g}}{a numeric vector}
-          \item{\samp{PCB177_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB177_uf__L}}{a numeric vector}
           \item{\code{PCB180_ng_g}}{a numeric vector}
-          \item{\samp{PCB180_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB180_uf__L}}{a numeric vector}
           \item{\code{PCB183_ng_g}}{a numeric vector}
-          \item{\samp{PCB183_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB183_uf__L}}{a numeric vector}
           \item{\code{PCB187_ng_g}}{a numeric vector}
-          \item{\samp{PCB187_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB187_uf__L}}{a numeric vector}
           \item{\code{PCB189_ng_g}}{a numeric vector}
-          \item{\samp{PCB189_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB189_uf__L}}{a numeric vector}
           \item{\code{PCB194_ng_g}}{a numeric vector}
-          \item{\samp{PCB194_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB194_uf__L}}{a numeric vector}
           \item{\code{PCB195_ng_g}}{a numeric vector}
-          \item{\samp{PCB195_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB195_uf__L}}{a numeric vector}
           \item{\code{PCB198_199_ng_g}}{a numeric vector}
           \item{\code{PCB200_ng_g}}{a numeric vector}
-          \item{\samp{PCB200_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB200_uf__L}}{a numeric vector}
           \item{\code{PCB201_ng_g}}{a numeric vector}
-          \item{\samp{PCB201_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB201_uf__L}}{a numeric vector}
           \item{\code{PCB203_ng_g}}{a numeric vector}
-          \item{\samp{PCB203_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB203_uf__L}}{a numeric vector}
           \item{\code{PCB206_ng_g}}{a numeric vector}
-          \item{\samp{PCB206_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB206_uf__L}}{a numeric vector}
           \item{\code{PCB209_ng_g}}{a numeric vector}
-          \item{\samp{PCB209_uf_֧_L}}{a numeric vector}
+          \item{\samp{PCB209_uf__L}}{a numeric vector}
           \item{\code{Permethrin_cis_ng_g}}{a numeric vector}
-          \item{\samp{Permethrin_cis_uf_֧_L}}{a numeric vector}
+          \item{\samp{Permethrin_cis_uf__L}}{a numeric vector}
           \item{\code{Permethrin_ng_g}}{a numeric vector}
           \item{\code{Permethrin_trans_ng_g}}{a numeric vector}
-          \item{\samp{Permethrin_trans_uf_֧_L}}{a numeric vector}
-          \item{\samp{Permethrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Permethrin_trans_uf__L}}{a numeric vector}
+          \item{\samp{Permethrin_uf__L}}{a numeric vector}
           \item{\code{Perthane_ng_g}}{a numeric vector}
           \item{\code{Perylene_ng_g}}{a numeric vector}
-          \item{\samp{Perylene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Perylene_uf__L}}{a numeric vector}
           \item{\code{pH}}{a numeric vector}
           \item{\code{Phenanthrene_ng_g}}{a numeric vector}
-          \item{\samp{Phenanthrene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Phenanthrene_uf__L}}{a numeric vector}
           \item{\code{PhenanthreneAnthracene_C1_ng_g}}{a numeric vector}
-          \item{\samp{PhenanthreneAnthracene_C1_uf_֧_L}}{a numeric vector}
+          \item{\samp{PhenanthreneAnthracene_C1_uf__L}}{a numeric vector}
           \item{\code{PhenanthreneAnthracene_C2_ng_g}}{a numeric vector}
-          \item{\samp{PhenanthreneAnthracene_C2_uf_֧_L}}{a numeric vector}
+          \item{\samp{PhenanthreneAnthracene_C2_uf__L}}{a numeric vector}
           \item{\code{PhenanthreneAnthracene_C3_ng_g}}{a numeric vector}
-          \item{\samp{PhenanthreneAnthracene_C3_uf_֧_L}}{a numeric vector}
+          \item{\samp{PhenanthreneAnthracene_C3_uf__L}}{a numeric vector}
           \item{\code{PhenanthreneAnthracene_C4_ng_g}}{a numeric vector}
-          \item{\samp{PhenanthreneAnthracene_C4_uf_֧_L}}{a numeric vector}
-          \item{\samp{Pheo_a_Particulate_֧_L}}{a numeric vector}
+          \item{\samp{PhenanthreneAnthracene_C4_uf__L}}{a numeric vector}
+          \item{\samp{Pheo_a_Particulate__L}}{a numeric vector}
           \item{\code{Phorate_ng_g}}{a numeric vector}
-          \item{\samp{Phorate_uf_֧_L}}{a numeric vector}
-          \item{\samp{Phosmet_uf_֧_L}}{a numeric vector}
+          \item{\samp{Phorate_uf__L}}{a numeric vector}
+          \item{\samp{Phosmet_uf__L}}{a numeric vector}
           \item{\code{Phosphamidon_ng_g}}{a numeric vector}
           \item{\code{Phosphamidon_ppb}}{a logical vector}
-          \item{\samp{Phosphamidon_uf_֧_L}}{a numeric vector}
+          \item{\samp{Phosphamidon_uf__L}}{a numeric vector}
           \item{\code{PiperonylButoxide_ng_g}}{a numeric vector}
           \item{\code{PO4_P_mg_kg}}{a numeric vector}
           \item{\code{PO4_P_uf_mg_L}}{a numeric vector}
           \item{\code{Prallethrin_ng_g}}{a numeric vector}
-          \item{\samp{Prallethrin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Prallethrin_uf__L}}{a numeric vector}
           \item{\code{Prometon_ppb}}{a numeric vector}
-          \item{\samp{Prometon_uf_֧_L}}{a numeric vector}
+          \item{\samp{Prometon_uf__L}}{a numeric vector}
           \item{\code{Prometryn_ppb}}{a logical vector}
-          \item{\samp{Prometryn_uf_֧_L}}{a numeric vector}
+          \item{\samp{Prometryn_uf__L}}{a numeric vector}
           \item{\code{Propazine_ppb}}{a numeric vector}
-          \item{\samp{Propazine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Propylbenzene_n_uf_֧_L}}{a numeric vector}
+          \item{\samp{Propazine_uf__L}}{a numeric vector}
+          \item{\samp{Propylbenzene_n_uf__L}}{a numeric vector}
           \item{\code{Prothiofos_ppb}}{a logical vector}
           \item{\code{Pyrene_ng_g}}{a numeric vector}
-          \item{\samp{Pyrene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Pyrene_uf__L}}{a numeric vector}
           \item{\code{Pyrethrin1_ng_g}}{a logical vector}
           \item{\code{Pyrethrin2_ng_g}}{a logical vector}
           \item{\code{Resmethrin_ng_g}}{a numeric vector}
           \item{\code{Ronnel_ppb}}{a logical vector}
-          \item{\samp{Roxithromycin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Roxithromycin_uf__L}}{a numeric vector}
           \item{\code{S_mg_kg}}{a numeric vector}
           \item{\code{Salinity_uf_ppt}}{a numeric vector}
-          \item{\samp{Sb_֧_g}}{a numeric vector}
+          \item{\samp{Sb__g}}{a numeric vector}
           \item{\code{Sb_f_mg_L}}{a numeric vector}
           \item{\code{Sb_uf_mg_L}}{a numeric vector}
-          \item{\samp{Se_֧_g}}{a numeric vector}
+          \item{\samp{Se__g}}{a numeric vector}
           \item{\code{Se_f_mg_L}}{a numeric vector}
           \item{\code{Se_uf_mg_L}}{a numeric vector}
           \item{\code{Secbumeton_ppb}}{a logical vector}
-          \item{\samp{Secbumeton_uf_֧_L}}{a numeric vector}
+          \item{\samp{Secbumeton_uf__L}}{a numeric vector}
           \item{\code{Si_SiO2_f_mg_L}}{a numeric vector}
           \item{\code{Si_SiO2_uf_mg_L}}{a numeric vector}
           \item{\code{Simazine_ppb}}{a numeric vector}
-          \item{\samp{Simazine_uf_֧_L}}{a numeric vector}
+          \item{\samp{Simazine_uf__L}}{a numeric vector}
           \item{\code{Simetryn_ppb}}{a logical vector}
-          \item{\samp{Simetryn_uf_֧_L}}{a numeric vector}
+          \item{\samp{Simetryn_uf__L}}{a numeric vector}
           \item{\code{SO4_f_mg_L}}{a numeric vector}
           \item{\code{SO4_uf_mg_L}}{a numeric vector}
           \item{\code{Solids_.}}{a numeric vector}
           \item{\code{Solids_mg_L}}{a numeric vector}
           \item{\samp{SpecCond_uf_֓_cm}}{a numeric vector}
-          \item{\samp{Sulfachloropyridazine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfadimethoxine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfamerazine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfamethazine_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfamethizole_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfamethoxazole_uf_֧_L}}{a numeric vector}
-          \item{\samp{Sulfathiazole_uf_֧_L}}{a numeric vector}
+          \item{\samp{Sulfachloropyridazine_uf__L}}{a numeric vector}
+          \item{\samp{Sulfadimethoxine_uf__L}}{a numeric vector}
+          \item{\samp{Sulfamerazine_uf__L}}{a numeric vector}
+          \item{\samp{Sulfamethazine_uf__L}}{a numeric vector}
+          \item{\samp{Sulfamethizole_uf__L}}{a numeric vector}
+          \item{\samp{Sulfamethoxazole_uf__L}}{a numeric vector}
+          \item{\samp{Sulfathiazole_uf__L}}{a numeric vector}
           \item{\code{Sulfotep_ng_g}}{a numeric vector}
           \item{\code{Sulfotep_ppb}}{a logical vector}
-          \item{\samp{Sulfotep_uf_֧_L}}{a numeric vector}
+          \item{\samp{Sulfotep_uf__L}}{a numeric vector}
           \item{\code{Sulprofos_ppb}}{a logical vector}
           \item{\code{SuspSedConc_Particulate_mg_L}}{a numeric vector}
           \item{\code{TDS_calc_mg_L}}{a numeric vector}
           \item{\code{TDS_f_mg_L}}{a numeric vector}
           \item{\code{Tedion_ng_g}}{a numeric vector}
-          \item{\samp{Tedion_uf_֧_L}}{a numeric vector}
+          \item{\samp{Tedion_uf__L}}{a numeric vector}
           \item{\code{Temp_degC}}{a numeric vector}
           \item{\code{Temp_degF}}{a numeric vector}
           \item{\code{Terbufos_ppb}}{a logical vector}
-          \item{\samp{Terbufos_uf_֧_L}}{a numeric vector}
+          \item{\samp{Terbufos_uf__L}}{a numeric vector}
           \item{\code{Terbuthylazine_ppb}}{a numeric vector}
-          \item{\samp{Terbuthylazine_uf_֧_L}}{a numeric vector}
+          \item{\samp{Terbuthylazine_uf__L}}{a numeric vector}
           \item{\code{Terbutryn_ppb}}{a logical vector}
-          \item{\samp{Terbutryn_uf_֧_L}}{a numeric vector}
-          \item{\samp{Terphenyl_d14_Surrogate_uf_֧_L}}{a numeric vector}
-          \item{\samp{Tetrachloroethane_1112_uf_֧_L}}{a numeric vector}
-          \item{\samp{Tetrachloroethane_1122_uf_֧_L}}{a numeric vector}
-          \item{\samp{Tetrachloroethylene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Terbutryn_uf__L}}{a numeric vector}
+          \item{\samp{Terphenyl_d14_Surrogate_uf__L}}{a numeric vector}
+          \item{\samp{Tetrachloroethane_1112_uf__L}}{a numeric vector}
+          \item{\samp{Tetrachloroethane_1122_uf__L}}{a numeric vector}
+          \item{\samp{Tetrachloroethylene_uf__L}}{a numeric vector}
           \item{\code{Tetrachlorvinphos_ng_g}}{a numeric vector}
           \item{\code{Tetrachlorvinphos_ppb}}{a logical vector}
-          \item{\samp{Tetrachlorvinphos_uf_֧_L}}{a numeric vector}
-          \item{\samp{Tetracycline_uf_֧_L}}{a numeric vector}
+          \item{\samp{Tetrachlorvinphos_uf__L}}{a numeric vector}
+          \item{\samp{Tetracycline_uf__L}}{a numeric vector}
           \item{\code{Tetradifon_ppb}}{a logical vector}
           \item{\code{Thiobencarb_ppb}}{a numeric vector}
-          \item{\samp{Thiobencarb_uf_֧_L}}{a numeric vector}
+          \item{\samp{Thiobencarb_uf__L}}{a numeric vector}
           \item{\code{Thionazin_ng_g}}{a numeric vector}
           \item{\code{Thionazin_ppb}}{a logical vector}
-          \item{\samp{Thionazin_uf_֧_L}}{a numeric vector}
+          \item{\samp{Thionazin_uf__L}}{a numeric vector}
           \item{\code{TKN_uf_mg_L}}{a numeric vector}
           \item{\code{TN_mg_kg}}{a numeric vector}
           \item{\code{TN_uf_mg_L}}{a numeric vector}
           \item{\code{TOC_.}}{a numeric vector}
           \item{\code{TOC_uf_mg_L}}{a numeric vector}
           \item{\code{Tokuthion_ng_g}}{a numeric vector}
-          \item{\samp{Tokuthion_uf_֧_L}}{a numeric vector}
-          \item{\samp{Toluene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Tokuthion_uf__L}}{a numeric vector}
+          \item{\samp{Toluene_uf__L}}{a numeric vector}
           \item{\code{Toxaphene_ng_g}}{a numeric vector}
           \item{\code{TP_mg_L}}{a numeric vector}
           \item{\code{TP_P_uf_mg_L}}{a numeric vector}
           \item{\code{Tributyltin_Sn_ng_g}}{a numeric vector}
-          \item{\samp{Trichlorfon_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trichlorobenzene_123_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trichlorobenzene_124_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trichloroethane_111_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trichloroethane_112_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trichloroethylene_uf_֧_L}}{a numeric vector}
+          \item{\samp{Trichlorfon_uf__L}}{a numeric vector}
+          \item{\samp{Trichlorobenzene_123_uf__L}}{a numeric vector}
+          \item{\samp{Trichlorobenzene_124_uf__L}}{a numeric vector}
+          \item{\samp{Trichloroethane_111_uf__L}}{a numeric vector}
+          \item{\samp{Trichloroethane_112_uf__L}}{a numeric vector}
+          \item{\samp{Trichloroethylene_uf__L}}{a numeric vector}
           \item{\code{Trichloronate_ng_g}}{a numeric vector}
-          \item{\samp{Trichloronate_uf_֧_L}}{a numeric vector}
+          \item{\samp{Trichloronate_uf__L}}{a numeric vector}
           \item{\code{Trichlorophon_ppb}}{a logical vector}
-          \item{\samp{Trichloropropane_123_uf_֧_L}}{a numeric vector}
-          \item{\samp{Triclosan_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trimethoprim_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trimethylbenzene_124_uf_֧_L}}{a numeric vector}
-          \item{\samp{Trimethylbenzene_135_uf_֧_L}}{a numeric vector}
+          \item{\samp{Trichloropropane_123_uf__L}}{a numeric vector}
+          \item{\samp{Triclosan_uf__L}}{a numeric vector}
+          \item{\samp{Trimethoprim_uf__L}}{a numeric vector}
+          \item{\samp{Trimethylbenzene_124_uf__L}}{a numeric vector}
+          \item{\samp{Trimethylbenzene_135_uf__L}}{a numeric vector}
           \item{\code{Trimethylnaphthalene_2.3.5_ng_g}}{a numeric vector}
-          \item{\samp{Trimethylnaphthalene_235_uf_֧_L}}{a numeric vector}
+          \item{\samp{Trimethylnaphthalene_235_uf__L}}{a numeric vector}
           \item{\code{TSS_uf_mg_L}}{a numeric vector}
           \item{\code{Turb_NTU}}{a numeric vector}
-          \item{\samp{Tylosin_uf_֧_L}}{a numeric vector}
-          \item{\samp{Xylene_mp_uf_֧_L}}{a numeric vector}
-          \item{\samp{Xylene_o_uf_֧_L}}{a numeric vector}
-          \item{\samp{Zn_֧_g}}{a numeric vector}
+          \item{\samp{Tylosin_uf__L}}{a numeric vector}
+          \item{\samp{Xylene_mp_uf__L}}{a numeric vector}
+          \item{\samp{Xylene_o_uf__L}}{a numeric vector}
+          \item{\samp{Zn__g}}{a numeric vector}
           \item{\code{Zn_f_mg_L}}{a numeric vector}
           \item{\code{Zn_uf_mg_L}}{a numeric vector}
 }}
