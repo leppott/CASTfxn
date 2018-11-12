@@ -42,6 +42,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9113 (2018-11-12)
+
+* Report_Results.rmd
+    + New results report.
+
 ## Changes in Version 0.1.0.9112 (2018-10-17)
 
 * data.R
