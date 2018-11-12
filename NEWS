@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-11-12 18:04:52
+    #> Last Update: 2018-11-12 18:14:45
 
 # Planned Updates
 
@@ -29,6 +29,12 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9114 (2018-11-12)
+
+  - getBMIStressorResponses
+      - Update jpg file name output. Issue \#16.
+          - Missing “dot” between SiteID and BMI.SR.
 
 ## Changes in Version 0.1.0.9113 (2018-11-12)
 

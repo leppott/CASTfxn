@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9114 (2018-11-12)
+
+* getBMIStressorResponses
+    + Update jpg file name output.  Issue #16.
+        - Missing "dot" between SiteID and BMI.SR.
+
 ## Changes in Version 0.1.0.9113 (2018-11-12)
 
 * Report_Results.rmd

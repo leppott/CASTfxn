@@ -153,7 +153,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
       
       ppi<-300
-      varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, "BMI.SR.")
+      varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".BMI.SR.")
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
                             ".jpg", sep = ""), width = 4 * ppi, 
            height = 3 * ppi, quality=100, pointsize=8, res = ppi)
