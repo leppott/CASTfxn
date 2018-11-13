@@ -1,21 +1,22 @@
 ---
-title: "Summary Report"
+title: "Report, All"
 subtitle: "CAST"
 author: "`r Sys.getenv('USERNAME')`"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:
   html_document:
-    depth: 3
-    toc: yes
-    toc_float: no
+    toc: true
+    toc_depth: 3
+    toc_float: false
   word_document:
+    toc: yes
   pdf_document:
     toc: true
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
-TargetSiteID <- "SRCKN001.61"
-dir_Results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
+# TargetSiteID <- "SRCKN001.61"
+# dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
 ```
 
 # REPORT INFORMATION
@@ -34,13 +35,11 @@ dir_Results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDri
   cat(paste("**Site ID:** ",TargetSiteID,"\n\n",sep=""))
 ```
 
-Could include a table of other information about the Site.
-
 # MAP
 ```{r map}
 #TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".map.jpg")
-fn_img <- file.path(dir_Results, TargetSiteID, myJPG)
+fn_img <- file.path(dir_results, TargetSiteID, myJPG)
 knitr::include_graphics(fn_img)
 ```
 
@@ -48,14 +47,14 @@ knitr::include_graphics(fn_img)
 # BOXES
 ```{r Plots_Boxes}
 #TargetSiteID <- "SRCKN001.61"
-myFiles <- list.files(file.path(dir_Results, TargetSiteID)
+myFiles <- list.files(file.path(dir_results, TargetSiteID)
                       , pattern=paste0(TargetSiteID,".boxes."), full.names = TRUE)
 knitr::include_graphics(myFiles)
 ```
 
 # CLUSTER
 ```{r Plots_Cluster}
-myFiles <- list.files(file.path(dir_Results, TargetSiteID)
+myFiles <- list.files(file.path(dir_results, TargetSiteID)
                       , pattern=paste0(TargetSiteID,".cluster."), full.names = TRUE)
 knitr::include_graphics(myFiles)
 ```
@@ -63,8 +62,8 @@ knitr::include_graphics(myFiles)
 
 # BMI STRESSOR RESPONSE
 ```{r Plots_BMI_SR}
-myFiles <- list.files(file.path(dir_Results, TargetSiteID)
-                      , pattern=paste0(TargetSiteID,"BMI.SR"), full.names = TRUE)
+myFiles <- list.files(file.path(dir_results, TargetSiteID)
+                      , pattern=paste0(TargetSiteID,".BMI.SR"), full.names = TRUE)
 knitr::include_graphics(myFiles)
 ```
 
