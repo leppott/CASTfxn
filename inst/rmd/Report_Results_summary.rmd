@@ -7,7 +7,7 @@ output:
   html_document:
     toc: yes
     toc_depth: 3
-    toc_float: no
+    toc_float: yes
   word_document:
     toc: yes
   pdf_document:
@@ -42,8 +42,35 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 #TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".map.jpg")
 fn_img <- file.path(dir_results, TargetSiteID, myJPG)
-knitr::include_graphics(fn_img)
+if(file.exists(fn_img)==TRUE){
+  knitr::include_graphics(fn_img)
+} else {
+  cat("No file exists; map.\n")
+}
 ```
+
+# BOX PLOTS
+Box plots by stressor category.
+
+```{r BoxPlots}
+dir_SiteID <- file.path(dir_results, TargetSiteID)
+fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
+                                 , pattern=".boxes.")
+if(length(fn_BoxPlots)==0){
+  txt_NoFile <- "No file exists; box plots.\n"
+  cat(txt_NoFile)
+} else if(file.exists(fn_BoxPlots[1])==TRUE){
+  #
+  fn_img <- fn_BoxPlots
+  knitr::include_graphics(fn_img)
+  #
+} else {
+  cat(txt_NoFile)
+}
+
+
+```
+
 
 # STRESSOR RESPONSE
 
@@ -62,14 +89,14 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
   knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs)
 } else {
-  cat("No Stressor Response BMI correlations.\n")
+  cat("No file exists; Stressor Response BMI correlations.\n")
 }##IF.corrs.START
 #
 if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
   df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
   knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
 } else {
-  cat("No Stressor Response BMI scores.\n")
+  cat("No file exists; Stressor Response BMI scores.\n")
 }##IF.scores.START
 ```
 
@@ -84,7 +111,7 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
                      , paste0(TargetSiteID,".SR.BMI.", Corr_Analyte), full.names = TRUE)
   knitr::include_graphics(fn_img)
 } else {
-  cat("No Stressor Response BMI correlation plots.\n")
+  cat("No file exists; Stressor Response BMI correlation plots.\n")
 }
 #
 
@@ -95,35 +122,68 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
 ```{r SR_SSTV_tables}
 fn_SR_SSTV_Corrs  <- file.path(dir_results, TargetSiteID
                                , paste0(TargetSiteID, ".SSTVCorrs.txt"))
-#
-df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
-#
-cap_SR_SSTV_Corrs <- "Stressor Response, SSTV, Correlations"
-#
-knitr::kable(df_SR_SSTVCorrs, caption=cap_SR_SSTV_Corrs)
+
+if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
+  #
+  df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
+  #
+  cap_SR_SSTV_Corrs <- "Stressor Response, SSTV, Correlations"
+  #
+  knitr::kable(df_SR_SSTVCorrs, caption=cap_SR_SSTV_Corrs)
+  #
+} else {
+  cat("No file exists; Stressor Response SSTV data.\n")
+}
 ```
 
-### Plots
-```{r SR_SSTV_plots}
-fn_SR_SSTV_Corrs  <- file.path(dir_results, TargetSiteID
-                               , paste0(TargetSiteID, ".SSTVCorrs.txt"))
-#
-df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
-Corr_Analyte <- sort(unique(df_SR_SSTVCorrs[,1]))
-#
-fn_img <- list.files(file.path(dir_results, TargetSiteID)
-                     , paste0(TargetSiteID,".SR.SSTV.", Corr_Analyte), full.names = TRUE)
-knitr::include_graphics(fn_img)
-```
-
+# OTHER
 ## Co-Occurence
 ### Table
-SiteID.CoOccurrence_Scores_YYYYMMDD_HHMMSS.tsv
+```{r CoOccur_tables}
+#dir_results <- file.path(getwd(), "Results", "_CoOccur", "hi")
+# dir_SiteID <- file.path(dir_results, TargetSiteID)
+
+fn_CoOccur_Scores  <- list.files(path=file.path(dir_results, TargetSiteID)
+                                 , full.names = TRUE
+                                 , pattern=".CoOccurrence.Scores.")
+if(length(fn_CoOccur_Scores)==0){
+  txt_NoFile <- "No file exists; co-occurrence scores.\n"
+  cat(txt_NoFile)
+} else if(file.exists(fn_CoOccur_Scores)==TRUE){
+  #
+  df_CoOccur_Scores <- read.delim(fn_CoOccur_Scores)
+  #
+  cap_CoOccur_Scores <- "Co-Occurrence Scores"
+  #
+  knitr::kable(df_CoOccur_Scores, caption=cap_CoOccur_Scores)
+  #
+} else {
+  cat(txt_NoFile)
+}
+#
+```
+
 ### Plots
 Plots are saved from the function in pairs in a PDF.
 
-* SiteID_CoOccurrence_YYYYMMDD_HHMMSS.pdf
+* SiteID.CoOccurrence.YYYYMMDD_HHMMSS.pdf
 
 ## Chem, Percent Rank
 ### Table
-SiteID.chem.pctrank.txt
+```{r ChemPctRank_table}
+fn_ChemPctRank  <- file.path(dir_results, TargetSiteID
+                               , paste0(TargetSiteID, ".chem.pctrank.txt"))
+
+if(file.exists(fn_ChemPctRank)==TRUE){
+  #
+  df_ChemPctRank <- read.delim(fn_ChemPctRank)
+  #
+  cap_ChemPctRank <- "Chemical Analytes, Percent Rank"
+  #
+  knitr::kable(df_ChemPctRank, caption=cap_ChemPctRank)
+  #
+} else {
+  cat("No files exists; chemistry percent ranks.\n")
+}
+```
+

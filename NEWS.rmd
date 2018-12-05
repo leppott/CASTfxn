@@ -42,6 +42,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9117 (2018-12-05)
+
+* Report
+    + Add CoOccurrence table.
+    + Add ChemPctRank table.
+    + Only "summary" report.
+        - Stop message for "all" report.
+
 ## Changes in Version 0.1.0.9116 (2018-12-05)
 
 * getReport

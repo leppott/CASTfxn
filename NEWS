@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-05 11:36:14
+    #> Last Update: 2018-12-05 16:28:24
 
 # Planned Updates
 
@@ -29,6 +29,14 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9117 (2018-12-05)
+
+  - Report
+      - Add CoOccurrence table.
+      - Add ChemPctRank table.
+      - Only “summary” report.
+          - Stop message for “all” report.
 
 ## Changes in Version 0.1.0.9116 (2018-12-05)
 

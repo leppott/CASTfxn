@@ -5,7 +5,7 @@
 \title{Report Generation}
 \usage{
 getReport(TargetSiteID, dir_results = file.path(getwd(), "Results"),
-  report_type = "all", report_format = "html",
+  report_type = "summary", report_format = "html",
   dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"))
 }
 \arguments{
@@ -13,14 +13,15 @@ getReport(TargetSiteID, dir_results = file.path(getwd(), "Results"),
 
 \item{dir_results}{Directory with subfolders named by SiteID.  Default = Results folder in working directory.}
 
-\item{report_type}{Requested report type (all or summary).  Default = all}
+\item{report_type}{Requested report type (all or summary).  Default = summary}
 
 \item{report_format}{Requested report output format (html or word).  Default = HTML}
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
 }
 \value{
-A report for the provided SiteID in the provided format (html or word) in the results directory.
+A report for the provided SiteID in the provided format (html or word) 
+in the results directory.
 }
 \description{
 Generate report
@@ -28,7 +29,9 @@ Generate report
 \details{
 Generates a report based on a Target SiteID in a given directory.  
 The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
-Report format can be "html" (recommended default) or "word" (docx).
+Report format can be "html" (recommended default) or "word" (docx). 
+
+Only the "summary" report is active.
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"

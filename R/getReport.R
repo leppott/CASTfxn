@@ -4,15 +4,18 @@
 #' 
 #' @details Generates a report based on a Target SiteID in a given directory.  
 #' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
-#' Report format can be "html" (recommended default) or "word" (docx).  
+#' Report format can be "html" (recommended default) or "word" (docx). 
+#' 
+#' Only the "summary" report is active. 
 #' 
 #' @param TargetSiteID SiteID
 #' @param dir_results Directory with subfolders named by SiteID.  Default = Results folder in working directory.
-#' @param report_type Requested report type (all or summary).  Default = all
+#' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = HTML
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
 #' 
-#' @return A report for the provided SiteID in the provided format (html or word) in the results directory.
+#' @return A report for the provided SiteID in the provided format (html or word) 
+#' in the results directory.
 #' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
@@ -27,7 +30,7 @@
 #
 #' @export
 getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
-                      , report_type="all", report_format="html"
+                      , report_type="summary", report_format="html"
                       , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
   #
   # Date and Time for output
@@ -37,6 +40,12 @@ getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
   # QC, ensure inputs are in the proper case
   report_type   <- tolower(report_type)
   report_format <- tolower(report_format)
+  #
+  # 20181205
+  if(report_type!="summary"){
+    Msg <- "Only the 'summary' report_type is active."
+    stop(Msg)
+  }
   #
   # Report parts
   strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
