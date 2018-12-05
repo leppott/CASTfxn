@@ -53,26 +53,41 @@ knitr::include_graphics(fn_img)
 fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, "StressRespCorrs.BMI.txt")
 fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID, "StressRespScores.BMI.txt")
 #
-df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
-df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
-#
+# captions
 cap_SR_BMI_Corrs <- "Stressor Response, BMI, Correlations"
 cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores"
 #
-knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs)
-knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
+# if exist run
+if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
+  df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+  knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs)
+} else {
+  cat("No Stressor Response BMI correlations.\n")
+}##IF.corrs.START
+#
+if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
+  df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
+  knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
+} else {
+  cat("No Stressor Response BMI scores.\n")
+}##IF.scores.START
 ```
 
 ### Plots
 ```{r SR_BMI_plots}
 fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, "StressRespCorrs.BMI.txt")
 #
-df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
-Corr_Analyte <- sort(unique(df_SR_BMI_Corrs$stressName))
+if(file.exists(fn_SR_BMI_Corrs)==TRUE){
+  df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+  Corr_Analyte <- sort(unique(df_SR_BMI_Corrs$stressName))
+  fn_img <- list.files(file.path(dir_results, TargetSiteID)
+                     , paste0(TargetSiteID,".SR.BMI.", Corr_Analyte), full.names = TRUE)
+  knitr::include_graphics(fn_img)
+} else {
+  cat("No Stressor Response BMI correlation plots.\n")
+}
 #
-fn_img <- list.files(file.path(dir_results, TargetSiteID)
-                     , paste0(TargetSiteID,".BMI.SR.", Corr_Analyte), full.names = TRUE)
-knitr::include_graphics(fn_img)
+
 ```
 
 ## SSTV
@@ -97,6 +112,18 @@ df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
 Corr_Analyte <- sort(unique(df_SR_SSTVCorrs[,1]))
 #
 fn_img <- list.files(file.path(dir_results, TargetSiteID)
-                     , paste0(TargetSiteID,".SSTV.SR.", Corr_Analyte), full.names = TRUE)
+                     , paste0(TargetSiteID,".SR.SSTV.", Corr_Analyte), full.names = TRUE)
 knitr::include_graphics(fn_img)
 ```
+
+## Co-Occurence
+### Table
+SiteID.CoOccurrence_Scores_YYYYMMDD_HHMMSS.tsv
+### Plots
+Plots are saved from the function in pairs in a PDF.
+
+* SiteID_CoOccurrence_YYYYMMDD_HHMMSS.pdf
+
+## Chem, Percent Rank
+### Table
+SiteID.chem.pctrank.txt

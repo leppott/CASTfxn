@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-11-13 14:48:13
+    #> Last Update: 2018-12-05 11:36:14
 
 # Planned Updates
 
@@ -29,6 +29,16 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9116 (2018-12-05)
+
+  - getReport
+      - Modify summary report to check if file exists
+  - getCoOccur
+      - Modify user feedback to include overall item number; Issue \#18
+      - Modify file outputs to use “dot” delimiter to match other file
+        outputs in package.
+      - TSV to TXT for scores to match other data file outputs.
 
 ## Changes in Version 0.1.0.9115 (2018-11-13)
 

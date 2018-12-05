@@ -216,10 +216,10 @@ getCoOccur <- function(df.data, ID.plot=NULL
            , FALSE)
     #
     # Write to PDF
-    fn.pdf <- paste0(TargetSiteID, "_CoOccurrence_", myDateTime,".pdf")
+    fn.pdf <- paste0(TargetSiteID, ".CoOccurrence.", myDateTime,".pdf")
     grDevices::pdf(file=file.path(wd,dir.sub,dir.sub2,fn.pdf), width=6, height=8)
     #
-    fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence_Scores_", myDateTime,".tsv"))
+    fn.scores <- file.path(wd,dir.sub,dir.sub2,paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
     utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
@@ -255,8 +255,12 @@ getCoOccur <- function(df.data, ID.plot=NULL
        j.num <- match(j, col.Stressors)
        j.len <- length(col.Stressors)
        #
-       print(paste0("Items to process; ID, ", i.num, "/", i.len, ", ", i
-                    , "; Stressors, ", j.num, "/", j.len, ", ", j, "."))
+       ij.num <- ((i.num-1)*j.len) + j.num
+       ij.len <- i.len * j.len
+       #
+       cat(paste0("Processing item (",ij.num,"/",ij.len,"); ID (", i.num, "/", i.len, ") ", i
+                    , "; Stressors (", j.num, "/", j.len, ") ", j, ".\n"))
+       flush.console()
        #
        df.i[,paste0("n_",j)] <- sum(!is.na(df.comp[,j]))
        #df.i[,paste0("q20_",j)] <- stats::quantile(df.comp[,j], probs=0.20, na.rm=TRUE)
