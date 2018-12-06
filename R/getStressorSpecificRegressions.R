@@ -23,6 +23,8 @@
 #' 
 #' @return Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
 #' 
+#' @importFrom pryr "%<a-%"
+#' 
 #' @examples
 #' predint <- 0.75
 #' varLegLoc <- "topright"

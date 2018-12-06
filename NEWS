@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-06 14:24:11
+    #> Last Update: 2018-12-06 15:20:11
 
 # Planned Updates
 
@@ -30,12 +30,10 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9118 (2018-12-06)
+## Changes in Version 0.1.0.9119 (2018-12-06)
 
   - Modify plots to output a combined PDF as well as individual JPG
-    files.
-      - .boxes.
-          - getStressorList
+    files. Issue \#19.
       - .cluster.
           - getClusterInfo
       - .SR.BMI.
@@ -44,6 +42,13 @@ NEWS
           - getAlgStressorResponse
       - .SSTV.
           - getStressorSpecificRegressions
+
+## Changes in Version 0.1.0.9118 (2018-12-06)
+
+  - Modify plots to output a combined PDF as well as individual JPG
+    files. Issue \#19.
+      - .boxes.
+          - getStressorList
   - Added pryr package to aid in capture of plots for use in PDF output.
 
 ## Changes in Version 0.1.0.9117 (2018-12-05)

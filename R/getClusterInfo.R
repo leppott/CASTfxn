@@ -18,15 +18,17 @@
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
+#' @importFrom pryr "%<a-%"
+#' 
 #' @examples
 #' 
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
+# CurrentDir<-getwd()
+# myDir.Data <- paste(CurrentDir,"data/",sep="/")
+# 
 #' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
@@ -60,7 +62,7 @@
 #' 
 #' @export
 getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, 
-                           useLU = FALSE) {
+                           useLU = FALSE) {##FUNCTION.START
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
@@ -88,8 +90,11 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
   df.plot.2 <- data.cluster.mySites
   df.plot <- data.cluster
 
+  # Plots ####
+  # Capture each plot in a list for the PDF
+  plots.i <- vector(ncol(data.cluster.mySites)-1, mode="list")
   ppi<-300
-  for (i in 2:ncol(data.cluster.mySites)) {
+  for (i in 2:ncol(data.cluster.mySites)) {##FOR.i.START
     #
     varYlab <- colnames(data.cluster.mySites)[i]
     #
@@ -110,29 +115,48 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
       next
     }##IF.myY.END
     #
+    plot.pryr %<a-% {##pryr.START
+      #
+      graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
+                        , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
+                        , boxlwd = 0.8, col ="lightgray")
+      #~~~~~~~~~~~~~
+      # add points to plots for reference sites
+      myY <- df.plot.3[,i]
+      myX <- df.plot.3[,cluster]
+      graphics::points(myX,myY,col="blue",cex=0.7,pch=19)
+      #~~~~~~~~~~~~~
+      # add points to plots for selected sites
+      myY <- df.plot.2[,i]
+      myX <- df.plot.2[,cluster]
+      graphics::points(myX,myY,col="red",cex=0.8,pch=19)
+      #
+    }##pryr.END
+    #
+    # PDF, capture plot in list
+    plot.pryr
+    plots.i[[i-1]] <- grDevices::recordPlot()
+    #
+    # JPG, Create
     grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
                                       TargetSiteID,".cluster.",varYlab,".jpg"),
                 width = 4*ppi, height = 3*ppi, pointsize = 8,
                 quality = 100, bg = "white", res = ppi)
-        #
-        graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
-                , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
-                , boxlwd = 0.8, col ="lightgray")
-        #~~~~~~~~~~~~~
-        # add points to plots for reference sites
-        myY <- df.plot.3[,i]
-        myX <- df.plot.3[,cluster]
-        graphics::points(myX,myY,col="blue",cex=0.7,pch=19)
-        #~~~~~~~~~~~~~
-        # add points to plots for selected sites
-        myY <- df.plot.2[,i]
-        myX <- df.plot.2[,cluster]
-        graphics::points(myX,myY,col="red",cex=0.8,pch=19)
-        #
+      plot.pryr  
     grDevices::dev.off() ##JPEG.END
     #
-  }
+  }##FOR.i.END
   #
-  grDevices::graphics.off()  
+  #grDevices::graphics.off() 
+  # Create PDF from list
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".cluster.AllGroups.pdf"))
+  pdf(file=fn_pdf)
+  for (ii in plots.i){##FOR.gp.START
+    #grDevices::replayPlot(g.plot)
+    if(is.null(ii)==TRUE) {next}
+    grDevices::replayPlot(ii)
+  }##FOR.gp.END
+  grDevices::dev.off()
+  rm(plots.i)
   #
-}
+}##FUNCTION.END

@@ -166,6 +166,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   pdf(file=fn_pdf)
   for (i in plots.g){##FOR.gp.START
     #grDevices::replayPlot(g.plot)
+    if(is.null(i)==TRUE) {next}
     grDevices::replayPlot(i)
   }##FOR.gp.END
   grDevices::dev.off()

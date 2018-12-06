@@ -15,6 +15,8 @@
 #' 
 #' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 #' 
+#' @importFrom pryr "%<a-%"
+#' 
 #' @examples
 #' predint <- 0.75
 #' varLegLoc <- "topright"
