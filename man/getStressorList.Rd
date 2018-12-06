@@ -45,9 +45,6 @@ TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
 
-CurrentDir<-getwd()
-myDir.Data <- paste(CurrentDir,"data/",sep="/")
-
 # datasets getSiteInfo
 # data, example included with package
 data.Stations.Info <- data_Sites

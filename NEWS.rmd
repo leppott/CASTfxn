@@ -42,6 +42,21 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9118 (2018-12-06)
+
+* Modify plots to output a combined PDF as well as individual JPG files.
+    + .boxes. 
+        - getStressorList
+    + .cluster.
+        - getClusterInfo
+    + .SR.BMI.
+        - getBMIStressorResponse
+    + .SR.Alg.
+        - getAlgStressorResponse
+    + .SSTV.
+        - getStressorSpecificRegressions
+* Added pryr package to aid in capture of plots for use in PDF output.
+
 ## Changes in Version 0.1.0.9117 (2018-12-05)
 
 * Report

@@ -21,14 +21,16 @@
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
+#' @importFrom pryr "%<a-%"
+#' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
+# CurrentDir<-getwd()
+#  myDir.Data <- paste(CurrentDir,"data/",sep="/")
+# 
 #' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
@@ -101,47 +103,75 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   groupnames <- unique(subset(chem.info, chem.info$ConvertTo %in% chemnames, select = "GroupName"))
   numgps <- length(groupnames[,1])
   
+  # Plots ####
   ppi <- 300
-  
-  for (g in 1:numgps) {    # Generate 1 box plot for each group, ref sites in blue, target site in red
+  # Capture each plot in a list for the PDF
+  ## https://stackoverflow.com/questions/13273611/how-to-append-a-plot-to-an-existing-pdf-file
+  ## https://www.andrewheiss.com/blog/2016/12/08/save-base-graphics-as-pseudo-objects-in-r/
+  plots.g <- vector(numgps, mode="list")
+  # Generate 1 box plot for each group, ref sites in blue, target site in red
+  for (g in 1:numgps) {##FOR.g.START
     gpchems <- subset(chem.info, GroupName == groupnames[g,], select = "ConvertTo")
     gpcoolvar <- subset(coolvar, coolvar %in% gpchems$ConvertTo)
     n <- length(gpcoolvar)
     if(n>0) { ##FOR.n.START
+      plot.pryr %<a-% {##pryr.START
+        maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
+        graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
+        if (useLU == TRUE) {##IF.useLU.START
+          labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
+        } else {
+          labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
+        }##IF.useLU.END
+        labx = paste(maintitle, labmain, sep = "\n")
+        graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
+             xlim = c(0,1), cex.lab = 0.8)
+        graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
+        graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
+        for(i in 1:n) {##FOR.i.START
+          xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
+          newvar <- (xvar-min(xvar, na.rm=T))/dif
+          graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
+                  , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
+          good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
+          if (length(good.ref.data) != 0) {##IF.length.START
+            point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
+            graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
+          }##IF.length.END
+          point1 <- (site.chem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
+          graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
+        }##FOR.i.NED
+        graphics::box(bty="l")  
+      }##pryr.END
+
+      # PDF, capture plot in list
+      #lst.plots.g[[g]] <- grDevices::recordPlot()
+      #plots.g[[g]] <- plot.pryr
+      #assign(paste0("plot_",g),plot.pryr)
+      plot.pryr
+      plots.g[[g]] <- grDevices::recordPlot()
+      
+      # JPG, create
       grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
-                    ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
-                    height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
-                    res = ppi)
-      maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
-      graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
-      if (useLU == TRUE) {
-        labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
-      } else {
-        labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
-      }
-      labx = paste(maintitle, labmain, sep = "\n")
-      graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
-           xlim = c(0,1), cex.lab = 0.8)
-      graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
-      graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
-      for(i in 1:n) {
-        xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
-        newvar <- (xvar-min(xvar, na.rm=T))/dif
-        graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
-                , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
-        good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
-        if (length(good.ref.data) != 0) {
-          point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-          graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
-        }
-        point1 <- (site.chem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-        graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
-      }
-      graphics::box(bty="l")
+                                        ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
+                      height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
+                      res = ppi)
+        plot.pryr
       grDevices::dev.off()
-    }
-    
-  }
+    }##IF.n.END
+  }##FOR.g.END
+  
+  # Create PDF from list
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".boxes.AllGroups.pdf"))
+  pdf(file=fn_pdf)
+  for (i in plots.g){##FOR.gp.START
+    #grDevices::replayPlot(g.plot)
+    grDevices::replayPlot(i)
+  }##FOR.gp.END
+  grDevices::dev.off()
+  rm(plots.g)
+  
+  # Data File ####
   chem.pctrank <- apply(cluster.chem[,3:ncol(cluster.chem)], 2, function(x) dplyr::percent_rank(x))
   data.chem.pctrank <- as.data.frame(chem.pctrank)
   data.chem.pctrank <- cbind(cluster.chem$StationID_Master,
