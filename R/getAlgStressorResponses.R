@@ -244,7 +244,9 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       # # Create results data frame
       if (varFlag==1) {  #First time through loop
         df.CorrTable <- c(df.corr)
-      } # IF, END
+      } else {
+        df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+      }# IF, END
       df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
       pval.corr = signif(c1S$p.value,2)
       

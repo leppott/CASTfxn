@@ -149,7 +149,7 @@ getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
   #
   #grDevices::graphics.off() 
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".cluster.AllGroups.pdf"))
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".cluster.ALL.pdf"))
   pdf(file=fn_pdf)
   for (ii in plots.i){##FOR.gp.START
     #grDevices::replayPlot(g.plot)

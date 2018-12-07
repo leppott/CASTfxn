@@ -162,7 +162,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   }##FOR.g.END
   
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".boxes.AllGroups.pdf"))
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".boxes.ALL.pdf"))
   pdf(file=fn_pdf)
   for (i in plots.g){##FOR.gp.START
     #grDevices::replayPlot(g.plot)

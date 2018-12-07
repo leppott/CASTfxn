@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-06 15:20:11
+    #> Last Update: 2018-12-07 11:06:45
 
 # Planned Updates
 
@@ -29,6 +29,28 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9120 (2018-12-06)
+
+  - Modify plots to output a combined PDF as well as individual JPG
+    files. Issue \#19.
+      - .SSTV.
+          - getStressorSpecificRegressions
+  - getStressorSpecificRegressions
+      - Change data.chem.info2 to data.chem.info.
+      - Add required objects as function inputs.
+  - Fix duplicated first line in txt output for stressor responses.
+    Issue \#17
+      - getBMIStressorResponses
+      - getStressorSpecificRegressions
+      - getAlgStressorResponses
+
+## Changes in Version 0.1.0.9119 (2018-12-06)
+
+  - Modify plots to output a combined PDF as well as individual JPG
+    files. Issue \#19.
+      - .SR.BMI.
+          - getBMIStressorResponse
 
 ## Changes in Version 0.1.0.9119 (2018-12-06)
 

@@ -5,10 +5,26 @@
 \title{Stressor Specific Regressions}
 \usage{
 getStressorSpecificRegressions(matchedData, predint = 0.75,
-  varLegLoc = "topright")
+  varLegLoc = "topright", data.SampSummary, data.bmi.taxa.raw, data.chem.info,
+  data.SSTV.totabund, TargetSiteID)
 }
 \arguments{
 \item{matchedData}{matched biological and chemical stressor data.}
+
+\item{predint}{x}
+
+\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft", 
+"left", "topleft", "top", "topright", "right" and "center".  Default = "topright"}
+
+\item{data.SampSummary}{x}
+
+\item{data.bmi.taxa.raw}{x}
+
+\item{data.chem.info}{x}
+
+\item{data.SSTV.totabund}{x}
+
+\item{TargetSiteID}{Site ID}
 }
 \value{
 Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
@@ -21,7 +37,7 @@ Percent fines.
 
 Required objects:
 
-* data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
 * data.bmi.taxa.raw; BMI.Metrics.SampID
 
@@ -29,8 +45,6 @@ Required objects:
 
 * data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, ChemSampleID, SSTV.analyte
 , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
-
-* myDir.Data
 
 * TargetSiteID
 }
