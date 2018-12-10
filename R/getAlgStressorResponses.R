@@ -148,7 +148,7 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
       
       ppi<-300
-      varFileOut = paste0("Results/",TargetSiteID,"/", TargetSiteID, "Alg.SR.")
+      varFileOut = paste0("Results/",TargetSiteID,"/", TargetSiteID, ".SR.Alg.")
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName, ".jpg", 
                         sep = ""), width = 4*ppi, height = 3*ppi, 
                       quality=100, pointsize=8, res = ppi)
@@ -243,7 +243,7 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
                                  , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
       # # Create results data frame
       if (varFlag==1) {  #First time through loop
-        df.CorrTable <- c(df.corr)
+        df.CorrTable <- df.corr
       } else {
         df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
       }# IF, END

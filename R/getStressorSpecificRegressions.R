@@ -330,7 +330,7 @@ getStressorSpecificRegressions <- function(matchedData
                                        , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
             # # Create results data frame
             if (varFlag==1) {  #First time through loop
-              df.CorrTable <- c(df.corr)
+              df.CorrTable <- df.corr
             } else {
               df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
             }# IF, END

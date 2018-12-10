@@ -88,6 +88,9 @@
 #' @export
 getBMIStressorResponses <- function(stressors, list.MatchBMIData
                                     , predint=0.75, varLegLoc="topright") {
+  # QC
+  boo.QC <- FALSE
+  ## Trigger QC actions below for when debugging.
 
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
@@ -103,26 +106,67 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
-  BMIresp <- colnames(list.MatchBMIData[["all.b.rsp"]])[8:ncol(list.MatchBMIData[["all.b.rsp"]])]
+  BMIresp <- colnames(list.MatchBMIData[["all.b.rsp"]])[16:ncol(list.MatchBMIData[["all.b.rsp"]])]
   
+  #QC
+  if(boo.QC==TRUE){##IF.boo.QC.START
+    ##p
+    stressors <- stressors[1:2]
+    ##q 
+    BMIresp <- BMIresp[1:3]
+  }##IF.boo.QC.END
+
+  
+  # move from plotting section
+  #p
+  p.len <- length(stressors)
+  #q
+  q.len <- length(BMIresp)
+  
+  boo.pryr <- FALSE
+  
+  # Capture each plot in a list for the PDF
+  #plots.pq <- vector(length(BMIresp), mode="list")
+  plots.pq <- vector(q.len*p.len, mode="list")
+  ppi<-300
+  varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".SR.BMI.")
+  
+  # FOR.p ####
   for (p in 1:length(stressors)) {
-    # QC
-    # print(p)
-    p.len <- length(stressors)
     stressName <- stressors[p]
     varFlag <- 1
     varFlag.b <- 1
+
     if (stressName %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_calc_cfs",
-                          "Flow_cfs")) {
-      log.yn <- FALSE
-    } else {
-      log.yn <- TRUE
-    }
+                          "Flow_cfs")) {##IF.stressName.START
+        log.yn <- FALSE
+      } else {
+        log.yn <- TRUE
+    }##IF.stressName.END
+    # QC
+    if(boo.QC==TRUE){##IF.boo.QC.START
+      print(paste0("p; ",p))
+      flush.console()
+    }##IF.boo.QC.END
+
+    # FOR.q ####
     for (q in 1:length(BMIresp)) { 
+      varFlag <- 1
+      varFlag.b <- 1
       respName <- BMIresp[q]
+      pq <- q.len*(p-1)+q
+      pq.len <- p.len * q.len
+      
       # QC
-      # print (q)
-      q.len <- length(BMIresp)
+      if(boo.QC==TRUE){##IF.boo.QC.START
+        print(paste0("Item (", pq, "/", pq.len, ")"))
+        print(paste0("q; ", respName))
+        flush.console()
+      }##IF.boo.QC.END
+      
+
+
+      {##NoIssues.START
       # get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
       all.yvar<- list.MatchBMIData[["all.b.rsp"]][,c("StationID_Master","BMI.Metrics.SampID", respName)]
@@ -151,34 +195,38 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       #get target site data to plot
       site.xvar<- list.MatchBMIData[["site.b.str"]][,c("BMI.Metrics.SampID", stressName)]
       site.yvar<- list.MatchBMIData[["site.b.rsp"]][,c("BMI.Metrics.SampID", respName)]
-      df.plot5 <- merge(site.xvar,site.yvar, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
+      df.plot5 <- merge(site.xvar, site.yvar, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
       site.df.plot <- df.plot5[stats::complete.cases(df.plot5),2:3]
+      }##NoIssues.END
       
       # Plots ####
-      # Capture each plot in a list for the PDF
-      plots.q <- vector(length(BMIresp), mode="list")
-      ppi<-300
-      varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".BMI.SR.")
+
+      # Plot parts
+      if (log.yn == TRUE) {
+        all.df.plot     <- cbind(log10(all.df.plot[,1]), all.df.plot[,2])
+        all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]), all.ref.df.plot[,2])
+        cl.df.plot      <- cbind(log10(cl.df.plot[,1]), cl.df.plot[,2])
+        cl.ref.df.plot  <- cbind(log10(cl.ref.df.plot[,1]), cl.ref.df.plot[,2])
+        site.df.plot    <- cbind(log10(site.df.plot[,1]), site.df.plot[,2])
+      }
+      
+      varMain <- paste("Linear regression of", stressName, "on", respName
+                       , "for", TargetSiteID, "\n","with", paste(predint*100, "th", sep= "")
+                       , "percentile prediction interval", sep = " ")
+      if (log.yn == TRUE) {
+        varxlab <- paste("Log10", stressName)
+      } else {
+        varxlab <- stressName
+      }
+      
       ## Create Plot
       plot.pryr %<a-% {##pryr.START
+        {##NoIssue.pryr
         graphics::par(cex.main=0.8,cex.lab=0.7,font.main=2, font.lab=2
                       , mar=c(6,4,4,2)+0.1)
-        if (log.yn == TRUE) {
-          all.df.plot     <- cbind(log10(all.df.plot[,1]), all.df.plot[,2])
-          all.ref.df.plot <- cbind(log10(all.ref.df.plot[,1]), all.ref.df.plot[,2])
-          cl.df.plot      <- cbind(log10(cl.df.plot[,1]), cl.df.plot[,2])
-          cl.ref.df.plot  <- cbind(log10(cl.ref.df.plot[,1]), cl.ref.df.plot[,2])
-          site.df.plot    <- cbind(log10(site.df.plot[,1]), site.df.plot[,2])
-        }
         
-        varMain <- paste("Linear regression of", stressName, "on", respName
-                         , "for", TargetSiteID, "\n","with", paste(predint*100, "th", sep= "")
-                         , "percentile prediction interval", sep = " ")
-        if (log.yn == TRUE) {
-          varxlab <- paste("Log10", stressName)
-        } else {
-          varxlab <- stressName
-        }
+        # moved out parts
+          
         # There should never be a case where either x or y are always NA for all data
         if (length(all.ref.df.plot) > 0) {
           graphics::plot(all.df.plot[,2]~all.df.plot[,1],main=varMain,
@@ -247,18 +295,31 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
         # r2 text and legend
         r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
         r2 = formatC(r^2,format="f",digits=3)
-  
-        #
+        }##NoIssue.pryr
+        
+        # Correlation ####
         c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
         df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
                                    , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
         # # Create results data frame
         if (varFlag==1) {  #First time through loop
-          df.CorrTable <- c(df.corr)
+          df.CorrTable <- df.corr
         } else {
           df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
         } # IF, END
-         pval.corr = signif(c1S$p.value,2)
+        boo.Append    <- TRUE
+        boo.col.names <- FALSE
+        if (pq==1){
+          boo.Append    <- !boo.Append
+          boo.col.names <- !boo.col.names
+        }
+        if(boo.pryr==TRUE){
+          utils::write.table(df.CorrTable
+                             , file.path(wd,dir.sub,dir.sub2,"StressRespCorrs.BMI.txt")
+                             , sep="\t", quote=FALSE, row.names=FALSE
+                             , col.names=boo.col.names, append=boo.Append)  
+        }
+        pval.corr = signif(c1S$p.value,2)
         
         #Print equation, r2, and p-value
         if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
@@ -275,12 +336,13 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
         }##IF.length.END
         #
         
+         # Scoring ####
         # 20180621, scoring
         slope.dir <- sign(slope) #1 = positive, -1 = negative
         # exp.dir <- data.lkp.dir[stressName,respName]
         exp.dir <- -1
   
-        for (f in 1:length(site.df.plot)) {
+        for (f in 1:nrow(site.df.plot)) {
           # Generate scores based on slope, significance value, and r2
           if ((length(cl.df.plot)>=5) && (abs(pval.corr)<=0.1) && (r2>=0.1)) {
             # print to console p (stressName) and q (respName)
@@ -298,24 +360,42 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
               print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
               sr.score = 0
           }
-          df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID, # "Group" = cluster,
-                          "Param_Name"=stressName,"BMI_Metric"=respName,
-                          "n"=length(site.df.plot),#"Param_Value"=varXprime[f],
-                          #"BMI_MetricValue"=varYprime[f],
-                          "SR_Score"=sr.score))
-          if (varFlag.b==1) { # First time through this loop
-              df.sc.sr <- rbind(df.temp2)
-          } else {
-              df.sc.sr <- rbind(df.sc.sr, df.temp2)
-          }
-          varFlag.b <- 0 # Set varFlag.b to zero
+         
         }##FOR.f.END
         #
+        df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID, # "Group" = cluster,
+                                        "Param_Name"=stressName,"BMI_Metric"=respName,
+                                        "n"=length(site.df.plot),#"Param_Value"=varXprime[f],
+                                        #"BMI_MetricValue"=varYprime[f],
+                                        "SR_Score"=sr.score))
+        if (varFlag.b==1) { # First time through this loop
+          df.sc.sr <- df.temp2
+        } else {
+          df.sc.sr <- rbind(df.sc.sr, df.temp2)
+        }
+        boo.Append    <- TRUE
+        boo.col.names <- FALSE
+        if (pq==1){
+          boo.Append    <- !boo.Append
+          boo.col.names <- !boo.col.names
+        }
+        if(boo.pryr==TRUE){
+          utils::write.table(df.sc.sr
+                             , file.path(wd,dir.sub,dir.sub2,"StressRespScores.BMI.txt")
+                             , sep="\t", quote=FALSE, row.names=FALSE
+                             , col.names=boo.col.names, append=boo.Append) 
+        }
+        # Moved from inside FOR.f
       }##plot.pryr.END
       
+      
       ## PDF, capture plot in list
-      plot.pryr
-      plots.q[[q]] <- grDevices::recordPlot()
+      ### Need to run plot.pryr as is only created above
+      boo.pryr <- TRUE
+        plot.pryr
+      boo.pryr <- FALSE
+      #pq <- q.len*(p-1)+q
+      plots.pq[[pq]] <- grDevices::recordPlot()
       
       ## JPG, Create
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
@@ -325,25 +405,27 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
       grDevices::dev.off()
       #
       varFlag <- 0
+      varFlag.b <- 0 # Set varFlag.b to zero
     }##FOR.q.END
     #grDevices::graphics.off()
   }##FOR.p.END
   
+  # END ####
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.BMI.ALL.pdf"))
-  pdf(file=fn_pdf)
-  for (qq in plots.q){##FOR.gp.START
+  pdf(file=fn_pdf, width=8)
+  for (pq in plots.pq){##FOR.gp.START
     #grDevices::replayPlot(g.plot)
-    if(is.null(qq)==TRUE) {next}
-    grDevices::replayPlot(qq)
+    if(is.null(pq)==TRUE) {next}
+    grDevices::replayPlot(pq)
   }##FOR.gp.END
   grDevices::dev.off()
-  rm(plots.q)
+ # rm(plots.pq)
   #
-  utils::write.table(df.CorrTable,file.path(wd,dir.sub,dir.sub2,
-                    "StressRespCorrs.BMI.txt"),sep="\t",quote=FALSE,
-                    row.names=FALSE,col.names=TRUE)
-  utils::write.table(df.sc.sr,file.path(wd,dir.sub,dir.sub2,
-                    "StressRespScores.BMI.txt"),sep="\t",quote=FALSE,
-                    row.names=FALSE,col.names=TRUE)  
+  # utils::write.table(df.CorrTable
+  #                    , file.path(wd,dir.sub,dir.sub2,"StressRespCorrs.BMI.txt")
+  #                    , sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
+  # utils::write.table(df.sc.sr
+  #                    , file.path(wd,dir.sub,dir.sub2,"StressRespScores.BMI.txt")
+  #                   , sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)  
 }##FUNCTION.END
