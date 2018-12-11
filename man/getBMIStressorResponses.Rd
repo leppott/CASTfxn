@@ -4,30 +4,34 @@
 \alias{getBMIStressorResponses}
 \title{BMI Stressor Responses}
 \usage{
-getBMIStressorResponses(stressors, list.MatchBMIData, predint = 0.75,
-  varLegLoc = "topright")
+getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData,
+  predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
+\item{TargetSiteID}{Site ID}
+
 \item{stressors}{stressors}
 
+\item{BMIresp}{Benthic macroinvertebrate response variables.}
+
 \item{list.MatchBMIData}{list of matched BMI and stressor data.}
+
+\item{predint}{x. Default = 0.75}
+
+\item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 }
 \value{
-A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
+A jpg in SiteID subfoler of the "Results" folder of working directory.  
+And two tab-delimited text files; stressor correlations and scores.
 }
 \description{
 Get BMI stressor responses.
 }
 \details{
 BMI stressor regressions.
-
-Required objects:
-
-* BMIresp
-
-* TargetSiteID
 }
 \examples{
+\dontrun{
 predint <- 0.75
 varLegLoc <- "topright"
 BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
@@ -90,5 +94,6 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 list.MatchBMIData <- getBMIMatches(stressors, list.data)     
   
 # Run getBMIStressorResponses           
-getBMIStressorResponses(stressors, list.MatchBMIData)
+getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData)
+}
 }

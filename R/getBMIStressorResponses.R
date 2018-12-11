@@ -4,20 +4,20 @@
 #' 
 #' @details BMI stressor regressions.
 #' 
-#' Required objects:
-#' 
-#' * BMIresp
-#' 
-#' * TargetSiteID
-#' 
+#' @param TargetSiteID Site ID
 #' @param stressors stressors
+#' @param BMIresp Benthic macroinvertebrate response variables.
 #' @param list.MatchBMIData list of matched BMI and stressor data.
+#' @param predint x. Default = 0.75
+#' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
-#' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
+#' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
+#' And two tab-delimited text files; stressor correlations and scores.
 #' 
 #' @importFrom pryr "%<a-%"
 #' 
 #' @examples
+#' \dontrun{
 #' predint <- 0.75
 #' varLegLoc <- "topright"
 #' BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
@@ -83,10 +83,11 @@
 #' list.MatchBMIData <- getBMIMatches(stressors, list.data)     
 #'   
 #' # Run getBMIStressorResponses           
-#' getBMIStressorResponses(stressors, list.MatchBMIData)
+#' getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData)
+#' }
 #
 #' @export
-getBMIStressorResponses <- function(stressors, list.MatchBMIData
+getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.MatchBMIData
                                     , predint=0.75, varLegLoc="topright") {
   # QC
   boo.QC <- FALSE
@@ -106,7 +107,7 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
-  BMIresp <- colnames(list.MatchBMIData[["all.b.rsp"]])[16:ncol(list.MatchBMIData[["all.b.rsp"]])]
+  #BMIresp <- colnames(list.MatchBMIData[["all.b.rsp"]])[16:ncol(list.MatchBMIData[["all.b.rsp"]])]
   
   #QC
   if(boo.QC==TRUE){##IF.boo.QC.START
@@ -314,8 +315,9 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
           boo.col.names <- !boo.col.names
         }
         if(boo.pryr==TRUE){
+          fn_corr <- paste0(TargetSiteID,".SR.BMI.Corrs.txt")
           utils::write.table(df.CorrTable
-                             , file.path(wd,dir.sub,dir.sub2,"StressRespCorrs.BMI.txt")
+                             , file.path(wd,dir.sub,dir.sub2,fn_corr)
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append)  
         }
@@ -380,8 +382,9 @@ getBMIStressorResponses <- function(stressors, list.MatchBMIData
           boo.col.names <- !boo.col.names
         }
         if(boo.pryr==TRUE){
+          fn_scores <- paste0(TargetSiteID,".SR.BMI.Scores.txt")
           utils::write.table(df.sc.sr
-                             , file.path(wd,dir.sub,dir.sub2,"StressRespScores.BMI.txt")
+                             , file.path(wd,dir.sub,dir.sub2,fn_scores)
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append) 
         }

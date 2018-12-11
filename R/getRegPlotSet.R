@@ -18,6 +18,8 @@
 #' @export
 getRegPlotSet <- function(varLegLoc){
   #
+  varLegLoc <- tolower(varLegLoc)
+  #
   if (varLegLoc == "topleft") {
     varInset = 0.01       #top inset = 0.05
     varSpacer = "\n\n\n"

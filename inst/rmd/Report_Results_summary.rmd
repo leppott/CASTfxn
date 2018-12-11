@@ -77,11 +77,13 @@ if(length(fn_BoxPlots)==0){
 ## BMI
 ### Tables
 ```{r SR_BMI_tables}
-fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, "StressRespCorrs.BMI.txt")
-fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID, "StressRespScores.BMI.txt")
+fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
+                              , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
+fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID
+                              , paste0(TargetSiteID, ".SR.BMI.Scores.txt"))
 #
 # captions
-cap_SR_BMI_Corrs <- "Stressor Response, BMI, Correlations"
+cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
 cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores"
 #
 # if exist run
@@ -102,7 +104,8 @@ if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
 
 ### Plots
 ```{r SR_BMI_plots}
-fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, "StressRespCorrs.BMI.txt")
+fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
+                              , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
 #
 if(file.exists(fn_SR_BMI_Corrs)==TRUE){
   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
