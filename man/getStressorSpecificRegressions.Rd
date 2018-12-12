@@ -4,18 +4,11 @@
 \alias{getStressorSpecificRegressions}
 \title{Stressor Specific Regressions}
 \usage{
-getStressorSpecificRegressions(matchedData, predint = 0.75,
-  varLegLoc = "topright", data.SampSummary, data.bmi.taxa.raw, data.chem.info,
-  data.SSTV.totabund, TargetSiteID)
+getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
+  data.bmi.taxa.raw, data.chem.info, data.SSTV.totabund, data.MT.bmi,
+  matchedData, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
-\item{matchedData}{matched biological and chemical stressor data.}
-
-\item{predint}{x}
-
-\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft", 
-"left", "topleft", "top", "topright", "right" and "center".  Default = "topright"}
-
 \item{data.SampSummary}{x}
 
 \item{data.bmi.taxa.raw}{x}
@@ -24,7 +17,12 @@ getStressorSpecificRegressions(matchedData, predint = 0.75,
 
 \item{data.SSTV.totabund}{x}
 
-\item{TargetSiteID}{Site ID}
+\item{matchedData}{matched biological and chemical stressor data.}
+
+\item{predint}{x}
+
+\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft", 
+"left", "topleft", "top", "topright", "right" and "center".  Default = "topright"}
 }
 \value{
 Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
@@ -68,6 +66,7 @@ data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
+data.MT.bmi        <- data_BMIMasterTaxa
 #
 # Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
@@ -120,5 +119,11 @@ data.bmi.taxa.raw <- data_BMIcounts
 data.SSTV.totabund <- data_BMIRelAbund
 
 # Run getStressorSpecificRegressions
-getStressorSpecificRegressions(list.MatchBMIData)
+getStressorSpecificRegressions(TargetSiteID
+                               , data.SampSummary
+                               , data.bmi.taxa.raw
+                               , data.chem.info
+                               , data.SSTV.totabund
+                               , data.MT.bmi
+                               , list.MatchBMIData)
 }

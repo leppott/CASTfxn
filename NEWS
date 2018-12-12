@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-11 08:31:43
+    #> Last Update: 2018-12-12 12:15:42
 
 # Planned Updates
 
@@ -29,6 +29,18 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9123 (2018-12-12)
+
+  - getStressorSpecificRegressions
+      - Modify inputs.
+      - Add master taxa list.
+      - Replace SampleID with BMI.Metrics.SampID
+      - Limit data with unique so only get one instance.
+      - Add user feedback for progress.
+  - Add master taxa data file.
+      - Process raw data.
+      - Data description.
 
 ## Changes in Version 0.1.0.9122 (2018-12-11)
 

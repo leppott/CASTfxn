@@ -2619,3 +2619,74 @@
 #' @source example data
 "data_BMIRelAbund"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_BMIMasterTaxa ####
+#' @title data_BMIMasterTaxa
+#' 
+#' @description Benthic Macroinvertebrate, Master Taxa
+#' 
+#' @format A data frame with 824 observations on the following 60 variables.
+#' \describe{
+#'           \item{\code{GenusFinal}}{a factor with levels }
+#'           \item{\code{STORET}}{a logical vector}
+#'           \item{\code{BenTaxaID}}{a numeric vector}
+#'           \item{\code{WQX_FinalID}}{a factor with levels }
+#'           \item{\code{WQX_UnidentifiedSpecies}}{a factor with levels }
+#'           \item{\code{FinalID}}{a factor with levels }
+#'           \item{\code{TaxaGroup}}{a factor with levels }
+#'           \item{\code{Phylum}}{a factor with levels }
+#'           \item{\code{Class}}{a factor with levels }
+#'           \item{\code{Order}}{a factor with levels }
+#'           \item{\code{Family}}{a factor with levels }
+#'           \item{\code{Tribe}}{a factor with levels }
+#'           \item{\code{Species}}{a factor with levels }
+#'           \item{\code{Variety}}{a factor with levels \code{Type II}}
+#'           \item{\code{TolVal}}{a numeric vector}
+#'           \item{\code{TolValSource}}{a factor with levels }
+#'           \item{\code{Fam.TV}}{a numeric vector}
+#'           \item{\code{Fam.TV.reference}}{a factor with levels \code{EPA Draft} \code{Family tv} \code{Raw Data}}
+#'           \item{\code{FFG}}{a factor with levels }
+#'           \item{\code{FFGSource}}{a factor with levels }
+#'           \item{\code{Habit}}{a factor with levels }
+#'           \item{\code{HabitSource}}{a factor with levels \code{AZ DEQ}}
+#'           \item{\code{InBenthics}}{a factor with levels \code{Y}}
+#'           \item{\code{Fam.FFG}}{a factor with levels }
+#'           \item{\code{Fam.FFG.reference}}{a factor with levels \code{EPA Draft} \code{MC3} \code{Raw Data} \code{Unclassified by EI}}
+#'           \item{\code{Hilsenhoff.Biotic.Index}}{a numeric vector}
+#'           \item{\code{Fine.Sediment.Biotic.Index}}{a numeric vector}
+#'           \item{\code{Temperature.Preferance.Metric}}{a numeric vector}
+#'           \item{\code{Metals.Tolerance.Index}}{a numeric vector}
+#'           \item{\code{HT}}{a factor with levels \code{HT}}
+#'           \item{\code{Tany}}{a factor with levels \code{TANY}}
+#'           \item{\code{Voltinism}}{a factor with levels }
+#'           \item{\code{LifeCycleSource}}{a factor with levels \code{AZ DEQ}}
+#'           \item{\code{CharGroupID}}{a logical vector}
+#'           \item{\code{RowID}}{a logical vector}
+#'           \item{\code{Photo}}{a logical vector}
+#'           \item{\code{AdminCheck}}{a logical vector}
+#'           \item{\code{DateNameRevised}}{a factor with levels \code{2001-08-13 15:42:54} \code{2001-08-13 15:50:58} \code{2001-08-24 00:00:00}}
+#'           \item{\code{EnterDate}}{a factor with levels }
+#'           \item{\code{Comments}}{a factor with levels }
+#'           \item{\code{Excluded.Taxa.}}{a logical vector}
+#'           \item{\code{TIN}}{a numeric vector}
+#'           \item{\code{NonBenthic}}{a logical vector}
+#'           \item{\code{NeedsReview}}{a logical vector}
+#'           \item{\code{STORET_CharName}}{a factor with levels }
+#'           \item{\code{STORET_SpNum}}{a numeric vector}
+#'           \item{\code{STORET_Comment}}{a factor with levels \code{(DH)} \code{(LH)}}
+#'           \item{\code{OTU_Code}}{a numeric vector}
+#'           \item{\code{OTU_Name}}{a factor with levels}
+#'           \item{\code{TaxaCode}}{a factor with multiple levels }
+#'           \item{\code{TSN}}{a factor with multiple levels }
+#'           \item{\code{ParTSN}}{a numeric vector}
+#'           \item{\code{uBio.Number}}{a factor with levels }
+#'           \item{\code{Phylogenetic.Sort}}{a numeric vector}
+#'           \item{\code{OLD.TolVal}}{a numeric vector}
+#'           \item{\code{FFG_OLD}}{a factor with levels \code{CF} \code{CG} \code{Herbivores} \code{MH} \code{OM} \code{PA} \code{PH} \code{Piercer-Herbivores} \code{PR} \code{SC} \code{SH} \code{XY}}
+#'           \item{\code{Invasive}}{a logical vector}
+#'           \item{\code{FinesTolVal_hi}}{a numeric vector}
+#'           \item{\code{FinesTolVal_low}}{a numeric vector}
+#'           \item{\code{SpecCondTolVal}}{a numeric vector}
+#' }
+#' 
+#' @source example data, Arizona
+"data_BMIMasterTaxa"

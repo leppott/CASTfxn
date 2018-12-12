@@ -17,15 +17,16 @@
 #' 
 #' * TargetSiteID
 #' 
-#' @param matchedData matched biological and chemical stressor data.
-#' @param predint x
-#' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft", 
-#' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
+#' @param TargetSiteID
 #' @param data.SampSummary x
 #' @param data.bmi.taxa.raw x
 #' @param data.chem.info x
 #' @param data.SSTV.totabund x
-#' @param TargetSiteID Site ID
+#' @param matchedData matched biological and chemical stressor data.
+#' @param predint x
+#' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft", 
+#' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
+
 #' 
 #' @return Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
 #' 
@@ -51,6 +52,7 @@
 #' data.algae.metrics <- data_AlgMetrics
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
+#' data.MT.bmi        <- data_BMIMasterTaxa
 #' #
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
@@ -103,22 +105,43 @@
 #' data.SSTV.totabund <- data_BMIRelAbund
 #' 
 #' # Run getStressorSpecificRegressions
-#' getStressorSpecificRegressions(list.MatchBMIData)
+#' getStressorSpecificRegressions(TargetSiteID
+#'                                , data.SampSummary
+#'                                , data.bmi.taxa.raw
+#'                                , data.chem.info
+#'                                , data.SSTV.totabund
+#'                                , data.MT.bmi
+#'                                , list.MatchBMIData)
 #~~~~~~~~~~~~~~~~
 # QC
 # matchedData <- list.MatchBMIData
 #
 #' @export
-getStressorSpecificRegressions <- function(matchedData
-                                           , predint=0.75
-                                           , varLegLoc="topright"
+getStressorSpecificRegressions <- function(TargetSiteID
                                            , data.SampSummary
                                            , data.bmi.taxa.raw
                                            , data.chem.info
                                            , data.SSTV.totabund
-                                           , TargetSiteID
+                                           , data.MT.bmi
+                                           , matchedData
+                                           , predint=0.75
+                                           , varLegLoc="topright"
+                                           
                                            ) {##FUNCTION.START
-  #
+  # Debugging
+  boo.QC <- TRUE
+  if(boo.QC==TRUE){##IF.boo.QC.START
+    matchedData <- list.MatchBMIData
+  }##IF.boo.QC.END
+  
+  # Extra, 20181211
+  ## Add RelAbundInds to data.bmi.raw
+  col.by <- c("BMI.Metrics.SampID", "FinalID")
+  data.bmi.taxa.raw <- merge(data.bmi.taxa.raw
+                             , data.SSTV.totabund[, c(col.by, "RelAbundInds")]
+                             , by=col.by
+                             , all.x=TRUE)
+  
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
@@ -133,8 +156,10 @@ getStressorSpecificRegressions <- function(matchedData
   varSpacer  <- RegPlotSet[2]
   varLegOpp  <- RegPlotSet[3]
   
-  df.SSTV <- subset(data.chem.info, SSTV != 0, c("StdParamName", "SSTV", "SensMin"
-                                              , "SensMax", "TolMin", "TolMax"))
+  df.SSTV <- subset(data.chem.info, SSTV != 0 & !is.na(SSTV) & SSTV!=""
+                    , c("StdParamName", "SSTV", "SensMin", "SensMax", "TolMin", "TolMax"))
+  # duplicate entry, use unique to limit
+  df.SSTV <- unique(df.SSTV)
   colnames(df.SSTV)[1] <- "Analyte"
 
   if (nrow(list.SiteSummary$BMImetrics)==0) {
@@ -143,15 +168,54 @@ getStressorSpecificRegressions <- function(matchedData
                  ". Regression data illustrate cluster relationships only."))
     utils::flush.console()
   }
-    
+  
+  boo.pryr <- FALSE
+  
+  plots.tvr <- vector(10, mode="list")
+  ppi<-300
+  varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
+  
+  fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
+  boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+  if(boo.file.exists){
+    file.remove(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+  }
+  
+  # IF ####
   if (nrow(df.SSTV) != 0) {##IF.SSTV.START
+    #
     stressor.SSTV <- subset(df.SSTV, Analyte %in% stressors)
-
+    
+    tv.len <- nrow(stressor.SSTV)
+    
+    #
     if (nrow(stressor.SSTV) != 0) {##IF.stressor.SSTV.START
-      
-      for (tv in 1:nrow(stressor.SSTV)) {        # Currently only valid for SpecCond
+      #
+      # Loop tv (stressor) ####
+      for (tv in 1:nrow(stressor.SSTV)) {##FOR.tv.START
+      # Currently only valid for SpecCond
+        #
         SSTV.analyte <- as.vector(stressor.SSTV$Analyte)[tv]
         SSTV.name <- as.vector(stressor.SSTV$SSTV)[tv]
+        
+        if(boo.QC==TRUE){##IF.boo.QC.START
+          varFlag <- 0
+          #if(tv==1){tv=20}
+        }##IF.boo.QC.END
+        #
+        
+        tv.len <- nrow(stressor.SSTV)
+        print(paste0("Item (", tv, "/", tv.len,"); Stressor = ", SSTV.analyte))
+        flush.console()
+        
+        # skip if SSTV = ""
+        ## 20181211
+        if(is.na(SSTV.name)==TRUE | SSTV.name==""){
+          print("No data; SKIP")
+          flush.console()
+          next
+        }
+        
         # 20180620, more than one (add sum)
         if (sum(SSTV.analyte %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_cfs",
                                     "Flow_calc_cfs"))>0) {
@@ -183,17 +247,17 @@ getStressorSpecificRegressions <- function(matchedData
                                         bmi.taxa.raw[,SSTV.name]==maxTolVal-1,
                                         bmi.taxa.raw$RelAbundInds, NA)
 
-        bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, SampleID)
+        bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMI.Metrics.SampID)
         bmi.taxa.raw2 <- dplyr::summarize(bmi.taxa.raw2, 
                                           SensRelAbund = sum(SensTaxa, na.rm = TRUE), 
                                           TolRelAbund = sum(TolTaxa, na.rm = TRUE))
 
-        all.match.b.resp <- bmi.taxa.raw2[bmi.taxa.raw2$SampleID %in%
+        all.match.b.resp <- bmi.taxa.raw2[bmi.taxa.raw2$BMI.Metrics.SampID %in%
                                     unique(all.match.b.str$BMI.Metrics.SampID),]
 
         all.SSTV.abund <- merge(all.match.b.str, all.match.b.resp, 
                                 by.x = c("StationID_Master", "BMI.Metrics.SampID"),
-                                by.y = c("StationID_Master", "SampleID"),
+                                by.y = c("StationID_Master", "BMI.Metrics.SampID"),
                                 all = TRUE)
 
         good.SSTV.abund <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
@@ -204,8 +268,19 @@ getStressorSpecificRegressions <- function(matchedData
         SSTV.Resp <- c("SensRelAbund", "TolRelAbund")
         
         varFlag <- 1
-        for (r in 1:length(SSTV.Resp)) {
+        
+        r.len  <- length(SSTV.Resp)
+        
+        # Loop r (response) ####
+        for (r in 1:length(SSTV.Resp)) {##FOR.r.START
+          tvr <- r.len*(tv-1)+r
+          tvr.len <- tv.len * r.len
+          
           respName <- SSTV.Resp[r]
+          
+          print(paste0("Response = ",respName))
+          flush.console()
+          
           df.plot1 <- good.SSTV.abund[,c(SSTV.analyte,respName)]
           df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte,respName)]
           df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte,respName)]
@@ -214,9 +289,9 @@ getStressorSpecificRegressions <- function(matchedData
           
           # PLOTS ####
           # Capture each plot in a list for the PDF
-          plots.r <- vector(length(SSTV.Resp), mode="list")
-          ppi<-300
-          varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,"SSTV.SR.")
+          # plots.tvr <- vector(length(SSTV.Resp), mode="list")
+          # ppi<-300
+          #varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
           
           # 
           # grDevices::jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
@@ -329,11 +404,25 @@ getStressorSpecificRegressions <- function(matchedData
             df.corr = data.frame(cbind(SSTV.analyte, respName, signif(c1S$statistic,2)
                                        , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
             # # Create results data frame
-            if (varFlag==1) {  #First time through loop
-              df.CorrTable <- df.corr
+            # correlations ####
+            # fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
+            boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+            boo.Append    <- TRUE
+            boo.col.names <- FALSE
+            if (boo.file.exists==FALSE) {  #First time through loop
+              # df.CorrTable <- df.corr
+              boo.Append    <- !boo.Append
+              boo.col.names <- !boo.col.names
             } else {
-              df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+              #df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
             }# IF, END
+            df.CorrTable <- df.corr
+            if(boo.pryr==TRUE){
+              utils::write.table(df.CorrTable
+                                 , file.path(wd, dir.sub, dir.sub2, fn_SSTVfile)
+                                 , sep="\t", quote=FALSE, row.names=FALSE
+                                 , col.names=boo.col.names, append=boo.Append) 
+            }
             pval.corr = signif(c1S$p.value,2)
             
             #Print equation, r2, and p-value
@@ -350,8 +439,10 @@ getStressorSpecificRegressions <- function(matchedData
           }##plot.pryr.END
           
           # PDF, capture plot in list
-          plot.pryr
-          plots.r[[r]] <- grDevices::recordPlot()
+          boo.pryr <- TRUE
+            plot.pryr
+          boo.pryr <- FALSE
+          plots.tvr[[tvr]] <- grDevices::recordPlot()
           
           # JPG
           grDevices::jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
@@ -363,25 +454,25 @@ getStressorSpecificRegressions <- function(matchedData
 
           varFlag <- 0
           
-        }  # End For loop over responses
+        }##FOR.r.END  # End For loop over responses
         grDevices::graphics.off()
         
-      }  # End For loop over stressors
-      SSTVfile <- paste("Results/",TargetSiteID, "/", TargetSiteID, ".SSTVCorrs.txt", sep="")
-      utils::write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,
-                         row.names=FALSE,col.names=TRUE)
+      }##FOR.tv.END  # End For loop over stressors
+      # SSTVfile <- paste("Results/",TargetSiteID, "/", TargetSiteID, ".SSTVCorrs.txt", sep="")
+      # utils::write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,
+      #                    row.names=FALSE,col.names=TRUE)
     }##IF.stressor.SSTV.END
   }##IF.SSTV.END
   
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SSTV.ALL.pdf"))
-  pdf(file=fn_pdf)
-  for (rr in plots.r){##FOR.gp.START
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
+  pdf(file=fn_pdf, width=8)
+  for (tvr in plots.tvr){##FOR.gp.START
     #grDevices::replayPlot(g.plot)
-    if(is.null(rr)==TRUE) {next}
-    grDevices::replayPlot(r)
+    if(is.null(tvr)==TRUE) {next}
+    grDevices::replayPlot(tvr)
   }##FOR.gp.END
   grDevices::dev.off()
-  rm(plots.r)
+  rm(plots.tvr)
   
 }##FUNCTION.END
