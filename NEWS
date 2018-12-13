@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-12 12:15:42
+    #> Last Update: 2018-12-13 09:18:33
 
 # Planned Updates
 
@@ -29,6 +29,11 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9124 (2018-12-13)
+
+  - getSSDplot
+      - Add example to save created plot.
 
 ## Changes in Version 0.1.0.9123 (2018-12-12)
 

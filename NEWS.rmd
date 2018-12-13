@@ -42,6 +42,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9124 (2018-12-13)
+
+* getSSDplot
+    + Add example to save created plot.
+
 ## Changes in Version 0.1.0.9123 (2018-12-12)
 
 * getStressorSpecificRegressions

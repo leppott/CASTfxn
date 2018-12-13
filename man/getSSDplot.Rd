@@ -35,6 +35,11 @@ myExp  <- "Exposure_mgperL"
 p1 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 p1
 # can save output to a file
+\dontrun{
+library(ggplot2)
+fn_p1 <- file.path(getwd(), "Results", "SSD_example1.pdf")
+ggsave(fn_p1, p1)
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -48,6 +53,11 @@ myDF[,myRT] <- "LC50"
 # Run function
 p2 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 p2
+#' # can save output to a file
+\dontrun{
+fn_p2 <- file.path(getwd(), "Results", "SSD_example2.pdf")
+ggplot2::ggsave(fn_p2, p2)
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -61,6 +71,12 @@ myExp  <- "Exposure"
 # Run function
 p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 p3
+# 
+# can save output to a file
+\dontrun{
+fn_p3 <- file.path(getwd(), "Results", "SSD_example3.pdf")
+ggplot2::ggsave(fn_p3, p3)
+}
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~
  
