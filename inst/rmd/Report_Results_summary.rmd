@@ -124,7 +124,7 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
 ### Table
 ```{r SR_SSTV_tables}
 fn_SR_SSTV_Corrs  <- file.path(dir_results, TargetSiteID
-                               , paste0(TargetSiteID, ".SSTVCorrs.txt"))
+                               , paste0(TargetSiteID, ".SR.SSTV.Corrs.txt"))
 
 if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
   #

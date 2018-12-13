@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-13 09:18:33
+    #> Last Update: 2018-12-13 11:18:06
 
 # Planned Updates
 
@@ -34,6 +34,8 @@ NEWS
 
   - getSSDplot
       - Add example to save created plot.
+  - getReport
+      - Tweak summary report for names change of SSTV correlations file.
 
 ## Changes in Version 0.1.0.9123 (2018-12-12)
 

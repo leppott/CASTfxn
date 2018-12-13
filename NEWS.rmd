@@ -46,6 +46,8 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * getSSDplot
     + Add example to save created plot.
+* getReport
+    + Tweak summary report for names change of SSTV correlations file.
 
 ## Changes in Version 0.1.0.9123 (2018-12-12)
 
