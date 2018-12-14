@@ -1,4 +1,4 @@
-# Prepare data for example for AZ, Algae Metrics
+# Prepare data for example for AZ, Algae Counts
 #
 # Erik.Leppo@tetratech.com
 # 20180611
@@ -11,7 +11,7 @@ wd <- getwd() # assume is package directory
 
 # 1. Get data and process#####
 # 1.1. Import Data
-myFile <- "AZAlgaeMetrics.tab"
+myFile <- "AZAlgaeCountsFinal.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 #
@@ -27,5 +27,5 @@ str(df)
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2. Save as RDA for use in package####
 #
-data_AlgMetrics <- df
-devtools::use_data(data_AlgMetrics, overwrite = TRUE)
+data_Algcounts <- df
+devtools::use_data(data_Algcounts, overwrite = TRUE)

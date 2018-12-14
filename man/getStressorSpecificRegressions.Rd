@@ -9,6 +9,8 @@ getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
   matchedData, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
+\item{TargetSiteID}{x}
+
 \item{data.SampSummary}{x}
 
 \item{data.bmi.taxa.raw}{x}
@@ -16,6 +18,8 @@ getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
 \item{data.chem.info}{x}
 
 \item{data.SSTV.totabund}{x}
+
+\item{data.MT.bmi}{x}
 
 \item{matchedData}{matched biological and chemical stressor data.}
 

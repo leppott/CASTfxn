@@ -10,8 +10,12 @@
 #' 
 #' * TargetSiteID
 #' 
+#' @param TargetSiteID Site ID
 #' @param stressors stressors
+#' @param Algresp Algae response variables.
 #' @param list.MatchAlgData list of matched Algae and stressor data.
+#' @param predint x. Default = 0.75
+#' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
 #' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 #' 
@@ -21,7 +25,7 @@
 #' predint <- 0.75
 #' varLegLoc <- "topright"
 #' 
-#' TargetSiteID <- "SRCKN001.61"
+#' TargetSiteID <- "BWBOU007.83"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
@@ -77,7 +81,7 @@
 #' 
 #' # data getAlgStressorResponses
 #' data.algae.metrics <- data_AlgMetrics
-#' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
+#' AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
 #' predint <- 0.75
 #' varLegLoc <- "topright"
 #' 
@@ -85,8 +89,13 @@
 #' getAlgStressorResponses(stressors, list.MatchAlgData)
 #
 #' @export
-getAlgStressorResponses <- function(stressors, list.MatchAlgData
+getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.MatchAlgData
                                     , predint=0.75, varLegLoc="topright") {
+  
+  
+  # QC
+  boo.QC <- FALSE
+  ## Trigger QC actions below for when debugging.
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
@@ -102,8 +111,20 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
-  AlgResp <- colnames(list.MatchAlgData[["all.a.resp"]])[5:ncol(list.MatchAlgData[["all.a.resp"]])]
+  #AlgResp <- colnames(list.MatchAlgData[["all.a.resp"]])[1:ncol(list.MatchAlgData[["all.a.resp"]])]
 
+  #QC
+  if(boo.QC==TRUE){##IF.boo.QC.START
+    ##p
+    stressors <- stressors[1:2]
+    ##q 
+    BMIresp <- AlgResp[1:3]
+  }##IF.boo.QC.END
+  #p
+  p.len <- length(stressors)
+  #r
+  r.len <- length(AlgResp)
+  
   for (p in 1:length(stressors)) {
     stressName <- stressors[p]
     if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC", "Flow_cfs", 
@@ -113,9 +134,24 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       log.yn <- TRUE
     }
     varFlag <- 1
-    #for (r in 4:length(AlgResp)) {
+    
+    # QC
+    if(boo.QC==TRUE){##IF.boo.QC.START
+      print(paste0("p; ",p))
+      flush.console()
+    }##IF.boo.QC.END
+    
     for (r in 1:length(AlgResp)) {
       respName <- AlgResp[r]
+      
+      pr <- r.len*(p-1)+r
+      pr.len <- p.len * r.len
+      # QC
+      if(boo.QC==TRUE){##IF.boo.QC.START
+        print(paste0("Item (", pr, "/", pr.len, ")"))
+        print(paste0("r; ", respName))
+        flush.console()
+      }##IF.boo.QC.END
       
       #get all data to plot
       all.xvar<- list.MatchAlgData[["all.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]

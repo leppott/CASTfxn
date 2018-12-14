@@ -4,13 +4,21 @@
 \alias{getAlgStressorResponses}
 \title{Algae Stressor Responses}
 \usage{
-getAlgStressorResponses(stressors, list.MatchAlgData, predint = 0.75,
-  varLegLoc = "topright")
+getAlgStressorResponses(TargetSiteID, stressors, Algresp, list.MatchAlgData,
+  predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
+\item{TargetSiteID}{Site ID}
+
 \item{stressors}{stressors}
 
+\item{Algresp}{Algae response variables.}
+
 \item{list.MatchAlgData}{list of matched Algae and stressor data.}
+
+\item{predint}{x. Default = 0.75}
+
+\item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 }
 \value{
 A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
@@ -31,7 +39,7 @@ Required objects:
 predint <- 0.75
 varLegLoc <- "topright"
 
-TargetSiteID <- "SRCKN001.61"
+TargetSiteID <- "BWBOU007.83"
 clustertype <- "5"
 useLU <- FALSE
 
@@ -87,7 +95,7 @@ list.MatchAlgData <- getAlgMatches(stressors, list.data)
 
 # data getAlgStressorResponses
 data.algae.metrics <- data_AlgMetrics
-AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
+AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
 predint <- 0.75
 varLegLoc <- "topright"
 

@@ -17,16 +17,16 @@
 #' 
 #' * TargetSiteID
 #' 
-#' @param TargetSiteID
+#' @param TargetSiteID x
 #' @param data.SampSummary x
 #' @param data.bmi.taxa.raw x
 #' @param data.chem.info x
 #' @param data.SSTV.totabund x
+#' @param data.MT.bmi x
 #' @param matchedData matched biological and chemical stressor data.
 #' @param predint x
 #' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft", 
 #' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
-
 #' 
 #' @return Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
 #' 

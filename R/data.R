@@ -2690,3 +2690,28 @@
 #' 
 #' @source example data, Arizona
 "data_BMIMasterTaxa"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_AlgMasterTaxa ####
+#' @title Algae Master Taxa
+#' 
+#' @description Algae Master Taxa
+#' 
+#' @format A data frame with X rows and Y variables
+#' \describe{
+#' }
+#' 
+#' @source example data
+"data_AlgMasterTaxa"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_Algcounts ####
+#' @title Algae Counts
+#' 
+#' @description Algae sample counts
+#' 
+#' @format A data frame with X rows and Y variables
+#' \describe{
+#' }
+#' 
+#' @source example data
+"data_Algcounts"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

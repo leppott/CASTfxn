@@ -42,6 +42,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9126 (2018-12-14)
+
+* getAlgStressorResponses
+    + Update with changes made to getBMIStressorResponses
+* Update Algae Data
+    + data_AlgMetrics
+    + data_AlgMasterTaxa
+    + data_Algcounts
+
 ## Changes in Version 0.1.0.9125 (2018-12-14)
 
 * Vignette Update
