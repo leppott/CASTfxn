@@ -22,6 +22,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 ```
 
 # REPORT INFORMATION
+
 ```{r report_date}
   myReportDate <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   cat(paste("**Report Date and Time:** ",myReportDate,"\n\n",sep=""))
@@ -31,6 +32,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 ```
 
 # SITE INFORMATION
+
 ```{r SiteID}
 #list.dirs(file.path(getwd(), "Results"), full.names=FALSE, recursive=FALSE)
 
@@ -38,6 +40,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 ```
 
 # MAP
+
 ```{r map}
 #TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".map.jpg")
@@ -50,59 +53,132 @@ if(file.exists(fn_img)==TRUE){
 ```
 
 # BOX PLOTS
+
 Box plots by stressor category.
 
 ```{r BoxPlots}
 dir_SiteID <- file.path(dir_results, TargetSiteID)
 fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
                                  , pattern=".boxes.")
-if(length(fn_BoxPlots)==0){
+fn_BoxPlots_jpg <- fn_BoxPlots[grep(".jpg", fn_BoxPlots)]
+if(length(fn_BoxPlots_jpg)==0){
   txt_NoFile <- "No file exists; box plots.\n"
   cat(txt_NoFile)
-} else if(file.exists(fn_BoxPlots[1])==TRUE){
+} else if(file.exists(fn_BoxPlots_jpg[1])==TRUE){
   #
-  fn_img <- fn_BoxPlots
+  fn_img <- fn_BoxPlots_jpg
   knitr::include_graphics(fn_img)
   #
 } else {
   cat(txt_NoFile)
 }
-
-
 ```
 
 
 # STRESSOR RESPONSE
 
 ## BMI
+
 ### Tables
-```{r SR_BMI_tables}
+
+Correlograms instead of long tables are used to visually display the stressor and response metrics for correlations and scores.
+
+#### Correlations
+
+```{r SR_BMI_corrs}
 fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
+# fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID
+#                               , paste0(TargetSiteID, ".SR.BMI.Scores.txt"))
+#
+# captions
+cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
+# cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores"
+#
+# Corrs
+if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
+  cat(paste0("\n", cap_SR_BMI_Corrs,"\n"))
+  df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+  # Plot
+  df_corr_r <- reshape2::dcast(df_SR_BMI_Corrs, stressName ~ respName, value.var="estimate")
+  df_corrplot <- t(df_corr_r[,-1])
+  colnames(df_corrplot) <- df_corr_r[,1]
+  corrplot::corrplot(df_corrplot, method="circle")
+}
+
+# # Table, Corrs
+# if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
+#   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+#   # Table
+#   print(knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs))
+# } else {
+#   cat("No file exists; Stressor Response BMI correlations.\n")
+# }##IF.corrs.START
+
+
+# # Scores
+# if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
+#   cat(paste0("\n#### ", cap_SR_BMI_Scores,"\n"))
+#   df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
+#   #knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
+#   df_score <- reshape2::dcast(df_SR_BMI_Scores, Param_Name ~ BMI_Metric, value.var="SR_Score")
+#   df_corrplot <- t(df_score[,-1])
+#   colnames(df_corrplot) <- df_score[,1]
+#   corrplot::corrplot(df_corrplot, is.corr=FALSE, method="circle")
+# } else {
+#   cat("No file exists; Stressor Response BMI scores.\n")
+# }##IF.scores.START
+```
+
+#### Scores
+
+```{r SR_BMI_scores}
+# fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
+#                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
 fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID
                               , paste0(TargetSiteID, ".SR.BMI.Scores.txt"))
 #
 # captions
-cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
+# cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
 cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores"
 #
-# if exist run
-if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
-  df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
-  knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs)
-} else {
-  cat("No file exists; Stressor Response BMI correlations.\n")
-}##IF.corrs.START
-#
+# # Corrs
+# if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
+#   cat(paste0("\n#### ", cap_SR_BMI_Corrs,"\n"))
+#   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+#   # Plot
+#   df_corr_r <- reshape2::dcast(df_SR_BMI_Corrs, stressName ~ respName, value.var="estimate")
+#   df_corrplot <- t(df_corr_r[,-1])
+#   colnames(df_corrplot) <- df_corr_r[,1]
+#   corrplot::corrplot(df_corrplot, method="circle")
+# }
+# 
+# # # Table, Corrs
+# # if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
+# #   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+# #   # Table
+# #   print(knitr::kable(df_SR_BMI_Corrs, caption=cap_SR_BMI_Corrs))
+# # } else {
+# #   cat("No file exists; Stressor Response BMI correlations.\n")
+# # }##IF.corrs.START
+
+
+# Scores
 if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
+  cat(paste0("\n", cap_SR_BMI_Scores,"\n"))
   df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
-  knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
+  #knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
+  df_score <- reshape2::dcast(df_SR_BMI_Scores, Param_Name ~ BMI_Metric, value.var="SR_Score")
+  df_corrplot <- t(df_score[,-1])
+  colnames(df_corrplot) <- df_score[,1]
+  corrplot::corrplot(df_corrplot, is.corr=FALSE, method="circle")
 } else {
   cat("No file exists; Stressor Response BMI scores.\n")
 }##IF.scores.START
 ```
 
 ### Plots
+
 ```{r SR_BMI_plots}
 fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
@@ -121,27 +197,49 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
 ```
 
 ## SSTV
+
 ### Table
+
 ```{r SR_SSTV_tables}
 fn_SR_SSTV_Corrs  <- file.path(dir_results, TargetSiteID
                                , paste0(TargetSiteID, ".SR.SSTV.Corrs.txt"))
 
+cap_SR_SSTV_Corrs <- "Stressor Response, SSTV, Correlations"
+  
+# Table
 if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
   #
   df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
+  # Table
+ # print(knitr::kable(df_SR_SSTVCorrs, caption=cap_SR_SSTV_Corrs))
   #
-  cap_SR_SSTV_Corrs <- "Stressor Response, SSTV, Correlations"
+  cat(paste0("\n", cap_SR_SSTV_Corrs,"\n"))
   #
-  knitr::kable(df_SR_SSTVCorrs, caption=cap_SR_SSTV_Corrs)
-  #
+  df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
+  # Plot
+  df_corr_r <- reshape2::dcast(df_SR_SSTVCorrs, stressName ~ respName, value.var="estimate")
+  df_corrplot <- t(df_corr_r[,-1])
+  colnames(df_corrplot) <- df_corr_r[,1]
+  corrplot::corrplot(df_corrplot, method="circle")
 } else {
   cat("No file exists; Stressor Response SSTV data.\n")
 }
+
+# Plot
+if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
+  #
+ 
+  #
+}
+
 ```
 
 # OTHER
+
 ## Co-Occurence
+
 ### Table
+
 ```{r CoOccur_tables}
 #dir_results <- file.path(getwd(), "Results", "_CoOccur", "hi")
 # dir_SiteID <- file.path(dir_results, TargetSiteID)
@@ -153,13 +251,9 @@ if(length(fn_CoOccur_Scores)==0){
   txt_NoFile <- "No file exists; co-occurrence scores.\n"
   cat(txt_NoFile)
 } else if(file.exists(fn_CoOccur_Scores)==TRUE){
-  #
   df_CoOccur_Scores <- read.delim(fn_CoOccur_Scores)
-  #
   cap_CoOccur_Scores <- "Co-Occurrence Scores"
-  #
   knitr::kable(df_CoOccur_Scores, caption=cap_CoOccur_Scores)
-  #
 } else {
   cat(txt_NoFile)
 }
@@ -167,24 +261,23 @@ if(length(fn_CoOccur_Scores)==0){
 ```
 
 ### Plots
+
 Plots are saved from the function in pairs in a PDF.
 
 * SiteID.CoOccurrence.YYYYMMDD_HHMMSS.pdf
 
 ## Chem, Percent Rank
+
 ### Table
+
 ```{r ChemPctRank_table}
 fn_ChemPctRank  <- file.path(dir_results, TargetSiteID
                                , paste0(TargetSiteID, ".chem.pctrank.txt"))
 
 if(file.exists(fn_ChemPctRank)==TRUE){
-  #
   df_ChemPctRank <- read.delim(fn_ChemPctRank)
-  #
   cap_ChemPctRank <- "Chemical Analytes, Percent Rank"
-  #
   knitr::kable(df_ChemPctRank, caption=cap_ChemPctRank)
-  #
 } else {
   cat("No files exists; chemistry percent ranks.\n")
 }

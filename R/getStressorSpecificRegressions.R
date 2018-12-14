@@ -403,6 +403,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
             c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
             df.corr = data.frame(cbind(SSTV.analyte, respName, signif(c1S$statistic,2)
                                        , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
+            names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
             # # Create results data frame
             # correlations ####
             # fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
@@ -474,5 +475,24 @@ getStressorSpecificRegressions <- function(TargetSiteID
   }##FOR.gp.END
   grDevices::dev.off()
   rm(plots.tvr)
+  
+  # CorrPlot ####
+  ## read
+  fn_corr <- paste0(TargetSiteID,".SR.SSTV.Corrs.txt")
+  df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  ## transpose
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
+  df_corrplot <- t(df_corr_r[,-1])
+  colnames(df_corrplot) <- df_corr_r[,1]
+  ## jpg
+  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.SSTV.CorrPlot.jpg"))
+  grDevices::jpeg(filename = fn_jpg_cp
+                  , width = 4 * ppi
+                  , height = 3 * ppi
+                  , quality=100
+                  )
+      corrplot::corrplot(df_corrplot, method="circle")
+  grDevices::dev.off()
+  #
   
 }##FUNCTION.END

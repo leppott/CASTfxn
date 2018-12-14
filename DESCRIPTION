@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
 Description: Functions and other tools associated with the Causal Assessment 
     Screening Tool.  Used to more quickly assess stressors to a list of sites.
-Version: 0.1.0.9124
+Version: 0.1.0.9125
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),
@@ -17,7 +17,8 @@ VignetteBuilder: knitr
 URL: https://github.com/leppott/CASTfxn
 RoxygenNote: 6.0.1
 Depends: R (>= 2.10)
-Imports:  dplyr,
+Imports:  corrplot,
+  dplyr,
   elevatr,
   ggplot2,
   graphics, 
@@ -32,7 +33,8 @@ Imports:  dplyr,
   rmarkdown, 
   RColorBrewer,
   replyr,
-  reshape, 
+  reshape,
+  reshape2,
   rgdal, 
   rgeos, 
   RgoogleMaps, 

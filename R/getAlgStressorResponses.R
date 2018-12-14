@@ -75,7 +75,7 @@
 #' # Run getAlgMatches
 #' list.MatchAlgData <- getAlgMatches(stressors, list.data)
 #' 
-#' # data getAltStressorResponses
+#' # data getAlgStressorResponses
 #' data.algae.metrics <- data_AlgMetrics
 #' AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
 #' predint <- 0.75
@@ -241,6 +241,7 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
       c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
       df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
                                  , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
+      names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
       # # Create results data frame
       if (varFlag==1) {  #First time through loop
         df.CorrTable <- df.corr
@@ -267,5 +268,24 @@ getAlgStressorResponses <- function(stressors, list.MatchAlgData
     grDevices::graphics.off()
   }
   utils::write.table(df.CorrTable,file="StressRespCorrs.Algae.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
+  
+  # CorrPlot ####
+  ## read
+  fn_corr <- paste0(TargetSiteID,".SR.Alg.Corrs.txt")
+  df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  ## transpose
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
+  df_corrplot <- t(df_corr_r[,-1])
+  colnames(df_corrplot) <- df_corr_r[,1]
+  ## jpg
+  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.Alg.CorrPlot.jpg"))
+  grDevices::jpeg(filename = fn_jpg_cp
+                  , width = 4 * ppi
+                  , height = 3 * ppi
+                  , quality=100
+  )
+  corrplot::corrplot(df_corrplot, method="circle")
+  grDevices::dev.off()
+  #
   
 }

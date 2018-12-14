@@ -42,6 +42,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9125 (2018-12-14)
+
+* Vignette Update
+    + CASTfxn
+        - Change name shown in help file.
+    + Add vignette for "anlaysis".
+        - Run all functions example.
+* Correlation output file column names.
+    + getBMIStressorResponses.R
+    + getStressorSpecificRegressions.R
+    + getAlgStressorResponses.R
+
 ## Changes in Version 0.1.0.9124 (2018-12-13)
 
 * getSSDplot

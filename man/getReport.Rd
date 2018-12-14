@@ -39,7 +39,7 @@ dir_results <- file.path(getwd(), "Results")
 report_type <- "summary"
 report_format <- "html"
  
-/dontrun{
+\dontrun{
 # Run Function
 getReport(TargetSiteID, dir_results, report_type, report_format)
 }

@@ -85,7 +85,7 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 # Run getAlgMatches
 list.MatchAlgData <- getAlgMatches(stressors, list.data)
 
-# data getAltStressorResponses
+# data getAlgStressorResponses
 data.algae.metrics <- data_AlgMetrics
 AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
 predint <- 0.75
