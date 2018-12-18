@@ -42,6 +42,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9128 (2018-12-18)
+
+* Update getReport template RMD for Algae corrplot.
+    + \inst\rmd\Report_Results_summary.rmd
+
 ## Changes in Version 0.1.0.9127 (2018-12-18)
 
 * Update data documentation

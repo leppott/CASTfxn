@@ -104,6 +104,8 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   corrplot::corrplot(df_corrplot, method="circle")
+} else {
+  cat("No file exists; Stressor Response BMI correlations.\n")
 }
 
 # # Table, Corrs
@@ -230,6 +232,36 @@ if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
   #
  
   #
+}
+
+```
+
+## Algae
+
+### Tables
+
+Correlograms instead of long tables are used to visually display the stressor and response metrics for correlations and scores.
+
+#### Correlations
+
+```{r SR_Alg_corrs}
+fn_SR_Alg_Corrs  <- file.path(dir_results, TargetSiteID
+                              , paste0(TargetSiteID, ".SR.Alg.Corrs.txt"))
+
+# captions
+cap_SR_Alg_Corrs  <- "Stressor Response, Algae, Correlations"
+
+# Corrs
+if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
+  cat(paste0("\n", cap_SR_Alg_Corrs,"\n"))
+  df_SR_Alg_Corrs <- read.delim(fn_SR_Alg_Corrs)
+  # Plot
+  df_corr_r <- reshape2::dcast(df_SR_Alg_Corrs, stressName ~ respName, value.var="estimate")
+  df_corrplot <- t(df_corr_r[,-1])
+  colnames(df_corrplot) <- df_corr_r[,1]
+  corrplot::corrplot(df_corrplot, method="circle")
+} else {
+  cat("No file exists; Stressor Response Algae correlations.\n")
 }
 
 ```

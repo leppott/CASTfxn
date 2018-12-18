@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-18 11:12:16
+    #> Last Update: 2018-12-18 12:24:57
 
 # Planned Updates
 
@@ -29,6 +29,11 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9128 (2018-12-18)
+
+  - Update getReport template RMD for Algae corrplot.
+      - \_Results\_summary.rmd
 
 ## Changes in Version 0.1.0.9127 (2018-12-18)
 
