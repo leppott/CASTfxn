@@ -14,6 +14,9 @@ wd <- getwd() # assume is package directory
 myFile <- "AZAlgaeMetrics.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
+# Rename column to fit code (20181217)
+colnames(df)[colnames(df)=="Alg.Metrics.SampID"] <- "Algae.Metrics.SampID"
+
 #
 # df <- unique(df.bmi[,c("StationID", "BenCollDate")])
 

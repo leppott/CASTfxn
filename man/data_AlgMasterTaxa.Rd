@@ -4,8 +4,31 @@
 \name{data_AlgMasterTaxa}
 \alias{data_AlgMasterTaxa}
 \title{Algae Master Taxa}
-\format{A data frame with X rows and Y variables
+\format{A data frame with 557 observations on the following 23 variables.
 \describe{
+          \item{\code{FinalID}}{a factor with levels } 
+          \item{\code{Phylum}}{a factor with levels \code{Heterokontophyta}}
+           \item{\code{Class}}{a factor with levels \code{Bacillariophyceae}}
+           \item{\code{Subclass}}{a factor with levels }
+           \item{\code{Order}}{a factor with levels }
+           \item{\code{Family}}{a factor with levels }
+           \item{\code{Tribe}}{a logical vector}
+           \item{\code{Genus}}{a factor with levels }
+           \item{\code{Species}}{a factor with levels }
+           \item{\code{Variety}}{a factor with levels }
+           \item{\code{Poll_Tol_Class}}{a numeric vector}
+           \item{\code{pH_class}}{a numeric vector}
+           \item{\code{Salinity_class}}{a numeric vector}
+           \item{\code{Nitrogen_Uptake_class}}{a numeric vector}
+           \item{\code{Oxygen_class}}{a numeric vector}
+           \item{\code{Saprobity_class}}{a numeric vector}
+           \item{\code{Trophic_class}}{a numeric vector}
+           \item{\code{Moisture_class}}{a numeric vector}
+           \item{\code{Motility_class}}{a factor with levels \code{H} \code{M} \code{N} \code{V}}
+           \item{\code{Phosphorus_class}}{a factor with levels \code{H} \code{L}}
+           \item{\code{Nitrogen_class}}{a factor with levels \code{H} \code{L}}
+           \item{\code{TaxaGroup}}{a logical vector}
+           \item{\code{GroupName}}{a factor with levels }
 }}
 \source{
 example data

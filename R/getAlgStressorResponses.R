@@ -12,9 +12,9 @@
 #' 
 #' @param TargetSiteID Site ID
 #' @param stressors stressors
-#' @param Algresp Algae response variables.
+#' @param AlgResp Algae response variables.
 #' @param list.MatchAlgData list of matched Algae and stressor data.
-#' @param predint x. Default = 0.75
+#' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
 #' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
@@ -22,16 +22,17 @@
 #' @importFrom pryr "%<a-%"
 #' 
 #' @examples
+#' \dontrun{
 #' predint <- 0.75
 #' varLegLoc <- "topright"
 #' 
-#' TargetSiteID <- "BWBOU007.83"
+#' TargetSiteID <- "LCBEN002.57"
 #' clustertype <- "5"
 #' useLU <- FALSE
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
+# CurrentDir<-getwd()
+# myDir.Data <- paste(CurrentDir,"data/",sep="/")
+# 
 #' # datasets getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
@@ -82,14 +83,13 @@
 #' # data getAlgStressorResponses
 #' data.algae.metrics <- data_AlgMetrics
 #' AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
-#' predint <- 0.75
-#' varLegLoc <- "topright"
 #' 
 #' # Run getAlgStressorResponses
-#' getAlgStressorResponses(stressors, list.MatchAlgData)
+#' getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData)
+#' }
 #
 #' @export
-getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.MatchAlgData
+getAlgStressorResponses <- function(TargetSiteID, stressors, AlgResp, list.MatchAlgData
                                     , predint=0.75, varLegLoc="topright") {
   
   
@@ -101,8 +101,9 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
   wd <- getwd()
   dir.sub <- "Results"
   dir.sub2 <- TargetSiteID
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2))
+  fp_dir <- file.path(wd, dir.sub, dir.sub2)
+  ifelse(dir.exists(fp_dir)==FALSE
+         , dir.create(fp_dir)
          , FALSE)
   #
   # helper
@@ -117,8 +118,10 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
   if(boo.QC==TRUE){##IF.boo.QC.START
     ##p
     stressors <- stressors[1:2]
-    ##q 
-    BMIresp <- AlgResp[1:3]
+    p<-2
+    ##r
+    AlgResp <- AlgResp[1:3]
+    r<-3
   }##IF.boo.QC.END
   #p
   p.len <- length(stressors)
@@ -137,8 +140,8 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
     
     # QC
     if(boo.QC==TRUE){##IF.boo.QC.START
-      print(paste0("p; ",p))
-      flush.console()
+      # print(paste0("p (",p,"/",p.len,") ", stressName))
+      # flush.console()
     }##IF.boo.QC.END
     
     for (r in 1:length(AlgResp)) {
@@ -146,16 +149,18 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
       
       pr <- r.len*(p-1)+r
       pr.len <- p.len * r.len
+      print(paste0("Item (", pr, "/", pr.len, "); p (",p,"/",p.len,") ", stressName,"; r (",r,"/",r.len,") ",respName))
+      flush.console()
       # QC
       if(boo.QC==TRUE){##IF.boo.QC.START
-        print(paste0("Item (", pr, "/", pr.len, ")"))
-        print(paste0("r; ", respName))
-        flush.console()
+        # noting
       }##IF.boo.QC.END
+      
+
       
       #get all data to plot
       all.xvar<- list.MatchAlgData[["all.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
-      all.yvar<- list.MatchAlgData[["all.a.rsp"]][,c("StationCode","Algae.Metrics.SampID", respName)]
+      all.yvar<- list.MatchAlgData[["all.a.rsp"]][,c("StationID_Master","Algae.Metrics.SampID", respName)]
       df.plot1 <- merge(all.xvar[,2:3],all.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       all.df.plot <- df.plot1[stats::complete.cases(df.plot1),2:3]
       
@@ -167,7 +172,7 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
       
       #get all cluster data to plot
       cl.xvar<- list.MatchAlgData[["cl.a.str"]][,c("StationID_Master","Algae.Metrics.SampID", stressName)]
-      cl.yvar<- list.MatchAlgData[["cl.a.rsp"]][,c("StationCode","Algae.Metrics.SampID", respName)]
+      cl.yvar<- list.MatchAlgData[["cl.a.rsp"]][,c("StationID_Master","Algae.Metrics.SampID", respName)]
       df.plot3 <- merge(cl.xvar[,2:3],cl.yvar[,2:3], by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
       cl.df.plot <- df.plot3[stats::complete.cases(df.plot3),2:3]
       
@@ -185,6 +190,14 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
       
       ppi<-300
       varFileOut = paste0("Results/",TargetSiteID,"/", TargetSiteID, ".SR.Alg.")
+      
+      #20181218, move IF here so doesn't plot if no data.
+      if (length(all.ref.df.plot) == 0) {
+        print("SKIP, no data")
+        flush.console()
+        next
+      }
+      
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName, ".jpg", 
                         sep = ""), width = 4*ppi, height = 3*ppi, 
                       quality=100, pointsize=8, res = ppi)
@@ -205,26 +218,37 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
       } else {
         varxlab <- stressName
       }
+      
       # There should never be a case where either x or y are always NA for all data
-      if (length(all.ref.df.plot) > 0) {
+      #if (length(all.ref.df.plot) > 0) {
         graphics::plot(all.df.plot[,2]~all.df.plot[,1],
              main=varMain, xlab=varxlab,ylab=respName, 
              col="darkgrey", pch=1, cex=0.8, cex.axis=0.8)
-      } else {
-        next
-      }
+      # } else {
+      #   # Create empty plot, should have outside of graphics device
+      #   par(mar = c(0,0,0,0))
+      #   plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+      #   text(x = 0.5, y = 0.5, paste0("No data to plot.\n", stressName,"\n", respName)
+      #        , cex = 1.6, col = "black")
+      #   dev.off()
+      #   next
+      # }
+      
       if (length(all.ref.df.plot) > 0) {
         graphics::points(all.ref.df.plot[,2]~all.ref.df.plot[,1], 
                col="blue", pch=16, cex=0.8) # blue solid dots
       }
+      
       if (length(cl.df.plot) > 0) {
         graphics::points(cl.df.plot[,2]~cl.df.plot[,1], 
                col="cyan4", pch=2, cex=0.8) # Red open triangles
       }
+      
       if (length(cl.ref.df.plot) > 0) {
         graphics::points(cl.ref.df.plot[,2]~cl.ref.df.plot[,1], 
                col="blue", pch=17, cex=0.8) # Solid blue triangles
       }
+      
       if (length(site.df.plot) > 0) {
         graphics::points(site.df.plot[,2]~site.df.plot[,1], 
                col="red", pch=19, cex = 1.0) # black solid dots
@@ -278,14 +302,16 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
       df.corr = data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
                                  , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
       names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
-      # # Create results data frame
+     
+      # CorrTable ####
+       # # Create results data frame
       if (varFlag==1) {  #First time through loop
         df.CorrTable <- df.corr
       } else {
-        df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+         df.CorrTable <- rbind(df.CorrTable, df.corr)  #  if not first iteration then append
       }# IF, END
-      df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
-      pval.corr = signif(c1S$p.value,2)
+      #df.CorrTable <- rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+      pval.corr <- signif(c1S$p.value,2)
       
       #Print equation, r2, and p-value
       if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
@@ -295,33 +321,45 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, Algresp, list.Match
         symbshape <- c(1, 16, 2, 17, 19)
         symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
         symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-        graphics::mtext(eqn, side=1, line=4, bty="n", col = c("black"), cex=0.6)
-        graphics::legend(varLegOpp,inset=varInset, symbname, pch=symbshape, col=symbcol, cex=0.6)
+        graphics::mtext(eqn, side=1, line=5, bty="n", col = c("black"), cex=0.6)
+        #graphics::legend(varLegOpp, symbname, inset=varInset, pch=symbshape, col=symbcol, cex=0.6)
+        graphics::legend(varLegOpp, symbname, pch=symbshape, col=symbcol, cex=0.6)
       }
       grDevices::dev.off()
       varFlag <- 0
     }
     grDevices::graphics.off()
   }
-  utils::write.table(df.CorrTable,file="StressRespCorrs.Algae.txt",sep="\t",quote=FALSE,row.names=FALSE,col.names=TRUE)  
   
-  # CorrPlot ####
-  ## read
-  fn_corr <- paste0(TargetSiteID,".SR.Alg.Corrs.txt")
-  df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
-  ## transpose
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
-  df_corrplot <- t(df_corr_r[,-1])
-  colnames(df_corrplot) <- df_corr_r[,1]
-  ## jpg
-  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.Alg.CorrPlot.jpg"))
-  grDevices::jpeg(filename = fn_jpg_cp
-                  , width = 4 * ppi
-                  , height = 3 * ppi
-                  , quality=100
-  )
-  corrplot::corrplot(df_corrplot, method="circle")
-  grDevices::dev.off()
+  if(exists("df.CorrTable")==TRUE){##IF.exists.START
+    fn_CorrTable <- paste0(TargetSiteID,".SR.Alg.Corrs.txt")
+    utils::write.table(df.CorrTable
+                       ,file=file.path(wd,dir.sub,dir.sub2, fn_CorrTable)
+                       ,sep="\t"
+                       ,quote=FALSE
+                       ,row.names=FALSE
+                       ,col.names=TRUE
+    )  
+    
+    # CorrPlot ####
+    ## read
+    fn_corr <- paste0(TargetSiteID,".SR.Alg.Corrs.txt")
+    df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+    ## transpose
+    df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
+    df_corrplot <- t(df_corr_r[,-1])
+    colnames(df_corrplot) <- df_corr_r[,1]
+    ## jpg
+    fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.Alg.CorrPlot.jpg"))
+    grDevices::jpeg(filename = fn_jpg_cp
+                    , width = 4 * ppi
+                    , height = 3 * ppi
+                    , quality=100
+    )
+    corrplot::corrplot(df_corrplot, method="circle")
+    grDevices::dev.off()
+  }##IF.exists.END
+ 
   #
   
-}
+}##FUNCTION.END

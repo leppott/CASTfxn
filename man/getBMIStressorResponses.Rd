@@ -16,7 +16,7 @@ getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData,
 
 \item{list.MatchBMIData}{list of matched BMI and stressor data.}
 
-\item{predint}{x. Default = 0.75}
+\item{predint}{Prediction interval. Default = 0.75}
 
 \item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 }

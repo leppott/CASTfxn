@@ -4,8 +4,17 @@
 \name{data_Algcounts}
 \alias{data_Algcounts}
 \title{Algae Counts}
-\format{A data frame with X rows and Y variables
+\format{A data frame with 4882 observations on the following 10 variables
 \describe{
+          \item{\code{StationID_Master}}{a factor with levels }
+          \item{\code{AlgalSampIdent}}{a numeric vector}
+          \item{\code{RepNum}}{a numeric vector}
+          \item{\code{CollDate}}{a factor with levels}
+          \item{\code{CollMeth}}{a factor with levels \code{Alg-NS-ADEQ-multihabitat} \code{Alg-NS-EMAP-reachwide}}
+          \item{\code{FinalID}}{a factor with levels }
+          \item{\code{Individuals}}{a numeric vector}
+          \item{\code{AdjFinalCount}}{a numeric vector}
+          \item{\code{RelAbund}}{a numeric vector}
 }}
 \source{
 example data

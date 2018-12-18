@@ -8,7 +8,7 @@
 #' @param stressors stressors
 #' @param BMIresp Benthic macroinvertebrate response variables.
 #' @param list.MatchBMIData list of matched BMI and stressor data.
-#' @param predint x. Default = 0.75
+#' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
 #' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  

@@ -4,7 +4,7 @@
 \alias{getAlgStressorResponses}
 \title{Algae Stressor Responses}
 \usage{
-getAlgStressorResponses(TargetSiteID, stressors, Algresp, list.MatchAlgData,
+getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData,
   predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
@@ -12,11 +12,11 @@ getAlgStressorResponses(TargetSiteID, stressors, Algresp, list.MatchAlgData,
 
 \item{stressors}{stressors}
 
-\item{Algresp}{Algae response variables.}
+\item{AlgResp}{Algae response variables.}
 
 \item{list.MatchAlgData}{list of matched Algae and stressor data.}
 
-\item{predint}{x. Default = 0.75}
+\item{predint}{Prediction interval. Default = 0.75}
 
 \item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 }
@@ -36,15 +36,13 @@ Required objects:
 * TargetSiteID
 }
 \examples{
+\dontrun{
 predint <- 0.75
 varLegLoc <- "topright"
 
-TargetSiteID <- "BWBOU007.83"
+TargetSiteID <- "LCBEN002.57"
 clustertype <- "5"
 useLU <- FALSE
-
-CurrentDir<-getwd()
-myDir.Data <- paste(CurrentDir,"data/",sep="/")
 
 # datasets getSiteInfo
 # data, example included with package
@@ -96,9 +94,8 @@ list.MatchAlgData <- getAlgMatches(stressors, list.data)
 # data getAlgStressorResponses
 data.algae.metrics <- data_AlgMetrics
 AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
-predint <- 0.75
-varLegLoc <- "topright"
 
 # Run getAlgStressorResponses
-getAlgStressorResponses(stressors, list.MatchAlgData)
+getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData)
+}
 }

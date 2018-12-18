@@ -28,7 +28,7 @@ Required objects:
 * data.chem.raw; StationID_Master, ChemSampleID
 }
 \examples{
-TargetSiteID <- "SRCKN001.61"
+TargetSiteID <- "LCBEN002.57"
 clustertype <- "5"
 useLU <- FALSE
 

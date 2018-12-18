@@ -1148,22 +1148,6 @@
 #' @source example data
 "data_BMIMetrics"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_AlgMetrics ####
-#' @title Algae metrics example data
-#' 
-#' @description A dataset with example algae metric data for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 926 rows and 5 variables:
-#' \describe{
-#'           \item{StationCode}{Station ID}
-#'           \item{SampleDate}{Station ID}
-#'           \item{H20}{algae metric H20}
-#'           \item{D18}{algae metric D18}
-#'           \item{S2}{algae metric S2}
-#' }
-#' @source example data
-"data_AlgMetrics"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # data_SampSummary ####
 #' @title Sample summary example data
 #' 
@@ -2696,8 +2680,31 @@
 #' 
 #' @description Algae Master Taxa
 #' 
-#' @format A data frame with X rows and Y variables
+#' @format A data frame with 557 observations on the following 23 variables.
 #' \describe{
+#'           \item{\code{FinalID}}{a factor with levels } 
+#'           \item{\code{Phylum}}{a factor with levels \code{Heterokontophyta}}
+#'            \item{\code{Class}}{a factor with levels \code{Bacillariophyceae}}
+#'            \item{\code{Subclass}}{a factor with levels }
+#'            \item{\code{Order}}{a factor with levels }
+#'            \item{\code{Family}}{a factor with levels }
+#'            \item{\code{Tribe}}{a logical vector}
+#'            \item{\code{Genus}}{a factor with levels }
+#'            \item{\code{Species}}{a factor with levels }
+#'            \item{\code{Variety}}{a factor with levels }
+#'            \item{\code{Poll_Tol_Class}}{a numeric vector}
+#'            \item{\code{pH_class}}{a numeric vector}
+#'            \item{\code{Salinity_class}}{a numeric vector}
+#'            \item{\code{Nitrogen_Uptake_class}}{a numeric vector}
+#'            \item{\code{Oxygen_class}}{a numeric vector}
+#'            \item{\code{Saprobity_class}}{a numeric vector}
+#'            \item{\code{Trophic_class}}{a numeric vector}
+#'            \item{\code{Moisture_class}}{a numeric vector}
+#'            \item{\code{Motility_class}}{a factor with levels \code{H} \code{M} \code{N} \code{V}}
+#'            \item{\code{Phosphorus_class}}{a factor with levels \code{H} \code{L}}
+#'            \item{\code{Nitrogen_class}}{a factor with levels \code{H} \code{L}}
+#'            \item{\code{TaxaGroup}}{a logical vector}
+#'            \item{\code{GroupName}}{a factor with levels }
 #' }
 #' 
 #' @source example data
@@ -2708,10 +2715,83 @@
 #' 
 #' @description Algae sample counts
 #' 
-#' @format A data frame with X rows and Y variables
+#' @format A data frame with 4882 observations on the following 10 variables
 #' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{AlgalSampIdent}}{a numeric vector}
+#'           \item{\code{RepNum}}{a numeric vector}
+#'           \item{\code{CollDate}}{a factor with levels}
+#'           \item{\code{CollMeth}}{a factor with levels \code{Alg-NS-ADEQ-multihabitat} \code{Alg-NS-EMAP-reachwide}}
+#'           \item{\code{FinalID}}{a factor with levels }
+#'           \item{\code{Individuals}}{a numeric vector}
+#'           \item{\code{AdjFinalCount}}{a numeric vector}
+#'           \item{\code{RelAbund}}{a numeric vector}
 #' }
 #' 
 #' @source example data
 "data_Algcounts"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_AlgMetrics ####
+#' @title Algae metrics example data
+#' 
+#' @description A dataset with example algae metric data for use with the
+#'  getSiteInfo and getAlgStressorResponses functions.
+#' 
+#' @format A data frame with 124 observations on the following 52 variables.
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{Algae.Metrics.SampID}}{a factor with levels }
+#'           \item{\code{AlgalSampIdent}}{a numeric vector}
+#'           \item{\code{RepNum}}{a numeric vector}
+#'           \item{\code{CollDate}}{a factor with levels }
+#'           \item{\code{PollTolClass.1.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.2.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.3.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.11.tot}}{a numeric vector}
+#'           \item{\code{pHClass.2.tot}}{a numeric vector}
+#'           \item{\code{pHClass.3.tot}}{a numeric vector}
+#'           \item{\code{pHClass.4.tot}}{a numeric vector}
+#'           \item{\code{pHClass.5.tot}}{a numeric vector}
+#'           \item{\code{pHClass.6.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.1.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.2.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.3.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.4.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.1.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.2.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.3.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.4.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.1.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.2.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.3.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.4.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.5.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.1.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.2.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.3.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.4.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.5.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.1.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.2.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.3.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.4.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.5.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.6.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.7.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.1.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.2.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.3.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.4.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.5.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.H.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.M.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.N.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.V.tot}}{a numeric vector}
+#'           \item{\code{PhosphorusClass.H.tot}}{a numeric vector}
+#'           \item{\code{PhosphorusClass.L.tot}}{a numeric vector}
+#'           \item{\code{NitrogenClass.H.tot}}{a numeric vector}
+#'           \item{\code{NitrogenClass.L.tot}}{a numeric vector}
+#' }
+#' @source example data
+"data_AlgMetrics"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

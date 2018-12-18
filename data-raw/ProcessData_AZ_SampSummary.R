@@ -32,6 +32,20 @@ df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
 dim(df)
 table(df$ElevCategory, useNA="ifany")
 
+# Revise Alg SampID (20181217)
+
+# df$Algae.Metrics.SampID <- NA # none are in Alg data as of Dec 2018
+# myFile <- "AZAlgaeCountsFinal.tab"
+# df_AlgCounts <- read.delim(file.path(wd, "data-raw", "AZ", myFile), stringsAsFactors = FALSE)
+# df_AlgCounts$CollDate    <- as.Date(df_AlgCounts$CollDate)
+# myCol <- c("StationID_Master", "CollDate")
+# x <- merge(df, unique(df_AlgCounts[, c(myCol, "Alg.SampID")]), by=myCol, all.x=TRUE)
+
+# Remove _EMAP and _Multihabitat from end.
+re_EMAP <- "(_EMAP)$"
+re_MH  <- "(_Multihabitat)$"
+df$Algae.Metrics.SampID <- sub(re_EMAP, "", df$Algae.Metrics.SampID)
+df$Algae.Metrics.SampID <- sub(re_MH, "", df$Algae.Metrics.SampID)
 
 # 1.2. Process Data
 View(df)

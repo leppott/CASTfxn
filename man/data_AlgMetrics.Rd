@@ -4,13 +4,60 @@
 \name{data_AlgMetrics}
 \alias{data_AlgMetrics}
 \title{Algae metrics example data}
-\format{A data frame with 926 rows and 5 variables:
+\format{A data frame with 124 observations on the following 52 variables.
 \describe{
-          \item{StationCode}{Station ID}
-          \item{SampleDate}{Station ID}
-          \item{H20}{algae metric H20}
-          \item{D18}{algae metric D18}
-          \item{S2}{algae metric S2}
+          \item{\code{StationID_Master}}{a factor with levels }
+          \item{\code{Algae.Metrics.SampID}}{a factor with levels }
+          \item{\code{AlgalSampIdent}}{a numeric vector}
+          \item{\code{RepNum}}{a numeric vector}
+          \item{\code{CollDate}}{a factor with levels }
+          \item{\code{PollTolClass.1.tot}}{a numeric vector}
+          \item{\code{PollTolClass.2.tot}}{a numeric vector}
+          \item{\code{PollTolClass.3.tot}}{a numeric vector}
+          \item{\code{PollTolClass.11.tot}}{a numeric vector}
+          \item{\code{pHClass.2.tot}}{a numeric vector}
+          \item{\code{pHClass.3.tot}}{a numeric vector}
+          \item{\code{pHClass.4.tot}}{a numeric vector}
+          \item{\code{pHClass.5.tot}}{a numeric vector}
+          \item{\code{pHClass.6.tot}}{a numeric vector}
+          \item{\code{SalinityClass.1.tot}}{a numeric vector}
+          \item{\code{SalinityClass.2.tot}}{a numeric vector}
+          \item{\code{SalinityClass.3.tot}}{a numeric vector}
+          \item{\code{SalinityClass.4.tot}}{a numeric vector}
+          \item{\code{N_UptakeClass.1.tot}}{a numeric vector}
+          \item{\code{N_UptakeClass.2.tot}}{a numeric vector}
+          \item{\code{N_UptakeClass.3.tot}}{a numeric vector}
+          \item{\code{N_UptakeClass.4.tot}}{a numeric vector}
+          \item{\code{OxygenClass.1.tot}}{a numeric vector}
+          \item{\code{OxygenClass.2.tot}}{a numeric vector}
+          \item{\code{OxygenClass.3.tot}}{a numeric vector}
+          \item{\code{OxygenClass.4.tot}}{a numeric vector}
+          \item{\code{OxygenClass.5.tot}}{a numeric vector}
+          \item{\code{SaprobityClass.1.tot}}{a numeric vector}
+          \item{\code{SaprobityClass.2.tot}}{a numeric vector}
+          \item{\code{SaprobityClass.3.tot}}{a numeric vector}
+          \item{\code{SaprobityClass.4.tot}}{a numeric vector}
+          \item{\code{SaprobityClass.5.tot}}{a numeric vector}
+          \item{\code{TrophicClass.1.tot}}{a numeric vector}
+          \item{\code{TrophicClass.2.tot}}{a numeric vector}
+          \item{\code{TrophicClass.3.tot}}{a numeric vector}
+          \item{\code{TrophicClass.4.tot}}{a numeric vector}
+          \item{\code{TrophicClass.5.tot}}{a numeric vector}
+          \item{\code{TrophicClass.6.tot}}{a numeric vector}
+          \item{\code{TrophicClass.7.tot}}{a numeric vector}
+          \item{\code{MoistureClass.1.tot}}{a numeric vector}
+          \item{\code{MoistureClass.2.tot}}{a numeric vector}
+          \item{\code{MoistureClass.3.tot}}{a numeric vector}
+          \item{\code{MoistureClass.4.tot}}{a numeric vector}
+          \item{\code{MoistureClass.5.tot}}{a numeric vector}
+          \item{\code{MotilityClass.H.tot}}{a numeric vector}
+          \item{\code{MotilityClass.M.tot}}{a numeric vector}
+          \item{\code{MotilityClass.N.tot}}{a numeric vector}
+          \item{\code{MotilityClass.V.tot}}{a numeric vector}
+          \item{\code{PhosphorusClass.H.tot}}{a numeric vector}
+          \item{\code{PhosphorusClass.L.tot}}{a numeric vector}
+          \item{\code{NitrogenClass.H.tot}}{a numeric vector}
+          \item{\code{NitrogenClass.L.tot}}{a numeric vector}
 }}
 \source{
 example data
@@ -19,6 +66,7 @@ example data
 data_AlgMetrics
 }
 \description{
-A dataset with example algae metric data for use with the getSiteInfo function.
+A dataset with example algae metric data for use with the
+ getSiteInfo and getAlgStressorResponses functions.
 }
 \keyword{datasets}
