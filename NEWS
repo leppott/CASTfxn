@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-18 12:24:57
+    #> Last Update: 2018-12-18 14:02:39
 
 # Planned Updates
 
@@ -29,6 +29,11 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9129 (2018-12-18)
+
+  - getAlgStressorResponses
+      - Add PDF of plots.
 
 ## Changes in Version 0.1.0.9128 (2018-12-18)
 

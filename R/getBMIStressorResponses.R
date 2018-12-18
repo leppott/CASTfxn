@@ -221,6 +221,7 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
       }
       
       ## Create Plot
+      # plot.pryr ####
       plot.pryr %<a-% {##pryr.START
         {##NoIssue.pryr
         graphics::par(cex.main=0.8,cex.lab=0.7,font.main=2, font.lab=2
@@ -268,7 +269,7 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
           if (cl.y.sd == 0) {
             print(paste("Horizontal line for", stressName, respName, sep=" "))
             utils::flush.console()
-            next     #It's okay to plot the points, but not the regression line
+           # next     #It's okay to plot the points, but not the regression line
           }
         }    
         
@@ -415,6 +416,7 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
   }##FOR.p.END
   
   # END ####
+  ## PDF ####
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.BMI.ALL.pdf"))
   pdf(file=fn_pdf, width=8)
