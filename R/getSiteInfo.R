@@ -44,8 +44,8 @@
 #' useLU <- FALSE
 #' dir_results <- file.path(getwd(), "Results")
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- file.path(CurrentDir, "data")
+# CurrentDir<-getwd()
+# myDir.Data <- file.path(CurrentDir, "data")
 #' 
 #' # data import, example
 #' #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
@@ -173,7 +173,17 @@ getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE
                                  data.refSites[,"FinalLatitude"]), my.aea)
   proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
                                  data.Stations.Info[,"FinalLatitude"]), my.aea)
-  # 
+  #
+  # Leaflet Map in Notebook
+  report_format <- "html"
+  dir_rmd <- file.path(system.file(package = "CASTfxn"), "rmd")
+  strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
+  strFile_out_ext <- paste0(".", report_format)
+  strFile_out <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".map.leaflet", strFile_out_ext))
+  rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
+                    , output_dir=dir_results, quiet=TRUE)
+  
+  
   # plot map
   ppi <- 300
   grDevices::jpeg(filename = paste0("Results/",TargetSiteID, "/", TargetSiteID, 

@@ -58,8 +58,6 @@ clustertype <- "5"
 useLU <- FALSE
 dir_results <- file.path(getwd(), "Results")
 
-CurrentDir<-getwd()
-myDir.Data <- file.path(CurrentDir, "data")
 
 # data import, example
 #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))

@@ -42,6 +42,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9130 (2018-12-18)
+
+* getSiteInfo
+    + Add a leaflet map output as HTML (R Notebook).
+
 ## Changes in Version 0.1.0.9129 (2018-12-18)
 
 * getAlgStressorResponses
