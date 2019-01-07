@@ -11,6 +11,5 @@ NEWS.rmd
 NEWS.rmd
 ^vignettes/Results
 ^Results$
-inst/rmd/
 Results/
 vignettes/Results/

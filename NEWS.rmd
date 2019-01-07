@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9131 (2019-01-07)
+
+* getSiteInfo
+    + Map_Leaflet.rmd missing
+    + inst/RMD was mistakenly in .gitignore
+
 ## Changes in Version 0.1.0.9130 (2018-12-18)
 
 * getSiteInfo

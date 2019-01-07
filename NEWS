@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-12-19 11:49:54
+    #> Last Update: 2019-01-07 15:11:02
 
 # Planned Updates
 
@@ -29,6 +29,12 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9131 (2019-01-07)
+
+  - getSiteInfo
+      - Map\_Leaflet.rmd missing
+      - inst/RMD was mistakenly in .gitignore
 
 ## Changes in Version 0.1.0.9130 (2018-12-18)
 
