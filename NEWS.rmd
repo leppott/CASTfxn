@@ -42,9 +42,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9135 (2019-01-10)
+
+* getStressorList
+    + Add LogTransf to output.  Issue #23
+
 ## Changes in Version 0.1.0.9134 (2019-01-10)
 
-* Mis-numbered v0.1.0.9033 as 9032
+* Misnumbered v0.1.0.9033 as 9032
 
 ## Changes in Version 0.1.0.9133 (2019-01-10)
 

@@ -202,7 +202,27 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     }
   }
   stressorlist <- stressor
-  myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank)
+  
+  # LogTransf ####
+  # 20190110, get log transformation code from chem.info
+  # define pipe
+  `%>%` <- dplyr::`%>%`
+  #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
+  # need to use max (default of 1) in case of duplicates
+  chem.info_LogTransf <- chem.info %>% 
+                             group_by(StdParamName) %>% 
+                                summarise(max_LogTransf=max(LogTransf))
+  stressorlist4merge <- data.frame(StdParamName=stressorlist, Sort=1:length(stressorlist))
+  # merge
+  LogTransf_merge <- merge(stressorlist4merge, chem.info_LogTransf, all.x=TRUE)
+  # sort 
+  LogTransf_merge <- LogTransf_merge[order(LogTransf_merge$Sort), ]
+  # NA to 0
+  LogTransf_merge[is.na(LogTransf_merge[,"max_LogTransf"]), "max_LogTransf"] <- 0
+  
+  # create output ####
+  myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank
+                      , stressors_LogTransf=LogTransf_merge$max_LogTransf)
   #
   return(myStressors)
 } # FUN end

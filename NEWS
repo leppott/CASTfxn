@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-01-10 12:48:09
+    #> Last Update: 2019-01-10 14:42:07
 
 # Planned Updates
 
@@ -30,9 +30,14 @@ NEWS
 
 # Version History
 
+## Changes in Version 0.1.0.9135 (2019-01-10)
+
+  - getStressorList
+      - Add LogTransf to output. Issue \#23
+
 ## Changes in Version 0.1.0.9134 (2019-01-10)
 
-  - Mis-numbered v0.1.0.9033 as 9032
+  - Misnumbered v0.1.0.9033 as 9032
 
 ## Changes in Version 0.1.0.9133 (2019-01-10)
 
