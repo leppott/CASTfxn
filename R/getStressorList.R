@@ -210,8 +210,8 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
   # need to use max (default of 1) in case of duplicates
   chem.info_LogTransf <- chem.info %>% 
-                             group_by(StdParamName) %>% 
-                                summarise(max_LogTransf=max(LogTransf))
+                            dplyr::group_by(StdParamName) %>% 
+                              dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
   stressorlist4merge <- data.frame(StdParamName=stressorlist, Sort=1:length(stressorlist))
   # merge
   LogTransf_merge <- merge(stressorlist4merge, chem.info_LogTransf, all.x=TRUE)

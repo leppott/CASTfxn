@@ -5,7 +5,7 @@
 \title{BMI Stressor Responses}
 \usage{
 getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData,
-  predint = 0.75, varLegLoc = "topright")
+  LogTransf, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -15,6 +15,8 @@ getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData,
 \item{BMIresp}{Benthic macroinvertebrate response variables.}
 
 \item{list.MatchBMIData}{list of matched BMI and stressor data.}
+
+\item{LogTransf}{Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.}
 
 \item{predint}{Prediction interval. Default = 0.75}
 
@@ -89,11 +91,12 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
 # datasets getBMIMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 
 # Run getBMIMatches
 list.MatchBMIData <- getBMIMatches(stressors, list.data)     
   
 # Run getBMIStressorResponses           
-getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData)
+getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData, stressors_logtransf)
 }
 }

@@ -8,6 +8,7 @@
 #' @param stressors stressors
 #' @param BMIresp Benthic macroinvertebrate response variables.
 #' @param list.MatchBMIData list of matched BMI and stressor data.
+#' @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
@@ -78,17 +79,18 @@
 #' # datasets getBMIMatches
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' 
 #' # Run getBMIMatches
 #' list.MatchBMIData <- getBMIMatches(stressors, list.data)     
 #'   
 #' # Run getBMIStressorResponses           
-#' getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData)
+#' getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData, stressors_logtransf)
 #' }
 #
 #' @export
 getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.MatchBMIData
-                                    , predint=0.75, varLegLoc="topright") {
+                                    , LogTransf, predint=0.75, varLegLoc="topright") {
   # QC
   boo.QC <- FALSE
   ## Trigger QC actions below for when debugging.
@@ -132,18 +134,23 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
   ppi<-300
   varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".SR.BMI.")
   
+  LogTransf <- as.logical(LogTransf)
+  
   # FOR.p ####
   for (p in 1:length(stressors)) {
     stressName <- stressors[p]
     varFlag <- 1
     varFlag.b <- 1
 
-    if (stressName %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_calc_cfs",
-                          "Flow_cfs")) {##IF.stressName.START
-        log.yn <- FALSE
-      } else {
-        log.yn <- TRUE
-    }##IF.stressName.END
+    # if (stressName %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_calc_cfs",
+    #                       "Flow_cfs")) {##IF.stressName.START
+    #     log.yn <- FALSE
+    #   } else {
+    #     log.yn <- TRUE
+    # }##IF.stressName.END
+    # 
+    log.yn <- LogTransf[p]
+    
     # QC
     if(boo.QC==TRUE){##IF.boo.QC.START
       print(paste0("p; ",p))

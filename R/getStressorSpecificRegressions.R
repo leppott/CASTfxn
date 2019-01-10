@@ -91,6 +91,7 @@
 #' # datasets getBMIMatches
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' 
 #' # Run getBMIMatches
 #' list.MatchBMIData <- getBMIMatches(stressors, list.data)  

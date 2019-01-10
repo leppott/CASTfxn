@@ -14,6 +14,7 @@
 #' @param stressors stressors
 #' @param AlgResp Algae response variables.
 #' @param list.MatchAlgData list of matched Algae and stressor data.
+#' @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
@@ -76,6 +77,7 @@
 #' # datasets getAlgMatches
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #'
 #' # Run getAlgMatches
 #' list.MatchAlgData <- getAlgMatches(stressors, list.data)
@@ -85,12 +87,12 @@
 #' AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
 #' 
 #' # Run getAlgStressorResponses
-#' getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData)
+#' getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData, stressors_logtransf)
 #' }
 #
 #' @export
 getAlgStressorResponses <- function(TargetSiteID, stressors, AlgResp, list.MatchAlgData
-                                    , predint=0.75, varLegLoc="topright") {
+                                    , LogTransf, predint=0.75, varLegLoc="topright") {
   
   
   # QC
@@ -136,18 +138,22 @@ getAlgStressorResponses <- function(TargetSiteID, stressors, AlgResp, list.Match
   ppi<-300
   varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".SR.Alg.")
   
+  LogTransf <- as.logical(LogTransf)
+  
   # FOR.p ####
   for (p in 1:length(stressors)) {
     stressName <- stressors[p]
     
     varFlag <- 1
     
-    if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC", "Flow_cfs", 
-                          "Flow_calc_cfs")) {
-      log.yn <- FALSE
-    } else {
-      log.yn <- TRUE
-    }
+    # if (stressName %in% c("DO_uf_mg_L", "pH", "Temp_degC", "Flow_cfs", 
+    #                       "Flow_calc_cfs")) {
+    #   log.yn <- FALSE
+    # } else {
+    #   log.yn <- TRUE
+    # }
+    log.yn <- LogTransf[p]
+    
     varFlag <- 1
     
     # QC

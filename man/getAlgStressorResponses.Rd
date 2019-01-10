@@ -5,7 +5,7 @@
 \title{Algae Stressor Responses}
 \usage{
 getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData,
-  predint = 0.75, varLegLoc = "topright")
+  LogTransf, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -15,6 +15,8 @@ getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData,
 \item{AlgResp}{Algae response variables.}
 
 \item{list.MatchAlgData}{list of matched Algae and stressor data.}
+
+\item{LogTransf}{Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.}
 
 \item{predint}{Prediction interval. Default = 0.75}
 
@@ -87,6 +89,7 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
 # datasets getAlgMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 
 # Run getAlgMatches
 list.MatchAlgData <- getAlgMatches(stressors, list.data)
@@ -96,6 +99,6 @@ data.algae.metrics <- data_AlgMetrics
 AlgResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
 
 # Run getAlgStressorResponses
-getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData)
+getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData, stressors_logtransf)
 }
 }
