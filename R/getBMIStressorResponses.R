@@ -406,17 +406,17 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
       
       ## PDF, capture plot in list
       ### Need to run plot.pryr as is only created above
-     # boo.pryr <- TRUE
+      boo.pryr <- TRUE
         plot.pryr
       boo.pryr <- FALSE
       #pq <- q.len*(p-1)+q
-#      plots.pq[[pq]] <- grDevices::recordPlot()
+      plots.pq[[pq]] <- grDevices::recordPlot()
       
       ## JPG, Create
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
                                        ".jpg", sep = ""), width = 4 * ppi,
                       height = 3 * ppi, quality=100, pointsize=8, res = ppi)
- #       plot.pryr
+        plot.pryr
       grDevices::dev.off()
       #
       varFlag <- 0
