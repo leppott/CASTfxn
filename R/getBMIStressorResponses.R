@@ -112,9 +112,9 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
   #QC
   if(boo.QC==TRUE){##IF.boo.QC.START
     ##p
-    stressors <- stressors[1:2]
+   # stressors <- stressors[1:2]
     ##q 
-    BMIresp <- BMIresp[1:3]
+  #  BMIresp <- BMIresp[1:3]
   }##IF.boo.QC.END
 
   
@@ -158,6 +158,8 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
       pq <- q.len*(p-1)+q
       pq.len <- p.len * q.len
       
+      boo.pryr <- TRUE
+      
       # QC
       if(boo.QC==TRUE){##IF.boo.QC.START
         print(paste0("Item (", pq, "/", pq.len, ")"))
@@ -165,8 +167,6 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
         flush.console()
       }##IF.boo.QC.END
       
-
-
       {##NoIssues.START
       # get all data to plot
       all.xvar<- list.MatchBMIData[["all.b.str"]][,c("StationID_Master","BMI.Metrics.SampID", stressName)]
@@ -345,27 +345,37 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
         slope.dir <- sign(slope) #1 = positive, -1 = negative
         # exp.dir <- data.lkp.dir[stressName,respName]
         exp.dir <- -1
-  
+        
         for (f in 1:nrow(site.df.plot)) {
           # Generate scores based on slope, significance value, and r2
           if ((length(cl.df.plot)>=5) && (abs(pval.corr)<=0.1) && (r2>=0.1)) {
             # print to console p (stressName) and q (respName)
               if (slope.dir == exp.dir) {
-                  print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1"))
-                  sr.score = 1
+                #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
+                txt.score <-  "1"
+                sr.score = 1
               } else if (slope.dir != exp.dir) {
-                  print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
-                  sr.score = -1
+                 # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
+                  txt.score <- "-1"
+                 sr.score = -1
               } else {
-                  print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
-                  sr.score = 1
+                  #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
+                txt.score <- "inconclusive"  
+                sr.score = 1
               }
           } else {
-              print(paste0(stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
-              sr.score = 0
+              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+            txt.score <- "0"  
+            sr.score = 0
           }
-         
+          #
+          #
         }##FOR.f.END
+        #
+        if (boo.pryr==TRUE) {##IF.boo.pryr.START
+          msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
+          print(msg.status)
+        }##IF.boo.pryr.START
         #
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID, # "Group" = cluster,
                                         "Param_Name"=stressName,"BMI_Metric"=respName,
@@ -396,17 +406,17 @@ getBMIStressorResponses <- function(TargetSiteID, stressors, BMIresp, list.Match
       
       ## PDF, capture plot in list
       ### Need to run plot.pryr as is only created above
-      boo.pryr <- TRUE
+     # boo.pryr <- TRUE
         plot.pryr
       boo.pryr <- FALSE
       #pq <- q.len*(p-1)+q
-      plots.pq[[pq]] <- grDevices::recordPlot()
+#      plots.pq[[pq]] <- grDevices::recordPlot()
       
       ## JPG, Create
       grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
-                                       ".jpg", sep = ""), width = 4 * ppi, 
+                                       ".jpg", sep = ""), width = 4 * ppi,
                       height = 3 * ppi, quality=100, pointsize=8, res = ppi)
-        plot.pryr
+ #       plot.pryr
       grDevices::dev.off()
       #
       varFlag <- 0
