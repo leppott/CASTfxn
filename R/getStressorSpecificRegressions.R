@@ -130,7 +130,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
                                            
                                            ) {##FUNCTION.START
   # Debugging
-  boo.QC <- TRUE
+  boo.QC <- FALSE
   if(boo.QC==TRUE){##IF.boo.QC.START
     matchedData <- list.MatchBMIData
   }##IF.boo.QC.END
@@ -217,13 +217,28 @@ getStressorSpecificRegressions <- function(TargetSiteID
           next
         }
         
-        # 20180620, more than one (add sum)
-        if (sum(SSTV.analyte %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_cfs",
-                                    "Flow_calc_cfs"))>0) {
-          log.yn <- FALSE
-        } else {
-          log.yn <- TRUE
-        }
+        # 20190111, get LogTransf (mod for single parameter)
+        # LogTransf ####
+        # 20190110, get log transformation code from chem.info
+        # define pipe
+        `%>%` <- dplyr::`%>%`
+        #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
+        # need to use max (default of 1) in case of duplicates
+        chem.info_LogTransf <- chem.info %>% 
+          dplyr::group_by(StdParamName) %>% 
+          dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
+        LogTransf <- chem.info_LogTransf[chem.info_LogTransf[,"StdParamName"]==SSTV.analyte, "max_LogTransf"]
+        LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
+        # # 20180620, more than one (add sum)
+        # if (sum(SSTV.analyte %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_cfs",
+        #                             "Flow_calc_cfs"))>0) {
+        #   log.yn <- FALSE
+        # } else {
+        #   log.yn <- TRUE
+        # }
+        log.yn <- LogTransf
+        
+        
         # get all the matched sample data for this stressor
         # 20180620, match names
         SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in% names(matchedData$all.b.str)]

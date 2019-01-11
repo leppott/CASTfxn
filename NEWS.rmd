@@ -42,6 +42,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9137 (2019-01-11)
+
+* Update logtransf, Issue #23
+    + getStressorSpecificResponses
+        - Slightly different code.  Use example from getStressorList.
+
 ## Changes in Version 0.1.0.9136 (2019-01-10)
 
 * Update logtransf, Issue #23
