@@ -42,6 +42,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9138 (2019-01-17)
+
+* getReport
+    + Modified QC check for "summary" report.
+* Report_Results_summary.rmd
+    + Minor tweaks.
+    + BMI.SR plots show all with p value < 0.05.
+
 ## Changes in Version 0.1.0.9137 (2019-01-11)
 
 * Update logtransf, Issue #23

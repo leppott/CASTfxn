@@ -42,7 +42,7 @@ getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
   report_format <- tolower(report_format)
   #
   # 20181205
-  if(report_type!="summary"){
+  if(tolower(report_type)!="summary"){
     Msg <- "Only the 'summary' report_type is active."
     stop(Msg)
   }
