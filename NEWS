@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-01-17 16:00:20
+    #> Last Update: 2019-01-24 15:14:39
 
 # Planned Updates
 
@@ -29,6 +29,27 @@ NEWS
   - StreamCat data. Boxplots with jitter points.
 
 # Version History
+
+## Changes in Version 0.1.0.9140 (2019-01-24)
+
+  - getCoOccur.R
+      - Add debugging.
+      - Rework factor of Bio.Deg to ensure always in the same order.
+      - Box plot
+          - Remove y-axis elements (was confusing).
+          - Remove x-axis quotes around parameter name.
+          - Modify shape and color of jitter points for use in legend.
+          - Update legend.
+          - Update y-axis so scaling matches Curve plot when combined in
+            output.
+      - Curve plot
+          - Update points and legend to match box plot.
+
+## Changes in Version 0.1.0.9139 (2019-01-18)
+
+  - Overall Report
+      - getReport.R
+      - inst/rmd/Report\_Results\_overall.rmd
 
 ## Changes in Version 0.1.0.9138 (2019-01-17)
 

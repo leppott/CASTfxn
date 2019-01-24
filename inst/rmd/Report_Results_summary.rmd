@@ -16,7 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Debugging
-boo.DEBUG <- TRUE
+boo.DEBUG <- FALSE
 DEBUG.CaseNumber <- 1
 #
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START

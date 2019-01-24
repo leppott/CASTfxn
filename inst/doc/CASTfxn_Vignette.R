@@ -142,7 +142,7 @@ myJPG <- paste0(TargetSiteID,".boxes.Nutrients.jpg")
 fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
 include_graphics(fn.img)
 
-## ----ex_getClusterInfo------------------------------------------------------------------------------
+## ----ex_getClusterInfo---------------------------------------------------
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
@@ -181,13 +181,13 @@ refSiteCOMIDs <- list.data$ref.reaches
 # Run getClusterInfo
 getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
 
-## ----Output_getClusterInfo_txt----------------------------------------------------------------------
+## ----Output_getClusterInfo_txt-------------------------------------------
 TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".cluster.ElevWs.jpg")
 fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
 include_graphics(fn.img)
 
-## ----Ex_getBMImatches-------------------------------------------------------------------------------
+## ----Ex_getBMImatches----------------------------------------------------
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
 useLU <- FALSE
@@ -243,10 +243,10 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 # Run getBMIMatches
 list.MatchBMIData <- getBMIMatches(stressors, list.data)
 
-## ----Output_BMIMatches_str--------------------------------------------------------------------------
+## ----Output_BMIMatches_str-----------------------------------------------
 str(list.MatchBMIData)
 
-## ----ex_getBMIStressorResponses, eval=FALSE---------------------------------------------------------
+## ----ex_getBMIStressorResponses, eval=FALSE------------------------------
 #  predint <- 0.75
 #  varLegLoc <- "topright"
 #  BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
@@ -310,10 +310,10 @@ str(list.MatchBMIData)
 #  # Run getBMIStressorResponses
 #  getBMIStressorResponses(stressors, list.MatchBMIData)
 
-## ----Output_BMIStressorResponses, eval=FALSE--------------------------------------------------------
+## ----Output_BMIStressorResponses, eval=FALSE-----------------------------
 #  str(list.MatchBMIData)
 
-## ----ex_getAlgMatches, eval=FALSE-------------------------------------------------------------------
+## ----ex_getAlgMatches, eval=FALSE----------------------------------------
 #  TargetSiteID <- "SRCKN001.61"
 #  clustertype <- "5"
 #  useLU <- FALSE
@@ -368,10 +368,10 @@ str(list.MatchBMIData)
 #  # Run getAlgMatches
 #  list.MatchAlgData <- getAlgMatches(stressors, list.data)
 
-## ----Output_getAlgMatches_str, eval=FALSE-----------------------------------------------------------
+## ----Output_getAlgMatches_str, eval=FALSE--------------------------------
 #  str(list.MatchAlgData)
 
-## ----ex_getAlgStressorResponses, eval=FALSE---------------------------------------------------------
+## ----ex_getAlgStressorResponses, eval=FALSE------------------------------
 #  predint <- 0.75
 #  varLegLoc <- "topright"
 #  
@@ -438,10 +438,10 @@ str(list.MatchBMIData)
 #  # Run getAlgStressorResponses
 #  getAlgStressorResponses(stressors, list.MatchAlgData)
 
-## ----Output_getAlgStressorResonses_str, eval=FALSE--------------------------------------------------
+## ----Output_getAlgStressorResonses_str, eval=FALSE-----------------------
 #  str(list.MatchAlgData)
 
-## ----ex_getStressorSpecificRegressions, eval=FALSE--------------------------------------------------
+## ----ex_getStressorSpecificRegressions, eval=FALSE-----------------------
 #  predint <- 0.75
 #  varLegLoc <- "topright"
 #  
@@ -515,10 +515,10 @@ str(list.MatchBMIData)
 #  # Run getStressorSpecificRegressions
 #  getStressorSpecificRegressions(list.MatchBMIData)
 
-## ----Output_getStressorSpecificRegressions_str, eval=FALSE------------------------------------------
+## ----Output_getStressorSpecificRegressions_str, eval=FALSE---------------
 #  str(list.MatchAlgData)
 
-## ----Output_getSSDplot, warnings=FALSE--------------------------------------------------------------
+## ----Output_getSSDplot, warnings=FALSE-----------------------------------
 # Example 3 
 # https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
 # ssd_generator_v1.xlsm
@@ -530,7 +530,7 @@ myExp  <- "Exposure"
 p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 p3
 
-## ----ex_getCoOccur, eval=FALSE----------------------------------------------------------------------
+## ----ex_getCoOccur, eval=FALSE-------------------------------------------
 #  #Load Data
 #  df.data <- data_CoOccur
 #  #
@@ -553,7 +553,7 @@ p3
 #          , dir.plots
 #          )
 
-## ----Output_getCoOccur------------------------------------------------------------------------------
+## ----Output_getCoOccur---------------------------------------------------
 dir.pkg <- file.path(path.package("CASTfxn"), "extdata")
 fn.pdf <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_20180802_123825.pdf")
 fn.tsv <- file.path(dir.pkg, "901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv")
@@ -569,7 +569,7 @@ kable(df.tsv, caption="CoOccurence Scores")
 # image
 #include_graphics(fn.jpg)
 
-## ----Output, eval=FALSE-----------------------------------------------------------------------------
+## ----Output, eval=FALSE--------------------------------------------------
 #  # Install CASTfxn ####
 #  # library(devtools)
 #  # install_github("ALincolnTt/CASTfxn")

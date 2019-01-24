@@ -127,6 +127,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
                     , dir.plots=getwd()
                     ) {##FUNCTION.START
   #
+  boo_DEBUG <- FALSE
+  
   # define pipe
   `%>%` <- dplyr::`%>%`
   
@@ -199,7 +201,10 @@ getCoOccur <- function(df.data, ID.plot=NULL
   # print(paste0("Items to process; Stressors (n=",num.Stressors,")."))
   # print(paste0("Items to process; Groups (n=",num.Groups,")."))
   
- # i <- ID.plot[2]
+  if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
+    i <- ID.plot[2] 
+  }##IF.boo_DEBUG.END
+
   
 
   
@@ -243,14 +248,15 @@ getCoOccur <- function(df.data, ID.plot=NULL
         , expr={
           df.comp.bio.better <- df.comp %>% dplyr::filter(COL.BIO>i.Bio)
         })
-
-    # j <- col.Stressors[2]
-
-     #
- #    par(mfrow=c(3,2))
+  
      #
      # Calculate quantiles on Comparator Sites
      for (j in col.Stressors){##FOR.j.START
+       #
+       if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
+         j <- col.Stressors[2]
+         #par(mfrow=c(3,2))
+       }##IF.boo_DEBUG.END
        #
        j.num <- match(j, col.Stressors)
        j.len <- length(col.Stressors)
@@ -320,16 +326,32 @@ getCoOccur <- function(df.data, ID.plot=NULL
        
        # plot, ggplot
        lab.sub <- paste0("Comparator sites with higher ", col.Bio, " scores (", lab.N, ") ; ", lab.Score)
+       
+       
+       # Confirm Levels (factors) as 1=Good and 2=Degraded
+       df.comp$Bio.Deg <- factor(df.comp$Bio.Deg, c("Good", "Degraded"))
+       
+       
+       bio_col <- c("blue", "dark gray")
+       bio_shp <- c(21, 25) # circle and down triangle
+       lab_cluster <- paste0("Cluster = ",i.Group)
 
       p1<- ggplot2::ggplot(df.comp, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
         ggplot2::geom_boxplot() +
         ggplot2::coord_flip() + 
-        ggplot2::geom_jitter(size=1, alpha=0.5, ggplot2::aes_string(color=col.SiteTypeQuality)) +
+        ggplot2::geom_jitter(size=2, alpha=0.5
+              , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) +
         ggplot2::geom_hline(yintercept = df.i[,j], color="red", lty=2, lwd=1) + 
-        ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
-        ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
+       # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
+        #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
+        ggplot2::scale_color_manual(values=bio_col) +
+        ggplot2::scale_fill_manual(values=bio_col) +
+        ggplot2::scale_shape_manual(values=bio_shp) + 
         ggplot2::labs(title=i, caption=lab.sub) + 
-        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5))
+        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
+        ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
+        ggplot2::labs(y=j, x=lab_cluster)
+
        
        ## Logistic Regression (all comparator sites)
 
@@ -348,11 +370,15 @@ getCoOccur <- function(df.data, ID.plot=NULL
        
        # create data frame with known column names
        df.plot <- df.comp.glm
-       names(df.plot) <- c("y","y.name","x")
-       # convert 1 "Degraded" and 2 "Good" to 0 and 1
-       df.plot$y.name <- as.numeric(df.plot$y.name)-1
-       #reverse so 1 is good and 0 is degraded
-       df.plot$y.name <- 1-df.plot$y.name
+       names(df.plot) <- c("y","Bio.Deg","x")
+       # Confirm Levels (factors) as 1=Good and 2=Degraded
+       df.plot$Bio.Deg <- factor(df.plot$Bio.Deg, c("Good", "Degraded"))
+       # fix so so 0=good and 1=degraded
+       df.plot$y.name <- as.numeric(df.plot$Bio.Deg)-1
+        
+       
+       
+
        #
        
        # QC
@@ -366,13 +392,19 @@ getCoOccur <- function(df.data, ID.plot=NULL
          
          # plot2, ggplot
          p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
-           ggplot2::geom_point() +
+           ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), alpha=0.5, size=2) +
+           ggplot2::scale_fill_manual(breaks=c("Good", "Degraded"), values=bio_col) +
+           ggplot2::scale_color_manual(breaks=c("Good", "Degraded"), values=bio_col) +
+           ggplot2::scale_shape_manual(breaks=c("Good", "Degraded"), values=bio_shp) + 
            ggplot2::geom_vline(xintercept = df.i[,j], color="red", lty=2, lwd=1) + 
            ggplot2::geom_hline(yintercept = 0.2, color="black", lty=2) +
            ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) + 
            ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) + 
            ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat, color="blue", lwd=1) + 
            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5))
+         
+          # same colors
+         #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
          
            gridExtra::grid.arrange(p1, p2, ncol=1, nrow=2 )
          

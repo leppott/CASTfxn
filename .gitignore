@@ -1,3 +1,5 @@
+Meta
+doc
 .Rproj.user
 .Rhistory
 .RData
@@ -7,7 +9,6 @@ CASTfxn_LibraryCreation.Rmd
 CASTfxn_LibraryCreation.nb.html
 CASTfxn.Rproj
 .Rbuildignore
-NEWS.rmd
 NEWS.rmd
 ^vignettes/Results
 ^Results$
