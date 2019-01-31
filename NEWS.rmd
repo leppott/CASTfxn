@@ -40,7 +40,39 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * StreamCat data.  Boxplots with jitter points.
 
+* getCoOccur
+    + jpg output
+    + Update summary report for changes (date and columns in txt file) ?maybe?
+
 # Version History
+
+## Changes in Version 0.1.0.9141 (2019-01-31)
+
+* getCoOccur.R
+    + Details
+        - Use lowest biological condition score in box plots.
+        - **Bold** section headers in details.
+        - Changes to output (see below).
+    + logistic regression
+        - Ensure using Degraded Yes/No instead of Degraded/Reference.
+    + Output
+        - Save individuals JPG files as well as PDF.
+    + Example
+        - Modify example to be "Example 1, CA".
+        - Add "Example 2, AZ hi".
+    + Remove date from file names.
+    + Use loweest biological score for a site.
+        - Was mean.
+    + Box plot.
+        - Add scoring lines (as in SR plot).
+        - Update text (make multiline).
+    + Stressor Response (SR) Curve plot
+        - Generate scores.
+        - Save scores.
+        - Add scores to plot.
+* data
+    + Modify data_CoOccur to be data_CoOccur_CA
+    + Add data_CoOccur_AZ_Hi
 
 ## Changes in Version 0.1.0.9140 (2019-01-24)
 
@@ -55,7 +87,6 @@ cat(paste0("Last Update: ",Sys.time()))
         - Update y-axis so scaling matches Curve plot when combined in output.
     + Curve plot
         - Update points and legend to match box plot.
-    
 
 ## Changes in Version 0.1.0.9139 (2019-01-18)
 
