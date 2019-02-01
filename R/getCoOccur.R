@@ -5,8 +5,8 @@
 #
 #' @title Co-Occurrence Plots
 #' 
-#' @description Generates a PDF with 2 plots per site for co-occurrence of 
-#' measured chem and bio data
+#' @description Generates a box plots and stressor response plots (individually as jpg 
+#' and together as a PDF) as well as scores for co-occurence.
 #' 
 #' @details \strong{Derive evidence fo spatial/temporal co-occurrence.}
 #' 
@@ -91,8 +91,9 @@
 #' Default = c("Yes", "No").
 #' @param dir.plots Directory to save plots.  Default = working directory
 #'
-#' @return Saves a single PDF of plots, individual plots as JPGs, and a scores files (tab separated) to user defined
-#'  directory.  A sub-directory is created for each SiteID in ID.plot.
+#' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
+#' scores files (tab separated text file) to a user defined 'Results' directory.  
+#' A sub-directory is created for each SiteID in ID.plot.
 #' 
 #' @examples
 #' # Example #1, CA data
@@ -227,6 +228,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
   #par
 #  par.orig <- par(no.readonly=TRUE)
   # reset with "par(par.orig)"
+  # using ggplot so don't need par
   
   
   # QC Test
@@ -257,13 +259,15 @@ getCoOccur <- function(df.data, ID.plot=NULL
     ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2))
            , FALSE)
-    # PDF ####
+    # PDF, old ####
     #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-    fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")
-    if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
-      grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
-    }##IF.boo_DEBUG.END
-    #
+    # fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")
+    # if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
+    #   grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
+    # }##IF.boo_DEBUG.END
+    plots_pdf <- vector(1, mode="list")
+    plots_jpg <- vector(2, mode="list")
+    # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
     fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.txt"))
@@ -363,8 +367,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
          # plots ####
          # File Names
          #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-         fn_jpg_p1 <- paste0(TargetSiteID, ".CoOccurrence.Box", myDateTime,".jpg")
-         fn_jpg_p2 <- paste0(TargetSiteID, ".CoOccurrence.SR.",j,".", myDateTime,".jpg")
+         fn_jpg_p1 <- paste0(TargetSiteID, ".CoOccurrence.Box.", j, ".jpg")
+         fn_jpg_p2 <- paste0(TargetSiteID, ".CoOccurrence.SR.", j, ".jpg")
          ppi       <- 300
          
          # Create (ggplot)
@@ -394,6 +398,12 @@ getCoOccur <- function(df.data, ID.plot=NULL
            ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
            ggplot2::labs(y=j, x=lab_cluster) + 
            ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2)
+         # Capture plot (jpg)
+         # p1
+         # plots_jpg[[1]] <- grDevices::recordPlot()
+         ggplot2::ggsave(filename=file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+                         , plot=p1
+                         , dpi=ppi, width=8, height=6, units="in")
          
          ## Logistic Regression (all comparator sites)
          
@@ -462,6 +472,11 @@ getCoOccur <- function(df.data, ID.plot=NULL
              ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat, color="blue", lwd=1) + 
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) + 
              ggplot2::labs(title=i, caption=lab.sub) 
+           # p2
+           # plots_jpg[[2]] <- grDevices::recordPlot()
+           ggplot2::ggsave(filename=file.path(wd, dir.sub, dir.sub2, fn_jpg_p2)
+                           , plot=p2
+                           , dpi=ppi, width=8, height=6, units="in")
            
            # same colors
            #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
@@ -471,23 +486,31 @@ getCoOccur <- function(df.data, ID.plot=NULL
            # PDF, p1 and p2
            #grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
            p3 <- gridExtra::grid.arrange(p1, p2, ncol=1, nrow=2 )
-           p3
+           #p3
+           # Capture most recent plot to a list
+           plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # grDevices::dev.off()
            #
+           # ggplot mods
+           ## Size modifier - 4:3 isn't big enough for all of text on ggplots
+           #size_mod <- 1.5
+           #
            # # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1),
-           #                 width = 4*ppi, height = 3*ppi, quality=100,
-           #                 pointsize=8, res = ppi)
-           #    p1
-           # grDevices::dev.off()  
-           # #
-           # # JPG, p2
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p2),
-           #                 width = 4*ppi, height = 3*ppi, quality=100,
-           #                 pointsize=8, res = ppi)
-           #    p2
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+           #                 , pointsize = 8
+           #                 , res = ppi)
+           #    grDevices::replayPlot(1)
            # grDevices::dev.off()
-           
+           #
+           # JPG, p2
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p2)
+           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+           #                 , pointsize=8
+           #                 , res = ppi)
+           #    grDevices::replayPlot(2)
+           # grDevices::dev.off()
+           #
            
          } else { 
            #
@@ -497,14 +520,21 @@ getCoOccur <- function(df.data, ID.plot=NULL
            # grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
            # no plot 2
            p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2 )
-           p3
+           #p3
+           # Capture most recent plot to a list
+           plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # grDevices::dev.off()
            #
-           # # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1),
-           #                 width = 4*ppi, height = 3*ppi, quality=100,
-           #                 pointsize=8, res = ppi)
-           #    p1
+           # ggplot mods
+           ## Size modifier - 4:3 isn't big enough for all of text on ggplots
+           #size_mod <- 1.5
+           #
+           # JPG, p1
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+           #                 , pointsize=8
+           #                 , res = ppi)
+           #    grDevices::replayPlot(1)
            # grDevices::dev.off()
            
          }##IF.complete.cases.END
@@ -522,20 +552,34 @@ getCoOccur <- function(df.data, ID.plot=NULL
        #
        
        
-       
      }##FOR.j.END
      #
  #    par(par.orig)
    #
+    # PDF, new ####
+    # Create PDF from list of recorded plots
+    if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
+      fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")
+      grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
+        #
+        # Remove null items from plot list
+        #plots_pdf_nonull <- plots_pdf[-which(sapply(plots_pdf, is.null))]
+        ## already handled in loop with next
+        for (p in plots_pdf){##FOR.gp.START
+          #grDevices::replayPlot(g.plot)
+          if(is.null(p)==TRUE) {next}
+          grDevices::replayPlot(p)
+        }##FOR.gp.END
+        rm(plots_pdf)
+        #
+      grDevices::dev.off()
+    }##IF.boo_DEBUG.END
     # PDF (ALL) (close for i)
-    grDevices::dev.off()
+    # grDevices::dev.off()
   
      #
   }##FOR.i.END 
   
-  # # PDF (ALL)
-  # grDevices::dev.off()
-  #
   
 }##FUNCTION.END
 

@@ -46,12 +46,13 @@ Default = c("Yes", "No").}
 \item{dir.plots}{Directory to save plots.  Default = working directory}
 }
 \value{
-Saves a single PDF of plots, individual plots as JPGs, and a scores files (tab separated) to user defined
- directory.  A sub-directory is created for each SiteID in ID.plot.
+Saves a single PDF of all plots, individual plots as JPGs, and a 
+scores files (tab separated text file) to a user defined 'Results' directory.  
+A sub-directory is created for each SiteID in ID.plot.
 }
 \description{
-Generates a PDF with 2 plots per site for co-occurrence of 
-measured chem and bio data
+Generates a box plots and stressor response plots (individually as jpg 
+and together as a PDF) as well as scores for co-occurence.
 }
 \details{
 \strong{Derive evidence fo spatial/temporal co-occurrence.}

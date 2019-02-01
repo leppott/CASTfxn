@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-01-31 15:54:15
+    #> Last Update: 2019-02-01 12:43:35
 
 # Planned Updates
 
@@ -30,15 +30,20 @@ NEWS
 
   - getCoOccur
     
-      - jpg output
       - Update summary report for changes (date and columns in txt file)
         ?maybe?
 
 # Version History
 
+## Changes in Version 0.1.0.9142 (2019-02-01)
+
+  - getCoOccur.R, Issue \#25
+      - Add individual plots as jpg.
+          - Use ggsave instead of jpeg (as with other functions).
+
 ## Changes in Version 0.1.0.9141 (2019-01-31)
 
-  - getCoOccur.R
+  - getCoOccur.R, Issue \#25
       - Details
           - Use lowest biological condition score in box plots.
           - **Bold** section headers in details.
@@ -66,7 +71,7 @@ NEWS
 
 ## Changes in Version 0.1.0.9140 (2019-01-24)
 
-  - getCoOccur.R
+  - getCoOccur.R, Issue \#25
       - Add debugging.
       - Rework factor of Bio.Deg to ensure always in the same order.
       - Box plot
