@@ -93,7 +93,6 @@ saved as SitID.map.jpg, e.g., SRCKN001.61.map.jpg.
 ```{r ex_getSiteInfo}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 dir_results <- file.path(getwd(), "Results")
 
 CurrentDir <- getwd()
@@ -108,7 +107,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
  
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, dir_results)
 ```
 The structure of the data is below.
 ```{r Output_getSiteInfo_str}
@@ -143,7 +142,6 @@ The return is a summary list; ref.sites, ref.reaches, cluster.samps, chem.info ,
 ```{r ex_getChemDataSubsets}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -158,7 +156,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
@@ -168,7 +166,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 ```
 The structure of the data is below.
 ```{r Output_getChemDataSubsets_str}
@@ -193,7 +191,6 @@ SRCKN001.61.boxes.Nutrients.jpg.
 ```{r ex_getStressorList, warning=FALSE}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -209,7 +206,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -224,7 +221,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -313,7 +310,6 @@ In this case example 95 plots are created.
 ```{r ex_getClusterInfo}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -329,7 +325,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
  
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -340,14 +336,14 @@ data.chem.info <- data_ChemInfo
 
 #
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getClusterInfo
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
+getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
 ```
 For each variable in the test data set a "Ws" (Watershed) and "Cat" (Catchment) version are created.  This is how the variables exist in the data.
 
@@ -395,7 +391,6 @@ The return is a summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp
 ```{r Ex_getBMImatches}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -411,7 +406,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -422,7 +417,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -483,7 +478,6 @@ BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
              
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -499,7 +493,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -510,7 +504,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -563,7 +557,6 @@ The example data included with the package does not include algal data so no out
 ```{r ex_getAlgMatches, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -579,7 +572,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -590,7 +583,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -643,7 +636,6 @@ varLegLoc <- "topright"
 
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -659,7 +651,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -670,7 +662,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -730,7 +722,6 @@ varLegLoc <- "topright"
 
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir <- getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -746,7 +737,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -761,7 +752,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -1036,7 +1027,7 @@ data.MT.bmi <- read.table(fn.MT.bmi, header = TRUE, sep = "\t",
 #                                           "numeric","numeric","numeric"))
 # data.lkp.dir <- data_LkpDir
 
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU=FALSE)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps, 
                                             # BMImetrics = myBMImetrics, 
                                             # AlgMetrics = myAlgaeMetrics, 
@@ -1048,7 +1039,7 @@ site.Clusters <- list.SiteSummary$ClustIDs
 SiteInfo <- list.SiteSummary$SiteInfo
 
 list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, 
-                                clustertype, useLU=FALSE)
+                                clustertype)
 # mySubsets <- list(ref.sites = refSiteIDs, 
                     # ref.reaches = refSiteCOMIDs, 
                     # cluster.samps = cluster.chem.samps, 
@@ -1064,14 +1055,13 @@ site.chem <- list.data$site.chem
 chem.info <- list.data$chem.info
 
 # Get Cluster Info
-getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU=FALSE)
+getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
 
 # CAST, Stressors ####
 # Get Stressor List
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, 
                                   cluster.chem, cluster.samps, ref.sites, 
-                                  site.chem, probsHigh=0.75, probsLow=0.25, 
-                                  useLU=FALSE)
+                                  site.chem, probsHigh=0.75, probsLow=0.25)
 # myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank)
 
 stressors <- list.stressors$stressors

@@ -5,7 +5,7 @@
 \title{Stressor List}
 \usage{
 getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem,
-  cluster.samps, ref.sites, site.chem, probsHigh, probsLow, useLU = FALSE)
+  cluster.samps, ref.sites, site.chem, probsHigh, probsLow)
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -43,7 +43,6 @@ Required objects:
 \examples{
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 # datasets getSiteInfo
 # data, example included with package
@@ -56,7 +55,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -71,7 +70,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info

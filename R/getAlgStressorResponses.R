@@ -29,7 +29,6 @@
 #' 
 #' TargetSiteID <- "LCBEN002.57"
 #' clustertype <- "5"
-#' useLU <- FALSE
 #' 
 # CurrentDir<-getwd()
 # myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -45,7 +44,7 @@
 #' data.mod           <- data_ReachMod
 #' #
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 #' 
 #' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
@@ -56,7 +55,7 @@
 #' data.chem.info <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 #' 
 #' # datasets getStressorList
 #' chem.info <- list.data$chem.info

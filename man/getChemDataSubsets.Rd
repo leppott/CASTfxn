@@ -4,7 +4,7 @@
 \alias{getChemDataSubsets}
 \title{Chemical Data Subsets}
 \usage{
-getChemDataSubsets(TargetSiteID, comid, cluster, clustertype, useLU = FALSE)
+getChemDataSubsets(TargetSiteID, comid, cluster, clustertype)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
@@ -12,8 +12,6 @@ getChemDataSubsets(TargetSiteID, comid, cluster, clustertype, useLU = FALSE)
 \item{comid}{NHD+ COMID}
 
 \item{clustertype}{Cluster}
-
-\item{useLU}{Use LandUse.  Default = FALSE.}
 }
 \value{
 A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
@@ -40,7 +38,6 @@ Required objects:
 \examples{
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -55,7 +52,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
@@ -69,5 +66,5 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 }

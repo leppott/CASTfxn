@@ -4,8 +4,7 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
-  useLU = FALSE)
+getClusterInfo(site.COMID, clustertype, siteClusters, refSiteCOMIDs)
 }
 \arguments{
 \item{site.COMID}{SiteID}
@@ -15,8 +14,6 @@ getClusterInfo(site.COMID, clustertype, siteClusters, refSiteCOMIDs,
 \item{siteClusters}{site clusters.}
 
 \item{refSiteCOMIDs}{reference site COMIDs}
-
-\item{useLU}{Use LandUse.  Default = FALSE.}
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory.
@@ -37,7 +34,6 @@ Required objects:
 
 TargetSiteID <- "SRCKN001.61"
 clustertype <- "5"
-useLU <- FALSE
 
 # datasets getSiteInfo
 # data, example included with package
@@ -50,7 +46,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
  
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -61,13 +57,13 @@ data.chem.info <- data_ChemInfo
 
 #
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 
 # datasets getClusterInfo
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
+getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
 
 }

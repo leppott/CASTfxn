@@ -19,7 +19,6 @@
 #' @param TargetSiteID SiteID
 #' @param comid NHD+ COMID
 #' @param clustertype Cluster
-#' @param useLU Use LandUse.  Default = FALSE.
 #' 
 #' @return A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
 #' , all.chems, cluster.chem, and site.chem.
@@ -27,7 +26,6 @@
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
-#' useLU <- FALSE
 #' 
 #' CurrentDir<-getwd()
 #' myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -42,7 +40,7 @@
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
 #' #
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 #' 
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
@@ -56,15 +54,16 @@
 #' data.chem.info <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 # QC
 # comid <- site.COMID
 # cluster <- site.Clusters
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @export
-getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype, useLU=FALSE) {
+getChemDataSubsets <- function(TargetSiteID, comid, cluster, clustertype) {
   #
+  useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"

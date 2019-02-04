@@ -14,7 +14,6 @@
 #' @param clustertype Cluster type.
 #' @param siteClusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
-#' @param useLU Use LandUse.  Default = FALSE.
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
@@ -24,7 +23,6 @@
 #' 
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
-#' useLU <- FALSE
 #' 
 # CurrentDir<-getwd()
 # myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -40,7 +38,7 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
 #'  
 #' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
@@ -51,18 +49,19 @@
 #'
 #' #
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype, useLU)
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
 #' 
 #' # datasets getClusterInfo
 #' ref.reaches <- list.data$ref.reaches
 #' refSiteCOMIDs <- list.data$ref.reaches
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches, useLU)
+#' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs, 
-                           useLU = FALSE) {##FUNCTION.START
+getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs) {##FUNCTION.START
+  #
+  useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"

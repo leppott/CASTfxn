@@ -30,7 +30,6 @@
 #' 
 #' @param TargetSiteID SiteID
 #' @param clustertype Cluster
-#' @param useLU Use LandUse.  Default = FALSE.
 #' @param dir_results Directory for results.  Default = "Results".
 #' 
 #' @return A jpg map to a folder named by the SiteID in the user supplied dir_results 
@@ -41,9 +40,8 @@
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' clustertype <- "5"
-#' useLU <- FALSE
 #' dir_results <- file.path(getwd(), "Results")
-#' 
+#
 # CurrentDir<-getwd()
 # myDir.Data <- file.path(CurrentDir, "data")
 #' 
@@ -67,12 +65,13 @@
 #' data.mod           <- data_ReachMod
 #'
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, useLU, dir_results)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, dir_results)
 #
 #' @export
-getSiteInfo <- function(TargetSiteID, clustertype, useLU = FALSE
+getSiteInfo <- function(TargetSiteID, clustertype 
                         , dir_results = file.path(getwd(), "Results")) {
   #
+  useLU <- FALSE
   # check for and create (if necessary) dir_results and SiteID subdirectory
   #wd <- getwd()
   #dir.sub <- "Results"

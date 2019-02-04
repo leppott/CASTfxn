@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-01 13:22:17
+    #> Last Update: 2019-02-04 11:36:53
 
 # Planned Updates
 
@@ -22,7 +22,33 @@ NEWS
   - Update summary report for changes (date and columns in txt file)
     (getCoOccur).
 
+  - getSiteInfo
+    
+      - Add required objects to function input arguments.
+      - Remove useLU and clustertype as arguments.
+
 # Version History
+
+## Changes in Version 0.1.0.9145 (2019-02-04)
+
+  - useLU parameter, Issue \#31
+      - Remove useLU as input parameter.
+          - getSiteInfo (above).
+          - getChemDataSubsets
+          - getClusterInfo
+          - getStressorList
+      - Remove useLU in example code.
+          - getAlgmatches.R
+          - getAlgStressorResponses.R
+          - getBMIMatches.R
+          - getMBIStressorResponses.R
+          - getChemDataSubsets.R
+          - getClusterInfo.R
+          - getSiteInfo.R
+          - getStressorList.R
+          - getStressoSpecificRegressions.R
+          - CASTfxn\_Vignette.RMD
+          - Analysis.RMD
 
 ## Changes in Version 0.1.0.9144 (2019-02-01)
 
