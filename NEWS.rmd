@@ -36,30 +36,51 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * getSiteInfo
     + Add required objects to function input arguments.
-    + Remove useLU and clustertype as arguments.
 
 # Version History
 
+## Changes in Version 0.1.0.9146 (2019-02-04)
+
+* Remove clustertype, Issue #31
+    + Function inputs.
+        - getSiteInfo
+        - getClugerInfo
+        - getChemDataSubsets
+    + Function examples.
+        - getAlgmatches
+        - getAlgStressorResponses
+        - getBMImatches
+        - getBMIStressorResponses
+        - getChemDataSubsets
+        - getClusterInfo
+        - getSiteInfo
+        - getSTressorList
+        - getStressorSpecificRegressions
+    + Vignettes
+        - CASTfxn_Vignette
+        - Analysis
+        
 ## Changes in Version 0.1.0.9145 (2019-02-04)
 
-* useLU parameter, Issue #31
-    + Remove useLU as input parameter.
-        - getSiteInfo (above).
+* Remove useLU, Issue #31
+    + Function inputs.
+        - getSiteInfo
         - getChemDataSubsets
         - getClusterInfo
         - getStressorList
-    + Remove useLU in example code.
-        - getAlgmatches.R
-        - getAlgStressorResponses.R
-        - getBMIMatches.R
-        - getMBIStressorResponses.R
-        - getChemDataSubsets.R
-        - getClusterInfo.R
-        - getSiteInfo.R
-        - getStressorList.R
-        - getStressoSpecificRegressions.R
-        - CASTfxn_Vignette.RMD
-        - Analysis.RMD
+    + Function examples.
+        - getAlgmatches
+        - getAlgStressorResponses
+        - getBMIMatches
+        - getMBIStressorResponses
+        - getChemDataSubsets
+        - getClusterInfo
+        - getSiteInfo
+        - getStressorList
+        - getStressoSpecificRegressions
+    + Vignettes
+        - CASTfxn_Vignette
+        - Analysis
     
 ## Changes in Version 0.1.0.9144 (2019-02-01)
 

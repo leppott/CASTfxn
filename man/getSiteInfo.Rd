@@ -4,13 +4,10 @@
 \alias{getSiteInfo}
 \title{Site Info}
 \usage{
-getSiteInfo(TargetSiteID, clustertype, dir_results = file.path(getwd(),
-  "Results"))
+getSiteInfo(TargetSiteID, dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
-
-\item{clustertype}{Cluster}
 
 \item{dir_results}{Directory for results.  Default = "Results".}
 }
@@ -52,7 +49,6 @@ A subdirectory is created for each SiteID.
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"
-clustertype <- "5"
 dir_results <- file.path(getwd(), "Results")
 
 # data import, example
@@ -75,5 +71,5 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype, dir_results)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results)
 }

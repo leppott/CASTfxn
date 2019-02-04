@@ -4,14 +4,12 @@
 \alias{getChemDataSubsets}
 \title{Chemical Data Subsets}
 \usage{
-getChemDataSubsets(TargetSiteID, comid, cluster, clustertype)
+getChemDataSubsets(TargetSiteID, comid, cluster)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
 \item{comid}{NHD+ COMID}
-
-\item{clustertype}{Cluster}
 }
 \value{
 A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
@@ -37,7 +35,6 @@ Required objects:
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"
-clustertype <- "5"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -52,7 +49,7 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
+list.SiteSummary <- getSiteInfo(TargetSiteID)
 
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
@@ -66,5 +63,5 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
 }

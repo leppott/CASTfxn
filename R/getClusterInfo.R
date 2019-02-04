@@ -11,7 +11,6 @@
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
 #' @param site.COMID SiteID
-#' @param clustertype Cluster type.
 #' @param siteClusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
 #' 
@@ -22,7 +21,6 @@
 #' @examples
 #' 
 #' TargetSiteID <- "SRCKN001.61"
-#' clustertype <- "5"
 #' 
 # CurrentDir<-getwd()
 # myDir.Data <- paste(CurrentDir,"data/",sep="/")
@@ -38,7 +36,7 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #'  
 #' # datasets getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
@@ -49,17 +47,17 @@
 #'
 #' #
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
+#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
 #' 
 #' # datasets getClusterInfo
 #' ref.reaches <- list.data$ref.reaches
 #' refSiteCOMIDs <- list.data$ref.reaches
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
+#' getClusterInfo(site.COMID, site.Clusters, ref.reaches)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, clustertype, siteClusters, refSiteCOMIDs) {##FUNCTION.START
+getClusterInfo <- function(site.COMID, siteClusters, refSiteCOMIDs) {##FUNCTION.START
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory

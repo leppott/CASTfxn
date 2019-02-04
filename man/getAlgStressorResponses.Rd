@@ -43,7 +43,6 @@ predint <- 0.75
 varLegLoc <- "topright"
 
 TargetSiteID <- "LCBEN002.57"
-clustertype <- "5"
 
 # datasets getSiteInfo
 # data, example included with package
@@ -56,7 +55,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
+list.SiteSummary <- getSiteInfo(TargetSiteID)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -67,7 +66,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info

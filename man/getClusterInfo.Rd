@@ -4,12 +4,10 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(site.COMID, clustertype, siteClusters, refSiteCOMIDs)
+getClusterInfo(site.COMID, siteClusters, refSiteCOMIDs)
 }
 \arguments{
 \item{site.COMID}{SiteID}
-
-\item{clustertype}{Cluster type.}
 
 \item{siteClusters}{site clusters.}
 
@@ -33,7 +31,6 @@ Required objects:
 \examples{
 
 TargetSiteID <- "SRCKN001.61"
-clustertype <- "5"
 
 # datasets getSiteInfo
 # data, example included with package
@@ -46,7 +43,7 @@ data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, clustertype)
+list.SiteSummary <- getSiteInfo(TargetSiteID)
  
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
@@ -57,13 +54,13 @@ data.chem.info <- data_ChemInfo
 
 #
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters, clustertype)
+list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
 
 # datasets getClusterInfo
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, clustertype, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches)
 
 }
