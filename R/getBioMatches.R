@@ -158,6 +158,10 @@ getBioMatches <- function(stressors, list.data, biocomm="BMI") {##FUNCTION.START
       utils::flush.console()
     }##IF.nrow.alg.END
     #
+  } else {
+    # Non Valid biological community
+    Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
+    stop(Msg_Stop)
   }##IF.biocomm.END
 
   # CHEM

@@ -18,6 +18,8 @@
 #' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' 
+#' @keywords internal
+#' 
 #' @return A jpg in "Results" folder of working directory.  And a tab-delimited text file of stressor correlations.
 #' 
 #' @importFrom pryr "%<a-%"

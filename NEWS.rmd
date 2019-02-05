@@ -39,10 +39,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-## Changes in Version 0.1.0.9147 (2019-02-04)
+## Changes in Version 0.1.0.9148 (2019-02-05)
+
+* Merget getBMIStressorRespones and getAlgStressorResponses into a single function, Issue #34
+    + getBioStressorResponses
+    + Deprecated BMI and Alg version with keyword internal.
+
+## Changes in Version 0.1.0.9147 (2019-02-05)
 
 * Merge getBMIMatches and getAlgMatches into single function, Issue #33.
     + getBioMatches 
+    + Deprecated BMI and Alg version with keyword internal.
 
 ## Changes in Version 0.1.0.9146 (2019-02-04)
 
