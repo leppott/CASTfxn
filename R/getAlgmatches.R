@@ -13,6 +13,8 @@
 #' @param stressors stressors
 #' @param list.data data list
 #' 
+#' @keywords internal
+#' 
 #' @return A summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp, cl.b.rsp
 #' , and site.b.rsp.
 #' 

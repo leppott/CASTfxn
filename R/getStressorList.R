@@ -89,6 +89,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   nolu.cluster <- "clust_noland"
   lu.cluster <- "clust_land"
   
+  # First 2 columns are ChemSampID and StationID_Master
   cluster.chem.data <- cluster.chem[3:ncol(cluster.chem)]
   cluster.ref.chem <- subset(cluster.chem, cluster.chem$StationID_Master %in% ref.sites)
   cluster.ref.chem.data <- cluster.ref.chem[3:ncol(cluster.ref.chem)]
