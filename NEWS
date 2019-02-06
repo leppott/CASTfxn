@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-06 12:05:50
+    #> Last Update: 2019-02-06 16:11:50
 
 # Planned Updates
 
@@ -22,11 +22,31 @@ NEWS
   - Update summary report for changes (date and columns in txt file)
     (getCoOccur).
 
-  - getSiteInfo
-    
-      - Add required objects to function input arguments.
-
 # Version History
+
+## Changes in Version 0.1.0.9150 (2019-02-06)
+
+  - getSiteInfo, Issue \#32 and Issue \#4
+      - Add required objects to function input arguments.
+      - Update example code
+          - getBioMatches
+          - getBioStressorResponses
+          - getChemDataSubsets
+          - getClusterInfo
+          - getSiteInfo
+          - getStressorList
+          - getStressorSpecificRegressions
+      - Remove required columns in data.cluster input. Issue \#32.
+          - W\_\_\_AGRIC
+          - W\_\_\_URBAN
+          - W\_\_\_FOREST
+      - leaflet map, Issue \#42
+          - Change addProviderTiles
+          - Rename file and move inside Station folder.
+      - ggplot map, Issue \#14
+          - Started but did not finish.
+          - Left code in as comments.
+          - Map takes 10 to 15 seconds with ggplot.
 
 ## Changes in Version 0.1.0.9149 (2019-02-06)
 

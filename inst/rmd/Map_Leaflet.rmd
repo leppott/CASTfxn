@@ -26,6 +26,18 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # all.map.sites <- merge(data.Stations.Info, data.cluster, by.x = "COMID_NHD2", by.y = "COMID")
 ```
 
+# Static Map
+```{r map_jpg, echo=FALSE, eval=TRUE}
+fn_img <- file.path(dir_results, TargetSiteID, paste0(TargetSiteID,".map.jpg"))
+if(file.exists(fn_img)==TRUE){
+  knitr::include_graphics(fn_img)
+} else {
+  print("No static map exists.")
+}
+
+```
+
+
 # Interactive Map
 
 ```{r map_leaflet, echo=FALSE, eval=TRUE}
@@ -58,9 +70,9 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
   myCEX <- c(0.3, 0.9, 1, 1.2)
   GIS_offset <- 0.75
   
-  # MAP
+  # MAP#leaflet::addProviderTiles("CartoDB.Positron") %>% (not working)
   m1 <- leaflet::leaflet(data=df_leaflet) %>% 
-                leaflet::addProviderTiles("CartoDB.Positron") %>%
+                leaflet::addProviderTiles(leaflet::providers$Stamen.TonerLite) %>%
                 leaflet::addCircleMarkers(lng = ~FinalLongitude
                                  , lat = ~FinalLatitude
                                  , color = ~myColors(MapLeg)

@@ -43,6 +43,7 @@ predint <- 0.75
 varLegLoc <- "topright"
 
 TargetSiteID <- "LCBEN002.57"
+dir_results <- file.path(getwd(), "Results")
 
 # datasets getSiteInfo
 # data, example included with package
@@ -53,9 +54,30 @@ data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
+
+# Map data
+# San Diego
+#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
 
 # datasets getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID

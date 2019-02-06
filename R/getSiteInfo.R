@@ -21,7 +21,6 @@
 #' * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 #' 
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
-#' , W___AGRIC, W___URBAN, W___FOREST
 #' 
 #' * data.mod; COMID, ReachModStatus, ModReason
 #' 
@@ -30,6 +29,17 @@
 #' 
 #' @param TargetSiteID SiteID
 #' @param dir_results Directory for results.  Default = "Results".
+#' @param data.Stations.Info data.Stations.Info
+#' @param data.SampSummary data.SampSummary
+#' @param data.303d.ComID data.303d.ComID
+#' @param data.bmi.metrics data.bmi.metrics
+#' @param data.algae.metrics data.algae.metrics
+#' @param data.cluster data.cluster
+#' @param data.mod data.mod
+#' @param map_proj Map projection.  If no projection is provided an unprojected map is created without flowlines.
+#' @param map_outline Outline for map, typically State border.
+#' @param map_flowline Typically NHD+ flowline.
+#' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
 #' 
 #' @return A jpg map to a folder named by the SiteID in the user supplied dir_results 
 #' folder (default is "Results" folder in the working directory).  Also produced 
@@ -39,10 +49,8 @@
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
-#
-# CurrentDir<-getwd()
-# myDir.Data <- file.path(CurrentDir, "data")
 #' 
+#' # Data
 #' # data import, example
 #' #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
 #' #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
@@ -53,6 +61,7 @@
 #' #data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
 #' #data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
 #' 
+#' # Data getSiteInfo
 #' # data, example included with package
 #' data.Stations.Info <- data_Sites
 #' data.SampSummary   <- data_SampSummary
@@ -61,12 +70,36 @@
 #' data.algae.metrics <- data_AlgMetrics
 #' data.cluster       <- data_Cluster_Hi
 #' data.mod           <- data_ReachMod
+#' 
+#' # Map data
+#' # San Diego
+#' #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+#' #outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+#' # AZ
+#' map_flowline  <- data_GIS_Flow_HI
+#' map_flowline2 <- data_GIS_Flow_LO
+#' map_outline   <- data_GIS_AZ_Outline
+#' # Project site data to USGS Albers Equal Area
+#' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+#'               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+#'               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+#' # projection for outline
+#' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+#'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+#' map_proj <- my.aea
 #'
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+#'                                 , data.SampSummary, data.303d.ComID
+#'                                 , data.bmi.metrics, data.algae.metrics
+#'                                 , data.cluster, data.mod
+#'                                 , map_proj, map_outline, map_flowline)
 #
 #' @export
-getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results")) {
+getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results")
+                        , data.Stations.Info, data.SampSummary, data.303d.ComID
+                        , data.bmi.metrics, data.algae.metrics, data.cluster, data.mod
+                        , map_proj=NULL, map_outline=NULL, map_flowline=NULL, map_flowline2=NULL) {
   #
   useLU <- FALSE
   # check for and create (if necessary) dir_results and SiteID subdirectory
@@ -110,8 +143,7 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   myWBName <- mySiteInfo$WaterbodyName
   # replaced H6_noland and H6_land with "cluster"
   myReachInfo <- data.cluster[data.cluster[,"COMID"]==myCOMID, c(col.clust.land.no, col.clust.land.yes
-                                                                ,"ElevWs","WsAreaSqKm","PrecipWs", "TmeanWs"
-                                                                ,"W___AGRIC","W___URBAN","W___FOREST")]
+                                                                ,"ElevWs","WsAreaSqKm","PrecipWs", "TmeanWs")]
   #myClustIDs <- myReachInfo[,c("H6_noland","H6_land")]
   myClustIDs <- myReachInfo[,c(col.clust.land.no, col.clust.land.yes)]
   
@@ -142,22 +174,22 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   
   # Read spatial layers for background
   
-  # # San Diego
-  # flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-  # outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-  # # AZ
-  flowline.hi <- data_GIS_Flow_HI
-  flowline.lo <- data_GIS_Flow_LO
-  outline <- data_GIS_AZ_Outline
+  # # # San Diego
+  # # flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+  # # outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+  # # # AZ
+  # flowline.hi <- data_GIS_Flow_HI
+  # flowline.lo <- data_GIS_Flow_LO
+  # outline <- data_GIS_AZ_Outline
   # 
 
-  # # Project site data to USGS Albers Equal Area
-  # usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-  #               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-  #               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-  # projection for outline
-  my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m 
-               +no_defs +ellps=GRS80 +towgs84=0,0,0"
+  # # # Project site data to USGS Albers Equal Area
+  # # usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+  # #               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+  # #               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+  # # projection for outline
+  # my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m 
+  #              +no_defs +ellps=GRS80 +towgs84=0,0,0"
   
 
   df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
@@ -169,38 +201,116 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
                                  data.refSites[,"FinalLatitude"]), my.aea)
   proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
                                  data.Stations.Info[,"FinalLatitude"]), my.aea)
+  # Unprojected data
+  
+  
+  # plot map
+  ppi <- 300
+  
+  col_outline <- "black"
+  col_flowline <- "light blue"
+  col_sites_all <- "dark gray"
+  col_sites_cl  <- "cyan3"
+  col_sites_ref <- "blue"
+  col_sites_targ <- "red"
+  
+  pch_sites_all  <- 19
+  pch_sites_cl   <- 19
+  pch_sites_ref  <- 21
+  pch_sites_targ <- 17
+  
+  cex_sites_all  <- 0.3
+  cex_sites_ref  <- 0.9
+  cex_sites_cl   <- 1
+  cex_sites_targ <- 1.2
+  
+  lwd_outline  <- 1.5
+  lwd_flowline <- 0.5
+  
+  grDevices::jpeg(filename = paste0("Results/",TargetSiteID, "/", TargetSiteID, 
+                                    ".map.jpg"), width = 4*ppi, height = 4*ppi, pointsize = 6,
+                  quality=100, bg="white", res=ppi)
+    if(is.null(map_proj)==TRUE){##IF.map_proj.START
+      # map with no projection
+      plot(data.Stations.Info[,"FinalLongitude"], data.Stations.Info[,"FinalLatitude"]
+           , main=TargetSiteID, xlab="Longitude", ylab="Latitude"
+           , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all
+           )
+      # points
+      graphics::points(df.plot.cl[,"FinalLongitude"], df.plot.cl[,"FinalLatitude"], col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_cl)
+      graphics::points(data.refSites[,"FinalLongitude"], data.refSites[,"FinalLatitude"], col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_ref)
+      graphics::points(df.plotSite[,"FinalLongitude"], df.plotSite[,"FinalLatitude"], col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
+      # Legend (no flow line)
+      graphics::legend("bottomleft", legend = c("State", "all sites", "cluster sites", "ref sites", "target site")
+                       , col = c(col_outline, col_sites_all, col_sites_cl, col_sites_ref, col_sites_targ)
+                       , lty = c(1, rep(NA, 4))
+                       , pch = c(NA, pch_sites_all, pch_sites_cl, pch_sites_ref, pch_sites_targ)
+                       , title = "Legend")
+      #
+      # ggplot alternative (draft)
+      # m0 <- ggplot2::ggplot(data.Stations.Info, ggplot2::aes(FinalLongitude, FinalLatitude)) +
+      #         ggplot2::geom_point(data=data.Stations.Info, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
+      #         ggplot2::geom_point(data=df.plot.cl, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_cl, color=col_sites_cl) +
+      #         ggplot2::geom_point(data=data.refSites, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_ref, color=col_sites_ref) +
+      #         ggplot2::geom_point(data=df.plotSite, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_targ, color=col_sites_targ) +
+      #         ggplot2::labs(title=TargetSiteID, x="Longitude", y="Latitude") +
+      #         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
+      #
+    } else {
+      # Map with Projection
+      # lines
+      sp::plot(map_outline, col="white", border=col_outline, lwd=lwd_outline, main=TargetSiteID)
+      sp::plot(map_flowline, add = TRUE, col=col_flowline, lwd=lwd_flowline)
+      if(!is.null(map_flowline2)==TRUE){##IF.null.flowline2.START
+        sp::plot(map_flowline2, add = TRUE, col=col_flowline, lwd=lwd_flowline)
+      }##IF.null.flowline2.END
+      # points
+      graphics::points(proj.allSites[,1], proj.allSites[,2], col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
+      graphics::points(proj.plot.cl[,1], proj.plot.cl[,2], col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
+      graphics::points(proj.refSites[,1], proj.refSites[,2], col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
+      graphics::points(proj.mySite[,1], proj.mySite[,2], col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
+      # legend; items not the same size but ok.
+      graphics::legend("bottomleft", legend = c("State", "flowline", "all sites", "cluster sites", "ref sites", "target site")
+                               , col = c(col_outline, col_flowline, col_sites_all, col_sites_cl, col_sites_ref, col_sites_targ)
+                               , lty = c(1, 1,  rep(NA, 4))
+                               , pch = c(NA, NA, pch_sites_all, pch_sites_cl, pch_sites_ref, pch_sites_targ)
+                               , title = "Legend")
+      # ggplot help with projections
+      # http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/
+      #
+      # m1 <- ggplot2::ggplot() + 
+      #         ggplot2::geom_polygon(data=map_outline, ggplot2::aes(x=long, y=lat), fill="white", color=col_outline) +
+      #         ggplot2::labs(title=TargetSiteID, x="", y="") +
+      #         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+      #                        , axis.ticks.x = element_blank(), axis.text.x = element_blank()
+      #                        , axis.ticks.y = element_blank(), axis.text.y = element_blank()
+      #                        , panel.grid.major = element_blank(), panel.grid.minor = element_blank()
+      #                        , panel.background = element_blank()) +
+      #         ggplot2::geom_line(data=map_flowline, ggplot2::aes(x=long, y=lat, group=group), col=col_flowline) + 
+      #         ggplot2::geom_line(data=map_flowline2, ggplot2::aes(x=long, y=lat, group=group), col=col_flowline) + 
+      #         coord_equal(ratio=1) +  #square plot to avoid distortion
+      #   
+      #   # Good to here
+      #         ggplot2::geom_point(data=proj.allSites, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
+      #         ggplot2::geom_point(data=proj.plot.cl, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_cl, color=col_sites_cl) +
+      #         ggplot2::geom_point(data=proj.refSites, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_ref, color=col_sites_ref) +
+      #         ggplot2::geom_point(data=proj.mySite, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_targ, color=col_sites_targ)
+      # # will need to use ggsave()
+      #
+    }##IF.map_proj.END
+  grDevices::dev.off()
+  
   #
   # Leaflet Map in Notebook
   report_format <- "html"
   dir_rmd <- file.path(system.file(package = "CASTfxn"), "rmd")
   strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
   strFile_out_ext <- paste0(".", report_format)
-  strFile_out <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".map.leaflet", strFile_out_ext))
+  strFile_out <- paste0(TargetSiteID,".map.leaflet", strFile_out_ext)
+  dir_map <- file.path(dir_results, TargetSiteID)
   rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
-                    , output_dir=dir_results, quiet=TRUE)
-  
-  
-  # plot map
-  ppi <- 300
-  grDevices::jpeg(filename = paste0("Results/",TargetSiteID, "/", TargetSiteID, 
-                    ".map.jpg"), width = 4*ppi, height = 4*ppi, pointsize = 6,
-                    quality=100, bg="white", res=ppi)
-    # lines
-    sp::plot(outline, col="white", border="black", lwd=1.5, main=TargetSiteID)
-    sp::plot(flowline.hi, add = TRUE, col="light blue", lwd=0.5)
-    sp::plot(flowline.lo, add = TRUE, col="light blue", lwd=0.5)
-    # points
-    graphics::points(proj.allSites[,1], proj.allSites[,2], col="darkgray", pch=19, cex=0.3)
-    graphics::points(proj.plot.cl[,1], proj.plot.cl[,2], col="cyan3", pch=19, cex=0.9)
-    graphics::points(proj.refSites[,1], proj.refSites[,2], col="blue", pch=21, cex=1)
-    graphics::points(proj.mySite[,1], proj.mySite[,2], col="red", pch=17, cex=1.2)
-    # legend; items not the same size but ok.
-    graphics::legend("bottomleft", legend = c("State", "flowline", "all sites", "cluster sites", "ref sites", "target site")
-                             , col = c("black", "light blue", "darkgray", "cyan3", "blue", "red")
-                             , lty = c(1, 1,  rep(NA, 4))
-                             , pch = c(NA, NA, 19, 19, 21, 17)
-                             , title = "Legend")
-  grDevices::dev.off()
+                    , output_dir=dir_map, quiet=TRUE)
+  # place after static map so can insert
   
   #
   mySiteSummary <- list(SiteInfo = mySiteInfo

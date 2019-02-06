@@ -4,12 +4,37 @@
 \alias{getSiteInfo}
 \title{Site Info}
 \usage{
-getSiteInfo(TargetSiteID, dir_results = file.path(getwd(), "Results"))
+getSiteInfo(TargetSiteID, dir_results = file.path(getwd(), "Results"),
+  data.Stations.Info, data.SampSummary, data.303d.ComID, data.bmi.metrics,
+  data.algae.metrics, data.cluster, data.mod, map_proj = NULL,
+  map_outline = NULL, map_flowline = NULL, map_flowline2 = NULL)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
 \item{dir_results}{Directory for results.  Default = "Results".}
+
+\item{data.Stations.Info}{data.Stations.Info}
+
+\item{data.SampSummary}{data.SampSummary}
+
+\item{data.303d.ComID}{data.303d.ComID}
+
+\item{data.bmi.metrics}{data.bmi.metrics}
+
+\item{data.algae.metrics}{data.algae.metrics}
+
+\item{data.cluster}{data.cluster}
+
+\item{data.mod}{data.mod}
+
+\item{map_proj}{Map projection.  If no projection is provided an unprojected map is created without flowlines.}
+
+\item{map_outline}{Outline for map, typically State border.}
+
+\item{map_flowline}{Typically NHD+ flowline.}
+
+\item{map_flowline2}{Typically NHD+ flowline.  Can be more than one but plotted the same.}
 }
 \value{
 A jpg map to a folder named by the SiteID in the user supplied dir_results 
@@ -40,7 +65,6 @@ Required objects:
 * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 
 * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
-, W___AGRIC, W___URBAN, W___FOREST
 
 * data.mod; COMID, ReachModStatus, ModReason
 
@@ -51,6 +75,7 @@ A subdirectory is created for each SiteID.
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 
+# Data
 # data import, example
 #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
 #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
@@ -61,6 +86,7 @@ dir_results <- file.path(getwd(), "Results")
 #data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
 #data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
 
+# Data getSiteInfo
 # data, example included with package
 data.Stations.Info <- data_Sites
 data.SampSummary   <- data_SampSummary
@@ -70,6 +96,27 @@ data.algae.metrics <- data_AlgMetrics
 data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
+# Map data
+# San Diego
+#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
 }
