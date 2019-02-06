@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-05 15:02:28
+    #> Last Update: 2019-02-06 12:05:50
 
 # Planned Updates
 
@@ -27,6 +27,22 @@ NEWS
       - Add required objects to function input arguments.
 
 # Version History
+
+## Changes in Version 0.1.0.9149 (2019-02-06)
+
+  - getStressorList
+      - Error with NA reporting. Issue \#38.
+          - Added extra is.na in getChemDataSubsets.
+  - getChemDataSubsets
+      - Fix error with NA reporting. Issue \#38
+      - Add in required parameters. Issue \#4
+  - Update examples
+      - getBioMatches
+      - getBioStressorResponses
+      - getChemDataSubsets
+      - getClusterInfo
+      - getStressorList
+      - getStressorSpecificRegressions
 
 ## Changes in Version 0.1.0.9148 (2019-02-05)
 

@@ -4,12 +4,23 @@
 \alias{getChemDataSubsets}
 \title{Chemical Data Subsets}
 \usage{
-getChemDataSubsets(TargetSiteID, comid, cluster)
+getChemDataSubsets(TargetSiteID, comid, cluster, data.cluster,
+  data.Stations.Info, data.chem.raw, data.chem.info)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
 \item{comid}{NHD+ COMID}
+
+\item{cluster}{cluster information for TargetSiteID.  getSiteInfo list output 'COMID'.}
+
+\item{data.cluster}{data.cluster}
+
+\item{data.Stations.Info}{data.Stations.Info}
+
+\item{data.chem.raw}{Chemistry data.}
+
+\item{data.chem.info}{data.chem.info}
 }
 \value{
 A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
@@ -36,32 +47,32 @@ Required objects:
 \examples{
 TargetSiteID <- "SRCKN001.61"
 
-CurrentDir<-getwd()
-myDir.Data <- paste(CurrentDir,"data/",sep="/")
-
-# Run getSiteInfo
+# Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
+data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 data.mod           <- data_ReachMod
-#
+
+# Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID)
 
+# Data getChemDataSubset
+# data import, example 
+# data.chem.raw <- read.delim(paste(myDir.Data, "data.chem.raw.tab", sep=""), na.strings = c(""," "))
+# data.chem.info <- read.delim(paste(myDir.Data, "data.chem.info.tab", sep=""))
+# data, example included with package
+#
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
-
-# data import, example 
-# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
-# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-
-# data, example included with package
-data.chem.raw <- data_Chem
-data.chem.info <- data_ChemInfo
+data.chem.raw      <- data_Chem
+data.chem.info     <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 }

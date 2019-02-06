@@ -22,34 +22,33 @@
 #' 
 #' TargetSiteID <- "SRCKN001.61"
 #' 
-# CurrentDir<-getwd()
-# myDir.Data <- paste(CurrentDir,"data/",sep="/")
-# 
-#' # datasets getSiteInfo
+#' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi
+#' data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
 #' 
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #'  
-#' # datasets getChemDataSubsets
-#' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
+#' # Data getChemDataSubsets
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
 #'
 #' #
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
-#' # datasets getClusterInfo
+#' # Data getClusterInfo
 #' ref.reaches <- list.data$ref.reaches
 #' refSiteCOMIDs <- list.data$ref.reaches
 #' 

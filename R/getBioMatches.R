@@ -21,34 +21,32 @@
 #' # Example 1, BMI
 #' TargetSiteID <- "SRCKN001.61"
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
-#' # datasets getSiteInfo
+#' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi
+#' data.cluster       <- data_Cluster_Hi   # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
 #' #
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #' 
-#' # datasets getChemDataSubsets
+#' # Data getChemDataSubsets
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
-#' 
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
-#' # datasets getStressorList
+#' # Data getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -64,7 +62,7 @@
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
 #'                                  
-#' # datasets getBioMatches
+#' # Data getBioMatches
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' 
@@ -77,34 +75,32 @@
 #' # Example 2, Algae
 #' TargetSiteID <- "LCBEN002.57"
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
-#' # datasets getSiteInfo
+#' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi
+#' data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
 #' #
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #' 
-#' # datasets getChemDataSubsets
-#' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
-#' 
+#' # Data getChemDataSubsets
 #' # data, example included with package
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
-#' # datasets getStressorList
+#' # Data getStressorList
 #' chem.info <- list.data$chem.info
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
@@ -120,7 +116,7 @@
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
 #'                                  
-#' # datasets getBioMatches
+#' # Data getBioMatches
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #'

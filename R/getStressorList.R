@@ -24,36 +24,33 @@
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' 
-# CurrentDir<-getwd()
-#  myDir.Data <- paste(CurrentDir,"data/",sep="/")
-# 
-#' # datasets getSiteInfo
+#' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi
+#' data.cluster       <- data_Cluster_Hi   # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
 #' #
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #' 
-#' # datasets getChemDataSubsets
-#' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
-#' 
+#' # Data getChemDataSubsets
 #' # data import, example 
 #' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
 #' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-#' 
 #' # data, example included with package
+#' site.COMID <- list.SiteSummary$COMID
+#' site.Clusters <- list.SiteSummary$ClustIDs
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
 #' # datasets getStressorList
 #' chem.info <- list.data$chem.info
@@ -77,6 +74,12 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
                             , probsHigh, probsLow) {
   #
   useLU <- FALSE
+  
+  # DEBUGGING ####
+  boo.DEBUG <- FALSE
+  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+  }##IF.boo.DEBUG.END
+  
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"

@@ -18,50 +18,68 @@
 #' 
 #' @param TargetSiteID SiteID
 #' @param comid NHD+ COMID
-#' 
+#' @param cluster cluster information for TargetSiteID.  getSiteInfo list output 'COMID'.
+#' @param data.cluster data.cluster
+#' @param data.Stations.Info data.Stations.Info
+#' @param data.chem.raw Chemistry data.
+#' @param data.chem.info data.chem.info
+#'  
 #' @return A summary list; ref.sites, ref.reaches, cluster.samps, chem.info
 #' , all.chems, cluster.chem, and site.chem.
 #' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' 
-#' CurrentDir<-getwd()
-#' myDir.Data <- paste(CurrentDir,"data/",sep="/")
-#' 
-#' # Run getSiteInfo
+# CurrentDir<-getwd()
+# myDir.Data <- paste(CurrentDir, "data/", sep="/")
+# 
+#' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi
+#' data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
-#' #
+#'
+#' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID)
 #' 
+#' # Data getChemDataSubset
+#' # data import, example 
+#' # data.chem.raw <- read.delim(paste(myDir.Data, "data.chem.raw.tab", sep=""), na.strings = c(""," "))
+#' # data.chem.info <- read.delim(paste(myDir.Data, "data.chem.info.tab", sep=""))
+#' # data, example included with package
+#' #
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
-#' 
-#' # data import, example 
-#' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
-#' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-#' 
-#' # data, example included with package
-#' data.chem.raw <- data_Chem
-#' data.chem.info <- data_ChemInfo
+#' data.chem.raw      <- data_Chem
+#' data.chem.info     <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 # QC
+# TargetSiteID <- "UGBLR028.77"
 # comid <- site.COMID
 # cluster <- site.Clusters
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @export
-getChemDataSubsets <- function(TargetSiteID, comid, cluster) {
+getChemDataSubsets <- function(TargetSiteID, comid, cluster, data.cluster
+                               , data.Stations.Info, data.chem.raw, data.chem.info) {
   #
   useLU <- FALSE
+  #
+  # Debug ####
+  boo.DEBUG <- FALSE
+  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+    comid <- site.COMID
+    cluster <- site.Clusters
+  }##IF.boo.DEBUG.END
+  
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
@@ -108,7 +126,7 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster) {
   all.chems <- subset(data.chem.raw, ConvertTo %in% chems$ConvertTo)
   # Erik, 20180615  (same result) all.chems <- data.chem.raw[data.chem.raw$ConvertTo %in% chems$ConvertTo, ]
   all.chems2 <- all.chems[,c("ChemSampleID","ConvertTo","ResultValue")]
-  all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
+  all.chems3 <- reshape::cast(all.chems2, ChemSampleID ~ ConvertTo, mean, value="ResultValue", na.rm=TRUE)
   
   
   # chem.tab2 is the list of target site chems at sites in the target site cluster
@@ -132,14 +150,29 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster) {
   # Get error if no cluster info (i.e., if is.na(site.lu[,1]))
   
   cluster.chem.tab3 <- cluster.chem.tab2[,c("ChemSampleID","ConvertTo","ResultValue")]
+  # Remove NA values, 20190205
+  cluster.chem.tab3 <- cluster.chem.tab3[!is.na(cluster.chem.tab3$ResultValue), ]
+  #
   cluster.chem.samps <- unique(cluster.chem.tab2[,c("StationID_Master","ChemSampleID")])
-  cluster.chem.tab4 <- reshape::cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
+  cluster.chem.tab4 <- reshape::cast(cluster.chem.tab3, ChemSampleID ~ ConvertTo, mean, value="ResultValue", na.rm=TRUE)
   cluster.chem.tab5 = merge(cluster.chem.samps, cluster.chem.tab4, by.x = "ChemSampleID", by.y = "ChemSampleID")
   site.chem3 <- site.chem2[,c("ChemSampleID", "ConvertTo", "ResultValue")]
-  site.chem4 <- reshape::cast(site.chem3, ChemSampleID ~ ConvertTo, mean, value="ResultValue")
+  site.chem4 <- reshape::cast(site.chem3, ChemSampleID ~ ConvertTo, mean, value="ResultValue", na.rm=TRUE)
   
   mySubsets <- list(ref.sites = refSiteIDs, ref.reaches = refSiteCOMIDs, cluster.samps = cluster.chem.samps
                     , chem.info = chems.groups.sort, all.chems = all.chems3
                     , cluster.chem = cluster.chem.tab5, site.chem = site.chem4)
+  # Key
+  # chem.tab2  = cluster.chem
+  # chem.tab3  =
+  # chem.tab4  =
+  # chem.tab4  =
+  # chem.tab5  = cluster.chem
+  # site.chem3 = 
+  # site.chem4 = site.chem
+  # all.chems  = all.chem (target chemicals, all columns, converted units)
+  # all.chems2 = all.chem (limited columns)
+  # all.chems3 = all.chems (mean values)
+  
   return(mySubsets)
 }
