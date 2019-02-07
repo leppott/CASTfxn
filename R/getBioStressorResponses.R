@@ -202,9 +202,9 @@
 getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.MatchBioData
                                     , LogTransf, predint=0.75, varLegLoc="topright"
                                     , biocomm="bmi") {##FUNCTION.START
-  # QC
-  boo.QC <- FALSE
-  ## Trigger QC actions below for when debugging.
+  # DEBUG
+  boo.DEBUG <- FALSE
+  ## Trigger DEBUG actions below for when debugging.
   
   # Community ####
   biocomm <- tolower(biocomm)
@@ -256,14 +256,14 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #BioResp <- colnames(list.MatchBioData[["all.b.rsp"]])[16:ncol(list.MatchBioData[["all.b.rsp"]])]
   
   #QC
-  if(boo.QC==TRUE){##IF.boo.QC.START
+  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     # p
     stressors <- stressors[1:2]
-    p <- 1
+    p <- 2
     #q
     BioResp <- BioResp[1:3]
     q <- 1
-  }##IF.boo.QC.END
+  }##IF.boo.DEBUG.END
 
   
   # move from plotting section
@@ -297,11 +297,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     # 
     log.yn <- LogTransf[p]
     
-    # QC
-    if(boo.QC==TRUE){##IF.boo.QC.START
+    # DEBUG
+    if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
       print(paste0("p; ",p))
       flush.console()
-    }##IF.boo.QC.END
+    }##IF.boo.DEBUG.END
 
     # FOR.q ####
     for (q in 1:length(BioResp)) { 
@@ -314,11 +314,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       boo.pryr <- TRUE
       
       # QC
-      if(boo.QC==TRUE){##IF.boo.QC.START
+      if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
         print(paste0("Item (", pq, "/", pq.len, ")"))
         print(paste0("q; ", respName))
         flush.console()
-      }##IF.boo.QC.END
+      }##IF.boo.DEBUG.END
       
       {##NoIssues.START
       # get all data to plot
@@ -354,6 +354,129 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       }##NoIssues.END
       
       # Plots ####
+      
+      # ggplot ####
+      # test code 20190206
+      boo.TEST <- FALSE
+      # TEST
+      if(boo.TEST==TRUE){##boo.TEST
+        
+        col2keep <- c("StationID_Master","ChemSampleID","BMI.Metrics.SampID")
+        
+        all.str <- list.MatchBioData$all.b.str[,c(col2keep, stressName)]
+        all.rsp <- list.MatchBioData$all.b.rsp[,c(col2keep, respName)]
+        cl.str <- list.MatchBioData$cl.b.str[,c(col2keep, stressName)]
+        cl.rsp <- list.MatchBioData$cl.b.rsp[,c(col2keep, respName)]
+        site.str <- list.MatchBioData$site.b.str[,c(col2keep, stressName)]
+        site.rsp <- list.MatchBioData$site.b.rsp[,c(col2keep, respName)]
+        
+        # cl.str <- cl.str[,c(col2keep, stressName)]
+        # cl.rsp <- cl.rsp[,c(col2keep, respName)]
+       
+        SR_all  <- merge(all.str, all.rsp) 
+        SR_cl   <- merge(cl.str, cl.rsp)
+        SR_site <- merge(site.str, site.rsp)
+        
+        # complete cases
+        SR_all  <- SR_all[complete.cases(SR_all),] 
+        SR_cl   <- SR_cl[complete.cases(SR_cl),]
+        SR_site <- SR_site[complete.cases(SR_site),]
+        
+        # change names of S and R for ggplot
+        names(SR_all)[4:5] <- c("Stressor", "Response")
+        names(SR_cl)[4:5] <- c("Stressor", "Response")
+        names(SR_site)[4:5] <- c("Stressor", "Response")
+        
+        
+      
+        # SRdata <- merge(cl.str, cl.rsp) #cluster only
+        # SRdata <- SRdata[complete.cases(SRdata),]
+        # 
+        # # site.str <- site.str[,c("StationID_Master","ChemSampleID","BMI.Metrics.SampID",stressName)]
+        # # site.rsp <- site.rsp[,c("StationID_Master","ChemSampleID","BMI.Metrics.SampID",respName)]
+        # 
+        # siteData <- merge(site.str, site.rsp)
+        # siteData <- siteData[complete.cases(siteData),]
+        # 
+        # colnames(SRdata)[4]   <-"Stressor"
+        # colnames(siteData)[4] <-"Stressor"
+        # colnames(SRdata)[5]   <- "Response"
+        # colnames(siteData)[5] <- "Response"
+        
+        SR_cl_model <- lm(SR_cl$Response ~ SR_cl$Stressor) #cluster only
+        SR_cl_model_pred <- predict(SR_cl_model, interval = "prediction", level = 0.75)
+        SR_cl_model_val <- cbind(SR_cl, SR_cl_model_pred) #predictions for all cluster values
+        
+        
+        slope <- signif(summary(SR_cl_model)[[4]][[2]], 3)
+        intercept <- signif(summary(SR_cl_model)[[4]][[1]], 3)
+        pval_intercept <- signif(summary(SR_cl_model)[[4]][[7]], 3)
+        pval_slope <- signif(summary(SR_cl_model)[[4]][[8]], 3)
+        # r2 text and legend
+        r <- stats::cor(SR_cl$Response, SR_cl$Stressor, method="pearson",use="pairwise.complete.obs")
+        r2 <- formatC(r^2, format="f", digits=3)
+        n_str <- length(SR_cl$Stressor)
+        # Corelation
+        c1S <- (stats::cor.test(SR_cl$Response, SR_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
+        df.corr <- data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
+                                    , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
+        names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+        pval.corr <- signif(c1S$p.value, 2)
+        
+        str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
+        str_subtitle <- "Linear regression with 75th percentile prediction interval"
+        str_caption <- paste(paste0("Cluster regression: ", "y = ", slope, " x + ", intercept)
+                             , paste0("r2 = ", r2)
+                             , paste0("p-value = ", pval.corr)
+                             , paste0("n = ",n_str)
+                             , sep=" ~ ")
+        str_xlab  <- stressName
+        str_ylab  <- respName
+        
+        col_sites_all <- "dark gray"
+        col_sites_cl  <- "cyan3"
+        col_sites_ref <- "blue"
+        col_sites_targ <- "red"
+        col_line       <- "black"
+        
+        pch_sites_all  <- 19
+        pch_sites_cl   <- 19
+        pch_sites_ref  <- 21
+        pch_sites_targ <- 17
+        
+        cex_mod <- 2
+        cex_sites_all  <- 1 #cex_mod*0.3
+        cex_sites_ref  <- cex_mod*0.9
+        cex_sites_cl   <- cex_mod*1
+        cex_sites_targ <- cex_mod*1.2
+        
+        leg_name <- "Sites"
+        leg_labels <- c("all", "cluster", "target")
+        leg_shape <- c(pch_sites_all, pch_sites_cl, pch_sites_targ)
+        leg_col <- c(col_sites_all, col_sites_cl, col_sites_targ)
+        
+        p_SR <- ggplot2::ggplot(SR_all, ggplot2::aes(x=Stressor,y=Response, color="all", shape="all")) +
+                    ggplot2::geom_point(aes(color="all", shape="all"), size=cex_sites_all) + 
+                    ggplot2::geom_point(data=SR_cl, ggplot2::aes(x=Stressor, y=Response, color="cluster", shape="cluster"), size=cex_sites_cl) + 
+                    ggplot2::geom_point(data=SR_site, ggplot2::aes(x=Stressor,y=Response, color="target", shape="target"), size=cex_sites_targ) +
+                    ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                    ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+                    ggplot2::stat_smooth(method=lm, color=col_line) + 
+                    ggplot2::geom_line(data=SR_cl_model_val, ggplot2::aes(y=lwr), color=col_line, linetype="dashed") + 
+                    ggplot2::geom_line(data=SR_cl_model_val, ggplot2::aes(y=upr), color=col_line, linetype="dashed") + 
+                    ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
+                    ggplot2::labs(title=str_title, subtitle = str_subtitle, caption = str_caption, x=str_xlab, y=str_ylab)
+                    
+        
+       
+        # calculate
+        ggsave("test.jpg", p_SR)
+            
+        new = data.frame(SR_site[,"Stressor"])
+        colnames(new)[1] <- stressName
+        predict(SR_cl_model, newdata = new, interval = "prediction", level = 0.75)
+        SR_site_pred <- cbind(SR_site, predict(SR_cl_model, newdata = new, interval = "prediction", level = 0.75))
+      }##boo.TEST
 
       # Plot parts
       if (log.yn == TRUE) {

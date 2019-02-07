@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-06 16:11:50
+    #> Last Update: 2019-02-07 15:46:05
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9151 (2019-02-07)
+
+  - getBioStressorResponses, Issue \#7
+      - Convert plot to ggplot
+          - Test mode so not active.
 
 ## Changes in Version 0.1.0.9150 (2019-02-06)
 
