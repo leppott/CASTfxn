@@ -4,12 +4,12 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(site.COMID, siteClusters, refSiteCOMIDs)
+getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs)
 }
 \arguments{
 \item{site.COMID}{SiteID}
 
-\item{siteClusters}{site clusters.}
+\item{site.Clusters}{site clusters.}
 
 \item{refSiteCOMIDs}{reference site COMIDs}
 }

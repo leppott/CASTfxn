@@ -11,7 +11,7 @@
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
 #' @param site.COMID SiteID
-#' @param siteClusters site clusters.
+#' @param site.Clusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
@@ -78,7 +78,7 @@
 #' getClusterInfo(site.COMID, site.Clusters, ref.reaches)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, siteClusters, refSiteCOMIDs) {##FUNCTION.START
+getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION.START
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory

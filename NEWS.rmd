@@ -36,6 +36,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9152 (2019-02-07)
+
+* getClusterInfo
+    + Fixed siteClusters v. site.Clusters as a parameter.
+
 ## Changes in Version 0.1.0.9151 (2019-02-07)
 
 * getBioStressorResponses, Issue #7
