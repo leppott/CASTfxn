@@ -36,6 +36,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9153 (2019-02-08)
+
+* getBioStressorResponse
+    + Add ref.sites as an input.
+    + Update to ggplot, Issue #7
+    + Edit code for clarity
+
 ## Changes in Version 0.1.0.9152 (2019-02-07)
 
 * getClusterInfo

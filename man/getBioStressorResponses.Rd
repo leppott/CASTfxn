@@ -5,7 +5,8 @@
 \title{Biological Stressor Responses}
 \usage{
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData,
-  LogTransf, predint = 0.75, varLegLoc = "topright", biocomm = "bmi")
+  LogTransf, ref.sites, predint = 0.75, varLegLoc = "topright",
+  biocomm = "bmi")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -17,6 +18,8 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData,
 \item{list.MatchBioData}{list of matched biological (BMI or algae) and stressor data.}
 
 \item{LogTransf}{Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.}
+
+\item{ref.sites}{Reference sites.}
 
 \item{predint}{Prediction interval. Default = 0.75}
 
@@ -123,7 +126,8 @@ list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)
   
 # Run getBMIStressorResponses   
 biocomm <- "BMI"       
-getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData, LogTransf, predint, varLegLoc, biocomm)
+getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
+                        , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
@@ -211,6 +215,7 @@ BioResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
 
 # Run getAlgStressorResponses
 biocomm <- "algae"
-getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData, LogTransf, predint, varLegLoc, biocomm)
+getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
+                       , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 }
 }
