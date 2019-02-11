@@ -259,6 +259,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   varSpacer <- RegPlotSet[2]
   varLegOpp <- RegPlotSet[3]
   
+  plot_H <- 4
+  plot_W <- 9
+  
   #BioResp <- colnames(list.MatchBioData[["all.b.rsp"]])[16:ncol(list.MatchBioData[["all.b.rsp"]])]
   
   #QC
@@ -278,7 +281,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #q
   q.len <- length(BioResp)
   
-  boo.pryr <- FALSE
+ # boo.pryr <- FALSE
   
   # Capture each plot in a list for the PDF
   #plots.pq <- vector(length(BioResp), mode="list")
@@ -492,10 +495,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
           ggplot2::labs(title=str_title, subtitle = str_subtitle, caption=str_caption, x=str_xlab, y=str_ylab)
         #
+        print(p_SR)
         plots.pq[[pq]] <- grDevices::recordPlot()
         #
         fn_jpg <- paste0(varFileOut, stressName, "_", respName, ".jpg")
-        ggplot2::ggsave(fn_jpg, p_SR, width=9, height=4, units="in")
+        ggplot2::ggsave(fn_jpg, p_SR, width=plot_W, height=plot_H, units="in")
         #
       }##IF.boo.Plot.END
 
@@ -631,12 +635,12 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   ## PDF ####
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.",bio_prefix,".ALL.pdf"))
-  pdf(file=fn_pdf, width=8)
-  for (pq in plots.pq){##FOR.gp.START
-    #grDevices::replayPlot(g.plot)
-    if(is.null(pq)==TRUE) {next}
-    grDevices::replayPlot(pq)
-  }##FOR.gp.END
+  grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
+    for (pq in plots.pq){##FOR.gp.START
+      #grDevices::replayPlot(g.plot)
+      if(is.null(pq)==TRUE) {next}
+      grDevices::replayPlot(pq)
+    }##FOR.gp.END
   grDevices::dev.off()
  # rm(plots.pq)
   #
