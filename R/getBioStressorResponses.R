@@ -463,7 +463,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       cex_mod <- 2
       cex_sites_all     <- 1 #cex_mod*0.3
       cex_sites_all_ref <- cex_sites_all
-      cex_sites_cl      <- cex_mod*1
+      cex_sites_cl      <- cex_mod*0.95
       cex_sites_cl_ref  <- cex_sites_cl
       cex_sites_targ    <- cex_mod*1.2
       
@@ -480,20 +480,47 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       boo.Plot <- ifelse(nrow(df_plot_site)==0, FALSE, TRUE)
       # skip plot if no data for target site
       if(boo.Plot==TRUE){##IF.boo.Plot.START
-        p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes(x=Stressor,y=Response, color="all", shape="all", fill="all")) +
-          ggplot2::geom_point(ggplot2::aes(color="all", shape="all", fill="all"), size=cex_sites_all) + 
-          ggplot2::geom_point(data=df_plot_all_ref, ggplot2::aes(x=Stressor, y=Response, color="all ref", shape="all ref", fill="all ref"), size=cex_sites_all_ref) + 
-          ggplot2::geom_point(data=df_plot_cl, ggplot2::aes(x=Stressor, y=Response, color="cluster", shape="cluster", fill="cluster"), size=cex_sites_cl) + 
-          ggplot2::geom_point(data=df_plot_cl_ref, ggplot2::aes(x=Stressor, y=Response, color="cluster ref", shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref) + 
-          ggplot2::geom_point(data=df_plot_site, ggplot2::aes(x=Stressor,y=Response, color="target", shape="target", fill="target"), size=cex_sites_targ) +
-          ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-          ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-          ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) +
-          ggplot2::stat_smooth(method=lm, color=col_line, show.legend=FALSE) + 
-          ggplot2::geom_line(data=model_cl_val, ggplot2::aes(y=lwr), color=col_line, linetype="dashed", show.legend=FALSE) + 
-          ggplot2::geom_line(data=model_cl_val, ggplot2::aes(y=upr), color=col_line, linetype="dashed", show.legend=FALSE) + 
-          ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
-          ggplot2::labs(title=str_title, subtitle = str_subtitle, caption=str_caption, x=str_xlab, y=str_ylab)
+        p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes_(x=~Stressor,y=~Response, color="all", shape="all", fill="all"), size=cex_sites_all) +
+                 ggplot2::geom_point()
+        #  
+        # Add points if exist, otherwise plot dummy values
+        if(nrow(df_plot_all_ref)>0){##IF~nrow(df_plot_all_ref)~START
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="all ref", shape="all ref", fill="all ref"), size=cex_sites_all_ref)
+        } else {
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="all ref", shape="all ref", fill="all ref"))
+        }##IF~nrow(df_plot_all_ref)~END
+        #
+        #
+        if(nrow(df_plot_cl)>0){##IF~nrow(df_plot_cl)~START
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster", shape="cluster", fill="cluster"), size=cex_sites_cl)
+        } else {
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster", shape="cluster", fill="cluster"))
+        }##IF~nrow(df_plot_cl)~END  
+        # 
+        #
+        if(nrow(df_plot_cl_ref)>0){##IF~nrow(df_plot_cl_ref)~START
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster ref", shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref)
+        } else {
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster ref", shape="cluster ref", fill="cluster ref"))
+        }##IF~nrow(df_plot_cl_ref)~END
+        #
+        #
+        if(nrow(df_plot_site)>0){##IF~nrow(df_plot_site)~START
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_site, ggplot2::aes_(x=~Stressor,y=~Response, color="target", shape="target", fill="target"), size=cex_sites_targ)
+        } else {
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
+        }
+        ##IF~nrow(df_plot_site)~END
+        # 
+        # Add rest of plot  
+        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                       ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+                       ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) +
+                       ggplot2::stat_smooth(method=lm, color=col_line, show.legend=FALSE) + 
+                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr), color=col_line, linetype="dashed", show.legend=FALSE) + 
+                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr), color=col_line, linetype="dashed", show.legend=FALSE) + 
+                       ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
+                       ggplot2::labs(title=str_title, subtitle = str_subtitle, caption=str_caption, x=str_xlab, y=str_ylab)
         #
         print(p_SR)
         plots.pq[[pq]] <- grDevices::recordPlot()

@@ -36,6 +36,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9155 (2019-02-14)
+
+* getBioStressorResponse
+    + Fix plot error when missing a subset of data.  Issue #43.
+
 ## Changes in Version 0.1.0.9154 (2019-02-11)
 
 * getBioStressorResponse
