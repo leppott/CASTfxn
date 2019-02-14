@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-14 14:17:17
+    #> Last Update: 2019-02-14 16:25:24
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9156 (2019-02-14)
+
+  - getClusterInfo
+      - Convert to ggplot. Issue \#41.
 
 ## Changes in Version 0.1.0.9155 (2019-02-14)
 

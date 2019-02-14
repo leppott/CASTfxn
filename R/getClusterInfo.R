@@ -16,7 +16,7 @@
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
-#' @importFrom pryr "%<a-%"
+# @importFrom pryr "%<a-%"
 #' 
 #' @examples
 #' 
@@ -133,42 +133,125 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
       next
     }##IF.myY.END
     #
-    plot.pryr %<a-% {##pryr.START
-      #
-      graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
-                        , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
-                        , boxlwd = 0.8, col ="lightgray")
-      #~~~~~~~~~~~~~
-      # add points to plots for reference sites
-      myY <- df.plot.3[,i]
-      myX <- df.plot.3[,cluster]
-      graphics::points(myX,myY,col="blue",cex=0.7,pch=19)
-      #~~~~~~~~~~~~~
-      # add points to plots for selected sites
-      myY <- df.plot.2[,i]
-      myX <- df.plot.2[,cluster]
-      graphics::points(myX,myY,col="red",cex=0.8,pch=19)
-      #
-    }##pryr.END
+   #  # OLD PLOT
+    {
+   #  #plot.pryr %<a-% {##pryr.START
+   #    #
+   #   graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
+   #                      , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
+   #                      , boxlwd = 0.8, col ="lightgray")
+   #    #~~~~~~~~~~~~~
+   #    # add points to plots for reference sites
+   #    myY.ref <- df.plot.3[,i]
+   #    myX.ref <- df.plot.3[,cluster]
+   #    graphics::points(myX.ref,myY.ref,col="blue",cex=0.7,pch=19)
+   #    #~~~~~~~~~~~~~
+   #    # add points to plots for selected sites
+   #    myY.targ <- df.plot.2[,i]
+   #    myX.targ <- df.plot.2[,cluster]
+   #    graphics::points(myX.targ,myY.targ,col="red",cex=0.8,pch=19)
+   #    #
+   # }##pryr.END
+    #
     #
     # PDF, capture plot in list
-    plot.pryr
-    plots.i[[i-1]] <- grDevices::recordPlot()
+    #plot.pryr
+    #plots.i[[i-1]] <- grDevices::recordPlot()
     #
     # JPG, Create
-    grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
-                                      TargetSiteID,".cluster.",varYlab,".jpg"),
-                width = 4*ppi, height = 3*ppi, pointsize = 8,
-                quality = 100, bg = "white", res = ppi)
-      plot.pryr  
-    grDevices::dev.off() ##JPEG.END
+    # grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
+    #                                   TargetSiteID,".cluster.",varYlab,".jpg"),
+    #             width = 4*ppi, height = 3*ppi, pointsize = 8,
+    #             quality = 100, bg = "white", res = ppi)
+    #   plot.pryr  
+    # grDevices::dev.off() ##JPEG.END
+    }
+    
+    # ggplot ####
+    
+    ## Plot, Variables, Strings
+    str_title <- "Clusters w/o Land Use"
+    str_xlab  <- "Cluster"
+    str_ylab  <- colnames(df.plot)[2]
+    
+    ## Plot, Data
+    df_ggplot_all  <- as.data.frame(cbind(df.plot[,i], df.plot[,cluster]))
+    df_ggplot_ref  <- as.data.frame(cbind(df.plot.3[,i], df.plot.3[,cluster]))
+    df_ggplot_targ <- as.data.frame(cbind(df.plot.2[,i], df.plot.2[,cluster]))
+    colnames(df_ggplot_all)  <- c("var", str_xlab)
+    colnames(df_ggplot_ref)  <- c("var", str_xlab)
+    colnames(df_ggplot_targ) <- c("var", str_xlab)
+    
+    ## Plot, Variables, Output Size (inches)
+    plot_H <- 4
+    plot_W <- 9
+    
+    ## Plot, Variables, Colors
+    col_sites_all     <- "dark gray"
+    col_sites_all_ref <- "blue"
+    col_sites_cl      <- "cyan3"
+    col_sites_cl_ref  <- col_sites_all_ref
+    col_sites_targ    <- "red"
+    col_line          <- "black"
+    
+    ## Plot, Variables, Fill
+    fill_sites_all     <- col_sites_all
+    fill_sites_all_ref <- fill_sites_all
+    fill_sites_cl      <- col_sites_cl
+    fill_sites_cl_ref  <- fill_sites_cl 
+    fill_sites_targ    <- col_sites_targ
+    
+    ## Plot, Variables, Points
+    pch_sites_all     <- 19 # solid circle
+    pch_sites_all_ref <- 21 # circle outline
+    pch_sites_cl      <- 19
+    pch_sites_cl_ref  <- pch_sites_all_ref
+    pch_sites_targ    <- 17 # triangle
+    
+    ## Plot, Variables, Sizes
+    cex_mod <- 2.5
+    cex_sites_all     <- cex_mod*1
+    cex_sites_all_ref <- cex_sites_all
+    cex_sites_cl      <- cex_mod*0.95
+    cex_sites_cl_ref  <- cex_sites_cl
+    cex_sites_targ    <- cex_mod*1.2
+    
+    ## Plot, Variables, Legend
+    leg_name   <- "Sites"
+    leg_labels <- c("all ref", "target")
+    leg_shape  <- c(pch_sites_all_ref, pch_sites_targ)
+    leg_col    <- c(col_sites_all_ref, col_sites_targ)
+    leg_fill   <- c(fill_sites_all_ref, fill_sites_targ)
+    
+    # plot
+    p_cl <- ggplot2::ggplot(df_ggplot_all, ggplot2::aes(Cluster, var)) + 
+      ggplot2::geom_boxplot(ggplot2::aes(group=Cluster, y=var)) +
+      ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref) +
+      ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ) +
+      ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+      ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) + 
+      ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
+      ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab)
+    #
+      
+    print(p_cl)
+    
+    
+    # PDF, capture plot in list
+    plots.i[[i-1]] <- grDevices::recordPlot()
+    
+    # Save to JPG
+    fn_jpg <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".cluster.",varYlab,".jpg"))
+    ggplot2::ggsave(fn_jpg, p_cl, width=plot_W, height=plot_H, units="in")
+    
     #
   }##FOR.i.END
   #
   #grDevices::graphics.off() 
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".cluster.ALL.pdf"))
-  pdf(file=fn_pdf)
+  fn_pdf <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".cluster.ALL.pdf"))
+  pdf(file=fn_pdf, width=plot_W, height=plot_H)
   for (ii in plots.i){##FOR.gp.START
     #grDevices::replayPlot(g.plot)
     if(is.null(ii)==TRUE) {next}
