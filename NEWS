@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-15 09:12:30
+    #> Last Update: 2019-02-15 14:52:57
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9160 (2019-02-15)
+
+  - getStressorList
+      - Change “box” plots to ggplot. Issue \#41.
+      - Remove importFrom pryr “%\<a-%”.
 
 ## Changes in Version 0.1.0.9159 (2019-02-15)
 

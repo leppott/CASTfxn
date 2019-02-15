@@ -19,7 +19,7 @@
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
 #' 
-#' @importFrom pryr "%<a-%"
+# @importFrom pryr "%<a-%"
 #' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
@@ -100,6 +100,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+    g <- 2
   }##IF.boo.DEBUG.END
   
   # check for and create (if necessary) "Results" subdirectory of working directory
@@ -128,6 +129,8 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   
   # Plots ####
   ppi <- 300
+  plot_H <- 4
+  plot_W <- 9
   # Capture each plot in a list for the PDF
   ## https://stackoverflow.com/questions/13273611/how-to-append-a-plot-to-an-existing-pdf-file
   ## https://www.andrewheiss.com/blog/2016/12/08/save-base-graphics-as-pseudo-objects-in-r/
@@ -138,60 +141,171 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     gpcoolvar <- subset(coolvar, coolvar %in% gpchems$ConvertTo)
     n <- length(gpcoolvar)
     if(n>0) { ##FOR.n.START
-      plot.pryr %<a-% {##pryr.START
-        maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
-        graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
-        if (useLU == TRUE) {##IF.useLU.START
-          labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
-        } else {
-          labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
-        }##IF.useLU.END
-        labx = paste(maintitle, labmain, sep = "\n")
-        graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
-             xlim = c(0,1), cex.lab = 0.8)
-        graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
-        graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
-        for(i in 1:n) {##FOR.i.START
-          xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
-          newvar <- (xvar-min(xvar, na.rm=T))/dif
-          graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
-                  , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
-          good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
-          if (length(good.ref.data) != 0) {##IF.length.START
-            point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-            graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
-          }##IF.length.END
-          point1 <- (site.chem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-          graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
-        }##FOR.i.NED
-        graphics::box(bty="l")  
-      }##pryr.END
-
-      # PDF, capture plot in list
-      #lst.plots.g[[g]] <- grDevices::recordPlot()
-      #plots.g[[g]] <- plot.pryr
-      #assign(paste0("plot_",g),plot.pryr)
-      plot.pryr
-      plots.g[[g]] <- grDevices::recordPlot()
+      # plot.pryr %<a-% {##pryr.START
+      #   maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
+      #   graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
+      #   if (useLU == TRUE) {##IF.useLU.START
+      #     labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
+      #   } else {
+      #     labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
+      #   }##IF.useLU.END
+      #   labx = paste(maintitle, labmain, sep = "\n")
+      #   graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
+      #        xlim = c(0,1), cex.lab = 0.8)
+      #   graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
+      #   graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
+      #   for(i in 1:n) {##FOR.i.START
+      #     xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
+      #     newvar <- (xvar-min(xvar, na.rm=T))/dif
+      #     graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
+      #             , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
+      #     good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
+      #     if (length(good.ref.data) != 0) {##IF.length.START
+      #       point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
+      #       graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
+      #     }##IF.length.END
+      #     point1 <- (site.chem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
+      #     graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
+      #   }##FOR.i.END
+      #   graphics::box(bty="l") 
+      # }##pryr.END
+      # 
+      # # PDF, capture plot in list
+      # #lst.plots.g[[g]] <- grDevices::recordPlot()
+      # #plots.g[[g]] <- plot.pryr
+      # #assign(paste0("plot_",g),plot.pryr)
+      # plot.pryr
+      # plots.g[[g]] <- grDevices::recordPlot()
+      # 
+      # # JPG, create
+      # grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
+      #                                   ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
+      #                 height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
+      #                 res = ppi)
+      #   plot.pryr
+      # grDevices::dev.off()
+      #
       
-      # JPG, create
-      grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
-                                        ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
-                      height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
-                      res = ppi)
-        plot.pryr
-      grDevices::dev.off()
+      
+      # ggplot ####
+      
+      ## Plot, Data, Cluster
+      df_plot_wide <- as.data.frame(cluster.chem[,gpcoolvar])
+      colnames(df_plot_wide) <- gpcoolvar 
+      # need as.data.frame and colnames for groups with only 1 parameter
+      df_plot_wide_min <- apply(df_plot_wide, 2, min, na.rm=TRUE)
+      df_plot_wide_range <- apply(df_plot_wide, 2, range, na.rm=TRUE)
+      df_plot_wide_diff <- apply(df_plot_wide_range, 2, diff)
+      #df_plot_wide_mod <- (df_plot_wide - df_plot_wide_min) / df_plot_wide_diff
+      df_plot_wide_valminusmin <- sweep(df_plot_wide, 2, df_plot_wide_min, FUN="-")
+      df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
+      # reshape from wide to long
+      df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+      # Remove NaN so get rid of error message?
+      df_plot_long <- df_plot_long[!is.na(df_plot_long$value), ]
+
+      ## Plot, Data, Cluster_Ref
+      df_plot_ref_wide <- as.data.frame(cluster.ref.chem.data[, gpcoolvar])
+      colnames(df_plot_ref_wide) <- gpcoolvar 
+      df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
+      df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
+      df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+      df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ]
+      
+      ## Plot, Data, Target Site
+      df_plot_targ_wide <- as.data.frame(site.chem[, gpcoolvar])
+      colnames(df_plot_targ_wide) <- gpcoolvar
+      df_plot_targ_wide_valminusmin <- sweep(df_plot_targ_wide, 2, df_plot_wide_min, FUN="-")
+      df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
+      df_plot_long_targ <- reshape2::melt(df_plot_targ_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+      df_plot_long_targ <- df_plot_long_targ[!is.na(df_plot_long_targ$value), ]
+      
+      
+      ## Plot, Variables, Strings
+      str_Group <- as.character(groupnames[g,1])
+      str_title <- TargetSiteID
+      str_subtitle <- paste0("Cluster ", site.Clusters[1,nolu.cluster], " (all sites)")
+      str_xlab <- "Standardized Values"
+      str_ylab <- str_Group
+      
+      ## Plot, Variables, Colors
+      col_sites_all     <- "dark gray"
+      col_sites_all_ref <- "blue"
+      col_sites_cl      <- "cyan3"
+      col_sites_cl_ref  <- col_sites_all_ref
+      col_sites_targ    <- "red"
+      col_line          <- "black"
+      
+      ## Plot, Variables, Fill
+      fill_sites_all     <- col_sites_all
+      fill_sites_all_ref <- fill_sites_all
+      fill_sites_cl      <- col_sites_cl
+      fill_sites_cl_ref  <- fill_sites_cl 
+      fill_sites_targ    <- col_sites_targ
+      
+      ## Plot, Variables, Points
+      pch_sites_all     <- 19 # solid circle
+      pch_sites_all_ref <- 21 # circle outline
+      pch_sites_cl      <- 19
+      pch_sites_cl_ref  <- pch_sites_all_ref
+      pch_sites_targ    <- 17 # triangle
+      
+      ## Plot, Variables, Sizes
+      cex_mod <- 3
+      cex_sites_all     <- cex_mod*1
+      cex_sites_all_ref <- cex_sites_all
+      cex_sites_cl      <- cex_mod*0.95
+      cex_sites_cl_ref  <- cex_sites_cl
+      cex_sites_targ    <- cex_mod*1.2
+      
+      ## Plot, Variables, Legend
+      leg_name   <- "Sites"
+      leg_labels <- c("cluster ref", "target")
+      leg_shape  <- c(pch_sites_cl_ref, pch_sites_targ)
+      leg_col    <- c(col_sites_cl_ref, col_sites_targ)
+      leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
+      
+      p_SL <- ggplot2::ggplot(data=df_plot_long) + 
+                ggplot2::geom_boxplot(ggplot2::aes(y=value, x=GrpNm))  + 
+                ggplot2::coord_flip() + 
+                ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_xlab, x=str_ylab) + 
+                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.text.x = ggplot2::element_blank(), axis.ticks.x=ggplot2::element_blank())
+      #
+      # Add points (if present)
+      ## Cluster, Ref
+      if(nrow(df_plot_long_ref)!=0){##IF~nrow.df_plot_long_ref~START
+        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="cl_ref", shape="cl_ref", fill="cl_ref"), size=1)
+      }##IF~nrow.df_plot_long_ref~END
+      ## Target Site
+      if(nrow(df_plot_long_targ)!=0){##IF~nrow.df_plot_long_targ~START
+        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="targ", shape="targ", fill="targ"), size=1)
+      }##IF~nrow.df_plot_long_targ~END
+      #
+      # Legend
+      p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+                ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill)
+      
+      
+      #
+      print(p_SL)
+      plots.g[[g]] <- grDevices::recordPlot()
+      #
+      fn_jpg <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".boxes.", make.names(groupnames[g,]), ".jpg"))
+      ggplot2::ggsave(fn_jpg, p_SL, width=plot_W, height=plot_H, units="in")
+      
     }##IF.n.END
   }##FOR.g.END
   
+  # PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".boxes.ALL.pdf"))
-  pdf(file=fn_pdf)
-  for (i in plots.g){##FOR.gp.START
-    #grDevices::replayPlot(g.plot)
-    if(is.null(i)==TRUE) {next}
-    grDevices::replayPlot(i)
-  }##FOR.gp.END
+  fn_pdf <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".boxes.ALL.pdf"))
+  pdf(file=fn_pdf, width=plot_W, height=plot_H)
+    for (i in plots.g){##FOR.gp.START
+      #grDevices::replayPlot(g.plot)
+      if(is.null(i)==TRUE) {next}
+      grDevices::replayPlot(i)
+    }##FOR.gp.END
   grDevices::dev.off()
   rm(plots.g)
   
