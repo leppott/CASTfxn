@@ -36,6 +36,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9158 (2019-02-15)
+
+* getBioStressorResponses
+    + Remove importFrom pryr "%<a-%".
+        - No longer needed with gglot graphics.
+
 ## Changes in Version 0.1.0.9157 (2019-02-15)
 
 * getClusterInfo

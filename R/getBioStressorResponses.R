@@ -17,7 +17,7 @@
 #' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
 #' 
-#' @importFrom pryr "%<a-%"
+# @importFrom pryr "%<a-%"
 #' 
 #' @examples
 #' \dontrun{

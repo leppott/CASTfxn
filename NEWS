@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-15 07:18:37
+    #> Last Update: 2019-02-15 08:43:14
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9158 (2019-02-15)
+
+  - getBioStressorResponses
+      - Remove importFrom pryr “%\<a-%”.
+          - No longer needed with gglot graphics.
 
 ## Changes in Version 0.1.0.9157 (2019-02-15)
 
