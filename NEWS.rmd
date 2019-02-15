@@ -36,6 +36,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9157 (2019-02-15)
+
+* getClusterInfo
+    + Updated plot title to match old graphic.  Issue #41.
+
 ## Changes in Version 0.1.0.9156 (2019-02-14)
 
 * getClusterInfo

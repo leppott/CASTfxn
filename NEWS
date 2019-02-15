@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-14 16:25:24
+    #> Last Update: 2019-02-15 07:18:37
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9157 (2019-02-15)
+
+  - getClusterInfo
+      - Updated plot title to match old graphic. Issue \#41.
 
 ## Changes in Version 0.1.0.9156 (2019-02-14)
 

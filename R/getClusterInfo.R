@@ -170,7 +170,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     # ggplot ####
     
     ## Plot, Variables, Strings
-    str_title <- "Clusters w/o Land Use"
+    str_title <- varMain
     str_xlab  <- "Cluster"
     str_ylab  <- colnames(df.plot)[2]
     
