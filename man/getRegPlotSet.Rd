@@ -26,3 +26,4 @@ varSpacer <- RegPlotSet[2]
 varLegOpp <- RegPlotSet[3]
  
 }
+\keyword{internal}

@@ -8,6 +8,8 @@
 #' 
 #' @return A 3 part character string.
 #' 
+#' @keywords internal
+#' 
 #' @examples
 #' varLegLoc <- "topright"
 #' RegPlotSet <- getRegPlotSet(varLegLoc)

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-15 08:43:14
+    #> Last Update: 2019-02-15 09:12:30
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9159 (2019-02-15)
+
+  - getRegPlotSet
+      - Mark functions as keyword internal so not in the help list
 
 ## Changes in Version 0.1.0.9158 (2019-02-15)
 
