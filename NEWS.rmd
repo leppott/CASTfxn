@@ -36,6 +36,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9161 (2019-02-18)
+
+* Add geom_blank for ggplots where may not have a data group (e.g., cluster ref).  
+* Use same structure as in getBioStressorResponses.
+    + getStressorList
+    + getClusterInfo
+
 ## Changes in Version 0.1.0.9160 (2019-02-15)
 
 * getStressorList 

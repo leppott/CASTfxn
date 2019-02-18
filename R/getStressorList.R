@@ -205,12 +205,15 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       df_plot_long <- df_plot_long[!is.na(df_plot_long$value), ]
 
       ## Plot, Data, Cluster_Ref
-      df_plot_ref_wide <- as.data.frame(cluster.ref.chem.data[, gpcoolvar])
-      colnames(df_plot_ref_wide) <- gpcoolvar 
-      df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
-      df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
-      df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
-      df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ]
+      # QC for nrow
+      if(nrow(cluster.ref.chem.data)>0){##IF~nrow(cluster.ref.chem.data)~START
+        df_plot_ref_wide <- as.data.frame(cluster.ref.chem.data[, gpcoolvar])
+        colnames(df_plot_ref_wide) <- gpcoolvar 
+        df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
+        df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
+        df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+        df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
+      }##IF~nrow(cluster.ref.chem.data)~END
       
       ## Plot, Data, Target Site
       df_plot_targ_wide <- as.data.frame(site.chem[, gpcoolvar])
@@ -265,23 +268,28 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
       
+      # ggplot, main
       p_SL <- ggplot2::ggplot(data=df_plot_long) + 
                 ggplot2::geom_boxplot(ggplot2::aes(y=value, x=GrpNm))  + 
                 ggplot2::coord_flip() + 
                 ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_xlab, x=str_ylab) + 
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.text.x = ggplot2::element_blank(), axis.ticks.x=ggplot2::element_blank())
       #
-      # Add points (if present)
+      # ggplot, points subsets
       ## Cluster, Ref
-      if(nrow(df_plot_long_ref)!=0){##IF~nrow.df_plot_long_ref~START
+      if(nrow(cluster.ref.chem.data)!=0){##IF~nrow.df_plot_long_ref~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="cl_ref", shape="cl_ref", fill="cl_ref"), size=1)
+      } else {
+        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref", shape="cl_ref", fill="cl_ref")) 
       }##IF~nrow.df_plot_long_ref~END
       ## Target Site
-      if(nrow(df_plot_long_targ)!=0){##IF~nrow.df_plot_long_targ~START
+      if(nrow(site.chem)!=0){##IF~nrow.df_plot_long_targ~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="targ", shape="targ", fill="targ"), size=1)
+      } else {
+        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ", shape="targ", fill="targ"))
       }##IF~nrow.df_plot_long_targ~END
       #
-      # Legend
+      # ggplot, Legend
       p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
                 ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
                 ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill)

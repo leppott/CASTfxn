@@ -223,16 +223,31 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     leg_col    <- c(col_sites_all_ref, col_sites_targ)
     leg_fill   <- c(fill_sites_all_ref, fill_sites_targ)
     
-    # plot
+    # ggplot, basic
     p_cl <- ggplot2::ggplot(df_ggplot_all, ggplot2::aes(Cluster, var)) + 
-      ggplot2::geom_boxplot(ggplot2::aes(group=Cluster, y=var)) +
-      ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref) +
-      ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ) +
-      ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-      ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) + 
-      ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
-      ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab)
+      ggplot2::geom_boxplot(ggplot2::aes(group=Cluster, y=var))
+    
+    # ggplot, point subsets
+    ## Ref
+    if(nrow(df_ggplot_ref)!=0){##IF~df_ggplot_ref~START
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
+    } else {
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all", shape="ref_all", fill="ref_all")) 
+    }##IF~df_ggplot_ref~END
+    ## Target Site
+    if(nrow(df_ggplot_targ)!=0){##IF~nrow.df_plot_long_targ~START
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ)
+    } else {
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
+    }##IF~df_ggplot_targ~END
+      
+      
+    # ggplot, Legend and other
+    p_cl <- p_cl + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                  ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+                  ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) + 
+                  ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
+                  ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab)
     #
       
     print(p_cl)

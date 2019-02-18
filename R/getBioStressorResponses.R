@@ -480,9 +480,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       boo.Plot <- ifelse(nrow(df_plot_site)==0, FALSE, TRUE)
       # skip plot if no data for target site
       if(boo.Plot==TRUE){##IF.boo.Plot.START
+        # ggplot, main
         p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes_(x=~Stressor,y=~Response, color="all", shape="all", fill="all"), size=cex_sites_all) +
                  ggplot2::geom_point()
         #  
+        # ggplot, point subsets
         # Add points if exist, otherwise plot dummy values
         if(nrow(df_plot_all_ref)>0){##IF~nrow(df_plot_all_ref)~START
           p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="all ref", shape="all ref", fill="all ref"), size=cex_sites_all_ref)

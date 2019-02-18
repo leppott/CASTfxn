@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-15 14:52:57
+    #> Last Update: 2019-02-18 15:45:43
 
 # Planned Updates
 
@@ -23,6 +23,14 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9161 (2019-02-18)
+
+  - Add geom\_blank for ggplots where may not have a data group (e.g.,
+    cluster ref).  
+  - Use same structure as in getBioStressorResponses.
+      - getStressorList
+      - getClusterInfo
 
 ## Changes in Version 0.1.0.9160 (2019-02-15)
 
