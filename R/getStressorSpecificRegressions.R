@@ -143,10 +143,12 @@ getStressorSpecificRegressions <- function(TargetSiteID
                                            , varLegLoc="topright"
                                            ) {##FUNCTION.START
   # Debugging
-  boo.QC <- FALSE
-  if(boo.QC==TRUE){##IF.boo.QC.START
+  boo.DEBUG <- FALSE
+  #
+  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     matchedData <- list.MatchBMIData
-  }##IF.boo.QC.END
+    tv <- 1
+  }##IF.boo.DEBUG.END
   
   # Extra, 20181211
   ## Add RelAbundInds to data.bmi.raw
@@ -212,10 +214,10 @@ getStressorSpecificRegressions <- function(TargetSiteID
         SSTV.analyte <- as.vector(stressor.SSTV$Analyte)[tv]
         SSTV.name <- as.vector(stressor.SSTV$SSTV)[tv]
         
-        if(boo.QC==TRUE){##IF.boo.QC.START
+        if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
           varFlag <- 0
           #if(tv==1){tv=20}
-        }##IF.boo.QC.END
+        }##IF.boo.DEBUG.END
         #
         
         tv.len <- nrow(stressor.SSTV)
@@ -299,6 +301,10 @@ getStressorSpecificRegressions <- function(TargetSiteID
         varFlag <- 1
         
         r.len  <- length(SSTV.Resp)
+        
+        if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+          r <- 1
+        }##IF.boo.DEBUG.END
         
         # Loop r (response) ####
         for (r in 1:length(SSTV.Resp)) {##FOR.r.START

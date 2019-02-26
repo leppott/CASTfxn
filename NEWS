@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-18 15:45:43
+    #> Last Update: 2019-02-26 09:07:14
 
 # Planned Updates
 
@@ -23,6 +23,13 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9162 (2019-02-19)
+
+  - getStressorSpecificRegressions.
+      - ggplot graphics, Issue \#41.
+      - Started but unfinished.
+      - Other changes proposed to this function.
 
 ## Changes in Version 0.1.0.9161 (2019-02-18)
 
