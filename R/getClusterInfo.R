@@ -172,7 +172,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     ## Plot, Variables, Strings
     str_title <- varMain
     str_xlab  <- "Cluster"
-    str_ylab  <- colnames(df.plot)[2]
+    str_ylab  <- colnames(df.plot)[i]
     
     ## Plot, Data
     df_ggplot_all  <- as.data.frame(cbind(df.plot[,i], df.plot[,cluster]))

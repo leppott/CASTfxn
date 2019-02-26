@@ -36,6 +36,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9163 (2019-02-26)
+
+* getClusterInfo.R
+    + Fix y-axis label the same for all plots, Issue #48.
+
 ## Changes in Version 0.1.0.9162 (2019-02-19)
 
 * getStressorSpecificRegressions.

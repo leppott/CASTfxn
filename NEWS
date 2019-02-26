@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-02-26 09:07:14
+    #> Last Update: 2019-02-26 10:10:47
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9163 (2019-02-26)
+
+  - getClusterInfo.R
+      - Fix y-axis label the same for all plots, Issue \#48.
 
 ## Changes in Version 0.1.0.9162 (2019-02-19)
 
