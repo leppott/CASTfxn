@@ -14,27 +14,27 @@ myFile <- "AZSitesFinal.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 # Modify Names to match existing code
-df$StationID_Master <- df$STATION_CD
-df$FinalLatitude <- df$LATITUDE
-df$FinalLongitude <- df$LONGITUDE
-df$WaterbodyName <- df$STATION_NAME
-df$GIS_County <- df$COUNTY_NAME
-df$CARefSite_2017 <- tolower(df$ReferenceStatus)
-df$COMID_NHD2 <- df$COMID
+#df$StationID_Master <- df$STATION_CD
+#df$FinalLatitude <- df$LATITUDE
+#df$FinalLongitude <- df$LONGITUDE
+#df$WaterbodyName <- df$STATION_NAME
+#df$GIS_County <- df$COUNTY_NAME
+#df$CARefSite_2017 <- tolower(df$ReferenceStatus)
+#df$COMID_NHD2 <- df$COMID
 
 #
-df$CARefSite_2017[df$CARefSite_2017=="reference"] <- 1
+#df$CARefSite_2017[df$CARefSite_2017=="reference"] <- 1
 
-# Add elevation category (20180622)
-## use Hi/Lo cluster
-ec.hi.COMID <- data_Cluster_Hi$COMID
-ec.lo.COMID <- data_Cluster_Lo$COMID
-boo.hi <- df$COMID %in% ec.hi.COMID
-boo.lo <- df$COMID %in% ec.lo.COMID
-df$ElevCategory <- as.character(NA)
-df[boo.hi, "ElevCategory"] <- "HI"
-df[boo.lo, "ElevCategory"] <- "LO"
-
+# # Add elevation category (20180622)
+# ## use Hi/Lo cluster
+# ec.hi.COMID <- data_Cluster_Hi$COMID
+# ec.lo.COMID <- data_Cluster_Lo$COMID
+# boo.hi <- df$COMID %in% ec.hi.COMID
+# boo.lo <- df$COMID %in% ec.lo.COMID
+# df$ElevCategory <- as.character(NA)
+# df[boo.hi, "ElevCategory"] <- "HI"
+# df[boo.lo, "ElevCategory"] <- "LO"
+# comment out, 20190227
 
 # 1.2. Process Data
 View(df)

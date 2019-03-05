@@ -7,7 +7,7 @@
 # 0. Prep####
 wd <- getwd() # assume is package directory
 #library(devtools)
-library(readxl)
+#library(readxl)
 
 # 1. Get data and process#####
 # 1.1. Import Data
@@ -16,21 +16,27 @@ library(readxl)
 myFile <- "AZSiteSummary.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile), stringsAsFactors = FALSE)
 
-# Modify format
-df$CollDate <- as.Date(df$CollDate)
+# Modify format (2090227, add format)
+df$CollDate <- as.Date(df$CollDate, format="%m/%d/%Y")
 
 # Add columns
-df$StationID_Master <- df$StationID
+#df$StationID_Master <- df$StationID
 df$Station_Date <- df$CollDate
 
 
 # Add elevation category (20180622)
+myFile <- "AZSitesFinal.tab"
+data_Sites <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 ## use Sites
 ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
 dim(df)
 df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
 dim(df)
 table(df$ElevCategory, useNA="ifany")
+
+
+
+
 
 # Revise Alg SampID (20181217)
 
@@ -41,11 +47,11 @@ table(df$ElevCategory, useNA="ifany")
 # myCol <- c("StationID_Master", "CollDate")
 # x <- merge(df, unique(df_AlgCounts[, c(myCol, "Alg.SampID")]), by=myCol, all.x=TRUE)
 
-# Remove _EMAP and _Multihabitat from end.
-re_EMAP <- "(_EMAP)$"
-re_MH  <- "(_Multihabitat)$"
-df$Algae.Metrics.SampID <- sub(re_EMAP, "", df$Algae.Metrics.SampID)
-df$Algae.Metrics.SampID <- sub(re_MH, "", df$Algae.Metrics.SampID)
+# # Remove _EMAP and _Multihabitat from end.
+# re_EMAP <- "(_EMAP)$"
+# re_MH  <- "(_Multihabitat)$"
+# df$Algae.Metrics.SampID <- sub(re_EMAP, "", df$Algae.Metrics.SampID)
+# df$Algae.Metrics.SampID <- sub(re_MH, "", df$Algae.Metrics.SampID)
 
 # 1.2. Process Data
 View(df)

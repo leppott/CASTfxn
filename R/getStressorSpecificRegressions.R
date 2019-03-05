@@ -24,13 +24,16 @@
 #' @param data.SSTV.totabund x
 #' @param data.MT.bmi x
 #' @param matchedData matched biological and chemical stressor data.
+#' @param BioIndex_Val Column name for biological index value; list.MatchBMIData$site.b.rsp
+#' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBMIData$site.b.rsp
+#' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBMIData$site.b.rsp
 #' @param predint x
 #' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft", 
 #' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
 #' 
-#' @return Jpeg files to "Results" folder in working directory.  And a tab-delimited text file.
+#' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 #' 
-#' @importFrom pryr "%<a-%"
+# @importFrom pryr "%<a-%"
 #' 
 #' @examples
 #' predint <- 0.75
@@ -118,6 +121,9 @@
 #' # data, example included with package
 #' data.bmi.taxa.raw <- data_BMIcounts
 #' data.SSTV.totabund <- data_BMIRelAbund
+#' BioIndex_Val <- "IBI"
+#' BioIndex_Nar <- "NarRat"
+#' BioIndex_Nar_Deg <- "Violates"
 #' 
 #' # Run getStressorSpecificRegressions
 #' getStressorSpecificRegressions(TargetSiteID
@@ -126,7 +132,10 @@
 #'                                , data.chem.info
 #'                                , data.SSTV.totabund
 #'                                , data.MT.bmi
-#'                                , list.MatchBMIData)
+#'                                , list.MatchBMIData
+#'                                , BioIndex_Val
+#'                                , BioIndex_Nar
+#'                                , BioIndex_Nar_Deg)
 #~~~~~~~~~~~~~~~~
 # QC
 # matchedData <- list.MatchBMIData
@@ -139,6 +148,9 @@ getStressorSpecificRegressions <- function(TargetSiteID
                                            , data.SSTV.totabund
                                            , data.MT.bmi
                                            , matchedData
+                                           , BioIndex_Val="IBI"
+                                           , BioIndex_Nar="NarRat"
+                                           , BioIndex_Nar_Deg="Violates"
                                            , predint=0.75
                                            , varLegLoc="topright"
                                            ) {##FUNCTION.START
@@ -152,11 +164,12 @@ getStressorSpecificRegressions <- function(TargetSiteID
   
   # Extra, 20181211
   ## Add RelAbundInds to data.bmi.raw
-  col.by <- c("BMI.Metrics.SampID", "FinalID")
-  data.bmi.taxa.raw <- merge(data.bmi.taxa.raw
-                             , data.SSTV.totabund[, c(col.by, "RelAbundInds")]
-                             , by=col.by
-                             , all.x=TRUE)
+  # col.by <- c("BMI.Metrics.SampID", "FinalID")
+  # data.bmi.taxa.raw <- merge(data.bmi.taxa.raw
+  #                            , data.SSTV.totabund[, c(col.by, "RelAbundInds")]
+  #                            , by=col.by
+  #                            , all.x=TRUE)
+  # 20190304, remove, data.bmi.taxa.raw now has "RelAbundInds"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
@@ -185,17 +198,34 @@ getStressorSpecificRegressions <- function(TargetSiteID
     utils::flush.console()
   }
   
-  boo.pryr <- FALSE
+  # boo.pryr <- FALSE
   
-  plots.tvr <- vector(10, mode="list")
+  # plots.tvr <- vector(10, mode="list")
+  plots.tv <- vector(10, mode="list")
   ppi<-300
   varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
+  plot_H <- 4
+  plot_W <- 9
   
   fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
   boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
   if(boo.file.exists){
     file.remove(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
   }
+  
+  
+  # Target Site Bio Scores
+  targ_bio <- matchedData$site.b.rsp[, BioIndex_Val]
+  targ_bio_bad <- matchedData$site.b.rsp[matchedData$site.b.rsp[, BioIndex_Nar]==BioIndex_Nar_Deg, BioIndex_Val]
+  targ_bio_min <- min(targ_bio, na.rm=TRUE)
+  targ_bio_max <- max(targ_bio, na.rm=TRUE)
+  targ_bio_bad_min <- min(targ_bio_bad, na.rm=TRUE)
+  targ_bio_bad_max <- max(targ_bio_bad, na.rm=TRUE)
+  # bio threshold to use for "better"
+  bio_better_thresh <- targ_bio_bad_max
+  # skip to next if no "bad" bio scores for this site
+  if(is.na(bio_better_thresh)){next}
+  
   
   # IF ####
   if (nrow(df.SSTV) != 0) {##IF.SSTV.START
@@ -253,14 +283,12 @@ getStressorSpecificRegressions <- function(TargetSiteID
         # }
         log.yn <- LogTransf
         
-        
         # get all the matched sample data for this stressor
         # 20180620, match names
+        col_keep <- c("StationID_Master", "ChemSampleID", "BMI.Metrics.SampID")
         SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in% names(matchedData$all.b.str)]
-        all.match.b.str <- matchedData$all.b.str[,c("StationID_Master"
-                        , "ChemSampleID", "BMI.Metrics.SampID", SSTV.analyte.match.all.b.str)]
-        cl.match.b <- matchedData$cl.b.str[,c("StationID_Master", "ChemSampleID",
-                            "BMI.Metrics.SampID", SSTV.analyte.match.all.b.str)]
+        all.match.b.str <- matchedData$all.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
+        cl.match.b <- matchedData$cl.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
         
         bmi.taxa.raw <- data.bmi.taxa.raw[data.bmi.taxa.raw$StationID_Master %in% 
                                               unique(all.match.b.str$StationID_Master),]
@@ -271,56 +299,74 @@ getStressorSpecificRegressions <- function(TargetSiteID
         minTolVal <- min(data.MT.bmi[,SSTV.name], na.rm = TRUE)
         maxTolVal <- max(data.MT.bmi[,SSTV.name], na.rm = TRUE)
         
-        bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==minTolVal |
-                                        bmi.taxa.raw[,SSTV.name]==minTolVal+1,
+        bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==minTolVal | 
+                                        bmi.taxa.raw[,SSTV.name]==minTolVal+1, 
                                         bmi.taxa.raw$RelAbundInds, NA)
+
         bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==maxTolVal |
-                                        bmi.taxa.raw[,SSTV.name]==maxTolVal-1,
+                                        bmi.taxa.raw[,SSTV.name]==maxTolVal-1, 
                                         bmi.taxa.raw$RelAbundInds, NA)
 
-        bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMI.Metrics.SampID)
-        bmi.taxa.raw2 <- dplyr::summarize(bmi.taxa.raw2, 
-                                          SensRelAbund = sum(SensTaxa, na.rm = TRUE), 
-                                          TolRelAbund = sum(TolTaxa, na.rm = TRUE))
-
+        # bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMI.Metrics.SampID)
+        # bmi.taxa.raw2 <- dplyr::summarize(bmi.taxa.raw2, 
+        #                                   SensRelAbund = sum(SensTaxa, na.rm = TRUE), 
+        #                                   TolRelAbund = sum(TolTaxa, na.rm = TRUE))
+        bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMI.Metrics.SampID) %>%
+                                         dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
+                                                          , TolRelAbund = sum(TolTaxa, na.rm = TRUE))
+        
         all.match.b.resp <- bmi.taxa.raw2[bmi.taxa.raw2$BMI.Metrics.SampID %in%
-                                    unique(all.match.b.str$BMI.Metrics.SampID),]
+                                    unique(all.match.b.str$BMI.Metrics.SampID), ]
+        
+        col_by <- c("StationID_Master", "BMI.Metrics.SampID")
+        all.SSTV.abund <- merge(all.match.b.str
+                                , all.match.b.resp
+                                , by.x = col_by
+                                , by.y = col_by
+                                , all = TRUE)
+        
+        # Add Bio Index (value and Narrative Rating) (20190305)
+        all.SSTV.abund <- merge(all.SSTV.abund
+                                , matchedData$all.b.rsp[, c(col_by, BioIndex_Nar, BioIndex_Val)]
+                                , by.x = col_by
+                                , by.y = col_by
+                                , all.x = TRUE)
 
-        all.SSTV.abund <- merge(all.match.b.str, all.match.b.resp, 
-                                by.x = c("StationID_Master", "BMI.Metrics.SampID"),
-                                by.y = c("StationID_Master", "BMI.Metrics.SampID"),
-                                all = TRUE)
-
-        good.SSTV.abund <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
+        good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
         all.ref.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% ref.sites)
-        cl.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$ChemSampleID %in% cl.match.b$ChemSampleID)
-        cl.ref.SSTV.abund <- subset(cl.SSTV.abund, cl.SSTV.abund$StationID_Master %in% ref.sites)
-        site.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% TargetSiteID)
-        SSTV.Resp <- c("SensRelAbund", "TolRelAbund")
+        cl.SSTV.abund      <- subset(good.SSTV.abund, good.SSTV.abund$ChemSampleID %in% cl.match.b$ChemSampleID)
+        cl.ref.SSTV.abund  <- subset(cl.SSTV.abund, cl.SSTV.abund$StationID_Master %in% ref.sites)
+        site.SSTV.abund    <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% TargetSiteID)
+        SSTV.Resp          <- c("SensRelAbund", "TolRelAbund")
         
         varFlag <- 1
         
-        r.len  <- length(SSTV.Resp)
-        
-        if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-          r <- 1
-        }##IF.boo.DEBUG.END
-        
-        # Loop r (response) ####
-        for (r in 1:length(SSTV.Resp)) {##FOR.r.START
-          tvr <- r.len*(tv-1)+r
-          tvr.len <- tv.len * r.len
+        # r.len  <- length(SSTV.Resp)
+        # 
+        # if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+        #   r <- 1
+        # }##IF.boo.DEBUG.END
+        # 
+        # # Loop r (response) ####
+        # for (r in 1:length(SSTV.Resp)) {##FOR.r.START
+          # tvr <- r.len*(tv-1)+r
+          # tvr.len <- tv.len * r.len
           
-          respName <- SSTV.Resp[r]
+        #  respName <- SSTV.Resp[r]
           
-          print(paste0("Response = ",respName))
-          flush.console()
+        #  print(paste0("Response = ",respName))
+        #  flush.console()
           
-          df.plot1 <- good.SSTV.abund[,c(SSTV.analyte,respName)]
-          df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte,respName)]
-          df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte,respName)]
-          df.plot4 <- cl.ref.SSTV.abund[,c(SSTV.analyte,respName)]
-          df.plot5 <- site.SSTV.abund[,c(SSTV.analyte,respName)]
+          # df.plot1 <- good.SSTV.abund[,c(SSTV.analyte, respName)]
+          # df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte, respName)]
+          # df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte, respName)]
+          # df.plot4 <- cl.ref.SSTV.abund[,c(SSTV.analyte, respName)]
+          # df.plot5 <- site.SSTV.abund[,c(SSTV.analyte, respName)]
+        df.plot1 <- good.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
+        df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
+        df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
+        df.plot4 <- cl.ref.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
+        df.plot5 <- site.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
           
           # PLOTS ####
           # Capture each plot in a list for the PDF
@@ -334,164 +380,289 @@ getStressorSpecificRegressions <- function(TargetSiteID
           #      width = 4*ppi, height = 3*ppi, quality=100, 
           #      pointsize=8, res = ppi)
           
-          plot.pryr %<a-% {##pryr.START
-            graphics::par(cex.main=0.8,cex.lab=0.6,font.main=2, font.lab=2)
+         # plot.pryr %<a-% {##pryr.START
+           # graphics::par(cex.main=0.8,cex.lab=0.6,font.main=2, font.lab=2)
             if (log.yn == TRUE) {
-              df.plot1 <- cbind(log10(df.plot1[,1]),df.plot1[,2])
-              df.plot2 <- cbind(log10(df.plot2[,1]),df.plot2[,2])
-              df.plot3 <- cbind(log10(df.plot3[,1]),df.plot3[,2])
-              df.plot4 <- cbind(log10(df.plot4[,1]),df.plot4[,2])
-              df.plot5 <- cbind(log10(df.plot5[,1]),df.plot5[,2])
+              # df.plot1 <- cbind(log10(df.plot1[, 1]), df.plot1[, 2])
+              # df.plot2 <- cbind(log10(df.plot2[, 1]), df.plot2[, 2])
+              # df.plot3 <- cbind(log10(df.plot3[, 1]), df.plot3[, 2])
+              # df.plot4 <- cbind(log10(df.plot4[, 1]), df.plot4[, 2])
+              # df.plot5 <- cbind(log10(df.plot5[, 1]), df.plot5[, 2])
+              df.plot1[, SSTV.analyte] <- log10(df.plot1[, SSTV.analyte])
+              df.plot2[, SSTV.analyte] <- log10(df.plot2[, SSTV.analyte])
+              df.plot3[, SSTV.analyte] <- log10(df.plot3[, SSTV.analyte])
+              df.plot4[, SSTV.analyte] <- log10(df.plot4[, SSTV.analyte])
+              df.plot5[, SSTV.analyte] <- log10(df.plot5[, SSTV.analyte])
             }
             
-            if (respName == "SensRelAbund") {
-              respText <- "Sensitive Taxa Relative Abundance"
-            } else if (respName == "SensTotAbund") {
-              respText <- "Sensitive Taxa Abundance"
-            } else if (respName == "TolRelAbund") {
-              respText <- "Tolerant Taxa Relative Abundance"
-            } else {
-              respText <- "Tolerant Taxa Abundance"
-            }
+            # if (respName == "SensRelAbund") {
+            #   respText <- "Sensitive Taxa Relative Abundance"
+            # } else if (respName == "SensTotAbund") {
+            #   respText <- "Sensitive Taxa Abundance"
+            # } else if (respName == "TolRelAbund") {
+            #   respText <- "Tolerant Taxa Relative Abundance"
+            # } else {
+            #   respText <- "Tolerant Taxa Abundance"
+            # }
             
-            varMain <- paste("Linear regression of", SSTV.analyte, "on", respText
-                             , "\n", "for", TargetSiteID,"with", paste(predint*100, "th", sep= "")
-                             , "percentile prediction interval", sep = " ")
-            if (log.yn == TRUE) {
-              varxlab <- paste("Log10", SSTV.analyte)
-            } else {
-              varxlab <- SSTV.analyte
-            }
+            # varMain <- paste("Linear regression of", SSTV.analyte, "on", respText
+            #                  , "\n", "for", TargetSiteID,"with", paste(predint*100, "th", sep= "")
+            #                  , "percentile prediction interval", sep = " ")
+            # if (log.yn == TRUE) {
+            #   varxlab <- paste("Log10", SSTV.analyte)
+            # } else {
+            #   varxlab <- SSTV.analyte
+            # }
             # There should never be a case where either x or y are always NA for all data
             if (length(df.plot1) > 0) {
-              graphics::plot(df.plot1[,2]~df.plot1[,1],main=varMain, 
-                   xlab=varxlab,ylab=respText, col="darkgrey", 
-                   pch=1, cex = 0.8, cex.lab=0.6, cex.main = 0.8, 
-                   font.main = 2, font.lab = 2, mar = c(6,4,4,2)+0.1)
+              # graphics::plot(df.plot1[,2]~df.plot1[,1],main=varMain, 
+              #      xlab=varxlab,ylab=respText, col="darkgrey", 
+              #      pch=1, cex = 0.8, cex.lab=0.6, cex.main = 0.8, 
+              #      font.main = 2, font.lab = 2, mar = c(6,4,4,2)+0.1)
             } else {
               next
             }
-            if (length(df.plot2) > 0) {
-              graphics::points(df.plot2[,2]~df.plot2[,1], 
-                     col="blue", pch=16, cex = 0.8) # blue solid dots
-            }
-            if (length(df.plot3) > 0) {
-              graphics::points(df.plot3[,2]~df.plot3[,1], 
-                     col="cyan4", pch=2, cex = 0.8) # Cyan open triangles
-            }
-            if (length(df.plot4) > 0) {
-              graphics::points(df.plot4[,2]~df.plot4[,1], 
-                     col="blue", pch=17, cex = 0.8) # Solid blue triangles
-            }
-            if (length(df.plot5) > 0) {
-              graphics::points(df.plot5[,2]~df.plot5[,1], 
-                     col="red", pch=19, cex = 1.0) # Red solid dots
-            }
-            
-            cl.x.sd <- stats::sd(df.plot3[,1])
-            cl.y.sd <- stats::sd(df.plot3[,2])
-            
-            # fix from df.plot3 to sum(df.plot3) for vert and horiz
-            # and !is.na to sum(is.na)
-            #Check for vertical line
-            if (sum(!is.na(df.plot3))==0) {
-              if (sum(df.plot3) == 0) {
-                print(paste("Vertical line for", SSTV.analyte, respName, sep=" "))
-                utils::flush.console()
-                next     #It's okay to plot the points, but not the regression line
-              }
-            }
-            #Check for horizontal line
-            if (sum(!is.na(df.plot3))==0) {
-              if (sum(df.plot3) == 0) {
-                print(paste("Horizontal line for", SSTV.analyte, respName, sep=" "))
-                utils::flush.console()
-                next     #It's okay to plot the points, but not the regression line
-              }
-            }    
-            
-            #Linear Regression (uses cluster data -- all sites in the cluster)
-            varY <- df.plot3[,2]
-            varX <- df.plot3[,1]
-            fit = stats::lm(varY~varX)
-            pred.int = stats::predict(fit,interval="prediction",level=predint)
-            fitted.values = pred.int[,1]
-            pred.lower = pred.int[,2]
-            pred.upper = pred.int[,3]
-            
-            graphics::abline(stats::lm(varY~varX), col="cyan4", lwd=1.5)
-            graphics::abline(stats::lm(pred.lower~varX), col="cyan4", lwd=1)
-            graphics::abline(stats::lm(pred.upper~varX), col="cyan4", lwd=1)
-            # 
-            slope <- summary(stats::lm(varY~varX))[[4]][[2]]
-            intercept <- summary(stats::lm(varY~varX))[[4]][[1]]
-            pval_intercept <- summary(stats::lm(varY~varX))[[4]][[7]]
-            pval_slope <- summary(stats::lm(varY~varX))[[4]][[8]]
-            slope = signif(slope, 3)
-            intercept = signif(intercept, 3)
-            pval_intercept = signif(pval_intercept, 3)
-            pval = signif(pval_slope, 3)
-            # # r? text and legend
-            r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
-            r2 = formatC(r^2,format="f",digits=3)
-            # 
-            c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
-            df.corr = data.frame(cbind(SSTV.analyte, respName, signif(c1S$statistic,2)
-                                       , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
-            names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
-            # # Create results data frame
-            # correlations ####
-            # fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
-            boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
-            boo.Append    <- TRUE
-            boo.col.names <- FALSE
-            if (boo.file.exists==FALSE) {  #First time through loop
-              # df.CorrTable <- df.corr
-              boo.Append    <- !boo.Append
-              boo.col.names <- !boo.col.names
-            } else {
-              #df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
-            }# IF, END
-            df.CorrTable <- df.corr
-            if(boo.pryr==TRUE){
-              utils::write.table(df.CorrTable
-                                 , file.path(wd, dir.sub, dir.sub2, fn_SSTVfile)
-                                 , sep="\t", quote=FALSE, row.names=FALSE
-                                 , col.names=boo.col.names, append=boo.Append) 
-            }
-            pval.corr = signif(c1S$p.value,2)
-            
-            #Print equation, r2, and p-value
-            if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-              eqn <- paste("Cluster regression: "
-                           , "y =", slope, "x +", intercept, "; ", "r2 = ",r2,"; "
-                           ,"p-value = ",pval.corr,"; ","n = ",length(varX))
-              symbshape <- c(1, 16, 2, 17, 19)
-              symbcol <- c("grey", "blue", "cyan4", "blue", "red")
-              symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
-              graphics::mtext(eqn, side=1, line = 4, bty="n", col = c("black"), cex=0.6)
-              graphics::legend(varLegOpp, inset=as.numeric(varInset), symbname, pch=symbshape, col=symbcol, cex=0.6)
-            }
-          }##plot.pryr.END
+          #   if (length(df.plot2) > 0) {
+          #     graphics::points(df.plot2[,2]~df.plot2[,1], 
+          #            col="blue", pch=16, cex = 0.8) # blue solid dots
+          #   }
+          #   if (length(df.plot3) > 0) {
+          #     graphics::points(df.plot3[,2]~df.plot3[,1], 
+          #            col="cyan4", pch=2, cex = 0.8) # Cyan open triangles
+          #   }
+          #   if (length(df.plot4) > 0) {
+          #     graphics::points(df.plot4[,2]~df.plot4[,1], 
+          #            col="blue", pch=17, cex = 0.8) # Solid blue triangles
+          #   }
+          #   if (length(df.plot5) > 0) {
+          #     graphics::points(df.plot5[,2]~df.plot5[,1], 
+          #            col="red", pch=19, cex = 1.0) # Red solid dots
+          #   }
+          #   
+          #   cl.x.sd <- stats::sd(df.plot3[,1])
+          #   cl.y.sd <- stats::sd(df.plot3[,2])
+          #   
+          #   # fix from df.plot3 to sum(df.plot3) for vert and horiz
+          #   # and !is.na to sum(is.na)
+          #   #Check for vertical line
+          #   if (sum(!is.na(df.plot3))==0) {
+          #     if (sum(df.plot3) == 0) {
+          #       print(paste("Vertical line for", SSTV.analyte, respName, sep=" "))
+          #       utils::flush.console()
+          #       next     #It's okay to plot the points, but not the regression line
+          #     }
+          #   }
+          #   #Check for horizontal line
+          #   if (sum(!is.na(df.plot3))==0) {
+          #     if (sum(df.plot3) == 0) {
+          #       print(paste("Horizontal line for", SSTV.analyte, respName, sep=" "))
+          #       utils::flush.console()
+          #       next     #It's okay to plot the points, but not the regression line
+          #     }
+          #   }    
+          #   
+          #   #Linear Regression (uses cluster data -- all sites in the cluster)
+          #   varY <- df.plot3[,2]
+          #   varX <- df.plot3[,1]
+          #   fit = stats::lm(varY~varX)
+          #   pred.int = stats::predict(fit,interval="prediction",level=predint)
+          #   fitted.values = pred.int[,1]
+          #   pred.lower = pred.int[,2]
+          #   pred.upper = pred.int[,3]
+          #   
+          #   graphics::abline(stats::lm(varY~varX), col="cyan4", lwd=1.5)
+          #   graphics::abline(stats::lm(pred.lower~varX), col="cyan4", lwd=1)
+          #   graphics::abline(stats::lm(pred.upper~varX), col="cyan4", lwd=1)
+          #   # 
+          #   slope <- summary(stats::lm(varY~varX))[[4]][[2]]
+          #   intercept <- summary(stats::lm(varY~varX))[[4]][[1]]
+          #   pval_intercept <- summary(stats::lm(varY~varX))[[4]][[7]]
+          #   pval_slope <- summary(stats::lm(varY~varX))[[4]][[8]]
+          #   slope = signif(slope, 3)
+          #   intercept = signif(intercept, 3)
+          #   pval_intercept = signif(pval_intercept, 3)
+          #   pval = signif(pval_slope, 3)
+          #   # # r? text and legend
+          #   r = stats::cor(varX, varY, method="pearson",use="pairwise.complete.obs")
+          #   r2 = formatC(r^2,format="f",digits=3)
+          #   # 
+          #   c1S <- (stats::cor.test(varX,varY,method="pearson",use="pairwise.complete.obs"))
+          #   df.corr = data.frame(cbind(SSTV.analyte, respName, signif(c1S$statistic,2)
+          #                              , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
+          #   names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+          #   # # Create results data frame
+          #   # Correlations ####
+          #   # fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
+          #   boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+          #   boo.Append    <- TRUE
+          #   boo.col.names <- FALSE
+          #   if (boo.file.exists==FALSE) {  #First time through loop
+          #     # df.CorrTable <- df.corr
+          #     boo.Append    <- !boo.Append
+          #     boo.col.names <- !boo.col.names
+          #   } else {
+          #     #df.CorrTable=rbind(df.CorrTable,df.corr)  #  if not first iteration then append
+          #   }# IF, END
+          #   df.CorrTable <- df.corr
+          #   if(boo.pryr==TRUE){
+          #     utils::write.table(df.CorrTable
+          #                        , file.path(wd, dir.sub, dir.sub2, fn_SSTVfile)
+          #                        , sep="\t", quote=FALSE, row.names=FALSE
+          #                        , col.names=boo.col.names, append=boo.Append) 
+          #   }
+          #   pval.corr = signif(c1S$p.value,2)
+          #   
+          #   #Print equation, r2, and p-value
+          #   if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
+          #     eqn <- paste("Cluster regression: "
+          #                  , "y =", slope, "x +", intercept, "; ", "r2 = ",r2,"; "
+          #                  ,"p-value = ",pval.corr,"; ","n = ",length(varX))
+          #     symbshape <- c(1, 16, 2, 17, 19)
+          #     symbcol <- c("grey", "blue", "cyan4", "blue", "red")
+          #     symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", TargetSiteID)
+          #     graphics::mtext(eqn, side=1, line = 4, bty="n", col = c("black"), cex=0.6)
+          #     graphics::legend(varLegOpp, inset=as.numeric(varInset), symbname, pch=symbshape, col=symbcol, cex=0.6)
+          #   }
+          # }##plot.pryr.END
           
-          # PDF, capture plot in list
-          boo.pryr <- TRUE
-            plot.pryr
-          boo.pryr <- FALSE
-          plots.tvr[[tvr]] <- grDevices::recordPlot()
+          # # PDF, capture plot in list
+          # boo.pryr <- TRUE
+          #   plot.pryr
+          # boo.pryr <- FALSE
+          # plots.tvr[[tvr]] <- grDevices::recordPlot()
           
-          # JPG
-          grDevices::jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
-                                          respName, ".jpg", sep = ""),
-                          width = 4*ppi, height = 3*ppi, quality=100,
-                          pointsize=8, res = ppi)
-            plot.pryr
-          grDevices::dev.off()
+          # # JPG
+          # grDevices::jpeg(filename = paste(varFileOut, SSTV.analyte, "_", 
+          #                                 respName, ".jpg", sep = ""),
+          #                 width = 4*ppi, height = 3*ppi, quality=100,
+          #                 pointsize=8, res = ppi)
+          #   plot.pryr
+          # grDevices::dev.off()
+          
+          
+          #~~~~~~~~~~new code~~~~~~~~~~~~~~~~
+          
+          # stressor.SSTV has tolval for sensitive and tolerant taxa
+          # sstv_sens_min <- stressor.SSTV[tv, "SensMin"]
+          # sstv_sens_max <- stressor.SSTV[tv, "SensMax"]
+          # sstv_tol_min  <- stressor.SSTV[tv, "TolMin"]
+          # sstv_tol_max  <- stressor.SSTV[tv, "TolMax"]
+        
+          # 20190305, drop added Bio Index value and narrative
+          df_plot_all <- reshape2::melt(good.SSTV.abund[, 1:6], id.vars=colnames(good.SSTV.abund)[1:4])
+          df_plot_all$SSTV.analyte <- df_plot_all[, SSTV.analyte]
+          levels(df_plot_all$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
+          
+          # 20190305, switch to "better" bio from all
+          df_plot_betterbio <- good.SSTV.abund[good.SSTV.abund[, BioIndex_Val] > bio_better_thresh, 1:6]
+          df_plot_betterbio <- reshape2::melt(df_plot_betterbio, id.vars=colnames(df_plot_betterbio)[1:4])
+          df_plot_betterbio$SSTV.analyte <- df_plot_betterbio[, SSTV.analyte]
+          levels(df_plot_betterbio$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
+      
+          
+          df_plot_targ <- reshape2::melt(site.SSTV.abund[, 1:6], id.vars=colnames(site.SSTV.abund)[1:4])
+          df_plot_targ$SSTV.analyte <- df_plot_targ[, SSTV.analyte]
+          levels(df_plot_targ$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
+          
+          # factors by default are alphebetical so should be ok that every plot will be in the same order
+          
+          # ggplot ####
+          
+          {##PLOT VARIABLES ~ START
+          ## Plot, Variables, Strings
+          str_title <- paste(TargetSiteID, SSTV.analyte, sep=" ~ ")
+          str_subtitle <- paste0("Samples with better biology (index > ", signif(bio_better_thresh, 3), ")")
+          str_xlab  <- ""
+          str_ylab  <- "Relative Abundance"
+          str_caption <- ""
+          
+          ## Plot, Variables, Colors
+          # col_sites_all     <- "dark gray"
+          # col_sites_all_ref <- "blue"
+          # col_sites_cl      <- "cyan3"
+          # col_sites_cl_ref  <- col_sites_all_ref
+          col_sites_targ    <- "red"
+          # col_line          <- "black"
+          
+          ## Plot, Variables, Fill
+          # fill_sites_all     <- col_sites_all
+          # fill_sites_all_ref <- fill_sites_all
+          # fill_sites_cl      <- col_sites_cl
+          # fill_sites_cl_ref  <- fill_sites_cl 
+          fill_sites_targ    <- col_sites_targ
+          
+          ## Plot, Variables, Points
+          # pch_sites_all     <- 19 # solid circle
+          # pch_sites_all_ref <- 21 # circle outline
+          # pch_sites_cl      <- 19
+          # pch_sites_cl_ref  <- pch_sites_all_ref
+          pch_sites_targ    <- 17 # triangle
+          
+          ## Plot, Variables, Sizes
+          cex_mod <- 2
+          # cex_sites_all     <- 1 #cex_mod*0.3
+          # cex_sites_all_ref <- cex_sites_all
+          # cex_sites_cl      <- cex_mod*0.95
+          # cex_sites_cl_ref  <- cex_sites_cl
+          cex_sites_targ    <- cex_mod*1.2
+          
+          ## Plot, Variables, Target Site Line
+          targ_line_col <- col_sites_targ
+          targ_line_lty <- 2
+          targ_line_lwd <- 1
+          
+          ## Plot, Variables, Legend
+          leg_name   <- "Sites"
+          # leg_labels <- c("all", "all ref", "cluster", "cluster ref", "target")
+          # leg_shape  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
+          # leg_col    <- c(col_sites_all, col_sites_all_ref, col_sites_cl, col_sites_cl_ref, col_sites_targ)
+          # leg_fill   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
+          leg_labels <- c("target")
+          leg_shape  <- c(pch_sites_targ)
+          leg_col    <- c(col_sites_targ)
+          leg_fill   <- c(fill_sites_targ)
+          
+          }##PLOT VARIABLES ~ END
+          
+          
+          p_SSTV <- ggplot2::ggplot(df_plot_betterbio, ggplot2::aes(variable, value)) + 
+                    ggplot2::geom_boxplot(ggplot2::aes(group=variable)) + 
+                    ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_ylab) +
+                    ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.title.y = ggplot2::element_blank()) +
+                    ggplot2::coord_flip()
+          
+          # target site, points or line
+          display_target <- "lines"  # "lines", "points"
+          if(display_target=="points"){##IF~display_target~START
+            p_SSTV <- p_SSTV + ggplot2::geom_jitter(data=df_plot_targ, ggplot2::aes(group=variable, y=value, color="target", shape="target", fill="target"), size=2, width=0.1) +
+                      ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) + 
+                      ggplot2::scale_fill_manual(name=leg_name, labels=leg_labels, values=leg_fill)
+          } else if(display_target=="lines"){
+            p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data=df_plot_targ, ggplot2::aes(group=variable, ymin=value, ymax=value, color="target"), lty=targ_line_lty, lwd=targ_line_lwd) +
+                      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=targ_line_col)
+          }##IF~display_target~START
+          #
+          print(p_SSTV)
+         # plots.tvr[[tvr]] <- grDevices::recordPlot()
+          plots.tv[[tv]] <- grDevices::recordPlot()
+          #
+          #fn_jpg <- paste0(varFileOut, SSTV.analyte, "_", respName, ".jpg")
+          fn_jpg <- paste0(varFileOut, SSTV.analyte, ".jpg")
+          ggplot2::ggsave(fn_jpg, p_SSTV, width=plot_W, height=plot_H, units="in")
+          
+          # ggplot save
+          
+          
+          
+          #~~~~~~~~~~old code~~~~~~~~~~~~~~~~~
+
+          
 
           varFlag <- 0
           
-        }##FOR.r.END  # End For loop over responses
-        grDevices::graphics.off()
+        #}##FOR.r.END  # End For loop over responses
+        #grDevices::graphics.off()
         
       }##FOR.tv.END  # End For loop over stressors
       # SSTVfile <- paste("Results/",TargetSiteID, "/", TargetSiteID, ".SSTVCorrs.txt", sep="")
@@ -503,31 +674,37 @@ getStressorSpecificRegressions <- function(TargetSiteID
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
   pdf(file=fn_pdf, width=8)
-  for (tvr in plots.tvr){##FOR.gp.START
-    #grDevices::replayPlot(g.plot)
-    if(is.null(tvr)==TRUE) {next}
-    grDevices::replayPlot(tvr)
-  }##FOR.gp.END
+    # for (tvr in plots.tvr){##FOR.gp.START
+    #   #grDevices::replayPlot(g.plot)
+    #   if(is.null(tvr)==TRUE) {next}
+    #   grDevices::replayPlot(tvr)
+    # }##FOR.gp.END
+    for (tv in plots.tv){##FOR.gp.START
+      #grDevices::replayPlot(g.plot)
+      if(is.null(tv)==TRUE) {next}
+      grDevices::replayPlot(tv)
+    }##FOR.gp.END
   grDevices::dev.off()
-  rm(plots.tvr)
+#  rm(plots.tvr)
+  rm(plots.tv)
   
-  # CorrPlot ####
-  ## read
-  fn_corr <- paste0(TargetSiteID,".SR.SSTV.Corrs.txt")
-  df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
-  ## transpose
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
-  df_corrplot <- t(df_corr_r[,-1])
-  colnames(df_corrplot) <- df_corr_r[,1]
-  ## jpg
-  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.SSTV.CorrPlot.jpg"))
-  grDevices::jpeg(filename = fn_jpg_cp
-                  , width = 4 * ppi
-                  , height = 3 * ppi
-                  , quality=100
-                  )
-      corrplot::corrplot(df_corrplot, method="circle")
-  grDevices::dev.off()
+  # # CorrPlot ####
+  # ## read
+  # fn_corr <- paste0(TargetSiteID,".SR.SSTV.Corrs.txt")
+  # df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  # ## transpose
+  # df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
+  # df_corrplot <- t(df_corr_r[,-1])
+  # colnames(df_corrplot) <- df_corr_r[,1]
+  # ## jpg
+  # fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.SSTV.CorrPlot.jpg"))
+  # grDevices::jpeg(filename = fn_jpg_cp
+  #                 , width = 4 * ppi
+  #                 , height = 3 * ppi
+  #                 , quality=100
+  #                 )
+  #     corrplot::corrplot(df_corrplot, method="circle")
+  # grDevices::dev.off()
   #
   
 }##FUNCTION.END

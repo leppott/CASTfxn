@@ -121,7 +121,7 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example #2, AZ data
 #' #Load Data
-#' df.data <- data_CoOccur_AZ_Hi
+#' df.data <- data_CoOccur_AZ_Lo
 #' #
 #' col.Group     <- "Group"
 #' col.Bio       <- "IBI"
@@ -250,7 +250,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
   # Analysis for each "test" sample
   # Loop, i ####
   for (i in ID.plot){##FOR.i.START
-
+    #
     TargetSiteID <- i
     #
     wd = getwd()
@@ -279,7 +279,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
     #
     df.i <- df.data[df.data[,col.ID]==i, col.KEEP]
     i.Group <- df.i[,col.Group][1]
-    i.Bio <- min(df.data[df.data[,col.ID]==i, col.Bio], na.rm=TRUE)
+    i.Bio <- min(df.data[df.data[, col.ID]==i, col.Bio], na.rm=TRUE)
 
     # Filter for selected variables
     
@@ -372,22 +372,27 @@ getCoOccur <- function(df.data, ID.plot=NULL
          ppi       <- 300
          
          # Create (ggplot)
-         lab.sub <- paste0("Comparator sites with higher ", col.Bio, " scores and ", j, " (", lab.N, ").\n "
+         lab.sub <- paste0("Cluster sites with higher ", col.Bio, " scores and ", j, " (", lab.N, ").\n "
                            , lab.Score,".")
          
          bio_col <- c("blue", "dark gray")
          bio_shp <- c(21, 25) # circle and down triangle
-         lab_cluster <- paste0("Cluster = ",i.Group)
+         lab_comp <- paste0("Cluster = ",i.Group)
          # scoring lines
          box_q75 <- df.scores.i.n$q75[1]
          box_q50<- df.scores.i.n$q50[1]
+         
+         ## Plot, Variables, Target Site Line
+         targ_line_col <- "red"
+         targ_line_lty <- 2
+         targ_line_lwd <- 1
          
          p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
            ggplot2::geom_boxplot() +
            ggplot2::coord_flip() + 
            ggplot2::geom_jitter(size=2, alpha=0.5
                                 , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) +
-           ggplot2::geom_hline(yintercept = df.i[,j], color="red", lty=2, lwd=1) + 
+           ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd) + 
            # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
            #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
            ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
@@ -396,7 +401,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
            ggplot2::labs(title=i, caption=lab.sub) + 
            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
            ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
-           ggplot2::labs(y=j, x=lab_cluster) + 
+           ggplot2::labs(y=j, x=lab_comp) + 
            ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2)
          # Capture plot (jpg)
          # p1
@@ -453,7 +458,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
            df.scores.i.n[, "Sc_SR"] <- j_SR_score
            
            # 
-           lab.sub <- paste0("All comparator sites with both ", col.Bio, " and ", j
+           lab.sub <- paste0("All cluster sites with both ", col.Bio, " and ", j
                              , " (n=", n_cc_df_plot, ").\n Score = "
                              , paste(j_SR_score, collapse=", "),".")
            
@@ -465,7 +470,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
              ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
              ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
              ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
-             ggplot2::geom_vline(xintercept = df.i[,j], color="red", lty=2, lwd=1) + 
+             ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd) + 
              ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black", lty=2) +
              #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) + 
              ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) + 

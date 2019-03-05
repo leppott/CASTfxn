@@ -14,22 +14,23 @@ myFile <- "AZBenthicCountsFinal.tab"
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 # format
-df$CollDate <- as.Date(df$CollDate)
+df$CollDate <- as.Date(df$CollDate, format="%m/%d/%Y")
 # add columns
 df$StationID_Master <- df$StationID
 df$BMISampID        <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
 df$BMI.Metrics.SampID <- df$BMISampID
 
-# Add elevation category (20180622)
-## use Sites
-ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
-dim(df)
-df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
-dim(df)
+# # Add elevation category (20180622)
+# ## use Sites
+# ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
+# dim(df)
+# df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
+# dim(df)
+# comment out 20190227
 table(df$ElevCategory, useNA="ifany")
 
 # 1.2. Process Data
-View(df)
+View(head(df))
 # QC check
 dim(df)
 # structure

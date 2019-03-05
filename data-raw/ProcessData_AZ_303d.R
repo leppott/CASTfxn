@@ -14,9 +14,9 @@ myFile <- "AZSitesFinal.tab"
 df.sites <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 # Create new dataset
-df <- unique(df.sites[,c("COMID", "STATION_NAME")])
-df$ComID <- df$COMID
-df$WATER.BODY.NAME <- as.character(df$STATION_NAME)
+df <- unique(df.sites[,c("COMID_NHD2", "WaterbodyName")])
+df$ComID <- df$COMID_NHD2
+df$WATER.BODY.NAME <- as.character(df$WaterbodyName)
 df <- df[,c(3,4)]
 df$POLLUTANT <- as.character(NA)
 df$FINAL.LISTING.DECISION <- as.character(NA)

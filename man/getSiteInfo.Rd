@@ -114,9 +114,16 @@ my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
 map_proj <- my.aea
 
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-                                , data.SampSummary, data.303d.ComID
-                                , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline)
+list.SiteSummary <- getSiteInfo(TargetSiteID
+                                , dir_results
+                                , data.Stations.Info
+                                , data.SampSummary
+                                , data.303d.ComID
+                                , data.bmi.metrics
+                                , data.algae.metrics
+                                , data.cluster
+                                , data.mod
+                                , map_proj
+                                , map_outline
+                                , map_flowline)
 }

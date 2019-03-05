@@ -59,11 +59,18 @@
 #' map_proj <- my.aea
 #' 
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-#'                                 , data.SampSummary, data.303d.ComID
-#'                                 , data.bmi.metrics, data.algae.metrics
-#'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID
+#'                                 , dir_results
+#'                                 , data.Stations.Info
+#'                                 , data.SampSummary
+#'                                 , data.303d.ComID
+#'                                 , data.bmi.metrics
+#'                                 , data.algae.metrics
+#'                                 , data.cluster
+#'                                 , data.mod
+#'                                 , map_proj
+#'                                 , map_outline
+#'                                 , map_flowline)
 #' 
 #' # Data getChemDataSubset
 #' # data import, example 
@@ -77,9 +84,13 @@
 #' data.chem.info     <- data_ChemInfo
 #' 
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
+#' list.data <- getChemDataSubsets(TargetSiteID
+#'                                 , comid=site.COMID
+#'                                 , cluster=site.Clusters
+#'                                 , data.cluster=data.cluster
+#'                                 , data.Stations.Info=data.Stations.Info
+#'                                 , data.chem.raw=data.chem.raw
+#'                                 , data.chem.info=data.chem.info)
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 # QC
 # TargetSiteID <- "UGBLR028.77"
@@ -94,6 +105,7 @@ getChemDataSubsets <- function(TargetSiteID, comid, cluster, data.cluster
   #
   # Debug ####
   boo.DEBUG <- FALSE
+  #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     comid <- site.COMID
     cluster <- site.Clusters

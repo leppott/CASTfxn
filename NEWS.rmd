@@ -36,6 +36,26 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9164 (2019-03-05)
+
+* getStressorSpecificRegressions.R
+    + Revised plot output.  Issue #50 and 44.
+    + Old function R file renamed (prefixed with "z_") and marked with keyword "internal".
+    + Remove stressor loop.  Always sens and tol taxa.
+* Data
+    + Rebuild all data from raw data files using processing scripts.
+    + Use dataset received 2019-02-27.
+* getSSDplot
+    + Update example to 'print' plots.
+* getCoOccur
+    + cluster to comparator.
+        - Variables in function only.
+* getBioStressorResponses
+    + Ensure Alg version works, Issue #46
+    + Update example to remove bad response variables, Issue #46
+* DESCRIPTION
+    + Move pryr package from imports to suggests.  Issue #52.
+
 ## Changes in Version 0.1.0.9163 (2019-02-26)
 
 * getClusterInfo.R

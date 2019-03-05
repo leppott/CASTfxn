@@ -18,28 +18,32 @@ myCol <- c("StationID_Master", "CollDate", "CSCI", "O_E", "MMI_Score")
 myCol %in% names(df)
 # add columns
 df$StationID_Master   <- df$StationID
-df$CollDate           <- as.Date(df$BenCollDate)
-df$BMISampID          <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
-df$BMI.Metrics.SampID <- df$BMISampID
-# df$CSCI               <- df$IBI
-# df$O_E                <- as.character(NA)
-# df$MMI_Score          <- df$IBI
+df$CollDate           <- as.Date(df$CollDate, format="%m/%d/%Y")
+df$BenCollDate           <- as.Date(df$BenCollDate, format="%m/%d/%Y")
+#df$BMISampID          <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
+#df$BMI.Metrics.SampID <- df$BMISampID
+df$CSCI               <- df$IBI
+df$O_E                <- as.character(NA)
+df$MMI_Score          <- df$IBI
 
-# Add elevation category (20180622)
-## use Sites
-ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
-dim(df)
-df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
-dim(df)
+# # Add elevation category (20180622)
+# ## use Sites
+# ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
+# dim(df)
+# df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
+# dim(df)
+# comment out 20190227
 table(df$ElevCategory, useNA="ifany")
 
-df <- df[,c("StationID_Master","BMI.Metrics.SampID","ElevCategory","IBI", 
-            "TotalTaxSPL_Sc","DipTaxSPL_Sc","IntolTaxSPL_Sc","HBISPL_Sc",
-            "PlecoPct_Sc","ScrapPctSPL_Sc","ScrapTaxSPL_Sc","TrichTax_Sc", 
-            "EphemTax_Sc","EphemPct_Sc","Dom01PctSPL_Sc")]
+# df <- df[,c("StationID_Master","BMI.Metrics.SampID","ElevCategory","IBI", 
+#             "TotalTaxSPL_Sc","DipTaxSPL_Sc","IntolTaxSPL_Sc","HBISPL_Sc",
+#             "PlecoPct_Sc","ScrapPctSPL_Sc","ScrapTaxSPL_Sc","TrichTax_Sc", 
+#             "EphemTax_Sc","EphemPct_Sc","Dom01PctSPL_Sc")]
+# 20190228, remove, keep all columns
+
 
 # 1.2. Process Data
-View(df)
+View(head(df))
 # QC check
 dim(df)
 # structure

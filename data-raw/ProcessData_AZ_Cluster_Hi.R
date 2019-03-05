@@ -10,13 +10,18 @@ wd <- getwd() # assume is package directory
 
 # 1. Get data and process#####
 # 1.1. Import Data
-myFile <- "AZ_ClustersHiElev.txt"
+#myFile <- "AZ_ClustersHiElev.txt"
+myFile <- "AZ_Clust_HI.txt" # 20190228
 df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 # Check for colnames
 myCol <- c("COMID", "H6_noland", "H6_land", "ElevWs", "WsAreaSqKm", "PrecipWs"
            , "TmeanWs", "W___AGRIC", "W___URBAN", "W___FOREST")
 myCol %in% names(df)
+#
+# missing col, 20190227
+myCol[!(myCol %in% names(df))]
+
 # add extra columns
 df$H6_noland <- as.character(NA)
 df$H6_land <- as.character(NA)
@@ -30,7 +35,11 @@ df$clust_noland <- df$clust
 df$clust_land <- df$clust
 
 # Add elevation category (20180622)
-df$ElevCategory <- "HI"
+#df$ElevCategory <- "HI"
+
+# missing col, 20190227
+myCol[!(myCol %in% names(df))]
+
 
 myCol %in% names(df)
 

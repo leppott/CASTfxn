@@ -33,7 +33,7 @@ myTaxa <- "Taxa"
 myExp  <- "Exposure_mgperL"
 # Run function
 p1 <- getSSDplot(myDF, myRT, myTaxa, myExp)
-p1
+print(p1)
 # can save output to a file
 \dontrun{
 library(ggplot2)
@@ -52,7 +52,7 @@ myExp  <- "Exposure"
 myDF[,myRT] <- "LC50"
 # Run function
 p2 <- getSSDplot(myDF, myRT, myTaxa, myExp)
-p2
+print(p2)
 #' # can save output to a file
 \dontrun{
 fn_p2 <- file.path(getwd(), "Results", "SSD_example2.pdf")
@@ -70,7 +70,7 @@ myTaxa <- "Taxa"
 myExp  <- "Exposure"
 # Run function
 p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
-p3
+print(p3)
 # 
 # can save output to a file
 \dontrun{

@@ -42,9 +42,6 @@ Biological (Algae or BMI) stressor regressions.
 # Example 1, BMI
 predint <- 0.75
 varLegLoc <- "topright"
-BioResp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
-             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
-             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
              
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
@@ -124,8 +121,13 @@ LogTransf <- stressors_logtransf
 biocomm <- "BMI"
 list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)     
   
-# Run getBMIStressorResponses   
-biocomm <- "BMI"       
+# Data getBMIStressorResponses   
+biocomm <- "BMI"    
+BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
+             
+# Run getBMIStressorResponses                 
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
                         , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 
@@ -211,10 +213,10 @@ list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)
 
 # Data getBioStressorResponses
 data.algae.metrics <- data_AlgMetrics
-BioResp <- colnames(data.algae.metrics[6:ncol(data.algae.metrics)])
+BioResp <- colnames(data.algae.metrics[6:48])
+biocomm <- "algae"
 
 # Run getAlgStressorResponses
-biocomm <- "algae"
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
                        , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 }

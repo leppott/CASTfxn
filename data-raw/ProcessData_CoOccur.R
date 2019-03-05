@@ -38,3 +38,6 @@ devtools::use_data(data_CoOccur_CA, overwrite = TRUE)
 
 data_CoOccur_AZ_Hi <- df_AZ_Hi
 devtools::use_data(data_CoOccur_AZ_Hi, overwrite = TRUE)
+
+data_CoOccur_AZ_Lo <- df_AZ_Lo
+devtools::use_data(data_CoOccur_AZ_Lo, overwrite = TRUE)

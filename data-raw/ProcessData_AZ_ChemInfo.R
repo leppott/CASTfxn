@@ -15,12 +15,15 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 
 # Modify Names to match existing code
 df$Analyte <- df$StdParamName
-df$GroupNum <- as.numeric(df$Category)
-df$GroupName <- df$Category
+# 20190227, comment out, 'Category' no longer in data file
+#    already have GroupNum and GroupName
+# df$GroupNum <- as.numeric(df$Category)
+# df$GroupName <- df$Category
 df <- df[df$UseInStressorID==1,]
 
+
 # 1.2. Process Data
-View(df)
+View(head(df))
 # QC check
 dim(df)
 # structure

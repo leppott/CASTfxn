@@ -140,7 +140,7 @@ getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example #2, AZ data
 #Load Data
-df.data <- data_CoOccur_AZ_Hi
+df.data <- data_CoOccur_AZ_Lo
 #
 col.Group     <- "Group"
 col.Bio       <- "IBI"

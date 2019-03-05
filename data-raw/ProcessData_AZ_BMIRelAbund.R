@@ -16,20 +16,30 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile), stringsAsFactors = FAL
 # Modify format
 df$CollDate <- as.Date(df$CollDate, format="%m/%d/%Y")
 
+names(df)
+
 # Add columns
-df$StationID_Master   <- df$StationID
+#df$StationID_Master   <- df$StationID
 df$Station_Date       <- df$CollDate
 df$BMISampID          <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")
 df$BMI.Metrics.SampID <- df$BMISampID
+df$StationID_Master   <- df$StationID
 
+dim(df)
 
 # Add elevation category (20180622)
+myFile <- "AZSitesFinal.tab"
+df.sites <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 ## use Sites
 ec <- data_Sites[, c("StationID_Master", "ElevCategory")]
 dim(df)
 df <- merge(df, ec, by="StationID_Master", all.x=TRUE)
 dim(df)
 table(df$ElevCategory, useNA="ifany")
+
+
+
+
 
 # 1.2. Process Data
 View(df)

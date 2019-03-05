@@ -89,11 +89,18 @@
 #' map_proj <- my.aea
 #'
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-#'                                 , data.SampSummary, data.303d.ComID
-#'                                 , data.bmi.metrics, data.algae.metrics
-#'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#' list.SiteSummary <- getSiteInfo(TargetSiteID
+#'                                 , dir_results
+#'                                 , data.Stations.Info
+#'                                 , data.SampSummary
+#'                                 , data.303d.ComID
+#'                                 , data.bmi.metrics
+#'                                 , data.algae.metrics
+#'                                 , data.cluster
+#'                                 , data.mod
+#'                                 , map_proj
+#'                                 , map_outline
+#'                                 , map_flowline)
 #
 #' @export
 getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results")
