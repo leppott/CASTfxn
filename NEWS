@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-05 11:25:09
+    #> Last Update: 2019-03-05 15:42:16
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9165 (2019-03-05)
+
+  - getStressorList
+      - Fails when have no reference sites.
+          - Change trigger for plotting ref sites.
 
 ## Changes in Version 0.1.0.9164 (2019-03-05)
 

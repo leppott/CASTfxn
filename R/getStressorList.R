@@ -99,6 +99,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   
   # DEBUGGING ####
   boo.DEBUG <- FALSE
+  #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 2
   }##IF.boo.DEBUG.END
@@ -140,6 +141,12 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     gpchems <- subset(chem.info, GroupName == groupnames[g,], select = "ConvertTo")
     gpcoolvar <- subset(coolvar, coolvar %in% gpchems$ConvertTo)
     n <- length(gpcoolvar)
+    #
+    if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
+      print(paste0("Item (", g, "/", numgps, ")"))
+      flush.console()
+    }##IF~boo.DEBUG~START
+    #
     if(n>0) { ##FOR.n.START
       # plot.pryr %<a-% {##pryr.START
       #   maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
@@ -270,14 +277,14 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       
       # ggplot, main
       p_SL <- ggplot2::ggplot(data=df_plot_long) + 
-                ggplot2::geom_boxplot(ggplot2::aes(y=value, x=GrpNm))  + 
+                ggplot2::geom_boxplot(ggplot2::aes(x=GrpNm, y=value))  + 
                 ggplot2::coord_flip() + 
                 ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_xlab, x=str_ylab) + 
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.text.x = ggplot2::element_blank(), axis.ticks.x=ggplot2::element_blank())
       #
       # ggplot, points subsets
       ## Cluster, Ref
-      if(nrow(cluster.ref.chem.data)!=0){##IF~nrow.df_plot_long_ref~START
+      if(nrow(df_plot_long_ref)!=0){##IF~nrow.df_plot_long_ref~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="cl_ref", shape="cl_ref", fill="cl_ref"), size=1)
       } else {
         p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref", shape="cl_ref", fill="cl_ref")) 
