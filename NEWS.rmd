@@ -36,6 +36,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9166 (2019-03-07)
+
+* getBioStressorResponses
+    + Fix errors from testing.
+        - Remove extra brackets for sections.
+        - Add extra QC on correlation plot.
+        - Output item message for ones skipped.
+
 ## Changes in Version 0.1.0.9165 (2019-03-05)
 
 * getStressorList

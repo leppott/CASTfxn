@@ -245,7 +245,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   }##IF.biocomm.END
   
   
-  {# QC, NUMERIC ####
+  #{
+  # QC, NUMERIC ####
   all.x.str_numeric <- unlist(lapply(list.MatchBioData[[all.x.str]], is.numeric)) 
   all.x.rsp_numeric <- unlist(lapply(list.MatchBioData[[all.x.rsp]], is.numeric)) 
   #
@@ -269,7 +270,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     stop(msg_stop_num_rsp)
   }##IF~len_rsp~END
   #  
-  }##QC, NUMERIC ~ END
+  #}##QC, NUMERIC ~ END
   
   
   col_StationID  <- "StationID_Master"
@@ -297,10 +298,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #QC
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     # p
-    stressors <- stressors[1]
+    #stressors <- stressors[12]
     p <- 1
     #q
-    BioResp <- BioResp[c(48:51)]
+    #BioResp <- BioResp[c(7:11)]
     q <- 1
   }##IF.boo.DEBUG.END
 
@@ -361,7 +362,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       }##IF.boo.DEBUG.END
       
       # Data Munging ####
-      {##NoIssues.Munging.START
+      #{##NoIssues.Munging.START
       # Columns to keep
       col_keep <- c(col_StationID, col_ChemSampID, col_Bio_Metrics_SampID)
       col_keep_str <- c(col_keep, stressName)
@@ -376,8 +377,18 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       colnames(df_plot_all)[colnames(df_plot_all)==stressName] <- "Stressor"
       colnames(df_plot_all)[colnames(df_plot_all)==respName]   <- "Response"
       # QC
-      if (nrow(df_plot_all) < min_cases) { next }
-      if(sum(is.na(df_plot_all$Stress))==nrow(df_plot_all)) {next}
+      if (nrow(df_plot_all) < min_cases) { 
+        txt.score <- "< 20 cases"
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
+        print(msg.status)
+        next 
+      }
+      if(sum(is.na(df_plot_all$Stress))==nrow(df_plot_all)) {
+        txt.score <- "stressors all NA or NAN"
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
+        print(msg.status)
+        next 
+      }
       
       #get all ref data to plot
       all.ref.xvar <- subset(all.xvar, all.xvar$StationID_Master %in% ref.sites)
@@ -424,7 +435,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
       }##IF.log.yn.END
       
-      }##NoIssues.Munging.END
+      #}##NoIssues.Munging.END
       
       # LM and Corr ####
       if(nrow(df_plot_cl)>0){##IF~nrow(df_plot_cl)~START
@@ -458,7 +469,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       }##IF~nrow(df_plot_cl)~END
 
 
-      {# Plot, Variables ~ START
+      #{# Plot, Variables ~ START
       #
       ## Plot, Variables, Strings
       str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
@@ -512,7 +523,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       leg_shape  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_all, col_sites_all_ref, col_sites_cl, col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
-      }# Plot, Variables ~ END
+     # }# Plot, Variables ~ END
       
       # ggplot ####
       # Plot, Plot
@@ -574,7 +585,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
 
 
         # # Create results data frame
-        if(boo_corr==TRUE){
+        if(boo_corr==TRUE){##IF~boo_corr~START
           if (varFlag==1) {  #First time through loop
             df.CorrTable <- df.corr
           } else {
@@ -582,10 +593,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           } # IF, END
           boo.Append    <- TRUE
           boo.col.names <- FALSE
-          if (pq==1){
+          if (pq==1){##IF~pq~START
             boo.Append    <- !boo.Append
             boo.col.names <- !boo.col.names
-          }
+          }##IF~pq~END
           #if(boo.pryr==TRUE){
           fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
           utils::write.table(df.CorrTable
@@ -594,7 +605,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
                              , col.names=boo.col.names, append=boo.Append)  
           #}
           pval.corr = signif(c1S$p.value, 2)
-        }
+        }##IF~boo_corr~END
         
         
         # #Print equation, r2, and p-value
@@ -730,8 +741,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   ## read
   fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
   df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
-  ## transpose
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
+  ## transpose 
+  # 20190305; shouldn't need mean or unique but just in case, should be complete dups
+  df_corr <- unique(df_corr)
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, fun.aggregate=mean, value.var="estimate")
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   ## jpg
