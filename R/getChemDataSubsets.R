@@ -38,8 +38,15 @@
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
+#' 
+#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' if(elev_cat=="HI"){
+#'    data.cluster <- data_Cluster_Hi
+#' } else if(elev_cat=="LO") {
+#'    data.cluster <- data_Cluster_Lo
+#' }
 #'
 #' # Map data
 #' # San Diego
@@ -101,15 +108,16 @@
 getChemDataSubsets <- function(TargetSiteID, comid, cluster, data.cluster
                                , data.Stations.Info, data.chem.raw, data.chem.info) {
   #
-  useLU <- FALSE
-  #
   # Debug ####
   boo.DEBUG <- FALSE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    comid <- site.COMID
+    comid   <- site.COMID
     cluster <- site.Clusters
   }##IF.boo.DEBUG.END
+  
+  #
+  useLU <- FALSE
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()

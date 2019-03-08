@@ -36,6 +36,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9167 (2019-03-08)
+
+* Assign data.cluster based on information in data_Sites.
+    + Modify examples in each function.
+        - getSiteInfo
+        - getChemDataSubsets
+        - getBioMatches
+        - getBioStressorResponses
+        - getClusterInfo
+        - getStressorList
+        - getStressorSpecificRegressions
+
 ## Changes in Version 0.1.0.9166 (2019-03-07)
 
 * getBioStressorResponses

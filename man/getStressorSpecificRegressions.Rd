@@ -71,9 +71,16 @@ data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi     # need for getSiteInfo and getChemDataSubsets
 data.mod           <- data_ReachMod
 data.MT.bmi        <- data_BMIMasterTaxa
+
+# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
 
 # Map data
 # San Diego

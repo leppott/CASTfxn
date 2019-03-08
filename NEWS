@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-07 16:09:29
+    #> Last Update: 2019-03-08 10:03:22
 
 # Planned Updates
 
@@ -23,6 +23,18 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9167 (2019-03-08)
+
+  - Assign data.cluster based on information in data\_Sites.
+      - Modify examples in each function.
+          - getSiteInfo
+          - getChemDataSubsets
+          - getBioMatches
+          - getBioStressorResponses
+          - getClusterInfo
+          - getStressorList
+          - getStressorSpecificRegressions
 
 ## Changes in Version 0.1.0.9166 (2019-03-07)
 
