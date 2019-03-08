@@ -478,6 +478,13 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
 
       #{# Plot, Variables ~ START
       #
+      
+      ## Plot, portions
+      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref)>0, TRUE, FALSE)
+      boo_plot_cl     <- ifelse(nrow(df_plot_cl)>0, TRUE, FALSE)
+      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref)>0, TRUE, FALSE)
+      boo_plot_targ   <- ifelse(nrow(df_plot_site)>0, TRUE, FALSE)
+      
       ## Plot, Variables, Strings
       str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
       str_subtitle <- "Linear regression with 75th percentile prediction interval"
@@ -544,33 +551,30 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         #  
         # ggplot, point subsets
         # Add points if exist, otherwise plot dummy values
-        if(nrow(df_plot_all_ref)>0){##IF~nrow(df_plot_all_ref)~START
+        if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
           p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="all ref", shape="all ref", fill="all ref"), size=cex_sites_all_ref)
         } else {
           p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="all ref", shape="all ref", fill="all ref"))
-        }##IF~nrow(df_plot_all_ref)~END
+        }##IF~boo_plot_ref~END
         #
-        #
-        if(nrow(df_plot_cl)>0){##IF~nrow(df_plot_cl)~START
+        if(boo_plot_cl==TRUE){##IF~boo_plot_cl~START
           p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster", shape="cluster", fill="cluster"), size=cex_sites_cl)
         } else {
           p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster", shape="cluster", fill="cluster"))
-        }##IF~nrow(df_plot_cl)~END  
-        # 
+        }##IF~boo_plot_cl~END  
         #
-        if(nrow(df_plot_cl_ref)>0){##IF~nrow(df_plot_cl_ref)~START
+        if(boo_plot_cl_ref==TRUE){##IF~boo_plot_cl_ref~START
           p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster ref", shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref)
         } else {
           p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster ref", shape="cluster ref", fill="cluster ref"))
-        }##IF~nrow(df_plot_cl_ref)~END
+        }##IF~boo_plot_cl_ref~END
         #
-        #
-        if(nrow(df_plot_site)>0){##IF~nrow(df_plot_site)~START
+        if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
           p_SR <- p_SR + ggplot2::geom_point(data=df_plot_site, ggplot2::aes_(x=~Stressor,y=~Response, color="target", shape="target", fill="target"), size=cex_sites_targ)
         } else {
           p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
         }
-        ##IF~nrow(df_plot_site)~END
+        ##IF~boo_plot_targ~END
         # 
         # Add rest of plot  
         p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 

@@ -189,6 +189,10 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     colnames(df_ggplot_ref)  <- c("var", str_xlab)
     colnames(df_ggplot_targ) <- c("var", str_xlab)
     
+    ## Plot, portions
+    boo_plot_ref <- ifelse(nrow(df_ggplot_ref)!=0, TRUE, FALSE)
+    boo_plot_targ <- ifelse(nrow(df_ggplot_targ)!=0, TRUE, FALSE)
+
     ## Plot, Variables, Output Size (inches)
     plot_H <- 4
     plot_W <- 9
@@ -236,17 +240,17 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     
     # ggplot, point subsets
     ## Ref
-    if(nrow(df_ggplot_ref)!=0){##IF~df_ggplot_ref~START
+    if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
       p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
     } else {
       p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all", shape="ref_all", fill="ref_all")) 
-    }##IF~df_ggplot_ref~END
+    }##IF~boo_plot_ref~END
     ## Target Site
-    if(nrow(df_ggplot_targ)!=0){##IF~nrow.df_plot_long_targ~START
+    if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
       p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ)
     } else {
       p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
-    }##IF~df_ggplot_targ~END
+    }##IF~boo_plot_targ~END
       
       
     # ggplot, Legend and other

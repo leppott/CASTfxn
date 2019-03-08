@@ -36,6 +36,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9168 (2019-03-08)
+
+* Modify QC procedures for plotting missing categories of data.
+    + getStressorRef
+    + getClusterInfo  
+    + getBioMatches   
+    + getBioStressorResponses 
+
 ## Changes in Version 0.1.0.9167 (2019-03-08)
 
 * Assign data.cluster based on information in data_Sites.

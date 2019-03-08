@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-08 10:03:22
+    #> Last Update: 2019-03-08 11:34:28
 
 # Planned Updates
 
@@ -23,6 +23,14 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9168 (2019-03-08)
+
+  - Modify QC procedures for plotting missing categories of data.
+      - getStressorRef
+      - getClusterInfo  
+      - getBioMatches  
+      - getBioStressorResponses
 
 ## Changes in Version 0.1.0.9167 (2019-03-08)
 
