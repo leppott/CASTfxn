@@ -1,0 +1,325 @@
+## ----Setup, include=FALSE------------------------------------------------
+knitr::opts_chunk$set(echo=TRUE, eval=FALSE)
+library(knitr)
+library(CASTfxn)
+
+## ----Example-------------------------------------------------------------
+#  
+#  # Directory
+#  CurrentDir <- getwd()
+#  myDir.Data <- paste(CurrentDir,"data/",sep="/")
+#  
+#  predint <- 0.75
+#  varLegLoc <- "topright"
+#  
+#  TargetSiteID <- "SRCKN001.61"
+#  
+#  # getSiteInfo ####
+#  # dataset inputs
+#  # data, example included with package
+#  data.Stations.Info <- data_Sites
+#  data.SampSummary   <- data_SampSummary
+#  data.303d.ComID    <- data_303d
+#  data.bmi.metrics   <- data_BMIMetrics
+#  data.algae.metrics <- data_AlgMetrics
+#  data.cluster       <- data_Cluster_Hi
+#  data.mod           <- data_ReachMod
+#  data.MT.bmi        <- data_BMIMasterTaxa
+#  # Run getSiteInfo
+#  list.SiteSummary <- getSiteInfo(TargetSiteID)
+#  
+#  # getChemDataSubsets ####
+#  # datasets inputs
+#  site.COMID <- list.SiteSummary$COMID
+#  site.Clusters <- list.SiteSummary$ClustIDs
+#  data.chem.raw <- data_Chem
+#  data.chem.info <- data_ChemInfo
+#  # Run getChemDataSubsets
+#  list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#  
+#  # getClusterInfo ####
+#  # dataset inputs
+#  ref.reaches <- list.data$ref.reaches
+#  refSiteCOMIDs <- list.data$ref.reaches
+#  # Run getClusterInfo
+#  getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+#  
+#  # getStressorList ####
+#  # dataset inputs
+#  chem.info <- list.data$chem.info
+#  cluster.chem <- list.data$cluster.chem
+#  cluster.samps <- list.data$cluster.samps
+#  ref.sites <- list.data$ref.sites
+#  site.chem <- list.data$site.chem
+#  # set cutoff for possible stressor identification
+#  probsLow <- 0.10
+#  probsHigh <- 0.90
+#  # Run getStressorList
+#  list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+#                                   , cluster.samps, ref.sites, site.chem
+#                                   , probsHigh, probsLow)
+#  
+#  # getBMIMatches ####
+#  # dataset inputs
+#  ## remove "none"
+#  stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+#  # Run getBMIMatches
+#  list.MatchBMIData <- getBMIMatches(stressors, list.data)
+#  
+#  # getBMIStressorResponses ####
+#  BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+#               , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+#               , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
+#  # Run getBMIStressorResponses
+#  getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData)
+#  
+#  # getStressorSpecificRegressions ####
+#  # datasets inputs
+#  data.bmi.taxa.raw <- data_BMIcounts
+#  data.SSTV.totabund <- data_BMIRelAbund
+#  # Run getStressorSpecificRegressions
+#  getStressorSpecificRegressions(TargetSiteID
+#                                 , data.SampSummary
+#                                 , data.bmi.taxa.raw
+#                                 , data.chem.info
+#                                 , data.SSTV.totabund
+#                                 , data.MT.bmi
+#                                 , list.MatchBMIData)
+#  
+#  # getReport ####
+#  # summary report
+#  dir_results <- file.path(getwd(), "Results")
+#  report_type <- "summary"
+#  report_format <- "html"
+#  getReport(TargetSiteID, dir_results, report_type, report_format)
+#  
+
+## ----CoOccur-------------------------------------------------------------
+#  #Load Data
+#  df.data <- data_CoOccur
+#  #
+#  col.Group     <- "Group"
+#  col.Bio       <- "CSCI"
+#  col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
+#  col.ID        <- c("StationID_Master")
+#  #
+#  Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
+#  Bio.Nar.Lab <- c("very likely altered", "likely altered"
+#                  , "possibly altered ", "likely intact")
+#  Bio.Deg.Brk <- c(-2, 0.799, 2)
+#  Bio.Deg.Lab <- c("Degraded", "Good")
+#  dir.plots <- file.path(getwd(), "Results")
+#  #
+#  ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
+#  #
+#  getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+#          , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
+#          , dir.plots
+#          )
+
+## ----Output, eval=FALSE--------------------------------------------------
+#  # Install CASTfxn ####
+#  # library(devtools)
+#  # install_github("ALincolnTt/CASTfxn")
+#  
+#  # Set up ####
+#  library(CASTfxn)
+#  library(readxl)
+#  
+#  #Dir.Base <- "C:/Users/ann.lincoln/OneDrive - Tetra Tech, Inc/_ActiveProjects/AZ/RCodeData/ChemData"
+#  #Dir.Base <- "P:/Current/OtherGov/City of San Diego/FY2018/CAST_2018/QC_20180705/data"
+#  Dir.Base <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/vignettes/Results"
+#  #setwd("C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn_Ann\\CASTfxn")
+#  
+#  #Dir.Base <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\SanDiego\\Results"
+#  setwd(Dir.Base)
+#  
+#  # Site Selection ####
+#  TargetSiteID <- "LCNUT011.29"  # "VRELL009.02"
+#  TargetElevation <- "HI"
+#  
+#  # Read Files ####
+#  #Read all data files
+#  data.SampSummary <- data_SampSummary
+#  data.mod         <- data_ReachMod
+#  data.chem.info   <- data_ChemInfo
+#  data.303d.ComID  <- data_303d
+#  
+#  # Subset ####
+#  # These need subsetting
+#  if (TargetElevation == "HI") {
+#      data.cluster   <- data_Cluster_Hi
+#      fn.coOccur.hi  <- file.path(Dir.Base,"AZCoOccurData_HI.tab")
+#      data.coOccur   <- read.table(fn.coOccur.hi, header = TRUE, sep = "\t")
+#      ibi.thresholds <- c(45,52)
+#  } else {
+#      data.cluster   <- data_Cluster_Lo
+#      fn.coOccur.lo  <- file.path(Dir.Base, "AZCoOccurData_LO.tab")
+#      data.coOccur   <- read.table(fn.coOccur.lo, header = TRUE, sep = "\t")
+#      ibi.thresholds <- c(39,50)
+#  }
+#  
+#  # CAST, Stations ####
+#  data.Stations.Info <- data_Sites
+#  data.Stations.Info <- data.Stations.Info[data.Stations.Info$ElevCategory == TargetElevation,]
+#  
+#  # CAST, Chem ####
+#  ## Use data rather than example file
+#  data.chem.raw <- data_Chem
+#  #
+#  fn.cheminfo2   <- file.path(Dir.Base, "AZStressorInfoFinal.xlsx")
+#  data.chem.info2 <- read_excel(fn.cheminfo2, sheet = 1, skip = 0)
+#  # #
+#  # fn.chem <- file.path(Dir.Base, "AZStressorDataFinal.tab")
+#  # data.chem.raw <- read.delim(fn.chem, na.strings = "NA")
+#  #
+#  analytes      <- data.chem.info$StdParamName[data.chem.info$UseInStressorID == 1]
+#  data.chem.raw <- data.chem.raw[data.chem.raw$StdParamName %in% analytes,]
+#  data.chem.raw <- data.chem.raw[data.chem.raw$ElevCategory == TargetElevation,]
+#  
+#  # CAST, BMI, metrics ####
+#  data.bmi.metrics <- data_BMIMetrics
+#  data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$ElevCategory == TargetElevation,]
+#  data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$StationID_Master != "VROAK042.78",]
+#  data.bmi.metrics <- data.bmi.metrics[data.bmi.metrics$StationID_Master != "SRHAG007.47",]
+#  data.bmi.metrics <- data.bmi.metrics[,c("StationID_Master","BMISampID",
+#                                          "BMI.Metrics.SampID","CollDate",
+#                                          "ElevCategory","NarRat","IBI",
+#                                          "TotalTaxSPL_Sc","DipTaxSPL_Sc",
+#                                          "IntolTaxSPL_Sc","HBISPL_Sc","PlecoPct_Sc",
+#                                          "ScrapPctSPL_Sc","ScrapTaxSPL_Sc",
+#                                          "TrichTax_Sc","EphemTax_Sc","EphemPct_Sc",
+#                                          "Dom01PctSPL_Sc")]
+#  data.bmi.metrics <- data.bmi.metrics[, unlist(lapply(data.bmi.metrics,
+#                                        function(x) !all(is.na(x))))]
+#  
+#  # CAST, Alg, metrics ####
+#  fn.alg.metrics     <- file.path(Dir.Base, "AZAlgaeMetrics.tab")
+#  data.algae.metrics <- read.table(fn.alg.metrics, header = TRUE, sep = "\t")
+#  data.algae.metrics <- data.algae.metrics[!is.na(data.algae.metrics),]
+#  
+#  # CAST, misc ####
+#  fn.bmi.raw        <- file.path(Dir.Base, "AZBenthicCountsFinal.tab")
+#  data.bmi.taxa.raw <- read.table(fn.bmi.raw, header = TRUE, sep = "\t")
+#  
+#  fn.MT.bmi   <- file.path(Dir.Base, "AZBenthicMasterTaxa.tab")
+#  data.MT.bmi <- read.table(fn.MT.bmi, header = TRUE, sep = "\t",
+#                            stringsAsFactors = FALSE)
+#  
+#  # read LkpDir (.tab file)
+#  # fn.lkpdir <- "C:/Users/ann.lincoln/OneDrive - Tetra Tech, Inc/_ActiveProjects/AZ/RCodeData/ChemData/AZLkpDir.tab"
+#  # data.lkp.dir <- read.table(fn.lkpdir, header = TRUE, sep = "\t",
+#  #                            col.names = c("StdParamName","DipTaxSPL_Sc",
+#  #                                          "Dom01PctSPL_Sc","EphemPct_Sc",
+#  #                                          "EphemTax_Sc","HBISPL_Sc","IBI",
+#  #                                          "IntolTaxSPL_Sc","PlecoPct_Sc",
+#  #                                          "ScrapPctSPL_Sc","ScrapTaxSPL_Sc",
+#  #                                          "TotalTaxSPL_Sc","TrichTax_Sc"),
+#  #                            colClasses = c("character","numeric","numeric",
+#  #                                           "numeric","numeric","numeric","numeric",
+#  #                                           "numeric","numeric","numeric",
+#  #                                           "numeric","numeric","numeric"))
+#  # data.lkp.dir <- data_LkpDir
+#  
+#  list.SiteSummary <- getSiteInfo(TargetSiteID)
+#  # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo, Samps = mySamps,
+#                                              # BMImetrics = myBMImetrics,
+#                                              # AlgMetrics = myAlgaeMetrics,
+#                                              # ReachInfo = myReachInfo,
+#                                              # COMID = myCOMID,
+#                                              # ClustIDs = myClustIDs)
+#  site.COMID <- list.SiteSummary$COMID
+#  site.Clusters <- list.SiteSummary$ClustIDs
+#  SiteInfo <- list.SiteSummary$SiteInfo
+#  
+#  list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+#  # mySubsets <- list(ref.sites = refSiteIDs,
+#                      # ref.reaches = refSiteCOMIDs,
+#                      # cluster.samps = cluster.chem.samps,
+#                      # chem.info = chems.groups.sort,
+#                      # all.chems = all.chems3,
+#                      # cluster.chem = cluster.chem.tab5,
+#                      # site.chem = site.chem4)
+#  ref.sites <- list.data$ref.sites
+#  ref.reaches <- list.data$ref.reaches
+#  cluster.samps <- list.data$cluster.samps
+#  cluster.chem <- list.data$cluster.chem
+#  site.chem <- list.data$site.chem
+#  chem.info <- list.data$chem.info
+#  
+#  # Get Cluster Info
+#  getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+#  
+#  # CAST, Stressors ####
+#  # Get Stressor List
+#  list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info,
+#                                    cluster.chem, cluster.samps, ref.sites,
+#                                    site.chem, probsHigh=0.75, probsLow=0.25)
+#  # myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank)
+#  
+#  stressors <- list.stressors$stressors
+#  
+#  if ((length(stressors) == 1) && stressors[1] == "none") {
+#      # No stressors returned
+#      print(paste("No stressors identified for site", TargetSiteID, sep = " "))
+#      utils::flush.console()
+#  } else {
+#    #
+#      stressors <- c(stressors[2:length(stressors)])
+#      # Get BMI matches
+#      list.MatchBMIData <- getBMIMatches(stressors, list.data)
+#      # myBMIMatchData <- list(all.b.str = all.mbmi.stress
+#      #                        , cl.b.str = cl.mbmi.stress
+#      #                        , site.b.str = site.mbmi.stress
+#      #                        , all.b.rsp = all.mbmi.resp
+#      #                        , cl.b.rsp = cl.mbmi.resp
+#      #                        , site.b.rsp = site.mbmi.resp)
+#  
+#      # Get BMI Stressor Responses
+#      getBMIStressorResponses(stressors, list.MatchBMIData)
+#  
+#      if (TargetSiteID %in% unique(data.coOccur$StationID_Master)) {
+#          getCoOccur(data.coOccur, ID.plot=TargetSiteID, col.ID="StationID_Master"
+#                  , col.Group="Group", col.Bio="IBI", col.Stressors=c(stressors)
+#                  , Bio.Nar.Brk=c(0, ibi.thresholds, 100)
+#                  , Bio.Nar.Lab=c("Impaired","Marginal","Good")
+#                  , Bio.Deg.Brk=c(0, min(ibi.thresholds), 100)
+#                  , Bio.Deg.Lab=c("Impaired", "Good"))
+#      }
+#  
+#      # Get Stressor-specific regressions
+#      predint <- 0.75
+#      varLegLoc <- "topright"
+#      myDir.Data <- getwd()
+#      # read in relative abundance file
+#      fn.RelAbund <- "AZ_Benthics_RelAbund.xlsx"
+#      BMIRelAbund <- read_excel(fn.RelAbund, sheet=1)
+#      #data.SSTV.totabund <- data_BMIRelAbund
+#      data.SSTV.totabund <- BMIRelAbund
+#  
+#      getStressorSpecificRegressions(list.MatchBMIData, predint, varLegLoc)
+#      # }
+#  
+#      # Erik, 20180712, commented out since no data
+#      # list.MatchAlgData <- getAlgMatches(stressors, list.data)
+#      # # myAlgMatchData <- list(all.a.str = all.malg.stress
+#      # #                        , cl.a.str = cl.malg.stress
+#      # #                        , site.a.str = site.malg.stress
+#      # #                        , all.a.rsp = all.malg.resp
+#      # #                        , cl.a.rsp = cl.malg.resp
+#      # #                        , site.a.rsp = site.malg.resp)
+#      #
+#      # # Get Algal Stressor Responses
+#      # getAlgStressorResponses(stressors, list.MatchAlgData)
+#  
+#      # getSSDs
+#      #getSSDplot(Data, ResponseType, Taxa, Exposure)
+#      myDF <- data_SSD_generator
+#      myRT   <- "ResponseType"
+#      myTaxa <- "Taxa"
+#      myExp  <- "Exposure"
+#      # Run function
+#      p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+#  
+#  }
+

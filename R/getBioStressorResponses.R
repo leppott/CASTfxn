@@ -135,8 +135,15 @@
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.cluster       <- data_Cluster_Hi  # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
+#' 
+#' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' if(elev_cat=="HI"){
+#'    data.cluster <- data_Cluster_Hi
+#' } else if(elev_cat=="LO") {
+#'    data.cluster <- data_Cluster_Lo
+#' }
 #' 
 #' # Map data
 #' # San Diego
@@ -675,16 +682,21 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           } else {
             df.sc.sr <- rbind(df.sc.sr, df.temp2)
           }
+          
+          #if(boo.pryr==TRUE){
+          fn_scores <- paste0(TargetSiteID,".SR.",bio_prefix,".Scores.txt")
+          fp_scores <- file.path(wd, dir.sub, dir.sub2, fn_scores)
+          
           boo.Append    <- TRUE
           boo.col.names <- FALSE
-          if (pq==1){
+          if (file.exists(fp_scores)==FALSE){
+            # can't rely on pq==1 as that may not have data
             boo.Append    <- !boo.Append
             boo.col.names <- !boo.col.names
           }
-          #if(boo.pryr==TRUE){
-          fn_scores <- paste0(TargetSiteID,".SR.",bio_prefix,".Scores.txt")
+          
           utils::write.table(df.sc.sr
-                             , file.path(wd,dir.sub,dir.sub2,fn_scores)
+                             , fp_scores
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append) 
           #}

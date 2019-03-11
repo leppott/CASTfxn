@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-08 11:34:28
+    #> Last Update: 2019-03-11 10:10:13
 
 # Planned Updates
 
@@ -23,6 +23,18 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9169 (2019-03-11)
+
+  - Assign cluster in “algae” example.
+  - getBioStressorResponses
+      - Update scores text file output for header row.
+          - If case 1 didn’t have results the file didn’t have a header
+            row.
+          - And the report would fail.
+  - getReport
+      - Report\_Results\_summary.rmd
+          - Update dcast statement to include fun.aggregate = mean.
 
 ## Changes in Version 0.1.0.9168 (2019-03-08)
 

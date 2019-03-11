@@ -36,6 +36,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9169 (2019-03-11)
+
+* Assign cluster in "algae" example.
+* getBioStressorResponses
+    + Update scores text file output for header row.
+        - If case 1 didn't have results the file didn't have a header row.
+        - And the report would fail.
+* getReport
+    + Report_Results_summary.rmd
+        - Update dcast statement to include fun.aggregate = mean.
+
 ## Changes in Version 0.1.0.9168 (2019-03-08)
 
 * Modify QC procedures for plotting missing categories of data.

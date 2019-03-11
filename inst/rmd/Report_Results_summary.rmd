@@ -187,7 +187,8 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
   cat(paste0("\n", cap_SR_BMI_Corrs,"\n"))
   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
   # Plot
-  df_corr_r <- reshape2::dcast(df_SR_BMI_Corrs, stressName ~ respName, value.var="estimate")
+  df_corr_r <- reshape2::dcast(df_SR_BMI_Corrs, stressName ~ respName, value.var="estimate"
+                               , fun.aggregate = mean)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   corrplot::corrplot(df_corrplot, method="circle")
@@ -258,7 +259,8 @@ if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
   cat(paste0("\n", cap_SR_BMI_Scores,"\n"))
   df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
   #knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
-  df_score <- reshape2::dcast(df_SR_BMI_Scores, Param_Name ~ BMI_Metric, value.var="SR_Score")
+  df_score <- reshape2::dcast(df_SR_BMI_Scores, Param_Name ~ BMI_Metric, value.var="SR_Score"
+                              , fun.aggregate = mean)
   df_corrplot <- t(df_score[,-1])
   colnames(df_corrplot) <- df_score[,1]
   corrplot::corrplot(df_corrplot, is.corr=FALSE, method="circle")
@@ -358,7 +360,8 @@ if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
   #
   df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
   # Plot
-  df_corr_r <- reshape2::dcast(df_SR_SSTVCorrs, stressName ~ respName, value.var="estimate")
+  df_corr_r <- reshape2::dcast(df_SR_SSTVCorrs, stressName ~ respName, value.var="estimate"
+                               , fun.aggregate = mean)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   corrplot::corrplot(df_corrplot, method="circle")
@@ -415,7 +418,8 @@ if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
   cat(paste0("\n", cap_SR_Alg_Corrs,"\n"))
   df_SR_Alg_Corrs <- read.delim(fn_SR_Alg_Corrs)
   # Plot
-  df_corr_r <- reshape2::dcast(df_SR_Alg_Corrs, stressName ~ respName, value.var="estimate")
+  df_corr_r <- reshape2::dcast(df_SR_Alg_Corrs, stressName ~ respName, value.var="estimate"
+                               , fun.aggregate = mean)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   corrplot::corrplot(df_corrplot, method="circle")
