@@ -24,11 +24,12 @@
 #' @param data.SSTV.totabund x
 #' @param data.MT.bmi x
 #' @param matchedData matched biological and chemical stressor data.
+#' @param ref.sites Vector of reference sites IDs.
 #' @param BioIndex_Val Column name for biological index value; list.MatchBMIData$site.b.rsp
 #' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBMIData$site.b.rsp
 #' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBMIData$site.b.rsp
 #' @param predint x
-#' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft", 
+#' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft",
 #' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
 #' 
 #' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
@@ -36,11 +37,11 @@
 # @importFrom pryr "%<a-%"
 #' 
 #' @examples
-#' predint <- 0.75
+#' predint   <- 0.75
 #' varLegLoc <- "topright"
 #' 
 #' TargetSiteID <- "SRCKN001.61"
-#' dir_results <- file.path(getwd(), "Results")
+#' dir_results  <- file.path(getwd(), "Results")
 #' 
 #' # Data getSiteInfo
 #' # data, example included with package
@@ -86,10 +87,10 @@
 #' 
 #' # Data getChemDataSubsets
 #' # data, example included with package
-#' data.chem.raw <- data_Chem
+#' data.chem.raw  <- data_Chem
 #' data.chem.info <- data_ChemInfo
-#' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
+#' site.COMID     <- list.SiteSummary$COMID
+#' site.Clusters  <- list.SiteSummary$ClustIDs
 #' 
 #' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
@@ -97,14 +98,14 @@
 #'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #'
 #' # Data getStressorList
-#' chem.info <- list.data$chem.info
-#' cluster.chem <- list.data$cluster.chem
+#' chem.info     <- list.data$chem.info
+#' cluster.chem  <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
-#' ref.sites <- list.data$ref.sites
-#' site.chem <- list.data$site.chem
+#' ref.sites     <- list.data$ref.sites
+#' site.chem     <- list.data$site.chem
 #' 
 #' # set cutoff for possible stressor identification
-#' probsLow <- 0.10
+#' probsLow  <- 0.10
 #' probsHigh <- 0.90 
 #' 
 #' # Run getStressorList
@@ -122,15 +123,15 @@
 #'   
 #' # Data getStressorSpecificRegressions
 #' # data import, example
-#' # data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+#' # data.bmi.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' #
 #' # data, example included with package
-#' data.bmi.taxa.raw <- data_BMIcounts
+#' data.bmi.taxa.raw  <- data_BMIcounts
 #' data.SSTV.totabund <- data_BMIRelAbund
-#' BioIndex_Val <- "IBI"
-#' BioIndex_Nar <- "NarRat"
-#' BioIndex_Nar_Deg <- "Violates"
+#' BioIndex_Val       <- "IBI"
+#' BioIndex_Nar       <- "NarRat"
+#' BioIndex_Nar_Deg   <- "Violates"
 #' 
 #' # Run getStressorSpecificRegressions
 #' getStressorSpecificRegressions(TargetSiteID
@@ -140,13 +141,13 @@
 #'                                , data.SSTV.totabund
 #'                                , data.MT.bmi
 #'                                , list.MatchBMIData
+#'                                , ref.sites
 #'                                , BioIndex_Val
 #'                                , BioIndex_Nar
-#'                                , BioIndex_Nar_Deg)
+#'                                , BioIndex_Nar_Deg
+#'                                , predint
+#'                                , varLegLoc)
 #~~~~~~~~~~~~~~~~
-# QC
-# matchedData <- list.MatchBMIData
-#
 #' @export
 getStressorSpecificRegressions <- function(TargetSiteID
                                            , data.SampSummary
@@ -155,6 +156,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
                                            , data.SSTV.totabund
                                            , data.MT.bmi
                                            , matchedData
+                                           , ref.sites
                                            , BioIndex_Val="IBI"
                                            , BioIndex_Nar="NarRat"
                                            , BioIndex_Nar_Deg="Violates"

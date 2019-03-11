@@ -6,7 +6,7 @@
 \usage{
 getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
   data.bmi.taxa.raw, data.chem.info, data.SSTV.totabund, data.MT.bmi,
-  matchedData, BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
+  matchedData, ref.sites, BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
   BioIndex_Nar_Deg = "Violates", predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
@@ -24,6 +24,8 @@ getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
 
 \item{matchedData}{matched biological and chemical stressor data.}
 
+\item{ref.sites}{Vector of reference sites IDs.}
+
 \item{BioIndex_Val}{Column name for biological index value; list.MatchBMIData$site.b.rsp}
 
 \item{BioIndex_Nar}{Column name for biological index narrative rating; list.MatchBMIData$site.b.rsp}
@@ -32,7 +34,7 @@ getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
 
 \item{predint}{x}
 
-\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft", 
+\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft",
 "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"}
 }
 \value{
@@ -58,11 +60,11 @@ Required objects:
 * TargetSiteID
 }
 \examples{
-predint <- 0.75
+predint   <- 0.75
 varLegLoc <- "topright"
 
 TargetSiteID <- "SRCKN001.61"
-dir_results <- file.path(getwd(), "Results")
+dir_results  <- file.path(getwd(), "Results")
 
 # Data getSiteInfo
 # data, example included with package
@@ -108,10 +110,10 @@ list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 
 # Data getChemDataSubsets
 # data, example included with package
-data.chem.raw <- data_Chem
+data.chem.raw  <- data_Chem
 data.chem.info <- data_ChemInfo
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
+site.COMID     <- list.SiteSummary$COMID
+site.Clusters  <- list.SiteSummary$ClustIDs
 
 # Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
@@ -119,14 +121,14 @@ list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clu
                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
 # Data getStressorList
-chem.info <- list.data$chem.info
-cluster.chem <- list.data$cluster.chem
+chem.info     <- list.data$chem.info
+cluster.chem  <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
-ref.sites <- list.data$ref.sites
-site.chem <- list.data$site.chem
+ref.sites     <- list.data$ref.sites
+site.chem     <- list.data$site.chem
 
 # set cutoff for possible stressor identification
-probsLow <- 0.10
+probsLow  <- 0.10
 probsHigh <- 0.90 
 
 # Run getStressorList
@@ -144,15 +146,15 @@ list.MatchBMIData <- getBMIMatches(stressors, list.data)
   
 # Data getStressorSpecificRegressions
 # data import, example
-# data.bmi.taxa.raw <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+# data.bmi.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #
 # data, example included with package
-data.bmi.taxa.raw <- data_BMIcounts
+data.bmi.taxa.raw  <- data_BMIcounts
 data.SSTV.totabund <- data_BMIRelAbund
-BioIndex_Val <- "IBI"
-BioIndex_Nar <- "NarRat"
-BioIndex_Nar_Deg <- "Violates"
+BioIndex_Val       <- "IBI"
+BioIndex_Nar       <- "NarRat"
+BioIndex_Nar_Deg   <- "Violates"
 
 # Run getStressorSpecificRegressions
 getStressorSpecificRegressions(TargetSiteID
@@ -162,7 +164,10 @@ getStressorSpecificRegressions(TargetSiteID
                                , data.SSTV.totabund
                                , data.MT.bmi
                                , list.MatchBMIData
+                               , ref.sites
                                , BioIndex_Val
                                , BioIndex_Nar
-                               , BioIndex_Nar_Deg)
+                               , BioIndex_Nar_Deg
+                               , predint
+                               , varLegLoc)
 }

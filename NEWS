@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-11 10:10:13
+    #> Last Update: 2019-03-11 15:16:40
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9170 (2019-03-11)
+
+  - getStressorSpecificRegressions
+      - Add ref.sites as a required input parameter.
 
 ## Changes in Version 0.1.0.9169 (2019-03-11)
 
