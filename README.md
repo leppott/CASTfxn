@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2018-10-10 10:16:23
+    #> Last Update: 2019-03-11 15:39:14
 
 Suite of functions for the Causal Assessment Screening Tool (CAST).
 
@@ -22,9 +22,9 @@ issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://
 
 ## Installation
 
-library(devtools) \#install if needed
+\#library(devtools) \#install if needed
 
-install\_github(“leppott/CASTfnx”)
+devtools::install\_github(“leppott/CASTfnx”)
 
 ## Purpose
 

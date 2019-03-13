@@ -764,10 +764,24 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   ## read
   fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
   df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  
+  # QC, 20190313
+  ## Special case where the function doesn't save the header row
+  ### Unable to track down cause so implement QC check here.
+  cn_cor_pref <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+  cn_cor_x    <- colnames(df_corr)
+  cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
+  if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
+    df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr)
+                          , header = FALSE
+                          , col.names = cn_cor_pref)
+  }##IF~length~END
+  
   ## transpose 
   # 20190305; shouldn't need mean or unique but just in case, should be complete dups
   df_corr <- unique(df_corr)
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, fun.aggregate=mean, value.var="estimate")
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, fun.aggregate=mean, value.var="estimate"
+                               , na.rm=TRUE)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   ## jpg

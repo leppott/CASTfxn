@@ -17,7 +17,7 @@ df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
 myCol <- c("StationID_Master", "CollDate", "CSCI", "O_E", "MMI_Score")
 myCol %in% names(df)
 # add columns
-df$StationID_Master   <- df$StationID
+#df$StationID_Master   <- df$StationID
 df$CollDate           <- as.Date(df$CollDate, format="%m/%d/%Y")
 df$BenCollDate           <- as.Date(df$BenCollDate, format="%m/%d/%Y")
 #df$BMISampID          <- paste(df$StationID, df$CollDate, df$BenSampID, df$RepNum, sep="_")

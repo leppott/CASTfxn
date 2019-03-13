@@ -36,10 +36,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9171 (2019-03-13)
+
+* getBioStressorResponses
+   + AAdd QC check for header for correlation plot data.
+
 ## Changes in Version 0.1.0.9170 (2019-03-11)
 
 * getStressorSpecificRegressions
     + Add ref.sites as a required input parameter.
+* Add na.rm=TRUE to fun.aggregate=mean for dcast statements.
+    + getBioStressorResponses.R
+    + Report_Results_summary.rmd
 
 ## Changes in Version 0.1.0.9169 (2019-03-11)
 
