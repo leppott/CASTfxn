@@ -186,6 +186,19 @@ cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
 if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
   cat(paste0("\n", cap_SR_BMI_Corrs,"\n"))
   df_SR_BMI_Corrs <- read.delim(fn_SR_BMI_Corrs)
+  #
+  # QC header row
+  df_corr <- df_SR_BMI_Corrs
+  fp_corr <- fn_SR_BMI_Corrs
+  cn_cor_pref <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+  cn_cor_x    <- colnames(df_corr)
+  cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
+  if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
+    df_corr <- read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+    write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
+    df_SR_BMI_Corrs <- df_corr
+  }##IF~length~END
+  #
   # Plot
   df_corr_r <- reshape2::dcast(df_SR_BMI_Corrs, stressName ~ respName, value.var="estimate"
                                , fun.aggregate = mean, na.rm=TRUE)
@@ -417,6 +430,19 @@ cap_SR_Alg_Corrs  <- "Stressor Response, Algae, Correlations"
 if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
   cat(paste0("\n", cap_SR_Alg_Corrs,"\n"))
   df_SR_Alg_Corrs <- read.delim(fn_SR_Alg_Corrs)
+  #
+  # QC header row
+  df_corr <- df_SR_Alg_Corrs
+  fp_corr <- fn_SR_Alg_Corrs
+  cn_cor_pref <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+  cn_cor_x    <- colnames(df_corr)
+  cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
+  if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
+    df_corr <- read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+    write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
+    df_SR_Alg_Corrs <- df_corr
+  }##IF~length~END
+  #
   # Plot
   df_corr_r <- reshape2::dcast(df_SR_Alg_Corrs, stressName ~ respName, value.var="estimate"
                                , fun.aggregate = mean, na.rm=TRUE)

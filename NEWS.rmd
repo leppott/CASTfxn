@@ -39,7 +39,15 @@ cat(paste0("Last Update: ",Sys.time()))
 ## Changes in Version 0.1.0.9171 (2019-03-13)
 
 * getBioStressorResponses
-   + AAdd QC check for header for correlation plot data.
+    + Modify QC check for header for correlation plot data.
+       - Resave file.
+* Report_Results_summary
+    + Make same modification as getBioStressorResponses.
+
+## Changes in Version 0.1.0.9171 (2019-03-13)
+
+* getBioStressorResponses
+   + Add QC check for header for correlation plot data.
 
 ## Changes in Version 0.1.0.9170 (2019-03-11)
 

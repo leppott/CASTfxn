@@ -763,7 +763,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # CorrPlot ####
   ## read
   fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
-  df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  fp_corr <- file.path(wd, dir.sub, dir.sub2, fn_corr)
+  df_corr <- read.delim(fp_corr)
   
   # QC, 20190313
   ## Special case where the function doesn't save the header row
@@ -772,9 +773,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   cn_cor_x    <- colnames(df_corr)
   cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
   if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
-    df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr)
-                          , header = FALSE
-                          , col.names = cn_cor_pref)
+    df_corr <- read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+    write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
   }##IF~length~END
   
   ## transpose 
