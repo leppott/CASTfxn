@@ -138,6 +138,10 @@ boo_file <- fn_target %in% fn_all
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
                       , fn_target, "' in the 'Results' folder.\n")
+  #
+  df_target <- read.delim(fn_target)
+  knitr::kable(df_target, Caption = "txt_grp_msg")
+  #
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
 } else {
@@ -157,6 +161,10 @@ boo_file <- fn_target %in% fn_all
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
                       , fn_target, "' in the 'Results' folder.\n")
+  #
+  df_target <- read.delim(fn_target)
+  knitr::kable(df_target, Caption = "txt_grp_msg")
+  #
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
 } else {
@@ -469,18 +477,32 @@ fn_CoOccur_plots_box  <- list.files(path=file.path(dir_results, TargetSiteID)
 fn_CoOccur_plots_SR  <- list.files(path=file.path(dir_results, TargetSiteID)
                                  , full.names = TRUE
                                  , pattern=".CoOccurrence.SR.")
-numPlots <- length(fn_CoOccur_plots_box)
+
+len_box   <- length(fn_CoOccur_plots_box)
+len_SR    <- length(fn_CoOccur_plots_SR)
+len_total <- len_box + len_SR
+len_min   <- min(len_box,len_SR)
+len_max   <- max(len_box,len_SR)
+
+length(fn_CoOccur_plots_box) <- len_max
+length(fn_CoOccur_plots_SR)  <- len_max
+
+fn_img_all <- suppressWarnings(c(rbind(fn_CoOccur_plots_box, fn_CoOccur_plots_SR)))
+len_img <- length(fn_img_all)
 
 txt_NoFile <- "No file exists; co-occurrence box plots.\n"
-if(length(numPlots)==0){
+if(length(len_total)==0){
   cat(txt_NoFile)
 } else {
   # Combine plot names in a vector (alternating)
   ## assumes have one of each
-  fn_img_all <- vector(class(fn_CoOccur_plots_box)
-                       , length(c(fn_CoOccur_plots_box, fn_CoOccur_plots_SR)))
-  fn_img_all[c(TRUE, FALSE)] <- fn_CoOccur_plots_box
-  fn_img_all[c(FALSE, TRUE)] <- fn_CoOccur_plots_SR
+  # fn_img_all <- vector(class(fn_CoOccur_plots_box)
+  #                      , length(c(fn_CoOccur_plots_box, fn_CoOccur_plots_SR)))
+  # fn_img_all[c(TRUE, FALSE)] <- fn_CoOccur_plots_box
+  # fn_img_all[c(FALSE, TRUE)] <- fn_CoOccur_plots_SR
+  
+  fn_img_all_plot <- fn_img_all[!is.na(fn_img_all)]
+
   knitr::include_graphics(fn_img_all)
 }
 ```
