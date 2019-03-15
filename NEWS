@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-15 13:17:08
+    #> Last Update: 2019-03-15 14:12:51
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9173 (2019-03-15)
+
+  - Report\_Results\_summary
+      - Show SSTV plots.
+      - Update show CoOccur for no data.
 
 ## Changes in Version 0.1.0.9172 (2019-03-15)
 

@@ -22,7 +22,7 @@ DEBUG.CaseNumber <- 1
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   if(DEBUG.CaseNumber==1){##IF.DEBUG.CaseNumber.START
     TargetSiteID <- "SRCKN001.61"
-    dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
+    dir_results <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/Results"
   } else if(DEBUG.CaseNumber==2){
     TargetSiteID <- "LCBIL000.15"
     dir_results <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/AZ/"
@@ -335,62 +335,6 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
 
 ## SSTV
 
-```{r filelist_txt_sr_sstv}
-txt_grp_file <- "SR.SSTV.Corrs"
-txt_grp_msg <- "stressor response stressor specific correlations"
-fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".txt")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
-boo_file <- fn_target %in% fn_all
-#
-if(boo_file==TRUE){##IF.boo.pdf.START
-  msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
-                      , fn_target, "' in the 'Results' folder.\n")
-} else if(boo_file==FALSE){
-  msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
-} else {
-  msg_files <- ""
-}##IF.boo.pdf.START
-#
-cat(msg_files)
-```
-
-### Table
-
-```{r SR_SSTV_tables}
-fn_SR_SSTV_Corrs  <- file.path(dir_results, TargetSiteID
-                               , paste0(TargetSiteID, ".SR.SSTV.Corrs.txt"))
-
-cap_SR_SSTV_Corrs <- "Stressor Response, SSTV, Correlations"
-  
-# Table
-if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
-  #
-  df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
-  # Table
- # print(knitr::kable(df_SR_SSTVCorrs, caption=cap_SR_SSTV_Corrs))
-  #
-  cat(paste0("\n", cap_SR_SSTV_Corrs,"\n"))
-  #
-  df_SR_SSTVCorrs <- read.delim(fn_SR_SSTV_Corrs)
-  # Plot
-  df_corr_r <- reshape2::dcast(df_SR_SSTVCorrs, stressName ~ respName, value.var="estimate"
-                               , fun.aggregate = mean, na.rm=TRUE)
-  df_corrplot <- t(df_corr_r[,-1])
-  colnames(df_corrplot) <- df_corr_r[,1]
-  corrplot::corrplot(df_corrplot, method="circle")
-} else {
-  cat("No file exists; Stressor Response SSTV data.\n")
-}
-
-# Plot
-if(file.exists(fn_SR_SSTV_Corrs)==TRUE){
-  #
- 
-  #
-}
-
-```
-
 ### Plots
 ```{r filelist_pdf_SR_SSTV}
 txt_grp_file <- "SR.SSTV"
@@ -411,6 +355,20 @@ if(boo_file==TRUE){##IF.boo.pdf.START
 cat(msg_files)
 ```
 
+```{r SSTV_plots}
+fn_SSTV_plots  <- list.files(path=file.path(dir_results, TargetSiteID)
+                                 , full.names = TRUE
+                                 , pattern=".SR.SSTV.")
+fn_SSTV_plots_jpg <- fn_SSTV_plots[grep(".jpg", fn_SSTV_plots)]
+numPlots <- length(fn_SSTV_plots_jpg)
+
+if(length(numPlots)==0){
+  txt_NoFile <- "No file exists; SSTV plots.\n"
+  cat(txt_NoFile)
+} else {
+  knitr::include_graphics(fn_SSTV_plots_jpg)
+}
+```
 ## Algae
 
 ### Tables
@@ -513,10 +471,10 @@ fn_CoOccur_plots_SR  <- list.files(path=file.path(dir_results, TargetSiteID)
                                  , pattern=".CoOccurrence.SR.")
 numPlots <- length(fn_CoOccur_plots_box)
 
+txt_NoFile <- "No file exists; co-occurrence box plots.\n"
 if(length(numPlots)==0){
-  txt_NoFile <- "No file exists; co-occurrence box plots.\n"
   cat(txt_NoFile)
-} else if(file.exists(fn_CoOccur_Scores)==TRUE){
+} else {
   # Combine plot names in a vector (alternating)
   ## assumes have one of each
   fn_img_all <- vector(class(fn_CoOccur_plots_box)
@@ -524,12 +482,6 @@ if(length(numPlots)==0){
   fn_img_all[c(TRUE, FALSE)] <- fn_CoOccur_plots_box
   fn_img_all[c(FALSE, TRUE)] <- fn_CoOccur_plots_SR
   knitr::include_graphics(fn_img_all)
-
-  #
-  #knitr::include_graphics(file.path(dir_results, paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")))
-  #
-} else {
-  cat(txt_NoFile)
 }
 ```
 
