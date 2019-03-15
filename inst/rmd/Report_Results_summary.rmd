@@ -467,7 +467,7 @@ if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
 
 fn_CoOccur_Scores  <- list.files(path=file.path(dir_results, TargetSiteID)
                                  , full.names = TRUE
-                                 , pattern=".CoOccurrence.Scores.")
+                                 , pattern=".CoOccurrence.Scores.txt")
 if(length(fn_CoOccur_Scores)==0){
   txt_NoFile <- "No file exists; co-occurrence scores.\n"
   cat(txt_NoFile)
@@ -485,7 +485,54 @@ if(length(fn_CoOccur_Scores)==0){
 
 Plots are saved from the function in pairs in a PDF.
 
-* SiteID.CoOccurrence.YYYYMMDD_HHMMSS.pdf
+```{r filelist_pdf_CoOccur}
+txt_grp_file <- "CoOccurrence"
+txt_grp_msg <- "cooccurrence"
+fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
+fn_all <- list.files(file.path(dir_results, TargetSiteID))
+boo_file <- fn_target %in% fn_all
+#
+if(boo_file==TRUE){##IF.boo.pdf.START
+  msg_files <- paste0("All ", txt_grp_msg," plots are in the file '"
+                      , fn_target, "' in the 'Results' folder.\n")
+} else if(boo_file==FALSE){
+  msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
+} else {
+  msg_files <- ""
+}##IF.boo.pdf.START
+#
+cat(msg_files)
+```
+
+```{r CoOccur_plots}
+fn_CoOccur_plots_box  <- list.files(path=file.path(dir_results, TargetSiteID)
+                                 , full.names = TRUE
+                                 , pattern=".CoOccurrence.Box.")
+fn_CoOccur_plots_SR  <- list.files(path=file.path(dir_results, TargetSiteID)
+                                 , full.names = TRUE
+                                 , pattern=".CoOccurrence.SR.")
+numPlots <- length(fn_CoOccur_plots_box)
+
+if(length(numPlots)==0){
+  txt_NoFile <- "No file exists; co-occurrence box plots.\n"
+  cat(txt_NoFile)
+} else if(file.exists(fn_CoOccur_Scores)==TRUE){
+  # Combine plot names in a vector (alternating)
+  ## assumes have one of each
+  fn_img_all <- vector(class(fn_CoOccur_plots_box)
+                       , length(c(fn_CoOccur_plots_box, fn_CoOccur_plots_SR)))
+  fn_img_all[c(TRUE, FALSE)] <- fn_CoOccur_plots_box
+  fn_img_all[c(FALSE, TRUE)] <- fn_CoOccur_plots_SR
+  knitr::include_graphics(fn_img_all)
+
+  #
+  #knitr::include_graphics(file.path(dir_results, paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")))
+  #
+} else {
+  cat(txt_NoFile)
+}
+```
+
 
 ## Chem, Percent Rank
 ```{r filelist_txt_chempctrank}

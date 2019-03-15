@@ -45,4 +45,4 @@ Imports: corrplot,
   wrapr 
 Suggests: imager,
   pryr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

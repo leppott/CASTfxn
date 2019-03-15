@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-14 09:34:01
+    #> Last Update: 2019-03-15 13:17:08
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9172 (2019-03-15)
+
+  - Report\_Results\_summary
+      - Show CoOccurrence plots.
 
 ## Changes in Version 0.1.0.9171 (2019-03-13)
 
