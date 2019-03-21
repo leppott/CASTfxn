@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-21 16:45:04
+    #> Last Update: 2019-03-21 16:53:17
 
 # Planned Updates
 
@@ -24,7 +24,12 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9175 (2019-03-15)
+## Changes in Version 0.1.0.9176 (2019-03-21)
+
+  - Report\_Results\_summary
+      - lines 155-175, SR.BMI.Scores. read statement corrected.
+
+## Changes in Version 0.1.0.9175 (2019-03-21)
 
   - Report\_Results\_summary
       - lines 132-152, SR.BMI.Corrs. read statement corrected.

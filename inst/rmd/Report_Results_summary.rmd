@@ -162,7 +162,7 @@ if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
                       , fn_target, "' in the 'Results' folder.\n")
   #
-  df_target <- read.delim(fn_target)
+  df_target <- read.delim(file.path(dir_results, TargetSiteID, fn_target))
   knitr::kable(df_target, Caption = "txt_grp_msg")
   #
 } else if(boo_file==FALSE){
