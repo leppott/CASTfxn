@@ -36,6 +36,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9177 (2019-03-22)
+
+* getCoOccur
+    + End message for no data rather than error crash.
+    + ID.plot to TargetSiteID
+        - For consistency among functions.
+    + dir.plots parameter not being used.  Modify code to use it.
+    + Example, remove "c" from col.ID.
+
 ## Changes in Version 0.1.0.9176 (2019-03-21)
 
 * Report_Results_summary

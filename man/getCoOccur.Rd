@@ -4,16 +4,16 @@
 \alias{getCoOccur}
 \title{Co-Occurrence Plots}
 \usage{
-getCoOccur(df.data, ID.plot = NULL, col.ID, col.Group, col.Bio, col.Stressors,
-  Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
+getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
+  col.Stressors, Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
   Bio.Nar.Lab = c("very likely altered", "likely altered",
   "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
-  Bio.Deg.Lab = c("Yes", "No"), dir.plots = getwd())
+  Bio.Deg.Lab = c("Yes", "No"), dir.plots = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{df.data}{data frame with data.}
 
-\item{ID.plot}{ID of station/sample to plot; can be single or multiple.
+\item{TargetSiteID}{ID of station/sample to plot; can be single or multiple.
 Default is first entry in df.data[, col.ID]}
 
 \item{col.ID}{df.data column with unique Station/Sample identifier.}
@@ -43,12 +43,12 @@ Should be in order from bad (low) to good (high).
 Defaults are referenced in the code so if change the code will break. 
 Default = c("Yes", "No").}
 
-\item{dir.plots}{Directory to save plots.  Default = working directory}
+\item{dir.plots}{Directory to save plots.  Default = working directory and Results.}
 }
 \value{
 Saves a single PDF of all plots, individual plots as JPGs, and a 
 scores files (tab separated text file) to a user defined 'Results' directory.  
-A sub-directory is created for each SiteID in ID.plot.
+A sub-directory is created for each SiteID in TargetSiteID.
 }
 \description{
 Generates a box plots and stressor response plots (individually as jpg 
@@ -112,7 +112,7 @@ Other values will break the code.
 Only a single biological measurement is used.  But multiple stressors can be
  used.
 
-Uses the libraries dplyr, replyr, wrapr, ggplot2, and gridExtra.
+Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 }
 \examples{
 # Example #1, CA data
@@ -122,7 +122,7 @@ df.data <- data_CoOccur_CA
 col.Group     <- "Group"
 col.Bio       <- "CSCI"
 col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
-col.ID        <- c("StationID_Master")
+col.ID        <- "StationID_Master"
 #
 Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
 Bio.Nar.Lab <- c("very likely altered", "likely altered"
@@ -131,9 +131,9 @@ Bio.Deg.Brk <- c(-2, 0.799, 2)
 Bio.Deg.Lab <- c("Yes", "No")
 dir.plots <- file.path(getwd(), "Results")
 #
-ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
+TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
-getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
         , dir.plots
         )
@@ -145,7 +145,7 @@ df.data <- data_CoOccur_AZ_Lo
 col.Group     <- "Group"
 col.Bio       <- "IBI"
 col.Stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-col.ID        <- c("StationID_Master")
+col.ID        <- "StationID_Master"
 #
 Bio.Nar.Brk <- c(0, 45, 52, 100)
 Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
@@ -153,9 +153,9 @@ Bio.Deg.Brk <- c(0, 45, 100)
 Bio.Deg.Lab <- c("Yes", "No")
 dir.plots <- file.path(getwd(), "Results")
 #
-ID.plot <- c("VRWCL010.66")
+TargetSiteID <- c("VRWCL010.66")
 #
-getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
         , dir.plots
         )

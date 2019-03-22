@@ -1,5 +1,4 @@
 # library(dplyr)
-# library(replyr)
 # library(ggplot2)
 # library(gridExtra)
 #
@@ -65,10 +64,10 @@
 #' Only a single biological measurement is used.  But multiple stressors can be
 #'  used.
 #' 
-#' Uses the libraries dplyr, replyr, wrapr, ggplot2, and gridExtra.
+#' Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 #' 
 #' @param df.data data frame with data.
-#' @param ID.plot ID of station/sample to plot; can be single or multiple.  
+#' @param TargetSiteID ID of station/sample to plot; can be single or multiple.  
 #' Default is first entry in df.data[, col.ID]
 #' @param col.ID df.data column with unique Station/Sample identifier.
 #' @param col.Group df.data column with grouping variable.
@@ -89,11 +88,11 @@
 #' Should be in order from bad (low) to good (high).
 #' Defaults are referenced in the code so if change the code will break. 
 #' Default = c("Yes", "No").
-#' @param dir.plots Directory to save plots.  Default = working directory
+#' @param dir.plots Directory to save plots.  Default = working directory and Results.
 #'
 #' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
 #' scores files (tab separated text file) to a user defined 'Results' directory.  
-#' A sub-directory is created for each SiteID in ID.plot.
+#' A sub-directory is created for each SiteID in TargetSiteID.
 #' 
 #' @examples
 #' # Example #1, CA data
@@ -103,7 +102,7 @@
 #' col.Group     <- "Group"
 #' col.Bio       <- "CSCI"
 #' col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
-#' col.ID        <- c("StationID_Master")
+#' col.ID        <- "StationID_Master"
 #' #
 #' Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
 #' Bio.Nar.Lab <- c("very likely altered", "likely altered"
@@ -112,9 +111,9 @@
 #' Bio.Deg.Lab <- c("Yes", "No")
 #' dir.plots <- file.path(getwd(), "Results")
 #' #
-#' ID.plot <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
+#' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
-#' getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+#' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
 #'         , dir.plots
 #'         )
@@ -126,7 +125,7 @@
 #' col.Group     <- "Group"
 #' col.Bio       <- "IBI"
 #' col.Stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-#' col.ID        <- c("StationID_Master")
+#' col.ID        <- "StationID_Master"
 #' #
 #' Bio.Nar.Brk <- c(0, 45, 52, 100)
 #' Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
@@ -134,32 +133,28 @@
 #' Bio.Deg.Lab <- c("Yes", "No")
 #' dir.plots <- file.path(getwd(), "Results")
 #' #
-#' ID.plot <- c("VRWCL010.66")
+#' TargetSiteID <- c("VRWCL010.66")
 #' #
-#' getCoOccur(df.data, ID.plot, col.ID, col.Group, col.Bio, col.Stressors
+#' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
 #'         , dir.plots
 #'         )
 #' 
 #~~~~~~~~~~~~~
-# QC
-# check for and create (if necessary) "Results" subdirectory of working directory
-# wd <- getwd()
-# dir.sub <- "Results"
-# ifelse(!dir.exists(file.path(wd, dir.sub))==TRUE
-#        , dir.create(file.path(wd, dir.sub))
-#        , FALSE)
-#~~~~~~~~~~~~~
 #' @export
-getCoOccur <- function(df.data, ID.plot=NULL
-                    , col.ID, col.Group, col.Bio, col.Stressors
-                    , Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)
-                    , Bio.Nar.Lab=c("very likely altered", "likely altered"
-                                    , "possibly altered ", "likely intact")
-                    , Bio.Deg.Brk=c(-2, 0.799, 2)
-                    , Bio.Deg.Lab=c("Yes", "No")
-                    , dir.plots=getwd()
-                    ) {##FUNCTION.START
+getCoOccur <- function(df.data
+                       , TargetSiteID=NULL
+                       , col.ID
+                       , col.Group
+                       , col.Bio
+                       , col.Stressors
+                       , Bio.Nar.Brk=c(-2, 0.62, 0.799, 0.919, 2)
+                       , Bio.Nar.Lab=c("very likely altered", "likely altered"
+                                       , "possibly altered ", "likely intact")
+                       , Bio.Deg.Brk=c(-2, 0.799, 2)
+                       , Bio.Deg.Lab=c("Yes", "No")
+                       , dir.plots=file.path(getwd(), "Results")
+                       ) {##FUNCTION.START
   #
   boo_DEBUG <- FALSE
   
@@ -189,8 +184,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
   col.SiteTypeQuality <- col.Bio.Deg
   #
   # default sample ID
-  if(is.null(ID.plot)){##IF.isnull.ID.START
-    ID.plot <- as.character(sort(unique(df.data[,col.ID])))[1]
+  if(is.null(TargetSiteID)){##IF.isnull.ID.START
+    TargetSiteID <- as.character(sort(unique(df.data[,col.ID])))[1]
   }##IF.isnull.ID.END
   
   
@@ -233,7 +228,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
   
   # QC Test
 
-  # num.ID        <- sum(ID.plot %in% df.data[,col.ID])
+  # num.ID        <- sum(TargetSiteID %in% df.data[,col.ID])
   # num.Stressors <- sum(col.Stressors %in% names(df.data))
   # num.Groups    <- length(unique(df.data[,col.Group]))
   # 
@@ -243,21 +238,31 @@ getCoOccur <- function(df.data, ID.plot=NULL
 
   #
   if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
-    i <- ID.plot[1] 
+    i <- TargetSiteID[1] 
   }##IF.boo_DEBUG.END
   # outside loop just in case forget to turn off debug flag
 
   # Analysis for each "test" sample
   # Loop, i ####
-  for (i in ID.plot){##FOR.i.START
+  for (i in TargetSiteID){##FOR.i.START
     #
-    TargetSiteID <- i
+    i_TargetSiteID <- i
     #
-    wd = getwd()
-    dir.sub <- "Results"
-    dir.sub2 <- TargetSiteID
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2))
+    # QC (site in data) ####
+    boo_QC_site <- i_TargetSiteID %in% df.data[, col.ID]
+    if(boo_QC_site==FALSE){##IF~boo_QC_site~START
+      name_df <- deparse(substitute(df.data))
+      name_col <- deparse(substitute(col.ID))
+      name_df_col <- paste0(name_df, name_col)
+      msg_NoSite <- paste0("Target site (", i_TargetSiteID, ") was *not* found in the function inputs (df.data, TargetSiteID, and col.ID).")
+      stop(msg_NoSite)
+    }##IF~boo_QC_site~END
+    #
+    #wd <- getwd()
+    #dir.sub <- "Results"
+    dir.sub2 <- i_TargetSiteID
+    ifelse(!dir.exists(file.path(dir.plots, dir.sub2))==TRUE
+           , dir.create(file.path(dir.plots, dir.sub2))
            , FALSE)
     # PDF, old ####
     #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
@@ -270,12 +275,12 @@ getCoOccur <- function(df.data, ID.plot=NULL
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
-    fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.txt"))
+    fn.scores <- file.path(dir.plots, dir.sub2, paste0(i_TargetSiteID,".CoOccurrence.Scores.txt"))
     utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
-    i.num <- match(i, ID.plot)
-    i.len <- length(ID.plot)
+    i.num <- match(i, TargetSiteID)
+    i.len <- length(TargetSiteID)
     #
     df.i <- df.data[df.data[,col.ID]==i, col.KEEP]
     i.Group <- df.i[,col.Group][1]
@@ -367,8 +372,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
          # plots ####
          # File Names
          #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-         fn_jpg_p1 <- paste0(TargetSiteID, ".CoOccurrence.Box.", j, ".jpg")
-         fn_jpg_p2 <- paste0(TargetSiteID, ".CoOccurrence.SR.", j, ".jpg")
+         fn_jpg_p1 <- paste0(i_TargetSiteID, ".CoOccurrence.Box.", j, ".jpg")
+         fn_jpg_p2 <- paste0(i_TargetSiteID, ".CoOccurrence.SR.", j, ".jpg")
          ppi       <- 300
          
          # Create (ggplot)
@@ -406,7 +411,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
          # Capture plot (jpg)
          # p1
          # plots_jpg[[1]] <- grDevices::recordPlot()
-         ggplot2::ggsave(filename=file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+         ggplot2::ggsave(filename=file.path(dir.plots, fn_jpg_p1)
                          , plot=p1
                          , dpi=ppi, width=8, height=6, units="in")
          
@@ -479,7 +484,7 @@ getCoOccur <- function(df.data, ID.plot=NULL
              ggplot2::labs(title=i, caption=lab.sub) 
            # p2
            # plots_jpg[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(wd, dir.sub, dir.sub2, fn_jpg_p2)
+           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p2)
                            , plot=p2
                            , dpi=ppi, width=8, height=6, units="in")
            
@@ -564,8 +569,8 @@ getCoOccur <- function(df.data, ID.plot=NULL
     # PDF, new ####
     # Create PDF from list of recorded plots
     if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
-      fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")
-      grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
+      fn.pdf    <- paste0(i_TargetSiteID, ".CoOccurrence.ALL.pdf")
+      grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=6, height=8)
         #
         # Remove null items from plot list
         #plots_pdf_nonull <- plots_pdf[-which(sapply(plots_pdf, is.null))]
