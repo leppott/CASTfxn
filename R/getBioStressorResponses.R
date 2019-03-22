@@ -259,6 +259,14 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   }##IF.biocomm.END
   
   
+  # QC, site rsp ####
+  qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
+  if(qc_row_site_rsp==0){##IF~qc_row_site_rsp~START
+    msg_Stop_site_rsp <- "No site response data in list.MatchBioData."
+    stop(msg_Stop_site_rsp)
+  }##IF~qc_row_site_rsp~START
+  
+  
   #{
   # QC, NUMERIC ####
   all.x.str_numeric <- unlist(lapply(list.MatchBioData[[all.x.str]], is.numeric)) 

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-22 10:50:34
+    #> Last Update: 2019-03-22 16:20:51
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9177 (2019-03-22)
+
+  - getBioStressorResponses
+      - End if no site response data (list.MatchBioData$site.a.rsp).
 
 ## Changes in Version 0.1.0.9177 (2019-03-22)
 

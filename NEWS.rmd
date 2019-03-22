@@ -38,6 +38,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 ## Changes in Version 0.1.0.9177 (2019-03-22)
 
+* getBioStressorResponses
+    + End if no site response data (list.MatchBioData$site.a.rsp).
+
+## Changes in Version 0.1.0.9177 (2019-03-22)
+
 * getCoOccur
     + End message for no data rather than error crash.
     + ID.plot to TargetSiteID
