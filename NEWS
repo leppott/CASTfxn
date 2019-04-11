@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-22 16:20:51
+    #> Last Update: 2019-04-11 15:33:08
 
 # Planned Updates
 
@@ -24,7 +24,18 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9177 (2019-03-22)
+## Changes in Version 0.1.0.9179 (2019-04-11)
+
+  - getBioStressorResponses
+      - Line 262-267 QC check failed.
+          - Move declaration into previous if/then by biocomm.
+  - Use make.names for ggsave exports of plots by variable.
+      - getBioStressorResponses
+      - getStressorSpecificRegressions
+      - getCoOccur
+      - getClusterInfo
+
+## Changes in Version 0.1.0.9178 (2019-03-22)
 
   - getBioStressorResponses
       - End if no site response data (list.MatchBioData$site.a.rsp).

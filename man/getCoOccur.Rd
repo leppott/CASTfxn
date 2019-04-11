@@ -8,7 +8,8 @@ getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
   col.Stressors, Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
   Bio.Nar.Lab = c("very likely altered", "likely altered",
   "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
-  Bio.Deg.Lab = c("Yes", "No"), dir.plots = file.path(getwd(), "Results"))
+  Bio.Deg.Lab = c("Yes", "No"), dir.plots = file.path(getwd(),
+  "Results"))
 }
 \arguments{
 \item{df.data}{data frame with data.}

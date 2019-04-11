@@ -91,7 +91,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  dir.sub2 <- TargetSiteID
+  dir.sub2 <- make.names(TargetSiteID)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
@@ -268,7 +268,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION
     plots.i[[i-1]] <- grDevices::recordPlot()
     
     # Save to JPG
-    fn_jpg <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".cluster.",varYlab,".jpg"))
+    fn_jpg <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".cluster.", make.names(varYlab), ".jpg"))
     ggplot2::ggsave(fn_jpg, p_cl, width=plot_W, height=plot_H, units="in")
     
     #

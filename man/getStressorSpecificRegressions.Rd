@@ -6,8 +6,9 @@
 \usage{
 getStressorSpecificRegressions(TargetSiteID, data.SampSummary,
   data.bmi.taxa.raw, data.chem.info, data.SSTV.totabund, data.MT.bmi,
-  matchedData, ref.sites, BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
-  BioIndex_Nar_Deg = "Violates", predint = 0.75, varLegLoc = "topright")
+  matchedData, ref.sites, BioIndex_Val = "IBI",
+  BioIndex_Nar = "NarRat", BioIndex_Nar_Deg = "Violates",
+  predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
 \item{TargetSiteID}{x}

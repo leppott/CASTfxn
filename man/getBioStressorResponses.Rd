@@ -4,9 +4,9 @@
 \alias{getBioStressorResponses}
 \title{Biological Stressor Responses}
 \usage{
-getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData,
-  LogTransf, ref.sites, predint = 0.75, varLegLoc = "topright",
-  biocomm = "bmi")
+getBioStressorResponses(TargetSiteID, stressors, BioResp,
+  list.MatchBioData, LogTransf, ref.sites, predint = 0.75,
+  varLegLoc = "topright", biocomm = "bmi")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}

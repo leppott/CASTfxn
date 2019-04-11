@@ -240,6 +240,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     cl.x.rsp   <- "cl.b.rsp"
     site.x.rsp <- "site.b.rsp"
     #
+    qc_row_site_rsp <-  nrow(list.MatchBioData$site.b.rsp)
+    #
   } else if(biocomm=="algae"){
     #
     bio_prefix <- "Alg"
@@ -252,6 +254,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     cl.x.rsp   <- "cl.a.rsp"
     site.x.rsp <- "site.a.rsp"
     #
+    qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
+    #
   } else {
     # Non Valid biological community
     Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
@@ -260,7 +264,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   
   
   # QC, site rsp ####
-  qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
+  #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
   if(qc_row_site_rsp==0){##IF~qc_row_site_rsp~START
     msg_Stop_site_rsp <- "No site response data in list.MatchBioData."
     stop(msg_Stop_site_rsp)
@@ -301,7 +305,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  dir.sub2 <- TargetSiteID
+  dir.sub2 <- make.names(TargetSiteID)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
@@ -321,7 +325,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     # p
     #stressors <- stressors[12]
-    p <- 1
+    p <- 4
     #q
     #BioResp <- BioResp[c(7:11)]
     q <- 1
@@ -604,7 +608,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         print(p_SR)
         plots.pq[[pq]] <- grDevices::recordPlot()
         #
-        fn_jpg <- paste0(varFileOut, stressName, "_", respName, ".jpg")
+        fn_jpg <- paste0(varFileOut, make.names(stressName), "_", make.names(respName), ".jpg")
         ggplot2::ggsave(fn_jpg, p_SR, width=plot_W, height=plot_H, units="in")
         #
       }##IF.boo.Plot.END

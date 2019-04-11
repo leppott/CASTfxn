@@ -212,7 +212,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
   # plots.tvr <- vector(10, mode="list")
   plots.tv <- vector(10, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
+  varFileOut = paste0("Results/",make.names(TargetSiteID),"/",make.names(TargetSiteID),".SR.SSTV.")
   plot_H <- 4
   plot_W <- 9
   
@@ -657,7 +657,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
           plots.tv[[tv]] <- grDevices::recordPlot()
           #
           #fn_jpg <- paste0(varFileOut, SSTV.analyte, "_", respName, ".jpg")
-          fn_jpg <- paste0(varFileOut, SSTV.analyte, ".jpg")
+          fn_jpg <- paste0(varFileOut, make.names(SSTV.analyte), ".jpg")
           ggplot2::ggsave(fn_jpg, p_SSTV, width=plot_W, height=plot_H, units="in")
           
           # ggplot save

@@ -114,7 +114,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  dir.sub2 <- TargetSiteID
+  dir.sub2 <- make.names(TargetSiteID)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)

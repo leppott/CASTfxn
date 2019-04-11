@@ -4,8 +4,8 @@
 \alias{getAlgStressorResponses}
 \title{Algae Stressor Responses}
 \usage{
-getAlgStressorResponses(TargetSiteID, stressors, AlgResp, list.MatchAlgData,
-  LogTransf, predint = 0.75, varLegLoc = "topright")
+getAlgStressorResponses(TargetSiteID, stressors, AlgResp,
+  list.MatchAlgData, LogTransf, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}

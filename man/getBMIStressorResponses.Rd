@@ -4,8 +4,8 @@
 \alias{getBMIStressorResponses}
 \title{BMI Stressor Responses}
 \usage{
-getBMIStressorResponses(TargetSiteID, stressors, BMIresp, list.MatchBMIData,
-  LogTransf, predint = 0.75, varLegLoc = "topright")
+getBMIStressorResponses(TargetSiteID, stressors, BMIresp,
+  list.MatchBMIData, LogTransf, predint = 0.75, varLegLoc = "topright")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}

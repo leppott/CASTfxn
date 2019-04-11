@@ -260,7 +260,7 @@ getCoOccur <- function(df.data
     #
     #wd <- getwd()
     #dir.sub <- "Results"
-    dir.sub2 <- i_TargetSiteID
+    dir.sub2 <- make.names(i_TargetSiteID)
     ifelse(!dir.exists(file.path(dir.plots, dir.sub2))==TRUE
            , dir.create(file.path(dir.plots, dir.sub2))
            , FALSE)
@@ -372,8 +372,8 @@ getCoOccur <- function(df.data
          # plots ####
          # File Names
          #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-         fn_jpg_p1 <- paste0(i_TargetSiteID, ".CoOccurrence.Box.", j, ".jpg")
-         fn_jpg_p2 <- paste0(i_TargetSiteID, ".CoOccurrence.SR.", j, ".jpg")
+         fn_jpg_p1 <- paste0(make.names(i_TargetSiteID), ".CoOccurrence.Box.", j, ".jpg")
+         fn_jpg_p2 <- paste0(make.names(i_TargetSiteID), ".CoOccurrence.SR.", j, ".jpg")
          ppi       <- 300
          
          # Create (ggplot)
