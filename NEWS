@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-12 10:20:15
+    #> Last Update: 2019-04-12 12:51:53
 
 # Planned Updates
 
@@ -23,6 +23,12 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9182 (2019-04-12)
+
+  - Move the SR plot from getCoOccur to getBioStressorResponses, Issue
+    \#54.
+      - Prepare code, did not make changes.
 
 ## Changes in Version 0.1.0.9181 (2019-04-12)
 

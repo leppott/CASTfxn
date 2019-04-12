@@ -202,15 +202,15 @@ getCoOccur <- function(df.data
   # could use apply
   #
   # Add columns
-  df.scores[, "Param_Name"] <- as.character(NA)
+  df.scores[, "Param_Name"]  <- as.character(NA)
   df.scores[, "Param_Value"] <- as.numeric(NA)
-  df.scores[, "n"]       <- as.character(NA)
-  df.scores[, "q25"]     <- as.character(NA)
-  df.scores[, "q50"]     <- as.character(NA)
-  df.scores[, "q75"]     <- as.character(NA)
-  df.scores[, "Sc_Box"] <- as.character(NA)
+  df.scores[, "n"]           <- as.character(NA)
+  df.scores[, "q25"]         <- as.character(NA)
+  df.scores[, "q50"]         <- as.character(NA)
+  df.scores[, "q75"]         <- as.character(NA)
+  df.scores[, "Sc_Box"]      <- as.character(NA)
   df.scores[, "SR_pred_Deg"] <- as.character(NA)
-  df.scores[, "Sc_SR"] <- as.character(NA)
+  df.scores[, "Sc_SR"]       <- as.character(NA)
   # Remove columns
   col.remove <- names(df.scores) %in% col.Stressors
   df.scores <- df.scores[, !col.remove]
@@ -345,7 +345,7 @@ getCoOccur <- function(df.data
          df.i.n[, "q25"]         <- df.i.n[, paste0("q25_",j)]
          df.i.n[, "q50"]         <- df.i.n[, paste0("q50_",j)]
          df.i.n[, "q75"]         <- df.i.n[, paste0("q75_",j)]
-         df.i.n[, "Sc_Box"]     <- df.i.n[, paste0("Sc_Box_",j)]
+         df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_",j)]
          # df.i.n append to output (only keep matching columns)
          df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))], all.y=TRUE)
         #  # Save
