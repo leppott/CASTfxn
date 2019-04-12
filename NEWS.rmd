@@ -36,6 +36,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9184 (2019-04-12)
+
+* getBioStressorResponses
+    + Minor edits to 0.1.0.9083 changes (r2).
+    + Check for missing stressors.
+        - Remove from stressor list.
+        - Warning for those requested but missing from data.
+
 ## Changes in Version 0.1.0.9183 (2019-04-12)
 
 * getBioStressorResponses

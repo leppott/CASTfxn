@@ -242,6 +242,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     #
     qc_row_site_rsp <-  nrow(list.MatchBioData$site.b.rsp)
     #
+    # missing stressors
+    stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
+    stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
+    #
   } else if(biocomm=="algae"){
     #
     bio_prefix <- "Alg"
@@ -256,6 +260,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     #
     qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
     #
+    # missing stressor
+    stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.a.str))]
+    stressors <- stressors[stressors %in% names(list.MatchBioData$all.a.str)]
+    #
   } else {
     # Non Valid biological community
     Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
@@ -269,6 +277,13 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain any site response data for the specified biological community (", biocomm, ").")
     stop(msg_Stop_site_rsp)
   }##IF~qc_row_site_rsp~START
+  
+  # QC, bad stressors
+  if(length(stressors_missing)>0){##IF~length(stressors_missing)~START
+    msg_warn_stressors_missing <- paste0("The following stressors are missing from the 'list.MatchBioData' input:\n"
+                                         , paste(stressors_missing, collapse=", "))
+    warning(msg_warn_stressors_missing)
+  }##IF~length(stressors_missing)~END
   
   
   #{
@@ -482,7 +497,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         # Corelation
         c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
         df.corr_cl <- data.frame(cbind(stressName, respName, signif(c1S_cl$statistic, 2)
-                                    , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2))
+                                    , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
         names(df.corr_cl) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
         pval.corr_cl <- signif(c1S_cl$p.value, 2)
         #
@@ -514,7 +529,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         # Corelation
         c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor, method="pearson", use="pairwise.complete.obs"))
         df.corr_all <- data.frame(cbind(stressName, respName, signif(c1S_all$statistic, 2)
-                                       , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2))
+                                       , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2_all))
         names(df.corr_all) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
         pval.corr_all <- signif(c1S_all$p.value, 2)
         #
@@ -710,7 +725,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         if(nrow(df_plot_site)>0){##IF~nrow(df_plot_site)~END
           for (f in 1:nrow(df_plot_site)) {##FOR~f~START
             # Generate scores based on slope, significance value, and r2
-            if ((length(df_plot_cl)>=5) && (abs(pval.corr)<=0.1) && (r2>=0.1)) {##IF~length~START
+            if ((length(df_plot_cl)>=5) && (abs(pval.corr)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
               # print to console p (stressName) and q (respName)
                 if (slope.dir == exp.dir) {
                   #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
