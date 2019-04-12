@@ -325,7 +325,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     # p
     #stressors <- stressors[12]
-    p <- 4
+    p <- 2
     #q
     #BioResp <- BioResp[c(7:11)]
     q <- 1
@@ -463,6 +463,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       #}##NoIssues.Munging.END
       
+      # Cluster
       # LM and Corr ####
       if(nrow(df_plot_cl)>0){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
@@ -470,29 +471,61 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         model_cl_pred <- predict(model_cl, interval = "prediction", level = 0.75)
         model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
         # 
-        slope <- signif(summary(model_cl)$coefficients[[2]], 3)
-        intercept <- signif(summary(model_cl)$coefficients[[1]], 3)
-        pval_intercept <- signif(summary(model_cl)$coefficients[[7]], 3)
-        pval_slope <- signif(summary(model_cl)$coefficients[[8]], 3)
+        slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
+        intercept_cl <- signif(summary(model_cl)$coefficients[[1]], 3)
+        pval_intercept_cl <- signif(summary(model_cl)$coefficients[[7]], 3)
+        pval_slope_cl <- signif(summary(model_cl)$coefficients[[8]], 3)
         # r2
-        r <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson",use="pairwise.complete.obs")
-        r2 <- formatC(r^2, format="f", digits=3)
-        n_str <- length(df_plot_cl$Stressor)
+        r_cl <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson",use="pairwise.complete.obs")
+        r2_cl <- formatC(r_cl^2, format="f", digits=3)
+        n_str_cl <- length(df_plot_cl$Stressor)
         # Corelation
-        c1S <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
-        df.corr <- data.frame(cbind(stressName, respName, signif(c1S$statistic,2)
-                                    , signif(c1S$p.value,2), signif(c1S$estimate,2), r2))
-        names(df.corr) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
-        pval.corr <- signif(c1S$p.value, 2)
+        c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
+        df.corr_cl <- data.frame(cbind(stressName, respName, signif(c1S_cl$statistic, 2)
+                                    , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2))
+        names(df.corr_cl) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+        pval.corr_cl <- signif(c1S_cl$p.value, 2)
         #
         # 20180621, scoring
-        slope.dir <- sign(slope) #1 = positive, -1 = negative
+        slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
         # exp.dir <- data.lkp.dir[stressName,respName]
         exp.dir <- -1
         #
       } else {
        boo_corr <- FALSE 
       }##IF~nrow(df_plot_cl)~END
+      
+      # ALL
+      # LM and Corr ####
+      if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
+        # 20190228, QC for no data
+        model_all <- lm(df_plot_all$Response ~ df_plot_all$Stressor) #cluster only
+        model_all_pred <- predict(model_all, interval = "prediction", level = 0.75)
+        model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
+        # 
+        slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
+        intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
+        pval_intercept_all <- signif(summary(model_all)$coefficients[[7]], 3)
+        pval_slope_all <- signif(summary(model_all)$coefficients[[8]], 3)
+        # r2
+        r_all <- stats::cor(df_plot_all$Response, df_plot_all$Stressor, method="pearson",use="pairwise.complete.obs")
+        r2_all <- formatC(r_all^2, format="f", digits=3)
+        n_str_all <- length(df_plot_all$Stressor)
+        # Corelation
+        c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor, method="pearson", use="pairwise.complete.obs"))
+        df.corr_all <- data.frame(cbind(stressName, respName, signif(c1S_all$statistic, 2)
+                                       , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2))
+        names(df.corr_all) <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+        pval.corr_all <- signif(c1S_all$p.value, 2)
+        #
+        # 20180621, scoring
+        slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
+        # exp.dir <- data.lkp.dir[stressName,respName]
+        exp.dir <- -1
+        #
+      } else {
+        boo_corr <- FALSE 
+      }##IF~nrow(df_plot_all)~END
 
 
       #{# Plot, Variables ~ START
@@ -511,14 +544,26 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       str_ylab  <- respName
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) {##IF.equation.START
-        str_caption <- paste(paste0("Cluster regression: ", "y = ", slope, " x + ", intercept)
-                             , paste0("r2 = ", r2)
-                             , paste0("p-value = ", pval.corr)
-                             , paste0("n = ", n_str)
+        str_caption_cl <- paste(paste0("Regression (cluster): ", "y = ", slope_cl, " x + ", intercept_cl)
+                             , paste0("r2 = ", r2_cl)
+                             , paste0("p-value = ", pval.corr_cl)
+                             , paste0("n = ", n_str_cl)
                              , sep=" ~ ")
       } else {
-        str_caption <- "Cluster regression:  Less than 2 data points in cluster. "
+        str_caption_cl <- "Regression (cluster):  Less than 2 data points in cluster."
       }##IF.equation.END
+      #
+      if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {##IF.equation.START
+        str_caption_all <- paste(paste0("Regression (all): ", "y = ", slope_all, " x + ", intercept_all)
+                                , paste0("r2 = ", r2_all)
+                                , paste0("p-value = ", pval.corr_all)
+                                , paste0("n = ", n_str_all)
+                                , sep=" ~ ")
+      } else {
+        str_caption_all <- "Regression (all):  Less than 2 data points."
+      }##IF.equation.END
+      #
+      str_caption <- paste0(str_caption_all, "\n", str_caption_cl)
 
       ## Plot, Variables, Colors
       col_sites_all     <- "dark gray"
@@ -526,7 +571,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       col_sites_cl      <- "cyan3"
       col_sites_cl_ref  <- col_sites_all_ref
       col_sites_targ    <- "red"
-      col_line          <- "black"
+      col_line_cl       <- col_sites_cl
+      col_line_all      <- "black"
       
       ## Plot, Variables, Fill
       fill_sites_all     <- col_sites_all
@@ -599,9 +645,15 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
                        ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
                        ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) +
-                       ggplot2::stat_smooth(method=lm, color=col_line, show.legend=FALSE) + 
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr), color=col_line, linetype="dashed", show.legend=FALSE) + 
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr), color=col_line, linetype="dashed", show.legend=FALSE) + 
+                       # Linear model (all data?!)
+                       ggplot2::stat_smooth(method=lm, color=col_line_all, show.legend=FALSE) + 
+                       # Regression, cluster
+                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
+                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
+                       # Regression, all
+                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~lwr), color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
+                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~upr), color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
+                       # other
                        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
                        ggplot2::labs(title=str_title, subtitle = str_subtitle, caption=str_caption, x=str_xlab, y=str_ylab)
         #
