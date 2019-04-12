@@ -305,7 +305,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- getwd()
   dir.sub <- "Results"
-  dir.sub2 <- make.names(TargetSiteID)
+  dir.sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)

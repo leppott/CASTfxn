@@ -36,6 +36,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9180 (2019-04-12)
+
+* make.names; undo edits for TargetSiteID in names for folders and files.
+    + Some start with numbers and that is ok.
+    + getBioStressorResponses
+    + getClusterInfo 
+    + getCoOccur
+    + getStressorList
+    + getStressorSpecificRegressions
+* getCoOccur
+    + Boxplot not saving to TargetSiteID folder (line 414).
+
 ## Changes in Version 0.1.0.9179 (2019-04-11)
 
 * getBioStressorResponses

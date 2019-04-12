@@ -212,7 +212,7 @@ getStressorSpecificRegressions <- function(TargetSiteID
   # plots.tvr <- vector(10, mode="list")
   plots.tv <- vector(10, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",make.names(TargetSiteID),"/",make.names(TargetSiteID),".SR.SSTV.")
+  varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
   plot_H <- 4
   plot_W <- 9
   
