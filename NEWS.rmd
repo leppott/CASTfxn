@@ -36,6 +36,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9181 (2019-04-12)
+
+* getBioStressorResponses
+    + Update stop message for no response data.
+
 ## Changes in Version 0.1.0.9180 (2019-04-12)
 
 * make.names; undo edits for TargetSiteID in names for folders and files.

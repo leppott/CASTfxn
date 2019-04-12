@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-12 08:49:19
+    #> Last Update: 2019-04-12 10:20:15
 
 # Planned Updates
 
@@ -23,6 +23,11 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9181 (2019-04-12)
+
+  - getBioStressorResponses
+      - Update stop message for no response data.
 
 ## Changes in Version 0.1.0.9180 (2019-04-12)
 

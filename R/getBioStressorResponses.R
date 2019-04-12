@@ -266,7 +266,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # QC, site rsp ####
   #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
   if(qc_row_site_rsp==0){##IF~qc_row_site_rsp~START
-    msg_Stop_site_rsp <- "No site response data in list.MatchBioData."
+    msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain any site response data for the specified biological community (", biocomm, ").")
     stop(msg_Stop_site_rsp)
   }##IF~qc_row_site_rsp~START
   
