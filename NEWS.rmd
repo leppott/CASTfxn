@@ -34,7 +34,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * Update summary report for changes (date and columns in txt file) (getCoOccur).
 
+* getBioStressorResponses
+    + Add stressor response plot from getCoOccur
+
 # Version History
+
+## Changes in Version 0.1.0.9186 (2019-04-15)
+
+* getBioStressorResponses
+    + Fix 'df.corr' object not found.
+        - Previously renamed df.corr to df.corr_cl.  Missed a reference.
 
 ## Changes in Version 0.1.0.9185 (2019-04-15)
 

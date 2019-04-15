@@ -684,9 +684,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         # # Create results data frame
         if(boo_corr==TRUE){##IF~boo_corr~START
           if (varFlag==1) {  #First time through loop
-            df.CorrTable <- df.corr
+            df.CorrTable <- df.corr_cl
           } else {
-            df.CorrTable <- rbind(df.CorrTable, df.corr)  #  if not first iteration then append
+            df.CorrTable <- rbind(df.CorrTable, df.corr_cl)  #  if not first iteration then append
           } # IF, END
           boo.Append    <- TRUE
           boo.col.names <- FALSE
@@ -701,7 +701,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append)  
           #}
-          pval.corr = signif(c1S$p.value, 2)
+          pval.corr = signif(c1S_cl$p.value, 2)
         }##IF~boo_corr~END
         
         
@@ -727,11 +727,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
             # Generate scores based on slope, significance value, and r2
             if ((length(df_plot_cl)>=5) && (abs(pval.corr)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
               # print to console p (stressName) and q (respName)
-                if (slope.dir == exp.dir) {
+                if (slope.dir_cl == exp.dir) {
                   #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
                   txt.score <-  "1"
                   sr.score = 1
-                } else if (slope.dir != exp.dir) {
+                } else if (slope.dir_cl != exp.dir) {
                    # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
                     txt.score <- "-1"
                    sr.score = -1

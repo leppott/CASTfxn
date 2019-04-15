@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-15 14:40:27
+    #> Last Update: 2019-04-15 15:30:08
 
 # Planned Updates
 
@@ -22,7 +22,18 @@ NEWS
   - Update summary report for changes (date and columns in txt file)
     (getCoOccur).
 
+  - getBioStressorResponses
+    
+      - Add stressor response plot from getCoOccur
+
 # Version History
+
+## Changes in Version 0.1.0.9186 (2019-04-15)
+
+  - getBioStressorResponses
+      - Fix ‘df.corr’ object not found.
+          - Previously renamed df.corr to df.corr\_cl. Missed a
+            reference.
 
 ## Changes in Version 0.1.0.9185 (2019-04-15)
 
