@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-12 16:56:42
+    #> Last Update: 2019-04-15 14:40:27
 
 # Planned Updates
 
@@ -23,6 +23,15 @@ NEWS
     (getCoOccur).
 
 # Version History
+
+## Changes in Version 0.1.0.9185 (2019-04-15)
+
+  - getCoOccur
+      - NA for stressor values.
+          - Parameter was being skipped if no stressor values (i.e., all
+            NA).
+          - Output NA to scores file.
+          - Message to console.
 
 ## Changes in Version 0.1.0.9184 (2019-04-12)
 

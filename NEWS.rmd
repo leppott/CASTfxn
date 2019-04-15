@@ -36,6 +36,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9185 (2019-04-15)
+
+* getCoOccur
+    + NA for stressor values.
+        - Parameter was being skipped if no stressor values (i.e., all NA).
+        - Output NA to scores file.
+        - Message to console.
+
 ## Changes in Version 0.1.0.9184 (2019-04-12)
 
 * getBioStressorResponses

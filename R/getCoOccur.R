@@ -302,7 +302,7 @@ getCoOccur <- function(df.data
   
      #
     if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
-      j <- col.Stressors[2]
+      j <- col.Stressors[1]
       #par(mfrow=c(3,2))
     }##IF.boo_DEBUG.END
     # outside loop just in case forget to turn off debug flag
@@ -558,6 +558,17 @@ getCoOccur <- function(df.data
          
        } else {
          # no data
+         cat(paste0("   All values NA for stressor (", j, ").\n"))
+         flush.console()
+         # add data to scores table
+         column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
+         df.i.NA <- df.i[1,1:5]
+         df.i.NA[, column_names] <- NA
+         df.i.NA[, "Param_Name"] <- j
+         utils::write.table(df.i.NA, file=fn.scores
+                            , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
+         
+         
        }##IF.nrow.END
        #
        
