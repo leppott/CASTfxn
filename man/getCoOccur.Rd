@@ -116,13 +116,14 @@ Only a single biological measurement is used.  But multiple stressors can be
 Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 }
 \examples{
-# Example #1, CA data
+# Example #1, CA data (multiple sites)
+#
 #Load Data
 df.data <- data_CoOccur_CA
 #
 col.Group     <- "Group"
 col.Bio       <- "CSCI"
-col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
+col.Stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
 col.ID        <- "StationID_Master"
 #
 Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
@@ -139,9 +140,17 @@ getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , dir.plots
         )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Example #2, AZ data
-#Load Data
-df.data <- data_CoOccur_AZ_Lo
+# Example #2, AZ data (single site)
+#
+TargetSiteID <- c("VRWCL010.66")
+#
+# Cluster Data based on elevation category
+boo_Lo <- TargetSiteID \%in\% data_CoOccur_AZ_Lo$StationID_Master
+if(boo_Lo==TRUE){
+   df.data <- data_CoOccur_AZ_Lo
+} else {
+   df.data <- data_CoOccur_AZ_Hi
+}
 #
 col.Group     <- "Group"
 col.Bio       <- "IBI"
@@ -153,8 +162,6 @@ Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
 Bio.Deg.Brk <- c(0, 45, 100)
 Bio.Deg.Lab <- c("Yes", "No")
 dir.plots <- file.path(getwd(), "Results")
-#
-TargetSiteID <- c("VRWCL010.66")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 

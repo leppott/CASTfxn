@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-15 15:30:08
+    #> Last Update: 2019-04-16 09:38:04
 
 # Planned Updates
 
@@ -27,6 +27,11 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9187 (2019-04-16)
+
+  - getCoOccur
+      - Remove stressor plot (p2). Issue \#54
 
 ## Changes in Version 0.1.0.9186 (2019-04-15)
 

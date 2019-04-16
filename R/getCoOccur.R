@@ -95,13 +95,14 @@
 #' A sub-directory is created for each SiteID in TargetSiteID.
 #' 
 #' @examples
-#' # Example #1, CA data
+#' # Example #1, CA data (multiple sites)
+#' #
 #' #Load Data
 #' df.data <- data_CoOccur_CA
 #' #
 #' col.Group     <- "Group"
 #' col.Bio       <- "CSCI"
-#' col.Stressors <- c("DO_uf_mg_L", "SpecCond_uf_µS_cm", "TN_uf_mg_L", "TP_mg_L")
+#' col.Stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
 #' col.ID        <- "StationID_Master"
 #' #
 #' Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
@@ -118,9 +119,17 @@
 #'         , dir.plots
 #'         )
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' # Example #2, AZ data
-#' #Load Data
-#' df.data <- data_CoOccur_AZ_Lo
+#' # Example #2, AZ data (single site)
+#' #
+#' TargetSiteID <- c("VRWCL010.66")
+#' #
+#' # Cluster Data based on elevation category
+#' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID_Master
+#' if(boo_Lo==TRUE){
+#'    df.data <- data_CoOccur_AZ_Lo
+#' } else {
+#'    df.data <- data_CoOccur_AZ_Hi
+#' }
 #' #
 #' col.Group     <- "Group"
 #' col.Bio       <- "IBI"
@@ -132,8 +141,6 @@
 #' Bio.Deg.Brk <- c(0, 45, 100)
 #' Bio.Deg.Lab <- c("Yes", "No")
 #' dir.plots <- file.path(getwd(), "Results")
-#' #
-#' TargetSiteID <- c("VRWCL010.66")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
@@ -409,11 +416,16 @@ getCoOccur <- function(df.data
            ggplot2::labs(y=j, x=lab_comp) + 
            ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2)
          # Capture plot (jpg)
+         # Capture most recent plot to a list
+         print(p1)
+         plots_pdf[[ij.num]] <- grDevices::recordPlot()
          # p1
          # plots_jpg[[1]] <- grDevices::recordPlot()
          ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p1)
                          , plot=p1
                          , dpi=ppi, width=8, height=6, units="in")
+         
+         #
          
          ## Logistic Regression (all comparator sites)
          
@@ -441,113 +453,115 @@ getCoOccur <- function(df.data
          n_cc_df_plot <- sum(stats::complete.cases(df.plot[,c("x","y")]))
          #lab.sub <- paste0("All comparator sites with both ", col.Bio, " and ", j, " (n=", n_cc_df_plot, ")")
          
+         # 20190416, comment out p2 and p3, moving to getBSR
+         
          # Stressor Response Curve
-         if(sum(stats::complete.cases(df.plot))>0){##IF.complete.cases.START
-           #
-           fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
-           # create data for curve
-           newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100))
-           newdat$y.name <- stats::predict(fit, newdata=newdat, type="response") #se.fit=TRUE
-           # type=response is for probabilities.
-           
-           # Scoring
-           # j_values <- data.frame(x=df.i[,j])
-           j_values <- data.frame(x= df.scores.i.n[, "Param_Value"])
-           j_SR_predict <- predict(fit, newdata=j_values, type="response")
-           j_SR_score <- cut(j_SR_predict
-                             , breaks=c(0, 0.2, 0.5, 1)
-                             , labels=c(-1, 0, 1))
-           
-           # # Add scores df so can save
-           df.scores.i.n[, "SR_pred_Deg"] <- j_SR_predict
-           df.scores.i.n[, "Sc_SR"] <- j_SR_score
-           
-           # 
-           lab.sub <- paste0("All cluster sites with both ", col.Bio, " and ", j
-                             , " (n=", n_cc_df_plot, ").\n Score = "
-                             , paste(j_SR_score, collapse=", "),".")
-           
-           # plot2, ggplot
-           p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
-             ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), alpha=0.5, size=2) +
-             # ggplot2::geom_jitter(size=2, alpha=0.5
-             #                      , ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), width=0, height=0.005) +
-             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
-             ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd) + 
-             ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black", lty=2) +
-             #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) + 
-             ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) + 
-             ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat, color="blue", lwd=1) + 
-             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) + 
-             ggplot2::labs(title=i, caption=lab.sub) 
-           # p2
-           # plots_jpg[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p2)
-                           , plot=p2
-                           , dpi=ppi, width=8, height=6, units="in")
-           
-           # same colors
-           #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
-           
-           # Save Plots
-           #
-           # PDF, p1 and p2
-           #grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
-           p3 <- gridExtra::grid.arrange(p1, p2, ncol=1, nrow=2 )
-           #p3
-           # Capture most recent plot to a list
-           plots_pdf[[ij.num]] <- grDevices::recordPlot()
-           # grDevices::dev.off()
-           #
-           # ggplot mods
-           ## Size modifier - 4:3 isn't big enough for all of text on ggplots
-           #size_mod <- 1.5
-           #
-           # # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
-           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
-           #                 , pointsize = 8
-           #                 , res = ppi)
-           #    grDevices::replayPlot(1)
-           # grDevices::dev.off()
-           #
-           # JPG, p2
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p2)
-           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
-           #                 , pointsize=8
-           #                 , res = ppi)
-           #    grDevices::replayPlot(2)
-           # grDevices::dev.off()
-           #
-           
-         } else { 
-           #
-           # Save Plots
-           #
-           # PDF, p1 only
-           # grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
-           # no plot 2
-           p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2 )
-           #p3
-           # Capture most recent plot to a list
-           plots_pdf[[ij.num]] <- grDevices::recordPlot()
-           # grDevices::dev.off()
-           #
-           # ggplot mods
-           ## Size modifier - 4:3 isn't big enough for all of text on ggplots
-           #size_mod <- 1.5
-           #
-           # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
-           #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
-           #                 , pointsize=8
-           #                 , res = ppi)
-           #    grDevices::replayPlot(1)
-           # grDevices::dev.off()
-           
-         }##IF.complete.cases.END
+         # if(sum(stats::complete.cases(df.plot))>0){##IF.complete.cases.START
+         #   #
+         #   fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
+         #   # create data for curve
+         #   newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100))
+         #   newdat$y.name <- stats::predict(fit, newdata=newdat, type="response") #se.fit=TRUE
+         #   # type=response is for probabilities.
+         #   
+         #   # Scoring
+         #   # j_values <- data.frame(x=df.i[,j])
+         #   j_values <- data.frame(x= df.scores.i.n[, "Param_Value"])
+         #   j_SR_predict <- predict(fit, newdata=j_values, type="response")
+         #   j_SR_score <- cut(j_SR_predict
+         #                     , breaks=c(0, 0.2, 0.5, 1)
+         #                     , labels=c(-1, 0, 1))
+         #   
+         #   # # Add scores df so can save
+         #   df.scores.i.n[, "SR_pred_Deg"] <- j_SR_predict
+         #   df.scores.i.n[, "Sc_SR"] <- j_SR_score
+         #   
+         #   # 
+         #   lab.sub <- paste0("All cluster sites with both ", col.Bio, " and ", j
+         #                     , " (n=", n_cc_df_plot, ").\n Score = "
+         #                     , paste(j_SR_score, collapse=", "),".")
+         #   
+         #   # plot2, ggplot
+         #   p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
+         #     ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), alpha=0.5, size=2) +
+         #     # ggplot2::geom_jitter(size=2, alpha=0.5
+         #     #                      , ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), width=0, height=0.005) +
+         #     ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
+         #     ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
+         #     ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
+         #     ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd) + 
+         #     ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black", lty=2) +
+         #     #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) + 
+         #     ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) + 
+         #     ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat, color="blue", lwd=1) + 
+         #     ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) + 
+         #     ggplot2::labs(title=i, caption=lab.sub) 
+         #   # p2
+         #   # plots_jpg[[2]] <- grDevices::recordPlot()
+         #   ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p2)
+         #                   , plot=p2
+         #                   , dpi=ppi, width=8, height=6, units="in")
+         #   
+         #   # same colors
+         #   #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
+         #   
+         #   # Save Plots
+         #   #
+         #   # PDF, p1 and p2
+         #   #grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
+         #   p3 <- gridExtra::grid.arrange(p1, p2, ncol=1, nrow=2 )
+         #   #p3
+         #   # Capture most recent plot to a list
+         #   plots_pdf[[ij.num]] <- grDevices::recordPlot()
+         #   # grDevices::dev.off()
+         #   #
+         #   # ggplot mods
+         #   ## Size modifier - 4:3 isn't big enough for all of text on ggplots
+         #   #size_mod <- 1.5
+         #   #
+         #   # # JPG, p1
+         #   # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+         #   #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+         #   #                 , pointsize = 8
+         #   #                 , res = ppi)
+         #   #    grDevices::replayPlot(1)
+         #   # grDevices::dev.off()
+         #   #
+         #   # JPG, p2
+         #   # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p2)
+         #   #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+         #   #                 , pointsize=8
+         #   #                 , res = ppi)
+         #   #    grDevices::replayPlot(2)
+         #   # grDevices::dev.off()
+         #   #
+         #   
+         # } else { 
+         #   #
+         #   # Save Plots
+         #   #
+         #   # PDF, p1 only
+         #   # grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
+         #   # no plot 2
+         #   p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2 )
+         #   #p3
+         #   # Capture most recent plot to a list
+         #   plots_pdf[[ij.num]] <- grDevices::recordPlot()
+         #   # grDevices::dev.off()
+         #   #
+         #   # ggplot mods
+         #   ## Size modifier - 4:3 isn't big enough for all of text on ggplots
+         #   #size_mod <- 1.5
+         #   #
+         #   # JPG, p1
+         #   # grDevices::jpeg(filename = file.path(wd, dir.sub, dir.sub2, fn_jpg_p1)
+         #   #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+         #   #                 , pointsize=8
+         #   #                 , res = ppi)
+         #   #    grDevices::replayPlot(1)
+         #   # grDevices::dev.off()
+         #   
+         # }##IF.complete.cases.END
           
           # Save tabular scores
           utils::write.table(df.scores.i.n, file=fn.scores
@@ -581,7 +595,8 @@ getCoOccur <- function(df.data
     # Create PDF from list of recorded plots
     if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
       fn.pdf    <- paste0(i_TargetSiteID, ".CoOccurrence.ALL.pdf")
-      grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=6, height=8)
+     # grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=6, height=8) #p3
+      grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=9, height=4) #p1 only
         #
         # Remove null items from plot list
         #plots_pdf_nonull <- plots_pdf[-which(sapply(plots_pdf, is.null))]
