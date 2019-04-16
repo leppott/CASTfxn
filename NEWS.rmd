@@ -39,6 +39,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9188 (2019-04-16)
+
+* Add na.rm=TRUE to ggplot statements to avoid warnings; Issue #56.
+    + getCoOccur
+
 ## Changes in Version 0.1.0.9187 (2019-04-16)
 
 * getCoOccur

@@ -400,11 +400,11 @@ getCoOccur <- function(df.data
          targ_line_lwd <- 1
          
          p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
-           ggplot2::geom_boxplot() +
+           ggplot2::geom_boxplot(na.rm = TRUE) +
            ggplot2::coord_flip() + 
            ggplot2::geom_jitter(size=2, alpha=0.5
-                                , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) +
-           ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd) + 
+                                , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality), na.rm = TRUE) +
+           ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
            # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
            #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
            ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
@@ -414,7 +414,7 @@ getCoOccur <- function(df.data
            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
            ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
            ggplot2::labs(y=j, x=lab_comp) + 
-           ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2)
+           ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2, na.rm = TRUE)
          # Capture plot (jpg)
          # Capture most recent plot to a list
          print(p1)

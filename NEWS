@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-16 09:38:04
+    #> Last Update: 2019-04-16 10:34:11
 
 # Planned Updates
 
@@ -27,6 +27,11 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9188 (2019-04-16)
+
+  - Add na.rm=TRUE to ggplot statements to avoid warnings; Issue \#56.
+      - getCoOccur
 
 ## Changes in Version 0.1.0.9187 (2019-04-16)
 
