@@ -39,6 +39,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9191 (2019-04-17)
+
+* getCoOccur
+    + Attempt to remove warning messages from plot 1 (p1).
+        - If skip geom_jitter the plot is missing parts so leave alone.
+
 ## Changes in Version 0.1.0.9190 (2019-04-17)
 
 * getBioStressorResponses

@@ -399,34 +399,36 @@ getCoOccur <- function(df.data
          targ_line_lty <- 2
          targ_line_lwd <- 1
          
-         p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
-           ggplot2::geom_boxplot(na.rm = TRUE) +
-           ggplot2::coord_flip() + 
-           ggplot2::geom_jitter(size=2, alpha=0.5
-                                , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality), na.rm = TRUE) +
-           ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
-           # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
-           #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
-           ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-           ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-           ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
-           ggplot2::labs(title=i, caption=lab.sub) + 
-           ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-           ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
-           ggplot2::labs(y=j, x=lab_comp) + 
-           ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2, na.rm = TRUE)
-         # Capture plot (jpg)
-         # Capture most recent plot to a list
-         # print(p1)
-         # plots_pdf[[ij.num]] <- grDevices::recordPlot()
-         # p1
-         # plots_jpg[[1]] <- grDevices::recordPlot()
-         ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p1)
-                         , plot=p1
-                         , dpi=ppi, width=8, height=6, units="in")
-         
-         #
-         
+         # if non-empty
+         #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
+           # plot1, ggplot ####
+           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
+             ggplot2::geom_boxplot(na.rm = TRUE) +
+             ggplot2::coord_flip() + 
+             ggplot2::geom_jitter(size=2, alpha=0.5, na.rm=TRUE
+                                  , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) + 
+             ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
+             # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
+             #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
+             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
+             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
+             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
+             ggplot2::labs(title=i, caption=lab.sub) + 
+             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
+             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
+             ggplot2::labs(y=j, x=lab_comp) + 
+             ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2, na.rm = TRUE)
+           # Capture plot (jpg)
+           # Capture most recent plot to a list
+           # print(p1)
+           # plots_pdf[[ij.num]] <- grDevices::recordPlot()
+           # p1
+           # plots_jpg[[1]] <- grDevices::recordPlot()
+           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p1)
+                           , plot=p1
+                           , dpi=ppi, width=8, height=6, units="in")
+         #}##IF~non-empty~END
+
          ## Logistic Regression (all comparator sites)
          
          # #~~~~~~~~~~~~~~~~~~~
@@ -480,7 +482,7 @@ getCoOccur <- function(df.data
                              , " (n=", n_cc_df_plot, ").\n Score = "
                              , paste(j_SR_score, collapse=", "),".")
 
-           # plot2, ggplot
+           # plot2, ggplot ####
            p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
              ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), alpha=0.5, size=2, na.rm = TRUE) +
              # ggplot2::geom_jitter(size=2, alpha=0.5
@@ -540,9 +542,12 @@ getCoOccur <- function(df.data
            # Save Plots
            #
            # PDF, p1 only
-           # grDevices::pdf(file=file.path(wd, dir.sub, dir.sub2, fn.pdf), width=6, height=8)
-           # no plot 2
-           p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2 )
+           if(exists("p1")==TRUE & exists("p2")==FALSE){
+             p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2)
+           }
+           if(exists("p1")==FALSE & exists("p2")==TRUE){
+             p3 <- gridExtra::grid.arrange(p2, ncol=1, nrow=2)
+           }
            print(p3)
            # Capture most recent plot to a list
            plots_pdf[[ij.num]] <- grDevices::recordPlot()
