@@ -611,6 +611,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       cex_sites_cl_ref  <- cex_sites_cl
       cex_sites_targ    <- cex_mod*1.2
       
+      ## Plot, Variables, Alpha
+      alpha_lm_all <- 0.5
+      alpha_lm_cl  <- 0.25
+      
       ## Plot, Variables, Legend
       leg_name   <- "Sites"
       leg_labels <- c("all", "all ref", "cluster", "cluster ref", "target")
@@ -660,8 +664,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
                        ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
                        ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) +
-                       # Linear model (all data?!)
-                       ggplot2::stat_smooth(method=lm, color=col_line_all, show.legend=FALSE) + 
+                       # Linear model (all data)
+                       ggplot2::stat_smooth(data=df_plot_all, method=lm, color=col_line_all, fill=fill_sites_all, alpha=alpha_lm_all, show.legend=FALSE) + 
+                       # Linear model (cluster)
+                       ggplot2::stat_smooth(data=df_plot_cl, method=lm, color=col_line_cl, fill=fill_sites_cl, alpha=alpha_lm_cl, show.legend=FALSE) + 
                        # Regression, cluster
                        ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
                        ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
