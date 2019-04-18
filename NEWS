@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-17 12:41:18
+    #> Last Update: 2019-04-18 14:12:30
 
 # Planned Updates
 
@@ -27,6 +27,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9192 (2019-04-18)
+
+  - getCoOccur
+      - Allow for special characters (e.g., %) in stressors.
+      - Error message for stressors not in input data.
 
 ## Changes in Version 0.1.0.9191 (2019-04-17)
 

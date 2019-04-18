@@ -168,6 +168,19 @@ getCoOccur <- function(df.data
   # define pipe
   `%>%` <- dplyr::`%>%`
   
+  # QC, 20190418
+  col.Stressors <- unique(col.Stressors)
+  
+  # QC, 20190418
+  col.Stressors.NotPresent <- col.Stressors[!(col.Stressors %in% names(df.data))]
+  if(length(col.Stressors.NotPresent)!=0){##IF~bad stressors~START
+    msg.warning <- paste0("Stressors listed below are not present in the provided data frame (df.data) and were not analyzed: \n"
+                           , paste(col.Stressors.NotPresent, collapse="\n"), "\n\n")
+    cat(msg.warning)
+    flush.console()
+    col.Stressors <- col.Stressors[col.Stressors %in% names(df.data)]
+  }##IF~bad stressors~END
+  
   #
   myDateTime    <- format(Sys.time(),"%Y%m%d_%H%M%S")
   col.Bio.Nar   <- "Bio.Nar"
@@ -309,7 +322,7 @@ getCoOccur <- function(df.data
   
      #
     if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
-      j <- col.Stressors[1]
+      j <- col.Stressors[2]
       #par(mfrow=c(3,2))
     }##IF.boo_DEBUG.END
     # outside loop just in case forget to turn off debug flag
@@ -379,8 +392,8 @@ getCoOccur <- function(df.data
          # plots ####
          # File Names
          #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-         fn_jpg_p1 <- paste0(i_TargetSiteID, ".CoOccurrence.Box.", j, ".jpg")
-         fn_jpg_p2 <- paste0(i_TargetSiteID, ".CoOccurrence.SR.", j, ".jpg")
+         fn_jpg_p1 <- paste0(i_TargetSiteID, ".CoOccurrence.Box.", make.names(j), ".jpg")
+         fn_jpg_p2 <- paste0(i_TargetSiteID, ".CoOccurrence.SR.", make.names(j), ".jpg")
          ppi       <- 300
          
          # Create (ggplot)
@@ -402,7 +415,7 @@ getCoOccur <- function(df.data
          # if non-empty
          #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
            # plot1, ggplot ####
-           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=j, x=col.Group, group=col.Group)) +
+           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=as.name(j), x=col.Group, group=col.Group)) +
              ggplot2::geom_boxplot(na.rm = TRUE) +
              ggplot2::coord_flip() + 
              ggplot2::geom_jitter(size=2, alpha=0.5, na.rm=TRUE
