@@ -39,6 +39,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9193 (2019-04-18)
+
+* getBioStressorResponses
+    + Set minimum number of cluster samples 3 rather than 1.
+        - predict and corr.test were failing with only 2 records.
+
 ## Changes in Version 0.1.0.9192 (2019-04-18)
 
 * getCoOccur

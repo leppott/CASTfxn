@@ -340,10 +340,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     # p
     #stressors <- stressors[12]
-    p <- 2
+    p <- 1
     #q
     #BioResp <- BioResp[c(7:11)]
-    q <- 1
+    q <- 4
   }##IF.boo.DEBUG.END
 
   
@@ -380,7 +380,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     
     # DEBUG
     if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-      print(paste0("p; ",p))
+      print(paste0("p; ",p, "; ", stressors[p]))
       flush.console()
     }##IF.boo.DEBUG.END
 
@@ -480,7 +480,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       # Cluster
       # LM and Corr ####
-      if(nrow(df_plot_cl)>0){##IF~nrow(df_plot_cl)~START
+      if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
         model_cl <- lm(df_plot_cl$Response ~ df_plot_cl$Stressor) #cluster only
         model_cl_pred <- predict(model_cl, interval = "prediction", level = 0.75)
