@@ -39,6 +39,21 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9196 (2019-04-22)
+
+* getBioMatches
+    + Missing inputs:
+        - data.stress.raw
+        - data.bioMetrics
+        - list.SiteSummary
+        - data.SampSummary
+        - data.chem.raw
+    + Update documentation.
+    + Update examples.
+    + Update code; bio instead of bmi and alg.
+* Update examples for changes to getBioMatches
+    + CASTfxn_Vignette.RMD
+
 ## Changes in Version 0.1.0.9195 (2019-04-22)
 
 * Rename getStressorSpecificRegressions to getVerifiedPredictions

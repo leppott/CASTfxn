@@ -4,12 +4,21 @@
 \alias{getBioMatches}
 \title{Biological and Chemistry data matches.}
 \usage{
-getBioMatches(stressors, list.data, biocomm = "BMI")
+getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary,
+  data.chem.raw, data.bio.metrics, biocomm = "BMI")
 }
 \arguments{
 \item{stressors}{stressors}
 
 \item{list.data}{data list}
+
+\item{list.SiteSummary}{Site summary data; output of getSiteInfo function.}
+
+\item{data.SampSummary}{x}
+
+\item{data.chem.raw}{x}
+
+\item{data.bio.metrics}{Biological metric data (algae or BMI).}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI"}
 }
@@ -100,10 +109,10 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
-
 # Run getBioMatches
 biocomm <- "BMI"
-list.MatchBMIData <- getBioMatches(stressors, list.data, biocomm)
+data.bio.metrics <- data_BMIMetrics
+list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
@@ -185,6 +194,7 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
 # Run getBioMatches
 biocomm <- "algae"
-list.MatchAlgData <- getBioMatches(stressors, list.data, biocomm)
+data.bio.metrics <- data_AlgMetrics
+list.MatchAlgData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 
 }

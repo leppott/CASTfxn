@@ -577,7 +577,8 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
 # Run getBioMatches
 biocomm <- "BMI"
-list.MatchBMIData <- getBioMatches(stressors, list.data, biocomm)
+data.bio.metrics <- data_BMIMetrics
+list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 ```
 
 The structure of the returned data is below.

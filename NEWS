@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-22 11:31:32
+    #> Last Update: 2019-04-22 13:32:45
 
 # Planned Updates
 
@@ -27,6 +27,21 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9196 (2019-04-22)
+
+  - getBioMatches
+      - Missing inputs:
+          - data.stress.raw
+          - data.bioMetrics
+          - list.SiteSummary
+          - data.SampSummary
+          - data.chem.raw
+      - Update documentation.
+      - Update examples.
+      - Update code; bio instead of bmi and alg.
+  - Update examples for changes to getBioMatches
+      - CASTfxn\_Vignette.RMD
 
 ## Changes in Version 0.1.0.9195 (2019-04-22)
 

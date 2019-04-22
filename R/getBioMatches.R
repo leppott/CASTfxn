@@ -12,6 +12,10 @@
 #' 
 #' @param stressors stressors
 #' @param list.data data list
+#' @param list.SiteSummary Site summary data; output of getSiteInfo function.
+#' @param data.SampSummary x
+#' @param data.chem.raw x
+#' @param data.bio.metrics Biological metric data (algae or BMI).
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI"
 #' 
 #' @return A summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp, cl.b.rsp
@@ -88,10 +92,10 @@
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' 
-#' 
 #' # Run getBioMatches
 #' biocomm <- "BMI"
-#' list.MatchBMIData <- getBioMatches(stressors, list.data, biocomm)
+#' data.bio.metrics <- data_BMIMetrics
+#' list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example 2, Algae
@@ -173,16 +177,17 @@
 #'
 #' # Run getBioMatches
 #' biocomm <- "algae"
-#' list.MatchAlgData <- getBioMatches(stressors, list.data, biocomm)
+#' data.bio.metrics <- data_AlgMetrics
+#' list.MatchAlgData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 #' 
 # 
 #' @export
-getBioMatches <- function(stressors, list.data, biocomm="BMI") {##FUNCTION.START
+getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm="BMI") {##FUNCTION.START
   # QC
   biocomm <- tolower(biocomm)
   #
   all.chems <- list.data[["all.chems"]]
-  cl.chems <- list.data[["cluster.chem"]]
+  cl.chems  <- list.data[["cluster.chem"]]
   site.chem <- list.data[["site.chem"]]
   
   # Check for no data
@@ -221,19 +226,19 @@ getBioMatches <- function(stressors, list.data, biocomm="BMI") {##FUNCTION.START
   # Samps ####
   #
   ## Samps, Algae
-  malg.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID",
-                                                   "Algae.Metrics.SampID")])
-  malg.use.samps <- subset(malg.Samps, malg.Samps$ChemSampleID %in% mUseSamps)
-  # Clean up
-  malg.use.samps$Algae.Metrics.SampID <- 
-    stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_EMAP")
-  malg.use.samps$Algae.Metrics.SampID <- 
-    stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_Multihabitat")
+  # malg.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID",
+  #                                                  "Algae.Metrics.SampID")])
+  # malg.use.samps <- subset(malg.Samps, malg.Samps$ChemSampleID %in% mUseSamps)
+  # # Clean up
+  # malg.use.samps$Algae.Metrics.SampID <- 
+  #   stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_EMAP")
+  # malg.use.samps$Algae.Metrics.SampID <- 
+  #   stringr::str_remove(malg.use.samps$Algae.Metrics.SampID, "_Multihabitat")
   #
   ## Samps, BMI
-  mbmi.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID","BMI.Metrics.SampID")])
-  mbmi.use.samps <- subset(mbmi.Samps, mbmi.Samps$ChemSampleID %in% mUseSamps)
-  
+  # mbmi.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID","BMI.Metrics.SampID")])
+  # mbmi.use.samps <- subset(mbmi.Samps, mbmi.Samps$ChemSampleID %in% mUseSamps)
+  # 
   # Stressors ####
   #
   ## Stressors, ALL
@@ -245,17 +250,17 @@ getBioMatches <- function(stressors, list.data, biocomm="BMI") {##FUNCTION.START
   #
   ## Stressors, Algae
   # alg stresor data to use: all.malg.stress, cl.malg.stress, and site.malg.stress
-  all.malg.stress <- subset(all.stress, ChemSampleID %in% malg.use.samps$ChemSampleID)
-  all.malg.stress <- merge(malg.use.samps, all.malg.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
-  cl.malg.stress <- subset(all.malg.stress, ChemSampleID %in% cl.chems$ChemSampleID)
-  site.malg.stress <- subset(all.malg.stress, ChemSampleID %in% site.chem$ChemSampleID)
+  # all.malg.stress <- subset(all.stress, ChemSampleID %in% malg.use.samps$ChemSampleID)
+  # all.malg.stress <- merge(malg.use.samps, all.malg.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
+  # cl.malg.stress <- subset(all.malg.stress, ChemSampleID %in% cl.chems$ChemSampleID)
+  # site.malg.stress <- subset(all.malg.stress, ChemSampleID %in% site.chem$ChemSampleID)
   #
   ## Stressors, BMI
   # bmi stressor data to use: all.mbmi.stress, cl.mbmi.stress, and site.stress
-  all.mbmi.stress <- subset(all.stress, ChemSampleID %in% mbmi.use.samps$ChemSampleID)
-  all.mbmi.stress <- merge(mbmi.use.samps, all.mbmi.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
-  cl.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% cl.chems$ChemSampleID)
-  site.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% site.chem$ChemSampleID)
+  # all.mbmi.stress <- subset(all.stress, ChemSampleID %in% mbmi.use.samps$ChemSampleID)
+  # all.mbmi.stress <- merge(mbmi.use.samps, all.mbmi.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
+  # cl.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% cl.chems$ChemSampleID)
+  # site.mbmi.stress <- subset(all.mbmi.stress, ChemSampleID %in% site.chem$ChemSampleID)
   
   # Response ####
   #
@@ -271,40 +276,86 @@ getBioMatches <- function(stressors, list.data, biocomm="BMI") {##FUNCTION.START
   #                     , by.x = "StationID_Master", by.y = "StationID_Master")
   # site.chem1 <- unique(site.chem1)
   # site.malg.resp <- subset(all.malg.resp, Algae.Metrics.SampID %in% site.chem1$Algae.Metrics.SampID)
+  #
   # 20190301, use same procedure for alg as bmi
-  all.malg.resp.0 <- subset(data.algae.metrics, Algae.Metrics.SampID %in% malg.use.samps$Algae.Metrics.SampID)
-  all.malg.resp <- merge(malg.use.samps, all.malg.resp.0, by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
-  cl.malg.resp <- subset(all.malg.resp, ChemSampleID %in% cl.chems$ChemSampleID)
-  site.malg.resp <- subset(all.malg.resp, ChemSampleID %in% site.chem$ChemSampleID)
+  # all.malg.resp.0 <- subset(data.algae.metrics, Algae.Metrics.SampID %in% malg.use.samps$Algae.Metrics.SampID)
+  # all.malg.resp   <- merge(malg.use.samps, all.malg.resp.0, by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
+  # cl.malg.resp    <- subset(all.malg.resp, ChemSampleID %in% cl.chems$ChemSampleID)
+  # site.malg.resp  <- subset(all.malg.resp, ChemSampleID %in% site.chem$ChemSampleID)
   
   #
   ## Response, BMI
   # bmi response data to use: all.mbmi.resp, cl.mbmi.resp, and site.mbmi.resp
-  all.mbmi.resp.0 <- subset(data.bmi.metrics, BMISampID %in% mbmi.use.samps$BMI.Metrics.SampID)
-  all.mbmi.resp <- merge(mbmi.use.samps, all.mbmi.resp.0, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
-  cl.mbmi.resp <- subset(all.mbmi.resp, ChemSampleID %in% cl.chems$ChemSampleID)
-  site.mbmi.resp <- subset(all.mbmi.resp, ChemSampleID %in% site.chem$ChemSampleID)
+  # all.mbmi.resp.0 <- subset(data.bmi.metrics, BMISampID %in% mbmi.use.samps$BMI.Metrics.SampID)
+  # all.mbmi.resp   <- merge(mbmi.use.samps, all.mbmi.resp.0, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
+  # cl.mbmi.resp    <- subset(all.mbmi.resp, ChemSampleID %in% cl.chems$ChemSampleID)
+  # site.mbmi.resp  <- subset(all.mbmi.resp, ChemSampleID %in% site.chem$ChemSampleID)
   
-  # Output ####
-  if(biocomm=="bmi"){##IF.biocomm.START
-    #
-    myMatchData <- list(all.b.str    = all.mbmi.stress
-                        , cl.b.str   = cl.mbmi.stress
-                        , site.b.str = site.mbmi.stress
-                        , all.b.rsp  = all.mbmi.resp
-                        , cl.b.rsp   = cl.mbmi.resp
-                        , site.b.rsp = site.mbmi.resp)
-    #
+  ## Stressor and Response, Bio
+  if(biocomm=="bmi"){##IF~biocom-str/resp~START
+    # Samps
+    mbio.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID","BMI.Metrics.SampID")])
+    mbio.use.samps <- subset(mbio.Samps, mbio.Samps$ChemSampleID %in% mUseSamps)
+    # Stressor
+    all.mbio.stress  <- subset(all.stress, ChemSampleID %in% mbio.use.samps$ChemSampleID)
+    all.mbio.stress  <- merge(mbio.use.samps, all.mbio.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
+    cl.mbio.stress   <- subset(all.mbio.stress, ChemSampleID %in% cl.chems$ChemSampleID)
+    site.mbio.stress <- subset(all.mbio.stress, ChemSampleID %in% site.chem$ChemSampleID)
+    # Response
+    all.mbio.resp.0 <- subset(data.bio.metrics, BMISampID %in% mbio.use.samps$BMI.Metrics.SampID)
+    all.mbio.resp   <- merge(mbio.use.samps, all.mbio.resp.0, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
+    cl.mbio.resp    <- subset(all.mbio.resp, ChemSampleID %in% cl.chems$ChemSampleID)
+    site.mbio.resp  <- subset(all.mbio.resp, ChemSampleID %in% site.chem$ChemSampleID)
   } else if(biocomm=="algae"){
-    #
-    myMatchData <- list(all.a.str    = all.malg.stress
-                        , cl.a.str   = cl.malg.stress
-                        , site.a.str = site.malg.stress
-                        , all.a.rsp  = all.malg.resp
-                        , cl.a.rsp   = cl.malg.resp
-                        , site.a.rsp = site.malg.resp)
-    #
-  }##IF.biocomm.END
+    # Samps
+    mbio.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID",
+                                                     "Algae.Metrics.SampID")])
+    mbio.use.samps <- subset(mbio.Samps, mbio.Samps$ChemSampleID %in% mUseSamps)
+    # Clean up
+    mbio.use.samps$Algae.Metrics.SampID <- 
+      stringr::str_remove(mbio.use.samps$Algae.Metrics.SampID, "_EMAP")
+    mbio.use.samps$Algae.Metrics.SampID <- 
+      stringr::str_remove(mbio.use.samps$Algae.Metrics.SampID, "_Multihabitat")
+    # Stressor
+    all.mbio.stress  <- subset(all.stress, ChemSampleID %in% mbio.use.samps$ChemSampleID)
+    all.mbio.stress  <- merge(mbio.use.samps, all.mbio.stress, by.x = "ChemSampleID", by.y = "ChemSampleID")
+    cl.mbio.stress   <- subset(all.mbio.stress, ChemSampleID %in% cl.chems$ChemSampleID)
+    site.mbio.stress <- subset(all.mbio.stress, ChemSampleID %in% site.chem$ChemSampleID)
+    # Response
+    all.mbio.resp.0 <- subset(data.bio.metrics, Algae.Metrics.SampID %in% mbio.use.samps$Algae.Metrics.SampID)
+    all.mbio.resp   <- merge(mbio.use.samps, all.mbio.resp.0, by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
+    cl.mbio.resp    <- subset(all.mbio.resp, ChemSampleID %in% cl.chems$ChemSampleID)
+    site.mbio.resp  <- subset(all.mbio.resp, ChemSampleID %in% site.chem$ChemSampleID)
+  }##IF~biocom-str/resp~END
+  
+
+  # Output ####
+  # if(biocomm=="bmi"){##IF.biocomm.START
+  #   #
+  #   myMatchData <- list(all.b.str    = all.mbmi.stress
+  #                       , cl.b.str   = cl.mbmi.stress
+  #                       , site.b.str = site.mbmi.stress
+  #                       , all.b.rsp  = all.mbmi.resp
+  #                       , cl.b.rsp   = cl.mbmi.resp
+  #                       , site.b.rsp = site.mbmi.resp)
+  #   #
+  # } else if(biocomm=="algae"){
+  #   #
+  #   myMatchData <- list(all.a.str    = all.malg.stress
+  #                       , cl.a.str   = cl.malg.stress
+  #                       , site.a.str = site.malg.stress
+  #                       , all.a.rsp  = all.malg.resp
+  #                       , cl.a.rsp   = cl.malg.resp
+  #                       , site.a.rsp = site.malg.resp)
+  #   #
+  # }##IF.biocomm.END
+  
+  myMatchData <- list(all.a.str    = all.mbio.stress
+                      , cl.a.str   = cl.mbio.stress
+                      , site.a.str = site.mbio.stress
+                      , all.a.rsp  = all.mbio.resp
+                      , cl.a.rsp   = cl.mbio.resp
+                      , site.a.rsp = site.mbio.resp)
   #
   return(myMatchData)
   #
