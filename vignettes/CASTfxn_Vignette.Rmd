@@ -170,6 +170,7 @@ TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
 # Run getSiteInfo
 # data, example included with package
@@ -178,20 +179,58 @@ data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 #
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+#
+# Map data
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
 
+#
+list.SiteSummary <- getSiteInfo(TargetSiteID
+                                , dir_results
+                                , data.Stations.Info
+                                , data.SampSummary
+                                , data.303d.ComID
+                                , data.bmi.metrics
+                                , data.algae.metrics
+                                , data.cluster
+                                , data.mod
+                                , map_proj
+                                , map_outline
+                                , map_flowline)
+
+# Data getChemDataSubset
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
-
-# data, example included with package
-data.chem.raw <- data_Chem
-data.chem.info <- data_ChemInfo
+data.chem.raw      <- data_Chem
+data.chem.info     <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID
+                                , comid=site.COMID
+                                , cluster=site.Clusters
+                                , data.cluster=data.cluster
+                                , data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw
+                                , data.chem.info=data.chem.info)
 ```
 The structure of the data is below.
 ```{r Output_getChemDataSubsets_str}
@@ -218,34 +257,60 @@ TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
-# datasets getSiteInfo
+# Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
+
+# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+
+# Map data
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
 
-# datasets getChemDataSubsets
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-
+# Data getChemDataSubsets
 # data import, example 
 # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
 # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-
 # data, example included with package
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
 # datasets getStressorList
 chem.info <- list.data$chem.info
@@ -336,32 +401,60 @@ TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
-# datasets getSiteInfo
+# Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
 
+# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+
+# Map data
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
  
-# datasets getChemDataSubsets
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
+# Data getChemDataSubsets
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
 
 #
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
-# datasets getClusterInfo
+# Data getClusterInfo
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
@@ -398,7 +491,7 @@ include_graphics(fn.img)
    + Cluster reference sites (blue closed squares)
    + Test site data (red closed circles)
 
-### getBMImatches
+### getBioMatches, BMI
 
 Get BMI and chem sample matches.
 
@@ -411,37 +504,57 @@ Requires the output of:
 The return is a summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp
 , cl.b.rsp, and site.b.rsp.  No files are created or saved.
 
-```{r Ex_getBMImatches}
+```{r Ex_getBioMatches_BMI}
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
-# datasets getSiteInfo
+# Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
+data.cluster       <- data_Cluster_Hi   # need for getSiteInfo and getChemDataSubsets
 data.mod           <- data_ReachMod
-#
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
 
-# datasets getChemDataSubsets
+# Map data
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
+
+# Data getChemDataSubsets
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
-
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
-# datasets getStressorList
+# Data getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -457,13 +570,14 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# datasets getBMIMatches
+# Data getBioMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
 
-# Run getBMIMatches
-list.MatchBMIData <- getBMIMatches(stressors, list.data)
+# Run getBioMatches
+biocomm <- "BMI"
+list.MatchBMIData <- getBioMatches(stressors, list.data, biocomm)
 ```
 
 The structure of the returned data is below.
@@ -471,9 +585,9 @@ The structure of the returned data is below.
 str(list.MatchBMIData)
 ```
 
-### getBMIStressorResponses
+### getBioStressorResponses
 
-Get BMI stressor responses.
+Get biologica stressor responses.
 
 Requires the output of:
 
@@ -494,40 +608,65 @@ The text file is in the format of ......
 ```{r ex_getBMIStressorResponses, eval=FALSE}
 predint <- 0.75
 varLegLoc <- "topright"
-BMIresp <- c("CSCI", "MMI_Score", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
-             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
-             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
              
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
 # datasets getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
 
-# datasets getChemDataSubsets
+# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+
+# Map data
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
+# Run getSiteInfo
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
+
+# Data getChemDataSubsets
+# data import, example 
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
-
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
-# datasets getStressorList
+# Data getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -543,24 +682,34 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# datasets getBMIMatches
+# Data getBioMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
+LogTransf <- stressors_logtransf
 
-# Run getBMIMatches
-list.MatchBMIData <- getBMIMatches(stressors, list.data)     
+# Run getBioMatches
+biocomm <- "BMI"
+list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)     
   
-# Run getBMIStressorResponses           
-getBMIStressorResponses(stressors, list.MatchBMIData)
+# Data getBMIStressorResponses   
+biocomm <- "BMI"    
+BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
+             
+# Run getBMIStressorResponses                 
+getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
+                        , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 ```
 
 
 The structure of the returned data is below.
-```{r Output_BMIStressorResponses, eval=FALSE}
+```{r Output_BioStressorResponses, eval=FALSE}
 str(list.MatchBMIData)
 ```
 
-### getAlgMatches
+### getBioMatches, Algae
 
 Get Algae and chem sample matches.
 
@@ -575,37 +724,67 @@ cl.b.rsp , and site.b.rsp.
 
 The example data included with the package does not include algal data so no outputs are produced.  The output is similar to getBMImatches.
 
-```{r ex_getAlgMatches, eval=FALSE}
-TargetSiteID <- "SRCKN001.61"
+```{r ex_getBioMatches_Alg, eval=FALSE}
+TargetSiteID <- "LCBEN002.57"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
-# datasets getSiteInfo
+# Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
+
+# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+
+# Map data
+# San Diego
+#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
 
-# datasets getChemDataSubsets
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-
+# Data getChemDataSubsets
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
-# datasets getStressorList
+# Data getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -621,20 +800,21 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# datasets getAlgMatches
+# Data getBioMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 
-# Run getAlgMatches
-list.MatchAlgData <- getAlgMatches(stressors, list.data)
+# Run getBioMatches
+biocomm <- "algae"
+list.MatchAlgData <- getBioMatches(stressors, list.data, biocomm)
 ```
 
 The structure of the returned data is below.
-```{r Output_getAlgMatches_str, eval=FALSE}
+```{r Output_getBioMatches_Alg_str, eval=FALSE}
 str(list.MatchAlgData)
 ```
 
-### getAlgStressorResponses
+### getBioStressorResponses, Algae
 
 Algae stressor regressions.
 
@@ -654,36 +834,64 @@ The example data included with the package does not include algal data so no out
 predint <- 0.75
 varLegLoc <- "topright"
 
-TargetSiteID <- "SRCKN001.61"
+TargetSiteID <- "LCBEN002.57"
 
 CurrentDir<-getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
 # datasets getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
-data.cluster       <- data_Cluster_Hi
 data.mod           <- data_ReachMod
-#
+
+#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+if(elev_cat=="HI"){
+   data.cluster <- data_Cluster_Hi
+} else if(elev_cat=="LO") {
+   data.cluster <- data_Cluster_Lo
+}
+
+# Map data
+# San Diego
+# AZ
+map_flowline  <- data_GIS_Flow_HI
+map_flowline2 <- data_GIS_Flow_LO
+map_outline   <- data_GIS_AZ_Outline
+# Project site data to USGS Albers Equal Area
+usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
+              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
+              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+# projection for outline
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+map_proj <- my.aea
+
 # Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID)
+list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+                                , data.SampSummary, data.303d.ComID
+                                , data.bmi.metrics, data.algae.metrics
+                                , data.cluster, data.mod
+                                , map_proj, map_outline, map_flowline)
 
-# datasets getChemDataSubsets
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-
+# Data getChemDataSubsets
 # data, example included with package
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
+site.COMID <- list.SiteSummary$COMID
+site.Clusters <- list.SiteSummary$ClustIDs
 
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
-# datasets getStressorList
+# Data getStressorList
 chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
@@ -699,25 +907,28 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# datasets getAlgMatches
+# Data getBioMatches
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
+LogTransf <- stressors_logtransf
 
-# Run getAlgMatches
-list.MatchAlgData <- getAlgMatches(stressors, list.data)
+# Run getBioMatches
+biocomm <- "algae"
+list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)
 
-# data getAltStressorResponses
+# Data getBioStressorResponses
 data.algae.metrics <- data_AlgMetrics
-AlgResp <- colnames(data.algae.metrics[4:ncol(data.algae.metrics)])
-predint <- 0.75
-varLegLoc <- "topright"
+BioResp <- colnames(data.algae.metrics[6:48])
+biocomm <- "algae"
 
 # Run getAlgStressorResponses
-getAlgStressorResponses(stressors, list.MatchAlgData)
+getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
+                       , LogTransf, ref.sites, predint, varLegLoc, biocomm)
 ```
 
 The structure of the returned data is below.
-```{r Output_getAlgStressorResonses_str, eval=FALSE}
+```{r Output_getBioStressorResonses_Alg_str, eval=FALSE}
 str(list.MatchAlgData)
 ```
 

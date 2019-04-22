@@ -39,6 +39,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9195 (2019-04-22)
+
+* Rename getStressorSpecificRegressions to getVerifiedPredictions
+    + getStressorSpecificRegressions.R
+    + CASTfxn_Vignette.RMD
+    + Analysis.RMD
+* CASTfxn_Vignette.RMD
+    + Update examples for updates in functions.
+
 ## Changes in Version 0.1.0.9194 (2019-04-22)
 
 * Remove old deprecated functions.

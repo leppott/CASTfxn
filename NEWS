@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-22 09:54:32
+    #> Last Update: 2019-04-22 11:31:32
 
 # Planned Updates
 
@@ -27,6 +27,15 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9195 (2019-04-22)
+
+  - Rename getStressorSpecificRegressions to getVerifiedPredictions
+      - getStressorSpecificRegressions.R
+      - CASTfxn\_Vignette.RMD
+      - Analysis.RMD
+  - CASTfxn\_Vignette.RMD
+      - Update examples for updates in functions.
 
 ## Changes in Version 0.1.0.9194 (2019-04-22)
 

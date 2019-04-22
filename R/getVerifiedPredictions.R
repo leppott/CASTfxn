@@ -1,8 +1,8 @@
-#' @title Stressor Specific Regressions
+#' @title Verified Predictions
 #' 
-#' @description Get stressor specific regressions.
+#' @description Get verified predictions.
 #' 
-#' @details Percent fines.
+#' @details 
 #' 
 #' Required objects:
 #' 
@@ -121,7 +121,7 @@
 #' # Run getBMIMatches
 #' list.MatchBMIData <- getBMIMatches(stressors, list.data)  
 #'   
-#' # Data getStressorSpecificRegressions
+#' # Data getVerifiedPredictions
 #' # data import, example
 #' # data.bmi.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
@@ -133,8 +133,8 @@
 #' BioIndex_Nar       <- "NarRat"
 #' BioIndex_Nar_Deg   <- "Violates"
 #' 
-#' # Run getStressorSpecificRegressions
-#' getStressorSpecificRegressions(TargetSiteID
+#' # Run getVerifiedPredictions
+#' getVerifiedPredictions(TargetSiteID
 #'                                , data.SampSummary
 #'                                , data.bmi.taxa.raw
 #'                                , data.chem.info
