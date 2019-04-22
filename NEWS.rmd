@@ -39,6 +39,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9194 (2019-04-22)
+
+* Remove old deprecated functions.
+
 ## Changes in Version 0.1.0.9193 (2019-04-18)
 
 * getBioStressorResponses
