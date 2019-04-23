@@ -5,8 +5,7 @@
 \title{Biological Stressor Responses}
 \usage{
 getBioStressorResponses(TargetSiteID, stressors, BioResp,
-  list.MatchBioData, LogTransf, ref.sites, predint = 0.75,
-  varLegLoc = "topright", biocomm = "bmi",
+  list.MatchBioData, LogTransf, ref.sites, biocomm = "bmi",
   dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
@@ -21,10 +20,6 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp,
 \item{LogTransf}{Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.}
 
 \item{ref.sites}{Reference sites.}
-
-\item{predint}{Prediction interval. Default = 0.75}
-
-\item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
@@ -43,9 +38,6 @@ Biological (Algae or BMI) stressor regressions.
 \examples{
 \dontrun{
 # Example 1, BMI
-predint <- 0.75
-varLegLoc <- "topright"
-             
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 
@@ -140,13 +132,10 @@ BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
              
 # Run getBioStressorResponses, BMI               
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                        , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
+                        , LogTransf, ref.sites, biocomm, dir_results)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
-predint <- 0.75
-varLegLoc <- "topright"
-
 TargetSiteID <- "LCBEN002.57"
 dir_results <- file.path(getwd(), "Results")
 
@@ -237,6 +226,6 @@ BioResp <- colnames(data.algae.metrics[6:48])
 
 # Run getBioStressorResponses, Algae
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                       , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
+                       , LogTransf, ref.sites, biocomm, dir_results)
 }
 }

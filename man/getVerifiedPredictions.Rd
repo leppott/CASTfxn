@@ -7,8 +7,8 @@
 getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
   data.chem.info, data.SSTV.totabund, data.MT.bio, matchedData, ref.sites,
   BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
-  BioIndex_Nar_Deg = "Violates", predint = 0.75,
-  varLegLoc = "topright", dir_results = file.path(getwd(), "Results"))
+  BioIndex_Nar_Deg = "Violates", dir_results = file.path(getwd(),
+  "Results"))
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -33,11 +33,6 @@ getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
 
 \item{BioIndex_Nar_Deg}{Biological index degraded narrative text; list.MatchBioData$site.b.rsp}
 
-\item{predint}{x}
-
-\item{varLegLoc}{Legend location; "bottomright", "bottom", "bottomleft",
-"left", "topleft", "top", "topright", "right" and "center".  Default = "topright"}
-
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 }
 \value{
@@ -61,9 +56,6 @@ Required objects:
 * TargetSiteID
 }
 \examples{
-predint   <- 0.75
-varLegLoc <- "topright"
-
 TargetSiteID <- "SRCKN001.61"
 dir_results  <- file.path(getwd(), "Results")
 
@@ -171,7 +163,5 @@ getVerifiedPredictions(TargetSiteID
                        , BioIndex_Val
                        , BioIndex_Nar
                        , BioIndex_Nar_Deg
-                       , predint
-                       , varLegLoc
                        , dir_results)
 }

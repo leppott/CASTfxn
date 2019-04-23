@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-23 15:19:18
+    #> Last Update: 2019-04-23 15:48:03
 
 # Planned Updates
 
@@ -27,6 +27,16 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9201 (2019-04-23)
+
+  - Remove unused inputs, Issue \#60
+      - getVerifiedPredictions
+          - predint
+          - varLegLoc
+      - getBioStressorResponses
+          - predint
+          - varLegLoc
 
 ## Changes in Version 0.1.0.9200 (2019-04-23)
 

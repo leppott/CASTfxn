@@ -28,9 +28,6 @@
 #' @param BioIndex_Val Column name for biological index value; list.MatchBioData$site.b.rsp
 #' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBioData$site.b.rsp
 #' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBioData$site.b.rsp
-#' @param predint x
-#' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft",
-#' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
@@ -38,9 +35,6 @@
 # @importFrom pryr "%<a-%"
 #' 
 #' @examples
-#' predint   <- 0.75
-#' varLegLoc <- "topright"
-#' 
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results  <- file.path(getwd(), "Results")
 #' 
@@ -148,8 +142,6 @@
 #'                        , BioIndex_Val
 #'                        , BioIndex_Nar
 #'                        , BioIndex_Nar_Deg
-#'                        , predint
-#'                        , varLegLoc
 #'                        , dir_results)
 #~~~~~~~~~~~~~~~~
 #' @export
@@ -164,8 +156,6 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , BioIndex_Val="IBI"
                                    , BioIndex_Nar="NarRat"
                                    , BioIndex_Nar_Deg="Violates"
-                                   , predint=0.75
-                                   , varLegLoc="topright"
                                    , dir_results=file.path(getwd(), "Results")
                                    ) {##FUNCTION.START
   # Debugging
@@ -195,11 +185,12 @@ getVerifiedPredictions <- function(TargetSiteID
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
+  # Comment out, 20190423, when remove varLegLoc as input
   # helper
-  RegPlotSet <- getRegPlotSet(varLegLoc)
-  varInset   <- RegPlotSet[1]
-  varSpacer  <- RegPlotSet[2]
-  varLegOpp  <- RegPlotSet[3]
+  # RegPlotSet <- getRegPlotSet(varLegLoc)
+  # varInset   <- RegPlotSet[1]
+  # varSpacer  <- RegPlotSet[2]
+  # varLegOpp  <- RegPlotSet[3]
   
   df.SSTV <- subset(data.chem.info, SSTV != 0 & !is.na(SSTV) & SSTV!=""
                     , c("StdParamName", "SSTV", "SensMin", "SensMax", "TolMin", "TolMax"))

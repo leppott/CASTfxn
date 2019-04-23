@@ -10,8 +10,6 @@
 #' @param list.MatchBioData list of matched biological (BMI or algae) and stressor data.
 #' @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' @param ref.sites Reference sites.
-#' @param predint Prediction interval. Default = 0.75
-#' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
@@ -23,9 +21,6 @@
 #' @examples
 #' \dontrun{
 #' # Example 1, BMI
-#' predint <- 0.75
-#' varLegLoc <- "topright"
-#'              
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
 #' 
@@ -120,13 +115,10 @@
 #'              
 #' # Run getBioStressorResponses, BMI               
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                         , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
+#'                         , LogTransf, ref.sites, biocomm, dir_results)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example 2, Algae
-#' predint <- 0.75
-#' varLegLoc <- "topright"
-#' 
 #' TargetSiteID <- "LCBEN002.57"
 #' dir_results <- file.path(getwd(), "Results")
 #' 
@@ -217,13 +209,13 @@
 #' 
 #' # Run getBioStressorResponses, Algae
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                        , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
+#'                        , LogTransf, ref.sites, biocomm, dir_results)
 #' }
 #
 #' @export
 getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.MatchBioData
-                                    , LogTransf, ref.sites, predint=0.75, varLegLoc="topright"
-                                    , biocomm="bmi", dir_results=file.path(getwd(), "Results")
+                                    , LogTransf, ref.sites, biocomm="bmi"
+                                    , dir_results=file.path(getwd(), "Results")
                                     ) {##FUNCTION.START
   # DEBUG
   boo.DEBUG <- FALSE
@@ -331,11 +323,12 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   #
+  # Comment out, 20190423, when remove varLegLoc as input
   # helper
-  RegPlotSet <- getRegPlotSet(varLegLoc)
-  varInset  <- RegPlotSet[1]
-  varSpacer <- RegPlotSet[2]
-  varLegOpp <- RegPlotSet[3]
+  # RegPlotSet <- getRegPlotSet(varLegLoc)
+  # varInset  <- RegPlotSet[1]
+  # varSpacer <- RegPlotSet[2]
+  # varLegOpp <- RegPlotSet[3]
   
   plot_H <- 4
   plot_W <- 9
