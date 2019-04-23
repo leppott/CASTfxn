@@ -121,7 +121,7 @@
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example #2, AZ data (single site)
 #' #
-#' TargetSiteID <- c("VRWCL010.66")
+#' TargetSiteID <- c("SRCKN001.61")
 #' #
 #' # Cluster Data based on elevation category
 #' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID_Master
