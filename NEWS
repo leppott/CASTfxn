@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-Last Update: 2019-04-23 11:57:02
+    #> Last Update: 2019-04-23 15:19:18
 
 # Planned Updates
 
@@ -27,6 +27,12 @@ Last Update: 2019-04-23 11:57:02
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9200 (2019-04-23)
+
+  - getVerifiedPredictions
+      - Make inputs more generic, Issue \#59
+          - “bmi” to “bio”.
 
 ## Changes in Version 0.1.0.9199 (2019-04-23)
 

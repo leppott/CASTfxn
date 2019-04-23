@@ -4,34 +4,34 @@
 \alias{getVerifiedPredictions}
 \title{Verified Predictions}
 \usage{
-getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bmi.taxa.raw,
-  data.chem.info, data.SSTV.totabund, data.MT.bmi, matchedData, ref.sites,
+getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
+  data.chem.info, data.SSTV.totabund, data.MT.bio, matchedData, ref.sites,
   BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
   BioIndex_Nar_Deg = "Violates", predint = 0.75,
   varLegLoc = "topright", dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
-\item{TargetSiteID}{x}
+\item{TargetSiteID}{Site ID}
 
 \item{data.SampSummary}{x}
 
-\item{data.bmi.taxa.raw}{x}
+\item{data.bio.taxa.raw}{x}
 
 \item{data.chem.info}{x}
 
 \item{data.SSTV.totabund}{x}
 
-\item{data.MT.bmi}{x}
+\item{data.MT.bio}{Master Taxa list for biological data}
 
 \item{matchedData}{matched biological and chemical stressor data.}
 
 \item{ref.sites}{Vector of reference sites IDs.}
 
-\item{BioIndex_Val}{Column name for biological index value; list.MatchBMIData$site.b.rsp}
+\item{BioIndex_Val}{Column name for biological index value; list.MatchBioData$site.b.rsp}
 
-\item{BioIndex_Nar}{Column name for biological index narrative rating; list.MatchBMIData$site.b.rsp}
+\item{BioIndex_Nar}{Column name for biological index narrative rating; list.MatchBioData$site.b.rsp}
 
-\item{BioIndex_Nar_Deg}{Biological index degraded narrative text; list.MatchBMIData$site.b.rsp}
+\item{BioIndex_Nar_Deg}{Biological index degraded narrative text; list.MatchBioData$site.b.rsp}
 
 \item{predint}{x}
 
@@ -51,7 +51,7 @@ Required objects:
 
 * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.bmi.taxa.raw; BMI.Metrics.SampID
+* data.bio.taxa.raw; BMI.Metrics.SampID
 
 * data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 
@@ -75,7 +75,7 @@ data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.mod           <- data_ReachMod
-data.MT.bmi        <- data_BMIMasterTaxa
+data.MT.bio        <- data_BMIMasterTaxa
 
 # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
 elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
@@ -145,15 +145,15 @@ stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stresso
 # Run getBioMatches
 biocomm <- "BMI"
 data.bio.metrics <- data_BMIMetrics
-list.MatchBMIData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
   
 # Data getVerifiedPredictions
 # data import, example
-# data.bmi.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+# data.bio.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #
 # data, example included with package
-data.bmi.taxa.raw  <- data_BMIcounts
+data.bio.taxa.raw  <- data_BMIcounts
 data.SSTV.totabund <- data_BMIRelAbund
 BioIndex_Val       <- "IBI"
 BioIndex_Nar       <- "NarRat"
@@ -161,17 +161,17 @@ BioIndex_Nar_Deg   <- "Violates"
 
 # Run getVerifiedPredictions
 getVerifiedPredictions(TargetSiteID
-                               , data.SampSummary
-                               , data.bmi.taxa.raw
-                               , data.chem.info
-                               , data.SSTV.totabund
-                               , data.MT.bmi
-                               , list.MatchBMIData
-                               , ref.sites
-                               , BioIndex_Val
-                               , BioIndex_Nar
-                               , BioIndex_Nar_Deg
-                               , predint
-                               , varLegLoc
-                               , dir_results)
+                       , data.SampSummary
+                       , data.bio.taxa.raw
+                       , data.chem.info
+                       , data.SSTV.totabund
+                       , data.MT.bio
+                       , list.MatchBioData
+                       , ref.sites
+                       , BioIndex_Val
+                       , BioIndex_Nar
+                       , BioIndex_Nar_Deg
+                       , predint
+                       , varLegLoc
+                       , dir_results)
 }

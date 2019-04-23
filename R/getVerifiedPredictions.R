@@ -8,7 +8,7 @@
 #' 
 #' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
-#' * data.bmi.taxa.raw; BMI.Metrics.SampID
+#' * data.bio.taxa.raw; BMI.Metrics.SampID
 #' 
 #' * data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 #' 
@@ -17,17 +17,17 @@
 #' 
 #' * TargetSiteID
 #' 
-#' @param TargetSiteID x
+#' @param TargetSiteID Site ID
 #' @param data.SampSummary x
-#' @param data.bmi.taxa.raw x
+#' @param data.bio.taxa.raw x
 #' @param data.chem.info x
 #' @param data.SSTV.totabund x
-#' @param data.MT.bmi x
+#' @param data.MT.bio Master Taxa list for biological data
 #' @param matchedData matched biological and chemical stressor data.
 #' @param ref.sites Vector of reference sites IDs.
-#' @param BioIndex_Val Column name for biological index value; list.MatchBMIData$site.b.rsp
-#' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBMIData$site.b.rsp
-#' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBMIData$site.b.rsp
+#' @param BioIndex_Val Column name for biological index value; list.MatchBioData$site.b.rsp
+#' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBioData$site.b.rsp
+#' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBioData$site.b.rsp
 #' @param predint x
 #' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft",
 #' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
@@ -52,7 +52,7 @@
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
 #' data.mod           <- data_ReachMod
-#' data.MT.bmi        <- data_BMIMasterTaxa
+#' data.MT.bio        <- data_BMIMasterTaxa
 #' 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
 #' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
@@ -122,15 +122,15 @@
 #' # Run getBioMatches
 #' biocomm <- "BMI"
 #' data.bio.metrics <- data_BMIMetrics
-#' list.MatchBMIData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+#' list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 #'   
 #' # Data getVerifiedPredictions
 #' # data import, example
-#' # data.bmi.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+#' # data.bio.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' #
 #' # data, example included with package
-#' data.bmi.taxa.raw  <- data_BMIcounts
+#' data.bio.taxa.raw  <- data_BMIcounts
 #' data.SSTV.totabund <- data_BMIRelAbund
 #' BioIndex_Val       <- "IBI"
 #' BioIndex_Nar       <- "NarRat"
@@ -138,27 +138,27 @@
 #' 
 #' # Run getVerifiedPredictions
 #' getVerifiedPredictions(TargetSiteID
-#'                                , data.SampSummary
-#'                                , data.bmi.taxa.raw
-#'                                , data.chem.info
-#'                                , data.SSTV.totabund
-#'                                , data.MT.bmi
-#'                                , list.MatchBMIData
-#'                                , ref.sites
-#'                                , BioIndex_Val
-#'                                , BioIndex_Nar
-#'                                , BioIndex_Nar_Deg
-#'                                , predint
-#'                                , varLegLoc
-#'                                , dir_results)
+#'                        , data.SampSummary
+#'                        , data.bio.taxa.raw
+#'                        , data.chem.info
+#'                        , data.SSTV.totabund
+#'                        , data.MT.bio
+#'                        , list.MatchBioData
+#'                        , ref.sites
+#'                        , BioIndex_Val
+#'                        , BioIndex_Nar
+#'                        , BioIndex_Nar_Deg
+#'                        , predint
+#'                        , varLegLoc
+#'                        , dir_results)
 #~~~~~~~~~~~~~~~~
 #' @export
 getVerifiedPredictions <- function(TargetSiteID
                                    , data.SampSummary
-                                   , data.bmi.taxa.raw
+                                   , data.bio.taxa.raw
                                    , data.chem.info
                                    , data.SSTV.totabund
-                                   , data.MT.bmi
+                                   , data.MT.bio
                                    , matchedData
                                    , ref.sites
                                    , BioIndex_Val="IBI"
@@ -172,18 +172,18 @@ getVerifiedPredictions <- function(TargetSiteID
   boo.DEBUG <- FALSE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    matchedData <- list.MatchBMIData
+    matchedData <- list.MatchBioData
     tv <- 1
   }##IF.boo.DEBUG.END
   
   # Extra, 20181211
   ## Add RelAbundInds to data.bmi.raw
   # col.by <- c("BMI.Metrics.SampID", "FinalID")
-  # data.bmi.taxa.raw <- merge(data.bmi.taxa.raw
+  # data.bio.taxa.raw <- merge(data.bio.taxa.raw
   #                            , data.SSTV.totabund[, c(col.by, "RelAbundInds")]
   #                            , by=col.by
   #                            , all.x=TRUE)
-  # 20190304, remove, data.bmi.taxa.raw now has "RelAbundInds"
+  # 20190304, remove, data.bio.taxa.raw now has "RelAbundInds"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -209,7 +209,7 @@ getVerifiedPredictions <- function(TargetSiteID
 
   if (nrow(list.SiteSummary$BMImetrics)==0) {
     # No BMI Responses Found
-    print(paste0("No BMI response data available for ", TargetSiteID, 
+    print(paste0("No biological response data available for ", TargetSiteID, 
                  ". Regression data illustrate cluster relationships only."))
     utils::flush.console()
   }
@@ -306,14 +306,14 @@ getVerifiedPredictions <- function(TargetSiteID
         all.match.b.str <- matchedData$all.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
         cl.match.b <- matchedData$cl.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
         
-        bmi.taxa.raw <- data.bmi.taxa.raw[data.bmi.taxa.raw$StationID_Master %in% 
+        bmi.taxa.raw <- data.bio.taxa.raw[data.bio.taxa.raw$StationID_Master %in% 
                                               unique(all.match.b.str$StationID_Master),]
-        bmi.taxa.raw <- merge(bmi.taxa.raw, data.MT.bmi[,c("GenusFinal", 
+        bmi.taxa.raw <- merge(bmi.taxa.raw, data.MT.bio[,c("GenusFinal", 
                                 "FinalID", SSTV.name)], 
                                 by.x = "FinalID", by.y = "FinalID")
 
-        minTolVal <- min(data.MT.bmi[,SSTV.name], na.rm = TRUE)
-        maxTolVal <- max(data.MT.bmi[,SSTV.name], na.rm = TRUE)
+        minTolVal <- min(data.MT.bio[,SSTV.name], na.rm = TRUE)
+        maxTolVal <- max(data.MT.bio[,SSTV.name], na.rm = TRUE)
         
         bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==minTolVal | 
                                         bmi.taxa.raw[,SSTV.name]==minTolVal+1, 
