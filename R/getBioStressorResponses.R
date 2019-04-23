@@ -12,7 +12,8 @@
 #' @param ref.sites Reference sites.
 #' @param predint Prediction interval. Default = 0.75
 #' @param varLegLoc Plot legend location.  For regressions this will be opposite. Default="topright"
-#' @param biocomm Biological community; algae or BMI.  Default = "BMI"
+#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
+#' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
@@ -100,25 +101,26 @@
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
 #'                                  
-#' # Data getBioMatches
+#' # Data getBioMatches, BMI
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' LogTransf <- stressors_logtransf
+#' biocomm <- "BMI"
+#' data.bio.metrics <- data_BMIMetrics
 #' 
 #' # Run getBioMatches
-#' biocomm <- "BMI"
-#' list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)     
+#' list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#'                                    , data.chem.raw, data.bio.metrics, biocomm)
 #'   
-#' # Data getBMIStressorResponses   
-#' biocomm <- "BMI"    
+#' # Data getBioStressorResponses, BMI 
 #' BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
 #'              , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
 #'              , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
 #'              
-#' # Run getBMIStressorResponses                 
+#' # Run getBioStressorResponses, BMI               
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                         , LogTransf, ref.sites, predint, varLegLoc, biocomm)
+#'                         , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example 2, Algae
@@ -197,30 +199,32 @@
 #'                                  , cluster.samps, ref.sites, site.chem
 #'                                  , probsHigh, probsLow)
 #'                                  
-#' # Data getBioMatches
+#' # Data getBioMatches, Algae
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' LogTransf <- stressors_logtransf
-#'
-#' # Run getBioMatches
 #' biocomm <- "algae"
-#' list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)
+#' data.bio.metrics <- data_AlgMetrics
+#'
+#' # Run getBioMatches, Algae
+#' list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#'                                   , data.chem.raw, data.bio.metrics, biocomm)
 #' 
-#' # Data getBioStressorResponses
+#' # Data getBioStressorResponses, Algae
 #' data.algae.metrics <- data_AlgMetrics
 #' BioResp <- colnames(data.algae.metrics[6:48])
-#' biocomm <- "algae"
 #' 
-#' # Run getAlgStressorResponses
+#' # Run getBioStressorResponses, Algae
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                        , LogTransf, ref.sites, predint, varLegLoc, biocomm)
+#'                        , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
 #' }
 #
 #' @export
 getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.MatchBioData
                                     , LogTransf, ref.sites, predint=0.75, varLegLoc="topright"
-                                    , biocomm="bmi") {##FUNCTION.START
+                                    , biocomm="bmi", dir_results=file.path(getwd(), "Results")
+                                    ) {##FUNCTION.START
   # DEBUG
   boo.DEBUG <- FALSE
   ## Trigger DEBUG actions below for when debugging.
@@ -318,8 +322,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   col_ChemSampID <- "ChemSampleID"
 
   # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- getwd()
-  dir.sub <- "Results"
+  # wd <- getwd()
+  # dir.sub <- "Results"
+  wd <- dirname(dir_results)
+  dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))

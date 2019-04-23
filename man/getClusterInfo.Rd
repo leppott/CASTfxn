@@ -4,7 +4,8 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs)
+getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs,
+  dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{site.COMID}{SiteID}
@@ -12,6 +13,8 @@ getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs)
 \item{site.Clusters}{site clusters.}
 
 \item{refSiteCOMIDs}{reference site COMIDs}
+
+\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory.
@@ -92,6 +95,6 @@ ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 
 }

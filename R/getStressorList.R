@@ -15,6 +15,7 @@
 #' @param site.chem Chem sites
 #' @param probsHigh probabilities, high
 #' @param probsLow probabilities, low
+#' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
@@ -95,12 +96,12 @@
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow)
+#'                                  , probsHigh, probsLow, dir_results)
 #                                  
 #' @export
 getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
                             , cluster.samps, ref.sites, site.chem
-                            , probsHigh, probsLow) {
+                            , probsHigh, probsLow, dir_results=file.path(getwd(), "Results")) {##FUNCTION.START
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
@@ -112,8 +113,10 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   useLU <- FALSE
   
   # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- getwd()
-  dir.sub <- "Results"
+  # wd <- getwd()
+  # dir.sub <- "Results"
+  wd <- dirname(dir_results)
+  dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))

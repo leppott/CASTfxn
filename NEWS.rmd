@@ -39,6 +39,19 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9197 (2019-04-23)
+
+* Declare "directory" as a required input.
+    + getStressorList
+    + getBioStressorResponses
+    + getVerifiedPredictions
+    + getClusterInfo
+* getVerifiedPredictions
+    + Rename function.
+        - Earlier update only did file name.
+* getBioMatches
+    + Update names in output.
+
 ## Changes in Version 0.1.0.9196 (2019-04-22)
 
 * getBioMatches

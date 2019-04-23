@@ -13,6 +13,7 @@
 #' @param site.COMID SiteID
 #' @param site.Clusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
+#' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
@@ -82,15 +83,17 @@
 #' refSiteCOMIDs <- list.data$ref.reaches
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+#' getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs) {##FUNCTION.START
+getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs, dir_results=file.path(getwd(), "Results")) {##FUNCTION.START
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- getwd()
-  dir.sub <- "Results"
+  # wd <- getwd()
+  # dir.sub <- "Results"
+  wd <- dirname(dir_results)
+  dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))

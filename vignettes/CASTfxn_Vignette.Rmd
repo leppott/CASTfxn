@@ -459,7 +459,7 @@ ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 ```
 For each variable in the test data set a "Ws" (Watershed) and "Cat" (Catchment) version are created.  This is how the variables exist in the data.
 
@@ -1284,7 +1284,7 @@ site.chem <- list.data$site.chem
 chem.info <- list.data$chem.info
 
 # Get Cluster Info
-getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 
 # CAST, Stressors ####
 # Get Stressor List

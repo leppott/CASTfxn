@@ -35,6 +35,7 @@ Co-Occurrence is not included here either.
 # Directory
 CurrentDir <- getwd()
 myDir.Data <- paste(CurrentDir,"data/",sep="/")
+dir_results <- file.path(getwd(), "Results")
 
 predint <- 0.75
 varLegLoc <- "topright"
@@ -69,7 +70,7 @@ list.data <- getChemDataSubsets(TargetSiteID, site.COMID, site.Clusters)
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
 # Run getClusterInfo
-getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 
 # getStressorList ####
 # dataset inputs
@@ -290,7 +291,7 @@ site.chem <- list.data$site.chem
 chem.info <- list.data$chem.info
 
 # Get Cluster Info
-getClusterInfo(site.COMID, site.Clusters, ref.reaches)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
 
 # CAST, Stressors ####
 # Get Stressor List

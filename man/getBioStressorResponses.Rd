@@ -6,7 +6,8 @@
 \usage{
 getBioStressorResponses(TargetSiteID, stressors, BioResp,
   list.MatchBioData, LogTransf, ref.sites, predint = 0.75,
-  varLegLoc = "topright", biocomm = "bmi")
+  varLegLoc = "topright", biocomm = "bmi",
+  dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -25,7 +26,9 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp,
 
 \item{varLegLoc}{Plot legend location.  For regressions this will be opposite. Default="topright"}
 
-\item{biocomm}{Biological community; algae or BMI.  Default = "BMI"}
+\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+
+\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 }
 \value{
 A jpg in SiteID subfoler of the "Results" folder of working directory.  
@@ -118,25 +121,26 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# Data getBioMatches
+# Data getBioMatches, BMI
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 LogTransf <- stressors_logtransf
+biocomm <- "BMI"
+data.bio.metrics <- data_BMIMetrics
 
 # Run getBioMatches
-biocomm <- "BMI"
-list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)     
+list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+                                   , data.chem.raw, data.bio.metrics, biocomm)
   
-# Data getBMIStressorResponses   
-biocomm <- "BMI"    
+# Data getBioStressorResponses, BMI 
 BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
              , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
              , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
              
-# Run getBMIStressorResponses                 
+# Run getBioStressorResponses, BMI               
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                        , LogTransf, ref.sites, predint, varLegLoc, biocomm)
+                        , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
@@ -215,23 +219,24 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
                                  , cluster.samps, ref.sites, site.chem
                                  , probsHigh, probsLow)
                                  
-# Data getBioMatches
+# Data getBioMatches, Algae
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 LogTransf <- stressors_logtransf
-
-# Run getBioMatches
 biocomm <- "algae"
-list.MatchBioData <- getBioMatches(stressors, list.data, biocomm)
+data.bio.metrics <- data_AlgMetrics
 
-# Data getBioStressorResponses
+# Run getBioMatches, Algae
+list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+                                  , data.chem.raw, data.bio.metrics, biocomm)
+
+# Data getBioStressorResponses, Algae
 data.algae.metrics <- data_AlgMetrics
 BioResp <- colnames(data.algae.metrics[6:48])
-biocomm <- "algae"
 
-# Run getAlgStressorResponses
+# Run getBioStressorResponses, Algae
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                       , LogTransf, ref.sites, predint, varLegLoc, biocomm)
+                       , LogTransf, ref.sites, predint, varLegLoc, biocomm, dir_results)
 }
 }

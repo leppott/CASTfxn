@@ -31,6 +31,7 @@
 #' @param predint x
 #' @param varLegLoc Legend location; "bottomright", "bottom", "bottomleft",
 #' "left", "topleft", "top", "topright", "right" and "center".  Default = "topright"
+#' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 #' 
@@ -118,8 +119,10 @@
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' 
-#' # Run getBMIMatches
-#' list.MatchBMIData <- getBMIMatches(stressors, list.data)  
+#' # Run getBioMatches
+#' biocomm <- "BMI"
+#' data.bio.metrics <- data_BMIMetrics
+#' list.MatchBMIData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
 #'   
 #' # Data getVerifiedPredictions
 #' # data import, example
@@ -146,23 +149,25 @@
 #'                                , BioIndex_Nar
 #'                                , BioIndex_Nar_Deg
 #'                                , predint
-#'                                , varLegLoc)
+#'                                , varLegLoc
+#'                                , dir_results)
 #~~~~~~~~~~~~~~~~
 #' @export
-getStressorSpecificRegressions <- function(TargetSiteID
-                                           , data.SampSummary
-                                           , data.bmi.taxa.raw
-                                           , data.chem.info
-                                           , data.SSTV.totabund
-                                           , data.MT.bmi
-                                           , matchedData
-                                           , ref.sites
-                                           , BioIndex_Val="IBI"
-                                           , BioIndex_Nar="NarRat"
-                                           , BioIndex_Nar_Deg="Violates"
-                                           , predint=0.75
-                                           , varLegLoc="topright"
-                                           ) {##FUNCTION.START
+getVerifiedPredictions <- function(TargetSiteID
+                                   , data.SampSummary
+                                   , data.bmi.taxa.raw
+                                   , data.chem.info
+                                   , data.SSTV.totabund
+                                   , data.MT.bmi
+                                   , matchedData
+                                   , ref.sites
+                                   , BioIndex_Val="IBI"
+                                   , BioIndex_Nar="NarRat"
+                                   , BioIndex_Nar_Deg="Violates"
+                                   , predint=0.75
+                                   , varLegLoc="topright"
+                                   , dir_results=file.path(getwd(), "Results")
+                                   ) {##FUNCTION.START
   # Debugging
   boo.DEBUG <- FALSE
   #
@@ -181,8 +186,10 @@ getStressorSpecificRegressions <- function(TargetSiteID
   # 20190304, remove, data.bmi.taxa.raw now has "RelAbundInds"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- getwd()
-  dir.sub <- "Results"
+  # wd <- getwd()
+  # dir.sub <- "Results"
+  wd <- dirname(dir_results)
+  dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))

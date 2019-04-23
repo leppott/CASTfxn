@@ -95,7 +95,8 @@
 #' # Run getBioMatches
 #' biocomm <- "BMI"
 #' data.bio.metrics <- data_BMIMetrics
-#' list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+#' list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#'                                    , data.chem.raw, data.bio.metrics, biocomm)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example 2, Algae
@@ -178,11 +179,13 @@
 #' # Run getBioMatches
 #' biocomm <- "algae"
 #' data.bio.metrics <- data_AlgMetrics
-#' list.MatchAlgData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+#' list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#'                                    , data.chem.raw, data.bio.metrics, biocomm)
 #' 
 # 
 #' @export
-getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm="BMI") {##FUNCTION.START
+getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw
+                          , data.bio.metrics, biocomm="BMI") {##FUNCTION.START
   # QC
   biocomm <- tolower(biocomm)
   #
@@ -306,6 +309,13 @@ getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSumma
     all.mbio.resp   <- merge(mbio.use.samps, all.mbio.resp.0, by.x = "BMI.Metrics.SampID", by.y = "BMI.Metrics.SampID")
     cl.mbio.resp    <- subset(all.mbio.resp, ChemSampleID %in% cl.chems$ChemSampleID)
     site.mbio.resp  <- subset(all.mbio.resp, ChemSampleID %in% site.chem$ChemSampleID)
+    # Output
+    myMatchData <- list(all.b.str    = all.mbio.stress
+                        , cl.b.str   = cl.mbio.stress
+                        , site.b.str = site.mbio.stress
+                        , all.b.rsp  = all.mbio.resp
+                        , cl.b.rsp   = cl.mbio.resp
+                        , site.b.rsp = site.mbio.resp)
   } else if(biocomm=="algae"){
     # Samps
     mbio.Samps <- stats::na.omit(data.SampSummary[,c("ChemSampleID",
@@ -326,6 +336,13 @@ getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSumma
     all.mbio.resp   <- merge(mbio.use.samps, all.mbio.resp.0, by.x = "Algae.Metrics.SampID", by.y = "Algae.Metrics.SampID")
     cl.mbio.resp    <- subset(all.mbio.resp, ChemSampleID %in% cl.chems$ChemSampleID)
     site.mbio.resp  <- subset(all.mbio.resp, ChemSampleID %in% site.chem$ChemSampleID)
+    # Output
+    myMatchData <- list(all.a.str    = all.mbio.stress
+                        , cl.a.str   = cl.mbio.stress
+                        , site.a.str = site.mbio.stress
+                        , all.a.rsp  = all.mbio.resp
+                        , cl.a.rsp   = cl.mbio.resp
+                        , site.a.rsp = site.mbio.resp)
   }##IF~biocom-str/resp~END
   
 
@@ -350,12 +367,6 @@ getBioMatches <- function(stressors, list.data, list.SiteSummary, data.SampSumma
   #   #
   # }##IF.biocomm.END
   
-  myMatchData <- list(all.a.str    = all.mbio.stress
-                      , cl.a.str   = cl.mbio.stress
-                      , site.a.str = site.mbio.stress
-                      , all.a.rsp  = all.mbio.resp
-                      , cl.a.rsp   = cl.mbio.resp
-                      , site.a.rsp = site.mbio.resp)
   #
   return(myMatchData)
   #

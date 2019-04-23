@@ -112,7 +112,8 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 # Run getBioMatches
 biocomm <- "BMI"
 data.bio.metrics <- data_BMIMetrics
-list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+                                   , data.chem.raw, data.bio.metrics, biocomm)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
@@ -195,6 +196,7 @@ stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 # Run getBioMatches
 biocomm <- "algae"
 data.bio.metrics <- data_AlgMetrics
-list.MatchAlgData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+                                   , data.chem.raw, data.bio.metrics, biocomm)
 
 }
