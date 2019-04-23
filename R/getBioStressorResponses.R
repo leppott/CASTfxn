@@ -750,7 +750,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
                 } else {
                     #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
                   txt.score <- "inconclusive"  
-                  sr.score = 1
+                  sr.score = 0
                 }
             } else {
                 #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))

@@ -39,6 +39,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9198 (2019-04-23)
+
+* getBioStressorResponses
+    + Scoring.  No slope score to zero.
+
 ## Changes in Version 0.1.0.9197 (2019-04-23)
 
 * Declare "directory" as a required input.
