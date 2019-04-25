@@ -16,7 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Debugging
-boo.DEBUG <- FALSE
+boo.DEBUG <- TRUE
 DEBUG.CaseNumber <- 1
 #
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
@@ -140,7 +140,8 @@ if(boo_file==TRUE){##IF.boo.pdf.START
                       , fn_target, "' in the 'Results' folder.\n")
   #
   df_target <- read.delim(file.path(dir_results, TargetSiteID, fn_target))
-  knitr::kable(df_target, Caption = "txt_grp_msg")
+  #knitr::kable(df_target, Caption = "txt_grp_msg")
+  DT::datatable(df_target, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
   #
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
@@ -163,7 +164,8 @@ if(boo_file==TRUE){##IF.boo.pdf.START
                       , fn_target, "' in the 'Results' folder.\n")
   #
   df_target <- read.delim(file.path(dir_results, TargetSiteID, fn_target))
-  knitr::kable(df_target, Caption = "txt_grp_msg")
+  #knitr::kable(df_target, Caption = "txt_grp_msg")
+  DT::datatable(df_target, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
   #
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
@@ -377,6 +379,7 @@ if(length(numPlots)==0){
   knitr::include_graphics(fn_SSTV_plots_jpg)
 }
 ```
+
 ## Algae
 
 ### Tables
@@ -433,14 +436,15 @@ if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
 
 fn_CoOccur_Scores  <- list.files(path=file.path(dir_results, TargetSiteID)
                                  , full.names = TRUE
-                                 , pattern=".CoOccurrence.Scores.txt")
+                                 , pattern=".CoOccurrence.bmi.Scores.txt")
 if(length(fn_CoOccur_Scores)==0){
   txt_NoFile <- "No file exists; co-occurrence scores.\n"
   cat(txt_NoFile)
 } else if(file.exists(fn_CoOccur_Scores)==TRUE){
   df_CoOccur_Scores <- read.delim(fn_CoOccur_Scores)
   cap_CoOccur_Scores <- "Co-Occurrence Scores"
-  knitr::kable(df_CoOccur_Scores, caption=cap_CoOccur_Scores)
+  #knitr::kable(df_CoOccur_Scores, caption=cap_CoOccur_Scores)
+  DT::datatable(df_CoOccur_Scores, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
 } else {
   cat(txt_NoFile)
 }
@@ -510,7 +514,7 @@ if(length(len_total)==0){
 
 ## Chem, Percent Rank
 ```{r filelist_txt_chempctrank}
-txt_grp_file <- "chem.pctrank"
+txt_grp_file <- "chem.pctrank.bmi"
 txt_grp_msg <- "chemistry percent rank"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".txt")
 fn_all <- list.files(file.path(dir_results, TargetSiteID))
@@ -532,12 +536,13 @@ cat(msg_files)
 
 ```{r ChemPctRank_table}
 fn_ChemPctRank  <- file.path(dir_results, TargetSiteID
-                               , paste0(TargetSiteID, ".chem.pctrank.txt"))
+                               , paste0(TargetSiteID, ".chem.pctrank.bmi.txt"))
 
 if(file.exists(fn_ChemPctRank)==TRUE){
   df_ChemPctRank <- read.delim(fn_ChemPctRank)
   cap_ChemPctRank <- "Chemical Analytes, Percent Rank"
   knitr::kable(df_ChemPctRank, caption=cap_ChemPctRank)
+  DT::datatable(df_ChemPctRank, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
 } else {
   cat("No files exists; chemistry percent ranks.\n")
 }

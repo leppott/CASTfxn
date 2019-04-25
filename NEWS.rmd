@@ -39,6 +39,24 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9203 (2019-04-25)
+
+* biocomm name on file scoring outputs, Issue #64.
+    + getBioStressorResponses.
+        - Add to table outputs.
+    + getCoOccur
+        - Add as input.
+        - Add to txt output filenames.
+        - Add to table outputs.
+    + getStressorList
+        - Add as input.
+        - Add to txt output filenames.
+        - Did **not** add to table outputs.
+    + getReport
+        - Modify RMD for new file names.
+        - Add DT for tables.
+* Add DT package to DESCRIPTION IMPORTS.
+
 ## Changes in Version 0.1.0.9202 (2019-04-25)
 
 * Remove function getRegPlotSet, Issue #63.

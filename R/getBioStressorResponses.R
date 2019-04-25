@@ -700,9 +700,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
             boo.col.names <- !boo.col.names
           }##IF~pq~END
           #if(boo.pryr==TRUE){
+          # Add biocomm (20190425)
+          df.CorrTable[, "biocomm"] <- biocomm
           fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
           utils::write.table(df.CorrTable
-                             , file.path(wd,dir.sub,dir.sub2,fn_corr)
+                             , file.path(wd, dir.sub, dir.sub2, fn_corr)
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append)  
           #}
@@ -779,6 +781,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
             boo.col.names <- !boo.col.names
           }
           
+          # Add biocomm, 20190425
+          df.sc.sr[, "biocomm"] <- biocomm
           utils::write.table(df.sc.sr
                              , fp_scores
                              , sep="\t", quote=FALSE, row.names=FALSE
@@ -858,7 +862,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
   if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
     df_corr <- read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
-    write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
+    utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
   }##IF~length~END
   
   ## transpose 

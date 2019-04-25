@@ -6,7 +6,7 @@
 \usage{
 getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem,
   cluster.samps, ref.sites, site.chem, probsHigh, probsLow,
-  dir_results = file.path(getwd(), "Results"))
+  biocomm = "bmi", dir_results = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -26,6 +26,8 @@ getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem,
 \item{probsHigh}{probabilities, high}
 
 \item{probsLow}{probabilities, low}
+
+\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 }
@@ -111,9 +113,10 @@ site.chem <- list.data$site.chem
 # set cutoff for possible stressor identification
 probsLow <- 0.10
 probsHigh <- 0.90 
+biocomm <- "bmi"
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow, dir_results)
+                                 , probsHigh, probsLow, biocomm, dir_results)
 }

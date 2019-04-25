@@ -15,6 +15,7 @@
 #' @param site.chem Chem sites
 #' @param probsHigh probabilities, high
 #' @param probsLow probabilities, low
+#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
@@ -92,16 +93,19 @@
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
 #' probsHigh <- 0.90 
+#' biocomm <- "bmi"
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow, dir_results)
+#'                                  , probsHigh, probsLow, biocomm, dir_results)
 #                                  
 #' @export
 getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
                             , cluster.samps, ref.sites, site.chem
-                            , probsHigh, probsLow, dir_results=file.path(getwd(), "Results")) {##FUNCTION.START
+                            , probsHigh, probsLow, biocomm="bmi"
+                            , dir_results=file.path(getwd(), "Results")
+                            ) {##FUNCTION.START
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
@@ -346,9 +350,8 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   colnames(data.chem.pctrank)[1] <- "StationID_Master"
   colnames(data.chem.pctrank)[2] <- "ChemSampleID"
   row.names(data.chem.pctrank) <- NULL
-  utils::write.table(data.chem.pctrank, file = paste("Results/",TargetSiteID,
-                    "/",TargetSiteID,".chem.pctrank.txt", sep=""),sep="\t", 
-                    col.names=TRUE)
+  fn.pctrank <- file.path(dir_results, TargetSiteID, paste0(TargetSiteID, ".chem.pctrank.", biocomm, ".txt"))
+  utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
   stressor <- c("none")
   for (c in 3:ncol(site.pctrank)) {

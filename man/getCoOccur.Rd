@@ -8,8 +8,8 @@ getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
   col.Stressors, Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
   Bio.Nar.Lab = c("very likely altered", "likely altered",
   "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
-  Bio.Deg.Lab = c("Yes", "No"), dir.plots = file.path(getwd(),
-  "Results"))
+  Bio.Deg.Lab = c("Yes", "No"), biocomm = "bmi",
+  dir.plots = file.path(getwd(), "Results"))
 }
 \arguments{
 \item{df.data}{data frame with data.}
@@ -43,6 +43,8 @@ Default = c(-2, 0.799, 2)}
 Should be in order from bad (low) to good (high).
 Defaults are referenced in the code so if change the code will break. 
 Default = c("Yes", "No").}
+
+\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
 \item{dir.plots}{Directory to save plots.  Default = working directory and Results.}
 }
@@ -131,13 +133,14 @@ Bio.Nar.Lab <- c("very likely altered", "likely altered"
                 , "possibly altered ", "likely intact")
 Bio.Deg.Brk <- c(-2, 0.799, 2)
 Bio.Deg.Lab <- c("Yes", "No")
+biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
 #
 TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , dir.plots
+        , biocomm, dir.plots
         )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example #2, AZ data (single site)
@@ -161,11 +164,12 @@ Bio.Nar.Brk <- c(0, 45, 52, 100)
 Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
 Bio.Deg.Brk <- c(0, 45, 100)
 Bio.Deg.Lab <- c("Yes", "No")
+biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
-        , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , dir.plots
+        , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
+        , biocomm, dir.plots
         )
 
 }

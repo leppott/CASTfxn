@@ -88,6 +88,7 @@
 #' Should be in order from bad (low) to good (high).
 #' Defaults are referenced in the code so if change the code will break. 
 #' Default = c("Yes", "No").
+#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir.plots Directory to save plots.  Default = working directory and Results.
 #'
 #' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
@@ -110,13 +111,14 @@
 #'                 , "possibly altered ", "likely intact")
 #' Bio.Deg.Brk <- c(-2, 0.799, 2)
 #' Bio.Deg.Lab <- c("Yes", "No")
+#' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
 #' #
 #' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-#'         , dir.plots
+#'         , biocomm, dir.plots
 #'         )
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example #2, AZ data (single site)
@@ -140,11 +142,12 @@
 #' Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
 #' Bio.Deg.Brk <- c(0, 45, 100)
 #' Bio.Deg.Lab <- c("Yes", "No")
+#' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
-#'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-#'         , dir.plots
+#'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
+#'         , biocomm, dir.plots
 #'         )
 #' 
 #~~~~~~~~~~~~~
@@ -160,6 +163,7 @@ getCoOccur <- function(df.data
                                        , "possibly altered ", "likely intact")
                        , Bio.Deg.Brk=c(-2, 0.799, 2)
                        , Bio.Deg.Lab=c("Yes", "No")
+                       , biocomm="bmi"
                        , dir.plots=file.path(getwd(), "Results")
                        ) {##FUNCTION.START
   #
@@ -231,6 +235,7 @@ getCoOccur <- function(df.data
   df.scores[, "Sc_Box"]      <- as.character(NA)
   df.scores[, "SR_pred_Deg"] <- as.character(NA)
   df.scores[, "Sc_SR"]       <- as.character(NA)
+  df.scores[, "biocomm"]     <- as.character(NA)
   # Remove columns
   col.remove <- names(df.scores) %in% col.Stressors
   df.scores <- df.scores[, !col.remove]
@@ -295,7 +300,7 @@ getCoOccur <- function(df.data
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
-    fn.scores <- file.path(dir.plots, dir.sub2, paste0(i_TargetSiteID,".CoOccurrence.Scores.txt"))
+    fn.scores <- file.path(dir.plots, dir.sub2, paste0(i_TargetSiteID, ".CoOccurrence.", biocomm, ".Scores.txt"))
     utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
@@ -580,6 +585,9 @@ getCoOccur <- function(df.data
 
          }##IF.complete.cases.END
           
+         # add biocomm, 20190425
+         df.scores.i.n[, "biocomm"] <- biocomm
+         
           # Save tabular scores
           utils::write.table(df.scores.i.n, file=fn.scores
                       , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
@@ -596,6 +604,8 @@ getCoOccur <- function(df.data
          df.i.NA <- df.i[1,1:5]
          df.i.NA[, column_names] <- NA
          df.i.NA[, "Param_Name"] <- j
+         # add biocomm, 20190425
+         df.i.NA[, "biocomm"] <- biocomm
          utils::write.table(df.i.NA, file=fn.scores
                             , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
          
