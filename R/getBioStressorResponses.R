@@ -23,6 +23,7 @@
 #' # Example 1, BMI
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
+#' biocomm <- "bmi"
 #' 
 #' # datasets getSiteInfo
 #' # data, example included with package
@@ -94,14 +95,13 @@
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow)
+#'                                  , probsHigh, probsLow, biocomm, dir_results)
 #'                                  
 #' # Data getBioMatches, BMI
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' LogTransf <- stressors_logtransf
-#' biocomm <- "BMI"
 #' data.bio.metrics <- data_BMIMetrics
 #' 
 #' # Run getBioMatches
@@ -121,6 +121,7 @@
 #' # Example 2, Algae
 #' TargetSiteID <- "LCBEN002.57"
 #' dir_results <- file.path(getwd(), "Results")
+#' biocomm <- "algae"
 #' 
 #' # datasets getSiteInfo
 #' # data, example included with package
@@ -185,18 +186,18 @@
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
 #' probsHigh <- 0.90 
+#' biocomm <- "algae"
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow)
+#'                                  , probsHigh, probsLow, biocomm, dir_results)
 #'                                  
 #' # Data getBioMatches, Algae
 #' ## remove "none"
 #' stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 #' stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 #' LogTransf <- stressors_logtransf
-#' biocomm <- "algae"
 #' data.bio.metrics <- data_AlgMetrics
 #'
 #' # Run getBioMatches, Algae
@@ -204,8 +205,7 @@
 #'                                   , data.chem.raw, data.bio.metrics, biocomm)
 #' 
 #' # Data getBioStressorResponses, Algae
-#' data.algae.metrics <- data_AlgMetrics
-#' BioResp <- colnames(data.algae.metrics[6:48])
+#' BioResp <- colnames(data.bio.metrics[6:52])
 #' 
 #' # Run getBioStressorResponses, Algae
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
@@ -850,14 +850,14 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #
   # CorrPlot ####
   ## read
-  fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
+  fn_corr <- paste0(TargetSiteID, ".SR.",bio_prefix, ".Corrs.txt")
   fp_corr <- file.path(wd, dir.sub, dir.sub2, fn_corr)
   df_corr <- read.delim(fp_corr)
   
   # QC, 20190313
   ## Special case where the function doesn't save the header row
   ### Unable to track down cause so implement QC check here.
-  cn_cor_pref <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2")
+  cn_cor_pref <- c("stressName", "respName", "statistic", "p.value", "estimate", "r2", "biocomm")
   cn_cor_x    <- colnames(df_corr)
   cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
   if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START

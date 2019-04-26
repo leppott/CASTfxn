@@ -40,6 +40,7 @@ Biological (Algae or BMI) stressor regressions.
 # Example 1, BMI
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
+biocomm <- "bmi"
 
 # datasets getSiteInfo
 # data, example included with package
@@ -111,14 +112,13 @@ probsHigh <- 0.90
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow)
+                                 , probsHigh, probsLow, biocomm, dir_results)
                                  
 # Data getBioMatches, BMI
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 LogTransf <- stressors_logtransf
-biocomm <- "BMI"
 data.bio.metrics <- data_BMIMetrics
 
 # Run getBioMatches
@@ -138,6 +138,7 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
 # Example 2, Algae
 TargetSiteID <- "LCBEN002.57"
 dir_results <- file.path(getwd(), "Results")
+biocomm <- "algae"
 
 # datasets getSiteInfo
 # data, example included with package
@@ -202,18 +203,18 @@ site.chem <- list.data$site.chem
 # set cutoff for possible stressor identification
 probsLow <- 0.10
 probsHigh <- 0.90 
+biocomm <- "algae"
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow)
+                                 , probsHigh, probsLow, biocomm, dir_results)
                                  
 # Data getBioMatches, Algae
 ## remove "none"
 stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
 stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
 LogTransf <- stressors_logtransf
-biocomm <- "algae"
 data.bio.metrics <- data_AlgMetrics
 
 # Run getBioMatches, Algae
@@ -221,8 +222,7 @@ list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.
                                   , data.chem.raw, data.bio.metrics, biocomm)
 
 # Data getBioStressorResponses, Algae
-data.algae.metrics <- data_AlgMetrics
-BioResp <- colnames(data.algae.metrics[6:48])
+BioResp <- colnames(data.bio.metrics[6:52])
 
 # Run getBioStressorResponses, Algae
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
