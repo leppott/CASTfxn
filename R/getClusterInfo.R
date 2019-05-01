@@ -14,6 +14,7 @@
 #' @param site.Clusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory.
 #' 
@@ -48,6 +49,11 @@
 #' # AZ
 #' map_flowline  <- data_GIS_Flow_HI
 #' map_flowline2 <- data_GIS_Flow_LO
+#' if(elev_cat=="HI"){
+#'    map_flowline <- data_GIS_Flow_HI
+#' } else if(elev_cat=="LO") {
+#'    map_flowline <- data_GIS_Flow_LO
+#' }
 #' map_outline   <- data_GIS_AZ_Outline
 #' # Project site data to USGS Albers Equal Area
 #' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -57,13 +63,16 @@
 #' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
 #'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 #' map_proj <- my.aea
+#' # 
+#' dir_sub <- "SiteInfo"
 #' 
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
 #'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#'                                 , map_proj, map_outline, map_flowline
+#'                                 , dir_sub=dir_sub)
 #'  
 #' # Data getChemDataSubsets
 #' # data, example included with package
@@ -81,12 +90,15 @@
 #' # Data getClusterInfo
 #' ref.reaches <- list.data$ref.reaches
 #' refSiteCOMIDs <- list.data$ref.reaches
+#' dir_sub <- "ClusterInfo"
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
+#' getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs, dir_results=file.path(getwd(), "Results")) {##FUNCTION.START
+getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs
+                           , dir_results=file.path(getwd(), "Results")
+                           , dir_sub="ClusterInfo") {##FUNCTION.START
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory
@@ -95,8 +107,12 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs, dir_results
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
+  dir.sub3 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
+         , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
   if (length(site.Clusters)==0) {
@@ -271,7 +287,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs, dir_results
     plots.i[[i-1]] <- grDevices::recordPlot()
     
     # Save to JPG
-    fn_jpg <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".cluster.", make.names(varYlab), ".jpg"))
+    fn_jpg <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".cluster.", make.names(varYlab), ".jpg"))
     ggplot2::ggsave(fn_jpg, p_cl, width=plot_W, height=plot_H, units="in")
     
     #
@@ -279,7 +295,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs, dir_results
   #
   #grDevices::graphics.off() 
   # Create PDF from list
-  fn_pdf <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".cluster.ALL.pdf"))
+  fn_pdf <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID,".cluster.ALL.pdf"))
   pdf(file=fn_pdf, width=plot_W, height=plot_H)
   for (ii in plots.i){##FOR.gp.START
     #grDevices::replayPlot(g.plot)

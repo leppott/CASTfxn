@@ -40,6 +40,7 @@
 #' @param map_outline Outline for map, typically State border.
 #' @param map_flowline Typically NHD+ flowline.
 #' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
 #' 
 #' @return A jpg map to a folder named by the SiteID in the user supplied dir_results 
 #' folder (default is "Results" folder in the working directory).  Also produced 
@@ -85,6 +86,11 @@
 #' # AZ
 #' map_flowline  <- data_GIS_Flow_HI
 #' map_flowline2 <- data_GIS_Flow_LO
+#' if(elev_cat=="HI"){
+#'    map_flowline <- data_GIS_Flow_HI
+#' } else if(elev_cat=="LO") {
+#'    map_flowline <- data_GIS_Flow_LO
+#' }
 #' map_outline   <- data_GIS_AZ_Outline
 #' # Project site data to USGS Albers Equal Area
 #' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -94,6 +100,8 @@
 #' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
 #'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 #' map_proj <- my.aea
+#' # 
+#' dir_sub <- "SiteInfo"
 #'
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID
@@ -107,24 +115,30 @@
 #'                                 , data.mod
 #'                                 , map_proj
 #'                                 , map_outline
-#'                                 , map_flowline)
+#'                                 , map_flowline
+#'                                 , dir_sub=dir_sub)
 #
 #' @export
 getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results")
                         , data.Stations.Info, data.SampSummary, data.303d.ComID
                         , data.bmi.metrics, data.algae.metrics, data.cluster, data.mod
-                        , map_proj=NULL, map_outline=NULL, map_flowline=NULL, map_flowline2=NULL) {
+                        , map_proj=NULL, map_outline=NULL, map_flowline=NULL, map_flowline2=NULL
+                        , dir_sub="SiteInfo") {
   #
   useLU <- FALSE
   # check for and create (if necessary) dir_results and SiteID subdirectory
   #wd <- getwd()
   #dir.sub <- "Results"
   dir.sub2 <- TargetSiteID
+  dir.sub3 <- dir_sub
   ifelse(!dir.exists(dir_results)==TRUE
          , dir.create(dir_results)
          , FALSE)
   ifelse(!dir.exists(file.path(dir_results, dir.sub2))==TRUE
          , dir.create(file.path(dir_results, dir.sub2))
+         , FALSE)
+  ifelse(!dir.exists(file.path(dir_results, dir.sub2, dir.sub3))==TRUE
+         , dir.create(file.path(dir_results, dir.sub2, dir.sub3))
          , FALSE)
   #
   mySiteInfo <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
@@ -241,8 +255,10 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   lwd_outline  <- 1.5
   lwd_flowline <- 0.5
   
-  grDevices::jpeg(filename = paste0("Results/",TargetSiteID, "/", TargetSiteID, 
-                                    ".map.jpg"), width = 4*ppi, height = 4*ppi, pointsize = 6,
+  #fn_jpg <- paste0("Results/",TargetSiteID, "/", TargetSiteID, ".map.jpg")
+  fn_jpg <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID, ".map.jpg"))
+  
+  grDevices::jpeg(filename = fn_jpg, width = 4*ppi, height = 4*ppi, pointsize = 6,
                   quality=100, bg="white", res=ppi)
     if(is.null(map_proj)==TRUE){##IF.map_proj.START
       # map with no projection
@@ -321,7 +337,7 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
   strFile_out_ext <- paste0(".", report_format)
   strFile_out <- paste0(TargetSiteID,".map.leaflet", strFile_out_ext)
-  dir_map <- file.path(dir_results, TargetSiteID)
+  dir_map <- file.path(dir_results, TargetSiteID, dir.sub3)
   rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
                     , output_dir=dir_map, quiet=TRUE)
   # place after static map so can insert

@@ -58,7 +58,7 @@ getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
   if (file.exists(strFile_RMD)){##IF.file.exists.START
     #suppressWarnings(
     rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
-                      , output_dir=dir_results, quiet=TRUE)
+                      , output_dir=file.path(dir_results, TargetSiteID), quiet=TRUE)
     #)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"

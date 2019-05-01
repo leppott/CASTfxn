@@ -5,7 +5,7 @@
 \title{Cluster Info}
 \usage{
 getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs,
-  dir_results = file.path(getwd(), "Results"))
+  dir_results = file.path(getwd(), "Results"), dir_sub = "ClusterInfo")
 }
 \arguments{
 \item{site.COMID}{SiteID}
@@ -15,6 +15,8 @@ getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs,
 \item{refSiteCOMIDs}{reference site COMIDs}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
+
+\item{dir_sub}{Subdirectory for outputs from this function.  Default = "ClusterInfo"}
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory.
@@ -60,6 +62,11 @@ if(elev_cat=="HI"){
 # AZ
 map_flowline  <- data_GIS_Flow_HI
 map_flowline2 <- data_GIS_Flow_LO
+if(elev_cat=="HI"){
+   map_flowline <- data_GIS_Flow_HI
+} else if(elev_cat=="LO") {
+   map_flowline <- data_GIS_Flow_LO
+}
 map_outline   <- data_GIS_AZ_Outline
 # Project site data to USGS Albers Equal Area
 usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -69,13 +76,16 @@ usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
 my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 map_proj <- my.aea
+# 
+dir_sub <- "SiteInfo"
 
 # Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
                                 , data.SampSummary, data.303d.ComID
                                 , data.bmi.metrics, data.algae.metrics
                                 , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline)
+                                , map_proj, map_outline, map_flowline
+                                , dir_sub=dir_sub)
  
 # Data getChemDataSubsets
 # data, example included with package
@@ -93,8 +103,9 @@ list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clu
 # Data getClusterInfo
 ref.reaches <- list.data$ref.reaches
 refSiteCOMIDs <- list.data$ref.reaches
+dir_sub <- "ClusterInfo"
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results)
+getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
 
 }

@@ -16,7 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Debugging
-boo.DEBUG <- TRUE
+boo.DEBUG <- FALSE
 DEBUG.CaseNumber <- 1
 #
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
@@ -52,9 +52,10 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
 # MAP
 
 ```{r map}
+dir.sub3 <- "SiteInfo"
 #TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".map.jpg")
-fn_img <- file.path(dir_results, TargetSiteID, myJPG)
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, myJPG)
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -67,15 +68,16 @@ if(file.exists(fn_img)==TRUE){
 Box plots by stressor category.
 
 ```{r filelist_pdf_boxes}
+dir.sub3 <- "CandidateCauses"
 txt_grp_file <- "boxes"
 txt_grp_msg <- "box"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("All ", txt_grp_msg," plots are in the file '"
-                      , fn_target, "' in the 'Results' folder.\n")
+                      , fn_target, "' in the'",  paste0("Results/",dir.sub3), "' folder.\n")
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
 } else {
@@ -86,7 +88,8 @@ cat(msg_files)
 ```
 
 ```{r BoxPlots}
-dir_SiteID <- file.path(dir_results, TargetSiteID)
+dir.sub3 <- "CandidateCauses"
+dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub3)
 fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
                                  , pattern=".boxes.")
 fn_BoxPlots_jpg <- fn_BoxPlots[grep(".jpg", fn_BoxPlots)]
@@ -106,15 +109,16 @@ if(length(fn_BoxPlots_jpg)==0){
 # Clusters
 
 ```{r filelist_pdf_cluster}
+dir.sub3 <- "ClusterInfo"
 txt_grp_file <- "cluster"
 txt_grp_msg <- "cluster box"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, dir.sub3, TargetSiteID))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("All ", txt_grp_msg," plots are in the file '"
-                      , fn_target, "' in the 'Results' folder.\n")
+                      , fn_target, "' in the '", paste0("Results/", dir.sub3), "' folder.\n")
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
 } else {
@@ -129,17 +133,18 @@ cat(msg_files)
 ## BMI
 
 ```{r filelist_txt_sr_bmi_cor}
+dir.sub3 <- "StressoResponse"
 txt_grp_file <- "SR.BMI.Corrs"
 txt_grp_msg <- "stressor response benthic macroinvertebrate correlations"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".txt")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, dir.sub3, TargetSiteID))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
                       , fn_target, "' in the 'Results' folder.\n")
   #
-  df_target <- read.delim(file.path(dir_results, TargetSiteID, fn_target))
+  df_target <- read.delim(file.path(dir_results, TargetSiteID, dir.sub3, fn_target))
   #knitr::kable(df_target, Caption = "txt_grp_msg")
   DT::datatable(df_target, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
   #
@@ -153,17 +158,18 @@ cat(msg_files)
 ```
 
 ```{r filelist_txt_sr_bmi_scor}
+dir.sub3 <- "StressorResponse"
 txt_grp_file <- "SR.BMI.Scores"
 txt_grp_msg <- "stressor response benthic macroinvertebrate scores"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".txt")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
-                      , fn_target, "' in the 'Results' folder.\n")
+                      , fn_target, "' in the '", paste0("Results/", dir.sub3), "' folder.\n")
   #
-  df_target <- read.delim(file.path(dir_results, TargetSiteID, fn_target))
+  df_target <- read.delim(file.path(dir_results, TargetSiteID, dir.sub3, fn_target))
   #knitr::kable(df_target, Caption = "txt_grp_msg")
   DT::datatable(df_target, rownames = FALSE, filter="top", options=list(scrollX=TRUE))
   #
@@ -183,7 +189,8 @@ Correlograms are used instead of tables to visually display the stressor and res
 #### Correlations
 
 ```{r SR_BMI_corrs}
-fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
+dir.sub3 <- "StressorResponse"
+fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, dir.sub3
                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
 # fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID
 #                               , paste0(TargetSiteID, ".SR.BMI.Scores.txt"))
@@ -247,9 +254,10 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
 Scores are from stressor specific regressions and are scored -1, 0, or 1.
 
 ```{r SR_BMI_scores}
+dir.sub3 <- "StressorResponse"
 # fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
 #                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
-fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID
+fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID, dir.sub3
                               , paste0(TargetSiteID, ".SR.BMI.Scores.txt"))
 #
 # captions
@@ -294,10 +302,11 @@ if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
 
 ### Plots
 ```{r filelist_pdf_SR_BMI}
+dir.sub3 <- "StressorResponse"
 txt_grp_file <- "SR.BMI"
 txt_grp_msg <- "stressor specific benthic macroinvertebrate"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
@@ -313,7 +322,8 @@ cat(msg_files)
 ```
 
 ```{r SR_BMI_plots}
-fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID
+dir.sub3 <- "StressorResponse"
+fn_SR_BMI_Corrs  <- file.path(dir_results, TargetSiteID, dir.sub3
                               , paste0(TargetSiteID, ".SR.BMI.Corrs.txt"))
 #
 if(file.exists(fn_SR_BMI_Corrs)==TRUE){
@@ -332,7 +342,8 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
   ## pattern gets all relevant SR.BMI plots
   ## Starts with (^) "SiteID.SR.BMI.", includes and underscore, and ends with ($) ".jpg"
   myPattern <- paste0("^(", TargetSiteID, "\\.SR\\.BMI\\.).*[_].*\\.jpg?")
-  fn_img_all <- list.files(file.path(dir_results, TargetSiteID), pattern=myPattern, full.names = TRUE)
+  fn_img_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3), pattern=myPattern
+                           , full.names = TRUE)
   # ensure filenames exist then check if significant.
   fn_img_sig <- fn_img_all[basename(fn_img_all) %in% fn_jpg_sig]
   knitr::include_graphics(fn_img_sig)
@@ -347,10 +358,11 @@ if(file.exists(fn_SR_BMI_Corrs)==TRUE){
 
 ### Plots
 ```{r filelist_pdf_SR_SSTV}
+dir.sub3 <- "VerifiedPredictions"
 txt_grp_file <- "SR.SSTV"
 txt_grp_msg <- "stressor specific stressor response"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
@@ -366,7 +378,8 @@ cat(msg_files)
 ```
 
 ```{r SSTV_plots}
-fn_SSTV_plots  <- list.files(path=file.path(dir_results, TargetSiteID)
+dir.sub3 <- "VerifiedPredictions"
+fn_SSTV_plots  <- list.files(path=file.path(dir_results, TargetSiteID, dir.sub3)
                                  , full.names = TRUE
                                  , pattern=".SR.SSTV.")
 fn_SSTV_plots_jpg <- fn_SSTV_plots[grep(".jpg", fn_SSTV_plots)]
@@ -431,10 +444,11 @@ if(file.exists(fn_SR_Alg_Corrs)==TRUE){##IF.corrs.START
 ### Table
 
 ```{r CoOccur_tables}
+dir.sub3 <- "CoOccurrence"
 #dir_results <- file.path(getwd(), "Results", "_CoOccur", "hi")
 # dir_SiteID <- file.path(dir_results, TargetSiteID)
 
-fn_CoOccur_Scores  <- list.files(path=file.path(dir_results, TargetSiteID)
+fn_CoOccur_Scores  <- list.files(path=file.path(dir_results, TargetSiteID, dir.sub3)
                                  , full.names = TRUE
                                  , pattern=".CoOccurrence.bmi.Scores.txt")
 if(length(fn_CoOccur_Scores)==0){
@@ -456,10 +470,11 @@ if(length(fn_CoOccur_Scores)==0){
 Plots are saved from the function in pairs in a PDF.
 
 ```{r filelist_pdf_CoOccur}
+dir.sub3 <- "CoOccurrence"
 txt_grp_file <- "CoOccurrence"
 txt_grp_msg <- "cooccurrence"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".ALL.pdf")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
@@ -475,10 +490,11 @@ cat(msg_files)
 ```
 
 ```{r CoOccur_plots}
-fn_CoOccur_plots_box  <- list.files(path=file.path(dir_results, TargetSiteID)
+dir.sub3 <- "CoOccurrence"
+fn_CoOccur_plots_box  <- list.files(path=file.path(dir_results, TargetSiteID, dir.sub3)
                                  , full.names = TRUE
                                  , pattern=".CoOccurrence.Box.")
-fn_CoOccur_plots_SR  <- list.files(path=file.path(dir_results, TargetSiteID)
+fn_CoOccur_plots_SR  <- list.files(path=file.path(dir_results, TargetSiteID, dir.sub3)
                                  , full.names = TRUE
                                  , pattern=".CoOccurrence.SR.")
 
@@ -514,15 +530,16 @@ if(length(len_total)==0){
 
 ## Chem, Percent Rank
 ```{r filelist_txt_chempctrank}
+dir.sub3 <- "CandidateCauses"
 txt_grp_file <- "chem.pctrank.bmi"
 txt_grp_msg <- "chemistry percent rank"
 fn_target <- paste0(TargetSiteID,".", txt_grp_file, ".txt")
-fn_all <- list.files(file.path(dir_results, TargetSiteID))
+fn_all <- list.files(file.path(dir_results, TargetSiteID, dir.sub3))
 boo_file <- fn_target %in% fn_all
 #
 if(boo_file==TRUE){##IF.boo.pdf.START
   msg_files <- paste0("The ", txt_grp_msg," data are in the file '"
-                      , fn_target, "' in the 'Results' folder.\n")
+                      , fn_target, "' in the '", paste0("Results/", dir.sub3), "' folder.\n")
 } else if(boo_file==FALSE){
   msg_files <- paste0("No ", txt_grp_msg," plots exist.\n")
 } else {
@@ -535,7 +552,8 @@ cat(msg_files)
 ### Table
 
 ```{r ChemPctRank_table}
-fn_ChemPctRank  <- file.path(dir_results, TargetSiteID
+dir.sub3 <- "CandidateCauses"
+fn_ChemPctRank  <- file.path(dir_results, TargetSiteID, dir.sub3
                                , paste0(TargetSiteID, ".chem.pctrank.bmi.txt"))
 
 if(file.exists(fn_ChemPctRank)==TRUE){

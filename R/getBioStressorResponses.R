@@ -12,6 +12,7 @@
 #' @param ref.sites Reference sites.
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
 #' 
 #' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
@@ -49,6 +50,11 @@
 #' # AZ
 #' map_flowline  <- data_GIS_Flow_HI
 #' map_flowline2 <- data_GIS_Flow_LO
+#' if(elev_cat=="HI"){
+#'    map_flowline <- data_GIS_Flow_HI
+#' } else if(elev_cat=="LO") {
+#'    map_flowline <- data_GIS_Flow_LO
+#' }
 #' map_outline   <- data_GIS_AZ_Outline
 #' # Project site data to USGS Albers Equal Area
 #' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -58,13 +64,16 @@
 #' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
 #'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 #' map_proj <- my.aea
+#' #
+#' dir_sub <- "SiteInfo"
 #' 
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
 #'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#'                                 , map_proj, map_outline, map_flowline
+#'                                 , dir_sub=dir_sub)
 #' 
 #' # Data getChemDataSubsets
 #' # data import, example 
@@ -87,6 +96,7 @@
 #' cluster.samps <- list.data$cluster.samps
 #' ref.sites <- list.data$ref.sites
 #' site.chem <- list.data$site.chem
+#' dir_sub <- "CandidateCauses"
 #' 
 #' # set cutoff for possible stressor identification
 #' probsLow <- 0.10
@@ -95,7 +105,8 @@
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow, biocomm, dir_results)
+#'                                  , probsHigh, probsLow, biocomm, dir_results
+#'                                  , dir_sub)
 #'                                  
 #' # Data getBioMatches, BMI
 #' ## remove "none"
@@ -112,10 +123,11 @@
 #' BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
 #'              , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
 #'              , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
+#' dir_sub <- "StressorResponse"
 #'              
 #' # Run getBioStressorResponses, BMI               
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                         , LogTransf, ref.sites, biocomm, dir_results)
+#'                         , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
 #' 
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example 2, Algae
@@ -147,6 +159,11 @@
 #' # AZ
 #' map_flowline  <- data_GIS_Flow_HI
 #' map_flowline2 <- data_GIS_Flow_LO
+#' if(elev_cat=="HI"){
+#'    map_flowline <- data_GIS_Flow_HI
+#' } else if(elev_cat=="LO") {
+#'    map_flowline <- data_GIS_Flow_LO
+#' }
 #' map_outline   <- data_GIS_AZ_Outline
 #' # Project site data to USGS Albers Equal Area
 #' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -156,13 +173,16 @@
 #' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
 #'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 #' map_proj <- my.aea
+#' #
+#' dir_sub <- "SiteInfo"
 #' 
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
 #'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#'                                 , map_proj, map_outline, map_flowline
+#'                                 , dir_sub=dir_sub)
 #' 
 #' # Data getChemDataSubsets
 #' # data, example included with package
@@ -170,6 +190,7 @@
 #' data.chem.info <- data_ChemInfo
 #' site.COMID <- list.SiteSummary$COMID
 #' site.Clusters <- list.SiteSummary$ClustIDs
+#' dir_sub <- "CandidateCauses"
 #' 
 #' # Run getChemDataSubsets
 #' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
@@ -206,16 +227,18 @@
 #' 
 #' # Data getBioStressorResponses, Algae
 #' BioResp <- colnames(data.bio.metrics[6:52])
+#' dir_sub <- "StressorResponse"
 #' 
 #' # Run getBioStressorResponses, Algae
 #' getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-#'                        , LogTransf, ref.sites, biocomm, dir_results)
+#'                        , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
 #' }
 #
 #' @export
 getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.MatchBioData
                                     , LogTransf, ref.sites, biocomm="bmi"
                                     , dir_results=file.path(getwd(), "Results")
+                                    , dir_sub="StressorResponse"
                                     ) {##FUNCTION.START
   # DEBUG
   boo.DEBUG <- FALSE
@@ -319,8 +342,12 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
+  dir.sub3 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
+         , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
   # Comment out, 20190423, when remove varLegLoc as input
@@ -358,7 +385,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #plots.pq <- vector(length(BioResp), mode="list")
   plots.pq <- vector(q.len*p.len, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID, "/", TargetSiteID, ".SR.", bio_prefix, ".")
+  varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID, ".SR.", bio_prefix, ".")
   
   LogTransf <- as.logical(LogTransf)
   
@@ -704,7 +731,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           df.CorrTable[, "biocomm"] <- biocomm
           fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
           utils::write.table(df.CorrTable
-                             , file.path(wd, dir.sub, dir.sub2, fn_corr)
+                             , file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
                              , sep="\t", quote=FALSE, row.names=FALSE
                              , col.names=boo.col.names, append=boo.Append)  
           #}
@@ -771,7 +798,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           
           #if(boo.pryr==TRUE){
           fn_scores <- paste0(TargetSiteID,".SR.",bio_prefix,".Scores.txt")
-          fp_scores <- file.path(wd, dir.sub, dir.sub2, fn_scores)
+          fp_scores <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_scores)
           
           boo.Append    <- TRUE
           boo.col.names <- FALSE
@@ -831,7 +858,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # END ####
   ## PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.",bio_prefix,".ALL.pdf"))
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3, paste0(TargetSiteID,".SR.",bio_prefix,".ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (pq in plots.pq){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
@@ -851,7 +878,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # CorrPlot ####
   ## read
   fn_corr <- paste0(TargetSiteID, ".SR.",bio_prefix, ".Corrs.txt")
-  fp_corr <- file.path(wd, dir.sub, dir.sub2, fn_corr)
+  fp_corr <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
   df_corr <- read.delim(fp_corr)
   
   # QC, 20190313
@@ -873,7 +900,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   ## jpg
-  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.",bio_prefix,".CorrPlot.jpg"))
+  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".SR.",bio_prefix,".CorrPlot.jpg"))
   grDevices::jpeg(filename = fn_jpg_cp
                   , width = 4 * ppi
                   , height = 3 * ppi

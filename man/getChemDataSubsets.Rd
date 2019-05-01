@@ -72,6 +72,11 @@ if(elev_cat=="HI"){
 # AZ
 map_flowline  <- data_GIS_Flow_HI
 map_flowline2 <- data_GIS_Flow_LO
+if(elev_cat=="HI"){
+   map_flowline <- data_GIS_Flow_HI
+} else if(elev_cat=="LO") {
+   map_flowline <- data_GIS_Flow_LO
+}
 map_outline   <- data_GIS_AZ_Outline
 # Project site data to USGS Albers Equal Area
 usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23

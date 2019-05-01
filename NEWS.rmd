@@ -39,13 +39,20 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9205 (2019-05-01)
+
+* Shiny App
+    + Add COMID select with map.
+* Sub-directories by function, Issue #64
+    + Report and most functions.
+
 ## Changes in Version 0.1.0.9204 (2019-04-26)
 
-  * getBioStressorResponses
-      + Tweaks trying to find why fails for a user.
-         - Formatting in code.
-         - Algae example.
-         - QC check on cor file header add "biocomm". 
+* getBioStressorResponses
+    + Tweaks trying to find why fails for a user.
+        - Formatting in code.
+        - Algae example.
+        - QC check on cor file header add "biocomm". 
 
 ## Changes in Version 0.1.0.9203 (2019-04-25)
 

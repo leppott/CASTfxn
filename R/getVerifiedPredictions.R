@@ -29,6 +29,7 @@
 #' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBioData$site.b.rsp
 #' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBioData$site.b.rsp
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
 #' 
 #' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 #' 
@@ -63,6 +64,11 @@
 #' # AZ
 #' map_flowline  <- data_GIS_Flow_HI
 #' map_flowline2 <- data_GIS_Flow_LO
+#' if(elev_cat=="HI"){
+#'    map_flowline <- data_GIS_Flow_HI
+#' } else if(elev_cat=="LO") {
+#'    map_flowline <- data_GIS_Flow_LO
+#' }
 #' map_outline   <- data_GIS_AZ_Outline
 #' # Project site data to USGS Albers Equal Area
 #' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -72,13 +78,16 @@
 #' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
 #'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 #' map_proj <- my.aea
+#' # 
+#' dir_sub <- "SiteInfo"
 #' 
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
 #'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline)
+#'                                 , map_proj, map_outline, map_flowline
+#'                                 , dir_sub=dir_sub)
 #' 
 #' # Data getChemDataSubsets
 #' # data, example included with package
@@ -98,15 +107,18 @@
 #' cluster.samps <- list.data$cluster.samps
 #' ref.sites     <- list.data$ref.sites
 #' site.chem     <- list.data$site.chem
+#' dir_sub <- "CandidateCauses"
 #' 
 #' # set cutoff for possible stressor identification
 #' probsLow  <- 0.10
 #' probsHigh <- 0.90 
+#' biocomm <- "bmi"
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow)
+#'                                  , probsHigh, probsLow, biocomm, dir_results
+#'                                  , dir_sub)
 #'                                  
 #' # Data getBMIMatches
 #' ## remove "none"
@@ -116,7 +128,8 @@
 #' # Run getBioMatches
 #' biocomm <- "BMI"
 #' data.bio.metrics <- data_BMIMetrics
-#' list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary, data.chem.raw, data.bio.metrics, biocomm)
+#' list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#'                                   , data.chem.raw, data.bio.metrics, biocomm)
 #'   
 #' # Data getVerifiedPredictions
 #' # data import, example
@@ -129,6 +142,7 @@
 #' BioIndex_Val       <- "IBI"
 #' BioIndex_Nar       <- "NarRat"
 #' BioIndex_Nar_Deg   <- "Violates"
+#' dir_sub            <- "VerifiedPredictions"
 #' 
 #' # Run getVerifiedPredictions
 #' getVerifiedPredictions(TargetSiteID
@@ -142,7 +156,8 @@
 #'                        , BioIndex_Val
 #'                        , BioIndex_Nar
 #'                        , BioIndex_Nar_Deg
-#'                        , dir_results)
+#'                        , dir_results
+#'                        , dir_sub)
 #~~~~~~~~~~~~~~~~
 #' @export
 getVerifiedPredictions <- function(TargetSiteID
@@ -157,6 +172,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , BioIndex_Nar="NarRat"
                                    , BioIndex_Nar_Deg="Violates"
                                    , dir_results=file.path(getwd(), "Results")
+                                   , dir_sub="VerifiedPredictions"
                                    ) {##FUNCTION.START
   # Debugging
   boo.DEBUG <- FALSE
@@ -181,8 +197,12 @@ getVerifiedPredictions <- function(TargetSiteID
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
+  dir.sub3 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
+         , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
   # Comment out, 20190423, when remove varLegLoc as input
@@ -210,14 +230,14 @@ getVerifiedPredictions <- function(TargetSiteID
   # plots.tvr <- vector(10, mode="list")
   plots.tv <- vector(10, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID,"/",TargetSiteID,".SR.SSTV.")
+  varFileOut = paste0("Results/",TargetSiteID,"/", dir.sub3, "/", TargetSiteID,".SR.SSTV.")
   plot_H <- 4
   plot_W <- 9
   
   fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
   boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
   if(boo.file.exists){
-    file.remove(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+    file.remove(file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_SSTVfile))
   }
   
   
@@ -679,7 +699,7 @@ getVerifiedPredictions <- function(TargetSiteID
   }##IF.SSTV.END
   
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
+  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
   pdf(file=fn_pdf, width=8)
     # for (tvr in plots.tvr){##FOR.gp.START
     #   #grDevices::replayPlot(g.plot)

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-04-26 09:56:28
+    #> Last Update: 2019-05-01 18:29:35
 
 # Planned Updates
 
@@ -27,6 +27,13 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9205 (2019-05-01)
+
+  - Shiny App
+      - Add COMID select with map.
+  - Sub-directories by function, Issue \#64
+      - Report and most functions.
 
 ## Changes in Version 0.1.0.9204 (2019-04-26)
 

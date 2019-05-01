@@ -6,7 +6,8 @@
 \usage{
 getBioStressorResponses(TargetSiteID, stressors, BioResp,
   list.MatchBioData, LogTransf, ref.sites, biocomm = "bmi",
-  dir_results = file.path(getwd(), "Results"))
+  dir_results = file.path(getwd(), "Results"),
+  dir_sub = "StressorResponse")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -24,6 +25,8 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp,
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
+
+\item{dir_sub}{Subdirectory for outputs from this function.  Default = "StressorResponse"}
 }
 \value{
 A jpg in SiteID subfoler of the "Results" folder of working directory.  
@@ -66,6 +69,11 @@ if(elev_cat=="HI"){
 # AZ
 map_flowline  <- data_GIS_Flow_HI
 map_flowline2 <- data_GIS_Flow_LO
+if(elev_cat=="HI"){
+   map_flowline <- data_GIS_Flow_HI
+} else if(elev_cat=="LO") {
+   map_flowline <- data_GIS_Flow_LO
+}
 map_outline   <- data_GIS_AZ_Outline
 # Project site data to USGS Albers Equal Area
 usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -75,13 +83,16 @@ usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
 my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 map_proj <- my.aea
+#
+dir_sub <- "SiteInfo"
 
 # Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
                                 , data.SampSummary, data.303d.ComID
                                 , data.bmi.metrics, data.algae.metrics
                                 , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline)
+                                , map_proj, map_outline, map_flowline
+                                , dir_sub=dir_sub)
 
 # Data getChemDataSubsets
 # data import, example 
@@ -104,6 +115,7 @@ cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
 ref.sites <- list.data$ref.sites
 site.chem <- list.data$site.chem
+dir_sub <- "CandidateCauses"
 
 # set cutoff for possible stressor identification
 probsLow <- 0.10
@@ -112,7 +124,8 @@ probsHigh <- 0.90
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                  , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow, biocomm, dir_results)
+                                 , probsHigh, probsLow, biocomm, dir_results
+                                 , dir_sub)
                                  
 # Data getBioMatches, BMI
 ## remove "none"
@@ -129,10 +142,11 @@ list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.
 BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
              , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
              , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
+dir_sub <- "StressorResponse"
              
 # Run getBioStressorResponses, BMI               
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                        , LogTransf, ref.sites, biocomm, dir_results)
+                        , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example 2, Algae
@@ -164,6 +178,11 @@ if(elev_cat=="HI"){
 # AZ
 map_flowline  <- data_GIS_Flow_HI
 map_flowline2 <- data_GIS_Flow_LO
+if(elev_cat=="HI"){
+   map_flowline <- data_GIS_Flow_HI
+} else if(elev_cat=="LO") {
+   map_flowline <- data_GIS_Flow_LO
+}
 map_outline   <- data_GIS_AZ_Outline
 # Project site data to USGS Albers Equal Area
 usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
@@ -173,13 +192,16 @@ usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
 my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 map_proj <- my.aea
+#
+dir_sub <- "SiteInfo"
 
 # Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
                                 , data.SampSummary, data.303d.ComID
                                 , data.bmi.metrics, data.algae.metrics
                                 , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline)
+                                , map_proj, map_outline, map_flowline
+                                , dir_sub=dir_sub)
 
 # Data getChemDataSubsets
 # data, example included with package
@@ -187,6 +209,7 @@ data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 site.COMID <- list.SiteSummary$COMID
 site.Clusters <- list.SiteSummary$ClustIDs
+dir_sub <- "CandidateCauses"
 
 # Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
@@ -223,9 +246,10 @@ list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.
 
 # Data getBioStressorResponses, Algae
 BioResp <- colnames(data.bio.metrics[6:52])
+dir_sub <- "StressorResponse"
 
 # Run getBioStressorResponses, Algae
 getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                       , LogTransf, ref.sites, biocomm, dir_results)
+                       , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
 }
 }

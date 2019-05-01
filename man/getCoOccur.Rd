@@ -9,7 +9,7 @@ getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
   Bio.Nar.Lab = c("very likely altered", "likely altered",
   "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
   Bio.Deg.Lab = c("Yes", "No"), biocomm = "bmi",
-  dir.plots = file.path(getwd(), "Results"))
+  dir.plots = file.path(getwd(), "Results"), dir_sub = "CoOccurrence")
 }
 \arguments{
 \item{df.data}{data frame with data.}
@@ -47,6 +47,8 @@ Default = c("Yes", "No").}
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
 \item{dir.plots}{Directory to save plots.  Default = working directory and Results.}
+
+\item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
 }
 \value{
 Saves a single PDF of all plots, individual plots as JPGs, and a 
@@ -135,12 +137,13 @@ Bio.Deg.Brk <- c(-2, 0.799, 2)
 Bio.Deg.Lab <- c("Yes", "No")
 biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
+dir_sub <- "CoOccurrence"
 #
 TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , biocomm, dir.plots
+        , biocomm, dir.plots, dir_sub
         )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example #2, AZ data (single site)
@@ -166,10 +169,11 @@ Bio.Deg.Brk <- c(0, 45, 100)
 Bio.Deg.Lab <- c("Yes", "No")
 biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
+dir_sub <- "CoOccurrence"
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
-        , biocomm, dir.plots
+        , biocomm, dir.plots, dir_sub
         )
 
 }

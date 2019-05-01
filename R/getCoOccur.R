@@ -90,6 +90,7 @@
 #' Default = c("Yes", "No").
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir.plots Directory to save plots.  Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
 #'
 #' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
 #' scores files (tab separated text file) to a user defined 'Results' directory.  
@@ -113,12 +114,13 @@
 #' Bio.Deg.Lab <- c("Yes", "No")
 #' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
+#' dir_sub <- "CoOccurrence"
 #' #
 #' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-#'         , biocomm, dir.plots
+#'         , biocomm, dir.plots, dir_sub
 #'         )
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example #2, AZ data (single site)
@@ -144,10 +146,11 @@
 #' Bio.Deg.Lab <- c("Yes", "No")
 #' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
+#' dir_sub <- "CoOccurrence"
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
-#'         , biocomm, dir.plots
+#'         , biocomm, dir.plots, dir_sub
 #'         )
 #' 
 #~~~~~~~~~~~~~
@@ -165,6 +168,7 @@ getCoOccur <- function(df.data
                        , Bio.Deg.Lab=c("Yes", "No")
                        , biocomm="bmi"
                        , dir.plots=file.path(getwd(), "Results")
+                       , dir_sub="CoOccurrence"
                        ) {##FUNCTION.START
   #
   boo_DEBUG <- FALSE
@@ -286,8 +290,12 @@ getCoOccur <- function(df.data
     #wd <- getwd()
     #dir.sub <- "Results"
     dir.sub2 <- i_TargetSiteID
+    dir.sub3 <- dir_sub
     ifelse(!dir.exists(file.path(dir.plots, dir.sub2))==TRUE
            , dir.create(file.path(dir.plots, dir.sub2))
+           , FALSE)
+    ifelse(!dir.exists(file.path(dir.plots, dir.sub2, dir.sub3))==TRUE
+           , dir.create(file.path(dir.plots, dir.sub2, dir.sub3))
            , FALSE)
     # PDF, old ####
     #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
@@ -300,7 +308,7 @@ getCoOccur <- function(df.data
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
-    fn.scores <- file.path(dir.plots, dir.sub2, paste0(i_TargetSiteID, ".CoOccurrence.", biocomm, ".Scores.txt"))
+    fn.scores <- file.path(dir.plots, dir.sub2, dir.sub3, paste0(i_TargetSiteID, ".CoOccurrence.", biocomm, ".Scores.txt"))
     utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
@@ -442,7 +450,7 @@ getCoOccur <- function(df.data
            # plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # p1
            # plots_jpg[[1]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p1)
+           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, dir.sub3, fn_jpg_p1)
                            , plot=p1
                            , dpi=ppi, width=8, height=6, units="in")
          #}##IF~non-empty~END
@@ -517,7 +525,7 @@ getCoOccur <- function(df.data
              ggplot2::labs(title=i, caption=lab.sub)
            # p2
            # plots_jpg[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, fn_jpg_p2)
+           ggplot2::ggsave(filename=file.path(dir.plots, dir.sub2, dir.sub3, fn_jpg_p2)
                            , plot=p2
                            , dpi=ppi, width=8, height=6, units="in")
 
@@ -622,7 +630,7 @@ getCoOccur <- function(df.data
     # Create PDF from list of recorded plots
     if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
       fn.pdf    <- paste0(i_TargetSiteID, ".CoOccurrence.ALL.pdf")
-      grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=6, height=8) #p3
+      grDevices::pdf(file=file.path(dir.plots, dir.sub2, dir.sub3, fn.pdf), width=6, height=8) #p3
      # grDevices::pdf(file=file.path(dir.plots, dir.sub2, fn.pdf), width=9, height=4) #p1 only
         #
         # Remove null items from plot list
