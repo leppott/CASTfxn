@@ -164,14 +164,14 @@ getSSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   
   p1 <- ggplot2::ggplot() +
     ggplot2::geom_point(data = df.Final.Product
-                        , ggplot2::aes(x = Conc_1_Mean_Standardized, y = Proportion)) +
-    ggplot2::geom_line(data = df.Final.Product
+                        , ggplot2::aes(x = Conc_1_Mean_Standardized, y = Proportion), na.rm = TRUE) +
+    ggplot2::geom_line(data = df.Final.Product, na.rm = TRUE
                        , ggplot2::aes(x =  CentralTendency, y = Proportion), col = 'dark gray', lwd=0.75) +
-    ggplot2::geom_line(data = df.Final.Product
+    ggplot2::geom_line(data = df.Final.Product, na.rm = TRUE
                        , ggplot2::aes(x = LowerPI, y = Proportion), linetype = 'dashed', col="light gray") + 
-    ggplot2::geom_line(data = df.Final.Product
+    ggplot2::geom_line(data = df.Final.Product, na.rm = TRUE
                        , ggplot2::aes(x = UppererPI, y = Proportion), linetype = 'dashed', col="light gray") + 
-    ggplot2::geom_text(data = df.Final.Product
+    ggplot2::geom_text(data = df.Final.Product, na.rm = TRUE
                        , ggplot2::aes(x = Conc_1_Mean_Standardized
                        , y = Proportion, label = Taxa)
                        , size = 3, hjust="right", nudge_x = -0.05) +
