@@ -39,9 +39,21 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9206 (2019-05-02)
+
+* R v3.6.0., StagedInstall, Issue #65
+    + DESCRIPTION
+        - StagedInstall: no
+    + Use system.file(package="") without saving to a variable.
+        - runShinyExample.R
+        - getReport.R
+        - getSiteInfo.R
+* getSiteInfo
+    + Update leaflet map RMD with SiteInfo subdirectory for static map.  Issue #64
+
 ## Changes in Version 0.1.0.9205 (2019-05-01)
 
-* Shiny App
+* Shiny App, Issue #30.
     + Add COMID select with map.
 * Sub-directories by function, Issue #64
     + Report and most functions.

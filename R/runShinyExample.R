@@ -20,11 +20,13 @@
 #' @export
 runShinyExample <- function(){##FUNCTION.START
   #
-  appDir <- system.file("shiny-examples", "CAST", package = "CASTfxn")
-  if (appDir == "") {
+  #appDir <- system.file("shiny-examples", "CAST", package = "CASTfxn")
+  #if (appDir == "") {
+  if (system.file("shiny-examples", "CAST", package = "CASTfxn") == "") {
     stop("Could not find example directory. Try re-installing `CASTfxn`.", call. = FALSE)
   }
 
-  shiny::runApp(appDir, display.mode = "normal")
+  #shiny::runApp(appDir, display.mode = "normal")
+  shiny::runApp(system.file("shiny-examples", "CAST", package = "CASTfxn"), display.mode = "normal")
   #
 }##FUNCTION.END
