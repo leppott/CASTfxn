@@ -37,6 +37,29 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9209 (2019-05-06)
+
+* Fixes after running "check" in RStudio.
+    + Add package reference to functions that are not base package functions.
+        - importFrom("grDevices", "pdf")
+        - importFrom("graphics", "plot")
+        - importFrom("stats", "lm", "predict", "var")
+        - importFrom("utils", "flush.console", "read.delim")
+    + examples lines wider than 100 characters
+        - getBioMatches
+        - getBioStressorResponses
+        - getChemDataSubsets
+        - getClusterInfo
+        - getSSDplot
+        - getSiteInfo
+        - getStressorList
+        - getVerifiedPredictions
+    + Document data
+        - data_CoOccur_AZ_Lo
+* R v3.6.0., StagedInstall, Issue #65
+    + DESCRIPTION
+        - StagedInstall: yes
+
 ## Changes in Version 0.1.0.9208 (2019-05-06)
 
 * getBioStressorResponse, Issue #58.

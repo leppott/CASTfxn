@@ -35,7 +35,8 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                    , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -296,7 +297,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs
   #grDevices::graphics.off() 
   # Create PDF from list
   fn_pdf <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID,".cluster.ALL.pdf"))
-  pdf(file=fn_pdf, width=plot_W, height=plot_H)
+  grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
   for (ii in plots.i){##FOR.gp.START
     #grDevices::replayPlot(g.plot)
     if(is.null(ii)==TRUE) {next}

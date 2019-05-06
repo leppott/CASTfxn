@@ -72,7 +72,8 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -262,7 +263,7 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
                   quality=100, bg="white", res=ppi)
     if(is.null(map_proj)==TRUE){##IF.map_proj.START
       # map with no projection
-      plot(data.Stations.Info[,"FinalLongitude"], data.Stations.Info[,"FinalLatitude"]
+      graphics::plot(data.Stations.Info[,"FinalLongitude"], data.Stations.Info[,"FinalLatitude"]
            , main=TargetSiteID, xlab="Longitude", ylab="Latitude"
            , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all
            )

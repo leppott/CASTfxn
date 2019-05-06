@@ -91,7 +91,8 @@ df.site <- data.frame(analyte, abund, taxon)
 # add points to plot and add title (centered)
 p2 + 
   geom_point(data=df.site, aes(x=analyte, y=abund), colour="blue", size = 2) + 
-  geom_text(data=df.site, aes(x=analyte, y=abund, label=taxon), hjust="left", nudge_x=0.05, colour="blue") + 
+  geom_text(data=df.site, aes(x=analyte, y=abund, label=taxon)
+                             , hjust="left", nudge_x=0.05, colour="blue") + 
   labs(title="Cluster SSD with site specific taxa") + theme(plot.title=element_text(hjust=0.5))
   
 }

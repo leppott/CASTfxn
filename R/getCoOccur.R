@@ -185,7 +185,7 @@ getCoOccur <- function(df.data
     msg.warning <- paste0("Stressors listed below are not present in the provided data frame (df.data) and were not analyzed: \n"
                            , paste(col.Stressors.NotPresent, collapse="\n"), "\n\n")
     cat(msg.warning)
-    flush.console()
+    utils::flush.console()
     col.Stressors <- col.Stressors[col.Stressors %in% names(df.data)]
   }##IF~bad stressors~END
   
@@ -352,7 +352,7 @@ getCoOccur <- function(df.data
        #
        cat(paste0("Processing item (",ij.num,"/",ij.len,"); ID (", i.num, "/", i.len, ") ", i
                     , "; Stressors (", j.num, "/", j.len, ") ", j, ".\n"))
-       flush.console()
+       utils::flush.console()
        #
        df.i[,paste0("n_",j)] <- sum(!is.na(df.comp.bio.better[,j]))
        #df.i[,paste0("q20_",j)] <- stats::quantile(df.comp.bio.better[,j], probs=0.20, na.rm=TRUE)
@@ -466,7 +466,7 @@ getCoOccur <- function(df.data
          
          # logr <- glm(df.comp.glm[,col.Bio.Deg] ~ df.comp.glm[,j], family=binomial)
          # plot(df.comp.glm[,j], df.comp.glm[, col.Bio.Deg], ylim=c(0,2))
-         # myPredict <- predict(logr, data.frame(df.comp.glm[,j]), type="response")
+         # myPredict <- stats::predict(logr, data.frame(df.comp.glm[,j]), type="response")
          # curve(myPredict, add=TRUE)
          #
          
@@ -494,7 +494,7 @@ getCoOccur <- function(df.data
            # Scoring
            # j_values <- data.frame(x=df.i[,j])
            j_values <- data.frame(x= df.scores.i.n[, "Param_Value"])
-           j_SR_predict <- predict(fit, newdata=j_values, type="response")
+           j_SR_predict <- stats::predict(fit, newdata=j_values, type="response")
            j_SR_score <- cut(j_SR_predict
                              , breaks=c(0, 0.2, 0.5, 1)
                              , labels=c(-1, 0, 1))
@@ -606,7 +606,7 @@ getCoOccur <- function(df.data
        } else {
          # no data
          cat(paste0("   All values NA for stressor (", j, ").\n"))
-         flush.console()
+         utils::flush.console()
          # add data to scores table
          column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
          df.i.NA <- df.i[1,1:5]

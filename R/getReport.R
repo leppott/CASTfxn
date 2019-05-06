@@ -70,14 +70,14 @@ getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
                  #, Msg.Line2
                  , Msg.Line3, Msg.Line4, Msg.Line0, sep="\n\n")
     cat(Msg)
-    flush.console()
+    utils::flush.console()
   }##IF.file.exists.END
   # 
   # User Feedback
   print("Task COMPLETE.  Report generated.")
   print(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
                , report_type, "), Report Format (", report_format, ")."))
-  flush.console()
+  utils::flush.console()
   #
 }##FUNCTION.END
 

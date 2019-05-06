@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-06 11:22:48
+    #> Last Update: 2019-05-06 16:43:01
 
 # Planned Updates
 
@@ -24,6 +24,30 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9209 (2019-05-06)
+
+  - Fixes after running “check” in RStudio.
+      - Add package reference to functions that are not base package
+        functions.
+          - importFrom(“grDevices”, “pdf”)
+          - importFrom(“graphics”, “plot”)
+          - importFrom(“stats”, “lm”, “predict”, “var”)
+          - importFrom(“utils”, “flush.console”, “read.delim”)
+      - examples lines wider than 100 characters
+          - getBioMatches
+          - getBioStressorResponses
+          - getChemDataSubsets
+          - getClusterInfo
+          - getSSDplot
+          - getSiteInfo
+          - getStressorList
+          - getVerifiedPredictions
+      - Document data
+          - data\_CoOccur\_AZ\_Lo
+  - R v3.6.0., StagedInstall, Issue \#65
+      - DESCRIPTION
+          - StagedInstall: yes
 
 ## Changes in Version 0.1.0.9208 (2019-05-06)
 

@@ -36,7 +36,8 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -145,7 +146,8 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -508,8 +510,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # LM and Corr, Cluster ####
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
-        model_cl <- lm(df_plot_cl$Response ~ df_plot_cl$Stressor) #cluster only
-        model_cl_pred <- predict(model_cl, interval = "prediction", level = 0.75)
+        model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor) #cluster only
+        model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75)
         model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
         # 
         slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
@@ -540,8 +542,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # LM and Corr, All ####
       if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
-        model_all <- lm(df_plot_all$Response ~ df_plot_all$Stressor) #cluster only
-        model_all_pred <- predict(model_all, interval = "prediction", level = 0.75)
+        model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor) #cluster only
+        model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75)
         model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
         # 
         slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
@@ -914,7 +916,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   ## read
   fn_corr <- paste0(TargetSiteID, ".SR.",bio_prefix, ".Corrs.txt")
   fp_corr <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
-  df_corr <- read.delim(fp_corr)
+  df_corr <- utils::read.delim(fp_corr)
   
   # QC, 20190313
   ## Special case where the function doesn't save the header row
@@ -923,7 +925,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   cn_cor_x    <- colnames(df_corr)
   cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
   if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
-    df_corr <- read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+    df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
     utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
   }##IF~length~END
   

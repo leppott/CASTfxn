@@ -50,7 +50,8 @@
 #' data.MT.bio        <- data_BMIMasterTaxa
 #' 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -279,13 +280,13 @@ getVerifiedPredictions <- function(TargetSiteID
         
         tv.len <- nrow(stressor.SSTV)
         print(paste0("Item (", tv, "/", tv.len,"); Stressor = ", SSTV.analyte))
-        flush.console()
+        utils::flush.console()
         
         # skip if SSTV = ""
         ## 20181211
         if(is.na(SSTV.name)==TRUE | SSTV.name==""){
           print("No data; SKIP")
-          flush.console()
+          utils::flush.console()
           next
         }
         
@@ -382,7 +383,7 @@ getVerifiedPredictions <- function(TargetSiteID
         #  respName <- SSTV.Resp[r]
           
         #  print(paste0("Response = ",respName))
-        #  flush.console()
+        #  utils::flush.console()
           
           # df.plot1 <- good.SSTV.abund[,c(SSTV.analyte, respName)]
           # df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte, respName)]
@@ -700,7 +701,7 @@ getVerifiedPredictions <- function(TargetSiteID
   
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
-  pdf(file=fn_pdf, width=8)
+  grDevices::pdf(file=fn_pdf, width=8)
     # for (tvr in plots.tvr){##FOR.gp.START
     #   #grDevices::replayPlot(g.plot)
     #   if(is.null(tvr)==TRUE) {next}
@@ -718,7 +719,7 @@ getVerifiedPredictions <- function(TargetSiteID
   # # CorrPlot ####
   # ## read
   # fn_corr <- paste0(TargetSiteID,".SR.SSTV.Corrs.txt")
-  # df_corr <- read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
+  # df_corr <- utils::read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
   # ## transpose
   # df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
   # df_corrplot <- t(df_corr_r[,-1])

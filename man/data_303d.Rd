@@ -10,6 +10,7 @@
           \item{WATER.BODY.NAME}{Waterbody Name}
           \item{POLLUTANT}{Pollutant}
           \item{FINAL.LISTING.DECISION}{Final listing decision}
+          \item{ElevCategory}{}
 }}
 \source{
 example data

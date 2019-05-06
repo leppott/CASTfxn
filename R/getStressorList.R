@@ -38,7 +38,8 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -175,7 +176,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     #
     if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
       print(paste0("Item (", g, "/", numgps, ")"))
-      flush.console()
+      utils::flush.console()
     }##IF~boo.DEBUG~START
     #
     if(n>0) { ##FOR.n.START
@@ -350,7 +351,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   # PDF ####
   # Create PDF from list
   fn_pdf <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID,".boxes.ALL.pdf"))
-  pdf(file=fn_pdf, width=plot_W, height=plot_H)
+  grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (i in plots.g){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
       if(is.null(i)==TRUE) {next}
