@@ -1,0 +1,103 @@
+## ----setup, include=FALSE------------------------------------------------
+knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+#TargetSiteID <- "SRCKN001.61"
+# dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
+#~~~~~~~~~~~~~~~~~
+# from getSiteInfo()
+# data.Stations.Info
+# data.cluster       <- data_Cluster_Hi
+# col.clust.land.no <- "clust_noland"
+# col.clust.land.yes <- "clust_land"
+# all.map.sites <- merge(data.Stations.Info, data.cluster, by.x = "COMID_NHD2", by.y = "COMID")
+
+## ----map_jpg, echo=FALSE, eval=TRUE--------------------------------------
+dir.sub3 <- "SiteInfo"
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,".map.jpg"))
+if(file.exists(fn_img)==TRUE){
+  knitr::include_graphics(fn_img)
+} else {
+  print("No static map exists.")
+}
+
+
+## ----map_leaflet, echo=FALSE, eval=TRUE----------------------------------
+
+'%>%' <- dplyr::'%>%'
+
+ # Leaflet
+  ## Data
+  df_leaflet <- data.Stations.Info
+  ### Mark sites for legend
+  df_leaflet$MapLeg <- "all sites"
+  if (useLU == TRUE) {
+    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.yes]==myClustIDs[,2], ]
+  } else {
+    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustIDs[,1], ]
+  }
+  df_leaflet[df_leaflet$StationID_Master %in% df_leaflet_cl$StationID_Master, "MapLeg"]<- "cluster sites"
+  df_leaflet[is.na(df_leaflet$CARefSite_2017), "CARefSite_2017"] <- 0
+  #df_leaflet[df_leaflet$CARefSite_2017==1, "MapLeg"]<- "ref sites"
+  #df_leaflet[df_leaflet$StationID_Master==TargetSiteID, "MapLeg"]<- "target site"
+  # Ref sites can be "cluster" or "all"
+  
+  # GIS data
+  #outline_proj <- sp::spTransform(outline, CRS(my.aea))
+  
+  # map parameters  
+  #                          all sites, cluster
+  myColors <- leaflet::colorFactor(c("darkgray", "cyan3"), df_leaflet$MapLeg)
+  myPCH <- c(19,19,21,17)
+  myCEX <- c(0.3, 0.9, 1, 1.2)
+  GIS_offset <- 0.75
+  
+  # MAP#leaflet::addProviderTiles("CartoDB.Positron") %>% (not working)
+  m1 <- leaflet::leaflet(data=df_leaflet) %>% 
+                leaflet::addProviderTiles(leaflet::providers$Stamen.TonerLite) %>%
+                leaflet::addCircleMarkers(lng = ~FinalLongitude
+                                 , lat = ~FinalLatitude
+                                 , color = ~myColors(MapLeg)
+                                 , radius=3
+                                 , stroke=FALSE
+                                 , fillOpacity = 0.8
+                                 , opacity = 0.8
+                                 , popup=~StationID_Master) %>%
+                leaflet::addCircles(data=df_leaflet[df_leaflet$CARefSite_2017==1,]
+                           , lng=~FinalLongitude
+                           , lat=~FinalLatitude
+                           , color="blue") %>% 
+                leaflet::addCircles(data=df_leaflet[df_leaflet[,"StationID_Master"]==TargetSiteID, ]
+                            , lng=~FinalLongitude
+                            , lat=~FinalLatitude
+                           , color="red"
+                           , radius=5) %>%
+                leaflet::fitBounds(lng1 = df_leaflet[df_leaflet$StationID_Master==TargetSiteID, "FinalLongitude"]+GIS_offset
+                      , lat1 = df_leaflet[df_leaflet$StationID_Master==TargetSiteID, "FinalLatitude"]+GIS_offset
+                      , lng2 = df_leaflet[df_leaflet$StationID_Master==TargetSiteID, "FinalLongitude"]-GIS_offset
+                      , lat2 = df_leaflet[df_leaflet$StationID_Master==TargetSiteID, "FinalLatitude"]-GIS_offset)
+  
+  
+  # %>%
+  #               addLegend("bottomleft", )
+    
+   # addAwesomeMarkers(data=df_leaflet[df_leaflet[,"StationID_Master"]==TargetSiteID, ]
+   #                         , lng=~FinalLongitude
+   #                         , lat=~FinalLatitude
+   #                         , icon="caret-up")
+    
+    
+                # addPolygons(data=outline_proj
+                #              , color="black"
+                #              , fill=FALSE)
+                # 
+                # 
+                # addPolylines(data=data_GIS_AZ_Outline
+                #                , color= "black", fill=FALSE
+                #                )
+
+  m1              
+                
+# # save widget              
+# library(htmlwidgets)
+# fn_map_leaflet <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".map.leaflet.html"))
+# htmlwidgets::saveWidget(m1, fn_map_leaflet)
+

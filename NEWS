@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-02 11:46:26
+    #> Last Update: 2019-05-06 11:22:48
 
 # Planned Updates
 
@@ -19,14 +19,21 @@ NEWS
 
   - StreamCat data. Boxplots with jitter points.
 
-  - Update summary report for changes (date and columns in txt file)
-    (getCoOccur).
-
   - getBioStressorResponses
     
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9208 (2019-05-06)
+
+  - getBioStressorResponse, Issue \#58.
+      - 2nd Score.
+      - Add scores to plot.
+      - Rework output table.
+  - Add SiteID to all text file outputs, Issue \#66
+      - getBioStressorResponse
+          - SRCKN001.61.SR.BMI.Scores.txt
 
 ## Changes in Version 0.1.0.9207 (2019-05-02)
 
