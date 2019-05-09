@@ -60,7 +60,7 @@ data.mod           <- data_ReachMod
 # AZ
 map_flowline  <- data_GIS_Flow_HI
 map_flowline2 <- data_GIS_Flow_LO
-#' if(elev_cat=="HI"){
+if(elev_cat=="HI"){
    map_flowline <- data_GIS_Flow_HI
 } else if(elev_cat=="LO") {
    map_flowline <- data_GIS_Flow_LO

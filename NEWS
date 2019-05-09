@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-06 16:43:01
+    #> Last Update: 2019-05-09 11:28:08
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9210 (2019-05-09)
+
+  - getReport fails, Issue \#67
+      - Update for changes in BioStressorResponses scores output, Issue
+        \#58
 
 ## Changes in Version 0.1.0.9209 (2019-05-06)
 

@@ -262,7 +262,7 @@ fn_SR_BMI_Scores <- file.path(dir_results, TargetSiteID, dir.sub3
 #
 # captions
 # cap_SR_BMI_Corrs  <- "Stressor Response, BMI, Correlations"
-cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores"
+cap_SR_BMI_Scores <- "Stressor Response, BMI, Scores, all data"
 #
 # # Corrs
 # if(file.exists(fn_SR_BMI_Corrs)==TRUE){##IF.corrs.START
@@ -290,7 +290,7 @@ if(file.exists(fn_SR_BMI_Scores)==TRUE){##IF.scores.START
   cat(paste0("\n", cap_SR_BMI_Scores,"\n"))
   df_SR_BMI_Scores <- read.delim(fn_SR_BMI_Scores)
   #knitr::kable(df_SR_BMI_Scores, caption=cap_SR_BMI_Scores)
-  df_score <- reshape2::dcast(df_SR_BMI_Scores, Param_Name ~ BMI_Metric, value.var="SR_Score"
+  df_score <- reshape2::dcast(df_SR_BMI_Scores, stressName ~ respName, value.var="SR_Score_all"
                               , fun.aggregate = mean, na.rm=TRUE)
   df_corrplot <- t(df_score[,-1])
   colnames(df_corrplot) <- df_score[,1]

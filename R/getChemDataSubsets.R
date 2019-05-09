@@ -87,7 +87,8 @@
 #' 
 #' # Data getChemDataSubset
 #' # data import, example 
-#' # data.chem.raw <- read.delim(paste(myDir.Data, "data.chem.raw.tab", sep=""), na.strings = c(""," "))
+#' # data.chem.raw <- read.delim(paste(myDir.Data, "data.chem.raw.tab", sep="")
+#'                               , na.strings = c(""," "))
 #' # data.chem.info <- read.delim(paste(myDir.Data, "data.chem.info.tab", sep=""))
 #' # data, example included with package
 #' #
