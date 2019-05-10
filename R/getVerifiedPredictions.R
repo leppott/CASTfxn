@@ -178,6 +178,8 @@ getVerifiedPredictions <- function(TargetSiteID
   # Debugging
   boo.DEBUG <- FALSE
   #
+  col.Bio.Deg   <- "Bio.Deg"
+  #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     matchedData <- list.MatchBioData
     tv <- 1
@@ -594,6 +596,17 @@ getVerifiedPredictions <- function(TargetSiteID
           
           # factors by default are alphebetical so should be ok that every plot will be in the same order
           
+          # 20190510, new data frame for better sites AND bio.deg = No
+          # IBI scores (drop variable and value from good.SSTV.abund)
+          df_IBI <- unique(good.SSTV.abund[, c(1:4,7:8)])
+          # Add IBI scores to "better" sites
+          df_plot_betterbio_IBI <- merge(df_plot_betterbio, df_IBI, all.x=TRUE)
+          # Add Bio.Deg
+          df_plot_betterbio_IBI[, col.Bio.Deg] <- ifelse(df_plot_betterbio_IBI[, BioIndex_Nar] == BioIndex_Nar_Deg
+                                                         , "Yes", "No")
+          df_plot_betterbio_BioDegNo <- df_plot_betterbio_IBI[df_plot_betterbio_IBI[, col.Bio.Deg] == "No", ]
+
+          
           # ggplot ####
           
           {##PLOT VARIABLES ~ START
@@ -652,24 +665,96 @@ getVerifiedPredictions <- function(TargetSiteID
           
           }##PLOT VARIABLES ~ END
           
+          ## Plot, Variables, Bio.Deg
+          bio_col <- c("blue", "dark gray")
+          bio_shp <- c(21, 25) # circle and down triangle
+          # col.Bio.Deg   <- "Bio.Deg"
+          col.SiteTypeQuality <- col.Bio.Deg
+          
+          display_target <- "lines"  # "lines", "points"
           
           p_SSTV <- ggplot2::ggplot(df_plot_betterbio, ggplot2::aes(variable, value)) + 
-                    ggplot2::geom_boxplot(ggplot2::aes(group=variable)) + 
-                    ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_ylab) +
-                    ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.title.y = ggplot2::element_blank()) +
-                    ggplot2::coord_flip()
+                    ggplot2::geom_boxplot(ggplot2::aes(group = variable)) + 
+                    ggplot2::labs(title=str_title, subtitle = str_subtitle, y = str_ylab) +
+                    ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+                                   , plot.subtitle = ggplot2::element_text(hjust=0.5)
+                                   , axis.title.y = ggplot2::element_blank()) +
+                    ggplot2::coord_flip() + 
+                    # Add degraded y/n for better bio sites
+                    ggplot2::geom_jitter(data=df_plot_betterbio_BioDegNo
+                                         , size = 1
+                                         , alpha = 0.45
+                                         , na.rm = TRUE
+                                         , ggplot2::aes_string(color = col.SiteTypeQuality
+                                                              , shape = col.SiteTypeQuality
+                                                              , fill = col.SiteTypeQuality)) +
+                    # redo box with no fill (can't change alpha of just the box if do 2nd and want to keep gray background)
+                    ggplot2::geom_boxplot(fill=NA, ggplot2::aes(group=variable)) + 
+                    # Legend, Points
+                    ggplot2::scale_color_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
+                    ggplot2::scale_fill_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
+                    ggplot2::scale_shape_manual(breaks = c("Yes", "No"), values = bio_shp, drop = FALSE)
+                    
+                   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    # target site, points or line
+                   #  if(display_target=="points"){##IF~display_target~START
+                   #    p_SSTV <- p_SSTV + ggplot2::geom_jitter(data=df_plot_targ
+                   #                      , ggplot2::aes(group=variable, y=value, color="target"
+                   #                                     , shape="target", fill="target"), size=2, width=0.1)
+                   #      # ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+                   #      # ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) + 
+                   #      # ggplot2::scale_fill_manual(name=leg_name, labels=leg_labels, values=leg_fill)
+                   # ###*****Needs work but since hard coded to lines is ok *****
+                   #       } else if(display_target=="lines"){
+                   #    p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data=df_plot_targ
+                   #                      , ggplot2::aes(group=variable, ymin=value, ymax=value
+                   #                                     , color=targ_line_col)
+                   #                      , lty=targ_line_lty, lwd=targ_line_lwd)# +
+                   #      #ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=targ_line_col)
+                   #      # ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
+                   #      # ggplot2::scale_color_manual(values=c("blue", "red", "gray")
+                   #      #                             , guide=guide_legend(override.aes = list()))
+                   #    
+                   #    # Legend off
+                   #   #p_SSTV +  theme(legend.position = "none")
+                   #    
+                   #    
+                   #    p_SSTV + scale_color_manual(name="LegCol", values=c("gray", "red", "blue")) +
+                   #             scale_shape_manual(name="LegShp", values=bio_shp)
+                   #    
+                   #    p_SSTV + scale_shape_manual(name="LegShp", values=bio_shp)
+                   #    
+                   #    
+                   #    
+                   #    
+                   #    p_SSTV + scale_color_manual(name="myLegend", values=c("blue", "red", "gray")
+                   #                                , guide=TRUE
+                   #                                )
+                   #    
+                   #    
+                   #    p_SSTV <- p_SSTV + scale_color_manual(name="Sites", values=c("blue", "red")
+                   #                       , guide=guide_legend(override.aes = list(
+                   #                         linetype=c("blank", "dashed", "blank")
+                   #                         , shape=c(21, NA, 25))))
+                   #  }##IF~display_target~START
+                   # 
+                 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # target site, line (no legend - color outside of aes)
+                p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
+                                         , ggplot2::aes(group = variable
+                                                        , ymin = value
+                                                        , ymax = value
+                                                        )
+                                         , lty=targ_line_lty
+                                         , lwd=targ_line_lwd
+                                         , color=targ_line_col
+                                         , show.legend = FALSE)
           
-          # target site, points or line
-          display_target <- "lines"  # "lines", "points"
-          if(display_target=="points"){##IF~display_target~START
-            p_SSTV <- p_SSTV + ggplot2::geom_jitter(data=df_plot_targ, ggplot2::aes(group=variable, y=value, color="target", shape="target", fill="target"), size=2, width=0.1) +
-                      ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-                      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) + 
-                      ggplot2::scale_fill_manual(name=leg_name, labels=leg_labels, values=leg_fill)
-          } else if(display_target=="lines"){
-            p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data=df_plot_targ, ggplot2::aes(group=variable, ymin=value, ymax=value, color="target"), lty=targ_line_lty, lwd=targ_line_lwd) +
-                      ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=targ_line_col)
-          }##IF~display_target~START
+          
+
+          
+          
+          
           #
           print(p_SSTV)
          # plots.tvr[[tvr]] <- grDevices::recordPlot()
