@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9212 (2019-05-13)
+
+* getVerifiedPredictions, Issue #57
+    + Add "n" to plot in caption.
+    + Add scoring boundaries.
+    + Add scores to the plot caption.
+        - In ascending order to match plot (left to right).
+    + Modify scores output file.  Issue #61
+    + Error/stop message for no "worse" bio sites for comparison.
+
 ## Changes in Version 0.1.0.9211 (2019-05-10)
 
 * getVerifiedPredictions, Issue #57

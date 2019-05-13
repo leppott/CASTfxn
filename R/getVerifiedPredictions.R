@@ -207,6 +207,12 @@ getVerifiedPredictions <- function(TargetSiteID
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
+  
+  # 20190513, remove scores file if exists
+  fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
+                          , paste0(TargetSiteID, ".SR.SSTV.Scores.txt"))
+  if(file.exists(fn_scores)){file.remove(fn_scores)}
+  
   #
   # Comment out, 20190423, when remove varLegLoc as input
   # helper
@@ -249,12 +255,22 @@ getVerifiedPredictions <- function(TargetSiteID
   targ_bio_bad <- matchedData$site.b.rsp[matchedData$site.b.rsp[, BioIndex_Nar]==BioIndex_Nar_Deg, BioIndex_Val]
   targ_bio_min <- min(targ_bio, na.rm=TRUE)
   targ_bio_max <- max(targ_bio, na.rm=TRUE)
+  
+  # skip to next if no "bad" bio scores for this site
+  msg_stop_NoBadBio <- "There are no 'worse' bio sites for comparison for this site.  Quitting analysis."
+  if(length(targ_bio_bad)==0){
+    #next
+    stop(msg_stop_NoBadBio)
+  }
   targ_bio_bad_min <- min(targ_bio_bad, na.rm=TRUE)
   targ_bio_bad_max <- max(targ_bio_bad, na.rm=TRUE)
   # bio threshold to use for "better"
   bio_better_thresh <- targ_bio_bad_max
   # skip to next if no "bad" bio scores for this site
-  if(is.na(bio_better_thresh)){next}
+  if(is.na(bio_better_thresh)){
+    #next
+    stop(msg_stop_NoBadBio)
+  }
   
   
   # IF ####
@@ -580,20 +596,29 @@ getVerifiedPredictions <- function(TargetSiteID
         
           # 20190305, drop added Bio Index value and narrative
           df_plot_all <- reshape2::melt(good.SSTV.abund[, 1:6], id.vars=colnames(good.SSTV.abund)[1:4])
-          df_plot_all$SSTV.analyte <- df_plot_all[, SSTV.analyte]
+          #df_plot_all$SSTV.analyte <- df_plot_all[, SSTV.analyte]
+          df_plot_all[, "Param_Name"] <- SSTV.analyte
+          colnames(df_plot_all)[colnames(df_plot_all)==SSTV.analyte] <- "Param_Value"
+          df_plot_all <- df_plot_all[, c(1:3,7,4:6)]
           levels(df_plot_all$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
           
           # 20190305, switch to "better" bio from all
           df_plot_betterbio <- good.SSTV.abund[good.SSTV.abund[, BioIndex_Val] > bio_better_thresh, 1:6]
           df_plot_betterbio <- reshape2::melt(df_plot_betterbio, id.vars=colnames(df_plot_betterbio)[1:4])
-          df_plot_betterbio$SSTV.analyte <- df_plot_betterbio[, SSTV.analyte]
+          #df_plot_betterbio$SSTV.analyte <- df_plot_betterbio[, SSTV.analyte]
+          df_plot_betterbio[, "Param_Name"] <- SSTV.analyte
+          colnames(df_plot_betterbio)[colnames(df_plot_betterbio)==SSTV.analyte] <- "Param_Value"
+          df_plot_betterbio <- df_plot_betterbio[, c(1:3,7,4:6)]
           levels(df_plot_betterbio$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
+          n_records_better_bio <- nrow(df_plot_betterbio)
       
-          
           df_plot_targ <- reshape2::melt(site.SSTV.abund[, 1:6], id.vars=colnames(site.SSTV.abund)[1:4])
-          df_plot_targ$SSTV.analyte <- df_plot_targ[, SSTV.analyte]
+          #df_plot_targ$SSTV.analyte <- df_plot_targ[, SSTV.analyte]
+          # chem var and value to columns (20190513)
+          df_plot_targ[, "Param_Name"] <- SSTV.analyte
+          colnames(df_plot_targ)[colnames(df_plot_targ)==SSTV.analyte] <- "Param_Value"
+          df_plot_targ <- df_plot_targ[, c(1:3,7,4:6)]
           levels(df_plot_targ$variable) <- c("Sensitive Taxa", "Tolerant Taxa")
-          
           # factors by default are alphebetical so should be ok that every plot will be in the same order
           
           # 20190510, new data frame for better sites AND bio.deg = No
@@ -605,7 +630,46 @@ getVerifiedPredictions <- function(TargetSiteID
           df_plot_betterbio_IBI[, col.Bio.Deg] <- ifelse(df_plot_betterbio_IBI[, BioIndex_Nar] == BioIndex_Nar_Deg
                                                          , "Yes", "No")
           df_plot_betterbio_BioDegNo <- df_plot_betterbio_IBI[df_plot_betterbio_IBI[, col.Bio.Deg] == "No", ]
+          n_records_betterbio_BioDegNo <- nrow(df_plot_betterbio_BioDegNo)
+          
+          
+          # Scoring ####
+          # Get percentiles by taxa group
+          myProbs <- c(10, 20, 25, 50, 75, 80, 90)*0.01
+          df_quantiles <- aggregate(value ~ variable, data=df_plot_betterbio
+                                    , FUN = function(x) {quantile(x, probs=myProbs, na.rm=TRUE)})
+          q_Sens_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa", "value"][, "25%"])
+          q_Sens_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa", "value"][, "50%"])
+          q_Tol_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa", "value"][, "50%"])
+          q_Tol_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa", "value"][, "75%"])
+          # Add scoring thresholds to target siteID data frame
+          df_plot_targ[, paste0("betterbio_varval_q", c("LO", "HI"))] <- NA
+          df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "betterbio_varval_qLO"] <- q_Sens_lo
+          df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "betterbio_varval_qHI"] <- q_Sens_hi
+          df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa", "betterbio_varval_qLO"] <- q_Tol_lo
+          df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa", "betterbio_varval_qHI"] <- q_Tol_hi
+          # Scoring (tolerant than flip for sensitive)
+          df_plot_targ[, "Score"] <- ifelse(df_plot_targ[, "value"] > df_plot_targ[, "betterbio_varval_qHI"], 1
+                                            , ifelse(df_plot_targ[, "value"] < df_plot_targ[, "betterbio_varval_qLO"], -1, 0))
+          df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"]  <- -1 * df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"]
+          
+          
+          # Save
+          # fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
+          #                         , paste0(TargetSiteID, ".SR.SSTV.Scores.txt"))
+          boo_append <- TRUE
+          boo_colnames <- FALSE
+          if(file.exists(fn_scores)==FALSE){##IF~file.exists(fn_scores)~START
+            # invert for 1st instance
+            boo_append <- !boo_append
+            boo_colnames <- !boo_colnames
+          }##IF~file.exists(fn_scores)~END
 
+          utils::write.table(df_plot_targ, file=fn_scores
+                             , col.names = boo_colnames, row.names=FALSE, sep="\t", append=boo_append)
+          
+          
+          
           
           # ggplot ####
           
@@ -615,7 +679,16 @@ getVerifiedPredictions <- function(TargetSiteID
           str_subtitle <- paste0("Samples with better biology (index > ", signif(bio_better_thresh, 3), ")")
           str_xlab  <- ""
           str_ylab  <- "Relative Abundance"
-          str_caption <- ""
+          df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
+          str_score_sens <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[, "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
+          str_score_tol <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[, "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
+          str_caption <- paste0("Score = Tolerant (", str_score_tol
+                                , "), Sensitive ("
+                                , str_score_sens
+                                , ").\nNumber of samples = better biology (n="
+                                , n_records_better_bio
+                                , "), better biology and not degraded (n="
+                                , n_records_betterbio_BioDegNo, ").")
           
           ## Plot, Variables, Colors
           # col_sites_all     <- "dark gray"
@@ -675,7 +748,10 @@ getVerifiedPredictions <- function(TargetSiteID
           
           p_SSTV <- ggplot2::ggplot(df_plot_betterbio, ggplot2::aes(variable, value)) + 
                     ggplot2::geom_boxplot(ggplot2::aes(group = variable)) + 
-                    ggplot2::labs(title=str_title, subtitle = str_subtitle, y = str_ylab) +
+                    ggplot2::labs(title = str_title
+                                  , subtitle = str_subtitle
+                                  , y = str_ylab
+                                  , caption = str_caption) +
                     ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                                    , plot.subtitle = ggplot2::element_text(hjust=0.5)
                                    , axis.title.y = ggplot2::element_blank()) +
@@ -690,11 +766,32 @@ getVerifiedPredictions <- function(TargetSiteID
                                                               , fill = col.SiteTypeQuality)) +
                     # redo box with no fill (can't change alpha of just the box if do 2nd and want to keep gray background)
                     ggplot2::geom_boxplot(fill=NA, ggplot2::aes(group=variable)) + 
+                    # scoring thresholds
+                    ggplot2::geom_errorbar(data=df_plot_targ
+                                           , ggplot2::aes(group = variable
+                                                          , ymin = betterbio_varval_qLO
+                                                          , ymax = betterbio_varval_qHI
+                                           )
+                                           , lty = 2
+                                           , lwd = 1
+                                           , color = "black"
+                                           , show.legend = FALSE
+                                           , na.rm = TRUE) +
                     # Legend, Points
                     ggplot2::scale_color_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
                     ggplot2::scale_fill_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
                     ggplot2::scale_shape_manual(breaks = c("Yes", "No"), values = bio_shp, drop = FALSE)
                     
+          # target site, line (no legend - color outside of aes)
+          p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
+                                                    , ggplot2::aes(group = variable
+                                                                   , ymin = value
+                                                                   , ymax = value
+                                                    )
+                                                    , lty=targ_line_lty
+                                                    , lwd=targ_line_lwd
+                                                    , color=targ_line_col
+                                                    , show.legend = FALSE)
                    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     # target site, points or line
                    #  if(display_target=="points"){##IF~display_target~START
@@ -739,16 +836,7 @@ getVerifiedPredictions <- function(TargetSiteID
                    #  }##IF~display_target~START
                    # 
                  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                # target site, line (no legend - color outside of aes)
-                p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
-                                         , ggplot2::aes(group = variable
-                                                        , ymin = value
-                                                        , ymax = value
-                                                        )
-                                         , lty=targ_line_lty
-                                         , lwd=targ_line_lwd
-                                         , color=targ_line_col
-                                         , show.legend = FALSE)
+              
           
           
 
