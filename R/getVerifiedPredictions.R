@@ -31,7 +31,7 @@
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
 #' 
-#' @return Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
+#' @return Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 #' 
 # @importFrom pryr "%<a-%"
 #' 

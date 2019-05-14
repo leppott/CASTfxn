@@ -38,7 +38,7 @@ getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "VerifiedPredictions"}
 }
 \value{
-Jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
+Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 }
 \description{
 Get verified predictions.

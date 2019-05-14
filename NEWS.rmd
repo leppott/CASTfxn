@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9213 (2019-05-14)
+
+* getVerifiedPredictions
+    + Update description Value.
+
 ## Changes in Version 0.1.0.9212 (2019-05-13)
 
 * getVerifiedPredictions, Issue #57
