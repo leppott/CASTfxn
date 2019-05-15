@@ -30,6 +30,7 @@
 #' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBioData$site.b.rsp
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
+#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' 
 #' @return Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
 #' 
@@ -144,6 +145,7 @@
 #' BioIndex_Nar       <- "NarRat"
 #' BioIndex_Nar_Deg   <- "Violates"
 #' dir_sub            <- "VerifiedPredictions"
+#' biocomm <- "bmi"
 #' 
 #' # Run getVerifiedPredictions
 #' getVerifiedPredictions(TargetSiteID
@@ -174,6 +176,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , BioIndex_Nar_Deg="Violates"
                                    , dir_results=file.path(getwd(), "Results")
                                    , dir_sub="VerifiedPredictions"
+                                   , biocomm="bmi"
                                    ) {##FUNCTION.START
   # Debugging
   boo.DEBUG <- FALSE
@@ -184,6 +187,22 @@ getVerifiedPredictions <- function(TargetSiteID
     matchedData <- list.MatchBioData
     tv <- 1
   }##IF.boo.DEBUG.END
+  
+  # QC, biocomm ####
+  biocomm <- tolower(biocomm)
+  # Check for no data
+  if(biocomm=="bmi"){##IF.biocomm.START
+    #
+    #
+  } else if(biocomm=="algae"){
+    #
+    #
+  } else {
+    # Non Valid biological community
+    Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
+    stop(Msg_Stop)
+  }##IF.biocomm.END
+  
   
   # Extra, 20181211
   ## Add RelAbundInds to data.bmi.raw
@@ -210,7 +229,7 @@ getVerifiedPredictions <- function(TargetSiteID
   
   # 20190513, remove scores file if exists
   fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
-                          , paste0(TargetSiteID, ".SR.SSTV.Scores.txt"))
+                          , paste0(TargetSiteID, ".VP.", biocomm, ".Scores.txt"))
   if(file.exists(fn_scores)){file.remove(fn_scores)}
   
   #
@@ -653,6 +672,10 @@ getVerifiedPredictions <- function(TargetSiteID
                                             , ifelse(df_plot_targ[, "value"] < df_plot_targ[, "betterbio_varval_qLO"], -1, 0))
           df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"]  <- -1 * df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"]
           
+          # Add other variables
+          df_plot_targ[, "biocomm"] <- biocomm
+          df_plot_targ[, "n_BetterBio"] <- n_records_better_bio
+          df_plot_targ[, "n_BetterBioDegNo"] <- n_records_betterbio_BioDegNo
           
           # Save
           # fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3

@@ -8,7 +8,7 @@ getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
   data.chem.info, data.SSTV.totabund, data.MT.bio, matchedData, ref.sites,
   BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
   BioIndex_Nar_Deg = "Violates", dir_results = file.path(getwd(),
-  "Results"), dir_sub = "VerifiedPredictions")
+  "Results"), dir_sub = "VerifiedPredictions", biocomm = "bmi")
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -36,6 +36,8 @@ getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "VerifiedPredictions"}
+
+\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 }
 \value{
 Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
@@ -166,6 +168,7 @@ BioIndex_Val       <- "IBI"
 BioIndex_Nar       <- "NarRat"
 BioIndex_Nar_Deg   <- "Violates"
 dir_sub            <- "VerifiedPredictions"
+biocomm <- "bmi"
 
 # Run getVerifiedPredictions
 getVerifiedPredictions(TargetSiteID

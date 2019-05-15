@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-14 09:12:46
+    #> Last Update: 2019-05-15 13:03:09
 
 # Planned Updates
 
@@ -24,6 +24,20 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9214 (2019-05-15)
+
+  - getVerifiedPredictions
+      - Add biocomm as input.
+          - help file
+          - example
+          - function code
+      - Score file modifications, Issue \#68
+          - Add “n”.
+          - Rename (include biocomm)
+  - getBioStressorResponse
+      - Score file modifications, Issue \#68
+          - Correlations file, add “n”.
 
 ## Changes in Version 0.1.0.9213 (2019-05-14)
 

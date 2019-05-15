@@ -524,9 +524,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         n_str_cl <- length(df_plot_cl$Stressor)
         # Corelation
         c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
-        df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, signif(c1S_cl$statistic, 2)
+        df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
                                     , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
-        names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "statistic", "p.value", "estimate", "r2")
+        names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
         pval.corr_cl <- signif(c1S_cl$p.value, 2)
         #
         # 20180621, scoring
@@ -556,9 +556,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         n_str_all <- length(df_plot_all$Stressor)
         # Corelation
         c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor, method="pearson", use="pairwise.complete.obs"))
-        df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, signif(c1S_all$statistic, 2)
+        df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_all$parameter+1, signif(c1S_all$statistic, 2)
                                        , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2_all))
-        names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName", "respName", "statistic", "p.value", "estimate", "r2")
+        names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
         pval.corr_all <- signif(c1S_all$p.value, 2)
         #
         # 20180621, scoring
