@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-16 14:37:39
+    #> Last Update: 2019-05-16 14:54:01
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9219 (2019-05-16)
+
+  - Changes for R 3.6.0 devtools, Issue \#65
+      - Readme
+          - Fix misspelling in installation example.
 
 ## Changes in Version 0.1.0.9218 (2019-05-16)
 
