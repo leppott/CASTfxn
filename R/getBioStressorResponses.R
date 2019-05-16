@@ -246,6 +246,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   boo.DEBUG <- FALSE
   ## Trigger DEBUG actions below for when debugging.
   
+  # Correlation file output header row
+  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+  
+  
   # Community ####
   biocomm <- tolower(biocomm)
   # Check for no data
@@ -506,8 +510,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       #}##NoIssues.Munging.END
       
+      
       # Cluster
       # LM and Corr, Cluster ####
+      # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
         model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor) #cluster only
@@ -526,8 +532,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
         df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
                                     , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
-        names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-        pval.corr_cl <- signif(c1S_cl$p.value, 2)
+        #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+        names(df.corr_cl) <- cn_cor_pref
+         pval.corr_cl <- signif(c1S_cl$p.value, 2)
         #
         # 20180621, scoring
         slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
@@ -540,6 +547,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       # ALL
       # LM and Corr, All ####
+      # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
         model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor) #cluster only
@@ -558,7 +566,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor, method="pearson", use="pairwise.complete.obs"))
         df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_all$parameter+1, signif(c1S_all$statistic, 2)
                                        , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2_all))
-        names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+        #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+        names(df.corr_all) <- cn_cor_pref
         pval.corr_all <- signif(c1S_all$p.value, 2)
         #
         # 20180621, scoring
@@ -573,6 +582,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
 
       # Corr table output ####
       # # Create results data frame
+      # ~~~ Check QC of Corr Table at end of code ~~~~
       if(boo_corr==TRUE){##IF~boo_corr~START
         if (varFlag==1) {  #First time through loop
           df.CorrTable <- df.corr_cl
@@ -596,9 +606,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         #}
         pval.corr = signif(c1S_cl$p.value, 2)
       }##IF~boo_corr~END
-      
-      
-      
+      #
+
       # Scoring, Cluster ####
       if(nrow(df_plot_site)>0){##IF~nrow(df_plot_site)~END
         for (f in 1:nrow(df_plot_site)) {##FOR~f~START
@@ -919,9 +928,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   df_corr <- utils::read.delim(fp_corr)
   
   # QC, 20190313
+  # QC, Corr table ####
   ## Special case where the function doesn't save the header row
   ### Unable to track down cause so implement QC check here.
-  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "statistic", "p.value", "estimate", "r2")
+  #cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
   cn_cor_x    <- colnames(df_corr)
   cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
   if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START

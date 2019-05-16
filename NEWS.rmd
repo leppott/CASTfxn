@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9215 (2019-05-16)
+
+* getBioStressorResponse
+    + Modify correlation file output, Issue #68
+        - Update QC check for new "n" column.
+
 ## Changes in Version 0.1.0.9214 (2019-05-15)
 
 * getVerifiedPredictions
