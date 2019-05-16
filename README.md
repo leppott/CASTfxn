@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-16 14:34:39
+    #> Last Update: 2019-05-16 14:58:48
 
 Suite of functions for the Causal Assessment Screening Tool
 (CAST).
@@ -36,7 +36,7 @@ in install\_github are used to install the vignettes.
 
 ``` r
 Sys.setenv("TAR" = "internal")
-devtools::install_github("leppott/CASTfnx")
+devtools::install_github("leppott/CASTfxn", force=TRUE, build_vignettes=TRUE)
 ```
 
 ## Purpose
