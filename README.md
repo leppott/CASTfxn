@@ -3,12 +3,14 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-03-11 15:39:14
+    #> Last Update: 2019-05-16 13:39:29
 
-Suite of functions for the Causal Assessment Screening Tool (CAST).
+Suite of functions for the Causal Assessment Screening Tool
+(CAST).
 
 ## Badges
 
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 [![Travis-CI Build
 Status](https://travis-ci.org/leppott/CASTfxn.svg?branch=master)](https://travis-ci.org/leppott/CASTfxn)
 [![GitHub
@@ -22,9 +24,13 @@ issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://
 
 ## Installation
 
-\#library(devtools) \#install if needed
+Requires the use of devtools (or another package) to install from
+GitHub. If using devtools need to add an extra line of code (see below).
+<https://github.com/r-lib/devtools/issues/1939>
 
-devtools::install\_github(“leppott/CASTfnx”)
+Sys.setenv(“TAR” = “internal”)
+
+devtools::install\_github(“leppott/CASTfnx”)\`
 
 ## Purpose
 

@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9217 (2019-05-16)
+
+* Changes for R 3.6.0 devtools, Issue #65
+    + Need extra line for install from GitHub.  Update readme.
+        - Sys.setenv("TAR" = "internal")
+* GitHub badges
+    + Added Maintained to Readme.
+    + https://github.com/Naereen/badges
+
 ## Changes in Version 0.1.0.9216 (2019-05-16)
 
 * Changes for R 3.6.0 staged install, Issue #65

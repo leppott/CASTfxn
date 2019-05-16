@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-16 12:39:38
+    #> Last Update: 2019-05-16 13:45:17
 
 # Planned Updates
 
@@ -24,6 +24,15 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9217 (2019-05-16)
+
+  - Changes for R 3.6.0 devtools, Issue \#65
+      - Need extra line for install from GitHub. Update readme.
+          - Sys.setenv(“TAR” = “internal”)
+  - GitHub badges
+      - Added Maintained to Readme.
+      - <https://github.com/Naereen/badges>
 
 ## Changes in Version 0.1.0.9216 (2019-05-16)
 
