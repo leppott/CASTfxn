@@ -37,6 +37,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9216 (2019-05-16)
+
+* Changes for R 3.6.0 staged install, Issue #65
+    + Do not store package directory to any object.  Always call with system.file.
+        - getReport.R
+        - getSiteInfo.R
+* DESCRIPTION, Issue #69
+    + Update for package changes that are no longer used in CASTfxn.
+        - replyr, remove from Imports, package in maintenance mode
+        - pryr, removed from Suggests, used prior to conversion to all ggplot2 plots.
+
 ## Changes in Version 0.1.0.9215 (2019-05-16)
 
 * getBioStressorResponse

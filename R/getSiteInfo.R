@@ -336,12 +336,15 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   report_format <- "html"
   #dir_rmd <- file.path(system.file(package = "CASTfxn"), "rmd")
   #strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
-  strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+  #strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
   strFile_out_ext <- paste0(".", report_format)
   strFile_out <- paste0(TargetSiteID,".map.leaflet", strFile_out_ext)
   dir_map <- file.path(dir_results, TargetSiteID, dir.sub3)
-  rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
-                    , output_dir=dir_map, quiet=TRUE)
+  rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+                    , output_format=paste0(report_format,"_document")
+                    , output_file=strFile_out
+                    , output_dir=dir_map
+                    , quiet=TRUE)
   # place after static map so can insert
   
   #
