@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+
+## Changes in Version 0.1.0.9221 (2019-05-20)
+
+* getCoOccur
+    + Modify scores for SR plot (plot2), Issue #71
+    + Scores are in ascending order so Stressor Response plot matches Box plot.
+    + Scores file output is now ordered by Param_Value instead of IBI.
+* DESCRIPTION
+    + Removed "StagedInstall: yes"
+
 ## Changes in Version 0.1.0.9220 (2019-05-16)
 
 * Changes for R 3.6.0 devtools, Issue #65

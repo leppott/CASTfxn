@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-16 14:59:53
+    #> Last Update: 2019-05-20 13:35:47
 
 # Planned Updates
 
@@ -24,6 +24,17 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9221 (2019-05-20)
+
+  - getCoOccur
+      - Modify scores for SR plot (plot2), Issue \#71
+      - Scores are in ascending order so Stressor Response plot matches
+        Box plot.
+      - Scores file output is now ordered by Param\_Value instead of
+        IBI.
+  - DESCRIPTION
+      - Removed “StagedInstall: yes”
 
 ## Changes in Version 0.1.0.9220 (2019-05-16)
 

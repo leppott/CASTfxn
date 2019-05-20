@@ -335,7 +335,7 @@ getCoOccur <- function(df.data
   
      #
     if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
-      j <- col.Stressors[2]
+      j <- col.Stressors[3]
       #par(mfrow=c(3,2))
     }##IF.boo_DEBUG.END
     # outside loop just in case forget to turn off debug flag
@@ -354,33 +354,35 @@ getCoOccur <- function(df.data
                     , "; Stressors (", j.num, "/", j.len, ") ", j, ".\n"))
        utils::flush.console()
        #
-       df.i[,paste0("n_",j)] <- sum(!is.na(df.comp.bio.better[,j]))
-       #df.i[,paste0("q20_",j)] <- stats::quantile(df.comp.bio.better[,j], probs=0.20, na.rm=TRUE)
-       df.i[,paste0("q25_",j)] <- stats::quantile(df.comp.bio.better[,j], probs=0.25, na.rm=TRUE)
-       df.i[,paste0("q50_",j)] <- stats::quantile(df.comp.bio.better[,j], probs=0.50, na.rm=TRUE)
-       df.i[,paste0("q75_",j)] <- stats::quantile(df.comp.bio.better[,j], probs=0.75, na.rm=TRUE)
+       df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
+       #df.i[, paste0("q20_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.20, na.rm=TRUE)
+       df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.25, na.rm=TRUE)
+       df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.50, na.rm=TRUE)
+       df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.75, na.rm=TRUE)
        # Comp Score for box plot
-       df.i[,paste0("Sc_Box_",j)] <- ifelse(df.i[,j] > df.i[,paste0("q75_",j)],1
-                                             , ifelse(df.i[,j] < df.i[,paste0("q50_",j)],-1,0))
-       df.i[is.na(df.i[,j]), paste0("Sc_Box_",j)] <- NA
+       df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)],1
+                                             , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
+       df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
        
        # Plots
        # Need to filter df.i to get rid of NA for "j" (stressor)
        # order values by j then get multiple comp scores
-       df.i.n <- df.i[!is.na(df.i[,j]), ]
-       df.i.n <- df.i.n[order(df.i.n[,j]), ]
+       df.i.n <- df.i[!is.na(df.i[, j]), ]
+       df.i.n <- df.i.n[order(df.i.n[, j]), ]
        
        if (nrow(df.i.n)!=0){##IF.nrow.START
          # Save to Score/Results file
          df.i.n[, "Param_Name"]  <- j
          df.i.n[, "Param_Value"] <- df.i.n[, j]
-         df.i.n[, "n"]           <- df.i.n[, paste0("n_",j)]
-         df.i.n[, "q25"]         <- df.i.n[, paste0("q25_",j)]
-         df.i.n[, "q50"]         <- df.i.n[, paste0("q50_",j)]
-         df.i.n[, "q75"]         <- df.i.n[, paste0("q75_",j)]
-         df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_",j)]
+         df.i.n[, "n"]           <- df.i.n[, paste0("n_", j)]
+         df.i.n[, "q25"]         <- df.i.n[, paste0("q25_", j)]
+         df.i.n[, "q50"]         <- df.i.n[, paste0("q50_", j)]
+         df.i.n[, "q75"]         <- df.i.n[, paste0("q75_", j)]
+         df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_", j)]
          # df.i.n append to output (only keep matching columns)
          df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))], all.y=TRUE)
+         # 2019-05-20, sort by score
+         df.scores.i.n <- df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), ]
         #  # Save
         #  utils::write.table(df.scores.i.n, file=fn.scores
         #              , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
@@ -462,7 +464,7 @@ getCoOccur <- function(df.data
          col.glm <- c(col.Bio, col.Bio.Deg, j)
          #df.comp.glm <- df.comp[complete.cases(df.comp[,col.glm]), col.glm]
          
-         df.comp.glm <- df.comp[stats::complete.cases(df.comp[,col.glm]), col.glm] 
+         df.comp.glm <- df.comp[stats::complete.cases(df.comp[, col.glm]), col.glm] 
          
          # logr <- glm(df.comp.glm[,col.Bio.Deg] ~ df.comp.glm[,j], family=binomial)
          # plot(df.comp.glm[,j], df.comp.glm[, col.Bio.Deg], ylim=c(0,2))
@@ -494,6 +496,8 @@ getCoOccur <- function(df.data
            # Scoring
            # j_values <- data.frame(x=df.i[,j])
            j_values <- data.frame(x= df.scores.i.n[, "Param_Value"])
+           # sort values, 2019-05-20
+           #j_values <-  data.frame(x= df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), "Param_Value"])
            j_SR_predict <- stats::predict(fit, newdata=j_values, type="response")
            j_SR_score <- cut(j_SR_predict
                              , breaks=c(0, 0.2, 0.5, 1)
