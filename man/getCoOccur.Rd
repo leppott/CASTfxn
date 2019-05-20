@@ -9,7 +9,9 @@ getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
   Bio.Nar.Lab = c("very likely altered", "likely altered",
   "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
   Bio.Deg.Lab = c("Yes", "No"), biocomm = "bmi",
-  dir.plots = file.path(getwd(), "Results"), dir_sub = "CoOccurrence")
+  dir.plots = file.path(getwd(), "Results"), dir_sub = "CoOccurrence",
+  col.Stressors.InvSc = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.",
+  "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU"))
 }
 \arguments{
 \item{df.data}{data frame with data.}
@@ -49,6 +51,10 @@ Default = c("Yes", "No").}
 \item{dir.plots}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
+
+\item{col.Stressor.InvSc}{Stressors as columns of df.data that have inverse scoring for box plots.
+Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
+, "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU")}
 }
 \value{
 Saves a single PDF of all plots, individual plots as JPGs, and a 
@@ -141,9 +147,11 @@ dir_sub <- "CoOccurrence"
 #
 TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
+col.Stressors.InvSc <- c("DO_uf_mg_L", "pH")
+#
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , biocomm, dir.plots, dir_sub
+        , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
         )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example #2, AZ data (single site)
@@ -170,10 +178,11 @@ Bio.Deg.Lab <- c("Yes", "No")
 biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
 dir_sub <- "CoOccurrence"
+colStressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
-        , biocomm, dir.plots, dir_sub
+        , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
         )
 
 }

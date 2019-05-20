@@ -91,6 +91,9 @@
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir.plots Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
+#' @param col.Stressor.InvSc Stressors as columns of df.data that have inverse scoring for box plots.  
+#' Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
+#' , "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU")
 #'
 #' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
 #' scores files (tab separated text file) to a user defined 'Results' directory.  
@@ -118,9 +121,11 @@
 #' #
 #' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
+#' col.Stressors.InvSc <- c("DO_uf_mg_L", "pH")
+#' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-#'         , biocomm, dir.plots, dir_sub
+#'         , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
 #'         )
 #' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' # Example #2, AZ data (single site)
@@ -147,10 +152,11 @@
 #' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
 #' dir_sub <- "CoOccurrence"
+#' colStressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
-#'         , biocomm, dir.plots, dir_sub
+#'         , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
 #'         )
 #' 
 #~~~~~~~~~~~~~
@@ -169,6 +175,14 @@ getCoOccur <- function(df.data
                        , biocomm="bmi"
                        , dir.plots=file.path(getwd(), "Results")
                        , dir_sub="CoOccurrence"
+                       , col.Stressors.InvSc=c("DO_f_."
+                                               , "DO_f_mg_L"
+                                               , "DO_f_unk"
+                                               , "DOSat_f_."
+                                               , "DOSat_f_unk"
+                                               , "DO_uf_mg_L"
+                                               , "pH_SU"
+                                               , "pH_SU")
                        ) {##FUNCTION.START
   #
   boo_DEBUG <- FALSE
@@ -189,6 +203,15 @@ getCoOccur <- function(df.data
     col.Stressors <- col.Stressors[col.Stressors %in% names(df.data)]
   }##IF~bad stressors~END
   
+  # # Parameters (stressors) with inverse scoring
+  # # 2019-05-20 (same day added as input variables)
+  # col.Stressors.InvSc <- c("DO_f_."
+  #                          , "DO_f_mg_L"
+  #                          , "DO_f_unk"
+  #                          , "DOSat_f_."
+  #                          , "DOSat_f_unk"
+  #                          , "pH_SU")
+
   #
   myDateTime    <- format(Sys.time(),"%Y%m%d_%H%M%S")
   col.Bio.Nar   <- "Bio.Nar"
@@ -360,8 +383,16 @@ getCoOccur <- function(df.data
        df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.50, na.rm=TRUE)
        df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.75, na.rm=TRUE)
        # Comp Score for box plot
-       df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)],1
-                                             , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
+       ## Use different criteria for some parameters
+       if(j %in% col.Stressors.InvSc){##IF~j_in_InvSc~START
+         # Inverse Scoring
+         df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)], -1
+                                                , ifelse(df.i[, j] < df.i[, paste0("q25_",j)], 1, 0)) 
+       } else {
+         # Regular Scoring
+         df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)], 1
+                                                , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
+       }##IF~j_in_InvSc~END
        df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
        
        # Plots
@@ -418,10 +449,18 @@ getCoOccur <- function(df.data
          bio_col <- c("blue", "dark gray")
          bio_shp <- c(21, 25) # circle and down triangle
          lab_comp <- paste0("Cluster = ",i.Group)
-         # scoring lines
-         box_q75 <- df.scores.i.n$q75[1]
-         box_q50<- df.scores.i.n$q50[1]
          
+         # scoring lines
+         if(j %in% col.Stressors.InvSc){##IF~j_in_InvSc~START
+           # Inverse Scoring
+           box_qHI <- df.scores.i.n$q50[1]
+           box_qLO <- df.scores.i.n$q25[1]
+         } else {
+           # Regular Scoring
+           box_qHI <- df.scores.i.n$q75[1]
+           box_qLO <- df.scores.i.n$q50[1]
+         }##IF~j_in_InvSc~END
+
          ## Plot, Variables, Target Site Line
          targ_line_col <- "red"
          targ_line_lty <- 2
@@ -445,7 +484,7 @@ getCoOccur <- function(df.data
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
              ggplot2::labs(y=j, x=lab_comp) + 
-             ggplot2::geom_hline(yintercept = c(box_q50, box_q75), color="black", lty=2, na.rm = TRUE)
+             ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black", lty=2, na.rm = TRUE)
            # Capture plot (jpg)
            # Capture most recent plot to a list
            # print(p1)

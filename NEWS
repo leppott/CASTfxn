@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-20 13:35:47
+    #> Last Update: 2019-05-20 15:36:24
 
 # Planned Updates
 
@@ -24,6 +24,15 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9222 (2019-05-20)
+
+  - getCoOccur
+      - Modify scoring on box plot for DO and pH, Issue \#70
+      - Add new input variable for those with inverse scoring.
+          - Use 25/50 instead of 50/75 as scoring threshold quantiles.
+          - Scores are 1/0/-1 instead of -1/0/1
+      - Modify scoring threshold quantiles on box plot.
 
 ## Changes in Version 0.1.0.9221 (2019-05-20)
 
