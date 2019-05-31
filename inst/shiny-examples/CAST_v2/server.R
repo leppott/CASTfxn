@@ -36,7 +36,7 @@ data.Stations <- read.delim(paste0(myDir.Data,"data.Stations.LookUp.tab"))
 LU.Stations <- data.Stations[,"StationID"]
 #myX <- "Results.TEST.pdf"
 ## Stations - Location Information
-data.Stations.Info <- read.delim(paste0(myDir.Data,"data.Stations.Info.tab"))
+data.Stations.Info <- CASTfxn::data_Sites
 ## Eco85
 data.eco85 <- read.delim(paste0(myDir.Data,"data.eco85.tab"))
 ## Modified Status

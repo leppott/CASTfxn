@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-31 10:14:29
+    #> Last Update: 2019-05-31 11:11:33
 
 # Planned Updates
 
@@ -25,9 +25,13 @@ NEWS
 
 # Version History
 
+## Changes in Version 0.1.0.9224 (2019-05-31)
+
+  - Add testing, Issue \#72.
+
 ## Changes in Version 0.1.0.9223 (2019-05-31)
 
-  - runShinyExample
+  - runShinyExample, Issue 30
       - Added additional Shiny Apps to the package.
           - CAST\_MapSelection, was already in the package
           - CAST\_v1, original design

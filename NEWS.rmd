@@ -37,9 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9224 (2019-05-31)
+
+* Add testing, Issue #72.
+
 ## Changes in Version 0.1.0.9223 (2019-05-31)
 
-* runShinyExample
+* runShinyExample, Issue 30
    + Added additional Shiny Apps to the package.
        - CAST_MapSelection, was already in the package
        - CAST_v1, original design
