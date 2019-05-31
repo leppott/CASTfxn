@@ -15,7 +15,7 @@ source("global.R")
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("SEP - CAST")
+  titlePanel("SEP - CAST - COMID Selection")
 
   # Sidebar with a slider input for number of bins 
   , sidebarLayout(

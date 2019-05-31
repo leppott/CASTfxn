@@ -1,0 +1,459 @@
+GroupNum	GroupName	DataType3	Analyte	LogTransf	SSTV	SensMin	SensMax	TolMin	TolMax	SSD
+1	Water quality		AlkalinityCaCO3_f_mg_L	1	0					0
+1	Water quality		AlkalinityCaCO3_uf_mg_L	1	0					0
+1	Water quality		Bicarbonate_uf_mg_L	1	0					0
+1	Water quality		BOD_mg_L	1	0					0
+1	Water quality		COD_mg_L	1	0					0
+1	Water quality		DO_uf_mg_L	0	0					0
+1	Water quality		Hardness_CaCO3_f_mg_L	1	0					0
+1	Water quality		Hardness_CaCO3_uf_mg_L	1	0					0
+1	Water quality		pH	0	0					0
+1	Water quality		Salinity_uf_ppt	1	0					0
+1	Water quality		SpecCond_uf_µS_cm	1	SpecCondTolVal	1	2	5	6	0
+1	Water quality		TDS_f_mg_L	1	0					0
+1	Water quality		Temp_degC	0	0					0
+1	Water quality		TSS_uf_mg_L	1	0					0
+1	Water quality		Turb_NTU	1	0					0
+2	Bacteria		Coliform_Fecal_MPN_100mL	1	0					0
+2	Bacteria		Coliform_Total_MPN_100mL	1	0					0
+2	Bacteria		E_coli_MPN_100_mL	1	0					0
+2	Bacteria		Enterococcus_MPN_100_mL	1	0					0
+3	Ions_Metals		Ag_f_µg_L	1	0					0
+3	Ions_Metals		Ag_uf_µg_L	1	0					0
+3	Ions_Metals		Al_f_µg_L	1	0					0
+3	Ions_Metals		Al_uf_µg_L	1	0					0
+3	Ions_Metals		As_f_µg_L	1	0					0
+3	Ions_Metals		As_uf_µg_L	1	0					0
+3	Ions_Metals		B_f_µg_L	1	0					0
+3	Ions_Metals		B_uf_µg_L	1	0					0
+3	Ions_Metals		Ca_f_mg_L	1	0					0
+3	Ions_Metals		Ca_uf_mg_L	1	0					0
+3	Ions_Metals		Cd_f_µg_L	1	0					0
+3	Ions_Metals		Cd_uf_µg_L	1	0					0
+3	Ions_Metals		Cl_f_mg_L	1	0					0
+3	Ions_Metals		Cr_f_µg_L	1	0					0
+3	Ions_Metals		Cr_uf_µg_L	1	0					0
+3	Ions_Metals		Cu_f_µg_L	1	0					0
+3	Ions_Metals		Cu_uf_µg_L	1	0					0
+3	Ions_Metals		F_f_mg_L	1	0					0
+3	Ions_Metals		F_uf_mg_L	1	0					0
+3	Ions_Metals		Fe_f_µg_L	1	0					0
+3	Ions_Metals		Fe_uf_µg_L	1	0					0
+3	Ions_Metals		Hg_f_ng_L	1	0					0
+3	Ions_Metals		Hg_uf_ng_L	1	0					0
+3	Ions_Metals		K_f_mg_L	1	0					0
+3	Ions_Metals		K_uf_mg_L	1	0					0
+3	Ions_Metals		Mg_f_mg_L	1	0					0
+3	Ions_Metals		Mg_uf_mg_L	1	0					0
+3	Ions_Metals		Mn_f_µg_L	1	0					0
+3	Ions_Metals		Mn_uf_µg_L	1	0					0
+3	Ions_Metals		Na_f_mg_L	1	0					0
+3	Ions_Metals		Na_uf_mg_L	1	0					0
+3	Ions_Metals		Ni_f_µg_L	1	0					0
+3	Ions_Metals		Ni_uf_µg_L	1	0					0
+3	Ions_Metals		Pb_f_µg_L	1	0					0
+3	Ions_Metals		Pb_uf_µg_L	1	0					0
+3	Ions_Metals		Sb_f_µg_L	1	0					0
+3	Ions_Metals		Sb_uf_µg_L	1	0					0
+3	Ions_Metals		Se_f_µg_L	1	0					0
+3	Ions_Metals		Se_uf_µg_L	1	0					0
+3	Ions_Metals		Si_SiO2_uf_mg_L	1	0					0
+3	Ions_Metals		Zn_f_µg_L	1	0					0
+3	Ions_Metals		Zn_uf_µg_L	1	0					0
+4	Nutrients		AFDM_Algae_Particulate_g_m2	1	0					0
+4	Nutrients		Chlor_a_mg_m2	1	0					0
+4	Nutrients		Chlor_a_mg_m3	1	0					0
+4	Nutrients		Chlor_a_Particulate_µg_L	1	0					0
+4	Nutrients		Chlor_a_Particulate_mg_m2	1	0					0
+4	Nutrients		DIC_f_mg_L	1	0					0
+4	Nutrients		DOC_f_mg_L	1	0					0
+4	Nutrients		DP_f_mg_L	1	0					0
+4	Nutrients		DP_P_f_mg_L	1	0					0
+4	Nutrients		DP_P_mg_L	1	0					0
+4	Nutrients		NH3_N_f_mg_L	1	0					0
+4	Nutrients		NH3_N_uf_mg_L	1	0					0
+4	Nutrients		NO2_N_f_mg_L	1	0					0
+4	Nutrients		NO2_N_uf_mg_L	1	0					0
+4	Nutrients		NO2NO3_N_f_mg_L	1	0					0
+4	Nutrients		NO2NO3_N_uf_mg_L	1	0					0
+4	Nutrients		NO3_N_f_mg_L	1	0					0
+4	Nutrients		NO3_N_uf_mg_L	1	0					0
+4	Nutrients		oPO4_P_f_mg_L	1	0					0
+4	Nutrients		oPO4_P_uf_mg_L	1	0					0
+4	Nutrients		Pheo_a_Particulate_µg_L	1	0					0
+4	Nutrients		Si_SiO2_f_mg_L	1	0					0
+4	Nutrients		SO4_f_mg_L	1	0					0
+4	Nutrients		TIN_uf_mg_L	1	0					0
+4	Nutrients		TKN_uf_mg_L	1	0					0
+4	Nutrients		TN_uf_mg_L	1	0					0
+4	Nutrients		TOC_%	1	0					0
+4	Nutrients		TOC_uf_mg_L	1	0					0
+4	Nutrients		TP_mg_L	1	0					0
+4	Nutrients		TP_P_uf_mg_L	1	0					0
+5	Organometallics	Tin	Dibutyltin_Sn_uf_µg_L	1	0					0
+5	Organometallics	Mercury	MethylMercury_uf_ng_L	1	0					0
+5	Organometallics	Tin	Tributyltin_Sn_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Aldrin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Allethrin_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Ametryn_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Aspon_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Atraton_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Atrazine_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Azinphos ethyl_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Azinphos methyl_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Azoxystrobin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Bifenthrin_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Biphenyl_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Biphenyl_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Bolstar_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Boscalid_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Carbophenothion_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordane_cis_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordane_trans_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordene_alpha_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordene_cis_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordene_gamma_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordene_Total_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Chlordene_trans_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Chlorfenvinphos_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Chlorpyrifos_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Chlorpyrifos_methyl_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Chlorpyrifos_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Ciodrin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Coumaphos_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Cyanazine_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Cyfluthrin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Cyhalothrin_lambda_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Cypermethrin_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Dacthal_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Danitol_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	"DDD(o,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDD(p,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDE(o,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDE(p,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDMU(p,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDT(o,p')_uf_µg_L"	1	0					0
+6	Pesticides	Conventional pesticides	"DDT(p,p')_uf_µg_L"	1	0					0
+6	Pesticides	Pest-Pyrethroids	Deltamethrin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	DeltamethrinTralomethrin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Demeton_o_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Demeton_s_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Desmetryn_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Diazinon_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Diazinon_ug_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Dichlofenthion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Dichlorvos_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Dicrotophos_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Dieldrin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Dimethoate_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Dioxathion _uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Dipropetryn_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Disulfoton_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endosulfan_I_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endosulfan_II_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endosulfan_sulfate_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endrin_Aldehyde_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endrin_Ketone_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Endrin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Esfenvalerate_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	EsfenvalerateFenvalerate_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	EsfenvalerateFenvalerate1_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	EsfenvalerateFenvalerate2_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Ethion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Ethoprop_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Famphur_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Fenchlorphos_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Fenitrothion_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Fenpropathrin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Fensulfothion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Fenthion_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Fenvalerate_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Flutolanil_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Fluvalinate_uf_ng_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Fonofos_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	HCH_alpha _uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	HCH_beta_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	HCH_delta_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	HCH_gamma_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Heptachlor_epoxide_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Heptachlor_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Hexachlorobenzene_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Hydroxyatrazine2_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Iprodione_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Leptophos_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Malathion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Malathion_ug_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Merphos_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Metconazole_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Methidathion_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Methoxychlor_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Mevinphos_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Mirex_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Molinate_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Myclobutanil_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Naled_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Nonachlor_cis_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Nonachlor_trans_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Oxadiazon_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Oxychlordane_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Parathion_Ethyl_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Parathion_Methyl_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Permethrin_cis_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Permethrin_trans_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Permethrin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Phorate_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Phosmet_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Phosphamidon_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Prallethrin_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Prometon_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Prometryn_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Propazine_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Propiconazole_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Pyraclostrobin_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Pyrethrin1_uf_µg_L	1	0					0
+6	Pesticides	Pest-Pyrethroids	Pyrethrin2_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Secbumeton_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Simazine_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Simetryn_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Sulfotep_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Tebucanozole_uf_µg_L	1	0					0
+6	Pesticides	Conventional pesticides	Tedion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Terbufos_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Terbuthylazine_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Terbutryn_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Tetrachlorvinphos_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Tetraconazole_uf_µg_L	1	0					0
+6	Pesticides	Herbicides	Thiobencarb_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Thionazin_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Tokuthion_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Trichlorfon_uf_µg_L	1	0					0
+6	Pesticides	Organophosphate pesticides	Trichloronate_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Trifloxystrobin_uf_µg_L	1	0					0
+6	Pesticides	Fungicides	Triflumizole_uf_µg_L	1	0					0
+7	PCBs		PCB_AROCLOR_1248_uf_µg_L	1	0					0
+7	PCBs		PCB_AROCLOR_1254_uf_µg_L	1	0					0
+7	PCBs		PCB_AROCLOR_1260_uf_µg_L	1	0					0
+7	PCBs		PCB005_uf_µg_L	1	0					0
+7	PCBs		PCB008_uf_µg_L	1	0					0
+7	PCBs		PCB015_uf_µg_L	1	0					0
+7	PCBs		PCB018_uf_µg_L	1	0					0
+7	PCBs		PCB027_uf_µg_L	1	0					0
+7	PCBs		PCB028_uf_µg_L	1	0					0
+7	PCBs		PCB029_uf_µg_L	1	0					0
+7	PCBs		PCB031_uf_µg_L	1	0					0
+7	PCBs		PCB033_uf_µg_L	1	0					0
+7	PCBs		PCB044_uf_µg_L	1	0					0
+7	PCBs		PCB049_uf_µg_L	1	0					0
+7	PCBs		PCB052_uf_µg_L	1	0					0
+7	PCBs		PCB056_uf_µg_L	1	0					0
+7	PCBs		PCB060_uf_µg_L	1	0					0
+7	PCBs		PCB066_uf_µg_L	1	0					0
+7	PCBs		PCB070_uf_µg_L	1	0					0
+7	PCBs		PCB074_uf_µg_L	1	0					0
+7	PCBs		PCB077_uf_µg_L	1	0					0
+7	PCBs		PCB087_uf_µg_L	1	0					0
+7	PCBs		PCB095_uf_µg_L	1	0					0
+7	PCBs		PCB097_uf_µg_L	1	0					0
+7	PCBs		PCB099_uf_µg_L	1	0					0
+7	PCBs		PCB101_uf_µg_L	1	0					0
+7	PCBs		PCB105_uf_µg_L	1	0					0
+7	PCBs		PCB110_151_uf_µg_L	1	0					0
+7	PCBs		PCB110_uf_µg_L	1	0					0
+7	PCBs		PCB114_uf_µg_L	1	0					0
+7	PCBs		PCB118_uf_µg_L	1	0					0
+7	PCBs		PCB126_uf_µg_L	1	0					0
+7	PCBs		PCB128_uf_µg_L	1	0					0
+7	PCBs		PCB137_uf_µg_L	1	0					0
+7	PCBs		PCB138_uf_µg_L	1	0					0
+7	PCBs		PCB141_uf_µg_L	1	0					0
+7	PCBs		PCB149_uf_µg_L	1	0					0
+7	PCBs		PCB151_uf_µg_L	1	0					0
+7	PCBs		PCB153_uf_µg_L	1	0					0
+7	PCBs		PCB156_uf_µg_L	1	0					0
+7	PCBs		PCB157_uf_µg_L	1	0					0
+7	PCBs		PCB158_uf_µg_L	1	0					0
+7	PCBs		PCB170_uf_µg_L	1	0					0
+7	PCBs		PCB174_uf_µg_L	1	0					0
+7	PCBs		PCB177_uf_µg_L	1	0					0
+7	PCBs		PCB180_uf_µg_L	1	0					0
+7	PCBs		PCB183_uf_µg_L	1	0					0
+7	PCBs		PCB187_uf_µg_L	1	0					0
+7	PCBs		PCB189_uf_µg_L	1	0					0
+7	PCBs		PCB194_uf_µg_L	1	0					0
+7	PCBs		PCB195_uf_µg_L	1	0					0
+7	PCBs		PCB200_uf_µg_L	1	0					0
+7	PCBs		PCB201_uf_µg_L	1	0					0
+7	PCBs		PCB203_uf_µg_L	1	0					0
+7	PCBs		PCB206_uf_µg_L	1	0					0
+7	PCBs		PCB209_uf_µg_L	1	0					0
+8	PBDEs		PBDE017_25_uf_µg_L	1	0					0
+8	PBDEs		PBDE017_uf_µg_L	1	0					0
+8	PBDEs		PBDE025_uf_µg_L	1	0					0
+8	PBDEs		PBDE028_33_uf_µg_L	1	0					0
+8	PBDEs		PBDE028_uf_µg_L	1	0					0
+8	PBDEs		PBDE030_uf_µg_L	1	0					0
+8	PBDEs		PBDE033_uf_µg_L	1	0					0
+8	PBDEs		PBDE047_uf_µg_L	1	0					0
+8	PBDEs		PBDE049_uf_µg_L	1	0					0
+8	PBDEs		PBDE066_uf_µg_L	1	0					0
+8	PBDEs		PBDE085_uf_µg_L	1	0					0
+8	PBDEs		PBDE099_uf_µg_L	1	0					0
+8	PBDEs		PBDE100_uf_µg_L	1	0					0
+8	PBDEs		PBDE138_uf_µg_L	1	0					0
+8	PBDEs		PBDE153_uf_µg_L	1	0					0
+8	PBDEs		PBDE154_uf_µg_L	1	0					0
+8	PBDEs		PBDE179_uf_µg_L	1	0					0
+8	PBDEs		PBDE183_uf_µg_L	1	0					0
+8	PBDEs		PBDE184_uf_µg_L	1	0					0
+8	PBDEs		PBDE188_uf_µg_L	1	0					0
+8	PBDEs		PBDE190_uf_µg_L	1	0					0
+8	PBDEs		PBDE200_203_uf_µg_L	1	0					0
+8	PBDEs		PBDE200_uf_µg_L	1	0					0
+8	PBDEs		PBDE201_uf_µg_L	1	0					0
+8	PBDEs		PBDE202_uf_µg_L	1	0					0
+8	PBDEs		PBDE203_uf_µg_L	1	0					0
+8	PBDEs		PBDE206_uf_µg_L	1	0					0
+8	PBDEs		PBDE207_uf_µg_L	1	0					0
+8	PBDEs		PBDE208_uf_µg_L	1	0					0
+8	PBDEs		PBDE209_uf_µg_L	1	0					0
+9	PAHs		Acenaphthene_uf_µg_L	1	0					0
+9	PAHs		Acenaphthylene_uf_µg_L	1	0					0
+9	PAHs		Anthracene_uf_µg_L	1	0					0
+9	PAHs		Benz(a)anthracene_uf_µg_L	1	0					0
+9	PAHs		Benzo(a)pyrene_uf_µg_L	1	0					0
+9	PAHs		Benzo(b)fluoranthene_uf_µg_L	1	0					0
+9	PAHs		Benzo(e)pyrene_uf_µg_L	1	0					0
+9	PAHs		"Benzo(g,h,i)perylene_uf_µg_L"	1	0					0
+9	PAHs		Benzo(k)fluoranthene_uf_µg_L	1	0					0
+9	PAHs		Chrysene_uf_µg_L	1	0					0
+9	PAHs		"Dibenz(a,h)anthracene_uf_µg_L"	1	0					0
+9	PAHs		Dibenzothiophene_uf_µg_L	1	0					0
+9	PAHs		Dimethylnaphthalene_26_uf_µg_L	1	0					0
+9	PAHs		Dimethylphenanthrene_36_uf_µg_L	1	0					0
+9	PAHs		Fluoranthene_uf_µg_L	1	0					0
+9	PAHs		Fluorene_uf_µg_L	1	0					0
+9	PAHs		Indeno(123cd)pyrene_uf_µg_L	1	0					0
+9	PAHs		Methyldibenzothiophene_4_uf_µg_L	1	0					0
+9	PAHs		Methylfluoranthene_2_uf_µg_L	1	0					0
+9	PAHs		Methylfluorene_1_uf_µg_L	1	0					0
+9	PAHs		Methylnaphthalene_1_uf_µg_L	1	0					0
+9	PAHs		Methylnaphthalene_2_uf_µg_L	1	0					0
+9	PAHs		Methylphenanthrene_1_uf_µg_L	1	0					0
+9	PAHs		Naphthalene_uf_µg_L	1	0					0
+9	PAHs		Perylene_uf_µg_L	1	0					0
+9	PAHs		Phenanthrene_uf_µg_L	1	0					0
+9	PAHs		Pyrene_uf_µg_L	1	0					0
+9	PAHs		Trimethylnaphthalene_235_uf_µg_L	1	0					0
+10	VOCs		4Methyl2Pentanone_uf_µg_L	1	0					0
+10	VOCs		Acetone_uf_µg_L	1	0					0
+10	VOCs		Benzene_uf_µg_L	1	0					0
+10	VOCs		Bromobenzene_uf_µg_L	1	0					0
+10	VOCs		Bromochloromethane_uf_µg_L	1	0					0
+10	VOCs		Bromodichloromethane_uf_µg_L	1	0					0
+10	VOCs		Bromoform_uf_µg_L	1	0					0
+10	VOCs		Bromomethane_uf_µg_L	1	0					0
+10	VOCs		Butanone_2_uf_µg_L	1	0					0
+10	VOCs		Butylbenzene_n_uf_µg_L	1	0					0
+10	VOCs		Butylbenzene_sec_uf_µg_L	1	0					0
+10	VOCs		Butylbenzene_tert_uf_µg_L	1	0					0
+10	VOCs		CarbonTetrachloride_uf_µg_L	1	0					0
+10	VOCs		Chlorobenzene_uf_µg_L	1	0					0
+10	VOCs		Chloroethane_uf_µg_L	1	0					0
+10	VOCs		Chloroform_uf_µg_L	1	0					0
+10	VOCs		Chloromethane_uf_µg_L	1	0					0
+10	VOCs		Chlorotoluene_2_uf_µg_L	1	0					0
+10	VOCs		Chlorotoluene_4_uf_µg_L	1	0					0
+10	VOCs		"Dibromo-3-Chloropropane_1,2-(DBCP)_uf_µg_L"	1	0					0
+10	VOCs		Dibromochloromethane_uf_µg_L	1	0					0
+10	VOCs		Dibromoethane_12_uf_µg_L	1	0					0
+10	VOCs		Dibromomethane_uf_µg_L	1	0					0
+10	VOCs		Dichlorobenzene_12_uf_µg_L	1	0					0
+10	VOCs		Dichlorobenzene_13_uf_µg_L	1	0					0
+10	VOCs		Dichlorobenzene_14_uf_µg_L	1	0					0
+10	VOCs		Dichlorodifluoromethane _uf_µg_L	1	0					0
+10	VOCs		Dichloroethane_11_uf_µg_L	1	0					0
+10	VOCs		Dichloroethane_12_uf_µg_L	1	0					0
+10	VOCs		Dichloroethylene_11_uf_µg_L	1	0					0
+10	VOCs		Dichloroethylene_cis_12_uf_µg_L	1	0					0
+10	VOCs		Dichloroethylene_trans_ 12_uf_µg_L	1	0					0
+10	VOCs		Dichloropropane_12_uf_µg_L	1	0					0
+10	VOCs		Dichloropropane_13_uf_µg_L	1	0					0
+10	VOCs		Dichloropropane_22_uf_µg_L	1	0					0
+10	VOCs		Dichloropropene_11_uf_µg_L	1	0					0
+10	VOCs		Dichloropropene_cis13n_uf_µg_L	1	0					0
+10	VOCs		Dichloropropene_trans13_uf_µg_L	1	0					0
+10	VOCs		Ethylbenzene_uf_µg_L	1	0					0
+10	VOCs		Hexachlorobutadiene_uf_µg_L	1	0					0
+10	VOCs		Hexanone2_uf_µg_L	1	0					0
+10	VOCs		Isopropylbenzene_uf_µg_L	1	0					0
+10	VOCs		Isopropyltoluene_p_uf_µg_L	1	0					0
+10	VOCs		MethyleneChloride_uf_µg_L	1	0					0
+10	VOCs		MTBE_uf_µg_L	1	0					0
+10	VOCs		Propylbenzene_n_uf_µg_L	1	0					0
+10	VOCs		Styrene_uf_µg_L	1	0					0
+10	VOCs		Tetrachloroethane_1112_uf_µg_L	1	0					0
+10	VOCs		Tetrachloroethylene_uf_µg_L	1	0					0
+10	VOCs		Toluene_uf_µg_L	1	0					0
+10	VOCs		Trichlorobenzene_123_uf_µg_L	1	0					0
+10	VOCs		Trichlorobenzene_124_uf_µg_L	1	0					0
+10	VOCs		Trichloroethane_111_uf_µg_L	1	0					0
+10	VOCs		Trichloroethane_112_uf_µg_L	1	0					0
+10	VOCs		Trichloroethylene_uf_µg_L	1	0					0
+10	VOCs		Trichlorofluoromethane_uf_µg_L	1	0					0
+10	VOCs		Trichloropropane_123_uf_µg_L	1	0					0
+10	VOCs		Trimethylbenzene_124_uf_µg_L	1	0					0
+10	VOCs		Trimethylbenzene_135_uf_µg_L	1	0					0
+10	VOCs		VinylChloride_uf_µg_L	1	0					0
+10	VOCs		Xylene_mp_uf_µg_L	1	0					0
+10	VOCs		Xylene_o_uf_µg_L	1	0					0
+10	VOCs		Xylenes_uf_µg_L	1	0					0
+11	Emerging contaminants	Stimulant	Caffeine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Carbadox_uf_µg_L	1	0					0
+11	Emerging contaminants	Anticonvulsant	Carbamazepine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Chlortetracycline_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Doxycycline_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Erythromycin_H2O_uf_µg_L	1	0					0
+11	Emerging contaminants	Estrogenic hormone	Estradiol_17beta_uf_µg_L	1	0					0
+11	Emerging contaminants	Antidepressant	Fluoxetine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antilipemic	Gemfibrozil_uf_µg_L	1	0					0
+11	Emerging contaminants	Analgesic	Ibuprofen_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Lincomycin_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Oxytetracycline_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Roxithromycin_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfachloropyridazine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfadimethoxine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfamerazine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfamethazine_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfamethizole_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfamethoxazole_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Sulfathiazole_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Tetracycline_uf_µg_L	1	0					0
+11	Emerging contaminants	Antimicrobial	Triclosan_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Trimethoprim_uf_µg_L	1	0					0
+11	Emerging contaminants	Antibiotic	Tylosin_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	AnatoxinA_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	AnatoxinA_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	DesmethylLR_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	DesmethylLR_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	DesmethylRR_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	DesmethylRR_uf_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	DomoicAcid_Particulate_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	DomoicAcid_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLA_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLA_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLF_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLF_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLR_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLR_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLW_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLW_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLY_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinLY_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinRR_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinRR_uf_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinYR_Particulate_µg_L	1	0					0
+12	Biological toxins	Cyanobacterial toxin	MicrocystinYR_uf_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	Nodularin_Particulate_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	Nodularin_uf_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	OkadaicAcid_Particulate_µg_L	1	0					0
+12	Biological toxins	Shellfish toxin	OkadaicAcid_uf_µg_L	1	0					0

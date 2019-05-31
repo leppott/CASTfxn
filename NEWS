@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-20 15:36:24
+    #> Last Update: 2019-05-31 10:14:29
 
 # Planned Updates
 
@@ -24,6 +24,15 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9223 (2019-05-31)
+
+  - runShinyExample
+      - Added additional Shiny Apps to the package.
+          - CAST\_MapSelection, was already in the package
+          - CAST\_v1, original design
+          - CAST\_v2, for testing of new app
+      - Added parameter to function to run the different Shiny apps.
 
 ## Changes in Version 0.1.0.9222 (2019-05-20)
 

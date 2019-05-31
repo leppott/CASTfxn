@@ -1,0 +1,10 @@
+stressName	respName	V3	V4	V5	r2
+TP_P_uf_mg_L	CSCI	-2.2	0.036	-0.36	0.127
+TP_P_uf_mg_L	CSCI	-2.2	0.036	-0.36	0.127
+TP_P_uf_mg_L	O_E	-1.3	0.2	-0.22	0.050
+TP_P_uf_mg_L	MMI_Score	-2.8	0.0088	-0.44	0.190
+TP_P_uf_mg_L	ClingerTaxaPct	-1.6	0.12	-0.28	0.076
+TP_P_uf_mg_L	ColeopteraTaxaPct	-1.7	0.1	-0.29	0.085
+TP_P_uf_mg_L	EPTTaxaPct	-2.8	0.008	-0.45	0.206
+TP_P_uf_mg_L	ShredderTaxa	-0.73	0.47	-0.13	0.016
+TP_P_uf_mg_L	TaxaRichness	-1.9	0.067	-0.32	0.104

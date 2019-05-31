@@ -4,20 +4,35 @@
 \alias{runShinyExample}
 \title{run Shiny Example}
 \usage{
-runShinyExample()
+runShinyExample(appname = "CAST_v2")
+}
+\arguments{
+\item{appname}{Name of the Shiny app to run.  Valid values are 
+"CAST_Map", "CAST_v1", and "CAST_v2".  Default = "CAST_v2".}
 }
 \description{
 Launches Shiny app.
 }
 \details{
 The Shiny app based on the R package CASTfxn is included in the R package.
-This function launches that app.
+This function launches in the users default web browser the app referenced.  
+There are multiple apps stored in the package:
 
-The Shiny app is online at:
-https://leppott.shinyapps.io/CAST/
+* CAST_Map
 
-A demo map (also Shiny) is at:
-https://leppott.shinyapps.io/CAST_Map/
+    + Selection of COMID on a map or by pull down.
+    
+    + https://leppott.shinyapps.io/CAST_Map/
+    
+* CAST_v1
+
+    + Original design for Shiny App.  Kept for reference only.
+    
+    + https://leppott.shinyapps.io/CAST/
+    
+* CAST_v2
+
+    + Updated Shiny App.
 }
 \examples{
 \dontrun{

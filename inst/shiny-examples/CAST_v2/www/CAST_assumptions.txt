@@ -1,0 +1,25 @@
+Assumptions for CAST Tool:
+
+1. Only detected chemicals. NDs not evaluated at all.
+2. Log10 transform all data except: DO, pH, temp
+3. No data cleanup is performed.
+4. Stressor cutoffs: >=90th percentile (all [including pH] except DO) or <=10th percentile (DO, pH)
+5. Log10 transformation performed for regressions, but not distribution box plots. BUT, box plots are standardized (%-ile), so should be okay.
+6. Prediction interval = 0.75 for prediction lines in stressor-response analysis.
+7. r2 is calculated using Pearson correlation
+8. Stressors with insufficient data are skipped. These need to be reported out as a data gap...in other words, the chem is identified at the extreme of the distribution, but there are too few paired sites to evaluate it for stressor-response relationship.
+
+ToDo
+1. Add in specific taxa information (conductivity-specific tolerance values, SSDs)
+2. Identify where the target site is relative to the stressor-response curve. Is this stressor causing impairment at the site?
+2. Identify data gaps
+3. Add in 303d list and modified reaches data
+4. Add in criteria (need to make data table)
+5. Summarizing and scoring possible stressors
+	a. co-location
+	b. contemporaneous
+	c. stressor-response
+	d. specific taxa information
+	e. physical modification
+	f. 303d listed impairments
+	g. criteria exceeded
