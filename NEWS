@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-06-07 12:40:15
+    #> Last Update: 2019-06-07 14:56:31
 
 # Planned Updates
 
@@ -24,6 +24,13 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9226 (2019-06-06)
+
+  - getBioStressorResponses, Issue \#75
+      - Modify lm() sections.
+          - Convert NAN/Inf to NA
+          - na.action inside of lm()
 
 ## Changes in Version 0.1.0.9225 (2019-06-06)
 

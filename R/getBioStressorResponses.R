@@ -508,6 +508,15 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
       }##IF.log.yn.END
       
+      # QC for NA/NAN/Inf
+      # 20190606, log10 of 0 or negative gives errors for linear model (lm) below.
+      df_plot_all[!is.finite(df_plot_all[, "Stressor"]), "Stressor"]         <- NA
+      df_plot_all_ref[!is.finite(df_plot_all_ref[, "Stressor"]), "Stressor"] <- NA
+      df_plot_cl[!is.finite(df_plot_cl[, "Stressor"]), "Stressor"]           <- NA
+      df_plot_cl_ref[!is.finite(df_plot_cl_ref[, "Stressor"]), "Stressor"]   <- NA
+     
+      
+      
       #}##NoIssues.Munging.END
       
       
@@ -516,7 +525,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
-        model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor) #cluster only
+        model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor, na.action=na.exclude) #cluster only
         model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75)
         model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
         # 
@@ -550,7 +559,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
-        model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor) #cluster only
+        model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor, na.action=na.exclude) #cluster only
         model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75)
         model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
         # 

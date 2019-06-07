@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9226 (2019-06-06)
+
+* getBioStressorResponses, Issue #75
+    + Modify lm() sections.
+        - Convert NAN/Inf to NA
+        - na.action inside of lm()
+
 ## Changes in Version 0.1.0.9225 (2019-06-06)
 
 * Update ShinyApp included in package, Issue #30
