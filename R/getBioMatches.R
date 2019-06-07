@@ -36,6 +36,15 @@
 #' data.cluster       <- data_Cluster_Hi   # need for getSiteInfo and getChemDataSubsets
 #' data.mod           <- data_ReachMod
 #' 
+#' #' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]
+#'                     ==TargetSiteID, "ElevCategory"])
+#' if(elev_cat=="HI"){
+#'    data.cluster <- data_Cluster_Hi
+#' } else if(elev_cat=="LO") {
+#'    data.cluster <- data_Cluster_Lo
+#' }
+#' 
 #' # Map data
 #' # San Diego
 #' #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")

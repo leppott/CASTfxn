@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-31 11:11:33
+    #> Last Update: 2019-06-07 12:40:15
 
 # Planned Updates
 
@@ -24,6 +24,23 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9225 (2019-06-06)
+
+  - Update ShinyApp included in package, Issue \#30
+      - runShinyExample
+          - Use CAST\_v3
+      - Add shinyjs to DESCRIPTION Imports
+      - Still working
+  - Update console feedback to messages, Issue \#73
+      - So can trap in Shiny app and display to user.
+      - getCluster.R
+      - getBioStressorResponses
+  - Add output directory to Return section of help file.
+      - getSiteInfo
+      - getClusterInfo
+      - getCoOccur
+      - getVerifiedPredictions
 
 ## Changes in Version 0.1.0.9224 (2019-05-31)
 

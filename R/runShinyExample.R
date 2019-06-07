@@ -18,12 +18,12 @@
 #'     
 #'     + https://leppott.shinyapps.io/CAST/
 #'     
-#' * CAST_v2
+#' * CAST_v3
 #' 
 #'     + Updated Shiny App.
 #' 
 #' @param appname Name of the Shiny app to run.  Valid values are 
-#' "CAST_Map", "CAST_v1", and "CAST_v2".  Default = "CAST_v2".
+#' "CAST_Map", "CAST_v1", and "CAST_v3".  Default = "CAST_v3".
 
 #'
 #' @examples
@@ -33,7 +33,7 @@
 #' }
 #
 #' @export
-runShinyExample <- function(appname="CAST_v2"){##FUNCTION.START
+runShinyExample <- function(appname="CAST_v3"){##FUNCTION.START
   #
   #appDir <- system.file("shiny-examples", appname, package = "CASTfxn")
   #if (appDir == "") {

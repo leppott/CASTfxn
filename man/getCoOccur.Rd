@@ -58,8 +58,9 @@ Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
 }
 \value{
 Saves a single PDF of all plots, individual plots as JPGs, and a 
-scores files (tab separated text file) to a user defined 'Results' directory.  
-A sub-directory is created for each SiteID in TargetSiteID.
+scores files (tab separated text file) to a user defined 'Results' directory 
+in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results' 
+for each SiteID in TargetSiteID.
 }
 \description{
 Generates a box plots and stressor response plots (individually as jpg 
@@ -178,7 +179,7 @@ Bio.Deg.Lab <- c("Yes", "No")
 biocomm <- "bmi"
 dir.plots <- file.path(getwd(), "Results")
 dir_sub <- "CoOccurrence"
-colStressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
 #
 getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab

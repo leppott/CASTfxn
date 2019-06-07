@@ -412,7 +412,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     
     # DEBUG
     if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-      print(paste0("p; ",p, "; ", stressors[p]))
+      message(paste0("p; ",p, "; ", stressors[p]))
       flush.console()
     }##IF.boo.DEBUG.END
 
@@ -429,8 +429,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       # QC
       if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-        print(paste0("Item (", pq, "/", pq.len, ")"))
-        print(paste0("q; ", respName))
+        message(paste0("Item (", pq, "/", pq.len, ")"))
+        message(paste0("q; ", respName))
         flush.console()
       }##IF.boo.DEBUG.END
       
@@ -453,13 +453,13 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       if (nrow(df_plot_all) < min_cases) { 
         txt.score <- "< 20 cases"
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
-        print(msg.status)
+        message(msg.status)
         next 
       }
       if(sum(is.na(df_plot_all$Stress))==nrow(df_plot_all)) {
         txt.score <- "stressors all NA or NAN"
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
-        print(msg.status)
+        message(msg.status)
         next 
       }
       
@@ -658,7 +658,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         }##FOR~f~END
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score_all, ", ", txt.score_cl)
-        print(msg.status)
+        message(msg.status)
         #}##IF.boo.pryr.START
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID
                                         , "biocomm"=biocomm
@@ -701,7 +701,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         sr.score_cl <- "NE"
         txt.score <- "No Data"
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score)
-        print(msg.status)
+        message(msg.status)
       }##IF~nrow(df_plot_site)~END
       #
       

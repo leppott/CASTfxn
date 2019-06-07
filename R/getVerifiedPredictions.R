@@ -32,7 +32,8 @@
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' 
-#' @return Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
+#' @return Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
+#' in working directory of box plots and a single PDF of all plots.
 #' 
 # @importFrom pryr "%<a-%"
 #' 

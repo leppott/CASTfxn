@@ -40,7 +40,8 @@ getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 }
 \value{
-Results text file and jpeg files to "Results" folder in working directory of box plots and a single PDF of all plots.
+Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
+in working directory of box plots and a single PDF of all plots.
 }
 \description{
 Get verified predictions.

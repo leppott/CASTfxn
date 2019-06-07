@@ -16,7 +16,7 @@
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 
-#' @return A jpeg in the "Results" subdirectory of the working directory.
+#' @return A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.
 #' 
 # @importFrom pryr "%<a-%"
 #' 
@@ -147,7 +147,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs
     i.num <- i -1
     i.len <- ncol(data.cluster.mySites) - 1
     i.var <- varYlab
-    print(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
+    message(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
     utils::flush.console()
     #
     myY <- df.plot[,i]
@@ -155,7 +155,7 @@ getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs
     #
     # QC
     if(sum(!is.na(myY))==0 || is.numeric(myY)==FALSE){##IF.myY.START
-      print("No data, next")
+      message("No data, next")
       utils::flush.console()
       next
     }##IF.myY.END

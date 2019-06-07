@@ -42,10 +42,10 @@
 #' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
 #' 
-#' @return A jpg map to a folder named by the SiteID in the user supplied dir_results 
-#' folder (default is "Results" folder in the working directory).  Also produced 
-#' is a summary list; SiteInfo, Samps, BMImetrics, AlgMetrics, ReachInfo, COMID
-#' , ClustIDs, impair, and mods.
+#' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
+#' in the user supplied dir_results folder (default is "Results" folder in the 
+#' working directory).  Also produced is a summary list; SiteInfo, Samps, 
+#' BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
 #' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"

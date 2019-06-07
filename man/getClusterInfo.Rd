@@ -19,7 +19,7 @@ getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs,
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "ClusterInfo"}
 }
 \value{
-A jpeg in the "Results" subdirectory of the working directory.
+A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.
 }
 \description{
 Get cluster information.

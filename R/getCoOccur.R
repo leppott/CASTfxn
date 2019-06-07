@@ -96,8 +96,9 @@
 #' , "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU")
 #'
 #' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
-#' scores files (tab separated text file) to a user defined 'Results' directory.  
-#' A sub-directory is created for each SiteID in TargetSiteID.
+#' scores files (tab separated text file) to a user defined 'Results' directory 
+#' in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results' 
+#' for each SiteID in TargetSiteID.
 #' 
 #' @examples
 #' # Example #1, CA data (multiple sites)
@@ -152,7 +153,7 @@
 #' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
 #' dir_sub <- "CoOccurrence"
-#' colStressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+#' col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
@@ -198,7 +199,7 @@ getCoOccur <- function(df.data
   if(length(col.Stressors.NotPresent)!=0){##IF~bad stressors~START
     msg.warning <- paste0("Stressors listed below are not present in the provided data frame (df.data) and were not analyzed: \n"
                            , paste(col.Stressors.NotPresent, collapse="\n"), "\n\n")
-    cat(msg.warning)
+    message(msg.warning)
     utils::flush.console()
     col.Stressors <- col.Stressors[col.Stressors %in% names(df.data)]
   }##IF~bad stressors~END
@@ -373,7 +374,7 @@ getCoOccur <- function(df.data
        ij.num <- ((i.num-1)*j.len) + j.num
        ij.len <- i.len * j.len
        #
-       cat(paste0("Processing item (",ij.num,"/",ij.len,"); ID (", i.num, "/", i.len, ") ", i
+       message(paste0("Processing item (",ij.num,"/",ij.len,"); ID (", i.num, "/", i.len, ") ", i
                     , "; Stressors (", j.num, "/", j.len, ") ", j, ".\n"))
        utils::flush.console()
        #
@@ -648,7 +649,7 @@ getCoOccur <- function(df.data
          
        } else {
          # no data
-         cat(paste0("   All values NA for stressor (", j, ").\n"))
+         message(paste0("   All values NA for stressor (", j, ").\n"))
          utils::flush.console()
          # add data to scores table
          column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")

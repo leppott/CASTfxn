@@ -4,11 +4,11 @@
 \alias{runShinyExample}
 \title{run Shiny Example}
 \usage{
-runShinyExample(appname = "CAST_v2")
+runShinyExample(appname = "CAST_v3")
 }
 \arguments{
 \item{appname}{Name of the Shiny app to run.  Valid values are 
-"CAST_Map", "CAST_v1", and "CAST_v2".  Default = "CAST_v2".}
+"CAST_Map", "CAST_v1", and "CAST_v3".  Default = "CAST_v3".}
 }
 \description{
 Launches Shiny app.
@@ -30,7 +30,7 @@ There are multiple apps stored in the package:
     
     + https://leppott.shinyapps.io/CAST/
     
-* CAST_v2
+* CAST_v3
 
     + Updated Shiny App.
 }

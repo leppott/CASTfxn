@@ -40,10 +40,10 @@ getSiteInfo(TargetSiteID, dir_results = file.path(getwd(), "Results"),
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
 }
 \value{
-A jpg map to a folder named by the SiteID in the user supplied dir_results 
-folder (default is "Results" folder in the working directory).  Also produced 
-is a summary list; SiteInfo, Samps, BMImetrics, AlgMetrics, ReachInfo, COMID
-, ClustIDs, impair, and mods.
+A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
+in the user supplied dir_results folder (default is "Results" folder in the 
+working directory).  Also produced is a summary list; SiteInfo, Samps, 
+BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
 }
 \description{
 Get site info of provided siteID.
