@@ -13,6 +13,7 @@
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
+#' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
 #' 
 #' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
@@ -241,6 +242,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
                                     , LogTransf, ref.sites, biocomm="bmi"
                                     , dir_results=file.path(getwd(), "Results")
                                     , dir_sub="StressorResponse"
+                                    , boo_pred_warn = TRUE
                                     ) {##FUNCTION.START
   # DEBUG
   boo.DEBUG <- FALSE
@@ -526,7 +528,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
         model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor, na.action=na.exclude) #cluster only
-        model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75)
+        if(boo_pred_warn==TRUE){
+          suppressWarnings(model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75))
+        } else {
+          model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75)
+        }
         model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
         # 
         slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
@@ -560,7 +566,11 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
         # 20190228, QC for no data
         model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor, na.action=na.exclude) #cluster only
-        model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75)
+        if(boo_pred_warn==TRUE){
+          suppressWarnings(model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75))
+        } else {
+          model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75)
+        }
         model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
         # 
         slope_all <- signif(summary(model_all)$coefficients[[2]], 3)

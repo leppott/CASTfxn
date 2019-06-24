@@ -7,7 +7,7 @@
 getBioStressorResponses(TargetSiteID, stressors, BioResp,
   list.MatchBioData, LogTransf, ref.sites, biocomm = "bmi",
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "StressorResponse")
+  dir_sub = "StressorResponse", boo_pred_warn = TRUE)
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
@@ -27,6 +27,8 @@ getBioStressorResponses(TargetSiteID, stressors, BioResp,
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "StressorResponse"}
+
+\item{boo_pred_warn}{Should warnings for prediction be suppressed.  Default = TRUE.}
 }
 \value{
 A jpg in SiteID subfoler of the "Results" folder of working directory.  

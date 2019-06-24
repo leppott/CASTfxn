@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9228 (2019-06-24)
+
+* getBioStressorResponses, Issue #79
+    + Suppress warnings for "predict".
+
 ## Changes in Version 0.1.0.9227 (2019-06-24)
 
 * Working on Shiny app.  Incomplete.  Issue #30.
