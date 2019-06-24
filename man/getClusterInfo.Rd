@@ -4,7 +4,7 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(site.COMID, site.Clusters, refSiteCOMIDs,
+getClusterInfo(TargetSiteID, site.COMID, site.Clusters, refSiteCOMIDs,
   dir_results = file.path(getwd(), "Results"), dir_sub = "ClusterInfo")
 }
 \arguments{
@@ -32,6 +32,8 @@ Required objects:
 * TargetSiteID
 
 * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+ 
+ @param TargetSiteID SiteID
 }
 \examples{
 
@@ -107,6 +109,6 @@ refSiteCOMIDs <- list.data$ref.reaches
 dir_sub <- "ClusterInfo"
 
 # Run getClusterInfo
-getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
 
 }

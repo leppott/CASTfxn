@@ -43,8 +43,13 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     , mainPanel(
       tabsetPanel(
+        # 0
+        tabPanel("Console"
+                 , h3("Console")
+                 , textOutput("text_console_ALL")
+                 )##tabPanel~Console~END
         # 1
-        tabPanel("Site Info"
+        , tabPanel("Site Info"
                  , h3("Map")
                  , p("If the map file exists it will be displayed below.  If it doesn't then click the button to create it.")
                  , textOutput("StationID")

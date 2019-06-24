@@ -10,6 +10,7 @@
 #' 
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
+#'  @param TargetSiteID SiteID
 #' @param site.COMID SiteID
 #' @param site.Clusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
@@ -94,12 +95,16 @@
 #' dir_sub <- "ClusterInfo"
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+#' getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
 #' 
 #' @export
-getClusterInfo <- function(site.COMID, site.Clusters, refSiteCOMIDs
+getClusterInfo <- function(TargetSiteID
+                           , site.COMID
+                           , site.Clusters
+                           , refSiteCOMIDs
                            , dir_results=file.path(getwd(), "Results")
-                           , dir_sub="ClusterInfo") {##FUNCTION.START
+                           , dir_sub="ClusterInfo"
+                           ) {##FUNCTION.START
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory

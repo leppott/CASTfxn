@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-06-24 11:24:56
+    #> Last Update: 2019-06-24 12:54:08
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9229 (2019-06-24)
+
+  - getClusterInfo, Issue \#80
+      - Add TargetSiteID as input parameter.
 
 ## Changes in Version 0.1.0.9228 (2019-06-24)
 

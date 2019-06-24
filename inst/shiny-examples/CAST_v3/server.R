@@ -810,7 +810,7 @@ shinyServer(function(input, output) {
     shiny::withProgress({
       #
       # Number of increments
-      n_inc <- 19
+      n_inc <- 21
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Base Data"
@@ -873,7 +873,7 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getSiteInfo
+      # Run getSiteInfo ####
       list.SiteSummary <- getSiteInfo(TargetSiteID
                                       , dir_results
                                       , data.Stations.Info
@@ -908,7 +908,7 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getChemDataSubsets
+      # Run getChemDataSubsets ####
       list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
                                       , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
                                       , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
@@ -936,7 +936,7 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getStressorList
+      # Run getStressorList ####
       list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
                                         , cluster.samps, ref.sites, site.chem
                                         , probsHigh, probsLow, biocomm, dir_results
@@ -965,7 +965,7 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getBioMatches
+      # Run getBioMatches ####
       list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
                                          , data.chem.raw, data.bio.metrics, biocomm)
       
@@ -991,7 +991,7 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getBioStressorResponses, BMI               
+      # Run getBioStressorResponses, BMI      ####          
       getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
                               , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
       
@@ -1002,6 +1002,9 @@ shinyServer(function(input, output) {
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
       # Data getClusterInfo
+      site.COMID <- list.SiteSummary$COMID
+      site.Clusters <- list.SiteSummary$ClustIDs
+      #
       ref.reaches   <- list.data$ref.reaches
       refSiteCOMIDs <- list.data$ref.reaches
       dir_sub <- "ClusterInfo"
@@ -1011,8 +1014,8 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getClusterInfo
-      getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+      # Run getClusterInfo ####
+      getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
       
       
       
@@ -1049,15 +1052,13 @@ shinyServer(function(input, output) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
+      # Run, getCoOccur ####
       getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
                  , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
                  , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
       )
       
-      
-      
-      
-      
+
       
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "ALL"
@@ -1065,23 +1066,44 @@ shinyServer(function(input, output) {
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
       
+
       
+      # WoE ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Weight of Evidence"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       
+      msg("WoE")
+      message(msg)
       
+      # Report ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Report"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       
+      msg("report")
+      message(msg)
       
-      
-      
-      # WoE
-      
-      # Report
+      #
     }, message = "Run ALL")##witProgress~END
   }##Run_ALL~END
   
   # 00RunAll ####
   
   observeEvent(input$b_RunAll, {
-    Run_ALL()
+    withCallingHandlers({
+      shinyjs::html(id="text_console_ALL", html="")
+      # Run function that shows console output
+      Run_ALL()
+      }
+      , message = function(m) {
+        shinyjs::html(id = "text_console_ALL", html = m$message, add = FALSE)
+      }
+      , warning = function(m) {
+        shinyjs::html(id = "text_console_ALL", html = paste0(" ... ", m$message), add = TRUE)
+      })##withCallingHandlers~END
   })##observeEvent~input$b_RunAll~ENDs
   
   

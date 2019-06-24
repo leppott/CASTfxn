@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9229 (2019-06-24)
+
+* getClusterInfo, Issue #80
+    + Add TargetSiteID as input parameter.
+
 ## Changes in Version 0.1.0.9228 (2019-06-24)
 
 * getBioStressorResponses, Issue #79
