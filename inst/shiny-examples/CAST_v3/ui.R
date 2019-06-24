@@ -34,6 +34,8 @@ shinyUI(fluidPage(
                       , choices = c("bmi", "algae")
                       , selected = "bmi")
         
+        , actionButton("b_RunAll", "Run CAST")
+        
         # set size of sidebar (out of 12)
         #, width=3 # can invoke "ERROR: [uv_write] broken pipe"
       )##sidebarPanel~END
@@ -53,6 +55,7 @@ shinyUI(fluidPage(
                  , textOutput("text_console_Map")
                  #, includeHTML(file.path(".", "Results", "SRCKN001.61", "SiteInfo", paste0("SRCKN001.61", ".map.leaflet.html")))
                  #, includeHTML(output$fn_Map)
+                 , uiOutput("Map_html")
                  # check MBSS shiny app for ideas on how to display reactively
                  )##tabPanel~Site Info~END
         # 2

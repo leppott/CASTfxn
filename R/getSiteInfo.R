@@ -219,17 +219,18 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   # # projection for outline
   # my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m 
   #              +no_defs +ellps=GRS80 +towgs84=0,0,0"
+  # map_proj <- my.aea
   
 
   df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
   proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"],
-                               df.plotSite[,"FinalLatitude"]), my.aea)
+                               df.plotSite[,"FinalLatitude"]), map_proj)
   proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"],
-                                df.plot.cl[,"FinalLatitude"]), my.aea)
+                                df.plot.cl[,"FinalLatitude"]), map_proj)
   proj.refSites <- rgdal::project(cbind(data.refSites[,"FinalLongitude"],
-                                 data.refSites[,"FinalLatitude"]), my.aea)
+                                 data.refSites[,"FinalLatitude"]), map_proj)
   proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
-                                 data.Stations.Info[,"FinalLatitude"]), my.aea)
+                                 data.Stations.Info[,"FinalLatitude"]), map_proj)
   # Unprojected data
   
   

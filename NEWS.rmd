@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9227 (2019-06-24)
+
+* Working on Shiny app.  Incomplete.  Issue #30.
+* getSiteInfo, Issue #78
+    + Update code to use function variable map_proj instead of example variable my.aea.
+
 ## Changes in Version 0.1.0.9226 (2019-06-06)
 
 * getBioStressorResponses, Issue #75

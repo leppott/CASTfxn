@@ -27,6 +27,22 @@ shinyServer(function(input, output) {
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, ".map.leaflet.html"))))
   })
   
+  output$Map_html <- reactiveUI(function() {
+    fn_map_html <- file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, ".map.leaflet.html"))
+    #
+    fe_map_html <- file.exists(fn_map_html)
+    #
+    if(fe_map_html==TRUE){
+      includeHTML(fn_map_html)
+      #HTML(readLines(fn_map_html))
+    } else {
+      return(NULL)
+    }
+    
+    
+    
+  })
+  
   
   # Run CASTfxn ####
   
@@ -235,7 +251,7 @@ shinyServer(function(input, output) {
                                                , data.chem.info=data.chem.info)
       #
       # Increment the progress bar, and update the detail text.
-      msgDetail_A <- "ChemDataSubsets"
+      msgDetail_A <- "Cluster"
       msgDetail_B <- "Load input data"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
@@ -245,7 +261,7 @@ shinyServer(function(input, output) {
       dir_sub <- "ClusterInfo"
       #
       # Increment the progress bar, and update the detail text.
-      msgDetail_A <- "ChemDataSubsets"
+      msgDetail_A <- "Cluster"
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
@@ -790,10 +806,287 @@ shinyServer(function(input, output) {
     )##withProgress~END
   }##Run_VP~END
   
+  Run_ALL <- function(){
+    shiny::withProgress({
+      #
+      # Number of increments
+      n_inc <- 19
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Base Data"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Example 1, BMI
+      #TargetSiteID <- "SRCKN001.61"
+      TargetSiteID <- input$Station
+      dir_results  <- file.path(".", "Results")
+      #biocomm      <- "bmi"
+      biocomm      <- input$BioComm
+      #
+      # datasets getSiteInfo
+      # data, example included with package
+      data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
+      data.SampSummary   <- data_SampSummary
+      data.303d.ComID    <- data_303d
+      data.bmi.metrics   <- data_BMIMetrics
+      data.algae.metrics <- data_AlgMetrics
+      data.mod           <- data_ReachMod
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "SiteInfo"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
+      elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+                                             , "ElevCategory"])
+      if(elev_cat=="HI"){
+        data.cluster <- data_Cluster_Hi
+      } else if(elev_cat=="LO") {
+        data.cluster <- data_Cluster_Lo
+      }
+      
+      # Map data
+      # San Diego
+      #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
+      #outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
+      # AZ
+      map_flowline  <- data_GIS_Flow_HI
+      map_flowline2 <- data_GIS_Flow_LO
+      if(elev_cat=="HI"){
+        map_flowline <- data_GIS_Flow_HI
+      } else if(elev_cat=="LO") {
+        map_flowline <- data_GIS_Flow_LO
+      }
+      map_outline   <- data_GIS_AZ_Outline
+      # Project site data to USGS Albers Equal Area
+      usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+      # projection for outline
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+      map_proj <- my.aea
+      #
+      dir_sub <- "SiteInfo" 
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "SiteInfo"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getSiteInfo
+      list.SiteSummary <- getSiteInfo(TargetSiteID
+                                      , dir_results
+                                      , data.Stations.Info
+                                      , data.SampSummary
+                                      , data.303d.ComID
+                                      , data.bmi.metrics
+                                      , data.algae.metrics
+                                      , data.cluster
+                                      , data.mod
+                                      , map_proj
+                                      , map_outline
+                                      , map_flowline
+                                      , dir_sub=dir_sub)
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "ChemDataSubsets"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Data getChemDataSubsets
+      # data import, example 
+      # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
+      # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
+      site.COMID     <- list.SiteSummary$COMID
+      site.Clusters  <- list.SiteSummary$ClustIDs
+      # data, example included with package
+      data.chem.raw  <- data_Chem
+      data.chem.info <- data_ChemInfo
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "ChemDataSubsets"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getChemDataSubsets
+      list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
+                                      , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+                                      , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
+      #
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Stressor List"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Data getStressorList
+      chem.info     <- list.data$chem.info
+      cluster.chem  <- list.data$cluster.chem
+      cluster.samps <- list.data$cluster.samps
+      ref.sites     <- list.data$ref.sites
+      site.chem     <- list.data$site.chem
+      dir_sub       <- "CandidateCauses"
+      #
+      # set cutoff for possible stressor identification
+      probsLow  <- 0.10
+      probsHigh <- 0.90 
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Stressor List"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getStressorList
+      list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
+                                        , cluster.samps, ref.sites, site.chem
+                                        , probsHigh, probsLow, biocomm, dir_results
+                                        , dir_sub)
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Bio Matches"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Data getBioMatches, BMI
+      ## remove "none"
+      stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
+      stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
+      LogTransf <- stressors_logtransf
+      #
+      if(biocomm=="bmi"){
+        data.bio.metrics <- data_BMIMetrics
+      } else if(biocomm=="algae"){
+        data.bio.metrics <- data_AlgMetrics
+      }
+      
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Bio Matches"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getBioMatches
+      list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+                                         , data.chem.raw, data.bio.metrics, biocomm)
+      
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Bio Stressor Responses"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Data getBioStressorResponses, BMI 
+      if(biocomm=="bmi"){
+        BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
+                     , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
+                     , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc")
+      } else if(biocomm=="algae"){
+        BioResp <- colnames(data.bio.metrics[6:52])
+      }
+      
+      dir_sub <- "StressorResponse"
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Bio Stressor Responses"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getBioStressorResponses, BMI               
+      getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
+                              , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
+      
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Cluster"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Data getClusterInfo
+      ref.reaches   <- list.data$ref.reaches
+      refSiteCOMIDs <- list.data$ref.reaches
+      dir_sub <- "ClusterInfo"
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Cluster"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      # Run getClusterInfo
+      getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+      
+      
+      
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "CoOccurrence"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      
+      # Cluster Data based on elevation category
+      boo_Lo <- TargetSiteID %in% CASTfxn::data_CoOccur_AZ_Lo$StationID_Master
+      if(boo_Lo==TRUE){
+        df.data <- CASTfxn::data_CoOccur_AZ_Lo
+      } else {
+        df.data <- CASTfxn::data_CoOccur_AZ_Hi
+      }
+      #
+      col.Group     <- "Group"
+      col.Bio       <- "IBI"
+      col.Stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
+      col.ID        <- "StationID_Master"
+      #
+      Bio.Nar.Brk <- c(0, 45, 52, 100)
+      Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
+      Bio.Deg.Brk <- c(0, 45, 100)
+      Bio.Deg.Lab <- c("Yes", "No")
+      biocomm <- "bmi"
+      #biocomm <- input$BioComm
+      dir.plots <- file.path(".", "Results")
+      dir_sub <- "CoOccurrence"
+      col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "CoOccurrence"
+      msgDetail_B <- "Run"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
+                 , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
+                 , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
+      )
+      
+      
+      
+      
+      
+      
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "ALL"
+      msgDetail_B <- "COMPLETE"
+      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      #
+      
+      
+      
+      
+      
+      
+      
+      
+      # WoE
+      
+      # Report
+    }, message = "Run ALL")##witProgress~END
+  }##Run_ALL~END
+  
+  # 00RunAll ####
+  
+  observeEvent(input$b_RunAll, {
+    Run_ALL()
+  })##observeEvent~input$b_RunAll~ENDs
+  
   
   # 01Map ####
   
-
   observeEvent(input$Create01Map, {
     # Console messages to Shiny
     #https://deanattali.com/blog/advanced-shiny-tips/
