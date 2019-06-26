@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-06-24 12:54:08
+    #> Last Update: 2019-06-26 10:52:25
 
 # Planned Updates
 
@@ -24,6 +24,22 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9230 (2019-06-26)
+
+  - Working on Shiny app. Incomplete. Issue \#30.
+      - Renamed CAST\_v3 to CAST\_AZ
+      - Nearly complete.
+      - Removed CAST\_v1 and CAST\_v2.
+  - getClusterInfo
+      - Tweaks for Shiny App
+      - Formatting.
+      - boo\_DEBUG for testings.
+
+## Changes in Version 0.1.0.9229 (2019-06-24)
+
+  - getClusterInfo, Issue \#76
+      - Add data.cluster as input parameter.
 
 ## Changes in Version 0.1.0.9229 (2019-06-24)
 

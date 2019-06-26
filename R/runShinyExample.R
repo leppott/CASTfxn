@@ -13,27 +13,32 @@
 #'     + https://leppott.shinyapps.io/CAST_Map/
 #'     
 #' * CAST_v1
+#'     
+#'     + No longer in the package, kept for reference only.
 #' 
-#'     + Original design for Shiny App.  Kept for reference only.
+#'     + Original design for Shiny App.
 #'     
 #'     + https://leppott.shinyapps.io/CAST/
 #'     
-#' * CAST_v3
+#' * CAST_AZ
 #' 
-#'     + Updated Shiny App.
+#'     + Updated Shiny App with AZ data.
 #' 
 #' @param appname Name of the Shiny app to run.  Valid values are 
-#' "CAST_Map", "CAST_v1", and "CAST_v3".  Default = "CAST_v3".
+#' "CAST_Map" and "CAST_AZ".  Default = "CAST_AZ".
 
 #'
 #' @examples
 #' \dontrun{
-#' # Run Function
-#' runShinyExample()
+#' # AZ
+#' runShinyExample("CAST_AZ")
+#' 
+#' # Map
+#' runShinyExample("CAST_Map")
 #' }
 #
 #' @export
-runShinyExample <- function(appname="CAST_v3"){##FUNCTION.START
+runShinyExample <- function(appname="CAST_AZ"){##FUNCTION.START
   #
   #appDir <- system.file("shiny-examples", appname, package = "CASTfxn")
   #if (appDir == "") {

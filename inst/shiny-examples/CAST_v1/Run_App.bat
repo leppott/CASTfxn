@@ -1,1 +1,0 @@
-"C:\Programs\R\R-3.3.1\bin\R.exe" CMD BATCH "run.r"

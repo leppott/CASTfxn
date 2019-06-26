@@ -5,14 +5,19 @@
 \title{Cluster Info}
 \usage{
 getClusterInfo(TargetSiteID, site.COMID, site.Clusters, refSiteCOMIDs,
-  dir_results = file.path(getwd(), "Results"), dir_sub = "ClusterInfo")
+  data.cluster, dir_results = file.path(getwd(), "Results"),
+  dir_sub = "ClusterInfo")
 }
 \arguments{
+\item{TargetSiteID}{SiteID}
+
 \item{site.COMID}{SiteID}
 
 \item{site.Clusters}{site clusters.}
 
 \item{refSiteCOMIDs}{reference site COMIDs}
+
+\item{data.cluster}{The StreamCat data for each reach with cluster assignments.}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
@@ -32,8 +37,6 @@ Required objects:
 * TargetSiteID
 
 * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
- 
- @param TargetSiteID SiteID
 }
 \examples{
 
@@ -109,6 +112,7 @@ refSiteCOMIDs <- list.data$ref.reaches
 dir_sub <- "ClusterInfo"
 
 # Run getClusterInfo
-getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, 
+               data.cluster, dir_results, dir_sub)
 
 }

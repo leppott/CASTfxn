@@ -37,6 +37,22 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9230 (2019-06-26)
+
+* Working on Shiny app.  Incomplete.  Issue #30.
+    + Renamed CAST_v3 to CAST_AZ
+    + Nearly complete.
+    + Removed CAST_v1 and CAST_v2.
+* getClusterInfo
+    + Tweaks for Shiny App
+    + Formatting.
+    + boo_DEBUG for testings.
+
+## Changes in Version 0.1.0.9229 (2019-06-24)
+
+* getClusterInfo, Issue #76
+    + Add data.cluster as input parameter.
+
 ## Changes in Version 0.1.0.9229 (2019-06-24)
 
 * getClusterInfo, Issue #80

@@ -10,10 +10,11 @@
 #' 
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
-#'  @param TargetSiteID SiteID
+#' @param TargetSiteID SiteID
 #' @param site.COMID SiteID
 #' @param site.Clusters site clusters.
 #' @param refSiteCOMIDs reference site COMIDs
+#' @param data.cluster The StreamCat data for each reach with cluster assignments.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 
@@ -95,16 +96,25 @@
 #' dir_sub <- "ClusterInfo"
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
+#' getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, 
+#'                data.cluster, dir_results, dir_sub)
 #' 
 #' @export
 getClusterInfo <- function(TargetSiteID
                            , site.COMID
                            , site.Clusters
                            , refSiteCOMIDs
+                           , data.cluster
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
+  #
+  boo_DEBUG <- FALSE
+  #
+  if(boo_DEBUG==TRUE){
+    refSiteCOMIDs <- ref.reaches
+    i <- 2
+  }##IF~boo_DEBUG~END
   #
   useLU <- FALSE
   # check for and create (if necessary) "Results" subdirectory of working directory
@@ -128,17 +138,17 @@ getClusterInfo <- function(TargetSiteID
   }
   
   if (useLU == FALSE) {##IF.useLU.START
-    varMain = "Clusters w/o Land Use"
+    varMain <- "Clusters w/o Land Use"
     cluster <- "clust_noland"
   } else {
-    varMain = "Clusters w/ Land Use"
+    varMain <- "Clusters w/ Land Use"
     cluster <- "clust_land"
-  }
+  }##IF~useLU~END
   
-  data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,]
-  df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs,]
+  data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,  ]
+  df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs, ]
   df.plot.2 <- data.cluster.mySites
-  df.plot <- data.cluster
+  df.plot   <- data.cluster
 
   # Plots ####
   # Capture each plot in a list for the PDF
@@ -155,8 +165,8 @@ getClusterInfo <- function(TargetSiteID
     message(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
     utils::flush.console()
     #
-    myY <- df.plot[,i]
-    myX <- df.plot[,cluster]
+    myY <- df.plot[, i]
+    myX <- df.plot[, cluster]
     #
     # QC
     if(sum(!is.na(myY))==0 || is.numeric(myY)==FALSE){##IF.myY.START
@@ -215,7 +225,7 @@ getClusterInfo <- function(TargetSiteID
     colnames(df_ggplot_targ) <- c("var", str_xlab)
     
     ## Plot, portions
-    boo_plot_ref <- ifelse(nrow(df_ggplot_ref)!=0, TRUE, FALSE)
+    boo_plot_ref  <- ifelse(nrow(df_ggplot_ref)!=0, TRUE, FALSE)
     boo_plot_targ <- ifelse(nrow(df_ggplot_targ)!=0, TRUE, FALSE)
 
     ## Plot, Variables, Output Size (inches)
