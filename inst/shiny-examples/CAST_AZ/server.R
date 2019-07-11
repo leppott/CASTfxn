@@ -98,7 +98,8 @@ shinyServer(function(input, output) {
       #TargetSiteID <- "SRCKN001.61"
       TargetSiteID <- input$Station
       dir_results <- file.path(".", "Results")
-      #
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Data getSiteInfo
       # data, example included with package
       data.Stations.Info <- CASTfxn::data_Sites
@@ -840,7 +841,7 @@ shinyServer(function(input, output) {
     shiny::withProgress({
       #
       # Number of increments
-      n_inc <- 21
+      n_prog <- 23 # confirmed 20190703
       mySleepTime <- 0.5
       #
       # Remove Zip ####
@@ -849,11 +850,12 @@ shinyServer(function(input, output) {
         file.remove(fn_zip_results)
       }##IF~length(fn_zip_results)~END
       #
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # getSiteInfo ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Base Data"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Example 1, BMI
@@ -875,7 +877,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "SiteInfo"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
@@ -911,7 +913,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "SiteInfo"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run getSiteInfo
@@ -933,7 +935,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "ChemDataSubsets"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Data getChemDataSubsets
@@ -949,7 +951,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "ChemDataSubsets"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run getChemDataSubsets
@@ -957,11 +959,12 @@ shinyServer(function(input, output) {
                                       , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
                                       , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # getStressorList ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Stressor List"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Data getStressorList
@@ -979,7 +982,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Stressor List"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run getStressorList
@@ -988,11 +991,12 @@ shinyServer(function(input, output) {
                                         , probsHigh, probsLow, biocomm, dir_results
                                         , dir_sub)
 
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # getBioMatches ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Matches"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Data getBioMatches, BMI
@@ -1011,7 +1015,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Matches"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run getBioMatches
@@ -1019,11 +1023,12 @@ shinyServer(function(input, output) {
                                          , data.chem.raw, data.bio.metrics, biocomm)
 
 
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # getBioStressorResponses ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Stressor Responses"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Data getBioStressorResponses, BMI
@@ -1040,7 +1045,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Stressor Responses"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run getBioStressorResponses, BMI
@@ -1050,39 +1055,44 @@ shinyServer(function(input, output) {
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Functions above are needed for the functions below.
       # (getSiteInfo, getChemDataSet, getStressorList, getBioMatches)
-      # The functions below are all end points; i.e., not used as inputs for other functions.
+      # The functions below are all end points; 
+      # i.e., not used as inputs for other functions.
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      # 
-      # # getClusterInfo ####
-      # # Increment the progress bar, and update the detail text.
-      # msgDetail_A <- "Cluster"
-      # msgDetail_B <- "Load input data"
-      # incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
-      # Sys.sleep(mySleepTime)
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # getClusterInfo ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Cluster"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      #
+      # Data getClusterInfo
+      site.COMID <- list.SiteSummary$COMID
+      site.Clusters <- list.SiteSummary$ClustIDs
+      #
+      ref.reaches   <- list.data$ref.reaches
+      refSiteCOMIDs <- list.data$ref.reaches
+      dir_sub <- "ClusterInfo"
+      #
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Cluster"
+      msgDetail_B <- "Run"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
       # #
-      # # Data getClusterInfo
-      # site.COMID <- list.SiteSummary$COMID
-      # site.Clusters <- list.SiteSummary$ClustIDs
-      # #
-      # ref.reaches   <- list.data$ref.reaches
-      # refSiteCOMIDs <- list.data$ref.reaches
-      # dir_sub <- "ClusterInfo"
-      # #
-      # # Increment the progress bar, and update the detail text.
-      # msgDetail_A <- "Cluster"
-      # msgDetail_B <- "Run"
-      # incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
-      # Sys.sleep(mySleepTime)
-      # #
-      # # # Run getClusterInfo
-      # # getClusterInfo(TargetSiteID, site.COMID, site.Clusters, data.cluster
-      # #                , ref.reaches, dir_results, dir_sub) 
-      # # 
+      # Run getClusterInfo
+      getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches
+                        , data.cluster, dir_results, dir_sub) 
+      
+      
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # getCoOccur ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "CoOccurrence"
       msgDetail_B <- "Load input data"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
 
       # Cluster Data based on elevation category
@@ -1111,7 +1121,7 @@ shinyServer(function(input, output) {
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "CoOccurrence"
       msgDetail_B <- "Run"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
       # Run, getCoOccur
@@ -1120,36 +1130,103 @@ shinyServer(function(input, output) {
                  , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
       )
 
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # getVerifiedPredictions ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Verified Predictions"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      # 
+      # data, example included with package
+      data.bio.taxa.raw  <- data_BMIcounts
+      data.SSTV.totabund <- data_BMIRelAbund
+      BioIndex_Val       <- "IBI"
+      BioIndex_Nar       <- "NarRat"
+      BioIndex_Nar_Deg   <- "Violates"
+      dir_sub            <- "VerifiedPredictions"
+      biocomm <- "bmi"
+
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Verified Predictions"
+      msgDetail_B <- "Run"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      #
+      # Run, getVerifiedPredictions
+      getVerifiedPredictions(TargetSiteID
+                             , data.SampSummary
+                             , data.bio.taxa.raw
+                             , data.chem.info
+                             , data.SSTV.totabund
+                             , data.MT.bio
+                             , list.MatchBioData
+                             , ref.sites
+                             , BioIndex_Val
+                             , BioIndex_Nar
+                             , BioIndex_Nar_Deg
+                             , dir_results
+                             , dir_sub)
 
 
+      # 
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # getWoE ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Weight of Evidence"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      # 
 
       # 
-      # # WoE ####
-      # # Increment the progress bar, and update the detail text.
-      # msgDetail_A <- "Weight of Evidence"
-      # msgDetail_B <- "Load input data"
-      # incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
-      # Sys.sleep(mySleepTime)
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Weight of Evidence"
+      msgDetail_B <- "Run"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      #
+      getWoE(TargetSiteID
+             , df.rank = list.stressors$site.stressor.pctrank
+             , df.coOccur = data.bmi.coOccur
+             , biocomm = "bmi"
+             , index = "IBI"
+             , dir_results = file.path(".", "Results")
+             , CO_sub = "CoOccurrence"
+             , SR_sub = "StressorResponse"
+             , VP_sub = "VerifiedPredictons"
+             , SSD_sub = "SSD")
+      
+      
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # getReport ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Report"
+      msgDetail_B <- "Load input data"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
       # 
-      # # msg("WoE")
-      # # message(msg)
-      # 
-      # # Report ####
-      # # Increment the progress bar, and update the detail text.
-      # msgDetail_A <- "Report"
-      # msgDetail_B <- "Load input data"
-      # incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
-      # Sys.sleep(mySleepTime)
-      # 
-      # # msg("report")
-      # # message(msg)
+      dir_results <- file.path(".", "Results")
+      report_type <- "summary"
+      report_format <- "html"
+      
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Report"
+      msgDetail_B <- "Run"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      #
+      # Run, getReport
+      getReport(TargetSiteID, dir_results, report_type, report_format)
       # 
       
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Create Zip File ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Zip"
       msgDetail_B <- "create File"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       
       # Create zip file
@@ -1158,11 +1235,12 @@ shinyServer(function(input, output) {
       zip(file.path(".", "Results", fn_zip), fn_zip_contents)
       
       
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "ALL"
       msgDetail_B <- "COMPLETE"
-      incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime * 10)
       #
       

@@ -23,6 +23,8 @@ library(shinyjs)
 
 # Source
 #source(file.path(".", "external", "runCASTfxn.R"))
+source(file.path(".", "external", "getTimeSeq.R"))
+source(file.path(".", "external", "getWoE.R"))
 
 #
 #setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CAST_v2")

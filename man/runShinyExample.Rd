@@ -8,7 +8,7 @@ runShinyExample(appname = "CAST_AZ")
 }
 \arguments{
 \item{appname}{Name of the Shiny app to run.  Valid values are 
-"CAST_Map" and "CAST_AZ".  Default = "CAST_AZ".}
+"CAST_Map_COMID", "CAST_Map_SiteID", "CAST_AZ", and "CAST_SMC".  Default = "CAST_AZ".}
 }
 \description{
 Launches Shiny app.
@@ -18,7 +18,7 @@ The Shiny app based on the R package CASTfxn is included in the R package.
 This function launches in the users default web browser the app referenced.  
 There are multiple apps stored in the package:
 
-* CAST_Map
+* CAST_Map_COMID
 
     + Selection of COMID on a map or by pull down.
     
@@ -42,6 +42,6 @@ There are multiple apps stored in the package:
 runShinyExample("CAST_AZ")
 
 # Map
-runShinyExample("CAST_Map")
+runShinyExample("CAST_Map_COMID")
 }
 }

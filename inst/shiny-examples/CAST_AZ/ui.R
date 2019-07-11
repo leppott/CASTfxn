@@ -16,10 +16,12 @@ shinyUI(fluidPage(
   # Need for console messages to Shiny
   shinyjs::useShinyjs()
   
+  # titlePanel ####
   # Application title
   , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> Test Application, v3")
              ,windowTitle = "Causal Assessment Screening Tool (CAST)")
   
+  # sidebarLayout ####
   # Sidebar with a slider input for number of bins 
   , sidebarLayout(
       sidebarPanel(
@@ -43,9 +45,11 @@ shinyUI(fluidPage(
         # set size of sidebar (out of 12)
         #, width=3 # can invoke "ERROR: [uv_write] broken pipe"
       )##sidebarPanel~END
-    
+     
+    # mainPanel ####
     # Show a plot of the generated distribution
     , mainPanel(
+      # tabsetPanel ####
       tabsetPanel(
         # 0
         tabPanel("Console"
