@@ -32,34 +32,38 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       addPolygons(data=poly.smc.proj
                   , color="green"
                   , fill=FALSE
-                  , group="Watersheds") %>%
+                  , group="Watersheds"
+                  ) %>%
       addPolylines(data=lines.flowline.proj
                    , color= "blue"
                    , highlightOptions=highlightOptions(bringToFront=TRUE, color="purple" )
                    , popup=~paste0(GNIS_NAME, as.character("<br> COMID = "), COMID)
-                   , group="Streams") %>%
+                   , group="Streams"
+                   ) %>%
       addCircles(data=df.sites.map
-                 , lng=~Longitude
-                 , lat=~Latitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), Stream_Name)
+                 , lng=~FinalLongitude
+                 , lat=~FinalLatitude
+                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
                  , color="orange"
                  , group="Sites"
                  , highlightOptions = highlightOptions(bringToFront = TRUE, color="red")
-                 , radius=~CSCI) %>%
-      addCircles(data=df.sites.map[df.sites.map[, "StationID_Master"]=="CC-FB", ]
-                 , lng=~Longitude
-                 , lat=~Latitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), Stream_Name)
+                 , radius=20
+                 ) %>%
+      addCircles(data=df.sites.map[df.sites.map[, "StationID_Master"]=="SMC04134", ]
+                 , lng=~FinalLongitude
+                 , lat=~FinalLatitude
+                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
                  , color="black"
                  , group="Sites_selected"
                  , layerId = "layer_site_selected"
-                 , radius=~CSCI
+                 , radius=30
                  ) %>%
       # Bounding (to SMC region)
       fitBounds(lng1 = poly.smc.proj@bbox[1]
                 , lat1 = poly.smc.proj@bbox[4]
                 , lng2 = poly.smc.proj@bbox[3]
-                , lat2 = poly.smc.proj@bbox[2]) %>%
+                , lat2 = poly.smc.proj@bbox[2]
+                ) %>%
       # Layers
       addLayersControl(
         baseGroups = c("OSM (default)", "Positron", "Toner Lite")
@@ -68,7 +72,8 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       # Legend
       addLegend("bottomleft", colors=c("green", "blue", "purple", "orange", "red", "black")
                 , labels=c("Watersheds", "Streams", "Streams (mouse-over)", "Sites", "Sites (mouse-over)", "Sites (selected)")
-                , values=NA)
+                , values=NA
+                )
   })#output$map.smc.END
   
   # # Reactive expression for the data subsetted to what the user selected
@@ -106,10 +111,10 @@ shinyServer(function(input, output, session) {##ShinyServer.START
   observeEvent(input$siteid.select,{
     #
     df_filtered <- df.sites.map[df.sites.map$StationID_Master == input$siteid.select, ]
-    
+
     #
     # get centroid (use mean just in case have duplicates)
-    view.cent <- c(mean(df_filtered$Longitude), mean(df_filtered$Latitude))
+    view.cent <- c(mean(df_filtered$FinalLongitude), mean(df_filtered$FinalLatitude))
     #
     # modify map
     leafletProxy("map") %>%
@@ -117,13 +122,13 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       removeShape("layer_site_selected") %>%
       #addPolylines(data=filteredData()
       addCircles(data=df_filtered
-                 , lng=~Longitude
-                 , lat=~Latitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), Stream_Name)
+                 , lng=~FinalLongitude
+                 , lat=~FinalLatitude
+                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
                  , color = "black"
                  , group = "Sites_selected"
                  , layerId = "layer_site_selected"
-                 , radius=~CSCI) %>%
+                 , radius=30) %>%
       # addPolylines(data=df_filtered
       #              , color="orange"
       #              , popup=~COMID
@@ -134,8 +139,8 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       #setView(fD.centroid[1], fD.centroid[2], zoom=10)
     #setView(view.cent[1], view.cent[2], zoom=10)
   #  #fitBounds(df_filtered@bbox[1], df_filtered@bbox[2], df_filtered@bbox[3], df_filtered@bbox[4])
-    setView(view.cent[1], view.cent[2], zoom = 12) # 1= whole earth
-    
+    setView(view.cent[1], view.cent[2], zoom = 16) # 1= whole earth
+
     
       #setView(filteredData$CENTROID_X, filteredData$CENTROID_Y, zoom=10)
       

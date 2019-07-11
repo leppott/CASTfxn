@@ -30,8 +30,8 @@ shinyUI(fluidPage(
       , br()
       , helpText("Use the button (or the map) to select a SiteID for analysis.")
       , selectInput("siteid.select", "Select SiteID:"
-                    , choices=c(NA, "CC-FB", mySites)
-                    , selected="CC-FB"
+                    , choices=c("SMC04134", "905S15201", "907S05514", mySites)
+                    , selected="SMC04134"
                     #, selected="20331944"# diversion but long and easy to spot on map
                     ) 
                             
