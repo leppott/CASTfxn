@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9233 (2019-9-05)
+
+* getCoOccur
+    + Modify "pH" in defaults for col.Stressor.InvSc.
+
 ## Changes in Version 0.1.0.9232 (2019-07-11)
 
 * Shiny, map

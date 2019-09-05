@@ -11,7 +11,7 @@ getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
   Bio.Deg.Lab = c("Yes", "No"), biocomm = "bmi",
   dir.plots = file.path(getwd(), "Results"), dir_sub = "CoOccurrence",
   col.Stressors.InvSc = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.",
-  "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU"))
+  "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU"))
 }
 \arguments{
 \item{df.data}{data frame with data.}
@@ -54,7 +54,7 @@ Default = c("Yes", "No").}
 
 \item{col.Stressor.InvSc}{Stressors as columns of df.data that have inverse scoring for box plots.
 Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
-, "DOSat_f_unk", "DO_uf_mg_L", "pH_SU", "pH_SU")}
+, "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")}
 }
 \value{
 Saves a single PDF of all plots, individual plots as JPGs, and a 

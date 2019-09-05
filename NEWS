@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-07-11 12:13:51
+    #> Last Update: 2019-09-05 09:18:30
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9233 (2019-9-05)
+
+  - getCoOccur
+      - Modify “pH” in defaults for col.Stressor.InvSc.
 
 ## Changes in Version 0.1.0.9232 (2019-07-11)
 
