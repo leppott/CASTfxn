@@ -369,7 +369,7 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   colnames(data.chem.pctrank)[2] <- "ChemSampleID"
   row.names(data.chem.pctrank) <- NULL
   fn.pctrank <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID, ".chem.pctrank.", biocomm, ".txt"))
-  utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE)
+  utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE, row.names = FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
   stressor <- c("none")
   for (c in 3:ncol(site.pctrank)) {

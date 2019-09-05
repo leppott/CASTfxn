@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9234 (2019-9-05)
+
+* getStressorList, Issue #81
+    + File save, remove row names (line 372).
+
 ## Changes in Version 0.1.0.9233 (2019-9-05)
 
 * getCoOccur
