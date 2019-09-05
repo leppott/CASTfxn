@@ -122,7 +122,9 @@
 #' #
 #' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #' #
+#' # Specify stressors by name
 #' col.Stressors.InvSc <- c("DO_uf_mg_L", "pH")
+#' 
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
@@ -153,7 +155,12 @@
 #' biocomm <- "bmi"
 #' dir.plots <- file.path(getwd(), "Results")
 #' dir_sub <- "CoOccurrence"
-#' col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+#' 
+#' # Specify stressors by name
+#' #col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+#' # Get stressors from chem.info
+#' col.Stressors.InvSc <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"] 
+#' 
 #' #
 #' getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
 #'         , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab

@@ -6,6 +6,8 @@
 #' 
 #' Required objects:  all specified as inputs.
 #' 
+#' chem.info need to include DirIncStress.  Valid values are 'inc' or 'dec'.
+#' 
 #' @param TargetSiteID Site ID
 #' @param site.Clusters Clusters
 #' @param chem.info chem information
@@ -124,10 +126,14 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 1
+    # all other function inputs defined in example.
   }##IF.boo.DEBUG.END
-  
   #
   useLU <- FALSE
+  
+  # QC, 20190905
+  # chem.info$DirIncStress to lower case
+  chem.info$DirIncStress <- tolower(chem.info$DirIncStress)
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -372,22 +378,34 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE, row.names = FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
   stressor <- c("none")
+  # 
+  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+    c <- 3
+  }##IF.boo.DEBUG.END
   for (c in 3:ncol(site.pctrank)) {
+    print(c)
     chemname <- colnames(site.pctrank)[c]
     bad <- is.na(site.pctrank[,c])
     check <- site.pctrank[,c]
     good <- check[!bad]
     maxSiteVal <- max(good, na.rm = TRUE)
     minSiteVal <- min(good, na.rm = TRUE)
-    if ((chemname == "DO_uf_mg_L") || (chemname == "pH")) {
+    # DirIncStress ####
+    # (not all in chem.info)
+    if(chemname %in% chem.info[, "StdParamName"]){
+      ExpDirIncStress <- (chem.info[chem.info[, "StdParamName"] == chemname, "DirIncStress"])[1]
+    } else {
+      ExpDirIncStress <- "unk"
+    }
+    if (ExpDirIncStress == "dec") {
       if (minSiteVal <= probsLow) {
         stressor <- c(stressor, chemname)
       }
     }
-    if ((chemname != "DO_uf_mg_L") && (maxSiteVal >= probsHigh)) {
+    if ((ExpDirIncStress == "inc") && (maxSiteVal >= probsHigh)) {
       stressor <- c(stressor, chemname)
     }
-  }
+  }##FOR~c~END
   stressorlist <- stressor
   
   # LogTransf ####

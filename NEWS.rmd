@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9235 (2019-9-05)
+
+* getStressorList, Issue #82
+    + Add "DirIncStress" to chem.info (raw data).
+    + Use new parameter to decide on how to deal with probsHi and probsLo.
+    + Previously looked only for "DO" or "pH". 
+* getCoOccur, Issue #82
+    + Update example to use data.chem.info$DirIncStress to get col.Stressors.InvSc input.
+
 ## Changes in Version 0.1.0.9234 (2019-9-05)
 
 * getStressorList, Issue #81

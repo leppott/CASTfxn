@@ -33,5 +33,5 @@ str(df)
 # 2. Save as RDA for use in package####
 #
 data_ChemInfo <- df
-devtools::use_data(data_ChemInfo, overwrite = TRUE)
+usethis::use_data(data_ChemInfo, overwrite = TRUE)
 

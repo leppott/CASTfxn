@@ -45,6 +45,8 @@ Get stressor list.
 Box plots of each stressor, grouped by category.
 
 Required objects:  all specified as inputs.
+
+chem.info need to include DirIncStress.  Valid values are 'inc' or 'dec'.
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"
