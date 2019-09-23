@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9236 (2019-09-23, ARL)
+
+* getSiteBackground, requested by CBoschen and JDiamond
+    + Adds StreamCat data that may be related to potential sources
+    + Copies site files (photos) from a different directory into the results 
+    + directory, SiteInfo subdirectory.
+
 ## Changes in Version 0.1.0.9235 (2019-9-05)
 
 * getStressorList, Issue #82
