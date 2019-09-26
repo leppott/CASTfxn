@@ -15,7 +15,7 @@
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
 #' 
-#' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
+#' @return A jpg in SiteID subfolder of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
 #' 
 # @importFrom pryr "%<a-%"
