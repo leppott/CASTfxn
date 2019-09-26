@@ -25,6 +25,57 @@ NEWS
 
 # Version History
 
+## Changes in Version 0.1.0.9236 (2019-9-26)
+
+  - getComparators, new function
+      - Uses cluster identification as base comparator set
+      - Adds BC dissimilarity distance matrix if useBC = TRUE
+      - Identifies a minimum of 30 comparator sites from sites
+        having <= bc.cutoff value dissimilarity; exceeds cutoff
+        if <30 sites meet criteria; uses all sites meeting 
+        criteria, even if >30.
+
+  - getCoOccurDataset, new function
+      - Identifies paired stressor/response data with a user-
+        specified lag time (default = 0) and creates a data set.
+      - This dataset is generated prior to selecting stressors
+        for analysis as potential causes of impairment.
+      - Biocomm-specific, but inclusive of measured/modeled data.
+      - Part of the data prep part of the CASTool.
+
+  - getDataGaps, new function
+      - Assembles data gaps identified by other functions into a
+        single, final table.
+
+  - getDataSets, new function
+      - Similar to getCoOccurDataset, but filtered for only stressors
+        that will be used in further analyses to evaluate evidence for 
+        causality.
+
+  - getQualSites, new function
+      - Identifies sites, reaches and samples representing reference
+        conditions, as identified by the regulatory authority and
+        specified in the Sites data file; sites considered to be
+        not degraded, also as identified by the regulatory authority's
+        numerical threshold for "degraded"; and sites having samples
+        with "better" quality than the worst quality target site sample.
+
+  - getSiteBackground, new function
+      - Identifies StreamCat data illustrative of anthropogenic activity
+        that might be found to relate to causal agents. Although it makes 
+        no claims about these agents, barplots of their values are presented 
+        at multiple scales, if available.
+      - Moves site files from a data folder repository into the 
+        target site results folder.
+
+  - getTimeSeq, new function
+      - Prepares barplots of stressor/response values over time, with each
+        stressor/response pair graphed separately, one atop the other.
+
+  - getWoE, new function
+      - Pulls together the weight of evidence findings from each separate
+        line of evidence evaluated for the target site and biological community.
+
 ## Changes in Version 0.1.0.9235 (2019-9-05)
 
   - getStressorList, Issue \#82
