@@ -130,49 +130,53 @@ getSiteBackground <- function(TargetSiteID
         flush.console()
         
         if (is.na(df.temp$StudyYear)) {
-            p.bkg <- ggplot2::ggplot(df.temp, aes(x=ShortName, y=signif(val,digits=2))) +
+            p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                            , y = signif(val, digits = 2))) +
                 ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "firebrick4") +
-                ggplot2::geom_text(aes(label = signif(val, digits=2)
+                ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
                               , vjust=-0.2), color = "black", size=3) +
                 ggplot2::ylim(0, max(df.temp$val)*1.1) +
                 ggplot2::facet_wrap(Scale~.)
             p.bkg <- p.bkg + ggthemes::theme_stata() + 
                 ggplot2::theme(legend.position = "none") +
-                ggplot2::theme(strip.text.x = element_text(size = 9)) +
+                ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
                 ggplot2::labs(title = p.title, subtitle = p.subtitle
                      , x = xlab, y = "Value")
             p.bkg <- p.bkg + 
-                ggplot2::theme(axis.text.x=element_text(size=7,angle=45,hjust=1)
-                      , axis.text.y = element_text(size=8)
-                      , axis.title.x = element_text(size=9, face="bold")
-                      , axis.title.y = element_text(size=9, face="bold")
-                      , plot.title = element_text(size=10, face="bold")
-                      , plot.subtitle = element_text(size=9, face="bold"))
+                ggplot2::theme(axis.text.x = ggplot2::element_text(size=7
+                                                    ,angle=45,hjust=1)
+                      , axis.text.y = ggplot2::element_text(size=8)
+                      , axis.title.x = ggplot2::element_text(size=9, face="bold")
+                      , axis.title.y = ggplot2::element_text(size=9, face="bold")
+                      , plot.title = ggplot2::element_text(size=10, face="bold")
+                      , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
             ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi)
             
         } else {
             
-            p.bkg <- ggplot2::ggplot(df.temp, aes(x=ShortName,y=signif(val,digits=2)
-                                                  , group=StudyYear)) +
+            p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                , y = signif(val, digits = 2)
+                                                , group = StudyYear)) +
                 ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
                          , fill = "firebrick4") +
-                ggplot2::geom_text(aes(label = signif(val, digits=2)
+                ggplot2::geom_text(ggplot2::aes(label = signif(val, digits=2)
                               , vjust=-0.2), color = "black", size=3) +
                 ggplot2::ylim(0, max(df.temp$val)*1.1) +
                 ggplot2::facet_grid(Scale~StudyYear, margins = FALSE)
             p.bkg <- p.bkg + ggthemes::theme_stata() + 
                 ggplot2::theme(legend.position = "none") +
-                ggplot2::theme(strip.text.x = element_text(size = 9)
-                      , strip.text.y = element_text(size = 8)) +
+                ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                      , strip.text.y = ggplot2::element_text(size = 8)) +
                 ggplot2::labs(title = p.title, subtitle = p.subtitle
                      , x = xlab, y = "Value")
             p.bkg <- p.bkg +
-                ggplot2::theme(axis.text.x=element_text(size=7,angle=45,hjust=1)
-                               , axis.text.y = element_text(size=8)
-                               , axis.title.x = element_text(size=9, face="bold")
-                               , axis.title.y = element_text(size=9, face="bold")
-                               , plot.title = element_text(size=10, face="bold")
-                               , plot.subtitle = element_text(size=9, face="bold"))
+                ggplot2::theme(axis.text.x = ggplot2::element_text(size = 7
+                                                , angle = 45, hjust = 1)
+                    , axis.text.y = ggplot2::element_text(size=8)
+                    , axis.title.x = ggplot2::element_text(size=9, face="bold")
+                    , axis.title.y = ggplot2::element_text(size=9, face="bold")
+                    , plot.title = ggplot2::element_text(size=10, face="bold")
+                    , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
             ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi)
 
         }
