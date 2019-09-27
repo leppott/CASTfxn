@@ -50,11 +50,7 @@ if(file.exists(fn_img)==TRUE){
   df_leaflet <- data.Stations.Info
   ### Mark sites for legend
   df_leaflet$MapLeg <- "all sites"
-  if (useLU == TRUE) {
-    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.yes]==myClustIDs[,2], ]
-  } else {
-    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustIDs[,1], ]
-  }
+  df_leaflet_cl <- all.map.sites[all.map.sites[,"clust"]==myClustID, ]
   df_leaflet[df_leaflet$StationID_Master %in% df_leaflet_cl$StationID_Master, "MapLeg"]<- "cluster sites"
   df_leaflet[is.na(df_leaflet$CARefSite_2017), "CARefSite_2017"] <- 0
   #df_leaflet[df_leaflet$CARefSite_2017==1, "MapLeg"]<- "ref sites"
