@@ -22,7 +22,7 @@
 #' @param index Name of the response index column. Default = "CSCI".
 #' @param respColnames Names of the core response columns (date, sample ID, 
 #' quality, and index score). Default = c("BMISampDate", "BMISampID", 
-#' "Quality", "CSCI").
+#' "Quality", index).
 #' @param lagdays The number of days allowed between the stressor sample date
 #' and the response sample date, where stressor must always be sampled prior to 
 #' the response sample collection. Default = 0 (same day).
@@ -44,7 +44,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                               , df_resp = data.bmi.metrics
                               , index = "CSCI"
                               , respColnames = c("BMISampDate", "BMISampID"
-                                                  , "Quality", "CSCI")
+                                                  , "Quality", index)
                               , lagdays = 0) {
     
     # Debug
@@ -65,7 +65,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     
     # Read data files (stressor and response)
     df_resp <- df_resp[,c("StationID_Master", "CollDate", "BMI.Metrics.SampID"
-                        , "Quality", "IBI")]
+                        , "Quality", index)]
     colnames(df_resp) <- c("StationID_Master", respColnames)
     
     # Clean up modeled data
