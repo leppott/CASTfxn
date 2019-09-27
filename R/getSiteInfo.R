@@ -120,14 +120,36 @@
 #'                                 , dir_sub=dir_sub)
 #
 #' @export
-getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results")
-                        , data.Stations.Info, data.SampSummary, data.303d.ComID
-                        , data.bmi.metrics, data.algae.metrics, data.cluster, data.mod
-                        , map_proj=NULL, map_outline=NULL, map_flowline=NULL, map_flowline2=NULL
+getSiteInfo <- function(TargetSiteID
+                        , dir_results = file.path(getwd(), "Results")
+                        , data.Stations.Info
+                        , data.SampSummary
+                        , data.303d.ComID
+                        , data.bmi.metrics
+                        , bmiIndex = "IBI"
+                        , data.algae.metrics
+                        , algIndex = "IBI"
+                        , data.cluster
+                        , data.mod
+                        , map_proj=NULL
+                        , map_outline=NULL
+                        , map_flowline=NULL
+                        , map_flowline2=NULL
                         , dir_sub="SiteInfo") {
   #
-  useLU <- FALSE
-  # check for and create (if necessary) dir_results and SiteID subdirectory
+   
+    # DEBUG 
+    # TargetSiteID
+    # dir_results = file.path(wd, "Results")
+    # data.Stations.Info = data_Sites
+    # data.algae.metrics = data.bmi.metrics
+    # map_proj = my.aea
+    # map_outline = outline
+    # map_flowline = flowline
+    # map_flowline2 = NULL
+    # dir_sub = "SiteInfo"  
+
+      # check for and create (if necessary) dir_results and SiteID subdirectory
   #wd <- getwd()
   #dir.sub <- "Results"
   dir.sub2 <- TargetSiteID
@@ -149,33 +171,23 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   data.refSites <- subset(data.Stations.Info, CARefSite_2017==1,
                           select= c(StationID_Master,FinalLatitude,
                                     FinalLongitude,COMID_NHD2))
-  #nolu.cluster <- paste(clustertype, "_noland", sep="")
-  #lu.cluster <- paste(clustertype, "_land", sep="")
-  
-  col.clust.land.no <- "clust_noland"
-  col.clust.land.yes <- "clust_land"
-  
+
   # get sampling info (dates of samples)
   mySamps <- data.SampSummary[data.SampSummary[,"StationID_Master"]==TargetSiteID
                               ,c("CollDate","ChemSampleID","PhabSampID"
                                  ,"BMI.Metrics.SampID","Algae.Metrics.SampID")]
   # get response information (CSCI, H20, etc)
   myBMImetrics <- data.bmi.metrics[data.bmi.metrics[,"StationID_Master"]==TargetSiteID
-                                   ,c("CollDate","IBI")]
+                                   ,c("CollDate",bmiIndex)]
   # myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
   #                                      ,c("CollDate","PollTolClass.1.tot")]
-  myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
-                                       ,]
+  myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID,]
   
   # get COMID 
   myCOMID <- mySiteInfo$COMID_NHD2
   myWBName <- mySiteInfo$WaterbodyName
-  # replaced H6_noland and H6_land with "cluster"
-  myReachInfo <- data.cluster[data.cluster[,"COMID"]==myCOMID, c(col.clust.land.no, col.clust.land.yes
-                                                                ,"ElevWs","WsAreaSqKm","PrecipWs", "TmeanWs")]
-  #myClustIDs <- myReachInfo[,c("H6_noland","H6_land")]
-  myClustIDs <- myReachInfo[,c(col.clust.land.no, col.clust.land.yes)]
-  
+  myClustID <- as.integer(data.cluster$clust[data.cluster$COMID==myCOMID])
+
   myReachMods <- data.mod[data.mod[,"COMID"]==myCOMID,c("ReachModStatus", "ModReason")]
   
   my303d.COMID <- subset(data.303d.ComID, data.303d.ComID$ComID == myCOMID)
@@ -185,21 +197,23 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
                                     "FINAL.LISTING.DECISION")]
   
   
-  all.map.sites <- merge(data.Stations.Info, data.cluster, by.x = "COMID_NHD2", by.y = "COMID")
+  all.map.sites <- merge(data.Stations.Info, data.cluster
+                         , by.x = c("COMID_NHD2","clust")
+                         , by.y = c("COMID","clust"))
   # if (useLU == TRUE) {
-  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustIDs[,2]
+  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustID[,2]
   #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
   # } else {
-  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustIDs[,1]
+  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustID[,1]
   #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
   # }
-  if (useLU == TRUE) {
-    df.plot.cl <- all.map.sites[all.map.sites[,col.clust.land.yes]==myClustIDs[,2]
+  # if (useLU == TRUE) {
+    df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
                                 , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  } else {
-    df.plot.cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustIDs[,1]
-                                , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  }
+  # } else {
+  #   df.plot.cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustID[,1]
+  #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
+  # }
   
   # Read spatial layers for background
   
@@ -341,7 +355,8 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
   strFile_out_ext <- paste0(".", report_format)
   strFile_out <- paste0(TargetSiteID,".map.leaflet", strFile_out_ext)
   dir_map <- file.path(dir_results, TargetSiteID, dir.sub3)
-  rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+  # rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+  rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
                     , output_format=paste0(report_format,"_document")
                     , output_file=strFile_out
                     , output_dir=dir_map
@@ -353,9 +368,9 @@ getSiteInfo <- function(TargetSiteID, dir_results = file.path(getwd(), "Results"
                         , Samps = mySamps
                         , BMImetrics = myBMImetrics
                         , AlgMetrics = myAlgaeMetrics
-                        , ReachInfo = myReachInfo
+                        # , ReachInfo = myReachInfo
                         , COMID = myCOMID
-                        , ClustIDs = myClustIDs
+                        , ClustIDs = myClustID
                         , impair = myImpairments
                         , mods = myReachMods)
   return(mySiteSummary)
