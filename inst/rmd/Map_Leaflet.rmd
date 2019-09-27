@@ -19,11 +19,9 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
 #~~~~~~~~~~~~~~~~~
 # from getSiteInfo()
-# data.Stations.Info
-# data.cluster       <- data_Cluster_Hi
-# col.clust.land.no <- "clust_noland"
-# col.clust.land.yes <- "clust_land"
-# all.map.sites <- merge(data.Stations.Info, data.cluster, by.x = "COMID_NHD2", by.y = "COMID")
+# data_Sites
+# data_cluster       <- data_Cluster_Hi
+# all.map.sites <- merge(data_Sites, data_cluster, by.x = "COMID_NHD2", by.y = "COMID")
 ```
 
 # Static Map
@@ -47,7 +45,7 @@ if(file.exists(fn_img)==TRUE){
 
  # Leaflet
   ## Data
-  df_leaflet <- data.Stations.Info
+  df_leaflet <- data_Sites
   ### Mark sites for legend
   df_leaflet$MapLeg <- "all sites"
   df_leaflet_cl <- all.map.sites[all.map.sites[,"clust"]==myClustID, ]

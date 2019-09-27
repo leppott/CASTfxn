@@ -8,7 +8,7 @@
 #' 
 #' Required objects:
 #' 
-#' * data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude
+#' * data_Sites; StationID_Master, FinalLatitude, FinalLongitude
 #' , WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
 #' 
 #' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
@@ -29,13 +29,13 @@
 #' 
 #' @param TargetSiteID SiteID
 #' @param dir_results Directory for results.  Default = "Results".
-#' @param data.Stations.Info data.Stations.Info
-#' @param data.SampSummary data.SampSummary
-#' @param data.303d.ComID data.303d.ComID
-#' @param data.bmi.metrics data.bmi.metrics
-#' @param data.algae.metrics data.algae.metrics
-#' @param data.cluster data.cluster
-#' @param data.mod data.mod
+#' @param data_Sites data_Sites
+#' @param data_SampSummary data_SampSummary
+#' @param data_303d data_303d
+#' @param data_bmiMetrics data_bmiMetrics
+#' @param data_algMetrics data_algMetrics
+#' @param data_cluster data_cluster
+#' @param data_mods data_mods
 #' @param map_proj Map projection.  If no projection is provided an unprojected map is created without flowlines.
 #' @param map_outline Outline for map, typically State border.
 #' @param map_flowline Typically NHD+ flowline.
@@ -53,7 +53,7 @@
 #' 
 #' # Data
 #' # data import, example
-#' #data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+#' #data_Sites <- read.delim(paste(myDir.Data,"data_Sites.tab",sep=""))
 #' #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
 #' #                               , na.strings = c(""," "))
 #' #data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
@@ -64,7 +64,7 @@
 #' 
 #' # Data getSiteInfo
 #' # data, example included with package
-#' data.Stations.Info <- data_Sites
+#' data_Sites <- data_Sites
 #' data.SampSummary   <- data_SampSummary
 #' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
@@ -72,8 +72,7 @@
 #' data.mod           <- data_ReachMod
 #' 
 #' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-#'                     , "ElevCategory"])
+#' elev_cat <- toupper(data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
@@ -107,7 +106,7 @@
 #' # Run getSiteInfo
 #' list.SiteSummary <- getSiteInfo(TargetSiteID
 #'                                 , dir_results
-#'                                 , data.Stations.Info
+#'                                 , data_Sites
 #'                                 , data.SampSummary
 #'                                 , data.303d.ComID
 #'                                 , data.bmi.metrics
@@ -122,15 +121,15 @@
 #' @export
 getSiteInfo <- function(TargetSiteID
                         , dir_results = file.path(getwd(), "Results")
-                        , data.Stations.Info
-                        , data.SampSummary
-                        , data.303d.ComID
-                        , data.bmi.metrics
+                        , data_Sites
+                        , data_SampSummary
+                        , data_303d
+                        , data_bmiMetrics=NULL
                         , bmiIndex = "IBI"
-                        , data.algae.metrics
+                        , data_algMetrics=NULL
                         , algIndex = "IBI"
-                        , data.cluster
-                        , data.mod
+                        , data_cluster
+                        , data_mods
                         , map_proj=NULL
                         , map_outline=NULL
                         , map_flowline=NULL
@@ -141,7 +140,7 @@ getSiteInfo <- function(TargetSiteID
     # DEBUG 
     # TargetSiteID
     # dir_results = file.path(wd, "Results")
-    # data.Stations.Info = data_Sites
+    # data_Sites = data_Sites
     # data.algae.metrics = data.bmi.metrics
     # map_proj = my.aea
     # map_outline = outline
@@ -164,57 +163,50 @@ getSiteInfo <- function(TargetSiteID
          , dir.create(file.path(dir_results, dir.sub2, dir.sub3))
          , FALSE)
   #
-  mySiteInfo <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                                   ,c("FinalLatitude","FinalLongitude","WaterbodyName"
-                                      ,"GIS_County","CARefSite_2017","COMID_NHD2"
-                                      ,"ElevCategory")]
-  data.refSites <- subset(data.Stations.Info, CARefSite_2017==1,
-                          select= c(StationID_Master,FinalLatitude,
-                                    FinalLongitude,COMID_NHD2))
+  mySiteInfo <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID
+                           ,c("FinalLatitude","FinalLongitude","WaterbodyName"
+                              ,"GIS_County","CARefSite_2017","COMID_NHD2"
+                              ,"ElevCategory")]
+  data_refSites <- subset(data_Sites, CARefSite_2017==1
+                          , select= c(StationID_Master, FinalLatitude
+                                      , FinalLongitude, COMID_NHD2))
 
   # get sampling info (dates of samples)
-  mySamps <- data.SampSummary[data.SampSummary[,"StationID_Master"]==TargetSiteID
+  mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID
                               ,c("CollDate","ChemSampleID","PhabSampID"
                                  ,"BMI.Metrics.SampID","Algae.Metrics.SampID")]
   # get response information (CSCI, H20, etc)
-  myBMImetrics <- data.bmi.metrics[data.bmi.metrics[,"StationID_Master"]==TargetSiteID
-                                   ,c("CollDate",bmiIndex)]
-  # myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
-  #                                      ,c("CollDate","PollTolClass.1.tot")]
-  myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID,]
+  if (!is.null("data_bmiMetrics")) {
+      myBMImetrics <- data_bmiMetrics[data_bmiMetrics[,"StationID_Master"]==TargetSiteID
+                                      ,c("CollDate",bmiIndex)]
+  }
+  if (!is.null("data_algMetrics")) {
+      # myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
+      #                                      ,c("CollDate","PollTolClass.1.tot")]
+      myAlgaeMetrics <- data_algMetrics[data_algMetrics[,"StationID_Master"]==TargetSiteID,]
+  }
   
   # get COMID 
   myCOMID <- mySiteInfo$COMID_NHD2
   myWBName <- mySiteInfo$WaterbodyName
-  myClustID <- as.integer(data.cluster$clust[data.cluster$COMID==myCOMID])
+  myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
 
-  myReachMods <- data.mod[data.mod[,"COMID"]==myCOMID,c("ReachModStatus", "ModReason")]
+  myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
+                           ,c("ReachModStatus", "ModReason")]
   
-  my303d.COMID <- subset(data.303d.ComID, data.303d.ComID$ComID == myCOMID)
+  my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
   my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
   myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
   myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
                                     "FINAL.LISTING.DECISION")]
   
   
-  all.map.sites <- merge(data.Stations.Info, data.cluster
+  all.map.sites <- merge(data_Sites, data_cluster
                          , by.x = c("COMID_NHD2","clust")
                          , by.y = c("COMID","clust"))
-  # if (useLU == TRUE) {
-  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustID[,2]
-  #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  # } else {
-  #   df.plot.cl <- all.map.sites[all.map.sites[,lu.cluster]==myClustID[,1]
-  #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  # }
-  # if (useLU == TRUE) {
-    df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
+  df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
                                 , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  # } else {
-  #   df.plot.cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustID[,1]
-  #                               , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
-  # }
-  
+
   # Read spatial layers for background
   
   # # # San Diego
@@ -236,15 +228,16 @@ getSiteInfo <- function(TargetSiteID
   # map_proj <- my.aea
   
 
-  df.plotSite <- data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID,]
+  df.plotSite <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID,]
+  
   proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"],
-                               df.plotSite[,"FinalLatitude"]), map_proj)
+                                df.plotSite[,"FinalLatitude"]), map_proj)
   proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"],
                                 df.plot.cl[,"FinalLatitude"]), map_proj)
-  proj.refSites <- rgdal::project(cbind(data.refSites[,"FinalLongitude"],
-                                 data.refSites[,"FinalLatitude"]), map_proj)
-  proj.allSites <- rgdal::project(cbind(data.Stations.Info[,"FinalLongitude"],
-                                 data.Stations.Info[,"FinalLatitude"]), map_proj)
+  proj.refSites <- rgdal::project(cbind(data_refSites[,"FinalLongitude"],
+                                data_refSites[,"FinalLatitude"]), map_proj)
+  proj.allSites <- rgdal::project(cbind(data_Sites[,"FinalLongitude"],
+                                data_Sites[,"FinalLatitude"]), map_proj)
   # Unprojected data
   
   
@@ -278,7 +271,7 @@ getSiteInfo <- function(TargetSiteID
                   quality=100, bg="white", res=ppi)
     if(is.null(map_proj)==TRUE){##IF.map_proj.START
       # map with no projection
-      graphics::plot(data.Stations.Info[,"FinalLongitude"], data.Stations.Info[,"FinalLatitude"]
+      graphics::plot(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
            , main=TargetSiteID, xlab="Longitude", ylab="Latitude"
            , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all
            )
@@ -294,8 +287,8 @@ getSiteInfo <- function(TargetSiteID
                        , title = "Legend")
       #
       # ggplot alternative (draft)
-      # m0 <- ggplot2::ggplot(data.Stations.Info, ggplot2::aes(FinalLongitude, FinalLatitude)) +
-      #         ggplot2::geom_point(data=data.Stations.Info, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
+      # m0 <- ggplot2::ggplot(data_Sites, ggplot2::aes(FinalLongitude, FinalLatitude)) +
+      #         ggplot2::geom_point(data=data_Sites, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
       #         ggplot2::geom_point(data=df.plot.cl, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_cl, color=col_sites_cl) +
       #         ggplot2::geom_point(data=data.refSites, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_ref, color=col_sites_ref) +
       #         ggplot2::geom_point(data=df.plotSite, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_targ, color=col_sites_targ) +
