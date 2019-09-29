@@ -10,8 +10,8 @@
 #' Uses the libraries dplyr and tidyr.
 #' 
 #' @param TargetSiteID Site ID
-#' @param df.rank Percent rank of each stressor in the distribution of comparator sites.
-#' @param df.coOccur CoOccur dataframe corresponding with stressors and specified biocomm
+#' @param df_rank Percent rank of each stressor in the distribution of comparator sites.
+#' @param df_coOccur CoOccur dataframe corresponding with stressors and specified biocomm
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param index Index name (IBI, CSCI, ASCI, etc.) Default = "IBI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
@@ -37,8 +37,9 @@
 #' 
 #' @export
 getWoE <- function(TargetSiteID
-                   , df.rank = list.stressors$site.stressor.pctrank
-                   , df.coOccur = data.bmi.coOccur
+                   , df_rank = list.stressors$site.stressor.pctrank
+                   , df_chemInfo = data_chemInfo
+                   , df_coOccur = data_bmiCoOccur
                    , biocomm = "bmi"
                    , index = "IBI"
                    , dir_results = file.path(getwd(), "Results")
@@ -48,8 +49,8 @@ getWoE <- function(TargetSiteID
                    , SSD_sub = "SSD") {
     
     # QC data
-    # df.rank = list.stressors$site.stressor.pctrank
-    # df.coOccur = data.bmi.coOccur
+    # df_rank = list.stressors$site.stressor.pctrank
+    # df_coOccur = data.bmi.coOccur
     # biocomm = "bmi"
     # index = "IBI"
     # dir_results = file.path(getwd(), "Results")
@@ -95,7 +96,7 @@ getWoE <- function(TargetSiteID
         
         keep.stress <- unique(df.CO$Stressor)
         
-        data.coOccurTarget <- df.coOccur %>%
+        data.coOccurTarget <- df_coOccur %>%
             dplyr::select(StationID_Master, ChemSampleID, CSCI, keep.stress) %>%
             dplyr::mutate(Index = CSCI) %>%
             dplyr::filter(StationID_Master == TargetSiteID) %>%
@@ -333,12 +334,12 @@ getWoE <- function(TargetSiteID
     }
     
     # Get Chem Info for all possible stressors
-    data.chem.info.trim <- data.chem.info %>% 
+    data_chemInfoTrim <- data_chemInfo %>% 
         dplyr::mutate(Analyte = StdParamName) %>% 
         dplyr::select(StdParamName, GroupNum, GroupName)
-    data.chem.info.trim <- unique(data.chem.info.trim)
+    data_chemInfoTrim <- unique(data_chemInfoTrim)
     
-    df.scores <- merge(df.scores, data.chem.info.trim, by.x = "Stressor"
+    df.scores <- merge(df.scores, data_chemInfoTrim, by.x = "Stressor"
                        , by.y = "StdParamName")
     df.scores <- df.scores[,c("StationID_Master", "Bio.Deg", "ChemSampleID"
                               , "GroupNum", "GroupName", "Stressor", "StressorValue"
@@ -358,14 +359,14 @@ getWoE <- function(TargetSiteID
     
     # Get % rank info for all stressors
     keep.stress <- unique(df.scores2$Stressor)
-    df.rank <- df.rank[,c("StationID_Master", "ChemSampleID", keep.stress)]
-    df.rank <- df.rank %>%
+    df_rank <- df_rank[,c("StationID_Master", "ChemSampleID", keep.stress)]
+    df_rank <- df_rank %>%
         tidyr::gather(key = "Stressor"
                , value = "PctRank"
                , -StationID_Master
                , -ChemSampleID)
     
-    df.scores3 <- merge(df.rank, df.scores2
+    df.scores3 <- merge(df_rank, df.scores2
                         , by.x = c("StationID_Master", "ChemSampleID", "Stressor")
                         , by.y = c("StationID_Master", "ChemSampleID", "Stressor")
                         , all.y = TRUE)
@@ -509,18 +510,19 @@ getWoE <- function(TargetSiteID
                 , append = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
     
     # Gather metric-level scores into one data frame
-    df.SRin.met.gps <- merge(df.SRin.met, data.chem.info, by.x = "Stressor"
+    df.SRin.met.gps <- merge(df.SRin.met, df_chemInfo, by.x = "Stressor"
                              , by.y = "StdParamName")
     df.SRin.met.gps <- df.SRin.met.gps[,c(2,9:10,1,3:8)]
-    df.SRout.met.gps <- merge(df.SRout.met, data.chem.info, by.x = "Stressor"
+    df.SRout.met.gps <- merge(df.SRout.met, df_chemInfo, by.x = "Stressor"
                               , by.y = "StdParamName")
     df.SRout.met.gps <- df.SRout.met.gps[,c(2,9:10,1,3:8)]
     df.SR.met.gps <- rbind(df.SRin.met.gps, df.SRout.met.gps)
     
     # Write table containing all metric-level scores
     fn.metric.scores <- paste0(TargetSiteID,".WoE.metrics.",biocomm,".tab")
-    write.table(df.SR.met.gps, file = file.path(dir_results, subdir, "WoE", fn.metric.scores)
-                , append = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
+    write.table(df.SR.met.gps, file = file.path(dir_results, subdir, "WoE"
+                , fn.metric.scores), append = FALSE, sep = "\t"
+                , col.names = TRUE, row.names = FALSE)
 }
 # 
 # rm(list = ls())
