@@ -108,6 +108,7 @@ getClusterInfo <- function(TargetSiteID
                            , siteQual2Plot
                            , refSiteCOMIDs
                            , data_cluster
+                           , data_clusterInfo
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
@@ -119,7 +120,19 @@ getClusterInfo <- function(TargetSiteID
     i <- 2
   }##IF~boo_DEBUG~END
   #
-  useLU <- FALSE
+  
+  # TargetSiteID
+  # siteCOMID=list.SiteSummary$COMID
+  # siteCluster=list.SiteSummary$ClustID
+  # siteQual2Plot=siteQual2Plot
+  # refSiteCOMIDs=allRefReaches
+  # data_cluster = data_cluster
+  # data_clusterInfo = data_clusterInfo
+  # dir_results=file.path(getwd(), "Results")
+  # dir_sub="ClusterInfo"
+  
+  
+  
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
   # dir.sub <- "Results"
@@ -154,17 +167,21 @@ getClusterInfo <- function(TargetSiteID
   for (i in 2:ncol(data_cluster.mySites)) {##FOR.i.START
     #
     varYlab <- colnames(data_cluster.mySites)[i]
+    varYunits <- as.character(data_clusterInfo$Units[data_clusterInfo$ColName == varYlab])
+    varYgrandscale <- as.character(data_clusterInfo$Scale[data_clusterInfo$ColName == varYlab])
+    varYtext <- as.character(data_clusterInfo$ShortName[data_clusterInfo$ColName == varYlab])
     
     # Generate plot title
-    if (grepl("^.*Ws", varYlab, perl=TRUE)==TRUE) {
-        varYlabtext <- gsub("^(.*)(Ws)$", "\\1 in the watershed"
-                            , varYlab, perl = TRUE)
-    } else if (grepl("^.*Cat", varYlab, perl=TRUE)==TRUE) {
-        varYlabtext <- gsub("^(.*)(Cat)$", "\\1 in the catchment"
-                            , varYlab, perl = TRUE)
-    } else { varYlabtext <- varYlab }
+    # if (grepl("^.*Ws", varYlab, perl=TRUE)==TRUE) {
+    #     varYlabtext <- gsub("^(.*)(Ws)$", "\\1 in the watershed"
+    #                         , varYlab, perl = TRUE)
+    # } else if (grepl("^.*Cat", varYlab, perl=TRUE)==TRUE) {
+    #     varYlabtext <- gsub("^(.*)(Cat)$", "\\1 in the catchment"
+    #                         , varYlab, perl = TRUE)
+    # } else { varYlabtext <- varYlab }
     
-    varMain <- paste0("Distribution of ",varYlabtext," by cluster")
+    varMain <- paste0(varYtext, " (", varYunits,") in the "
+                      , tolower(varYgrandscale), " by cluster")
     if (siteQual2Plot=="not degraded") {
         qualtext <- "not degraded*"
         str_caption <- "*Sites having one or more samples rated not degraded."
@@ -301,29 +318,36 @@ getClusterInfo <- function(TargetSiteID
     # ggplot, point subsets
     ## Ref
     if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1
+                , ggplot2::aes(group=Cluster, y=var, color="ref_all"
+                , shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
     } else {
-      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all", shape="ref_all", fill="ref_all")) 
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all"
+                , shape="ref_all", fill="ref_all")) 
     }##IF~boo_plot_ref~END
     ## Target Site
     if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ)
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1
+                , ggplot2::aes(group=Cluster, y=var, color="target"
+                , shape="target", fill="target"), size=cex_sites_targ)
     } else {
-      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target"
+                , shape="target", fill="target"))
     }##IF~boo_plot_targ~END
-      
-      
+    
     # ggplot, Legend and other
     p_cl <- p_cl + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels
-                                               , values=leg_shape)  + 
-                  ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
-                                              , values=leg_col) +
-                  ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
-                                             , values=leg_fill) + 
-                  ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
-                                 , plot.subtitle=ggplot2::element_text(hjust=0.5)
-                                 , plot.caption=ggplot2::element_text(size=8)) + 
-                  ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab
+                                               , values=leg_shape) + 
+        ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
+                                    , values=leg_col) +
+        ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
+                                   , values=leg_fill) + 
+        ggplot2::scale_x_discrete(limits=unique(df_ggplot_all$Cluster)) +
+        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+                       , plot.subtitle=ggplot2::element_text(hjust=0.5)
+                       , plot.caption=ggplot2::element_text(size=8)) + 
+        ggplot2::theme(axis.text.x = ggplot2::element_text(size=6)) +
+        ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab
                                 , caption=str_caption)
     #
       
