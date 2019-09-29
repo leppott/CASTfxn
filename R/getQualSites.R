@@ -93,6 +93,9 @@ getQualSites<- function(TargetSiteID
     all.good <- as.vector(unique(df_qual$StationID_Master[df_qual[,colBioDeg]=="No"]))
     comp.good <- all.good[all.good %in% comp_sites]
 
+    all.samp.good <- as.vector(unique(df_qual[,colSample][df_qual[,colBioDeg]=="No"]))
+    comp.samp.good <- all.samp.better[all.samp.better %in% comp.samps]
+    
     good.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$StationID_Master %in% all.good])
     comp.good.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% all.good])
     
@@ -110,33 +113,37 @@ getQualSites<- function(TargetSiteID
     # Return data as a list of vectors
     if (biocomm == "bmi") {
         myQualSites <- list(all.b.ref = all.ref
-                            , comp.b.ref = comp.ref
                             , all.b.ref.reaches = ref.reaches
-                            , comp.b.ref.reaches = comp.ref.reaches
                             , all.b.good = all.good
-                            , comp.b.good = comp.good
+                            , all.b.good.samps = all.samp.good
                             , all.b.good.reaches = good.reaches
-                            , comp.b.good.reaches = comp.good.reaches
                             , all.b.bt.sites = all.better
-                            , comp.b.bt.sites = comp.better
                             , all.b.bt.samps = all.samp.better
-                            , comp.b.bt.samps = comp.samp.better
                             , all.b.bt.reaches = all.better.reaches
+                            , comp.b.ref = comp.ref
+                            , comp.b.ref.reaches = comp.ref.reaches
+                            , comp.b.good = comp.good
+                            , comp.b.good.samps = comp.samp.good
+                            , comp.b.good.reaches = comp.good.reaches
+                            , comp.b.bt.sites = comp.better
+                            , comp.b.bt.samps = comp.samp.better
                             , comp.b.bt.reaches = comp.better.reaches)
     } else if (biocomm == "alg") {
         myQualSites <- list(all.a.ref = all.ref
-                            , comp.a.ref = comp.ref
                             , all.a.ref.reaches = ref.reaches
-                            , comp.a.ref.reaches = comp.ref.reaches
                             , all.a.good = all.good
-                            , comp.a.good = comp.good
+                            , all.a.good.samps = all.samp.good
                             , all.a.good.reaches = good.reaches
-                            , comp.a.good.reaches = comp.good.reaches
                             , all.a.bt.sites = all.better
-                            , comp.a.bt.sites = comp.better
                             , all.a.bt.samps = all.samp.better
-                            , comp.a.bt.samps = comp.samp.better
                             , all.a.bt.reaches = all.better.reaches
+                            , comp.a.ref = comp.ref
+                            , comp.a.ref.reaches = comp.ref.reaches
+                            , comp.a.good = comp.good
+                            , comp.a.good.samps = comp.samp.good
+                            , comp.a.good.reaches = comp.good.reaches
+                            , comp.a.bt.sites = comp.better
+                            , comp.a.bt.samps = comp.samp.better
                             , comp.a.bt.reaches = comp.better.reaches)
     } else {
         QualMsg <- paste0("Biological community ", biocomm, " not supported.")
