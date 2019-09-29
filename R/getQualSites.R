@@ -53,15 +53,15 @@ getQualSites<- function(TargetSiteID
                         , BioDegLab = c("Yes", "No")) {
     
     # For QC purposes
-    TargetSiteID
-    comp_sites
-    df_sites = data_Sites
-    biocomm = "bmi"
-    df_qual = data_bmiMetrics
-    colBio = "CSCI"
-    colSample = "BMI.Metrics.SampID"
-    BioDegBrk = c(-2, 0.799, 2)
-    BioDegLab = c("Yes", "No")
+    # TargetSiteID
+    # comp_sites
+    # df_sites = data_Sites
+    # biocomm = "bmi"
+    # df_qual = data_bmiMetrics
+    # colBio = "CSCI"
+    # colSample = "BMI.Metrics.SampID"
+    # BioDegBrk = c(-2, 0.799, 2)
+    # BioDegLab = c("Yes", "No")
     
     # Define pipe
     `%>%` <- dplyr::`%>%`
@@ -78,7 +78,7 @@ getQualSites<- function(TargetSiteID
     comp.ref <- all.ref[all.ref %in% comp_sites]
     
     # Get vector of "reference" reaches (all & cluster/comparator)
-    ref.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$CARefSite_2017 == 1])
+    all.ref.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$CARefSite_2017 == 1])
     comp.ref.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$CARefSite_2017 == 1])
     
     # Get vector of not degraded sites
@@ -87,6 +87,11 @@ getQualSites<- function(TargetSiteID
         dplyr::select(StationID_Master, eval(colSample), eval(colBio))
     comp.samps <- df_qual[,colSample][df_qual$StationID_Master %in% comp_sites]
     
+    # Get vector of "reference" samples (all & cluster/comparator)
+    all.ref.samps <- as.vector(unique(df_qual[,colSample][df_qual[,"StationID_Master"] %in% all.ref]))
+    comp.ref.samps <- all.ref.samps[all.ref.samps %in% comp.samps]
+    
+    # Flag quality of sites based on degradation threshold
     df_qual[, colBioDeg] <- cut(df_qual[,colBio]
                                   , breaks=BioDegBrk
                                   , labels=BioDegLab)
@@ -113,7 +118,8 @@ getQualSites<- function(TargetSiteID
     # Return data as a list of vectors
     if (biocomm == "bmi") {
         myQualSites <- list(all.b.ref = all.ref
-                            , all.b.ref.reaches = ref.reaches
+                            , all.b.ref.samps = all.ref.samps
+                            , all.b.ref.reaches = all.ref.reaches
                             , all.b.good = all.good
                             , all.b.good.samps = all.samp.good
                             , all.b.good.reaches = good.reaches
@@ -121,6 +127,7 @@ getQualSites<- function(TargetSiteID
                             , all.b.bt.samps = all.samp.better
                             , all.b.bt.reaches = all.better.reaches
                             , comp.b.ref = comp.ref
+                            , comp.b.ref.samps = comp.ref.samps
                             , comp.b.ref.reaches = comp.ref.reaches
                             , comp.b.good = comp.good
                             , comp.b.good.samps = comp.samp.good
@@ -130,7 +137,8 @@ getQualSites<- function(TargetSiteID
                             , comp.b.bt.reaches = comp.better.reaches)
     } else if (biocomm == "alg") {
         myQualSites <- list(all.a.ref = all.ref
-                            , all.a.ref.reaches = ref.reaches
+                            , all.a.ref.samps = all.ref.samps
+                            , all.a.ref.reaches = all.ref.reaches
                             , all.a.good = all.good
                             , all.a.good.samps = all.samp.good
                             , all.a.good.reaches = good.reaches
