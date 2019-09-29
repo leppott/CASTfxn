@@ -46,22 +46,22 @@ getQualSites<- function(TargetSiteID
                         , comp_sites
                         , df_sites = data_Sites
                         , biocomm = "bmi"
-                        , df_qual = data.bmi.metrics
+                        , df_qual = data_bmiMetrics
                         , colBio = "CSCI"
                         , colSample = "BMI.Metrics.SampID"
                         , BioDegBrk = c(-2, 0.799, 2)
                         , BioDegLab = c("Yes", "No")) {
     
     # For QC purposes
-    # TargetSiteID
-    # comp_sites
-    # df_sites = data_Sites
-    # biocomm = "bmi"
-    # df_qual = data.bmi.metrics
-    # colBio = "IBI"
-    # colSample = "BMI.Metrics.SampID"
-    # BioDegBrk = c(-2, 0.799, 2)
-    # BioDegLab = c("Yes", "No")
+    TargetSiteID
+    comp_sites
+    df_sites = data_Sites
+    biocomm = "bmi"
+    df_qual = data_bmiMetrics
+    colBio = "CSCI"
+    colSample = "BMI.Metrics.SampID"
+    BioDegBrk = c(-2, 0.799, 2)
+    BioDegLab = c("Yes", "No")
     
     # Define pipe
     `%>%` <- dplyr::`%>%`
@@ -94,7 +94,7 @@ getQualSites<- function(TargetSiteID
     comp.good <- all.good[all.good %in% comp_sites]
 
     all.samp.good <- as.vector(unique(df_qual[,colSample][df_qual[,colBioDeg]=="No"]))
-    comp.samp.good <- all.samp.better[all.samp.better %in% comp.samps]
+    comp.samp.good <- all.samp.good[all.samp.good %in% comp.samps]
     
     good.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$StationID_Master %in% all.good])
     comp.good.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% all.good])
