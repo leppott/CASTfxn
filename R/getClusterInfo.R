@@ -8,13 +8,15 @@
 #' 
 #' * TargetSiteID
 #' 
-#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+#' * data_cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
 #' @param TargetSiteID SiteID
-#' @param site.COMID SiteID
-#' @param site.Clusters site clusters.
+#' @param siteCOMID Site COMID from NHDPlus v2
+#' @param siteCluster Site cluster.
+#' @param siteQual2Plot Type of quality sites. Allowed values are c("reference",
+#' "not degraded", "better than")
 #' @param refSiteCOMIDs reference site COMIDs
-#' @param data.cluster The StreamCat data for each reach with cluster assignments.
+#' @param data_cluster The StreamCat data for each reach with cluster assignments.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 
@@ -40,9 +42,9 @@
 #' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
 #'                    , "ElevCategory"])
 #' if(elev_cat=="HI"){
-#'    data.cluster <- data_Cluster_Hi
+#'    data_cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
-#'    data.cluster <- data_Cluster_Lo
+#'    data_cluster <- data_Cluster_Lo
 #' }
 #' 
 #' # Map data
@@ -73,7 +75,7 @@
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
-#'                                 , data.cluster, data.mod
+#'                                 , data_cluster, data.mod
 #'                                 , map_proj, map_outline, map_flowline
 #'                                 , dir_sub=dir_sub)
 #'  
@@ -82,12 +84,12 @@
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
+#' siteCluster <- list.SiteSummary$ClustIDs
 #'
 #' #
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=siteCluster
+#'                                 , data_cluster=data_cluster, data.Stations.Info=data.Stations.Info
 #'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
 #' # Data getClusterInfo
@@ -96,16 +98,16 @@
 #' dir_sub <- "ClusterInfo"
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, 
-#'                data.cluster, dir_results, dir_sub)
+#' getClusterInfo(TargetSiteID, site.COMID, siteCluster, ref.reaches, 
+#'                data_cluster, dir_results, dir_sub)
 #' 
 #' @export
 getClusterInfo <- function(TargetSiteID
-                           , site.COMID
-                           , site.Clusters
+                           , siteCOMID
+                           , siteCluster
                            , siteQual2Plot
                            , refSiteCOMIDs
-                           , data.cluster
+                           , data_cluster
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
@@ -132,7 +134,7 @@ getClusterInfo <- function(TargetSiteID
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
-  if (length(site.Clusters)==0) {
+  if (length(siteCluster)==0) {
     # do not proceed
     # no cluster assignment
     stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
@@ -140,18 +142,18 @@ getClusterInfo <- function(TargetSiteID
   
   cluster <- "clust"
 
-  data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,  ]
-  df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs, ]
-  df.plot.2 <- data.cluster.mySites
-  df.plot   <- data.cluster
+  data_cluster.mySites <- data_cluster[data_cluster$COMID %in% siteCOMID,  ]
+  df.plot.3 <- data_cluster[data_cluster$COMID %in% refSiteCOMIDs, ]
+  df.plot.2 <- data_cluster.mySites
+  df.plot   <- data_cluster
 
   # Plots ####
   # Capture each plot in a list for the PDF
-  plots.i <- vector(ncol(data.cluster.mySites)-1, mode="list")
+  plots.i <- vector(ncol(data_cluster.mySites)-1, mode="list")
   ppi<-300
-  for (i in 2:ncol(data.cluster.mySites)) {##FOR.i.START
+  for (i in 2:ncol(data_cluster.mySites)) {##FOR.i.START
     #
-    varYlab <- colnames(data.cluster.mySites)[i]
+    varYlab <- colnames(data_cluster.mySites)[i]
     
     # Generate plot title
     if (grepl("^.*Ws", varYlab, perl=TRUE)==TRUE) {
@@ -177,7 +179,7 @@ getClusterInfo <- function(TargetSiteID
     #
     # QC
     i.num <- i -1
-    i.len <- ncol(data.cluster.mySites) - 1
+    i.len <- ncol(data_cluster.mySites) - 1
     i.var <- varYlab
     message(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
     utils::flush.console()
