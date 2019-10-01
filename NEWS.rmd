@@ -37,6 +37,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9238 (2019-10-01, ARL)
+* General
+    + Standardized variable and column names to minimize confusion
+* getStressorList
+    + Adjusted for using only one cluster rathern than multiple options
+    + Adjusted graphs to display quality type instead of "all ref" always
+* getCoOccurDataSet
+    + Generalized "CSCI" or "IBI" to be contents of variable "index"
+* getBioStressorResponses
+    + Adjusted graphs to display quality type instead of "all ref" always
+    
 ## Changes in Version 0.1.0.9237 (2019-09-27, ARL)
 * SMCClusterData.tab
     + Removed extraneous columns (clust_land, clust_noland, TempWS, PrecipWs)
@@ -49,10 +60,7 @@ cat(paste0("Last Update: ",Sys.time()))
     + Adjusted graph to display quality type instead of "all ref" always
     + Adjusted graph title to be more descriptive
     + Added caption to better describe quality type
-* getStressorList
-    + Adjusted for using only one cluster rathern than multiple options
-* getCoOccurDataSet
-    + Generalized "CSCI" or "IBI" to be contents of variable "index"
+
 
 ## Changes in Version 0.1.0.9236 (2019-9-26)
 
