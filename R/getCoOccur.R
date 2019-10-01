@@ -278,13 +278,10 @@ getCoOccur <- function(df_data
   # remove all rows
   df.scores <- df.scores[0, ]
   
-  
-
   #par
 #  par.orig <- par(no.readonly=TRUE)
   # reset with "par(par.orig)"
   # using ggplot so don't need par
-  
   
   # QC Test
 
@@ -339,7 +336,9 @@ getCoOccur <- function(df_data
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir_sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
-    fn.scores <- file.path(dir_plots, dir_sub2, dir_sub3, paste0(i_TargetSiteID, ".CoOccurrence.", biocomm, ".Scores.txt"))
+    fn.scores <- file.path(dir_plots, dir_sub2, dir_sub3
+                           , paste0(i_TargetSiteID, ".CoOccurrence.", biocomm
+                                    , ".Scores.txt"))
     utils::write.table(df.scores, file=fn.scores
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
@@ -381,25 +380,29 @@ getCoOccur <- function(df_data
        ij.num <- ((i.num-1)*j.len) + j.num
        ij.len <- i.len * j.len
        #
-       message(paste0("Processing item (",ij.num,"/",ij.len,"); ID (", i.num, "/", i.len, ") ", i
+       message(paste0("Processing item (",ij.num,"/",ij.len,"); ID ("
+                      , i.num, "/", i.len, ") ", i
                     , "; Stressors (", j.num, "/", j.len, ") ", j, ".\n"))
        utils::flush.console()
        #
        df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
        #df.i[, paste0("q20_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.20, na.rm=TRUE)
-       df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.25, na.rm=TRUE)
-       df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.50, na.rm=TRUE)
-       df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j], probs=0.75, na.rm=TRUE)
+       df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                    , probs=0.25, na.rm=TRUE)
+       df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                    , probs=0.50, na.rm=TRUE)
+       df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                    , probs=0.75, na.rm=TRUE)
        # Comp Score for box plot
        ## Use different criteria for some parameters
        if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
          # Inverse Scoring
          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)], -1
-                                                , ifelse(df.i[, j] < df.i[, paste0("q25_",j)], 1, 0)) 
+                                    , ifelse(df.i[, j] < df.i[, paste0("q25_",j)], 1, 0)) 
        } else {
          # Regular Scoring
          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)], 1
-                                                , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
+                                    , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
        }##IF~j_in_InvSc~END
        df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
        
@@ -419,7 +422,8 @@ getCoOccur <- function(df_data
          df.i.n[, "q75"]         <- df.i.n[, paste0("q75_", j)]
          df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_", j)]
          # df.i.n append to output (only keep matching columns)
-         df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))], all.y=TRUE)
+         df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))]
+                                , all.y=TRUE)
          # 2019-05-20, sort by score
          df.scores.i.n <- df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), ]
         #  # Save
@@ -429,7 +433,8 @@ getCoOccur <- function(df_data
         # # rm(df.scores.i.n)
          
          ## Box Plot of Comparator Sites (with better bio)
-         lab.Score <- paste0("Score = ", paste0(df.i.n[, paste0("Sc_Box_", j)], collapse=", "))
+         lab.Score <- paste0("Score = ", paste0(df.i.n[, paste0("Sc_Box_", j)]
+                                                , collapse=", "))
          lab.N     <- paste0("n = ",df.i[,paste0("n_",j)][1])
          
          # # plot, R
@@ -451,12 +456,13 @@ getCoOccur <- function(df_data
          ppi       <- 300
          
          # Create (ggplot)
-         lab.sub <- paste0("Cluster sites with higher ", colBio, " scores and ", j, " (", lab.N, ").\n "
+         lab.sub <- paste0("Comparator sites with higher ", colBio
+                           , " scores and ", j, " (", lab.N, ").\n "
                            , lab.Score,".")
          
          bio_col <- c("blue", "dark gray")
          bio_shp <- c(21, 25) # circle and down triangle
-         lab_comp <- paste0("Cluster = ",i.Group)
+         lab_comp <- paste0("Comparator sites selected from cluster = ",i.Group)
          
          # scoring lines
          if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
@@ -477,22 +483,31 @@ getCoOccur <- function(df_data
          # if non-empty
          #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
            # plot1, ggplot ####
-           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=as.name(j), x=colGroup, group=colGroup)) +
+           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=as.name(j)
+                                                , x=colGroup, group=colGroup)) +
              ggplot2::geom_boxplot(na.rm = TRUE) +
              ggplot2::coord_flip() + 
              ggplot2::geom_jitter(size=2, alpha=0.5, na.rm=TRUE
-                                  , ggplot2::aes_string(color=col.SiteTypeQuality, shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) + 
-             ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
+                            , ggplot2::aes_string(color=col.SiteTypeQuality
+                            , shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) + 
+             ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col
+                            , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
              # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
              #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
-             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) + 
+             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col
+                                         , drop=FALSE) +
+             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col
+                                        , drop=FALSE) +
+             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp
+                                         , drop=FALSE) + 
              ggplot2::labs(title=i, caption=lab.sub) + 
-             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white"), axis.ticks.y=ggplot2::element_blank()) +
+             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+                            , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
+             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
+                            , axis.ticks.y=ggplot2::element_blank()) +
              ggplot2::labs(y=j, x=lab_comp) + 
-             ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black", lty=2, na.rm = TRUE)
+             ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black"
+                                 , lty=2, na.rm = TRUE)
            # Capture plot (jpg)
            # Capture most recent plot to a list
            # print(p1)
@@ -536,8 +551,10 @@ getCoOccur <- function(df_data
            #
            fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
            # create data for curve
-           newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100))
-           newdat$y.name <- stats::predict(fit, newdata=newdat, type="response") #se.fit=TRUE
+           newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE)
+                                      , max(df.plot$x, na.rm=TRUE), len=100))
+           newdat$y.name <- stats::predict(fit, newdata=newdat
+                                           , type="response") #se.fit=TRUE
            # type=response is for probabilities.
 
            # Scoring
@@ -561,18 +578,26 @@ getCoOccur <- function(df_data
 
            # plot2, ggplot ####
            p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
-             ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), alpha=0.5, size=2, na.rm = TRUE) +
+             ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg
+                            , fill=Bio.Deg), alpha=0.5, size=2, na.rm = TRUE) +
              # ggplot2::geom_jitter(size=2, alpha=0.5
              #                      , ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), width=0, height=0.005) +
-             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col, drop=FALSE) +
-             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp, drop=FALSE) +
-             ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col, lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) +
-             ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black", lty=2, na.rm = TRUE) +
+             ggplot2::scale_fill_manual(breaks=c("Yes", "No")
+                                        , values=bio_col, drop=FALSE) +
+             ggplot2::scale_color_manual(breaks=c("Yes", "No")
+                                         , values=bio_col, drop=FALSE) +
+             ggplot2::scale_shape_manual(breaks=c("Yes", "No")
+                                         , values=bio_shp, drop=FALSE) +
+             ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col
+                        , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) +
+             ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black"
+                                 , lty=2, na.rm = TRUE) +
              #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) +
              ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) +
-             ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat, color="blue", lwd=1, na.rm = TRUE) +
-             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle = ggplot2::element_text(hjust=0.5)) +
+             ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
+                                , color="blue", lwd=1, na.rm = TRUE) +
+             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+                            , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::labs(title=i, caption=lab.sub)
            # p2
            # plots_jpg[[2]] <- grDevices::recordPlot()
@@ -659,14 +684,15 @@ getCoOccur <- function(df_data
          message(paste0("   All values NA for stressor (", j, ").\n"))
          utils::flush.console()
          # add data to scores table
-         column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
+         column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50"
+                           , "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
          df.i.NA <- df.i[1,1:5]
          df.i.NA[, column_names] <- NA
          df.i.NA[, "Param_Name"] <- j
          # add biocomm, 20190425
          df.i.NA[, "biocomm"] <- biocomm
-         utils::write.table(df.i.NA, file=fn.scores
-                            , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
+         utils::write.table(df.i.NA, file=fn.scores, col.names = FALSE
+                            , row.names=FALSE, sep="\t", append=TRUE)
          
          
        }##IF.nrow.END
@@ -681,7 +707,8 @@ getCoOccur <- function(df_data
     # Create PDF from list of recorded plots
     if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
       fn.pdf    <- paste0(i_TargetSiteID, ".CoOccurrence.ALL.pdf")
-      grDevices::pdf(file=file.path(dir_plots, dir_sub2, dir_sub3, fn.pdf), width=6, height=8) #p3
+      grDevices::pdf(file=file.path(dir_plots, dir_sub2, dir_sub3, fn.pdf)
+                     , width=6, height=8) #p3
      # grDevices::pdf(file=file.path(dir_plots, dir_sub2, fn.pdf), width=9, height=4) #p1 only
         #
         # Remove null items from plot list

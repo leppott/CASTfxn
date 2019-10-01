@@ -9,7 +9,7 @@
 #' Required objects:
 #' 
 #' * data_Sites; StationID_Master, FinalLatitude, FinalLongitude
-#' , WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
+#' , WaterbodyName, GIS_County, CARefSite_2017, COMID
 #' 
 #' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
 #' , BMI.Metrics.SampID, Algae.Metrics.SampID
@@ -165,20 +165,20 @@ getSiteInfo <- function(TargetSiteID
   #
   mySiteInfo <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID
                            ,c("FinalLatitude","FinalLongitude","WaterbodyName"
-                              ,"GIS_County","CARefSite_2017","COMID_NHD2"
+                              ,"GIS_County","CARefSite_2017","COMID"
                               ,"ElevCategory")]
   data_refSites <- subset(data_Sites, CARefSite_2017==1
                           , select= c(StationID_Master, FinalLatitude
-                                      , FinalLongitude, COMID_NHD2))
+                                      , FinalLongitude, COMID))
 
   # get sampling info (dates of samples)
   mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID
                               ,c("CollDate","ChemSampleID","PhabSampID"
-                                 ,"BMI.Metrics.SampID","Algae.Metrics.SampID")]
+                                 ,"BMISampID","AlgSampID")]
   # get response information (CSCI, H20, etc)
   if (!is.null("data_bmiMetrics")) {
       myBMImetrics <- data_bmiMetrics[data_bmiMetrics[,"StationID_Master"]==TargetSiteID
-                                      ,c("CollDate",bmiIndex)]
+                                      ,c("BMISampDate",bmiIndex)]
   }
   if (!is.null("data_algMetrics")) {
       # myAlgaeMetrics <- data.algae.metrics[data.algae.metrics[,"StationID_Master"]==TargetSiteID
@@ -187,7 +187,7 @@ getSiteInfo <- function(TargetSiteID
   }
   
   # get COMID 
-  myCOMID <- mySiteInfo$COMID_NHD2
+  myCOMID <- mySiteInfo$COMID
   myWBName <- mySiteInfo$WaterbodyName
   myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
 
@@ -202,7 +202,7 @@ getSiteInfo <- function(TargetSiteID
   
   
   all.map.sites <- merge(data_Sites, data_cluster
-                         , by.x = c("COMID_NHD2","clust")
+                         , by.x = c("COMID","clust")
                          , by.y = c("COMID","clust"))
   df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
                                 , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]

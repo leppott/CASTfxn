@@ -31,20 +31,10 @@ getTimeSeq <- function(TargetSiteID
                        , BioResp
                        , df_stress
                        , df_resp
-                       , colname.SampID
+                       , colSampID
                        , dir_results = file.path(getwd(),"Results")
                        , dir_sub = "TemporalSequence") {
 
-    # TargetSiteID
-    # stressors
-    # biocomm = "BMI"
-    # BioResp = BMImetrics
-    # df_stress = site.b.str
-    # df_resp = site.b.rsp
-    # colname.SampID = "BMI.Metrics.SampID"
-    # dir_results = file.path(getwd(),"Results")
-    # dir_sub = "TemporalSequence"
-    
     # Define pipe
     `%>%` <- dplyr::`%>%`
 
@@ -69,78 +59,44 @@ getTimeSeq <- function(TargetSiteID
     # Prep measured stressor data
     df_stress <- df_stress %>%
         dplyr::select_if(not_all_na) %>%
-        dplyr::mutate(BioQuality = as.factor(Quality)) %>%
         dplyr::select(-StationID_Master
-               , -BMI.Metrics.SampID
-               , -SampDate
-               , -LagDate
-               , -Quality) %>%
+               , -RespSampID
+               , -RespSampDate) %>%
         tidyr::gather(key = StdParamName, value = ResultValue
-               , -ChemSampleID, -SampleDate, -BioQuality) %>%
-        dplyr::filter(!is.na(ResultValue)) %>%
-        dplyr::mutate(variable = StdParamName
-               , value = ResultValue
-               , SampID = ChemSampleID) %>%
-        dplyr::select(BioQuality, SampleDate, variable, value) %>%
-        dplyr::group_by(BioQuality, SampleDate, variable) %>%
-        dplyr::summarize(meanval = formatC(signif(mean(value),digits=3)
-                                , digits=3,format="fg", flag="#"))
+               , -StressSampID, -StressSampDate) %>%
+        # dplyr::filter(!is.na(ResultValue)) %>%
+        # dplyr::mutate(variable = StdParamName
+        #        , value = ResultValue
+        #        , SampID = ChemSampleID) %>%
+        # dplyr::select(BioQuality, SampleDate, variable, value) %>%
+        dplyr::group_by(StressSampDate, StdParamName) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3)) %>%
+        dplyr::rename(SampDate = StressSampDate, variable = StdParamName)
 
     # Prep response data
-    if (biocomm == "BMI") {
-        df_resp <- df_resp %>%
-            dplyr::select_if(not_all_na) %>%
-            dplyr::mutate(BioQuality = as.factor(Quality)) %>%
-            dplyr::select(-StationID_Master
-                   , -BMISampID
-                   , -ChemSampleID
-                   , -SampDate
-                   , -LagDate
-                   , -CollDate
-                   , -Quality) %>%
-            tidyr::gather(key = BMImetric, value = ResultValue
-                   , -BMI.Metrics.SampID, -SampleDate, -BioQuality) %>%
-            dplyr::filter(!is.na(ResultValue)
-                   , BMImetric %in% BioResp) %>%
-            dplyr::mutate(variable = BMImetric
-                   , value = ResultValue
-                   , SampID = BMI.Metrics.SampID) %>%
-            dplyr::select(BioQuality, SampleDate, variable, value) %>%
-            dplyr::group_by(BioQuality, SampleDate, variable) %>%
-            dplyr::summarize(meanval = formatC(signif(mean(value),digits=3)
-                                        , digits=3,format="fg", flag="#"))
-    } else if (biocomm == "ALGAE") {
-        df_resp <- df_resp %>%
-            dplyr::select_if(not_all_na) %>%
-            dplyr::mutate(BioQuality = as.factor(Quality)) %>%
-            dplyr::select(-StationID_Master
-                   , -ChemSampleID
-                   , -SampDate
-                   , -LagDate
-                   , -Quality) %>%
-            tidyr::gather(key = Algmetric, value = ResultValue
-                   , -Alg.Metrics.SampID, -SampleDate, -BioQuality) %>%
-            dplyr::filter(!is.na(ResultValue)
-                   , Algmetric %in% BioResp) %>%
-            dplyr::mutate(variable = Algmetric
-                   , value = ResultValue
-                   , SampID = Alg.Metrics.SampID) %>%
-            dplyr::select(BioQuality, SampleDate, variable, value) %>%
-            dplyr::group_by(BioQuality, SampleDate, variable) %>%
-            dplyr::summarize(meanval = formatC(signif(mean(value),digits=3)
-                                        , digits=3,format="fg", flag="#"))
-    } else {
-        warn(paste(biocomm,"is not a valid option."))
-    }
-    skipflag <- ifelse(nrow(df_resp)==0,TRUE, FALSE)
+    df_resp <- df_resp %>%
+        dplyr::select_if(not_all_na) %>%
+        dplyr::select(-StationID_Master
+               , -StressSampID
+               , -StressSampDate
+               , -Quality) %>%
+        tidyr::gather(key = Biometric, value = ResultValue
+               , -RespSampID, -RespSampDate) %>%
+        dplyr::filter(!is.na(ResultValue)
+               , Biometric %in% BioResp) %>%
+        dplyr::group_by(RespSampDate, Biometric) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3)) %>%
+        dplyr::rename(SampDate = RespSampDate, variable = Biometric)
+
+        skipflag <- ifelse(nrow(df_resp)==0,TRUE, FALSE)
     
     if (skipflag == FALSE) {
         
         # Ensure all data in one dataframe
         df.data <- rbind(df_stress, df_resp)
         
-        minDate <- min(df.data$SampleDate)-30
-        maxDate <- max(df.data$SampleDate)+30
+        minDate <- as.Date(min(df.data$SampDate)-30)
+        maxDate <- as.Date(max(df.data$SampDate)+30)
         diffDate <- paste(round((maxDate - minDate)/10, 2),"days")
         # print(diffDate)
         # flush.console()
@@ -167,23 +123,23 @@ getTimeSeq <- function(TargetSiteID
                 print(paste("Plotting bar graphs for", stressName, "and", respName))
                 flush.console()
 
-                ggplot2::ggplot(df.plot, ggplot2::aes(x=SampleDate, y=as.numeric(meanval))) +
-                    ggplot2::geom_col(fill = "black", width = 2
-                             , position = ggplot2::position_dodge(preserve = "single")) +
-                    ggrepel::geom_text_repel(ggplot2::aes(label=meanval), hjust= 2, vjust = 0
-                                    , size=2.5) +
-                    ggplot2::facet_wrap(~ variable, ncol=1, scales="free_y") +
-                    ggplot2::theme_bw() + 
-                    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
+                p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x=SampDate
+                                            , y=as.numeric(meanval)))
+                p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = 2
+                             , position = ggplot2::position_dodge(preserve = "single"))
+                p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanval)
+                                        , hjust= 2, vjust = 0, size=2.5)
+                p_ts <- p_ts + ggplot2::facet_wrap(~ variable, ncol=1, scales="free_y")
+                p_ts <- p_ts + ggplot2::theme_bw()
+                p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
                                        , hjust = 1, size = 8)
-                                       , panel.grid.minor = ggplot2::element_blank()) +
-                    ggplot2::scale_x_date(limits=c(minDate,maxDate)
-                                 , date_labels = "%m/%d/%Y"
-                                 , date_breaks = diffDate) +
-                    ggplot2::labs(title = paste(TargetSiteID
+                                       , panel.grid.minor = ggplot2::element_blank())
+                p_ts <- p_ts + ggplot2::scale_x_date(limits=c(minDate,maxDate)
+                                 , date_labels = "%m/%d/%Y", date_breaks = diffDate)
+                p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID
                                        ,"Stressor/Response Time Series")
-                         , x = "Sample Date", y = "Value") +
-                    ggplot2::ggsave(filename=fpath, dpi = ppi, width=8
+                         , x = "Sample Date", y = "Value")
+                p_ts <- p_ts + ggplot2::ggsave(filename=fpath, dpi = ppi, width=8
                                     , height=6, units="in")
             }
         }

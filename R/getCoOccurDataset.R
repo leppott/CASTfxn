@@ -38,24 +38,22 @@
 #' @export
 getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                               , df_sites = data_Sites
-                              , df_model = data.model.raw
-                              , df_meas = data.chem.raw
+                              , df_model = data_modelRaw
+                              , df_meas = data_chemRaw
                               , biocomm = "BMI"
-                              , df_resp = data.bmi.metrics
+                              , df_resp = data_bmiMetrics
                               , index = "CSCI"
-                              , respColnames = c("BMISampDate", "BMISampID"
-                                                  , "Quality", index)
                               , lagdays = 0) {
     
     # Debug
     # dataDir = file.path(getwd(),"Data")
     # df_sites = data_Sites
-    # df_model = data.model.raw
-    # df_meas = data.chem.raw
+    # df_model = data_modelRaw
+    # df_meas = data_chemRaw
     # biocomm = "BMI"
-    # df_resp = data.bmi.metrics
+    # df_resp = data_bmiMetrics
     # index = "CSCI"
-    # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
+    # # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
     # lagdays = 10
     
     biocomm <- tolower(biocomm)
@@ -64,9 +62,9 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     `%>%` <- dplyr::`%>%`
     
     # Read data files (stressor and response)
-    df_resp <- df_resp[,c("StationID_Master", "CollDate", "BMI.Metrics.SampID"
+    df_resp <- df_resp[,c("StationID_Master", "BMISampDate", "BMISampID"
                         , "Quality", index)]
-    colnames(df_resp) <- c("StationID_Master", respColnames)
+    # colnames(df_resp) <- c("StationID_Master", respColnames)
     
     # Clean up modeled data
     df_model <- df_model %>%
@@ -79,18 +77,20 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     df_modbmi <- merge(df_resp, df_model, by.x = "StationID_Master"
                        , by.y = "StationID_Master", all = TRUE)
     df_modbmi <- df_modbmi %>% 
-        dplyr::mutate(BioSampleDate = lubridate::mdy(BMISampDate)) %>%
-        dplyr::mutate(LagDate = BioSampleDate - lagdays) %>%
+        dplyr::rename(RespSampDate = BMISampDate) %>%
+        dplyr::rename(RespSampID = BMISampID) %>%
+        dplyr::mutate(LagDate = RespSampDate - lagdays) %>%
         dplyr::select(StationID_Master
-                      , BioSampleDate
+                      , RespSampDate
                       , LagDate
-                      , eval(respColnames)
+                      , RespSampID
+                      , Quality
+                      , eval(index)
                       , eval(modColnames)
-                      , - clust
-                      , - BMISampDate)
+                      , - clust)
     
     rm(df_model, df_resp)
-    respColnames <- respColnames[!respColnames %in% "BMISampDate"]
+    respColnames <- c("RespSampID", "Quality", index)
 
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
@@ -98,26 +98,27 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
         dplyr::select(StationID_Master, ChemSampleID, SampDate
                , StdParamName, ResultValue) %>%
         tidyr::spread(key = StdParamName, value = ResultValue) %>%
-        dplyr::mutate(StressSampleDate = lubridate::mdy(SampDate))
+        dplyr::mutate(StressSampDate = lubridate::mdy(SampDate)) %>%
+        dplyr::select(-SampDate)
     measColnames <- names(df_meas)
     measColnames <- measColnames[!(measColnames %in% c("StationID_Master"
                                                        , "ChemSampleID"
-                                                       , "StressSampleDate"))]
+                                                       , "StressSampDate"))]
     
     # Merge site/bmi data with measure data by station & date
     
     df_coOccur <- fuzzyjoin::fuzzy_left_join(df_modbmi, df_meas
                             , by = c("StationID_Master" = "StationID_Master"
-                            , "BioSampleDate" = "StressSampleDate"
-                            , "LagDate" = "StressSampleDate")
+                            , "RespSampDate" = "StressSampDate"
+                            , "LagDate" = "StressSampDate")
                             , match_fun = list(`==`, `>=`, `<=`)) %>%
         dplyr::filter(!is.na(StationID_Master.y)) %>%
         dplyr::rename(StationID_Master = StationID_Master.x) %>%
-        dplyr::rename(RespSampleDate = BioSampleDate) %>%
+        dplyr::rename(StressSampID = ChemSampleID) %>%
         dplyr::mutate(BioComm = eval(biocomm)) %>%
-        dplyr::select(StationID_Master, StressSampleDate, RespSampleDate
-                      , ChemSampleID, eval(respColnames), eval(modColnames)
-                      , eval(measColnames), -SampDate)
+        dplyr::select(StationID_Master, StressSampDate, RespSampDate
+                      , StressSampID, BioComm, eval(respColnames)
+                      , eval(modColnames), eval(measColnames))
     df_sites <- df_sites[,c("StationID_Master", "clust")]
     df_coOccur <- merge(df_sites, df_coOccur)
     

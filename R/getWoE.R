@@ -69,7 +69,7 @@ getWoE <- function(TargetSiteID
            , dir.create(file.path(dir_results, subdir, "WoE"))
            , FALSE)
    
-    LoEcols <- c("StationID_Master", "ChemSampleID", "Bio.Deg", "Stressor"
+    LoEcols <- c("StationID_Master", "StressSampID", "Bio.Deg", "Stressor"
                  , "StressorValue", "Response", "ResponseValue", "n", "LoEtrim"
                  , "LoE", "Analysis", "InOut", "Score", "biocomm")
     
@@ -97,27 +97,27 @@ getWoE <- function(TargetSiteID
         keep.stress <- unique(df.CO$Stressor)
         
         data.coOccurTarget <- df_coOccur %>%
-            dplyr::select(StationID_Master, ChemSampleID, CSCI, keep.stress) %>%
-            dplyr::mutate(Index = CSCI) %>%
+            dplyr::select(StationID_Master, StressSampID, eval(index), keep.stress) %>%
+            dplyr::mutate(Index = eval(index)) %>%
             dplyr::filter(StationID_Master == TargetSiteID) %>%
             tidyr::gather(keep.stress, key = "Stressor", value = "StressorValue") %>%
             dplyr::filter(!is.na(StressorValue)) %>%
-            dplyr::select(StationID_Master, ChemSampleID, Index, Stressor
+            dplyr::select(StationID_Master, StressSampID, eval(index), Stressor
                    , StressorValue)
         data.coOccurTarget <- unique(data.coOccurTarget)
         
         df.CO <- merge(df.CO, data.coOccurTarget, by.x = c("StationID_Master"
                             , "ResponseValue", "Stressor", "StressorValue")
-                       , by.y =  c("StationID_Master", "Index", "Stressor"
+                       , by.y =  c("StationID_Master", index, "Stressor"
                                    , "StressorValue"))
         df.CO <- unique(df.CO)
-        df.CO <- df.CO[,c("StationID_Master", "ChemSampleID", "Bio.Nar"
+        df.CO <- df.CO[,c("StationID_Master", "StressSampID", "Bio.Nar"
                           , "Bio.Deg", "ResponseValue", "Stressor"
                           , "StressorValue", "n", "Sc_Box", "SC_SR", "biocomm")]
         
         # Pull out co-occurrence scores from co-occurrence file
         df.CO.1 <- df.CO %>%
-            dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+            dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                    , Stressor, StressorValue, n, Sc_Box, biocomm) %>%
             dplyr::mutate(Response = index
                    , LoEtrim = "CO_boxplot"
@@ -131,7 +131,7 @@ getWoE <- function(TargetSiteID
         
         # Pull out the SR logistic regression scores from co-occurrence file
         df.SRlog <- df.CO %>%
-            dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+            dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                    , Stressor, StressorValue, n, SC_SR, biocomm) %>%
             dplyr::mutate(Response = index, LoEtrim = "SR_InCase_LogRegr"
                    , LoE = "Stressor-response in the case"
@@ -156,7 +156,7 @@ getWoE <- function(TargetSiteID
         colnames(df.SR) <- c("StationID_Master", "biocomm", "Stressor", "Response"
                              , "n_site", "n_all", "SRscore.all", "n_cluster"
                              , "SRscore.cluster")
-        df.SR <- merge(df.SR, unique(df.CO.1[,c("StationID_Master", "ChemSampleID"
+        df.SR <- merge(df.SR, unique(df.CO.1[,c("StationID_Master", "StressSampID"
                                                 , "ResponseValue", "Bio.Deg"
                                                 , "Stressor", "StressorValue")])
                        , by.x = c("StationID_Master", "Stressor")
@@ -169,7 +169,7 @@ getWoE <- function(TargetSiteID
             # Pull out the stressor response linear regression scores for the IBI
             # NOTE that I've hardcoded IBI, but it really should be a variable w/value=IBI
             df.SRin <- df.SR %>%
-                dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+                dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                        , Stressor, StressorValue, Response, n_cluster
                        , SRscore.cluster, biocomm) %>%
                 dplyr::filter(Response == index) %>%
@@ -182,7 +182,7 @@ getWoE <- function(TargetSiteID
             df.SRin <- df.SRin[,LoEcols]
             
             df.SRout <- df.SR %>%
-                dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+                dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                        , Stressor, StressorValue, Response, n_all, SRscore.all
                        , biocomm) %>%
                 dplyr::filter(Response == index) %>%
@@ -197,7 +197,7 @@ getWoE <- function(TargetSiteID
             # Pull out the stressor response linear regression scores for the metrics
             # NOTE that I've hardcoded IBI, but it really should be a variable w/value=IBI
             df.SRin.met <- df.SR %>%
-                dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+                dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                        , Stressor, StressorValue, Response, n_cluster
                        , SRscore.cluster, biocomm) %>%
                 dplyr::filter(Response != index) %>%
@@ -210,7 +210,7 @@ getWoE <- function(TargetSiteID
             df.SRin.met <- df.SRin.met[,LoEcols]
             
             df.SRout.met <- df.SR %>%
-                dplyr::select(StationID_Master, ChemSampleID, Bio.Deg, ResponseValue
+                dplyr::select(StationID_Master, StressSampID, Bio.Deg, ResponseValue
                        , Stressor, StressorValue, Response, n_all, SRscore.all
                        , biocomm) %>%
                 dplyr::filter(Response != index) %>%
@@ -246,10 +246,10 @@ getWoE <- function(TargetSiteID
                    , StressorValue = Param_Value
                    , Response = variable
                    , ResponseValue = value) %>%
-            dplyr::select(StationID_Master, ChemSampleID, Stressor, StressorValue
+            dplyr::select(StationID_Master, StressSampID, Stressor, StressorValue
                    , Response, ResponseValue, n, LoEtrim, LoE, Analysis, InOut
                    , Score, biocomm)
-        df.VP <- merge(df.VP, unique(df.CO.1[,c("ChemSampleID", "Bio.Deg")]))
+        df.VP <- merge(df.VP, unique(df.CO.1[,c("StressSampID", "Bio.Deg")]))
         df.VP <- df.VP[,LoEcols]
         df.VP <- df.VP[!is.na(df.VP$Score),]
         df.VP <- unique (df.VP)
@@ -341,7 +341,7 @@ getWoE <- function(TargetSiteID
     
     df.scores <- merge(df.scores, data_chemInfoTrim, by.x = "Stressor"
                        , by.y = "StdParamName")
-    df.scores <- df.scores[,c("StationID_Master", "Bio.Deg", "ChemSampleID"
+    df.scores <- df.scores[,c("StationID_Master", "Bio.Deg", "StressSampID"
                               , "GroupNum", "GroupName", "Stressor", "StressorValue"
                               , "Response", "ResponseValue", "n", "LoEtrim", "LoE"
                               , "Analysis", "InOut","Score", "biocomm")]
@@ -352,36 +352,36 @@ getWoE <- function(TargetSiteID
     
     # Create subset of data (to not destroy full dataset)
     df.scores2 <- df.scores %>%
-        dplyr::select(StationID_Master, Bio.Deg, GroupNum, GroupName, ChemSampleID
+        dplyr::select(StationID_Master, Bio.Deg, GroupNum, GroupName, StressSampID
                , Stressor, StressorValue, Response, ResponseValue, LoEtrim
                , Score, biocomm) %>%
-        dplyr::arrange(ChemSampleID, GroupNum, Stressor, LoEtrim)
+        dplyr::arrange(StressSampID, GroupNum, Stressor, LoEtrim)
     
     # Get % rank info for all stressors
     keep.stress <- unique(df.scores2$Stressor)
-    df_rank <- df_rank[,c("StationID_Master", "ChemSampleID", keep.stress)]
+    df_rank <- df_rank[,c("StationID_Master", "StressSampID", keep.stress)]
     df_rank <- df_rank %>%
         tidyr::gather(key = "Stressor"
                , value = "PctRank"
                , -StationID_Master
-               , -ChemSampleID)
+               , -StressSampID)
     
     df.scores3 <- merge(df_rank, df.scores2
-                        , by.x = c("StationID_Master", "ChemSampleID", "Stressor")
-                        , by.y = c("StationID_Master", "ChemSampleID", "Stressor")
+                        , by.x = c("StationID_Master", "StressSampID", "Stressor")
+                        , by.y = c("StationID_Master", "StressSampID", "Stressor")
                         , all.y = TRUE)
     df.scores3 <- unique(df.scores3)
 
     # Cast data into wide format, as opposed to long
     df.scores.wide.all <- df.scores3 %>%
         tidyr::spread(key = LoEtrim, value = Score) %>%
-        dplyr::arrange(ChemSampleID, GroupNum, Stressor, PctRank)
+        dplyr::arrange(StressSampID, GroupNum, Stressor, PctRank)
     
     if ("VP_boxplot" %in% colnames(df.scores.wide.all)) {
         df.scores.wide.all <- df.scores.wide.all %>%
             dplyr::mutate(VP_boxplot = ifelse(!is.na(VP_boxplot)==TRUE
                                        , VP_boxplot, -9)) %>%
-            dplyr::group_by(StationID_Master, Bio.Deg, GroupNum, GroupName, ChemSampleID
+            dplyr::group_by(StationID_Master, Bio.Deg, GroupNum, GroupName, StressSampID
                      , Stressor, StressorValue, PctRank, Response, ResponseValue) %>%
             dplyr::summarize(CO_boxplot = sum(CO_boxplot, na.rm = TRUE)
                       , SR_InCase_LogRegr = sum(SR_InCase_LogRegr, na.rm = TRUE)
@@ -397,7 +397,7 @@ getWoE <- function(TargetSiteID
     } else {
         df.scores.wide.all <- df.scores.wide.all %>%
             dplyr::group_by(StationID_Master, Bio.Deg, GroupNum, GroupName
-                      , ChemSampleID, Stressor, StressorValue, PctRank
+                      , StressSampID, Stressor, StressorValue, PctRank
                       , Response, ResponseValue) %>%
             dplyr::summarize(CO_boxplot = sum(CO_boxplot, na.rm = TRUE)
                       , SR_InCase_LogRegr = sum(SR_InCase_LogRegr, na.rm = TRUE)

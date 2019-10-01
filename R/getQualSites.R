@@ -43,23 +43,23 @@
 #' 
 #' @export
 getQualSites<- function(TargetSiteID
-                        , comp_sites
                         , df_sites = data_Sites
                         , biocomm = "bmi"
-                        , df_qual = data_bmiMetrics
+                        , df_qual = data_bmiCoOccur
                         , colBio = "CSCI"
-                        , colSample = "BMI.Metrics.SampID"
+                        , colBioSample = "RespSampID"
+                        , colStressSample = "StressSampID"
                         , BioDegBrk = c(-2, 0.799, 2)
                         , BioDegLab = c("Yes", "No")) {
     
     # For QC purposes
     # TargetSiteID
-    # comp_sites
     # df_sites = data_Sites
     # biocomm = "bmi"
-    # df_qual = data_bmiMetrics
+    # df_qual = data_bmiCoOccur
     # colBio = "CSCI"
-    # colSample = "BMI.Metrics.SampID"
+    # colBioSample = "RespSampID"
+    # colStressSample = "StressSampID"
     # BioDegBrk = c(-2, 0.799, 2)
     # BioDegLab = c("Yes", "No")
     
@@ -70,89 +70,105 @@ getQualSites<- function(TargetSiteID
     biocomm <- tolower(biocomm)
     colBioDeg = "BioDeg"
     
+    # Subset bio index data frame to just site, sample, index score
+    df_qual <- df_qual  %>%
+        dplyr::select(StationID_Master, eval(colStressSample)
+                      , eval(colBioSample), eval(colBio))
+    
+    # Subset coOccur data to 
+    
     # Subset df_sites for comparators only
-    comp.sitedata <- df_sites[df_sites$StationID_Master %in% comp_sites,]
+    # comp.sitedata <- df_sites[df_sites$StationID_Master %in% comp_sites,]
     
     # Get vector of "reference" sites (all & cluster/comparator)
     all.ref <- as.vector(df_sites$StationID_Master[df_sites$CARefSite_2017 == 1])
-    comp.ref <- all.ref[all.ref %in% comp_sites]
+    # comp.ref <- all.ref[all.ref %in% comp_sites]
     
     # Get vector of "reference" reaches (all & cluster/comparator)
-    all.ref.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$CARefSite_2017 == 1])
-    comp.ref.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$CARefSite_2017 == 1])
+    all.ref.reaches <- as.vector(df_sites$COMID[df_sites$CARefSite_2017 == 1])
+    # comp.ref.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$CARefSite_2017 == 1])
     
     # Get vector of not degraded sites
-    # Subset bio index data frame to just site, sample, index score
-    df_qual <- df_qual  %>%
-        dplyr::select(StationID_Master, eval(colSample), eval(colBio))
-    comp.samps <- df_qual[,colSample][df_qual$StationID_Master %in% comp_sites]
+    # comp.samps <- df_qual[,colSample][df_qual$StationID_Master %in% comp_sites]
     
     # Get vector of "reference" samples (all & cluster/comparator)
-    all.ref.samps <- as.vector(unique(df_qual[,colSample][df_qual[,"StationID_Master"] %in% all.ref]))
-    comp.ref.samps <- all.ref.samps[all.ref.samps %in% comp.samps]
+    all.ref.samps.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,"StationID_Master"] %in% all.ref]))
+    all.ref.samps.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,"StationID_Master"] %in% all.ref]))
+    
+    # comp.ref.samps <- all.ref.samps[all.ref.samps %in% comp.samps]
     
     # Flag quality of sites based on degradation threshold
     df_qual[, colBioDeg] <- cut(df_qual[,colBio]
                                   , breaks=BioDegBrk
                                   , labels=BioDegLab)
     all.good <- as.vector(unique(df_qual$StationID_Master[df_qual[,colBioDeg]=="No"]))
-    comp.good <- all.good[all.good %in% comp_sites]
+    # comp.good <- all.good[all.good %in% comp_sites]
 
-    all.samp.good <- as.vector(unique(df_qual[,colSample][df_qual[,colBioDeg]=="No"]))
-    comp.samp.good <- all.samp.good[all.samp.good %in% comp.samps]
+    all.samp.good.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,colBioDeg]=="No"]))
+    all.samp.good.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,colBioDeg]=="No"]))
+    # comp.samp.good <- all.samp.good[all.samp.good %in% comp.samps]
     
-    good.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$StationID_Master %in% all.good])
-    comp.good.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% all.good])
+    all.good.reaches <- as.vector(df_sites$COMID[df_sites$StationID_Master %in% all.good])
+    # comp.good.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% all.good])
     
     # Get vector of sites with samples having index > min target site index
+    # Get bio samples and chem sample where bio is better than target
     min.targ <- min(df_qual[,colBio][df_qual$StationID_Master == TargetSiteID])
     all.better <- as.vector(unique(df_qual$StationID_Master[df_qual[,colBio] > min.targ]))
-    all.samp.better <- as.vector(unique(df_qual[,colSample][df_qual[,colBio] > min.targ]))
-    all.better.reaches <- as.vector(df_sites$COMID_NHD2[df_sites$StationID_Master %in% all.better])
-    comp.better <- all.better[all.better %in% comp_sites]
-    comp.samp.better <- all.samp.better[all.samp.better %in% comp.samps]
-    comp.better.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% comp.better])
+    all.samp.better.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,colBio] > min.targ]))
+    all.samp.better.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,colBio] > min.targ]))
+    all.better.reaches <- as.vector(df_sites$COMID[df_sites$StationID_Master %in% all.better])
+    # comp.better <- all.better[all.better %in% comp_sites]
+    # comp.samp.better <- all.samp.better[all.samp.better %in% comp.samps]
+    # comp.better.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% comp.better])
     
     # Assess data gaps
     
     # Return data as a list of vectors
     if (biocomm == "bmi") {
-        myQualSites <- list(all.b.ref = all.ref
-                            , all.b.ref.samps = all.ref.samps
-                            , all.b.ref.reaches = all.ref.reaches
-                            , all.b.good = all.good
-                            , all.b.good.samps = all.samp.good
-                            , all.b.good.reaches = good.reaches
-                            , all.b.bt.sites = all.better
-                            , all.b.bt.samps = all.samp.better
-                            , all.b.bt.reaches = all.better.reaches
-                            , comp.b.ref = comp.ref
-                            , comp.b.ref.samps = comp.ref.samps
-                            , comp.b.ref.reaches = comp.ref.reaches
-                            , comp.b.good = comp.good
-                            , comp.b.good.samps = comp.samp.good
-                            , comp.b.good.reaches = comp.good.reaches
-                            , comp.b.bt.sites = comp.better
-                            , comp.b.bt.samps = comp.samp.better
-                            , comp.b.bt.reaches = comp.better.reaches)
+        myQualSites <- list(allRefBMISites = all.ref
+                            , allRefBMIRespSamps = all.ref.samps.bio
+                            , allRefBMIStressSamps = all.ref.samps.stress
+                            , allRefBMIReaches = all.ref.reaches
+                            , allGoodBMISites = all.good
+                            , allGoodBMIRespSamps = all.samp.good.bio
+                            , allGoodBMIStressSamps = all.samp.good.stress
+                            , allGoodBMIReaches = all.good.reaches
+                            , allBTBMISites = all.better
+                            , allBTBMIRespSamps = all.samp.better.bio
+                            , allBTBMIStressSamps = all.samp.better.stress
+                            , allBTBMIReaches = all.better.reaches)
+                            # , comp.b.ref = comp.ref
+                            # , comp.b.ref.samps = comp.ref.samps
+                            # , comp.b.ref.reaches = comp.ref.reaches
+                            # , comp.b.good = comp.good
+                            # , comp.b.good.samps = comp.samp.good
+                            # , comp.b.good.reaches = comp.good.reaches
+                            # , comp.b.bt.sites = comp.better
+                            # , comp.b.bt.samps = comp.samp.better
+                            # , comp.b.bt.reaches = comp.better.reaches)
     } else if (biocomm == "alg") {
-        myQualSites <- list(all.a.ref = all.ref
-                            , all.a.ref.samps = all.ref.samps
-                            , all.a.ref.reaches = all.ref.reaches
-                            , all.a.good = all.good
-                            , all.a.good.samps = all.samp.good
-                            , all.a.good.reaches = good.reaches
-                            , all.a.bt.sites = all.better
-                            , all.a.bt.samps = all.samp.better
-                            , all.a.bt.reaches = all.better.reaches
-                            , comp.a.ref = comp.ref
-                            , comp.a.ref.reaches = comp.ref.reaches
-                            , comp.a.good = comp.good
-                            , comp.a.good.samps = comp.samp.good
-                            , comp.a.good.reaches = comp.good.reaches
-                            , comp.a.bt.sites = comp.better
-                            , comp.a.bt.samps = comp.samp.better
-                            , comp.a.bt.reaches = comp.better.reaches)
+        myQualSites <- list(allRefBMISites = all.ref
+                            , allRefBMIRespSamps = all.ref.samps.bio
+                            , allRefBMIStressSamps = all.ref.samps.chem
+                            , allRefBMIReaches = all.ref.reaches
+                            , allGoodBMISites = all.good
+                            , allGoodBMIRespSamps = all.samp.good.bio
+                            , allGoodBMIStressSamps = all.samp.good.stress
+                            , allGoodBMIReaches = all.good.reaches
+                            , allBTBMISites = all.better
+                            , allBTBMIRespSamps = all.samp.better.bio
+                            , allBTBMIStressSamps = all.samp.better.stress
+                            , allBTBMIReaches = all.better.reaches)
+                            # , comp.b.ref = comp.ref
+                            # , comp.b.ref.samps = comp.ref.samps
+                            # , comp.b.ref.reaches = comp.ref.reaches
+                            # , comp.b.good = comp.good
+                            # , comp.b.good.samps = comp.samp.good
+                            # , comp.b.good.reaches = comp.good.reaches
+                            # , comp.b.bt.sites = comp.better
+                            # , comp.b.bt.samps = comp.samp.better
+                            # , comp.b.bt.reaches = comp.better.reaches)
     } else {
         QualMsg <- paste0("Biological community ", biocomm, " not supported.")
         Msg(QualMsg)

@@ -6,13 +6,13 @@
 #' 
 #' Required objects:
 #' 
-#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+#' * data.SampSummary; StationID_Master, CollDate, StressSampID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
 #' * data.bio.taxa.raw; BMI.Metrics.SampID
 #' 
 #' * data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 #' 
-#' * data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, ChemSampleID, SSTV.analyte
+#' * data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, StressSampID, SSTV.analyte
 #' , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
 #' 
 #' * TargetSiteID
@@ -165,7 +165,6 @@
 #~~~~~~~~~~~~~~~~
 #' @export
 getVerifiedPredictions <- function(TargetSiteID
-                                   , data.SampSummary
                                    , data.bio.taxa.raw
                                    , data.chem.info
                                    , data.SSTV.totabund
@@ -200,7 +199,8 @@ getVerifiedPredictions <- function(TargetSiteID
     #
   } else {
     # Non Valid biological community
-    Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
+    Msg_Stop <- print(paste0("Non-valid biological community specified ("
+                    , biocomm,"). Only values of 'bmi' and 'algae' are valid."))
     stop(Msg_Stop)
   }##IF.biocomm.END
   
@@ -351,7 +351,7 @@ getVerifiedPredictions <- function(TargetSiteID
         
         # get all the matched sample data for this stressor
         # 20180620, match names
-        col_keep <- c("StationID_Master", "ChemSampleID", "BMI.Metrics.SampID")
+        col_keep <- c("StationID_Master", "StressSampID", "RespSampID")
         SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in% names(matchedData$all.b.str)]
         all.match.b.str <- matchedData$all.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
         cl.match.b <- matchedData$cl.b.str[,c(col_keep, SSTV.analyte.match.all.b.str)]
@@ -384,7 +384,7 @@ getVerifiedPredictions <- function(TargetSiteID
         all.match.b.resp <- bmi.taxa.raw2[bmi.taxa.raw2$BMI.Metrics.SampID %in%
                                     unique(all.match.b.str$BMI.Metrics.SampID), ]
         
-        col_by <- c("StationID_Master", "BMI.Metrics.SampID")
+        col_by <- c("StationID_Master", "RespSampID")
         all.SSTV.abund <- merge(all.match.b.str
                                 , all.match.b.resp
                                 , by.x = col_by
@@ -400,7 +400,7 @@ getVerifiedPredictions <- function(TargetSiteID
 
         good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
         all.ref.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% ref.sites)
-        cl.SSTV.abund      <- subset(good.SSTV.abund, good.SSTV.abund$ChemSampleID %in% cl.match.b$ChemSampleID)
+        cl.SSTV.abund      <- subset(good.SSTV.abund, good.SSTV.abund$StressSampID %in% cl.match.b$StressSampID)
         cl.ref.SSTV.abund  <- subset(cl.SSTV.abund, cl.SSTV.abund$StationID_Master %in% ref.sites)
         site.SSTV.abund    <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% TargetSiteID)
         SSTV.Resp          <- c("SensRelAbund", "TolRelAbund")
