@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9239 (2019-10-07, ARL)
+* General
+    + Minor bug fixes arising from system test to various functions
+* getSummaryAllSites
+    + Summarizes WoE from all target sites in the results folder
+
 ## Changes in Version 0.1.0.9238 (2019-10-01, ARL)
 * General
     + Standardized variable and column names to minimize confusion
