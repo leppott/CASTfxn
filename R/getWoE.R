@@ -49,11 +49,13 @@ getWoE <- function(TargetSiteID
                    , SSD_sub = "SSD") {
     
     # QC data
+    # TargetSiteID = "403BA0068"
     # df_rank = list.stressors$site.stressor.pctrank
-    # df_coOccur = data.bmi.coOccur
+    # df_chemInfo = data_stressInfo
+    # df_coOccur = data_bmiCoOccur
     # biocomm = "bmi"
-    # index = "IBI"
-    # dir_results = file.path(getwd(), "Results")
+    # index = bmiIndex
+    # dir_results = file.path(wd, "Results")
     # CO_sub = "CoOccurrence"
     # SR_sub = "StressorResponse"
     # VP_sub = "VerifiedPredictons"
@@ -334,13 +336,12 @@ getWoE <- function(TargetSiteID
     }
     
     # Get Chem Info for all possible stressors
-    data_chemInfoTrim <- data_chemInfo %>% 
-        dplyr::mutate(Analyte = StdParamName) %>% 
-        dplyr::select(StdParamName, GroupNum, GroupName)
-    data_chemInfoTrim <- unique(data_chemInfoTrim)
+    df_chemInfoTrim <- df_chemInfo %>% 
+        dplyr::mutate(Stressor = as.character(StdParamName)) %>%
+        dplyr::select(Stressor, GroupNum, GroupName)
+    df_chemInfoTrim <- unique(df_chemInfoTrim)
     
-    df.scores <- merge(df.scores, data_chemInfoTrim, by.x = "Stressor"
-                       , by.y = "StdParamName")
+    df.scores <- merge(df.scores, df_chemInfoTrim)
     df.scores <- df.scores[,c("StationID_Master", "Bio.Deg", "StressSampID"
                               , "GroupNum", "GroupName", "Stressor", "StressorValue"
                               , "Response", "ResponseValue", "n", "LoEtrim", "LoE"
