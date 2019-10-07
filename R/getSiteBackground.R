@@ -79,14 +79,17 @@ getSiteBackground <- function(TargetSiteID
                 have.photos <- TRUE
             }
             if (!have.photos) {
-                print(paste0("No site photos are available for ", TargetSiteID))
-                flush.console()
+                # print(paste0("No site photos are available for ", TargetSiteID))
+                # flush.console()
             }
         }
     } else { 
         print("No photos are available.")
         flush.console()
     }
+    
+    print("Completed tranferring any available site files.")
+    flush.console()
 
     # Get background data from fn_bkgdata; use COMID to select single row
     df.bkgdata <- read.table(fn_bkgdata, header = TRUE, sep = "\t"
