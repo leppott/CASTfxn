@@ -141,14 +141,21 @@ getSiteInfo <- function(TargetSiteID
     # TargetSiteID
     # dir_results = file.path(wd, "Results")
     # data_Sites = data_Sites
-    # data.algae.metrics = data.bmi.metrics
+    # data_SampSummary = data_SampSummary
+    # data_303d = data_303d
+    # data_bmiMetrics = data_bmiMetrics
+    # bmiIndex = "CSCI"
+    # data_algMetrics = NULL
+    # algIndex = "ASCI"
+    # data_cluster = data_cluster
+    # data_mods = data_mods
     # map_proj = my.aea
     # map_outline = outline
     # map_flowline = flowline
     # map_flowline2 = NULL
-    # dir_sub = "SiteInfo"  
+    # dir_sub = "SiteInfo"
 
-      # check for and create (if necessary) dir_results and SiteID subdirectory
+    # check for and create (if necessary) dir_results and SiteID subdirectory
   #wd <- getwd()
   #dir.sub <- "Results"
   dir.sub2 <- TargetSiteID
@@ -172,9 +179,7 @@ getSiteInfo <- function(TargetSiteID
                                       , FinalLongitude, COMID))
 
   # get sampling info (dates of samples)
-  mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID
-                              ,c("CollDate","ChemSampleID","PhabSampID"
-                                 ,"BMISampID","AlgSampID")]
+  mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID,]
   # get response information (CSCI, H20, etc)
   if (!is.null("data_bmiMetrics")) {
       myBMImetrics <- data_bmiMetrics[data_bmiMetrics[,"StationID_Master"]==TargetSiteID
