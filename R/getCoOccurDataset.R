@@ -54,7 +54,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # df_resp = data_bmiMetrics
     # index = "CSCI"
     # # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    # lagdays = 10
+    # lagdays = 0
     
     biocomm <- tolower(biocomm)
     
@@ -94,12 +94,11 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
 
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
+    df_meas <- as.data.frame(df_meas)
+    df_meas <- dplyr::select(df_meas, -SampDate)
     df_meas <- df_meas %>% 
-        dplyr::select(StationID_Master, ChemSampleID, SampDate
-               , StdParamName, ResultValue) %>%
         tidyr::spread(key = StdParamName, value = ResultValue) %>%
-        dplyr::mutate(StressSampDate = lubridate::mdy(SampDate)) %>%
-        dplyr::select(-SampDate)
+        dplyr::rename(StressSampDate = SampleDate)
     measColnames <- names(df_meas)
     measColnames <- measColnames[!(measColnames %in% c("StationID_Master"
                                                        , "ChemSampleID"
