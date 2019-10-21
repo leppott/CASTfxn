@@ -135,7 +135,7 @@
 #' #
 #' TargetSiteID <- c("SRCKN001.61")
 #' #
-#' # Cluster Data based on elevation category
+#' # comparator Data based on elevation category
 #' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID_Master
 #' if(boo_Lo==TRUE){
 #'    df_data <- data_CoOccur_AZ_Lo
@@ -572,7 +572,7 @@ getCoOccur <- function(df_data
            df.scores.i.n[, "Sc_SR"] <- j_SR_score
 
            #
-           lab.sub <- paste0("All cluster sites with both ", colBio, " and ", j
+           lab.sub <- paste0("All comparator sites with both ", colBio, " and ", j
                              , " (n=", n_cc_df_plot, ").\n Score = "
                              , paste(j_SR_score, collapse=", "),".")
 
