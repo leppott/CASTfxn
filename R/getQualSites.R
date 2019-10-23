@@ -126,18 +126,18 @@ getQualSites<- function(TargetSiteID
     
     # Return data as a list of vectors
     if (biocomm == "bmi") {
-        myQualSites <- list(allRefBMISites = all.ref
-                            , allRefBMIRespSamps = all.ref.samps.bio
-                            , allRefBMIStressSamps = all.ref.samps.stress
-                            , allRefBMIReaches = all.ref.reaches
-                            , allGoodBMISites = all.good
-                            , allGoodBMIRespSamps = all.samp.good.bio
-                            , allGoodBMIStressSamps = all.samp.good.stress
-                            , allGoodBMIReaches = all.good.reaches
-                            , allBTBMISites = all.better
-                            , allBTBMIRespSamps = all.samp.better.bio
-                            , allBTBMIStressSamps = all.samp.better.stress
-                            , allBTBMIReaches = all.better.reaches)
+        myQualSites <- list(allRefBioSites = all.ref
+                            , allRefBioRespSamps = all.ref.samps.bio
+                            , allRefBioStressSamps = all.ref.samps.stress
+                            , allRefBioReaches = all.ref.reaches
+                            , allGoodBioSites = all.good
+                            , allGoodBioRespSamps = all.samp.good.bio
+                            , allGoodBioStressSamps = all.samp.good.stress
+                            , allGoodBioReaches = all.good.reaches
+                            , allBTBioSites = all.better
+                            , allBTBioRespSamps = all.samp.better.bio
+                            , allBTBioStressSamps = all.samp.better.stress
+                            , allBTBioReaches = all.better.reaches)
                             # , comp.b.ref = comp.ref
                             # , comp.b.ref.samps = comp.ref.samps
                             # , comp.b.ref.reaches = comp.ref.reaches
