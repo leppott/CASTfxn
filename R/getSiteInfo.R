@@ -547,8 +547,8 @@ getSiteInfo <- function(TargetSiteID
         print(paste0("No site photos are available for ", TargetSiteID))
         flush.console()
         
-        gap.photos <- cbind.data.frame("getSiteInfo", "quality", nrow(badBMImetrics)
-                                    , "Degraded comparator sites available.")
+        gap.photos <- cbind.data.frame("getSiteInfo", "quality", 0
+                                    , "Site photos are not available.")
         colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
 
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
