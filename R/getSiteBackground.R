@@ -124,7 +124,8 @@ getSiteBackground <- function(TargetSiteID
         
         xlab <- paste0(cat.sub$Category[i],": ",cat.sub$Subcategory[i]
                        ,", ",cat.sub$Units[i])
-        fn.plot <- file.path(plot.path,paste0(cat.sub[i,4],".png"))
+        fn.plot <- file.path(plot.path, paste0(TargetSiteID, "_bkgd_"
+                                               , cat.sub[i,4], ".png"))
         p.title <- paste("Potential anthropogenic alterations")
         p.subtitle <- TargetSiteID
         numcols <- length(unique(df.temp$Scale))/2
@@ -153,7 +154,7 @@ getSiteBackground <- function(TargetSiteID
                       , axis.title.y = ggplot2::element_text(size=9, face="bold")
                       , plot.title = ggplot2::element_text(size=10, face="bold")
                       , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
-            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi)
+            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_w, height=plot_h)
             
         } else {
             
@@ -180,7 +181,7 @@ getSiteBackground <- function(TargetSiteID
                     , axis.title.y = ggplot2::element_text(size=9, face="bold")
                     , plot.title = ggplot2::element_text(size=10, face="bold")
                     , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
-            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi)
+            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_w, height=plot_h)
 
         }
 
