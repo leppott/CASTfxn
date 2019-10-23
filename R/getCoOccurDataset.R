@@ -50,11 +50,11 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # df_sites = data_Sites
     # df_model = data_modelRaw
     # df_meas = data_chemRaw
-    # biocomm = "BMI"
-    # df_resp = data_bmiMetrics
-    # index = "CSCI"
+    # biocomm = "Alg"
+    # df_resp = data_algMetrics
+    # index = algIndex
     # # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    # lagdays = 0
+    # lagdays = 10
     
     biocomm <- tolower(biocomm)
     
@@ -62,8 +62,20 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     `%>%` <- dplyr::`%>%`
     
     # Read data files (stressor and response)
-    df_resp <- df_resp[,c("StationID_Master", "BMISampDate", "BMISampID"
-                        , "Quality", index)]
+    if (biocomm == "bmi") {
+        df_resp <- df_resp[,c("StationID_Master", "BMISampDate", "BMISampID"
+                              , "Quality", index)] %>%
+            dplyr::rename(RespSampDate = BMISampDate) %>%
+            dplyr::rename(RespSampID = BMISampID)
+    } else if (biocomm == "alg") {
+        df_resp <- df_resp[,c("StationID_Master", "AlgSampDate", "AlgSampID"
+                              , "Quality", index)] %>%
+            dplyr::rename(RespSampDate = AlgSampDate) %>%
+            dplyr::rename(RespSampID = AlgSampID)
+    } else {
+        print("Biological community type not used.")
+        flush.console()
+    }
     # colnames(df_resp) <- c("StationID_Master", respColnames)
     
     # Clean up modeled data
@@ -74,11 +86,10 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     modColnames <- modColnames[!(modColnames %in% c("StationID_Master","clust"))]
     
     # Merge modeled stressor data and response data
-    df_modbmi <- merge(df_resp, df_model, by.x = "StationID_Master"
+    df_modresp <- merge(df_resp, df_model, by.x = "StationID_Master"
                        , by.y = "StationID_Master", all = TRUE)
-    df_modbmi <- df_modbmi %>% 
-        dplyr::rename(RespSampDate = BMISampDate) %>%
-        dplyr::rename(RespSampID = BMISampID) %>%
+    df_modresp <- df_modresp %>% 
+        dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate)) %>%
         dplyr::mutate(LagDate = RespSampDate - lagdays) %>%
         dplyr::select(StationID_Master
                       , RespSampDate
@@ -106,7 +117,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     
     # Merge site/bmi data with measure data by station & date
     
-    df_coOccur <- fuzzyjoin::fuzzy_left_join(df_modbmi, df_meas
+    df_coOccur <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas
                             , by = c("StationID_Master" = "StationID_Master"
                             , "RespSampDate" = "StressSampDate"
                             , "LagDate" = "StressSampDate")
