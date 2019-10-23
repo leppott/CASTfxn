@@ -204,54 +204,7 @@ getStressorList <- function(TargetSiteID
     }##IF~boo.DEBUG~START
     #
     if(n>0) { ##FOR.n.START
-      # plot.pryr %<a-% {##pryr.START
-      #   maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
-      #   graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
-      #   if (useLU == TRUE) {##IF.useLU.START
-      #     labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
-      #   } else {
-      #     labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
-      #   }##IF.useLU.END
-      #   labx = paste(maintitle, labmain, sep = "\n")
-      #   graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
-      #        xlim = c(0,1), cex.lab = 0.8)
-      #   graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
-      #   graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
-      #   for(i in 1:n) {##FOR.i.START
-      #     xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
-      #     newvar <- (xvar-min(xvar, na.rm=T))/dif
-      #     graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
-      #             , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
-      #     good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
-      #     if (length(good.ref.data) != 0) {##IF.length.START
-      #       point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-      #       graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
-      #     }##IF.length.END
-      #     point1 <- (siteChem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-      #     graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
-      #   }##FOR.i.END
-      #   graphics::box(bty="l") 
-      # }##pryr.END
-      # 
-      # # PDF, capture plot in list
-      # #lst.plots.g[[g]] <- grDevices::recordPlot()
-      # #plots.g[[g]] <- plot.pryr
-      # #assign(paste0("plot_",g),plot.pryr)
-      # plot.pryr
-      # plots.g[[g]] <- grDevices::recordPlot()
-      # 
-      # # JPG, create
-      # grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
-      #                                   ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
-      #                 height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
-      #                 res = ppi)
-      #   plot.pryr
-      # grDevices::dev.off()
-      #
-      
-      
-      # ggplot ####
-      
+
       ## Plot, Data, Cluster
       df_plot_wide <- as.data.frame(clusterChem[,gpcoolvar])
       colnames(df_plot_wide) <- gpcoolvar 
