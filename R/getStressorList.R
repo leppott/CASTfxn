@@ -153,8 +153,9 @@ getStressorList <- function(TargetSiteID
   # QC, 20190905
   # chem.info$DirIncStress to lower case
   chemInfo$DirIncStress <- tolower(chemInfo$DirIncStress)
-  biocomm <- tolower(biocomm)
+  biocomm <- toupper(biocomm)
   `%>%` <- dplyr::`%>%`
+  plot_ext <- ".png"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -162,13 +163,19 @@ getStressorList <- function(TargetSiteID
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
-  dir.sub3 <- dir_sub
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
+  
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   
   # stations <- TargetSiteID
 
@@ -246,13 +253,19 @@ getStressorList <- function(TargetSiteID
       # Get proper labels to describe "good quality" sites
       if (siteQual2Plot=="not degraded") {
           qualtext <- "not degraded*"
-          str_caption <- "*Stressor samples paired with biological samples rated not degraded."
+          if (biocomm=="BMI") {
+              str_caption <- paste0("*Stressor samples paired with benthic "
+                                    , "macroinvertebrate samples rated not degraded.")
+          } else if (biocomm=="ALG") {
+              str_caption <- paste0("*Stressor samples paired with algae "
+                                    , "samples rated not degraded.")
+          }
       } else if (siteQual2Plot=="better than") {
           qualtext <- "better quality*"
           str_caption <- paste("*Stressor samples with paired response samples having biological"
-                               ,"quality better than the minimum target site quality.", sep = "\n")
+                               ,"quality better than the mimum target site quality.", sep = "\n")
       } else { 
-          qualtext <- "all ref"
+          qualtext <- "Reference"
           str_caption <- ""
       }
       
@@ -295,7 +308,7 @@ getStressorList <- function(TargetSiteID
       
       ## Plot, Variables, Legend
       leg_name   <- "Sites"
-      leg_labels <- c(qualtext, "target")
+      leg_labels <- c(qualtext, "Target")
       leg_shape  <- c(pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
@@ -353,18 +366,22 @@ getStressorList <- function(TargetSiteID
       print(p_SL)
       plots.g[[g]] <- grDevices::recordPlot()
       #
-      fn_jpg <- file.path(wd, dir.sub, dir.sub2, dir.sub3
-                          , paste0(TargetSiteID, ".boxes."
-                                   , make.names(groupnames[g,]), ".jpg"))
-      ggplot2::ggsave(fn_jpg, p_SL, width=plot_W, height=plot_H, units="in")
+      # fn_title <- make.names(groupnames[g,])
+      fn_title <- stringr::str_to_title(str_Group)
+      fn_title <- gsub("\\s","",fn_title)
+      fn_plot <- file.path(dir_path, paste0(TargetSiteID, biocomm, "_CandCauses_"
+                                   , fn_title, plot_ext))
+      # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
+      #                                       , make.names(groupnames[g,]), plot_ext))
+      ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
       
     }##IF.n.END
   }##FOR.g.END
   
   # PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(wd, dir.sub, dir.sub2, dir.sub3
-                      , paste0(TargetSiteID,".boxes.ALL.pdf"))
+  fn_pdf <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                       ,"CandCauses_ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (i in plots.g){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
@@ -381,8 +398,8 @@ getStressorList <- function(TargetSiteID
   # colnames(data.chem.pctrank)[1] <- "StationID_Master"
   # colnames(data.chem.pctrank)[2] <- "StressSampleID"
   # row.names(data.chem.pctrank) <- NULL
-  fn.pctrank <- file.path(dir_results, TargetSiteID, dir.sub3
-                          , paste0(TargetSiteID, ".chempctrank.",biocomm,".tab"))
+  fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                           ,"CandCauses_ChemPctRank.tab"))
   utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE
                      , row.names = FALSE, append=FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
