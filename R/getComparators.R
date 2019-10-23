@@ -118,6 +118,11 @@ getComparators<- function(TargetSiteID
         colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     }
     
+    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+    write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE
+                , row.names = FALSE, sep = "\t")
+    
     CompMsg2 <- paste("Using final number of comparators =", length(comp.sites)-1)
     message(CompMsg2)
     
