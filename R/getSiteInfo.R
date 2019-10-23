@@ -120,8 +120,9 @@
 #
 #' @export
 getSiteInfo <- function(TargetSiteID
-                        , dir_results = file.path(getwd(), "Results")
                         , data_Sites
+                        , data_bkgdata
+                        , data_bkginfo
                         , data_SampSummary
                         , data_303d
                         , data_bmiMetrics=NULL
@@ -135,13 +136,16 @@ getSiteInfo <- function(TargetSiteID
                         , map_outline=NULL
                         , map_flowline=NULL
                         , map_flowline2=NULL
-                        , dir_sub="SiteInfo") {
-  #
+                        , dir_photo = file.path(getwd(),"Data","Photos")
+                        , dir_results = file.path(getwd(), "Results")
+                        , dir_sub = "SiteInfo") {
+    #
    
     # DEBUG 
     # TargetSiteID = TargetSiteID
-    # dir_results = file.path(wd, "Results")
     # data_Sites = data_Sites
+    # data_bkgdata = df_bkgdata
+    # data_bkginfo = df_bkginfo
     # data_SampSummary = data_SampSummary
     # data_303d = data_303d
     # data_bmiMetrics = data_bmiMetrics
@@ -155,6 +159,8 @@ getSiteInfo <- function(TargetSiteID
     # map_outline = outline
     # map_flowline = flowline
     # map_flowline2 = NULL
+    # dir_photo = file.path(getwd(),"Data","Photos")
+    # dir_results = file.path(getwd(), "Results")
     # dir_sub = "SiteInfo"
 
     # check for and create (if necessary) dir_results and SiteID subdirectory
@@ -172,6 +178,8 @@ getSiteInfo <- function(TargetSiteID
     ifelse(!dir.exists(file.path(dir_results, dir_sub2, dir_sub3))==TRUE
          , dir.create(file.path(dir_results, dir_sub2, dir_sub3))
          , FALSE)
+    
+    dir_path <- file.path(dir_results, dir_sub2, dir_sub3)
   
     # Define pipe
     `%>%` <- dplyr::`%>%`
@@ -211,6 +219,21 @@ getSiteInfo <- function(TargetSiteID
         badBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Degraded")
         myBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Target")
         
+        gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBMImetrics)
+                                     , "Not degraded comparator sites available.")
+        colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
+        gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBMImetrics)
+                                     , "Degraded comparator sites available.")
+        colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
+        gap.comps <- rbind(gap.good, gap.bad)
+        rm(gap.good, gap.bad)
+        
+        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
+        
+        
         ## Plot, Variables, Strings, other Aesthetics
         lab.sub <- paste0("Comparator samples (n = ", nrow(compBMImetrics)
                         , " from ", length(comp_sites)," sites)")
@@ -225,8 +248,8 @@ getSiteInfo <- function(TargetSiteID
         str_ylab  <- "Score"
         
         ## Plot, Data
-        fn_bioscores <- paste0(TargetSiteID, "_bmi_IndexBoxplots.png")
-        fn_bioscores <- file.path(dir_results,dir_sub2,dir_sub3,fn_bioscores)
+        fn_bmiscores <- paste0(TargetSiteID, "_bmi_IndexBoxplots.png")
+        fn_bmiscores <- file.path(dir_path,fn_bmiscores)
         pBMI <- ggplot2::ggplot(compBMImetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
           ggplot2::geom_boxplot(na.rm = TRUE) +
           ggplot2::geom_jitter(size=2, width = 0.2, na.rm=TRUE
@@ -246,7 +269,7 @@ getSiteInfo <- function(TargetSiteID
                          , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
           ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                          , axis.ticks.y=ggplot2::element_blank())
-        ggplot2::ggsave(fn_bioscores, pBMI, width=plot_W, height=plot_H, units="in")
+        ggplot2::ggsave(fn_bmiscores, pBMI, width=plot_W, height=plot_H, units="in")
 
     }
     if (!is.null("data_algMetrics")) {
@@ -280,8 +303,8 @@ getSiteInfo <- function(TargetSiteID
         str_ylab  <- "Score"
         
         ## Plot, Data
-        fn_bioscores <- paste0(TargetSiteID, "_alg_IndexBoxplots.png")
-        fn_bioscores <- file.path(dir_results,dir_sub2,dir_sub3,fn_bioscores)
+        fn_algscores <- paste0(TargetSiteID, "_alg_IndexBoxplots.png")
+        fn_algscores <- file.path(dir_path,fn_algscores)
         pAlg <- ggplot2::ggplot(compALGmetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
             ggplot2::geom_boxplot(na.rm = TRUE) +
             ggplot2::geom_jitter(size=2, width = 0.2, na.rm=TRUE
@@ -301,7 +324,7 @@ getSiteInfo <- function(TargetSiteID
                            , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                            , axis.ticks.y=ggplot2::element_blank())
-        ggplot2::ggsave(fn_bioscores, pAlg, width=plot_W, height=plot_H, units="in")
+        ggplot2::ggsave(fn_algscores, pAlg, width=plot_W, height=plot_H, units="in")
         
     }
     
@@ -384,8 +407,7 @@ getSiteInfo <- function(TargetSiteID
     lwd_flowline <- 0.5
     
     #fn_jpg <- paste0("Results/",TargetSiteID, "/", TargetSiteID, ".map.jpg")
-    fn_jpg <- file.path(dir_results, TargetSiteID, dir_sub3
-                        , paste0(TargetSiteID, "_map.jpg"))
+    fn_jpg <- file.path(dir_path, paste0(TargetSiteID, "_map.jpg"))
     
     grDevices::jpeg(filename = fn_jpg, width = 4*ppi, height = 4*ppi, pointsize = 6,
               quality=100, bg="white", res=ppi)
@@ -495,6 +517,139 @@ getSiteInfo <- function(TargetSiteID
                 , quiet=TRUE)
     # place after static map so can insert
     
+    
+    # Check for presence of Photos in data directory. If not present, skip.
+    if (dir.exists(dir_photo)==TRUE) {
+        photofiles <- list.files(dir_photo)
+        have.photos <- FALSE
+        for (l in 1:length(photofiles)) {
+            photoname <- photofiles[l]
+            if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
+                file.copy(file.path(dir_photo,photoname)
+                          , file.path(dir_path,photoname))
+                print(paste0(photoname, " copied."))
+                flush.console()
+                have.photos <- TRUE
+            }
+            # if (!have.photos) {
+            #     
+            #     print(paste0("No site photos are available for ", TargetSiteID))
+            #     flush.console()
+            # }
+        }
+    } else { 
+        print("Photo directory does not exist.")
+        flush.console()
+    }
+    
+    if (!have.photos) {
+        
+        print(paste0("No site photos are available for ", TargetSiteID))
+        flush.console()
+        
+        gap.photos <- cbind.data.frame("getSiteInfo", "quality", nrow(badBMImetrics)
+                                    , "Degraded comparator sites available.")
+        colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
+
+        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
+    }
+
+    print("Completed tranferring any available site files.")
+    flush.console()
+    
+    # Get background data from fn_bkgdata; use COMID to select single row
+    data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
+    data_bkgdata2 <- tidyr::gather(data_bkgdata, -COMID, key = "ColName"
+                                 , value = "val")
+    data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
+    
+    fn_bkg <- paste0(TargetSiteID,"_bkgdata.tab")
+    write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
+                , sep = "\t", col.names = TRUE, row.names = FALSE)
+    
+    # Get metadata from fn_bkginfo
+    df.bkg2plot <- dplyr::left_join(df_bkginfo, data_bkgdata2)
+    
+    rm(data_bkgdata, data_bkgdata2, df_bkginfo)
+    
+    # Determine appropriate graphics
+    # Bar charts, faceted with catchment on left, watershed on right
+    cat.sub <- unique(df.bkg2plot[,c("Category","Subcategory","Units","AbbrFN")])
+    
+    for (i in 1:nrow(cat.sub)) {
+        # pull out temp data set to plot
+        df.temp <- df.bkg2plot %>%
+            dplyr::filter(Category == cat.sub$Category[i]
+                          , Subcategory == cat.sub$Subcategory[i])
+        
+        xlab <- paste0(cat.sub$Category[i],": ",cat.sub$Subcategory[i]
+                       ,", ",cat.sub$Units[i])
+        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_bkgd_"
+                                               , cat.sub[i,4], ".png"))
+        p.title <- paste("Potential anthropogenic alterations")
+        p.subtitle <- TargetSiteID
+        numcols <- length(unique(df.temp$Scale))/2
+        
+        print(xlab)
+        flush.console()
+        
+        if (is.na(df.temp$StudyYear)) {
+            p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                           , y = signif(val, digits = 2))) +
+                ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "firebrick4") +
+                ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                                , vjust=-0.2), color = "black", size=3) +
+                ggplot2::ylim(0, max(df.temp$val)*1.1) +
+                ggplot2::facet_wrap(Scale~.)
+            p.bkg <- p.bkg + ggthemes::theme_stata() + 
+                ggplot2::theme(legend.position = "none") +
+                ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
+                ggplot2::labs(title = p.title, subtitle = p.subtitle
+                              , x = xlab, y = "Value")
+            p.bkg <- p.bkg + 
+                ggplot2::theme(axis.text.x = ggplot2::element_text(size=7
+                                                                   ,angle=45,hjust=1)
+                               , axis.text.y = ggplot2::element_text(size=8)
+                               , axis.title.x = ggplot2::element_text(size=9, face="bold")
+                               , axis.title.y = ggplot2::element_text(size=9, face="bold")
+                               , plot.title = ggplot2::element_text(size=10, face="bold")
+                               , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
+            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W, height=plot_H)
+            
+        } else {
+            
+            p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                           , y = signif(val, digits = 2)
+                                                           , group = StudyYear)) +
+                ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
+                                  , fill = "firebrick4") +
+                ggplot2::geom_text(ggplot2::aes(label = signif(val, digits=2)
+                                                , vjust=-0.2), color = "black", size=3) +
+                ggplot2::ylim(0, max(df.temp$val)*1.1) +
+                ggplot2::facet_grid(Scale~StudyYear, margins = FALSE)
+            p.bkg <- p.bkg + ggthemes::theme_stata() + 
+                ggplot2::theme(legend.position = "none") +
+                ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                               , strip.text.y = ggplot2::element_text(size = 8)) +
+                ggplot2::labs(title = p.title, subtitle = p.subtitle
+                              , x = xlab, y = "Value")
+            p.bkg <- p.bkg +
+                ggplot2::theme(axis.text.x = ggplot2::element_text(size = 7
+                                                                   , angle = 45, hjust = 1)
+                               , axis.text.y = ggplot2::element_text(size=8)
+                               , axis.title.x = ggplot2::element_text(size=9, face="bold")
+                               , axis.title.y = ggplot2::element_text(size=9, face="bold")
+                               , plot.title = ggplot2::element_text(size=10, face="bold")
+                               , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
+            ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W, height=plot_H)
+            
+        }
+        
+    }
+
     #
     mySiteSummary <- list(SiteInfo = mySiteInfo
                     , Samps = mySamps
@@ -506,3 +661,4 @@ getSiteInfo <- function(TargetSiteID
                     , mods = myReachMods)
     return(mySiteSummary)
 }
+
