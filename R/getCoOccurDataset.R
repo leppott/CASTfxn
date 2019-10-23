@@ -50,11 +50,14 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # df_sites = data_Sites
     # df_model = data_modelRaw
     # df_meas = data_chemRaw
+    # biocomm = "BMI"
+    # df_resp = data_bmiMetrics
+    # index = bmiIndex
     # biocomm = "Alg"
     # df_resp = data_algMetrics
     # index = algIndex
     # # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    # lagdays = 10
+    # lagdays = lagdays
     
     biocomm <- tolower(biocomm)
     
@@ -71,7 +74,8 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
         df_resp <- df_resp[,c("StationID_Master", "AlgSampDate", "AlgSampID"
                               , "Quality", index)] %>%
             dplyr::rename(RespSampDate = AlgSampDate) %>%
-            dplyr::rename(RespSampID = AlgSampID)
+            dplyr::rename(RespSampID = AlgSampID) %>%
+            dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate))
     } else {
         print("Biological community type not used.")
         flush.console()
@@ -89,7 +93,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     df_modresp <- merge(df_resp, df_model, by.x = "StationID_Master"
                        , by.y = "StationID_Master", all = TRUE)
     df_modresp <- df_modresp %>% 
-        dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate)) %>%
+        # dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate)) %>%
         dplyr::mutate(LagDate = RespSampDate - lagdays) %>%
         dplyr::select(StationID_Master
                       , RespSampDate
