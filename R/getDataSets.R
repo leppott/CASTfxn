@@ -30,18 +30,22 @@ getDataSets <- function(TargetSiteID
                         , measParams = measParams
                         , modelParams = modelParams
                         , biocomm = "bmi"
-                        , bmiIndex = "CSCI"
+                        , bioIndex = "CSCI"
+                        , colBioSample = "BMISampID"
+                        , colBioSampDate = "BMISampDate"
                         , df_biometrics = data_bmiMetrics
                         , df_stressinfo = data_stressInfo) {
 
     # For QC purposes
-    # TargetSiteID = TargetSiteID
-    # compSites = list.CompSites$comp.sites
-    # df_coOccur = data_bmiCoOccur
+    # TargetSiteID
+    # compSites = comp_sites
+    # df_coOccur = data_bioCoOccur
     # measParams = measParams
     # modelParams = modelParams
     # biocomm = "bmi"
-    # bmiIndex = "CSCI"
+    # bioIndex = colBio
+    # colBioSample = colBioSample
+    # colBioSampDate = colBioSampDate
     # df_biometrics = data_bmiMetrics
     # df_stressinfo = data_stressInfo
 
@@ -71,11 +75,14 @@ getDataSets <- function(TargetSiteID
     useParams <- colnames(dplyr::select(df_detects, -StationID_Master
                                         , -StressSampID, -StressSampDate
                                         , -RespSampID, -RespSampDate, -clust
-                                        , -BioComm, -Quality, -CSCI))
+                                        , -BioComm, -Quality))
+    useParams <- useParams[useParams != bioIndex]
     
     allBioRespData <- merge(df_core, df_biometrics
-                            , by.x = c("StationID_Master", "RespSampID", "RespSampDate")
-                            , by.y = c("StationID_Master", "BMISampID", "BMISampDate"))
+                            , by.x = c("StationID_Master", "RespSampID"
+                                       , "RespSampDate")
+                            , by.y = c("StationID_Master", colBioSample
+                                       , colBioSampDate))
     compBioRespData <- allBioRespData[allBioRespData$StationID_Master %in% compSites,]
     siteBioRespData <- allBioRespData[allBioRespData$StationID_Master==TargetSiteID,]
 
@@ -88,23 +95,13 @@ getDataSets <- function(TargetSiteID
         dplyr::select(-ANALYSIS_TYPE, -CHEMICAL_NAME, -FinalUnit)
 
     # Return both unmatched and matched data as output
-    if (biocomm == "bmi") {
-        mySubsets <- list(siteStressInfo = df_stressinfo
-                          , allBioStress_bmi = allBioStressData
-                          , compBioStress_bmi = compBioStressData
-                          , siteBioStress_bmi = siteBioStressData
-                          , allBioResp_bmi = allBioRespData
-                          , compBioResp_bmi = compBioRespData
-                          , siteBioResp_bmi = siteBioRespData)
-    } else if (biocomm == "alg") {
-        mySubsets <- list(siteStressInfo = df_stressinfo
-                          , allBioStress_alg = allBioStressData
-                          , compBioStress_alg = compBioStressData
-                          , siteBioStress_alg = siteBioStressData
-                          , allBioResp_alg = allBioRespData
-                          , compBioResp_alg = compBioRespData
-                          , siteBioResp_alg = siteBioRespData)
-    }
+    mySubsets <- list(siteStressInfo = df_stressinfo
+                      , allBioStress = allBioStressData
+                      , compBioStress = compBioStressData
+                      , siteBioStress = siteBioStressData
+                      , allBioResp = allBioRespData
+                      , compBioResp = compBioRespData
+                      , siteBioResp = siteBioRespData)
 
     return(mySubsets)
     
