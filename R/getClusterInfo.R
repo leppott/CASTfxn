@@ -105,7 +105,7 @@
 getClusterInfo <- function(TargetSiteID
                            , siteCOMID
                            , siteCluster
-                           , siteQual2Plot
+                           # , siteQual2Plot
                            , refSiteCOMIDs
                            , data_cluster
                            , data_clusterInfo
@@ -182,17 +182,17 @@ getClusterInfo <- function(TargetSiteID
     
     varMain <- paste0(varYtext, " (", varYunits,") in the "
                       , tolower(varYgrandscale), " by cluster")
-    if (siteQual2Plot=="not degraded") {
-        qualtext <- "not degraded*"
-        str_caption <- "*Sites having one or more samples rated not degraded."
-    } else if (siteQual2Plot=="better than") {
-        qualtext <- "better quality*"
-        str_caption <- paste("*Sites having one or more samples with biological quality"
-                             ,"better than the minimum target site quality.", sep = "\n")
-    } else { 
+    # if (siteQual2Plot=="not degraded") {
+    #     qualtext <- "not degraded*"
+    #     str_caption <- "*Sites having one or more samples rated not degraded."
+    # } else if (siteQual2Plot=="better than") {
+    #     qualtext <- "better quality*"
+    #     str_caption <- paste("*Sites having one or more samples with biological quality"
+    #                          ,"better than the minimum target site quality.", sep = "\n")
+    # } else { 
         qualtext <- "all ref"
         str_caption <- ""
-    }
+    # }
     #
     # QC
     i.num <- i -1
