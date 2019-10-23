@@ -196,6 +196,7 @@ getSiteInfo <- function(TargetSiteID
     data_refSites <- subset(data_Sites, CARefSite_2017==1
                       , select= c(StationID_Master, FinalLatitude
                                   , FinalLongitude, COMID))
+    myRefCOMIDs <- as.vector(unique(data_refSites$COMID))
     
     # get sampling info (dates of samples)
     mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID,]
@@ -658,7 +659,8 @@ getSiteInfo <- function(TargetSiteID
                     , COMID = myCOMID
                     , ClustIDs = myClustID
                     , impair = myImpairments
-                    , mods = myReachMods)
+                    , mods = myReachMods
+                    , refCOMIDs = myRefCOMIDs)
     return(mySiteSummary)
 }
 
