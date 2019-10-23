@@ -221,10 +221,10 @@ getSiteInfo <- function(TargetSiteID
         myBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Target")
         
         gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBMImetrics)
-                                     , "Not degraded comparator sites available.")
+                                     , "Not degraded comparator samples available.")
         colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
         gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBMImetrics)
-                                     , "Degraded comparator sites available.")
+                                     , "Degraded comparator samples available.")
         colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
         gap.comps <- rbind(gap.good, gap.bad)
         rm(gap.good, gap.bad)
