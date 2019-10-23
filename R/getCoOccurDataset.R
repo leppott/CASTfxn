@@ -84,10 +84,10 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     
     # Clean up modeled data
     df_model <- df_model %>%
-        dplyr::select(StationID_Master, clust, StdParamName, ResultValue) %>%
+        dplyr::select(StationID_Master, StdParamName, ResultValue) %>%
         tidyr::spread(key = StdParamName, value = ResultValue)
     modColnames <- names(df_model)
-    modColnames <- modColnames[!(modColnames %in% c("StationID_Master","clust"))]
+    modColnames <- modColnames[!(modColnames %in% "StationID_Master")]
     
     # Merge modeled stressor data and response data
     df_modresp <- merge(df_resp, df_model, by.x = "StationID_Master"
@@ -101,8 +101,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                       , RespSampID
                       , Quality
                       , eval(index)
-                      , eval(modColnames)
-                      , - clust)
+                      , eval(modColnames))
     
     rm(df_model, df_resp)
     respColnames <- c("RespSampID", "Quality", index)
