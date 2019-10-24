@@ -122,6 +122,19 @@ getQualSites<- function(TargetSiteID
     # comp.samp.better <- all.samp.better[all.samp.better %in% comp.samps]
     # comp.better.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% comp.better])
     
+    all.ref <- all.ref[!is.na(all.ref)]
+    all.ref.samps.bio <- all.ref.samps.bio[!is.na(all.ref.samps.bio)]
+    all.ref.samps.stress <- all.ref.samps.stress[!is.na(all.ref.samps.stress)]
+    all.ref.reaches <- all.ref.reaches[!is.na(all.ref.reaches)]
+    all.good <- all.good[!is.na(all.good)]
+    all.samp.good.bio <- all.samp.good.bio[!is.na(all.samp.good.bio)]
+    all.samp.good.stress <- all.samp.good.stress[!is.na(all.samp.good.stress)]
+    all.good.reaches <- all.good.reaches[!is.na(all.good.reaches)]
+    all.better <- all.better[!is.na(all.better)]
+    all.samp.better.bio <- all.samp.better.bio[!is.na(all.samp.better.bio)]
+    all.samp.better.stress <- all.samp.better.stress[!is.na(all.samp.better.stress)]
+    all.better.reaches <- all.better.reaches[!is.na(all.better.reaches)]
+    
     # Assess data gaps
     
     # Return data as a list of vectors
