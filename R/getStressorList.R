@@ -368,8 +368,8 @@ getStressorList <- function(TargetSiteID
       # fn_title <- make.names(groupnames[g,])
       fn_title <- stringr::str_to_title(str_Group)
       fn_title <- gsub("\\s","",fn_title)
-      fn_plot <- file.path(dir_path, paste0(TargetSiteID, biocomm, "_CandCauses_"
-                                   , fn_title, plot_ext))
+      fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                            , "_CandCauses_", fn_title, plot_ext))
       # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
       #                                       , make.names(groupnames[g,]), plot_ext))
       ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
