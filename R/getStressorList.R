@@ -120,7 +120,7 @@ getStressorList <- function(TargetSiteID
                             , chemInfo
                             , clusterChem
                             , siteQual2Plot
-                            , refSites
+                            , refSamps
                             , siteChem
                             , probsHigh
                             , probsLow
@@ -138,18 +138,17 @@ getStressorList <- function(TargetSiteID
 
   # TargetSiteID
   # siteCluster=list.SiteSummary$ClustID
-  # chemInfo=listStressBMIAllData$siteStressInfo
-  # clusterChem=compStressData
+  # chemInfo=data_stressInfo
+  # clusterChem=compStressALL
   # siteQual2Plot=siteQual2Plot
-  # refSites=allBMIRefStressSamps
-  # siteChem=siteStressData
+  # refSamps=allBioRefStressSamps
+  # siteChem=siteStressALL
   # probsHigh=probsHigh
   # probsLow=probsLow
   # biocomm="bmi"
-  # dir_results=file.path(wd, "Results")
-  # dir_sub="CandidateCauses"
-  
-  
+  # dir_results=dir_results
+  # dir_sub="CandidateCauses"  
+  # 
   # QC, 20190905
   # chem.info$DirIncStress to lower case
   chemInfo$DirIncStress <- tolower(chemInfo$DirIncStress)
@@ -181,7 +180,7 @@ getStressorList <- function(TargetSiteID
 
   # First 2 columns are ChemSampID and StationID_Master
   clusterChemData <- clusterChem[3:ncol(clusterChem)]
-  clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSites)
+  clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSamps)
   clusterRefChemData <- clusterRefChem[3:ncol(clusterRefChem)]
   chemnames <- names(clusterChem[,3:ncol(clusterChemData)])
   allcount <- apply(clusterChemData, 2, function(x) sum(!is.na(x)))
