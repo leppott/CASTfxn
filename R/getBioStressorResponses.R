@@ -256,17 +256,17 @@ getBioStressorResponses <- function(TargetSiteID
   ## Trigger DEBUG actions below for when debugging.
   
   # TargetSiteID
-  # stressors
-  # BioResp = BMImetrics
+  # stressors <-stressorsWPairedResponses
+  # stressorInfo <- siteStressInfo
+  # BioResp = bioMetricNames
   # list.MatchBioData = list_MatchBioData
   # LogTransf=c(stressors_logtransf)
-  # ref.sites=allBMIRefStressSamps
-  # biocomm="BMI"
-  # dir_results=file.path(wd, "Results")
-  # dir_sub="StressorResponse"
+  # ref.sites=allBioRefStressSamps
+  # siteQual2Plot=siteQual2Plot
+  # biocomm=bioComm
+  # dir_results=dir_results
+  # dir_sub="StressorResponse"  
   # boo_pred_warn = TRUE
-  
-  
   
   # Correlation file output header row
   cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName"
@@ -274,9 +274,9 @@ getBioStressorResponses <- function(TargetSiteID
   
   
   # Community ####
-  biocomm <- tolower(biocomm)
+  biocomm <- toupper(biocomm)
   # Check for no data
-  if(biocomm=="bmi"){##IF.biocomm.START
+  if(biocomm=="BMI"){##IF.biocomm.START
     #
     bio_prefix <- "BMI"
     col_Bio_Metrics_SampID <- "RespSampID"
@@ -294,7 +294,7 @@ getBioStressorResponses <- function(TargetSiteID
     stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
     stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
     #
-  } else if(biocomm=="algae"){
+  } else if(biocomm=="ALGAE"){
     #
     bio_prefix <- "Alg"
     col_Bio_Metrics_SampID <- "AlgSampID"
@@ -374,14 +374,19 @@ getBioStressorResponses <- function(TargetSiteID
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
-  dir.sub3 <- dir_sub
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
-  #
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
+  
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   # Comment out, 20190423, when remove varLegLoc as input
   # helper
   # RegPlotSet <- getRegPlotSet(varLegLoc)
@@ -417,13 +422,16 @@ getBioStressorResponses <- function(TargetSiteID
   #plots.pq <- vector(length(BioResp), mode="list")
   plots.pq <- vector(q.len*p.len, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID
-                      , ".SR.", bio_prefix, ".")
+  varFileOut <- file.path(dir_path,paste0(TargetSiteID, "_", biocomm, "_SRLin_"
+                                          , "_"))
+  # varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID
+  #                     , ".SR.", bio_prefix, ".")
   
   LogTransf <- as.logical(LogTransf)
   
   # FOR.p ####
   for (p in 1:length(stressors)) {
+
     stressName <- stressors[p]
     varFlag <- 1
     varFlag.b <- 1
@@ -670,9 +678,9 @@ getBioStressorResponses <- function(TargetSiteID
         #if(boo.pryr==TRUE){
         # Add biocomm (20190425)
         #df.CorrTable[, "biocomm"] <- biocomm
-        fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
+        fn_corr <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Corrs.tab")
         utils::write.table(df.CorrTable
-                           , file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
+                           , file.path(dir_path, fn_corr)
                            , sep="\t", quote=FALSE, row.names=FALSE
                            , col.names=boo.col.names, append=boo.Append)  
         #}
@@ -729,7 +737,10 @@ getBioStressorResponses <- function(TargetSiteID
           #
         }##FOR~f~END
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score_all, ", ", txt.score_cl)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " ("
+                             , q, "/", q.len, "); score (all, cluster) = "
+                             , txt.score_all, ", ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID
@@ -749,8 +760,8 @@ getBioStressorResponses <- function(TargetSiteID
         }
         
         #if(boo.pryr==TRUE){
-        fn_scores <- paste0(TargetSiteID,".SR.",bio_prefix,".Scores.txt")
-        fp_scores <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_scores)
+        fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
+        fp_scores <- file.path(dir_path, fn_scores)
         
         boo.Append    <- TRUE
         boo.col.names <- FALSE
@@ -772,7 +783,10 @@ getBioStressorResponses <- function(TargetSiteID
         sr.score_all <- "NE"
         sr.score_cl <- "NE"
         txt.score <- "No Data"
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " ("
+                             , q, "/", q.len, "); score (all, cluster) = "
+                             , txt.score)
         message(msg.status)
       }##IF~nrow(df_plot_site)~END
       #
@@ -958,8 +972,9 @@ getBioStressorResponses <- function(TargetSiteID
         print(p_SR)
         plots.pq[[pq]] <- grDevices::recordPlot()
         #
-        fn_jpg <- paste0(varFileOut, make.names(stressName), "_", make.names(respName), ".jpg")
-        ggplot2::ggsave(fn_jpg, p_SR, width=plot_W, height=plot_H, units="in")
+        fn_png <- paste0(varFileOut, make.names(stressName), "_"
+                         , make.names(respName), ".png")
+        ggplot2::ggsave(fn_png, p_SR, width=plot_W, height=plot_H, units="in")
         #
       }##IF.boo.Plot.END
 
@@ -1018,8 +1033,7 @@ getBioStressorResponses <- function(TargetSiteID
   # END ####
   ## PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3
-                      , paste0(TargetSiteID,".SR.",bio_prefix,".ALL.pdf"))
+  fn_pdf <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,"_SRLin_ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (pq in plots.pq){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
@@ -1038,8 +1052,8 @@ getBioStressorResponses <- function(TargetSiteID
   #
   # CorrPlot ####
   ## read
-  fn_corr <- paste0(TargetSiteID, ".SR.",bio_prefix, ".Corrs.txt")
-  fp_corr <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
+  fn_corr <- paste0(TargetSiteID,"_", biocomm, "_SRLin_Corrs.tab")
+  fp_corr <- file.path(dir_path, fn_corr)
   df_corr <- utils::read.delim(fp_corr)
   
   # QC, 20190313
@@ -1057,16 +1071,18 @@ getBioStressorResponses <- function(TargetSiteID
   ## transpose 
   # 20190305; shouldn't need mean or unique but just in case, should be complete dups
   df_corr <- unique(df_corr)
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, fun.aggregate=mean, value.var="estimate"
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
+                               , fun.aggregate=mean
+                               , value.var="estimate"
                                , na.rm=TRUE)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   ## jpg
-  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".SR.",bio_prefix,".CorrPlot.jpg"))
-  grDevices::jpeg(filename = fn_jpg_cp
+  fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                          , "_SRLin_CorrPlot.png"))
+  grDevices::png(filename = fn_png_cp
                   , width = 4 * ppi
                   , height = 3 * ppi
-                  , quality=100
                   )
     corrplot::corrplot(df_corrplot, method="circle")
   grDevices::dev.off()
