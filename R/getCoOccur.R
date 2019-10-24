@@ -195,26 +195,28 @@ getCoOccur <- function(df_data
   #
     
     # Debugging
-    df_data = data_bioCoOccur
-    TargetSiteID = TargetSiteID
-    col_ID = "StationID_Master"
-    colGroup = "clust"
-    colBio = colBio
-    colStressors = c(stressorsWPairedResponses)
-    BioNarBrk = BioNarBrk
-    BioNarLab = BioNarLab
-    BioDegBrk = BioDegBrk
-    BioDegLab = c("Yes", "No")
-    biocomm = bioComm
-    dir_plots = dir_results
-    dir_sub = "CoOccurrence"
-    col_StressInvScore = col_StressInvScore
+    # df_data = data_bioCoOccur
+    # TargetSiteID = TargetSiteID
+    # col_ID = "StationID_Master"
+    # colGroup = "clust"
+    # colBio = colBio
+    # colStressors = c(stressorsWPairedResponses)
+    # BioNarBrk = BioNarBrk
+    # BioNarLab = BioNarLab
+    # BioDegBrk = BioDegBrk
+    # BioDegLab = c("Yes", "No")
+    # biocomm = bioComm
+    # dir_plots = dir_results
+    # dir_sub = "CoOccurrence"
+    # col_StressInvScore = col_StressInvScore
     
     
   boo_DEBUG <- FALSE
   
   # define pipe
   `%>%` <- dplyr::`%>%`
+  
+  biocomm <- toupper(biocomm)
   
   # QC, 20190418
   colStressors <- unique(colStressors)
