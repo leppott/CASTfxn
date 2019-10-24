@@ -45,23 +45,21 @@ getTimeSeq <- function(TargetSiteID
     ifelse(!dir.exists(file.path(dir_results, TargetSiteID))==TRUE
            , dir.create(file.path(dir_results, TargetSiteID))
            , FALSE)
-    ifelse(!dir.exists(file.path(dir_results, TargetSiteID, dir_sub))==TRUE
-           , dir.create(file.path(dir_results, TargetSiteID, dir_sub))
+    ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm))==TRUE
+           , dir.create(file.path(dir_results, TargetSiteID, biocomm))
            , FALSE)
-    ifelse(!dir.exists(file.path(dir_results, TargetSiteID, dir_sub, biocomm))==TRUE
-           , dir.create(file.path(dir_results, TargetSiteID, dir_sub, biocomm))
+    ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm, dir_sub))==TRUE
+           , dir.create(file.path(dir_results, TargetSiteID, biocomm, dir_sub))
            , FALSE)
     
-    path <- file.path(dir_results, TargetSiteID, dir_sub, biocomm)
+    path <- file.path(dir_results, TargetSiteID, biocomm, dir_sub)
     
     skipflag = FALSE
     
     # Prep measured stressor data
     df_stress <- df_stress %>%
         dplyr::select_if(not_all_na) %>%
-        dplyr::select(-StationID_Master
-               , -RespSampID
-               , -RespSampDate) %>%
+        dplyr::select(-StationID_Master) %>%
         tidyr::gather(key = StdParamName, value = ResultValue
                , -StressSampID, -StressSampDate) %>%
         # dplyr::filter(!is.na(ResultValue)) %>%
@@ -77,8 +75,6 @@ getTimeSeq <- function(TargetSiteID
     df_resp <- df_resp %>%
         dplyr::select_if(not_all_na) %>%
         dplyr::select(-StationID_Master
-               , -StressSampID
-               , -StressSampDate
                , -Quality) %>%
         tidyr::gather(key = Biometric, value = ResultValue
                , -RespSampID, -RespSampDate) %>%
@@ -110,7 +106,8 @@ getTimeSeq <- function(TargetSiteID
             for (r in 1:length(BioResp)) {
                 respName = BioResp[r]
                 
-                fn = paste0(TargetSiteID,".TS.",stressName,".",respName,".jpg")
+                fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressName, "_"
+                            , respName, ".png")
                 fpath = file.path(path, fn)
                 
                 df.plot <- df.data %>%
