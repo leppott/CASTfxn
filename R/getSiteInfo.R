@@ -249,7 +249,7 @@ getSiteInfo <- function(TargetSiteID
         str_ylab  <- "Score"
         
         ## Plot, Data
-        fn_bmiscores <- paste0(TargetSiteID, "_bmi_IndexBoxplots.png")
+        fn_bmiscores <- paste0(TargetSiteID, "_BMI_IndexBoxplots.png")
         fn_bmiscores <- file.path(dir_path,fn_bmiscores)
         pBMI <- ggplot2::ggplot(compBMImetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
           ggplot2::geom_boxplot(na.rm = TRUE) +
@@ -304,7 +304,7 @@ getSiteInfo <- function(TargetSiteID
         str_ylab  <- "Score"
         
         ## Plot, Data
-        fn_algscores <- paste0(TargetSiteID, "_alg_IndexBoxplots.png")
+        fn_algscores <- paste0(TargetSiteID, "_ALGAE_IndexBoxplots.png")
         fn_algscores <- file.path(dir_path,fn_algscores)
         pAlg <- ggplot2::ggplot(compALGmetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
             ggplot2::geom_boxplot(na.rm = TRUE) +
@@ -408,10 +408,10 @@ getSiteInfo <- function(TargetSiteID
     lwd_flowline <- 0.5
     
     #fn_jpg <- paste0("Results/",TargetSiteID, "/", TargetSiteID, ".map.jpg")
-    fn_jpg <- file.path(dir_path, paste0(TargetSiteID, "_map.jpg"))
+    fn_map <- file.path(dir_path, paste0(TargetSiteID, "_MAP.png"))
     
-    grDevices::jpeg(filename = fn_jpg, width = 4*ppi, height = 4*ppi, pointsize = 6,
-              quality=100, bg="white", res=ppi)
+    grDevices::png(filename = fn_map, width = 4*ppi, height = 4*ppi, pointsize = 6,
+              quality=300, bg="white", res=ppi)
     if(is.null(map_proj)==TRUE){##IF.map_proj.START
     # map with no projection
     graphics::plot(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
@@ -508,7 +508,7 @@ getSiteInfo <- function(TargetSiteID
     #strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
     #strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
     strFile_out_ext <- paste0(".", report_format)
-    strFile_out <- paste0(TargetSiteID,"_map_leaflet", strFile_out_ext)
+    strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
     dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
     # rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
     rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
@@ -588,7 +588,7 @@ getSiteInfo <- function(TargetSiteID
         
         xlab <- paste0(cat.sub$Category[i],": ",cat.sub$Subcategory[i]
                        ,", ",cat.sub$Units[i])
-        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_bkgd_"
+        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
                                                , cat.sub[i,4], ".png"))
         p.title <- paste("Potential anthropogenic alterations")
         p.subtitle <- TargetSiteID
