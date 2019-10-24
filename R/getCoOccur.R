@@ -193,6 +193,24 @@ getCoOccur <- function(df_data
                                                , "pH_SU")
                        ) {##FUNCTION.START
   #
+    
+    # Debugging
+    df_data = data_bioCoOccur
+    TargetSiteID = TargetSiteID
+    col_ID = "StationID_Master"
+    colGroup = "clust"
+    colBio = colBio
+    colStressors = c(stressorsWPairedResponses)
+    BioNarBrk = BioNarBrk
+    BioNarLab = BioNarLab
+    BioDegBrk = BioDegBrk
+    BioDegLab = c("Yes", "No")
+    biocomm = bioComm
+    dir_plots = dir_results
+    dir_sub = "CoOccurrence"
+    col_StressInvScore = col_StressInvScore
+    
+    
   boo_DEBUG <- FALSE
   
   # define pipe
@@ -318,13 +336,19 @@ getCoOccur <- function(df_data
     #wd <- getwd()
     #dir.sub <- "Results"
     dir_sub2 <- i_TargetSiteID
-    dir_sub3 <- dir_sub
+    dir_sub3 <- biocomm
+    dir_sub4 <- dir_sub
     ifelse(!dir.exists(file.path(dir_plots, dir_sub2))==TRUE
            , dir.create(file.path(dir_plots, dir_sub2))
            , FALSE)
     ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3))==TRUE
            , dir.create(file.path(dir_plots, dir_sub2, dir_sub3))
            , FALSE)
+    ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4))==TRUE
+           , dir.create(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4))
+           , FALSE)
+    
+    dir_path <- file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)
     # PDF, old ####
     #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
     # fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.pdf")
@@ -336,10 +360,9 @@ getCoOccur <- function(df_data
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir_sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
-    fn.scores <- file.path(dir_plots, dir_sub2, dir_sub3
-                           , paste0(i_TargetSiteID, ".CoOccurrence.", biocomm
-                                    , ".Scores.txt"))
-    utils::write.table(df.scores, file=fn.scores
+    fn.scores <- file.path(dir_path, paste0(i_TargetSiteID, "_", biocomm
+                                            , ".CoOccurrence.Scores.txt"))
+    utils::write.table(df.scores, file=fn.scores, append = FALSE
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
     i.num <- match(i, TargetSiteID)
@@ -451,8 +474,12 @@ getCoOccur <- function(df_data
          # plots ####
          # File Names
          #fn.pdf    <- paste0(TargetSiteID, ".CoOccurrence.ALL.", myDateTime,".pdf")
-         fn_jpg_p1 <- paste0(i_TargetSiteID, ".CoOccurrence.Box.", make.names(j), ".jpg")
-         fn_jpg_p2 <- paste0(i_TargetSiteID, ".CoOccurrence.SR.", make.names(j), ".jpg")
+         # fn_title <- stringr::str_to_title(make.names(j))
+         # fn_title <- gsub("\\s","",fn_title)
+         # fn_title <- gsub("\\.","",fn_title)
+         
+         fn_jpg_p1 <- paste0(i_TargetSiteID, "_", biocomm, "_CoOccur_", make.names(j), ".jpg")
+         fn_jpg_p2 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_", make.names(j), ".jpg")
          ppi       <- 300
          
          # Create (ggplot)
@@ -514,7 +541,7 @@ getCoOccur <- function(df_data
            # plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # p1
            # plots_jpg[[1]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_plots, dir_sub2, dir_sub3, fn_jpg_p1)
+           ggplot2::ggsave(filename=file.path(dir_path, fn_jpg_p1)
                            , plot=p1
                            , dpi=ppi, width=8, height=6, units="in")
          #}##IF~non-empty~END
@@ -601,7 +628,7 @@ getCoOccur <- function(df_data
              ggplot2::labs(title=i, caption=lab.sub)
            # p2
            # plots_jpg[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_plots, dir_sub2, dir_sub3, fn_jpg_p2)
+           ggplot2::ggsave(filename=file.path(dir_path, fn_jpg_p2)
                            , plot=p2
                            , dpi=ppi, width=8, height=6, units="in")
 
@@ -706,8 +733,8 @@ getCoOccur <- function(df_data
     # PDF, new ####
     # Create PDF from list of recorded plots
     if(boo_DEBUG==FALSE){##IF.boo_DEBUG.START
-      fn.pdf    <- paste0(i_TargetSiteID, ".CoOccurrence.ALL.pdf")
-      grDevices::pdf(file=file.path(dir_plots, dir_sub2, dir_sub3, fn.pdf)
+      fn.pdf    <- paste0(i_TargetSiteID, "_", biocomm, "_CoOccurrence_ALL.pdf")
+      grDevices::pdf(file=file.path(dir_path, fn.pdf)
                      , width=6, height=8) #p3
      # grDevices::pdf(file=file.path(dir_plots, dir_sub2, fn.pdf), width=9, height=4) #p1 only
         #
