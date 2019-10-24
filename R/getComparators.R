@@ -45,7 +45,7 @@ getComparators<- function(TargetSiteID
     `%>%` <- dplyr::`%>%`
     
     fn.compsites <- file.path(dir_results, TargetSiteID, dir_sub
-                              ,paste0(TargetSiteID,".compsites.tab"))
+                              ,paste0(TargetSiteID,"_Compsites.tab"))
     
     ifelse(!dir.exists(file.path(dir_results, TargetSiteID))==TRUE
            , dir.create(file.path(dir_results, TargetSiteID))
