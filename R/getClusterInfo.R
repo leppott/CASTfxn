@@ -358,9 +358,9 @@ getClusterInfo <- function(TargetSiteID
     plots.i[[i-1]] <- grDevices::recordPlot()
     
     # Save to JPG
-    fn_jpg <- file.path(wd,dir.sub,dir.sub2,dir.sub3,paste0(TargetSiteID
-                            ,".cluster.",make.names(varYlab),".jpg"))
-    ggplot2::ggsave(fn_jpg, p_cl, width=plot_W, height=plot_H, units="in")
+    fn_png <- file.path(wd,dir.sub,dir.sub2,dir.sub3,paste0(TargetSiteID
+                            ,"_Cluster_",make.names(varYlab),".png"))
+    ggplot2::ggsave(fn_png, p_cl, width=plot_W, height=plot_H, units="in")
     
     #
   }##FOR.i.END
