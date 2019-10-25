@@ -411,7 +411,7 @@ getSiteInfo <- function(TargetSiteID
     fn_map <- file.path(dir_path, paste0(TargetSiteID, "_MAP.png"))
     
     grDevices::png(filename = fn_map, width = 4*ppi, height = 4*ppi, pointsize = 6,
-              quality=300, bg="white", res=ppi)
+              bg="white", res=ppi)
     if(is.null(map_proj)==TRUE){##IF.map_proj.START
     # map with no projection
     graphics::plot(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
@@ -567,7 +567,7 @@ getSiteInfo <- function(TargetSiteID
                                  , value = "val")
     data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
     
-    fn_bkg <- paste0(TargetSiteID,"_bkgdata.tab")
+    fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
     write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
                 , sep = "\t", col.names = TRUE, row.names = FALSE)
     
