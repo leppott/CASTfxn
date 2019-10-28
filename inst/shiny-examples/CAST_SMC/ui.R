@@ -94,9 +94,10 @@ shinyUI(fluidPage(
         # 3
         , tabPanel("Candidate Causes"
                    , h3("Candidate Causes")
-                   , p("Advanced options = probsLow, probsHigh, biocomm")
+                   , p("Relative path of file")
                   # , actionButton("Create03CandidateCauses", "Create Candidate Causes")
-                   , textOutput("txt_console_Candidate")
+                   #, textOutput("txt_console_Candidate")
+                  , uiOutput("pdf_Candidate")
                    )##tabPanel~Candidate Causes~END
         # 4
         , tabPanel("Co-Occurrence"
@@ -104,6 +105,7 @@ shinyUI(fluidPage(
                    , p("Advanced options = Bio, Stressors, biocomm, index labels and break points")
                    #, actionButton("Create04CoOccur", "Create Co-Occurrence")
                    , textOutput("txt_console_CoOccur")
+                   , uiOutput("pdf_CoOccur")
                    )##tabPanel~Co-Occurrence~END
         # 5
         , tabPanel("Stressor Response"
@@ -111,6 +113,7 @@ shinyUI(fluidPage(
                    , p("Advanced options = probsLow, probsHigh, biocomm, BioResp")
                   # , actionButton("Create05BioStressorResponses", "Create Stressor Responses")
                    , textOutput("txt_console_SR")
+                  , uiOutput("pdf_SR")
                    )##tabPanel~Stressor Response~END
         # 6
         , tabPanel("Verified Predictions"
@@ -118,6 +121,7 @@ shinyUI(fluidPage(
                    , p("Advanced options = TBD")
                   # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
                    , textOutput("txt_console_VP")
+                  , uiOutput("pdf_VP")
                   )##tabPanel~Verified Predictions~END
         # 7
         , tabPanel("Results"

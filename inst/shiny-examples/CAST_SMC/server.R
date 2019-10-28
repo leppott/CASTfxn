@@ -2243,6 +2243,16 @@ shinyServer(function(input, output) {
     })##withCallingHandlers~END
   })##observeEvent~Create03CandidateCauses
   
+  output$pdf_Candidate <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "CandidateCauses"
+    txt_file <- "boxes"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
+  
   # 04Co-Occur ####
   observeEvent(input$Create04CoOccur, {
     withCallingHandlers({
@@ -2265,6 +2275,16 @@ shinyServer(function(input, output) {
     #
   })##observeEvent~Create04CoOccur
   
+  output$pdf_CoOccur <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "CoOccurrence"
+    txt_file <- "CoOccurrence"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
+  
   # 05SR ####
   observeEvent(input$Create05BioStressorResponses, {
     withCallingHandlers({
@@ -2280,6 +2300,17 @@ shinyServer(function(input, output) {
       shinyjs::html(id = "txt_console_SR", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create05SR
+  
+  
+  output$pdf_SR <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "StressorResponse"
+    txt_file <- "SR.BMI"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
   
   # 06VP ####
   
@@ -2297,6 +2328,28 @@ shinyServer(function(input, output) {
       shinyjs::html(id = "txt_console_VP", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create06VP
+  
+  output$pdf_VP <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "VerifiedPredictions"
+    txt_file <- "SR.SSTV"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
+  
+  # Time Sequence ####
+  
+  output$pdf_TS <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "TimeSequence"
+    txt_file <- "TS"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
   
   # 07Results ####
   
