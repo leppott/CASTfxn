@@ -190,7 +190,7 @@ getClusterInfo <- function(TargetSiteID
     #     str_caption <- paste("*Sites having one or more samples with biological quality"
     #                          ,"better than the minimum target site quality.", sep = "\n")
     # } else { 
-        qualtext <- "all ref"
+        qualtext <- "Reference"
         str_caption <- ""
     # }
     #
@@ -306,7 +306,7 @@ getClusterInfo <- function(TargetSiteID
     
     ## Plot, Variables, Legend
     leg_name   <- "Sites"
-    leg_labels <- c(qualtext, "target")
+    leg_labels <- c(qualtext, "Target")
     leg_shape  <- c(pch_sites_all_ref, pch_sites_targ)
     leg_col    <- c(col_sites_all_ref, col_sites_targ)
     leg_fill   <- c(fill_sites_all_ref, fill_sites_targ)
