@@ -54,9 +54,9 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # df_resp = data_bmiMetrics
     # index = bmiIndex
     # biocomm = "Alg"
-    # df_resp = data_algMetrics
+    # df_resp = data_AlgMetrics
     # index = algIndex
-    # # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
+    # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
     # lagdays = lagdays
     
     biocomm <- tolower(biocomm)
@@ -74,8 +74,8 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
         df_resp <- df_resp[,c("StationID_Master", "AlgSampDate", "AlgSampID"
                               , "Quality", index)] %>%
             dplyr::rename(RespSampDate = AlgSampDate) %>%
-            dplyr::rename(RespSampID = AlgSampID) %>%
-            dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate))
+            dplyr::rename(RespSampID = AlgSampID) #%>%
+#            dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate))
     } else {
         print("Biological community type not used.")
         flush.console()
