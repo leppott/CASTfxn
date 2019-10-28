@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+
+## Changes in Version 0.1.0.9235.003 (2019-10-28)
+
+* Shiny, Disclaimer_Key.HTML
+    + toc_depth from 3 to 2.
+        - Takes up less space.
+
 ## Changes in Version 0.1.0.9235.002 (2019-10-28)
 
 * Updates for state of files as of COB 10-24.

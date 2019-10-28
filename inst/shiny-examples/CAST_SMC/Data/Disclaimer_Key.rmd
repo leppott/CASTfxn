@@ -6,7 +6,7 @@ date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:
   html_document:
     toc: yes
-    toc_depth: 3
+    toc_depth: 2
     toc_float: yes
 ---
 ```{r setup, include=FALSE}
