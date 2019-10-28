@@ -55,14 +55,14 @@ getQualSites<- function(TargetSiteID
     # For QC purposes
     # TargetSiteID
     # df_sites = data_Sites
-    # biocomm = "bmi"
-    # df_qual = data_bmiCoOccur
-    # colBio = "CSCI"
+    # biocomm = bioComm
+    # df_qual = data_bioCoOccur
+    # colBio = bioIndex
     # colBioSample = "RespSampID"
     # colStressSample = "StressSampID"
-    # BioDegBrk = c(-2, 0.799, 2)
-    # BioDegLab = c("Yes", "No")
-    
+    # BioDegBrk = BioDegBrk
+    # BioDegLab = BioDegLab
+    # 
     # Define pipe
     `%>%` <- dplyr::`%>%`
 
@@ -137,55 +137,19 @@ getQualSites<- function(TargetSiteID
     
     # Assess data gaps
     
-    # Return data as a list of vectors
-    if (biocomm == "bmi") {
-        myQualSites <- list(allRefBioSites = all.ref
-                            , allRefBioRespSamps = all.ref.samps.bio
-                            , allRefBioStressSamps = all.ref.samps.stress
-                            , allRefBioReaches = all.ref.reaches
-                            , allGoodBioSites = all.good
-                            , allGoodBioRespSamps = all.samp.good.bio
-                            , allGoodBioStressSamps = all.samp.good.stress
-                            , allGoodBioReaches = all.good.reaches
-                            , allBTBioSites = all.better
-                            , allBTBioRespSamps = all.samp.better.bio
-                            , allBTBioStressSamps = all.samp.better.stress
-                            , allBTBioReaches = all.better.reaches)
-                            # , comp.b.ref = comp.ref
-                            # , comp.b.ref.samps = comp.ref.samps
-                            # , comp.b.ref.reaches = comp.ref.reaches
-                            # , comp.b.good = comp.good
-                            # , comp.b.good.samps = comp.samp.good
-                            # , comp.b.good.reaches = comp.good.reaches
-                            # , comp.b.bt.sites = comp.better
-                            # , comp.b.bt.samps = comp.samp.better
-                            # , comp.b.bt.reaches = comp.better.reaches)
-    } else if (biocomm == "alg") {
-        myQualSites <- list(allRefBMISites = all.ref
-                            , allRefBMIRespSamps = all.ref.samps.bio
-                            , allRefBMIStressSamps = all.ref.samps.chem
-                            , allRefBMIReaches = all.ref.reaches
-                            , allGoodBMISites = all.good
-                            , allGoodBMIRespSamps = all.samp.good.bio
-                            , allGoodBMIStressSamps = all.samp.good.stress
-                            , allGoodBMIReaches = all.good.reaches
-                            , allBTBMISites = all.better
-                            , allBTBMIRespSamps = all.samp.better.bio
-                            , allBTBMIStressSamps = all.samp.better.stress
-                            , allBTBMIReaches = all.better.reaches)
-                            # , comp.b.ref = comp.ref
-                            # , comp.b.ref.samps = comp.ref.samps
-                            # , comp.b.ref.reaches = comp.ref.reaches
-                            # , comp.b.good = comp.good
-                            # , comp.b.good.samps = comp.samp.good
-                            # , comp.b.good.reaches = comp.good.reaches
-                            # , comp.b.bt.sites = comp.better
-                            # , comp.b.bt.samps = comp.samp.better
-                            # , comp.b.bt.reaches = comp.better.reaches)
-    } else {
-        QualMsg <- paste0("Biological community ", biocomm, " not supported.")
-        Msg(QualMsg)
-    }
+    # Return data as a list of vector
+    myQualSites <- list(allRefBioSites = all.ref
+                        , allRefBioRespSamps = all.ref.samps.bio
+                        , allRefBioStressSamps = all.ref.samps.stress
+                        , allRefBioReaches = all.ref.reaches
+                        , allGoodBioSites = all.good
+                        , allGoodBioRespSamps = all.samp.good.bio
+                        , allGoodBioStressSamps = all.samp.good.stress
+                        , allGoodBioReaches = all.good.reaches
+                        , allBTBioSites = all.better
+                        , allBTBioRespSamps = all.samp.better.bio
+                        , allBTBioStressSamps = all.samp.better.stress
+                        , allBTBioReaches = all.better.reaches)
     
     return(myQualSites)
 
