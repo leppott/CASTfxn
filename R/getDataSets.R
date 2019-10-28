@@ -42,11 +42,11 @@ getDataSets <- function(TargetSiteID
     # df_coOccur = data_bioCoOccur
     # measParams = measParams
     # modelParams = modelParams
-    # biocomm = "bmi"
+    # biocomm = bioComm
     # bioIndex = colBio
     # colBioSample = colBioSample
     # colBioSampDate = colBioSampDate
-    # df_biometrics = data_bmiMetrics
+    # df_biometrics = bioMetricData
     # df_stressinfo = data_stressInfo
 
     # Define pipe
