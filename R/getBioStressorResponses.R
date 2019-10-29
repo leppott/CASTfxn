@@ -276,7 +276,7 @@ getBioStressorResponses <- function(TargetSiteID
   # Community ####
   biocomm <- toupper(biocomm)
   # Check for no data
-  if(biocomm=="BMI"){##IF.biocomm.START
+  # if(biocomm=="BMI"){##IF.biocomm.START
     #
     bio_prefix <- "BMI"
     col_Bio_Metrics_SampID <- "RespSampID"
@@ -294,42 +294,45 @@ getBioStressorResponses <- function(TargetSiteID
     stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
     stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
     #
-  } else if(biocomm=="ALGAE"){
+  # } else if(biocomm=="ALGAE"){
     #
-    bio_prefix <- "Alg"
-    col_Bio_Metrics_SampID <- "AlgSampID"
-    min_cases <- 20
-    all.x.str  <- "all.a.str"
-    cl.x.str   <- "cl.a.str"
-    site.x.str <- "site.a.str"
-    all.x.rsp  <- "all.a.rsp"
-    cl.x.rsp   <- "cl.a.rsp"
-    site.x.rsp <- "site.a.rsp"
-    #
-    qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
-    #
-    # missing stressor
-    stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.a.str))]
-    stressors <- stressors[stressors %in% names(list.MatchBioData$all.a.str)]
-    #
-  } else {
-    # Non Valid biological community
-    Msg_Stop <- print(paste0("Non-valid biological community specified ("
-                    , biocomm,"). Only values of 'bmi' and 'algae' are valid."))
-    stop(Msg_Stop)
-  }##IF.biocomm.END
+  #   bio_prefix <- "Alg"
+  #   col_Bio_Metrics_SampID <- "AlgSampID"
+  #   min_cases <- 20
+  #   all.x.str  <- "all.a.str"
+  #   cl.x.str   <- "cl.a.str"
+  #   site.x.str <- "site.a.str"
+  #   all.x.rsp  <- "all.a.rsp"
+  #   cl.x.rsp   <- "cl.a.rsp"
+  #   site.x.rsp <- "site.a.rsp"
+  #   #
+  #   qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
+  #   #
+  #   # missing stressor
+  #   stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.a.str))]
+  #   stressors <- stressors[stressors %in% names(list.MatchBioData$all.a.str)]
+  #   #
+  # } else {
+  #   # Non Valid biological community
+  #   Msg_Stop <- print(paste0("Non-valid biological community specified ("
+  #                   , biocomm,"). Only values of 'bmi' and 'algae' are valid."))
+  #   stop(Msg_Stop)
+  # }##IF.biocomm.END
   
   
   # QC, site rsp ####
   #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
   if(qc_row_site_rsp==0){##IF~qc_row_site_rsp~START
-    msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain any site response data for the specified biological community (", biocomm, ").")
+    msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain "
+                                , "any site response data for the specified "
+                                , "biological community (", biocomm, ").")
     stop(msg_Stop_site_rsp)
   }##IF~qc_row_site_rsp~START
   
   # QC, bad stressors
   if(length(stressors_missing)>0){##IF~length(stressors_missing)~START
-    msg_warn_stressors_missing <- paste0("The following stressors are missing from the 'list.MatchBioData' input:\n"
+    msg_warn_stressors_missing <- paste0("The following stressors are missing "
+                                         , "from the 'list.MatchBioData' input:\n"
                                          , paste(stressors_missing, collapse=", "))
     warning(msg_warn_stressors_missing)
   }##IF~length(stressors_missing)~END
@@ -600,7 +603,7 @@ getBioStressorResponses <- function(TargetSiteID
         # exp.dir <- data.lkp.dir[stressName,respName]
         
         # Determine expected direction of slope
-        dirIncStress <- stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName]
+        dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
         if (dirIncStress == "Inc") {
             exp.dir <- -1
         } else {
@@ -1086,5 +1089,8 @@ getBioStressorResponses <- function(TargetSiteID
                   )
     corrplot::corrplot(df_corrplot, method="circle")
   grDevices::dev.off()
+  
+  print("Printing correlation plot.")
+  flush.console()
   #
 }##FUNCTION.END
