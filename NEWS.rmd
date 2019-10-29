@@ -37,12 +37,20 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9235.005 (2019-10-29)
+
+* Shiny_SMC
+    + Move Results back out of www folder.
+    + Function to copy Results to www.
+    + Add function to end of Run_All.
+    + Remove www\Results in global.
+    + ObserveEvent on StationID for CopyResults.
+
 ## Changes in Version 0.1.0.9235.004 (2019-10-28)
 
 * Shiny_SMC
     + Move Results to www folder.
     + Add PDF viewer to each tab.
-
 
 ## Changes in Version 0.1.0.9235.003 (2019-10-28)
 

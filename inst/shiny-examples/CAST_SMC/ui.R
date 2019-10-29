@@ -26,8 +26,8 @@ shinyUI(fluidPage(
   , sidebarLayout(
       sidebarPanel(
         
-        p("Dir_input")
-        , p("dir_output")
+        p("Dir_input = .Data")
+        , p("dir_output = .Results")
         , selectInput("Station"
                     , label = "Choose a station for which to generate outputs"
                     , choices = LU.Stations
@@ -124,6 +124,17 @@ shinyUI(fluidPage(
                   , uiOutput("pdf_VP")
                   )##tabPanel~Verified Predictions~END
         # 7
+        , tabPanel("Time Sequence (BMI)"
+                   , h3("Time Sequence (BMI)")
+                   , p("if present")
+                   , uiOutput("pdf_TS_BMI")
+                   )
+        , tabPanel("Time Sequence (Algae)"
+                   , h3("Time Sequence (Algae)")
+                   , p("if present")
+                   , uiOutput("pdf_TS_Alg")
+                   )
+        # 8
         , tabPanel("Results"
                    # , h3("Results Download")
                    # , p("Use the button below to package the Results as a single zip file.")

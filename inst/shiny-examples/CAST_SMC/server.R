@@ -28,16 +28,8 @@ shinyServer(function(input, output) {
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
   
-  
-  getHTML <- function(fn_html){
-    #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
-    fe_html <- file.exists(fn_html)
-    if(fe_html==TRUE){
-      return(includeHTML(fn_html))
-    } else {
-      return(NULL)
-    }
-  }##getHTML~END
+
+
   
   output$Map_html <- renderUI({
     getHTML(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html")))
@@ -83,6 +75,13 @@ shinyServer(function(input, output) {
    fn_zip_toggle <- paste0(input$Station, ".zip")
    toggleState(id="b_downloadData", condition = file.exists(file.path(".", "Results", fn_zip_toggle)) == TRUE)
   })##~toggleState~END
+  
+  observeEvent({
+    input$Station
+  }, {
+    TargetSiteID <- input$Station
+    CopyResults(TargetSiteID)
+  })##~CopyResults
   
   
   # BUTTONS ####
@@ -2146,7 +2145,7 @@ shinyServer(function(input, output) {
       # # Create Zip File ####
       # # Increment the progress bar, and update the detail text.
       # msgDetail_A <- "Zip"
-      # msgDetail_B <- "create File"
+      # msgDetail_B <- "Create file"
       # incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       # Sys.sleep(mySleepTime)
       # 
@@ -2155,6 +2154,16 @@ shinyServer(function(input, output) {
       # fn_zip <- paste0(input$Station, "_", input$BioComm, ".zip")
       # zip(file.path(".", "Results", fn_zip), fn_zip_contents)
       # 
+      
+      # CopyResults ####
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Results"
+      msgDetail_B <- "Prepare for display"
+      incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime * 10)
+      # Copy from Results to www/Results
+      CopyResults(TargetSiteID)
+
       
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
@@ -2275,6 +2284,7 @@ shinyServer(function(input, output) {
     #
   })##observeEvent~Create04CoOccur
   
+  
   output$pdf_CoOccur <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "CoOccurrence"
@@ -2285,6 +2295,19 @@ shinyServer(function(input, output) {
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
   
+
+  # output$pdf_CoOccur <- renderUI({
+  #   TargetSiteID <- input$Station
+  #   txt_dir  <- "CoOccurrence"
+  #   txt_file <- "CoOccurrence"
+  #   # working directory changes to 'www' for this operation.
+  #   src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+  #                        , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+  #   # src_pdf <- paste("http://localhost/Results"
+  #   #                  , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"), sep="/")
+  #   tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  # })
+  # 
   # 05SR ####
   observeEvent(input$Create05BioStressorResponses, {
     withCallingHandlers({
@@ -2341,12 +2364,22 @@ shinyServer(function(input, output) {
   
   # Time Sequence ####
   
-  output$pdf_TS <- renderUI({
+  output$pdf_TS_BMI <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "TimeSequence"
     txt_file <- "TS"
     # working directory changes to 'www' for this operation.
-    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir, "BMI"
+                         , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
+    tags$iframe(style="height:600px; width:100%", src=src_pdf)
+  })
+  
+  output$pdf_TS_Alg <- renderUI({
+    TargetSiteID <- input$Station
+    txt_dir  <- "TimeSequence"
+    txt_file <- "TS"
+    # working directory changes to 'www' for this operation.
+    src_pdf <- file.path(".", "Results", TargetSiteID, txt_dir, "Algae"
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
