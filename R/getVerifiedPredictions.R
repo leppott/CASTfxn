@@ -171,7 +171,6 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , data.SSTV.totabund
                                    , data.MT.bio
                                    , matchedData
-                                   # , ref.sites
                                    , BioIndex_Val="IBI"
                                    , BioIndex_Nar="NarRat"
                                    , BioIndex_Nar_Deg="Violates"
@@ -182,38 +181,37 @@ getVerifiedPredictions <- function(TargetSiteID
     
     
     # TargetSiteID
-    # stressors = stressors
-    # stressorInfo = stressorInfo
-    # data.bio.taxa.raw = data_bmiTaxaRaw
-    # data_stressInfo = siteStressInfo
-    # data.SSTV.totabund =data.SSTV.totabund
-    # data.MT.bio = data_MTbmi
+    # stressors = stressorsWPairedResponses
+    # stressorInfo <- siteStressInfo
+    # data.bio.taxa.raw = bioTaxaData
+    # data.SSTV.totabund = df_SSTVtotabund
+    # data.MT.bio = bioMasterTaxa
     # matchedData = list_MatchBioData
-    # # ref.sites = allRefSites
-    # BioIndex_Val = bmiIndex
+    # BioIndex_Val = bioIndex
     # BioIndex_Nar = "Quality"
     # BioIndex_Nar_Deg = "Degraded"
-    # dir_results=file.path(wd, "Results")
+    # dir_results=dir_results
     # dir_sub="VerifiedPredictions"
-    # biocomm="bmi"
+    # biocomm=bioComm
     
   # Debugging
   boo.DEBUG <- FALSE
-  #
-  col.Bio.Deg   <- "Bio.Deg"
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     matchedData <- list.MatchBioData
     tv <- 1
   }##IF.boo.DEBUG.END
   
+  # define pipe
+  `%>%` <- dplyr::`%>%`
+  col.Bio.Deg   <- "Bio.Deg"
   # QC, biocomm ####
-  biocomm <- tolower(biocomm)
+  biocomm <- toupper(biocomm)
   # Check for no data
-  if(biocomm=="bmi"){##IF.biocomm.START
+  if(biocomm=="BMI"){##IF.biocomm.START
     #
     #
-  } else if(biocomm=="algae"){
+  } else if(biocomm=="ALGAE"){
     #
     #
   } else {
@@ -225,22 +223,25 @@ getVerifiedPredictions <- function(TargetSiteID
   
   
   # check for and create (if necessary) "Results" subdirectory of working directory
-  # wd <- getwd()
-  # dir.sub <- "Results"
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
-  dir.sub3 <- dir_sub
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   
   # 20190513, remove scores file if exists
-  fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
-                          , paste0(TargetSiteID, ".VP.", biocomm, ".Scores.txt"))
+  fn_scores <-  file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                           , "_VP_Scores.txt"))
   if(file.exists(fn_scores)){file.remove(fn_scores)}
   
   # Subset SSTV-specific data from stressor metadata file
@@ -251,11 +252,19 @@ getVerifiedPredictions <- function(TargetSiteID
   df.SSTV <- unique(df.SSTV)
   colnames(df.SSTV)[1] <- "Analyte"
 
-  if (nrow(list.SiteSummary$BMImetrics)==0) {
+  if ((biocomm == "BMI") && nrow(list.SiteSummary$BMImetrics)==0) {
     # No BMI Responses Found
-    print(paste0("No biological response data available for ", TargetSiteID, 
-                 ". Regression data illustrate cluster relationships only."))
+    print(paste0("No benthic macroinvertebrate response data available for "
+                 , TargetSiteID, "."))
     utils::flush.console()
+  } else if ((biocomm == "ALGAE") && nrow(list.SiteSummary$BMImetrics)==0) {
+      # No BMI Responses Found
+      print(paste0("No algal response data available for "
+                   , TargetSiteID, "."))
+      utils::flush.console()
+  } else if ((biocomm != "BMI") && (biocomm != "ALGAE")) { 
+      print(paste0(biocomm, " is an unrecognized biological community."))
+      utils::flush.console()
   }
   
   # boo.pryr <- FALSE
@@ -263,14 +272,13 @@ getVerifiedPredictions <- function(TargetSiteID
   # plots.tvr <- vector(10, mode="list")
   plots.tv <- vector(10, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID,"/", dir.sub3, "/", TargetSiteID,".SR.SSTV.")
   plot_H <- 4
   plot_W <- 9
   
-  fn_SSTVfile <- paste0(TargetSiteID, ".SR.SSTV.Corrs.txt")
-  boo.file.exists <- file.exists(file.path(wd, dir.sub, dir.sub2, fn_SSTVfile))
+  fn_SSTVfile <- paste0(TargetSiteID, "_", biocomm, "_VP_Corrs.txt")
+  boo.file.exists <- file.exists(file.path(dir_path, fn_SSTVfile))
   if(boo.file.exists){
-    file.remove(file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_SSTVfile))
+    file.remove(file.path(dir_path, fn_SSTVfile))
   }
   
   
@@ -332,13 +340,7 @@ getVerifiedPredictions <- function(TargetSiteID
           next
         }
         
-        # 20190111, get LogTransf (mod for single parameter)
-        # LogTransf ####
-        # 20190110, get log transformation code from chem.info
-        # define pipe
-        `%>%` <- dplyr::`%>%`
-        #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist
-        # , c("StdParamName", "LogTransf")])
+        # 20190111, get LogTransf (0 = FALSE; 1 = TRUE)
         # need to use max (default of 1) in case of duplicates
         chem.info_LogTransf <- stressorInfo %>% 
           dplyr::group_by(StdParamName) %>% 
@@ -346,13 +348,6 @@ getVerifiedPredictions <- function(TargetSiteID
         LogTransf <- chem.info_LogTransf[chem.info_LogTransf[,"StdParamName"]==SSTV.analyte
                                          , "max_LogTransf"]
         LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
-        # # 20180620, more than one (add sum)
-        # if (sum(SSTV.analyte %in% c("DO_uf_mg_L", "pH_SU", "Temp_degC", "Flow_cfs",
-        #                             "Flow_calc_cfs"))>0) {
-        #   log.yn <- FALSE
-        # } else {
-        #   log.yn <- TRUE
-        # }
         log.yn <- LogTransf
         
         # get all the matched sample data for this stressor
@@ -372,22 +367,19 @@ getVerifiedPredictions <- function(TargetSiteID
         
         bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==minTolVal | 
                                         bmi.taxa.raw[,SSTV.name]==minTolVal+1, 
-                                        bmi.taxa.raw$RelAbundInds, NA)
+                                        bmi.taxa.raw$RelAbund, NA)
 
         bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==maxTolVal |
                                         bmi.taxa.raw[,SSTV.name]==maxTolVal-1, 
-                                        bmi.taxa.raw$RelAbundInds, NA)
+                                        bmi.taxa.raw$RelAbund, NA)
 
-        # bmi.taxa.raw2 <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMISampID)
-        # bmi.taxa.raw2 <- dplyr::summarize(bmi.taxa.raw2, 
-        #                                   SensRelAbund = sum(SensTaxa, na.rm = TRUE), 
-        #                                   TolRelAbund = sum(TolTaxa, na.rm = TRUE))
-        bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID_Master, BMISampID) %>%
-                                         dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
-                                                          , TolRelAbund = sum(TolTaxa, na.rm = TRUE))
+        bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID_Master
+                                        , BMISampID) %>%
+            dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
+                             , TolRelAbund = sum(TolTaxa, na.rm = TRUE))
         bmi.taxa.raw <- dplyr::rename(bmi.taxa.raw, RespSampID = BMISampID)
         
-        all.match.b.resp <- bmi.taxa.raw2[bmi.taxa.raw$RespSampID %in%
+        all.match.b.resp <- bmi.taxa.raw[bmi.taxa.raw$RespSampID %in%
                                     unique(all.match.b.str$RespSampID), ]
 
         col_by <- c("StationID_Master", "RespSampID")
@@ -407,9 +399,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                 , all.x = TRUE)
 
         good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
-        # all.ref.SSTV.abund <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% ref.sites)
         cl.SSTV.abund      <- subset(good.SSTV.abund, good.SSTV.abund$StressSampID %in% cl.match.b$StressSampID)
-        # cl.ref.SSTV.abund  <- subset(cl.SSTV.abund, cl.SSTV.abund$StationID_Master %in% ref.sites)
         site.SSTV.abund    <- subset(good.SSTV.abund, good.SSTV.abund$StationID_Master %in% TargetSiteID)
         SSTV.Resp          <- c("SensRelAbund", "TolRelAbund")
         
@@ -419,17 +409,13 @@ getVerifiedPredictions <- function(TargetSiteID
         # Generate data for plotting (1 = all complete cases, 3 = comparators
         # 5 = target site)
         df.plot1 <- good.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
-        # df.plot2 <- all.ref.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
         df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
-        # df.plot4 <- cl.ref.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
         df.plot5 <- site.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
           
         # Log transform if indicated
         if (log.yn == TRUE) {
           df.plot1[, SSTV.analyte] <- log10(df.plot1[, SSTV.analyte])
-          # df.plot2[, SSTV.analyte] <- log10(df.plot2[, SSTV.analyte])
           df.plot3[, SSTV.analyte] <- log10(df.plot3[, SSTV.analyte])
-          # df.plot4[, SSTV.analyte] <- log10(df.plot4[, SSTV.analyte])
           df.plot5[, SSTV.analyte] <- log10(df.plot5[, SSTV.analyte])
         }
 
@@ -491,16 +477,24 @@ getVerifiedPredictions <- function(TargetSiteID
       myProbs <- c(10, 20, 25, 50, 75, 80, 90)*0.01
       df_quantiles <- aggregate(value ~ variable, data=df_plot_betterbio
                                 , FUN = function(x) {quantile(x, probs=myProbs, na.rm=TRUE)})
-      q_Sens_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa", "value"][, "25%"])
-      q_Sens_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa", "value"][, "50%"])
-      q_Tol_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa", "value"][, "50%"])
-      q_Tol_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa", "value"][, "75%"])
+      q_Sens_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa"
+                                          , "value"][, "25%"])
+      q_Sens_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa"
+                                          , "value"][, "50%"])
+      q_Tol_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa"
+                                         , "value"][, "50%"])
+      q_Tol_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa"
+                                         , "value"][, "75%"])
       # Add scoring thresholds to target siteID data frame
       df_plot_targ[, paste0("betterbio_varval_q", c("LO", "HI"))] <- NA
-      df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "betterbio_varval_qLO"] <- q_Sens_lo
-      df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "betterbio_varval_qHI"] <- q_Sens_hi
-      df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa", "betterbio_varval_qLO"] <- q_Tol_lo
-      df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa", "betterbio_varval_qHI"] <- q_Tol_hi
+      df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa"
+                   , "betterbio_varval_qLO"] <- q_Sens_lo
+      df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa"
+                   , "betterbio_varval_qHI"] <- q_Sens_hi
+      df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa"
+                   , "betterbio_varval_qLO"] <- q_Tol_lo
+      df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa"
+                   , "betterbio_varval_qHI"] <- q_Tol_hi
       # Scoring (tolerant than flip for sensitive)
       df_plot_targ[, "Score"] <- ifelse(df_plot_targ[, "value"] > df_plot_targ[, "betterbio_varval_qHI"], 1
                                         , ifelse(df_plot_targ[, "value"] < df_plot_targ[, "betterbio_varval_qLO"], -1, 0))
@@ -523,7 +517,8 @@ getVerifiedPredictions <- function(TargetSiteID
       }##IF~file.exists(fn_scores)~END
 
       utils::write.table(df_plot_targ, file=fn_scores
-                         , col.names = boo_colnames, row.names=FALSE, sep="\t", append=boo_append)
+                         , col.names = boo_colnames, row.names=FALSE, sep="\t"
+                         , append=boo_append)
       
       
       
@@ -533,12 +528,15 @@ getVerifiedPredictions <- function(TargetSiteID
       {##PLOT VARIABLES ~ START
       ## Plot, Variables, Strings
       str_title <- paste(TargetSiteID, SSTV.analyte, sep=" ~ ")
-      str_subtitle <- paste0("Samples with better biology (index > ", signif(bio_better_thresh, 3), ")")
+      str_subtitle <- paste0("Samples with better biology (index > "
+                             , signif(bio_better_thresh, 3), ")")
       str_xlab  <- ""
       str_ylab  <- "Relative Abundance"
       df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
-      str_score_sens <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[, "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
-      str_score_tol <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[, "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
+      str_score_sens <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[
+          , "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
+      str_score_tol <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[
+          , "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
       str_caption <- paste0("Score = Tolerant (", str_score_tol
                             , "), Sensitive ("
                             , str_score_sens
@@ -614,7 +612,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                , axis.title.y = ggplot2::element_blank()) +
                 ggplot2::coord_flip() + 
                 # Add degraded y/n for better bio sites
-                ggplot2::geom_jitter(data=df_plot_betterbio_BioDegNo
+                ggplot2::geom_jitter(data=df_plot_betterbio_IBI
                                      , size = 1
                                      , alpha = 0.45
                                      , na.rm = TRUE
@@ -705,9 +703,8 @@ getVerifiedPredictions <- function(TargetSiteID
          # plots.tvr[[tvr]] <- grDevices::recordPlot()
           plots.tv[[tv]] <- grDevices::recordPlot()
           #
-          #fn_jpg <- paste0(varFileOut, SSTV.analyte, "_", respName, ".jpg")
-          fn_jpg <- paste0(varFileOut, make.names(SSTV.analyte), ".jpg")
-          ggplot2::ggsave(fn_jpg, p_SSTV, width=plot_W, height=plot_H, units="in")
+          fn_png <- paste0(TargetSiteID, "_", biocomm, "_VP_", make.names(SSTV.analyte), ".png")
+          ggplot2::ggsave(file.path(dir_path, fn_png), p_SSTV, width=plot_W, height=plot_H, units="in")
           
           # ggplot save
           
@@ -732,38 +729,13 @@ getVerifiedPredictions <- function(TargetSiteID
   # Create PDF from list
   fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3, paste0(TargetSiteID,".SR.SSTV.ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=8)
-    # for (tvr in plots.tvr){##FOR.gp.START
-    #   #grDevices::replayPlot(g.plot)
-    #   if(is.null(tvr)==TRUE) {next}
-    #   grDevices::replayPlot(tvr)
-    # }##FOR.gp.END
     for (tv in plots.tv){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
       if(is.null(tv)==TRUE) {next}
       grDevices::replayPlot(tv)
     }##FOR.gp.END
   grDevices::dev.off()
-#  rm(plots.tvr)
   rm(plots.tv)
-  
-  # # CorrPlot ####
-  # ## read
-  # fn_corr <- paste0(TargetSiteID,".SR.SSTV.Corrs.txt")
-  # df_corr <- utils::read.delim(file.path(wd,dir.sub,dir.sub2,fn_corr))
-  # ## transpose
-  # df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, value.var="estimate")
-  # df_corrplot <- t(df_corr_r[,-1])
-  # colnames(df_corrplot) <- df_corr_r[,1]
-  # ## jpg
-  # fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, paste0(TargetSiteID, ".SR.SSTV.CorrPlot.jpg"))
-  # grDevices::jpeg(filename = fn_jpg_cp
-  #                 , width = 4 * ppi
-  #                 , height = 3 * ppi
-  #                 , quality=100
-  #                 )
-  #     corrplot::corrplot(df_corrplot, method="circle")
-  # grDevices::dev.off()
-  #
   
 }##FUNCTION.END
 
