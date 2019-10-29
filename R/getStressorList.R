@@ -121,6 +121,7 @@ getStressorList <- function(TargetSiteID
                             , clusterChem
                             , siteQual2Plot
                             , refSamps
+                            , refSites
                             , siteChem
                             , probsHigh
                             , probsLow
@@ -139,21 +140,23 @@ getStressorList <- function(TargetSiteID
   # TargetSiteID
   # siteCluster=list.SiteSummary$ClustID
   # chemInfo=data_stressInfo
-  # clusterChem=compStressALL
+  # clusterChem=compStressAll
   # siteQual2Plot=siteQual2Plot
   # refSamps=allBioRefStressSamps
-  # siteChem=siteStressALL
+  # refSites=allBioRefSites
+  # siteChem=siteStressAll
   # probsHigh=probsHigh
   # probsLow=probsLow
-  # biocomm="bmi"
+  # biocomm=bioComm
   # dir_results=dir_results
-  # dir_sub="CandidateCauses"  
+  # dir_sub="CandidateCauses"
   # 
   # QC, 20190905
   # chem.info$DirIncStress to lower case
   chemInfo$DirIncStress <- tolower(chemInfo$DirIncStress)
   biocomm <- toupper(biocomm)
   `%>%` <- dplyr::`%>%`
+  not_all_na <- function(x) {!all(is.na(x))}
   plot_ext <- ".png"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
@@ -179,12 +182,45 @@ getStressorList <- function(TargetSiteID
   # stations <- TargetSiteID
 
   # First 2 columns are ChemSampID and StationID_Master
-  clusterChemData <- clusterChem[3:ncol(clusterChem)]
+  clusterChemData <- clusterChem[4:ncol(clusterChem)]
+  
+  # Identify all cluster "reference" samples, including modeled ones
   clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSamps)
-  clusterRefChemData <- clusterRefChem[3:ncol(clusterRefChem)]
-  chemnames <- names(clusterChem[,3:ncol(clusterChemData)])
+  clusterRefModSamps <- clusterChem %>%
+      dplyr::filter(stringr::str_detect(StressSampID, "_modeledflow_")) %>%
+      dplyr::filter(StationID_Master %in% refSites)
+  if (biocomm == "BMI") {
+      clusterRefModSamps <- clusterChem %>%
+          dplyr::filter(stringr::str_detect(StressSampID, "_bmi"))
+      clusterRefModSamps <- unique(clusterRefModSamps)
+      clusterChem <- clusterChem %>%
+          dplyr::filter(stringr::str_detect(StressSampID, "algae"
+                                            , negate = TRUE))
+      clusterChem <- unique(clusterChem)
+      
+  } else if (biocomm == "ALGAE") {
+      clusterRefModSamps <- clusterChem %>%
+          dplyr::filter(stringr::str_detect(StressSampID, "_algae"))
+      clusterRefModSamps <- unique(clusterRefModSamps)
+      clusterChem <- clusterChem %>%
+          dplyr::filter(stringr::str_detect(StressSampID, "bmi"
+                                            , negate = TRUE))
+      clusterChem <- unique(clusterChem)
+  }
+  clusterRefChem <- rbind(clusterRefChem, clusterRefModSamps)
+  rm(clusterRefModSamps)
+  clusterRefChem <- select_if(clusterRefChem, not_all_na)
+  clusterRefChemData <- clusterRefChem[4:ncol(clusterRefChem)]
+  rm(clusterRefChem)
+  
+  useCols <- colnames(clusterRefChemData)
+  clusterChemData <- dplyr::select(clusterChemData, eval(useCols))
+  
+  # Use clusterRefChemData for namees, since non-matching biocomm are exluded
+  chemnames <- colnames(clusterRefChemData)
   allcount <- apply(clusterChemData, 2, function(x) sum(!is.na(x)))
-  alltype <- unlist(lapply(1:ncol(clusterChemData), function(x) is.numeric(clusterChem[,x])))
+  alltype <- unlist(lapply(1:ncol(clusterChemData)
+                           , function(x) is.numeric(clusterChemData[,x])))
   coolvar <- names(allcount)[allcount>2 & alltype]
   
   groupnames <- unique(subset(chemInfo, chemInfo$Analyte %in% chemnames, select = "GroupName"))
@@ -212,7 +248,8 @@ getStressorList <- function(TargetSiteID
     if(n>0) { ##FOR.n.START
 
       ## Plot, Data, Cluster
-      df_plot_wide <- as.data.frame(clusterChem[,gpcoolvar])
+        #In next line changed clusterChem to ClusterChemData
+      df_plot_wide <- as.data.frame(clusterChemData[,gpcoolvar])
       colnames(df_plot_wide) <- gpcoolvar 
       # need as.data.frame and colnames for groups with only 1 parameter
       df_plot_wide_min <- apply(df_plot_wide, 2, min, na.rm=TRUE)
@@ -251,19 +288,19 @@ getStressorList <- function(TargetSiteID
       
       # Get proper labels to describe "good quality" sites
       if (siteQual2Plot=="not degraded") {
-          qualtext <- "not degraded*"
+          qualtext <- "Not degraded*"
           if (biocomm=="BMI") {
               str_caption <- paste0("*Stressor samples paired with benthic "
                                     , "macroinvertebrate samples rated not degraded.")
-          } else if (biocomm=="ALG") {
+          } else if (biocomm=="ALGAE") {
               str_caption <- paste0("*Stressor samples paired with algae "
                                     , "samples rated not degraded.")
           }
       } else if (siteQual2Plot=="better than") {
-          qualtext <- "better quality*"
-          str_caption <- paste("*Stressor samples with paired response samples having biological"
-                               ,"quality better than the mimum target site quality.", sep = "\n")
-      } else { 
+          qualtext <- "Better quality*"
+              str_caption <- paste("*Stressor samples with paired response samples having biological"
+                                   ,"quality better than the mimum target site quality.", sep = "\n")
+     } else { 
           qualtext <- "Reference"
           str_caption <- ""
       }
@@ -306,7 +343,7 @@ getStressorList <- function(TargetSiteID
       cex_sites_targ    <- cex_mod*1.5
       
       ## Plot, Variables, Legend
-      leg_name   <- "Sites"
+      leg_name   <- "Samples"
       leg_labels <- c(qualtext, "Target")
       leg_shape  <- c(pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
@@ -391,9 +428,9 @@ getStressorList <- function(TargetSiteID
   rm(plots.g)
   
   # Data File ####
-  chem.pctrank <- apply(clusterChem[,3:ncol(clusterChem)], 2
+  chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
                         , function(x) dplyr::percent_rank(x))
-  data.chem.pctrank <- cbind(clusterChem[,1:2], as.data.frame(chem.pctrank))
+  data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
   # colnames(data.chem.pctrank)[1] <- "StationID_Master"
   # colnames(data.chem.pctrank)[2] <- "StressSampleID"
   # row.names(data.chem.pctrank) <- NULL
