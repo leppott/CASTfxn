@@ -265,7 +265,7 @@ getBioStressorResponses <- function(TargetSiteID
   # siteQual2Plot=siteQual2Plot
   # biocomm=bioComm
   # dir_results=dir_results
-  # dir_sub="StressorResponse"  
+  # dir_sub="StressorResponse"
   # boo_pred_warn = TRUE
   
   # Correlation file output header row
@@ -275,6 +275,8 @@ getBioStressorResponses <- function(TargetSiteID
   
   # Community ####
   biocomm <- toupper(biocomm)
+  not_all_na <- function(x) {!all(is.na(x))}
+  
   # Check for no data
   # if(biocomm=="BMI"){##IF.biocomm.START
     #
@@ -294,31 +296,6 @@ getBioStressorResponses <- function(TargetSiteID
     stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
     stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
     #
-  # } else if(biocomm=="ALGAE"){
-    #
-  #   bio_prefix <- "Alg"
-  #   col_Bio_Metrics_SampID <- "AlgSampID"
-  #   min_cases <- 20
-  #   all.x.str  <- "all.a.str"
-  #   cl.x.str   <- "cl.a.str"
-  #   site.x.str <- "site.a.str"
-  #   all.x.rsp  <- "all.a.rsp"
-  #   cl.x.rsp   <- "cl.a.rsp"
-  #   site.x.rsp <- "site.a.rsp"
-  #   #
-  #   qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
-  #   #
-  #   # missing stressor
-  #   stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.a.str))]
-  #   stressors <- stressors[stressors %in% names(list.MatchBioData$all.a.str)]
-  #   #
-  # } else {
-  #   # Non Valid biological community
-  #   Msg_Stop <- print(paste0("Non-valid biological community specified ("
-  #                   , biocomm,"). Only values of 'bmi' and 'algae' are valid."))
-  #   stop(Msg_Stop)
-  # }##IF.biocomm.END
-  
   
   # QC, site rsp ####
   #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
@@ -544,24 +521,83 @@ getBioStressorResponses <- function(TargetSiteID
       
       # Log Transform
       if (log.yn == TRUE) {##IF.log.yn.START
-        df_plot_all[, "Stressor"]     <- log10(df_plot_all[, "Stressor"])
-        df_plot_all_ref[, "Stressor"] <- log10(df_plot_all_ref[, "Stressor"])
-        df_plot_cl[, "Stressor"]      <- log10(df_plot_cl[, "Stressor"])
-        df_plot_cl_ref[, "Stressor"]  <- log10(df_plot_cl_ref[, "Stressor"])
-        df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
+          if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_all[, "Stressor"]     <- log10(df_plot_all[, "Stressor"])
+              gapcomment <- "No stressor data available for any sites in the cluster."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+          if (nrow(df_plot_all_ref) > 0) {
+              df_plot_all_ref[, "Stressor"] <- log10(df_plot_all_ref[, "Stressor"])
+              gapcomment <- "No stressor data available for reference sites in the cluster."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+          if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_cl[, "Stressor"]      <- log10(df_plot_cl[, "Stressor"])
+              gapcomment <- "No stressor data available for any comparator sites."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+          if (nrow(df_plot_cl_ref) > 0) {
+              df_plot_cl_ref[, "Stressor"]  <- log10(df_plot_cl_ref[, "Stressor"])
+              gapcomment <- "No stressor data available for reference comparator sites."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+          if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
+              gapcomment <- "No stressor data available for the target site."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+
       }##IF.log.yn.END
       
       # QC for NA/NAN/Inf
       # 20190606, log10 of 0 or negative gives errors for linear model (lm) below.
-      df_plot_all[!is.finite(df_plot_all[, "Stressor"]), "Stressor"]         <- NA
-      df_plot_all_ref[!is.finite(df_plot_all_ref[, "Stressor"]), "Stressor"] <- NA
-      df_plot_cl[!is.finite(df_plot_cl[, "Stressor"]), "Stressor"]           <- NA
-      df_plot_cl_ref[!is.finite(df_plot_cl_ref[, "Stressor"]), "Stressor"]   <- NA
-     
-      
+      if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_all[!is.finite(df_plot_all[, "Stressor"]), "Stressor"]         <- NA
+      }
+      if (nrow(df_plot_all_ref) > 0) {
+          df_plot_all_ref[!is.finite(df_plot_all_ref[, "Stressor"]), "Stressor"] <- NA
+      }
+      if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_cl[!is.finite(df_plot_cl[, "Stressor"]), "Stressor"]           <- NA
+      }
+      if (nrow(df_plot_cl_ref) > 0) {
+          df_plot_cl_ref[!is.finite(df_plot_cl_ref[, "Stressor"]), "Stressor"]   <- NA
+      }
+      if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_site[!is.finite(df_plot_site[, "Stressor"]), "Stressor"]   <- NA
+      }
       
       #}##NoIssues.Munging.END
-      
       
       # Cluster
       # LM and Corr, Cluster ####
@@ -798,10 +834,10 @@ getBioStressorResponses <- function(TargetSiteID
       
       ## Plot, inputs ####
       ## Plot, portions
-      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref)>0, TRUE, FALSE)
-      boo_plot_cl     <- ifelse(nrow(df_plot_cl)>0, TRUE, FALSE)
-      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref)>0, TRUE, FALSE)
-      boo_plot_targ   <- ifelse(nrow(df_plot_site)>0, TRUE, FALSE)
+      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor),])>0, TRUE, FALSE)
+      boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor),])>0, TRUE, FALSE)
+      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref[!is.na(df_plot_cl_ref$Stressor),])>0, TRUE, FALSE)
+      boo_plot_targ   <- ifelse(nrow(df_plot_site[!is.na(df_plot_site$Stressor),])>0, TRUE, FALSE)
       
       ## Plot, Variables, Strings
       str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
@@ -1090,7 +1126,7 @@ getBioStressorResponses <- function(TargetSiteID
     corrplot::corrplot(df_corrplot, method="circle")
   grDevices::dev.off()
   
-  print("Printing correlation plot.")
-  flush.console()
+  msg.corr <- "Printing correlation plot."
+  message(msg.corr)
   #
 }##FUNCTION.END
