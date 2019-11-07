@@ -46,23 +46,24 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                               , lagdays = 0) {
     
     # Debug
-    # dataDir = file.path(getwd(),"Data")
-    # df_sites = data_Sites
-    # df_model = data_modelRaw
-    # df_meas = data_chemRaw
-    # biocomm = "BMI"
-    # df_resp = data_bmiMetrics
-    # index = bmiIndex
-    # biocomm = "Alg"
-    # df_resp = data_AlgMetrics
-    # index = algIndex
-    # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    # lagdays = lagdays
+    dataDir = file.path(getwd(),"Data")
+    df_sites = data_Sites
+    df_model = data_modelRaw
+    df_meas = data_chemRaw
+    biocomm = "BMI"
+    df_resp = data_bmiMetrics
+    index = bmiIndex
+    biocomm = "Alg"
+    df_resp = data_AlgMetrics
+    index = algIndex
+    respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
+    lagdays = lagdays
     
     biocomm <- tolower(biocomm)
     
     # define pipe
     `%>%` <- dplyr::`%>%`
+    not_all_na <- function(x) {!all(is.na(x))}
     
     # Read data files (stressor and response)
     if (biocomm == "bmi") {
@@ -108,9 +109,16 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
 
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
+    df_meas <- df_meas[df_meas$Outlier != "Outlier",]
     df_meas <- as.data.frame(df_meas)
     df_meas <- dplyr::select(df_meas, -SampDate)
     df_meas <- df_meas %>% 
+        dplyr::select(StationID_Master, ChemSampleID, SampleDate
+                      , StdParamName, ResultValue) %>%
+        dplyr::group_by(StationID_Master, ChemSampleID, SampleDate
+                        , StdParamName) %>%
+        dplyr::summarise(meanResult = mean(ResultValue)) %>%
+        dplyr::rename(ResultValue = meanResult) %>%
         tidyr::spread(key = StdParamName, value = ResultValue) %>%
         dplyr::rename(StressSampDate = SampleDate)
     measColnames <- names(df_meas)
@@ -131,13 +139,16 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
         dplyr::mutate(BioComm = eval(biocomm)) %>%
         dplyr::select(StationID_Master, StressSampDate, RespSampDate
                       , StressSampID, BioComm, eval(respColnames)
-                      , eval(modColnames), eval(measColnames))
+                      , eval(modColnames), eval(measColnames)) %>%
+        dplyr::select_if(not_all_na)
+    df_coOccur <- df_coOccur[not_all_na(df_coOccur)]
     df_sites <- df_sites[,c("StationID_Master", "clust")]
     df_coOccur <- merge(df_sites, df_coOccur)
     
     fn <- paste0("SMC",biocomm,"CoOccurFinal.tab")
     write.table(df_coOccur, file.path(dataDir,fn)
-                , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
+                , append = FALSE, col.names = TRUE, row.names = FALSE
+                , sep = "\t")
     
     return(df_coOccur)
     
