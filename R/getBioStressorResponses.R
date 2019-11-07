@@ -243,7 +243,7 @@ getBioStressorResponses <- function(TargetSiteID
                                     , stressorInfo=siteStressInfo
                                     , BioResp
                                     , list.MatchBioData
-                                    , LogTransf
+                                    # , LogTransf
                                     , ref.sites
                                     , siteQual2Plot
                                     , biocomm="bmi"
@@ -260,7 +260,7 @@ getBioStressorResponses <- function(TargetSiteID
   # stressorInfo <- siteStressInfo
   # BioResp = bioMetricNames
   # list.MatchBioData = list_MatchBioData
-  # LogTransf=c(stressors_logtransf)
+  # # LogTransf=c(stressors_logtransf)
   # ref.sites=allBioRefStressSamps
   # siteQual2Plot=siteQual2Plot
   # biocomm=bioComm
@@ -276,6 +276,8 @@ getBioStressorResponses <- function(TargetSiteID
   # Community ####
   biocomm <- toupper(biocomm)
   not_all_na <- function(x) {!all(is.na(x))}
+  # Define pipe
+  `%>%` <- dplyr::`%>%`
   
   # Check for no data
   # if(biocomm=="BMI"){##IF.biocomm.START
@@ -407,8 +409,10 @@ getBioStressorResponses <- function(TargetSiteID
   # varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID
   #                     , ".SR.", bio_prefix, ".")
   
-  LogTransf <- as.logical(LogTransf)
-  
+  LogTransf <- stressorInfo[stressorInfo$StdParamName %in% stressors
+                            , c("StdParamName","LogTransf")]
+  LogTransf <- unique(LogTransf)
+
   # FOR.p ####
   for (p in 1:length(stressors)) {
 
@@ -423,7 +427,7 @@ getBioStressorResponses <- function(TargetSiteID
     #     log.yn <- TRUE
     # }##IF.stressName.END
     # 
-    log.yn <- LogTransf[p]
+    log.yn <- as.logical(LogTransf$LogTransf[LogTransf$StdParamName==stressName])
     
     # DEBUG
     if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
@@ -523,6 +527,8 @@ getBioStressorResponses <- function(TargetSiteID
       if (log.yn == TRUE) {##IF.log.yn.START
           if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
               df_plot_all[, "Stressor"]     <- log10(df_plot_all[, "Stressor"])
+
+          } else {
               gapcomment <- "No stressor data available for any sites in the cluster."
               gaps <- cbind.data.frame("getStressorList", stressName, 0
                                        , gapcomment)
@@ -530,10 +536,11 @@ getBioStressorResponses <- function(TargetSiteID
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
               fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
               write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                          , row.names = FALSE, sep = "\t")
-          }
+                          , row.names = FALSE, sep = "\t")          }
           if (nrow(df_plot_all_ref) > 0) {
               df_plot_all_ref[, "Stressor"] <- log10(df_plot_all_ref[, "Stressor"])
+
+          } else {
               gapcomment <- "No stressor data available for reference sites in the cluster."
               gaps <- cbind.data.frame("getStressorList", stressName, 0
                                        , gapcomment)
@@ -541,10 +548,12 @@ getBioStressorResponses <- function(TargetSiteID
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
               fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
               write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                          , row.names = FALSE, sep = "\t")
-          }
+                          , row.names = FALSE, sep = "\t")          }
           if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
               df_plot_cl[, "Stressor"]      <- log10(df_plot_cl[, "Stressor"])
+
+          } else {
+              
               gapcomment <- "No stressor data available for any comparator sites."
               gaps <- cbind.data.frame("getStressorList", stressName, 0
                                        , gapcomment)
@@ -552,10 +561,11 @@ getBioStressorResponses <- function(TargetSiteID
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
               fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
               write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                          , row.names = FALSE, sep = "\t")
-          }
+                          , row.names = FALSE, sep = "\t")          }
           if (nrow(df_plot_cl_ref) > 0) {
               df_plot_cl_ref[, "Stressor"]  <- log10(df_plot_cl_ref[, "Stressor"])
+
+          } else {
               gapcomment <- "No stressor data available for reference comparator sites."
               gaps <- cbind.data.frame("getStressorList", stressName, 0
                                        , gapcomment)
@@ -563,10 +573,11 @@ getBioStressorResponses <- function(TargetSiteID
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
               fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
               write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                          , row.names = FALSE, sep = "\t")
-          }
+                          , row.names = FALSE, sep = "\t")          }
           if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
               df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
+
+          } else {
               gapcomment <- "No stressor data available for the target site."
               gaps <- cbind.data.frame("getStressorList", stressName, 0
                                        , gapcomment)
@@ -603,100 +614,184 @@ getBioStressorResponses <- function(TargetSiteID
       # LM and Corr, Cluster ####
       # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
-        # 20190228, QC for no data
-        model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor
-                              , na.action=na.exclude) #cluster only
-        if(boo_pred_warn==TRUE){
-          suppressWarnings(model_cl_pred <- stats::predict(model_cl
-                            , interval = "prediction", level = 0.75))
-        } else {
-          model_cl_pred <- stats::predict(model_cl, interval = "prediction"
-                                          , level = 0.75)
-        }
-        model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
-        # 
-        slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
-        intercept_cl <- signif(summary(model_cl)$coefficients[[1]], 3)
-        pval_intercept_cl <- signif(summary(model_cl)$coefficients[[7]], 3)
-        pval_slope_cl <- signif(summary(model_cl)$coefficients[[8]], 3)
-        # r2
-        r_cl <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor
-                           , method="pearson",use="pairwise.complete.obs")
-        r2_cl <- formatC(r_cl^2, format="f", digits=3)
-        n_str_cl <- length(df_plot_cl$Stressor)
-        # Corelation
-        c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor
-                                   , method="pearson", use="pairwise.complete.obs"))
-        df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName
-                    , respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
-                    , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
-        #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-        names(df.corr_cl) <- cn_cor_pref
-         pval.corr_cl <- signif(c1S_cl$p.value, 2)
-        #
-        # 20180621, scoring
-        slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
-        # exp.dir <- data.lkp.dir[stressName,respName]
-        
-        # Determine expected direction of slope
-        dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
-        if (dirIncStress == "Inc") {
-            exp.dir <- -1
-        } else {
-            exp.dir <- 1
-        }
-        #
-      } else {
-       boo_corr <- FALSE 
-      }##IF~nrow(df_plot_cl)~END
+          
+          if(stats::sd(df_plot_cl$Stressor, na.rm=TRUE)==0){ # Vertical line
+              boo_corr <- FALSE 
+              
+              gapcomment <- paste0("Stressor data in the comparator set have "
+                                   , "a standard deviation of zero: "
+                                   , "all values are equal.")
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+              
+          } else if(stats::sd(df_plot_cl$Response, na.rm=TRUE)==0) { # Horizontal line
+              boo_corr <- FALSE 
+              
+              gapcomment <- paste0("Response data in the comparator set have "
+                                   , "a standard deviation of zero: "
+                                   , "all values are equal.")
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          } else {  # SD <> 0 along vertical and horizontal
+              
+              # 20190228, QC for no data
+              model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor
+                                    , na.action=na.exclude) #cluster only
+              if(boo_pred_warn==TRUE){
+                  suppressWarnings(model_cl_pred <- stats::predict(model_cl
+                                    , interval = "prediction", level = 0.75))
+              } else {
+                  model_cl_pred <- stats::predict(model_cl
+                                                  , interval = "prediction"
+                                                  , level = 0.75)
+              }
+              model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
+              # 
+              slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
+              intercept_cl <- signif(summary(model_cl)$coefficients[[1]], 3)
+              pval_intercept_cl <- signif(summary(model_cl)$coefficients[[7]], 3)
+              pval_slope_cl <- signif(summary(model_cl)$coefficients[[8]], 3)
+              # r2
+              r_cl <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor
+                                 , method="pearson",use="pairwise.complete.obs")
+              r2_cl <- formatC(r_cl^2, format="f", digits=3)
+              n_str_cl <- length(df_plot_cl$Stressor)
+              # Correlation
+              c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor
+                                         , method="pearson", use="pairwise.complete.obs"))
+              df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName
+                                             , respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
+                                             , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
+              #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+              names(df.corr_cl) <- cn_cor_pref
+              pval.corr_cl <- signif(c1S_cl$p.value, 2)
+              #
+              # 20180621, scoring
+              slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
+              # exp.dir <- data.lkp.dir[stressName,respName]
+              
+              # Determine expected direction of slope
+              dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
+              if (dirIncStress == "Inc") {
+                  exp.dir <- -1
+              } else {
+                  exp.dir <- 1
+              }
+              #              
+          } # End std dev If eval
+          
+        } else { # >2 rows of data
+            boo_corr <- FALSE 
+       
+            gapcomment <- paste0("Only two paired stressor-response samples "
+                            , "are available for the comparator set.")
+            gaps <- cbind.data.frame("getStressorList", stressName, 0, gapcomment)
+            colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+            fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                   , row.names = FALSE, sep = "\t")      
+       
+        }##IF~nrow(df_plot_cl)~END
       
-      # ALL
-      # LM and Corr, All ####
-      # ~~~ Check QC of Corr Table at end of code ~~~~
+        # ALL
+        # LM and Corr, All ####
+        # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
-        # 20190228, QC for no data
-        model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor
-                               , na.action=na.exclude) #cluster only
-        if(boo_pred_warn==TRUE){
-          suppressWarnings(model_all_pred <- stats::predict(model_all
-                                , interval = "prediction", level = 0.75))
-        } else {
-          model_all_pred <- stats::predict(model_all, interval = "prediction"
-                                           , level = 0.75)
-        }
-        model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
-        # 
-        slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
-        intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
-        pval_intercept_all <- signif(summary(model_all)$coefficients[[7]], 3)
-        pval_slope_all <- signif(summary(model_all)$coefficients[[8]], 3)
-        # r2
-        r_all <- stats::cor(df_plot_all$Response, df_plot_all$Stressor
-                            , method="pearson",use="pairwise.complete.obs")
-        r2_all <- formatC(r_all^2, format="f", digits=3)
-        n_str_all <- length(df_plot_all$Stressor)
-        # Corelation
-        c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor
-                            , method="pearson", use="pairwise.complete.obs"))
-        df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName
-                            , respName, c1S_all$parameter+1
-                            , signif(c1S_all$statistic, 2)
-                            , signif(c1S_all$p.value, 2)
-                            , signif(c1S_all$estimate, 2)
-                            , r2_all))
-        #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName"
-        #, "respName", "n", "statistic", "p.value", "estimate", "r2")
-        names(df.corr_all) <- cn_cor_pref
-        pval.corr_all <- signif(c1S_all$p.value, 2)
-        #
-        # 20180621, scoring
-        slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
-        # exp.dir <- data.lkp.dir[stressName,respName]
-        # exp.dir <- -1
-        #
-      } else {
-        boo_corr <- FALSE 
-      }##IF~nrow(df_plot_all)~END
+          
+            if(stats::sd(df_plot_all$Stressor, na.rm=TRUE)==0){ # Vertical line
+                
+                gapcomment <- paste0("Stressor data across all sites in the "
+                                   , "cluster have a standard deviation of "
+                                   , "zero: all values are equal.")
+                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+            } else if(stats::sd(df_plot_all$Response, na.rm=TRUE)==0) {
+                boo_corr <- FALSE 
+                
+                gapcomment <- paste0("Response data across all sites in the "
+                                     , "cluster have a standard deviation of "
+                                     , "zero: all values are equal.")
+                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                         , gapcomment)
+                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                            , row.names = FALSE, sep = "\t")
+                
+            } else {  # SD <> 0              
+              # 20190228, QC for no data
+              model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor
+                                     , na.action=na.exclude) #cluster only
+              if(boo_pred_warn==TRUE){
+                  suppressWarnings(model_all_pred <- stats::predict(model_all
+                                                                    , interval = "prediction", level = 0.75))
+              } else {
+                  model_all_pred <- stats::predict(model_all, interval = "prediction"
+                                                   , level = 0.75)
+              }
+              model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
+              # 
+              slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
+              intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
+              pval_intercept_all <- signif(summary(model_all)$coefficients[[7]], 3)
+              pval_slope_all <- signif(summary(model_all)$coefficients[[8]], 3)
+              # r2
+              r_all <- stats::cor(df_plot_all$Response, df_plot_all$Stressor
+                                  , method="pearson",use="pairwise.complete.obs")
+              r2_all <- formatC(r_all^2, format="f", digits=3)
+              n_str_all <- length(df_plot_all$Stressor)
+              # Corelation
+              c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor
+                                          , method="pearson", use="pairwise.complete.obs"))
+              df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName
+                                              , respName, c1S_all$parameter+1
+                                              , signif(c1S_all$statistic, 2)
+                                              , signif(c1S_all$p.value, 2)
+                                              , signif(c1S_all$estimate, 2)
+                                              , r2_all))
+              #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName"
+              #, "respName", "n", "statistic", "p.value", "estimate", "r2")
+              names(df.corr_all) <- cn_cor_pref
+              pval.corr_all <- signif(c1S_all$p.value, 2)
+              #
+              # 20180621, scoring
+              slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
+              # exp.dir <- data.lkp.dir[stressName,respName]
+              # exp.dir <- -1
+              #
+          } # End std dev If eval statement
+
+      } else { # < 2 samples
+          boo_corr <- FALSE 
+
+          gapcomment <- paste0("Only two paired stressor-response samples "
+                               , "are available for all sites in the cluster.")
+          gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                   , gapcomment)
+          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                      , row.names = FALSE, sep = "\t")
+          
+      }##IF~nrow(df_plot_all)~END              
 
 
       # Corr table output ####
