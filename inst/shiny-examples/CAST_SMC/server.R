@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
   })##Map_html~END
   
   output$Disclaimer_html <- renderUI({
-    getHTML(file.path(".", "data", "Disclaimer_Key.html"))
+    getHTML(file.path(".", "www", "Disclaimer_Key.html"))
     #
     # fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
     # #

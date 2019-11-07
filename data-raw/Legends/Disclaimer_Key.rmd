@@ -15,7 +15,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
 #~~~~~~~~~~~~~~~~~
 # in global.R
-dir_legends <- file.path(".", "Legends")
+dir_legends <- file.path(".", "data-raw", "Legends")
 #~~~~~~~~~~~~~~~~~
 # from getSiteInfo()
 # data.Stations.Info
@@ -225,7 +225,7 @@ The static map is all sites in entire region of interest alont with NHD+ flowlin
 str_cat <- "static map"
 dir.sub3 <- "SiteInfo"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3, paste0(TargetSiteID,"_map.jpg"))
+fn_img <- file.path(".", dir.sub3, paste0(TargetSiteID,"_map.jpg"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -276,7 +276,7 @@ The points have the same color coding as the static map.
 str_cat <- "interactive map"
 dir.sub3 <- "SiteInfo"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3, paste0(TargetSiteID, "_map_leaflet.png"))
+fn_img <- file.path(".", dir.sub3, paste0(TargetSiteID, "_map_leaflet.png"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -294,7 +294,7 @@ The color of the bars is a shade of red to associated it with the "target" site.
 str_cat <- "potential anthropogenic alterations"
 dir.sub3 <- "SiteInfo"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3, paste0(TargetSiteID, "_bkgd_RoadDensity.png"))
+fn_img <- file.path(".", dir.sub3, paste0(TargetSiteID, "_bkgd_RoadDensity.png"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -310,7 +310,7 @@ Box plots by stressor category.
 str_cat <- "candidate causes"
 dir.sub3 <- "CandidateCauses"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3, paste0(TargetSiteID, ".boxes.Water.quality.jpg"))
+fn_img <- file.path(".", dir.sub3, paste0(TargetSiteID, ".boxes.Water.quality.jpg"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -361,7 +361,7 @@ Box plot and Stressor Response
 str_cat <- "co-occurrence, box plot"
 dir.sub3 <- "CoOccurrence"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3
+fn_img <- file.path(".", dir.sub3
                     , paste0(TargetSiteID, ".CoOccurrence.Box.SpecificConductivity_fld_uS_cm.jpg"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
@@ -418,7 +418,7 @@ N and score in text at the bottom.
 str_cat <- "co-occurrence, stressor response"
 dir.sub3 <- "CoOccurrence"
 TargetSiteID <- "403S01784"
-fn_img <- file.path(dir_legends, dir.sub3
+fn_img <- file.path(".", dir.sub3
                     , paste0(TargetSiteID, ".CoOccurrence.SR.SpecificConductivity_fld_uS_cm.jpg"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
