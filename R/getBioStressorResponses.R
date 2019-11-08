@@ -283,7 +283,6 @@ getBioStressorResponses <- function(TargetSiteID
   # Check for no data
   # if(biocomm=="BMI"){##IF.biocomm.START
     #
-    bio_prefix <- "BMI"
     col_Bio_Metrics_SampID <- "RespSampID"
     min_cases <- 20
     all.x.str  <- "all.b.str"
@@ -346,7 +345,6 @@ getBioStressorResponses <- function(TargetSiteID
   }##IF~len_rsp~END
   #  
   #}##QC, NUMERIC ~ END
-  
   
   col_StationID  <- "StationID_Master"
   col_ChemSampID <- "StressSampID"
@@ -413,6 +411,23 @@ getBioStressorResponses <- function(TargetSiteID
   LogTransf <- stressorInfo[stressorInfo$StdParamName %in% stressors
                             , c("StdParamName","LogTransf")]
   LogTransf <- unique(LogTransf)
+  
+  # Prep site data for merging with scores
+  df_str <- site.b.str %>%
+      tidyr::gather(key = "Stressor", value = "StressorValue"
+                    , c(-StationID_Master, -StressSampID, -RespSampID))
+  df_rsp <- site.b.rsp %>%
+      dplyr::select(-RespSampDate) %>%
+      tidyr::gather(key = "Response", value = "ResponseValue"
+                    , c(-StationID_Master, -StressSampID, -RespSampID, -Quality))
+  df_SiteData <- merge(df_str, df_rsp
+                      , by.x = c("StationID_Master", "StressSampID", "RespSampID")
+                      , by.y = c("StationID_Master", "StressSampID", "RespSampID")
+                      , all = TRUE)
+  df_SiteData <- df_SiteData %>%
+      dplyr::select(StationID_Master, StressSampID, RespSampID, Quality
+                    , Stressor, StressorValue, Response, ResponseValue)
+  rm(df_str, df_rsp)
 
   # FOR.p ####
   for (p in 1:length(stressors)) {
@@ -896,6 +911,10 @@ getBioStressorResponses <- function(TargetSiteID
           df.sc.sr <- rbind(df.sc.sr, df.temp2)
         }
         
+        df.sc.sr <- merge(df_SiteData, df.sc.sr
+                          , by.x = c("StationID_Master", "Stressor", "Response")
+                          , by.y = c("StationID_Master", "stressName", "respName")
+                          , all.y = TRUE)
         #if(boo.pryr==TRUE){
         fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
         fp_scores <- file.path(dir_path, fn_scores)
