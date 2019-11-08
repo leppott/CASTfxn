@@ -43,27 +43,29 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                               , biocomm = "BMI"
                               , df_resp = data_bmiMetrics
                               , index = "CSCI"
-                              , lagdays = 0) {
+                              , lagdays = 0
+                              , removeOutliers = TRUE) {
     
     # Debug
-    # dataDir = file.path(getwd(),"Data")
-    # df_sites = data_Sites
-    # df_model = data_modelRaw
-    # df_meas = data_chemRaw
-    # biocomm = "BMI"
-    # df_resp = data_bmiMetrics
-    # index = bmiIndex
-    # biocomm = "Alg"
-    # df_resp = data_AlgMetrics
-    # index = algIndex
-    # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    # lagdays = lagdays
     
-    biocomm <- tolower(biocomm)
+    boo_DEBUG <- FALSE
+    
+    if  (boo_DEBUG == TRUE) {
+        dataDir = dir_data
+        df_sites = data_Sites
+        df_model = data_modelRaw
+        df_meas = data_chemRaw
+        biocomm = "Alg"
+        df_resp = data_AlgMetrics
+        index = algIndex
+        lagdays = lagdays
+        removeOutliers = TRUE
+    }
     
     # define pipe
     `%>%` <- dplyr::`%>%`
     not_all_na <- function(x) {!all(is.na(x))}
+    biocomm <- tolower(biocomm)
     
     # Read data files (stressor and response)
     if (biocomm == "bmi") {
@@ -109,7 +111,9 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
 
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
-    df_meas <- df_meas[df_meas$Outlier != "Outlier",]
+    if (removeOutliers == TRUE) {
+        df_meas <- df_meas[df_meas$Outlier != "Outlier",]
+    }
     df_meas <- as.data.frame(df_meas)
     df_meas <- dplyr::select(df_meas, -SampDate)
     df_meas <- df_meas %>% 
