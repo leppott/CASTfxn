@@ -347,7 +347,7 @@ getVerifiedPredictions <- function(TargetSiteID
       
       # 20190513, remove scores file if exists
       fn_scores <-  file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                               , "_VP_Scores.txt"))
+                                               , "_VP_Scores.tab"))
       if(file.exists(fn_scores)){file.remove(fn_scores)}        
       
       # plots.tvr <- vector(10, mode="list")
@@ -355,12 +355,6 @@ getVerifiedPredictions <- function(TargetSiteID
       ppi<-300
       plot_H <- 4
       plot_W <- 9
-      
-      fn_SSTVfile <- paste0(TargetSiteID, "_", biocomm, "_VP_Corrs.txt")
-      boo.file.exists <- file.exists(file.path(dir_path, fn_SSTVfile))
-      if(boo.file.exists){
-          file.remove(file.path(dir_path, fn_SSTVfile))
-      }
       
       # boo.pryr <- FALSE
 
@@ -724,9 +718,12 @@ getVerifiedPredictions <- function(TargetSiteID
                                              , show.legend = FALSE
                                              , na.rm = TRUE) +
                       # Legend, Points
-                      ggplot2::scale_color_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
-                      ggplot2::scale_fill_manual(breaks = c("Yes", "No"), values = bio_col, drop = FALSE) +
-                      ggplot2::scale_shape_manual(breaks = c("Yes", "No"), values = bio_shp, drop = FALSE)
+                      ggplot2::scale_color_manual(breaks = c("Yes", "No")
+                                                  , values = bio_col, drop = FALSE) +
+                      ggplot2::scale_fill_manual(breaks = c("Yes", "No")
+                                                 , values = bio_col, drop = FALSE) +
+                      ggplot2::scale_shape_manual(breaks = c("Yes", "No")
+                                                  , values = bio_shp, drop = FALSE)
                   
                   # target site, line (no legend - color outside of aes)
                   p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
