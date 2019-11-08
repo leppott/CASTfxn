@@ -243,7 +243,6 @@ getBioStressorResponses <- function(TargetSiteID
                                     , stressorInfo=siteStressInfo
                                     , BioResp
                                     , list.MatchBioData
-                                    # , LogTransf
                                     , ref.sites
                                     , siteQual2Plot
                                     , biocomm="bmi"
@@ -255,18 +254,20 @@ getBioStressorResponses <- function(TargetSiteID
   boo.DEBUG <- FALSE
   ## Trigger DEBUG actions below for when debugging.
   
-  # TargetSiteID
-  # stressors <-stressorsWPairedResponses
-  # stressorInfo <- siteStressInfo
-  # BioResp = bioMetricNames
-  # list.MatchBioData = list_MatchBioData
-  # # LogTransf=c(stressors_logtransf)
-  # ref.sites=allBioRefStressSamps
-  # siteQual2Plot=siteQual2Plot
-  # biocomm=bioComm
-  # dir_results=dir_results
-  # dir_sub="StressorResponse"
-  # boo_pred_warn = TRUE
+  if (boo.DEBUG == TRUE) {
+      TargetSiteID
+      stressors <-stressorsWPairedResponses
+      stressorInfo <- siteStressInfo
+      BioResp = bioMetricNames
+      list.MatchBioData = list_MatchBioData
+      ref.sites=allBioRefStressSamps
+      siteQual2Plot=siteQual2Plot
+      biocomm=bioComm
+      dir_results=dir_results
+      dir_sub="StressorResponse"
+      boo_pred_warn = TRUE
+  }
+
   
   # Correlation file output header row
   cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName"
@@ -690,8 +691,9 @@ getBioStressorResponses <- function(TargetSiteID
               #              
           } # End std dev If eval
           
-        } else { # >2 rows of data
-            boo_corr <- FALSE 
+        } else { # <=2 rows of data
+            boo_corr <- FALSE
+            n_str_cl <- NULL
        
             gapcomment <- paste0("Only two paired stressor-response samples "
                             , "are available for the comparator set.")
@@ -778,8 +780,9 @@ getBioStressorResponses <- function(TargetSiteID
               #
           } # End std dev If eval statement
 
-      } else { # < 2 samples
-          boo_corr <- FALSE 
+      } else { # <=2 samples
+          boo_corr <- FALSE
+          n_str_cl <- NULL
 
           gapcomment <- paste0("Only two paired stressor-response samples "
                                , "are available for all sites in the cluster.")
@@ -827,7 +830,7 @@ getBioStressorResponses <- function(TargetSiteID
         for (f in 1:nrow(df_plot_site)) {##FOR~f~START
           # Score, cluster
           # Generate scores based on slope, significance value, and r2
-          if ((length(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
+          if ((nrow(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
             # print to console p (stressName) and q (respName)
             if (slope.dir_cl == exp.dir) {
               #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
@@ -948,7 +951,7 @@ getBioStressorResponses <- function(TargetSiteID
                              , paste0("score = ", sr.score_cl)
                              , sep=" ~ ")
       } else {
-        str_caption_cl <- "Regression (comparators):  Less than 2 data points in comparator set."
+        str_caption_cl <- "Regression (comparators):  Less than 3 data points in comparator set."
       }##IF.equation.END
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {##IF.equation.START
@@ -959,7 +962,7 @@ getBioStressorResponses <- function(TargetSiteID
                                 , paste0("score = ", sr.score_all)
                                 , sep=" ~ ")
       } else {
-        str_caption_all <- "Regression (all):  Less than 2 data points."
+        str_caption_all <- "Regression (all):  Less than 3 data points."
       }##IF.equation.END
       #
       if (siteQual2Plot=="not degraded") {
@@ -1074,27 +1077,59 @@ getBioStressorResponses <- function(TargetSiteID
         ##IF~boo_plot_targ~END
         # 
         # Add rest of plot  
-        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-                       ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-                       ggplot2::scale_fill_manual(name=leg_name, labels=leg_labels, values=leg_fill) +
-                       # Linear model (all data)
-                       ggplot2::stat_smooth(data=df_plot_all, method=lm, color=col_line_all
-                            , fill=fill_sites_all, alpha=alpha_lm_all, show.legend=FALSE) + 
-                       # Linear model (cluster)
-                       ggplot2::stat_smooth(data=df_plot_cl, method=lm, color=col_line_cl
-                            , fill=fill_sites_cl, alpha=alpha_lm_cl, show.legend=FALSE) + 
-                       # Regression, cluster
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr)
-                            , color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr)
-                            , color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
-                       # Regression, all
-                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~lwr)
-                            , color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
-                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~upr)
-                            , color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
-                       # other
-                       ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
+        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name
+                                                   , labels=leg_labels
+                                                   , values=leg_shape)  + 
+                       ggplot2::scale_color_manual(name=leg_name
+                                                   , labels=leg_labels
+                                                   , values=leg_col) +
+                       ggplot2::scale_fill_manual(name=leg_name
+                                                  , labels=leg_labels
+                                                  , values=leg_fill)
+        # Regression, all
+        if (exists("model_all_val")) {
+            # Linear model (all data)
+            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_all
+                                                , method=lm
+                                                , color=col_line_all
+                                                , fill=fill_sites_all
+                                                , alpha=alpha_lm_all
+                                                , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
+                                              , ggplot2::aes_(y=~lwr)
+                                              , color=col_line_all
+                                              , linetype="dashed"
+                                              , show.legend=FALSE
+                                              , size = 1.25)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
+                                              , ggplot2::aes_(y=~upr)
+                                              , color=col_line_all
+                                              , linetype="dashed"
+                                              , show.legend=FALSE, size = 1.25)
+        }
+        # Regression, cluster
+        if (exists("model_cl_val")) {
+            # Linear model (cluster)
+            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_cl
+                                                , method=lm
+                                                , color=col_line_cl
+                                                , fill=fill_sites_cl
+                                                , alpha=alpha_lm_cl
+                                                , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
+                                              , ggplot2::aes_(y=~lwr)
+                                              , color=col_line_cl
+                                              , linetype="dashed"
+                                              , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
+                                              , ggplot2::aes_(y=~upr)
+                                              , color=col_line_cl
+                                              , linetype="dashed"
+                                              , show.legend=FALSE)
+        }
+
+        # other
+        p_SR <- p_SR + ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
                             , plot.subtitle=ggplot2::element_text(hjust=0.5, size=10)
                             , plot.caption=ggplot2::element_text(size=8)
                             , legend.title=ggplot2::element_text(size=10)
