@@ -46,18 +46,18 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                               , lagdays = 0) {
     
     # Debug
-    dataDir = file.path(getwd(),"Data")
-    df_sites = data_Sites
-    df_model = data_modelRaw
-    df_meas = data_chemRaw
-    biocomm = "BMI"
-    df_resp = data_bmiMetrics
-    index = bmiIndex
-    biocomm = "Alg"
-    df_resp = data_AlgMetrics
-    index = algIndex
-    respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
-    lagdays = lagdays
+    # dataDir = file.path(getwd(),"Data")
+    # df_sites = data_Sites
+    # df_model = data_modelRaw
+    # df_meas = data_chemRaw
+    # biocomm = "BMI"
+    # df_resp = data_bmiMetrics
+    # index = bmiIndex
+    # biocomm = "Alg"
+    # df_resp = data_AlgMetrics
+    # index = algIndex
+    # respColnames = c("BMISampDate", "BMISampID", "Quality", "CSCI")
+    # lagdays = lagdays
     
     biocomm <- tolower(biocomm)
     
