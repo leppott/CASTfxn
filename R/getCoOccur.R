@@ -172,6 +172,8 @@
 getCoOccur <- function(df_data
                        , TargetSiteID=NULL
                        , col_ID
+                       , colStressSamp
+                       , colRespSamp
                        , colGroup
                        , colBio
                        , colStressors
@@ -194,28 +196,30 @@ getCoOccur <- function(df_data
                        ) {##FUNCTION.START
   #
     
-    # Debugging
-    # df_data = data_bioCoOccur
-    # TargetSiteID = TargetSiteID
-    # col_ID = "StationID_Master"
-    # colGroup = "clust"
-    # colBio = colBio
-    # colStressors = c(stressorsWPairedResponses)
-    # BioNarBrk = BioNarBrk
-    # BioNarLab = BioNarLab
-    # BioDegBrk = BioDegBrk
-    # BioDegLab = c("Yes", "No")
-    # biocomm = bioComm
-    # dir_plots = dir_results
-    # dir_sub = "CoOccurrence"
-    # col_StressInvScore = col_StressInvScore
     
+    boo_DEBUG <- FALSE
     
-  boo_DEBUG <- FALSE
-  
+    if (boo_DEBUG==TRUE) {
+        df_data = data_bioCoOccur
+        TargetSiteID = TargetSiteID
+        col_ID = "StationID_Master"
+        colStressSamp = "StressSampID"
+        colRespSamp = "RespSampID"
+        colGroup = "clust"
+        colBio = colBio
+        colStressors = c(stressorsWPairedResponses)
+        BioNarBrk = BioNarBrk
+        BioNarLab = BioNarLab
+        BioDegBrk = BioDegBrk
+        BioDegLab = c("Yes", "No")
+        biocomm = bioComm
+        dir_plots = dir_results
+        dir_sub = "CoOccurrence"
+        col_StressInvScore = col_StressInvScore
+    }
+
   # define pipe
   `%>%` <- dplyr::`%>%`
-  
   biocomm <- toupper(biocomm)
   
   # QC, 20190418
@@ -231,21 +235,13 @@ getCoOccur <- function(df_data
     colStressors <- colStressors[colStressors %in% names(df_data)]
   }##IF~bad stressors~END
   
-  # # Parameters (stressors) with inverse scoring
-  # # 2019-05-20 (same day added as input variables)
-  # col_StressInvScore <- c("DO_f_."
-  #                          , "DO_f_mg_L"
-  #                          , "DO_f_unk"
-  #                          , "DOSat_f_."
-  #                          , "DOSat_f_unk"
-  #                          , "pH_SU")
-
   #
   myDateTime    <- format(Sys.time(),"%Y%m%d_%H%M%S")
   col.Bio.Nar   <- "Bio.Nar"
   col.Bio.Deg   <- "Bio.Deg"
   #
-  col.KEEP      <- c(col_ID, colGroup, colBio, col.Bio.Nar, col.Bio.Deg, colStressors)
+  col.KEEP      <- c(col_ID, colGroup, colStressSamp, colRespSamp, colBio
+                     , col.Bio.Nar, col.Bio.Deg, colStressors)
   #
   # Assign Bio Narrative and Status
   df_data[, col.Bio.Nar] <- cut(df_data[,colBio]
@@ -331,7 +327,9 @@ getCoOccur <- function(df_data
       name_df <- deparse(substitute(df_data))
       name_col <- deparse(substitute(col_ID))
       name_df_col <- paste0(name_df, name_col)
-      msg_NoSite <- paste0("Target site (", i_TargetSiteID, ") was *not* found in the function inputs (df_data, TargetSiteID, and col_ID).")
+      msg_NoSite <- paste0("Target site (", i_TargetSiteID
+                           , ") was *not* found in the function inputs "
+                           , "(df_data, TargetSiteID, and col_ID).")
       stop(msg_NoSite)
     }##IF~boo_QC_site~END
     #
