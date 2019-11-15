@@ -186,8 +186,8 @@ getVerifiedPredictions <- function(TargetSiteID
     # colBioSample = colBioSample            # Used
     # stressors = stressorsWPairedResponses  # Used
     # stressorInfo <- siteStressInfo         # Used
-    # dataBioTaxa = bioTaxaData        # Used
-    # dataMasterTaxa = bioMasterTaxa            # Used
+    # dataBioTaxa = bioTaxaData              # Used
+    # dataMasterTaxa = bioMasterTaxa         # Used
     # matchedData = list_MatchBioData        # Used
     # BioIndex_Val = bioIndex                # Used
     # BioIndex_Nar = "Quality"               # Used
@@ -589,6 +589,13 @@ getVerifiedPredictions <- function(TargetSiteID
                   df_plot_targ[, "biocomm"] <- biocomm
                   df_plot_targ[, "n_BetterBio"] <- n_records_better_bio
                   df_plot_targ[, "n_BetterBioDegNo"] <- n_records_betterbio_BioDegNo
+                  df_tbl_scores <- merge(df_plot_targ
+                                         , site.SSTV.abund[,c("RespSampID"
+                                                              ,"StressSampID"
+                                                              ,"CSCI", "Quality")]
+                                         , by.x = c("RespSampID","StressSampID")
+                                         , by.y = c("RespSampID","StressSampID")
+                                         , all.x = TRUE)
                   
                   # Save
                   # fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
@@ -601,7 +608,7 @@ getVerifiedPredictions <- function(TargetSiteID
                       boo_colnames <- !boo_colnames
                   }##IF~file.exists(fn_scores)~END
                   
-                  utils::write.table(df_plot_targ, file=fn_scores
+                  utils::write.table(df_tbl_scores, file=fn_scores
                                      , col.names = boo_colnames, row.names=FALSE, sep="\t"
                                      , append=boo_append)
                   
