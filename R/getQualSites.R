@@ -49,19 +49,33 @@ getQualSites<- function(TargetSiteID
                         , colBio = "CSCI"
                         , colBioSample = "RespSampID"
                         , colStressSample = "StressSampID"
+                        , comp_sites = NULL
+                        , useBC = FALSE
+                        , BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2)
+                        , BioNarLab = c("very likely altered", "likely altered"
+                                        , "possibly altered", "likely intact")
                         , BioDegBrk = c(-2, 0.799, 2)
-                        , BioDegLab = c("Yes", "No")) {
+                        , BioDegLab = c("Yes", "No")
+                        , dir_results = file.path(getwd(), "Results")) {
     
     # For QC purposes
-    # TargetSiteID
-    # df_sites = data_Sites
-    # biocomm = bioComm
-    # df_qual = data_bioCoOccur
-    # colBio = bioIndex
-    # colBioSample = "RespSampID"
-    # colStressSample = "StressSampID"
-    # BioDegBrk = BioDegBrk
-    # BioDegLab = BioDegLab
+    boo_DEBUG <- FALSE
+    
+    if (boo_DEBUG == TRUE) {
+        TargetSiteID
+        df_sites = data_Sites
+        biocomm = bioComm
+        df_qual = data_bioCoOccur
+        colBio = bioIndex
+        colBioSample = "RespSampID"
+        colStressSample = "StressSampID"
+        comp_sites = comp_sites
+        useBC = TRUE
+        BioNarBrk = BioNarBrk
+        BioNarLab = BioNarLab
+        BioDegBrk = BioDegBrk
+        BioDegLab = BioDegLab
+    }
     # 
     # Define pipe
     `%>%` <- dplyr::`%>%`
@@ -69,48 +83,38 @@ getQualSites<- function(TargetSiteID
     # Declare name of column to hold biodegradation flag value
     biocomm <- tolower(biocomm)
     colBioDeg = "BioDeg"
+    colBioNar = "BioNarrative"
     
     # Subset bio index data frame to just site, sample, index score
     df_qual <- df_qual  %>%
-        dplyr::select(StationID_Master, eval(colStressSample)
+        dplyr::select(StationID_Master, clust, eval(colStressSample)
                       , eval(colBioSample), eval(colBio))
-    
-    # Subset coOccur data to 
-    
-    # Subset df_sites for comparators only
-    # comp.sitedata <- df_sites[df_sites$StationID_Master %in% comp_sites,]
+    df_qual <- df_qual[!is.na(df_qual[,colBio]),]
     
     # Get vector of "reference" sites (all & cluster/comparator)
     all.ref <- as.vector(df_sites$StationID_Master[df_sites$CARefSite_2017 == 1])
-    # comp.ref <- all.ref[all.ref %in% comp_sites]
-    
+
     # Get vector of "reference" reaches (all & cluster/comparator)
     all.ref.reaches <- as.vector(df_sites$COMID[df_sites$CARefSite_2017 == 1])
-    # comp.ref.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$CARefSite_2017 == 1])
-    
-    # Get vector of not degraded sites
-    # comp.samps <- df_qual[,colSample][df_qual$StationID_Master %in% comp_sites]
-    
+
     # Get vector of "reference" samples (all & cluster/comparator)
     all.ref.samps.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,"StationID_Master"] %in% all.ref]))
     all.ref.samps.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,"StationID_Master"] %in% all.ref]))
-    
-    # comp.ref.samps <- all.ref.samps[all.ref.samps %in% comp.samps]
     
     # Flag quality of sites based on degradation threshold
     df_qual[, colBioDeg] <- cut(df_qual[,colBio]
                                   , breaks=BioDegBrk
                                   , labels=BioDegLab)
+    df_qual[, colBioNar] <- cut(df_qual[,colBio]
+                                , breaks=BioNarBrk
+                                , labels=BioNarLab)
     all.good <- as.vector(unique(df_qual$StationID_Master[df_qual[,colBioDeg]=="No"]))
-    # comp.good <- all.good[all.good %in% comp_sites]
 
     all.samp.good.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,colBioDeg]=="No"]))
     all.samp.good.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,colBioDeg]=="No"]))
-    # comp.samp.good <- all.samp.good[all.samp.good %in% comp.samps]
-    
+
     all.good.reaches <- as.vector(df_sites$COMID[df_sites$StationID_Master %in% all.good])
-    # comp.good.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% all.good])
-    
+
     # Get vector of sites with samples having index > min target site index
     # Get bio samples and chem sample where bio is better than target
     min.targ <- min(df_qual[,colBio][df_qual$StationID_Master == TargetSiteID])
@@ -118,10 +122,7 @@ getQualSites<- function(TargetSiteID
     all.samp.better.bio <- as.vector(unique(df_qual[,colBioSample][df_qual[,colBio] > min.targ]))
     all.samp.better.stress <- as.vector(unique(df_qual[,colStressSample][df_qual[,colBio] > min.targ]))
     all.better.reaches <- as.vector(df_sites$COMID[df_sites$StationID_Master %in% all.better])
-    # comp.better <- all.better[all.better %in% comp_sites]
-    # comp.samp.better <- all.samp.better[all.samp.better %in% comp.samps]
-    # comp.better.reaches <- as.vector(comp.sitedata$COMID_NHD2[comp.sitedata$StationID_Master %in% comp.better])
-    
+   
     all.ref <- all.ref[!is.na(all.ref)]
     all.ref.samps.bio <- all.ref.samps.bio[!is.na(all.ref.samps.bio)]
     all.ref.samps.stress <- all.ref.samps.stress[!is.na(all.ref.samps.stress)]
@@ -135,10 +136,94 @@ getQualSites<- function(TargetSiteID
     all.samp.better.stress <- all.samp.better.stress[!is.na(all.samp.better.stress)]
     all.better.reaches <- all.better.reaches[!is.na(all.better.reaches)]
     
-    # Assess data gaps
+    # Generate matrix of Quality vs. Comparator/Cluster/All, and same but only better than
+    # First get max(degraded) site index value
+    maxDegSiteIndexVal <- max(df_qual[,bioIndex][df_qual$StationID_Master==TargetSiteID])
+    myCluster <- unique(df_qual[,"clust"][df_qual$StationID_Master==TargetSiteID])
+    
+    if (useBC == TRUE) { # There are comparator sites defined by biosimilarity
+        df_qual[, "ComparatorYN"] <- ifelse(df_qual$StationID_Master %in% comp_sites, "Yes", "No")
+        df_qual[, "BetterThan"] <- ifelse(df_qual[,bioIndex]>maxDegSiteIndexVal, "Yes", "No")
+        
+        df_qualstats <- df_qual %>%
+            dplyr::mutate(CompSites = ifelse(ComparatorYN=="Yes", 1, 0)
+                          , CompGood = ifelse((ComparatorYN=="Yes")&(BioDeg=="No"), 1, 0)
+                          , CompBad = ifelse((ComparatorYN=="Yes")&(BioDeg=="Yes"), 1, 0)
+                          , CompBT = ifelse((ComparatorYN=="Yes")&(BetterThan=="Yes"), 1, 0)
+                          , CompBTGood = ifelse((CompBT==1)&(BioDeg=="No"),1,0)
+                          , CompBTBad = ifelse((CompBT==1)&(BioDeg=="Yes"),1,0)
+                          , ClustSites = ifelse((clust==myCluster), 1, 0)
+                          , ClustGood = ifelse((clust==myCluster)&(BioDeg=="No"), 1, 0)
+                          , ClustBad = ifelse((clust==myCluster)&(BioDeg=="Yes"), 1, 0)
+                          , ClustBT = ifelse((clust==myCluster)&(BetterThan=="Yes"), 1, 0)
+                          , ClustBTGood = ifelse((ClustBT==1)&(BioDeg=="No"),1,0)
+                          , ClustBTBad = ifelse((ClustBT==1)&(BioDeg=="Yes"),1,0)
+                          , AllSites = 1
+                          , AllSitesGood = ifelse(BioDeg=="No", 1, 0)
+                          , AllSitesBad = ifelse(BioDeg=="Yes", 1, 0)
+                          , AllSitesBT = ifelse(BetterThan=="Yes", 1, 0)
+                          , AllSitesBTGood = ifelse((AllSitesBT==1)&(BioDeg=="No"),1,0)
+                          , AllSitesBTBad = ifelse((AllSitesBT==1)&(BioDeg=="Yes"),1,0)) %>%
+            dplyr::select(CompSites, CompGood, CompBad, CompBT, CompBTGood
+                          , CompBTBad, ClustSites, ClustGood, ClustBad, ClustBT
+                          , ClustBTGood, ClustBTBad, AllSites, AllSitesGood
+                          , AllSitesBad, AllSitesBT, AllSitesBTGood, AllSitesBTBad)
+        
+            df_qualstats <- as.data.frame(colSums(df_qualstats), na.rm = TRUE)
+            colnames(df_qualstats) <- "Count"
+            
+    } else { # Comparator sites = cluster sites
+
+        df_qual[, "BetterThan"] <- ifelse(df_qual[,bioIndex]>maxDegSiteIndexVal, "Yes", "No")
+        
+        df_qualstats <- df_qual %>%
+            dplyr::mutate(ClustSites = ifelse((clust==myCluster), 1, 0)
+                          , ClustGood = ifelse((clust==myCluster)&(BioDeg=="No"), 1, 0)
+                          , ClustBad = ifelse((clust==myCluster)&(BioDeg=="Yes"), 1, 0)
+                          , ClustBT = ifelse((clust==myCluster)&(BetterThan=="Yes"), 1, 0)
+                          , ClustBTGood = ifelse((ClustBT==1)&(BioDeg=="No"),1,0)
+                          , ClustBTBad = ifelse((ClustBT==1)&(BioDeg=="Yes"),1,0)
+                          , AllSites = 1
+                          , AllSitesGood = ifelse(BioDeg=="No", 1, 0)
+                          , AllSitesBad = ifelse(BioDeg=="Yes", 1, 0)
+                          , AllSitesBT = ifelse(BetterThan=="Yes", 1, 0)
+                          , AllSitesBTGood = ifelse((AllSitesBT==1)&(BioDeg=="No"),1,0)
+                          , AllSitesBTBad = ifelse((AllSitesBT==1)&(BioDeg=="Yes"),1,0)) %>%
+            dplyr::select(ClustSites, ClustGood, ClustBad, ClustBT
+                          , ClustBTGood, ClustBTBad, AllSites, AllSitesGood
+                          , AllSitesBad, AllSitesBT, AllSitesBTGood, AllSitesBTBad)
+        
+        df_qualstats <- as.data.frame(colSums(df_qualstats), na.rm = TRUE)
+        colnames(df_qualstats) <- "Count"
+        
+    }
+
+    dirSiteInfo <- file.path(dir_results,TargetSiteID,"SiteInfo")
+    fnQualStats <- paste0(TargetSiteID, "_SiteQualities.tab")
+    write.table(df_qualstats, file.path(dirSiteInfo,fnQualStats)
+                , append = FALSE, col.names = TRUE, row.names = FALSE
+                , sep = "\t")
+    
+    numcompsfinal <- as.numeric(df_qualstats$Count[1])
+    if (numcompsfinal < length(comp_sites)) {
+        gapcomment <- paste0("Comparator sites do not have paired "
+                             , " stressor-response data for comparison.")
+        gaps <- cbind.data.frame("getQualSites", "Number of Comparators"
+                                 , length(comp_sites) - numcompsfinal
+                                 , gapcomment)
+        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
+    }
+        
+    # Read compsites file
+    # Number of comparator sites
     
     # Return data as a list of vector
-    myQualSites <- list(allRefBioSites = all.ref
+    myQualSites <- list(dfQuality = df_qual
+                        , allRefBioSites = all.ref
                         , allRefBioRespSamps = all.ref.samps.bio
                         , allRefBioStressSamps = all.ref.samps.stress
                         , allRefBioReaches = all.ref.reaches
@@ -149,7 +234,8 @@ getQualSites<- function(TargetSiteID
                         , allBTBioSites = all.better
                         , allBTBioRespSamps = all.samp.better.bio
                         , allBTBioStressSamps = all.samp.better.stress
-                        , allBTBioReaches = all.better.reaches)
+                        , allBTBioReaches = all.better.reaches
+                        , dfQualStats = df_qualstats)
     
     return(myQualSites)
 
