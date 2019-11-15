@@ -201,7 +201,7 @@ getQualSites<- function(TargetSiteID
     dirSiteInfo <- file.path(dir_results,TargetSiteID,"SiteInfo")
     fnQualStats <- paste0(TargetSiteID, "_SiteQualities.tab")
     write.table(df_qualstats, file.path(dirSiteInfo,fnQualStats)
-                , append = FALSE, col.names = TRUE, row.names = FALSE
+                , append = FALSE, col.names = TRUE, row.names = TRUE
                 , sep = "\t")
     
     numcompsfinal <- as.numeric(df_qualstats$Count[1])
