@@ -361,7 +361,7 @@ getCoOccur <- function(df_data
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir_sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
     fn.scores <- file.path(dir_path, paste0(i_TargetSiteID, "_", biocomm
-                                            , "_CoOccur_Scores.tab"))
+                                            , "_CO_Scores.tab"))
     utils::write.table(df.scores, file=fn.scores, append = FALSE
                 , col.names = TRUE, row.names=FALSE, sep="\t")
     #
