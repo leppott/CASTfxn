@@ -457,6 +457,7 @@ getBioStressorResponses <- function(TargetSiteID
       varFlag <- 1
       varFlag.b <- 1
       boo_corr <- TRUE
+      boo_all <- TRUE
       respName <- BioResp[q]
       pq <- q.len*(p-1)+q
       pq.len <- p.len * q.len
@@ -708,7 +709,7 @@ getBioStressorResponses <- function(TargetSiteID
           
         } else { # <=2 rows of data
             boo_corr <- FALSE
-            n_str_cl <- NULL
+            n_str_cl <- nrow(df_plot_cl)
        
             gapcomment <- paste0("Only two paired stressor-response samples "
                             , "are available for the comparator set.")
@@ -724,10 +725,10 @@ getBioStressorResponses <- function(TargetSiteID
         # ALL
         # LM and Corr, All ####
         # ~~~ Check QC of Corr Table at end of code ~~~~
-      if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
+      if(nrow(df_plot_all)>2){##IF~nrow(df_plot_cl)~START
           
             if(stats::sd(df_plot_all$Stressor, na.rm=TRUE)==0){ # Vertical line
-                
+                boo_all <- FALSE 
                 gapcomment <- paste0("Stressor data across all sites in the "
                                    , "cluster have a standard deviation of "
                                    , "zero: all values are equal.")
@@ -739,8 +740,7 @@ getBioStressorResponses <- function(TargetSiteID
                 write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                           , row.names = FALSE, sep = "\t")
             } else if(stats::sd(df_plot_all$Response, na.rm=TRUE)==0) {
-                boo_corr <- FALSE 
-                
+                boo_all <- FALSE 
                 gapcomment <- paste0("Response data across all sites in the "
                                      , "cluster have a standard deviation of "
                                      , "zero: all values are equal.")
@@ -751,9 +751,9 @@ getBioStressorResponses <- function(TargetSiteID
                 fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
                 write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                             , row.names = FALSE, sep = "\t")
-                
             } else {  # SD <> 0              
               # 20190228, QC for no data
+                boo_all <- TRUE 
               model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor
                                      , na.action=na.exclude) #cluster only
               if(boo_pred_warn==TRUE){
@@ -796,10 +796,10 @@ getBioStressorResponses <- function(TargetSiteID
           } # End std dev If eval statement
 
       } else { # <=2 samples
-          boo_corr <- FALSE
-          n_str_cl <- NULL
+          boo_all <- FALSE
+          n_str_all <- nrow(df_plot_all)
 
-          gapcomment <- paste0("Only two paired stressor-response samples "
+          gapcomment <- paste0("Only two or fewer paired stressor-response samples "
                                , "are available for all sites in the cluster.")
           gaps <- cbind.data.frame("getStressorList", stressName, 0
                                    , gapcomment)
@@ -845,47 +845,61 @@ getBioStressorResponses <- function(TargetSiteID
         for (f in 1:nrow(df_plot_site)) {##FOR~f~START
           # Score, cluster
           # Generate scores based on slope, significance value, and r2
-          if ((nrow(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
-            # print to console p (stressName) and q (respName)
-            if (slope.dir_cl == exp.dir) {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
-              txt.score_cl <-  "1"
-              sr.score_cl = 1
-            } else if (slope.dir_cl != exp.dir) {
-              # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
-              txt.score_cl <- "-1"
-              sr.score_cl = -1
-            } else {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
-              txt.score_cl <- "inconclusive"  
-              sr.score_cl = 0
+            if (boo_corr==TRUE) { # Cluster data should be scored
+                if ((nrow(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
+                    # print to console p (stressName) and q (respName)
+                    if (slope.dir_cl == exp.dir) {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
+                        txt.score_cl <-  "1"
+                        sr.score_cl = 1
+                    } else if (slope.dir_cl != exp.dir) {
+                        # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
+                        txt.score_cl <- "-1"
+                        sr.score_cl = -1
+                    } else {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
+                        txt.score_cl <- "inconclusive"  
+                        sr.score_cl = 0
+                    }
+                } else {
+                    #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                    txt.score_cl <- "0"  
+                    sr.score_cl = 0
+                }##IF~length~START
+            } else { # <=2 sites in cluster; cannot be scored
+                #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                txt.score_cl <- "NE"  
+                sr.score_cl = NA
             }
-          } else {
-            #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
-            txt.score_cl <- "0"  
-            sr.score_cl = 0
-          }##IF~length~START
+
           # Score, all
-          if ((length(df_plot_all)>=5) && (abs(pval.corr_all)<=0.1) && (r2_all>=0.1)) {##IF~length~START
-            # print to console p (stressName) and q (respName)
-            if (slope.dir_all == exp.dir) {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
-              txt.score_all <-  "1"
-              sr.score_all = 1
-            } else if (slope.dir_all != exp.dir) {
-              # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
-              txt.score_all <- "-1"
-              sr.score_all = -1
-            } else {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
-              txt.score_all <- "inconclusive"  
-              sr.score_all = 0
+            if (boo_all == TRUE) {
+                if ((length(df_plot_all)>=5) && (abs(pval.corr_all)<=0.1) && (r2_all>=0.1)) {##IF~length~START
+                    # print to console p (stressName) and q (respName)
+                    if (slope.dir_all == exp.dir) {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
+                        txt.score_all <-  "1"
+                        sr.score_all = 1
+                    } else if (slope.dir_all != exp.dir) {
+                        # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
+                        txt.score_all <- "-1"
+                        sr.score_all = -1
+                    } else {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
+                        txt.score_all <- "inconclusive"  
+                        sr.score_all = 0
+                    }
+                } else {
+                    #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                    txt.score_all <- "0"  
+                    sr.score_all = 0
+                }##IF~length~START
+            
+            } else { # boo_all == FALSE
+                txt.score_all <- "NE"  
+                sr.score_all = NA
             }
-          } else {
-            #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
-            txt.score_all <- "0"  
-            sr.score_all = 0
-          }##IF~length~START
+
           #
         }##FOR~f~END
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
@@ -915,6 +929,13 @@ getBioStressorResponses <- function(TargetSiteID
                           , by.x = c("StationID_Master", "Stressor", "Response")
                           , by.y = c("StationID_Master", "stressName", "respName")
                           , all.y = TRUE)
+        df.sc.sr$SR_Score_all <- ifelse(is.na(df.sc.sr$SR_Score_all)
+                                        , "NE"
+                                        , as.character(df.sc.sr$SR_Score_all))
+        df.sc.sr$SR_Score_cluster <- ifelse(is.na(df.sc.sr$SR_Score_cluster)
+                                        , "NE"
+                                        , as.character(df.sc.sr$SR_Score_cluster))
+                                                                        
         #if(boo.pryr==TRUE){
         fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
         fp_scores <- file.path(dir_path, fn_scores)
