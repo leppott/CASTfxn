@@ -104,10 +104,14 @@ getWoE <- function(TargetSiteID
     if(exists("dfTemp")){rm(dfTemp)}
     
     # prep dfStr for use in creating NE datasets for lines not evaluated
-    numSamps <- unique(dfStr$StressSampID)
+    numSamps <- length(unique(as.character(dfStr$StressSampID)))
     dfStr <- dfStr %>%
         tidyr::gather(key = "Stressor", value = "StressorValue"
                       , -StationID_Master, -StressSampID, -RespSampID)
+    dfSampDates <- df_coOccur %>%
+        dplyr::filter(StationID_Master == TargetSiteID) %>%
+        dplyr::select(StationID_Master, RespSampID, RespSampDate
+                      , StressSampID, StressSampDate)
     
     # Iterate over dfLoE to obtain all the evidence for each available line
     for (l in 1:nrow(dfLoE)) {
@@ -116,17 +120,18 @@ getWoE <- function(TargetSiteID
         booUse <- dfLoE$Completed[l]
         dirLoE <- dfLoE$ResultsDir[l]
         
-        scored <- ifelse(booUse == 1, " which was scored.", " which was not scored.")
+        scored <- ifelse(booUse == 1, " which was evaluated.", " which was not evaluated.")
         print(paste0("Processing ", chrLoE, scored))
         flush.console()
         
-        if(booUse==0){
+        if(booUse==0){ # LoE was not evaluated. Need to enter NE scores for given LoE
             
             # Create dummy dataframe
             dfTemp <- dfStr
             dfTemp <- merge(dfStr, dfQual[,c("RespSampID",index)]
                             , by.x = "RespSampID", by.y = "RespSampID")
             dfTemp <- dplyr::rename(dfTemp, ResponseValue = index)
+            dfTemp <- dfTemp[!is.na(dfTemp$StressorValue),]
 
             if (chrLoE == "TS") {
                 dfTemp <- dfTemp %>%
@@ -270,188 +275,210 @@ getWoE <- function(TargetSiteID
             fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
             write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
-        } # If an LoE wasn't evaluated, skip to the next LoE
+        } else { # booUse==1; If an LoE wasn't evaluated, skip to the next LoE
         
-        # Get Time Sequence data
-        if (chrLoE == "TS") {
-            if (file.exists(file.path(dirLoE,fnTSScores))) {
-                # Pull data into temp data structure
-                next
-
-            } else {
-                # No scores available
-                gapcomment <- "Time sequence line of evidence is not scored."
-                gaps <- cbind.data.frame("getWoE", chrLoE, 0
-                                         , gapcomment)
-                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
-                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                            , row.names = FALSE, sep = "\t")
-                next
-            }
-        } # End TS LoE
-
-        # Get CoOccurrence data
-        if (chrLoE == "CO") {
-            if (file.exists(file.path(dirLoE,fnCOScores))) {
-                dfCO <- read.table(file.path(dirLoE,fnCOScores)
-                                    , header = TRUE, sep = "\t"
-                                    , stringsAsFactors = FALSE)
-                colnames(dfCO) <- c("StationID_Master", "Cluster", "StressSampID"
-                                     , "RespSampID", index, "BioNarrative"
-                                     , "BioDegYN", "Stressor", "StressorValue"
-                                     , "n", "q25", "q50", "q75", "Sc_Boxplot"
-                                     , "SR_pred_Deg", "SC_SRLog", "biocomm")
-                dfCO <- dfCO[!is.na(dfCO$StressorValue),]
-                dfCO <- unique(dfCO)
-                
-                # Pull out co-occurrence scores from co-occurrence file
-                dfCO1 <- dfCO %>%
-                    dplyr::mutate(Response = index
-                                  , nType = "Comparator samples with better biology"
-                                  , LoEtrim = "CO_boxplot"
-                                  , LoE = "Co-occurrence"
-                                  , Analysis = "Box plot"
-                                  , InOut = "Inside the case") %>%
-                    dplyr::rename(ResponseValue = eval(index)
-                                  , Score = Sc_Boxplot)
-                
-                dfCO1 <- dfCO1[!is.na(dfCO1$Score),]
-                dfCO1 <- dfCO1[,LoEcols]
-                
-                # Pull out the SR logistic regression scores from co-occurrence file
-                dfSRlog <- dfCO %>%
-                    dplyr::mutate(Response = index
-                                  , nType = "All comparator samples"
-                                  , LoEtrim = "SR_InCase_LogRegr"
-                                  , LoE = "Stressor-response in the case"
-                                  , Analysis = "Logistic regression"
-                                  , InOut = "Inside the case") %>%
-                    dplyr::rename(ResponseValue = eval(index)
-                                  , Score = SC_SRLog)
-                
-                dfSRlog <- dfSRlog[!is.na(dfSRlog$Score),]
-                dfSRlog <- dfSRlog[,LoEcols]
-                
-                dfTemp <- rbind(dfCO1, dfSRlog)
-                rm(dfCO, dfCO1, dfSRlog)
-                
-            } else {
-                # No scores available
-            }
-        } # End CO LoE (plus SR logistic regressions)
-        
-        # Get Stressor-Response data
-        if (chrLoE == "SR") {
-            if (file.exists(file.path(dirLoE,fnSRScores))) {
-                dfSR <- read.table(file.path(dirLoE, fnSRScores)
-                                    , header = TRUE, sep = "\t"
-                                    , stringsAsFactors = FALSE)
-                
-                colnames(dfSR) <- c("StationID_Master", "Stressor", "Response"
-                                    , "StressSampID", "RespSampID", "Quality"
-                                    , "StressorValue", "ResponseValue", "biocomm"
-                                    , "n_site", "n_all", "SRlin_ScoreAll"
-                                    , "n_clust", "SRlin_ScoreCluster")
-                dfSR <- dfSR[!is.na(dfSR$StressorValue),]
-                dfSR <- unique(dfSR)
-                
-                # SR linear regression inside the case
-                dfSRlin_inside <- dfSR %>%
-                    dplyr:: mutate(nType = "All comparator samples"
-                                   , LoEtrim = "SR_InCase_LinRegr"
-                                   , LoE = "Stressor-response in the case"
-                                   , Analysis = "Linear regression"
-                                   , InOut = "Inside the case") %>%
-                    # dplyr::select(StationID_Master, StressSampID, RespSampID
-                    #               , Response, ResponseValue, Stressor
-                    #               , StressorValue, n_clust, nType
-                    #               , SRlin_ScoreCluster, LoEtrim
-                    #               , LoE, Analysis, InOut, biocomm) %>%
-                    dplyr::rename(n = n_clust, Score = SRlin_ScoreCluster)
-                dfSRlin_inside <- dfSRlin_inside[!is.na(dfSRlin_inside$Score),]
-                dfSRlin_inside <- dfSRlin_inside[,LoEcols]                
-                
-                # SR linear regression outside the case
-                dfSRlin_outside <- dfSR %>%
-                    dplyr:: mutate(nType = "All cluster samples"
-                                   , LoEtrim = "SR_OutCase_LinRegr"
-                                   , LoE = "Stressor-response in the case"
-                                   , Analysis = "Linear regression"
-                                   , InOut = "Outside the case") %>%
-                    # dplyr::select(StationID_Master, StressSampID, RespSampID
-                    #               , Response, ResponseValue, Stressor
-                    #               , StressorValue, n_all, nType, SRlin_ScoreAll
-                    #               , LoEtrim, LoE, Analysis, InOut, biocomm) %>%
-                    dplyr::rename(n = n_all, Score = SRlin_ScoreAll)
-                dfSRlin_outside <- dfSRlin_outside[!is.na(dfSRlin_outside$Score),]
-                dfSRlin_outside <- dfSRlin_outside[,LoEcols]
-                
-                dfTemp <- rbind(dfSRlin_inside, dfSRlin_outside)
-                rm(dfSR, dfSRlin_inside, dfSRlin_outside)
-
-                # Metrics
-                dfMetrics <- dfTemp %>%
-                    dplyr::filter(!Response %in% bioIndex)
-                
-                # Index
-                dfTemp <- dfTemp %>%
-                    dplyr::filter(Response %in% bioIndex)
-                
-            } else {
-                # No scores available
-            }
-        } # End SR LoE (linear regressions)
-        
-        # Get Verified Prediction data
-        if (chrLoE == "VP") {
-            if (file.exists(file.path(dirLoE,fnVPScores))) {
-                dfVP <- read.table(file.path(dirLoE,fnVPScores)
-                                   , header = TRUE, sep = "\t"
-                                   , stringsAsFactors = FALSE)
-                colnames(dfVP) <- c("RespSampID", "StressSampID"
-                                    , "StationID_Master", "Stressor"
-                                    , "StressorValue", "Response"
-                                    , "ResponseValue", "betterbio_varval_qLO"
-                                    , "betterbio_varval_qHI", "Score", "biocomm"
-                                    , "n", "n_BetterNotDegraded", "IndexValue"
-                                    , "Quality")
-                dfVP <- dfVP[!is.na(dfVP$StressorValue),]
-                dfVP <- unique(dfVP)
-                
-                # Pull out co-occurrence scores from co-occurrence file
-                dfVP <- dfVP %>%
-                    dplyr::mutate(nType = "Comparator samples with better biology"
-                                  , LoEtrim = ifelse(Response=="Sensitive Taxa"
-                                                     , "VP_boxplot_senstaxa"
-                                                     , "VP_boxplot_toltaxa")
-                                  , LoE = paste0("Verified prediction using "
-                                                 , "stressor-specific tolerance values")
-                                  , Analysis = "Box plot"
-                                  , InOut = "Inside the case")
-                
-                dfVP <- dfVP[!is.na(dfVP$Score),]
-                dfVP <- dfVP[,LoEcols]
-                
-                dfTemp <- dfVP
-                rm(dfVP)
-
-            } else {
-                # No scores available
-                # Create dummy dataframe with NE for all scores
-                
-            }
-        } # End VP LoE
-        
-        # Get Species Sensitivity Distribution data
-        if (chrLoE == "SSD") {
-            if (file.exists(file.path(dirLoE,fnSSDScores))) {
-                # Not yet implemented
-            } else {
-                # No scores available
-            }
-        } # End SSD LoE
+            # Get Time Sequence data
+            if (chrLoE == "TS") {
+                if (file.exists(file.path(dirLoE,fnTSScores))) {
+                    # Pull data into temp data structure
+                    next
+    
+                } else {
+                    # No scores available
+                    dfTemp <- dfStr
+                    dfTemp <- merge(dfStr, dfQual[,c("RespSampID",index)]
+                                    , by.x = "RespSampID", by.y = "RespSampID")
+                    dfTemp <- dfTemp[!is.na(dfTemp$StressorValue),]
+                    dfTemp <- dplyr::rename(dfTemp, ResponseValue = index)
+                    
+                    dfTemp <- dfTemp %>%
+                        dplyr::mutate(Response = index
+                                      , n = numSamps
+                                      , nType = "Target site samples only"
+                                      , Score = "NE"
+                                      , LoEtrim = "TS_barplot"
+                                      , LoE = "Time sequence"
+                                      , Analysis = "Temporal patterns"
+                                      , InOut = "Inside the Case"
+                                      , biocomm = biocomm) %>%
+                        dplyr::select(StationID_Master, StressSampID, RespSampID
+                                      , Response, ResponseValue, Stressor
+                                      , StressorValue, n, nType, Score, LoEtrim
+                                      , LoE, Analysis, InOut, biocomm)
+                    
+                    gapcomment <- "Time sequence line of evidence is not scored."
+                    gaps <- cbind.data.frame("getWoE", chrLoE, 0
+                                             , gapcomment)
+                    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                                , row.names = FALSE, sep = "\t")
+                    next
+                }
+            } # End TS LoE
+    
+            # Get CoOccurrence data
+            if (chrLoE == "CO") {
+                if (file.exists(file.path(dirLoE,fnCOScores))) {
+                    dfCO <- read.table(file.path(dirLoE,fnCOScores)
+                                        , header = TRUE, sep = "\t"
+                                        , stringsAsFactors = FALSE)
+                    colnames(dfCO) <- c("StationID_Master", "Cluster", "StressSampID"
+                                         , "RespSampID", index, "BioNarrative"
+                                         , "BioDegYN", "Stressor", "StressorValue"
+                                         , "n", "q25", "q50", "q75", "Sc_Boxplot"
+                                         , "SR_pred_Deg", "SC_SRLog", "biocomm")
+                    dfCO <- dfCO[!is.na(dfCO$StressorValue),]
+                    dfCO <- unique(dfCO)
+                    
+                    # Pull out co-occurrence scores from co-occurrence file
+                    dfCO1 <- dfCO %>%
+                        dplyr::mutate(Response = index
+                                      , nType = "Comparator samples with better biology"
+                                      , LoEtrim = "CO_boxplot"
+                                      , LoE = "Co-occurrence"
+                                      , Analysis = "Box plot"
+                                      , InOut = "Inside the case") %>%
+                        dplyr::rename(ResponseValue = eval(index)
+                                      , Score = Sc_Boxplot)
+                    
+                    dfCO1 <- dfCO1[!is.na(dfCO1$Score),]
+                    dfCO1 <- dfCO1[,LoEcols]
+                    
+                    # Pull out the SR logistic regression scores from co-occurrence file
+                    dfSRlog <- dfCO %>%
+                        dplyr::mutate(Response = index
+                                      , nType = "All comparator samples"
+                                      , LoEtrim = "SR_InCase_LogRegr"
+                                      , LoE = "Stressor-response in the case"
+                                      , Analysis = "Logistic regression"
+                                      , InOut = "Inside the case") %>%
+                        dplyr::rename(ResponseValue = eval(index)
+                                      , Score = SC_SRLog)
+                    
+                    dfSRlog <- dfSRlog[!is.na(dfSRlog$Score),]
+                    dfSRlog <- dfSRlog[,LoEcols]
+                    
+                    dfTemp <- rbind(dfCO1, dfSRlog)
+                    rm(dfCO, dfCO1, dfSRlog)
+                    
+                } else {
+                    # No scores available
+                }
+            } # End CO LoE (plus SR logistic regressions)
+            
+            # Get Stressor-Response data
+            if (chrLoE == "SR") {
+                if (file.exists(file.path(dirLoE,fnSRScores))) {
+                    dfSR <- read.table(file.path(dirLoE, fnSRScores)
+                                        , header = TRUE, sep = "\t"
+                                        , stringsAsFactors = FALSE)
+                    
+                    colnames(dfSR) <- c("StationID_Master", "Stressor", "Response"
+                                        , "StressSampID", "RespSampID", "Quality"
+                                        , "StressorValue", "ResponseValue", "biocomm"
+                                        , "n_site", "n_all", "SRlin_ScoreAll"
+                                        , "n_clust", "SRlin_ScoreCluster")
+                    dfSR <- dfSR[!is.na(dfSR$StressorValue),]
+                    dfSR <- unique(dfSR)
+                    
+                    # SR linear regression inside the case
+                    dfSRlin_inside <- dfSR %>%
+                        dplyr:: mutate(nType = "All comparator samples"
+                                       , LoEtrim = "SR_InCase_LinRegr"
+                                       , LoE = "Stressor-response in the case"
+                                       , Analysis = "Linear regression"
+                                       , InOut = "Inside the case") %>%
+                        # dplyr::select(StationID_Master, StressSampID, RespSampID
+                        #               , Response, ResponseValue, Stressor
+                        #               , StressorValue, n_clust, nType
+                        #               , SRlin_ScoreCluster, LoEtrim
+                        #               , LoE, Analysis, InOut, biocomm) %>%
+                        dplyr::rename(n = n_clust, Score = SRlin_ScoreCluster)
+                    dfSRlin_inside <- dfSRlin_inside[!is.na(dfSRlin_inside$Score),]
+                    dfSRlin_inside <- dfSRlin_inside[,LoEcols]                
+                    
+                    # SR linear regression outside the case
+                    dfSRlin_outside <- dfSR %>%
+                        dplyr:: mutate(nType = "All cluster samples"
+                                       , LoEtrim = "SR_OutCase_LinRegr"
+                                       , LoE = "Stressor-response in the case"
+                                       , Analysis = "Linear regression"
+                                       , InOut = "Outside the case") %>%
+                        # dplyr::select(StationID_Master, StressSampID, RespSampID
+                        #               , Response, ResponseValue, Stressor
+                        #               , StressorValue, n_all, nType, SRlin_ScoreAll
+                        #               , LoEtrim, LoE, Analysis, InOut, biocomm) %>%
+                        dplyr::rename(n = n_all, Score = SRlin_ScoreAll)
+                    dfSRlin_outside <- dfSRlin_outside[!is.na(dfSRlin_outside$Score),]
+                    dfSRlin_outside <- dfSRlin_outside[,LoEcols]
+                    
+                    dfTemp <- rbind(dfSRlin_inside, dfSRlin_outside)
+                    rm(dfSR, dfSRlin_inside, dfSRlin_outside)
+    
+                    # Metrics
+                    dfMetrics <- dfTemp %>%
+                        dplyr::filter(!Response %in% bioIndex)
+                    
+                    # Index
+                    dfTemp <- dfTemp %>%
+                        dplyr::filter(Response %in% bioIndex)
+                    
+                } else {
+                    # No scores available
+                }
+            } # End SR LoE (linear regressions)
+            
+            # Get Verified Prediction data
+            if (chrLoE == "VP") {
+                if (file.exists(file.path(dirLoE,fnVPScores))) {
+                    dfVP <- read.table(file.path(dirLoE,fnVPScores)
+                                       , header = TRUE, sep = "\t"
+                                       , stringsAsFactors = FALSE)
+                    colnames(dfVP) <- c("RespSampID", "StressSampID"
+                                        , "StationID_Master", "Stressor"
+                                        , "StressorValue", "Response"
+                                        , "ResponseValue", "betterbio_varval_qLO"
+                                        , "betterbio_varval_qHI", "Score", "biocomm"
+                                        , "n", "n_BetterNotDegraded", "IndexValue"
+                                        , "Quality")
+                    dfVP <- dfVP[!is.na(dfVP$StressorValue),]
+                    dfVP <- unique(dfVP)
+                    
+                    # Pull out co-occurrence scores from co-occurrence file
+                    dfVP <- dfVP %>%
+                        dplyr::mutate(nType = "Comparator samples with better biology"
+                                      , LoEtrim = ifelse(Response=="Sensitive Taxa"
+                                                         , "VP_boxplot_senstaxa"
+                                                         , "VP_boxplot_toltaxa")
+                                      , LoE = paste0("Verified prediction using "
+                                                     , "stressor-specific tolerance values")
+                                      , Analysis = "Box plot"
+                                      , InOut = "Inside the case")
+                    
+                    dfVP <- dfVP[!is.na(dfVP$Score),]
+                    dfVP <- dfVP[,LoEcols]
+                    
+                    dfTemp <- dfVP
+                    rm(dfVP)
+    
+                } else {
+                    # No scores available
+                    # Create dummy dataframe with NE for all scores
+                    
+                }
+            } # End VP LoE
+            
+            # Get Species Sensitivity Distribution data
+            if (chrLoE == "SSD") {
+                if (file.exists(file.path(dirLoE,fnSSDScores))) {
+                    # Not yet implemented
+                } else {
+                    # No scores available
+                }
+            } # End SSD LoE
+        } # End booUse == 1
         
         # Combine the different lines of evidence dataframes into one
         if (!exists("dfEvidenceLong")) {
@@ -468,14 +495,17 @@ getWoE <- function(TargetSiteID
     
     } # End iteration over all LoE
     
+    # Clean up NA stressor values in dfEvidenceLong -- these give erroneous results
+    # dfEvidenceLong <- dfEvidenceLong[!is.na(dfEvidenceLong$StressorValue),]
+    
     # Grab colnames of all possible LoEs here
     LoEcolnames <- unique(dfEvidenceLong$LoEtrim)
     
     # Merge stressor group name and percent rank into siteStressInfo
-    dfRank <- dfRank %>%
-        dplyr::select(-IQRmethod, -SDmethod, -Outlier, -StressSampDate) %>%
-        tidyr::gather(key = "Stressor", value = "StressorPctRank"
+    dfRank <- dplyr::select(dfRank,-IQRmethod,-SDmethod,-Outlier,-StressSampDate)
+    dfRank <- tidyr::gather(dfRank, key = "Stressor", value = "StressorPctRank"
                       , -StationID_Master, -StressSampID)
+    dfRank <- dplyr::filter(dfRank, !is.na(StressorPctRank))
     
     dfStressInfo <- dfStressInfo %>%
         select(StdParamName, GroupName) %>%
@@ -488,8 +518,8 @@ getWoE <- function(TargetSiteID
                                     , by.x = c("StationID_Master", "StressSampID")
                                     , by.y = c("StationID_Master", "StressSampID")))
     
-    rm(dfRank, dfStressInfo, dfStrGpRank)
-    
+    if (boo_DEBUG==FALSE) { rm(dfRank, dfStressInfo, dfStrGpRank) }
+
     # Merge in Quality info and Stressor Types
     dfEvidenceLong <- merge(dfStrGpRankQual, dfEvidenceLong
                             , by.x = c("StationID_Master", "StressSampID"
@@ -510,7 +540,7 @@ getWoE <- function(TargetSiteID
                                        , ifelse(as.numeric(Score)==0, "Indeterminate"
                                        , NA))))) %>%
         dplyr::arrange(StressorType, Stressor, StressSampID, LoE)
-    
+
     # Write the detailed data file
     fnEvidLong <- paste0(TargetSiteID,"_", biocomm, "_WoE_DetailedLoEs.tab")
     write.table(dfEvidenceLong, file.path(dirWoE,fnEvidLong), append = FALSE
@@ -536,7 +566,7 @@ getWoE <- function(TargetSiteID
                                        , ifelse(as.numeric(Score)==0, "Indeterminate"
                                        , NA))))) %>%
         dplyr::arrange(StressorType, Stressor, StressSampID, LoE)
-    
+
     # Write the detailed data file
     fnEvidLongMetrics <- paste0(TargetSiteID,"_", biocomm, "_WoE_DetailedMetricsLoEs.tab")
     write.table(dfMetricsLong, file.path(dirWoE,fnEvidLongMetrics), append = FALSE
@@ -586,7 +616,15 @@ getWoE <- function(TargetSiteID
         dfEvidNECountsWide <- dfEvidNECounts %>%
             dplyr::select(-Inside_Outside, -Finding, -Score) %>%
             dplyr::group_by(StressSampID, Stressor, StressorValue) %>%
-            tidyr::spread(key = "Heading", value = "NumLoE", fill = 0)
+            tidyr::spread(key = "Heading", value = "NumLoE", fill = 0) %>%
+            dplyr::select(-LoEtrim)
+        dfEvidNECountsWide <- as.data.frame(dfEvidNECountsWide) %>%
+            dplyr::group_by(StressSampID, Stressor, StressorValue) %>%
+            dplyr::summarise(totNumInNotEval = sum(NumInNotEval)
+                             , totNumOutNotEval = sum(NumOutNotEval)) %>%
+            dplyr::rename(NumInNotEval = totNumInNotEval
+                          , NumOutNotEval = totNumOutNotEval)
+        
         
         # Replace 1 values in dfEvidWideNE with "NE"
         if (ncol(dfEvidWideNE)>3) {
@@ -721,17 +759,19 @@ getWoE <- function(TargetSiteID
     dfEvidCountsWide <- merge(dfEvidBasic, dfEvidCountsWide
                                , by.x = c("StressSampID", "Stressor", "StressorValue")
                                , by.y = c("StressSampID", "Stressor", "StressorValue"))
+    # Get Sample Dates
+    dfEvidCountsWide <- merge(dfEvidCountsWide, dfSampDates)
     
     # Order the columns sensibly
     dfEvidCountsWide <- dfEvidCountsWide %>%
-        dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, eval(index)
-                      , BioDeg, BioNarrative, StressSampID, StressorType, Stressor
-                      , StressorValue, StressorPctRank, eval(LoEcolnames)
-                      , eval(colNamesLoEcounts), TotSupport, TotRefute, TotIndet
-                      , TotNotEval, WoE) %>%
-        dplyr::arrange(BioDeg, RespSampID, StressSampID, StressorType, Stressor
-                       , StressorValue)
-    
+        dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, RespSampDate
+                      , eval(index), BioDeg, BioNarrative, StressSampID, StressSampDate
+                      , StressorType, Stressor, StressorValue, StressorPctRank
+                      , eval(LoEcolnames), eval(colNamesLoEcounts), TotSupport
+                      , TotRefute, TotIndet, TotNotEval, WoE) %>%
+        dplyr::arrange(BioDeg, RespSampDate, StressSampDate, StressorType
+                       , Stressor, StressorValue)
+
     # Somehow need to check the #NE values in the row and correct NumInNotEval
     # and NumOutNotEval accordingly. This is likely only incorrect when VP was
     # evaluated for a given stressor, but not for others
