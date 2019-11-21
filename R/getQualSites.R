@@ -170,7 +170,33 @@ getQualSites<- function(TargetSiteID
                           , AllSitesBad, AllSitesBT, AllSitesBTGood, AllSitesBTBad)
         
             df_qualstats <- as.data.frame(colSums(df_qualstats), na.rm = TRUE)
-            colnames(df_qualstats) <- "Count"
+            df_qualstats <- cbind(rownames(df_qualstats)
+                                  , data.frame(df_qualstats, row.names = NULL))
+            colnames(df_qualstats) <- c("Label", "Count")
+            df_qualstats <- df_qualstats %>%
+                dplyr::mutate(Quality = ifelse(stringr::str_detect(Label, "Good")
+                                               , "Not degraded"
+                                               , ifelse(stringr::str_detect(Label
+                                                                    , "Bad")
+                                                    , "Degraded"
+                                                    , "All qualities"))
+                              , Group = ifelse(stringr::str_detect(Label, "BT")
+                                               , "Better than"
+                                               , "All")
+                              , Sites = ifelse(stringr::str_detect(Label, "Comp")
+                                               , "ComparatorSites"
+                                               , ifelse(stringr::str_detect(Label
+                                                                  , "Clust")
+                                                    , "ClusterSites"
+                                                    , "AllSites"))
+                              , BioComm = biocomm)
+            df_qualstats <- df_qualstats %>%
+                dplyr::select(-Label) %>%
+                dplyr::group_by(BioComm, Group, Quality) %>%
+                tidyr::spread(key = "Sites", value = "Count") %>%
+                dplyr::select(BioComm, Group, Quality, ComparatorSites
+                              , ClusterSites, AllSites) %>%
+                dplyr::arrange(Group, Quality)
             
     } else { # Comparator sites = cluster sites
 
@@ -194,17 +220,32 @@ getQualSites<- function(TargetSiteID
                           , AllSitesBad, AllSitesBT, AllSitesBTGood, AllSitesBTBad)
         
         df_qualstats <- as.data.frame(colSums(df_qualstats), na.rm = TRUE)
-        colnames(df_qualstats) <- "Count"
+        df_qualstats <- cbind(rownames(df_qualstats)
+                              , data.frame(df_qualstats, row.names = NULL))
+        colnames(df_qualstats) <- c("Label", "Count")
+        dfcomps <- dfcomps %>%
+            dplyr::mutate(Quality = ifelse(stringr::str_detect(Label, "Good")
+                                           , "Not degraded"
+                                           , ifelse(stringr::str_detect(Label,"Bad")
+                                                    , "Degraded"
+                                                    , "All qualities"))
+                          , Group = ifelse(stringr::str_detect(Label,"BT")
+                                           , "Better than"
+                                           , "All")
+                          , Sites = ifelse(stringr::str_detect(Label, "Clust")
+                                           , "Cluster sites"
+                                           , "All sites")
+                          , BioComm = biocomm)
         
     }
 
     dirSiteInfo <- file.path(dir_results,TargetSiteID,"SiteInfo")
-    fnQualStats <- paste0(TargetSiteID, "_SiteQualities.tab")
+    fnQualStats <- paste0(TargetSiteID,"_",toupper(biocomm),"_SiteQualities.tab")
     write.table(df_qualstats, file.path(dirSiteInfo,fnQualStats)
-                , append = FALSE, col.names = TRUE, row.names = TRUE
+                , append = FALSE, col.names = TRUE, row.names = FALSE
                 , sep = "\t")
     
-    numcompsfinal <- as.numeric(df_qualstats$Count[1])
+    numcompsfinal <- as.numeric(df_qualstats[1,4])
     if (numcompsfinal < length(comp_sites)) {
         gapcomment <- paste0("Comparator sites do not have paired "
                              , " stressor-response data for comparison.")
@@ -218,9 +259,6 @@ getQualSites<- function(TargetSiteID
                     , row.names = FALSE, sep = "\t")
     }
         
-    # Read compsites file
-    # Number of comparator sites
-    
     # Return data as a list of vector
     myQualSites <- list(dfQuality = df_qual
                         , allRefBioSites = all.ref
