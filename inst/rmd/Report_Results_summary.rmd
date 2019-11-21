@@ -16,7 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Debugging
-boo.DEBUG <- TRUE
+boo.DEBUG <- FALSE
 DEBUG.CaseNumber <- 4
 #
 # Define pipe
@@ -557,7 +557,7 @@ if(useAlg==TRUE){
     
     dir.sub3 <- "CandidateCauses"
     fn_stressors <- paste0(TargetSiteID, "_ALGAE_StressorsEvaluated.tab")
-    fn_strUsed <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fn_stressors)
+    fn_strUsed <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressors)
       
         if(exists("fn_strUsed")){##IF.boo.pdf.START
             dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
@@ -584,7 +584,7 @@ if(useAlg==TRUE){
     txt_grp_file <- "CandCauses"
     txt_grp_msg <- "stressor box"
     fn_target <- paste0(TargetSiteID,"_ALGAE_", txt_grp_file, "_ALL.pdf")
-    fn_all <- list.files(file.path(dir_results, TargetSiteID, "BMI", dir.sub3))
+    fn_all <- list.files(file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3))
     boo_file <- fn_target %in% fn_all
     #
     if(boo_file==TRUE){##IF.boo.pdf.START
@@ -609,7 +609,7 @@ if(useAlg==TRUE){
     dir.sub3 <- "CandidateCauses"
     dir_SiteID <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
-                                     , pattern="_BMI_CandCauses")
+                                     , pattern="_ALGAE_CandCauses")
     fn_BoxPlots_jpg <- fn_BoxPlots[grep(".png", fn_BoxPlots)]
     if(length(fn_BoxPlots_jpg)==0){
       txt_NoFile <- "No file exists; box plots.\n"
@@ -643,8 +643,8 @@ if(useAlg==TRUE){
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     txt_grp_file <- "boxes"
     txt_grp_msg <- "Weight of evidence data"
-    fn_target1 <- paste0(TargetSiteID,"_BMI_WoE_ExecSummary.tab")
-    fn_target2 <- paste0(TargetSiteID,"_BMI_WoE_ScoresTable.tab")
+    fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
+    fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
     fn_target <- c(fn_target1, fn_target2)
     fn_all <- list.files(dir_WoE_bmi)
     boo_file <- all(fn_target %in% fn_all)
@@ -670,7 +670,7 @@ if(useAlg==TRUE){
 if(useAlg==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
-    fn_target1 <- paste0(TargetSiteID,"_BMI_WoE_ExecSummary.tab")
+    fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
     fn_WoE_ES  <- list.files(path=dir_WoE_bmi, full.names = TRUE
                                      , pattern=fn_target1)
     if(length(fn_WoE_ES)==0){
@@ -719,7 +719,7 @@ if(useAlg==TRUE){
 
     dir.sub3 <- "WoE"
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
-    fn_target2 <- paste0(TargetSiteID,"_BMI_WoE_ScoresTable.tab")
+    fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
     fn_WoE_det  <- list.files(path=dir_WoE_bmi, full.names = TRUE
                                      , pattern=fn_target2)
     if(length(fn_WoE_det)==0){
@@ -745,7 +745,7 @@ if(useAlg==TRUE){
                                 , SR_Outside_LinRegr = SR_OutCase_LinRegr
                                 , VP_SensitiveTaxa = VP_boxplot_senstaxa
                                 , VP_TolerantTaxa = VP_boxplot_toltaxa)
-        df_det <- dplyr::mutate(df_det, CSCI = round(CSCI,3)
+        df_det <- dplyr::mutate(df_det, MMIhybrid = round(MMIhybrid,3)
                                 , PercentRank = round(PercentRank, 3)
                                 , StressorValue = ifelse(StressorValue<1
                                                          , format(StressorValue
@@ -760,7 +760,8 @@ if(useAlg==TRUE){
                                                          , format(StressorValue
                                                                  , digits=0
                                                                  , big.mark=",")))))
-        df_det <- dplyr::select(df_det, Degraded, Narrative, CSCI, ResponseSampleDate
+        df_det <- dplyr::select(df_det, Degraded, Narrative, MMIhybrid
+                                , ResponseSampleDate
                                 , ResponseSampleID, StressorSampleDate
                                 , StressorSampleID, Group, Stressor, StressorValue
                                 , PercentRank, CO_boxplot, SR_Inside_LogRegr
