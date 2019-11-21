@@ -29,8 +29,15 @@
 #' }
 #
 #' @export
-getReport <- function(TargetSiteID, dir_results=file.path(getwd(), "Results")
-                      , report_type="summary", report_format="html"
+getReport <- function(TargetSiteID
+                      , probsHigh=0.75
+                      , probsLow=0.25
+                      , useBMI
+                      , useAlg
+                      , dfSamps = data_SampSummary[data_SampSummary$StationID_Master==TargetSiteID,]
+                      , dir_results=file.path(getwd(), "Results")
+                      , report_type="summary"
+                      , report_format="html"
                       , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
   #
   # Date and Time for output
