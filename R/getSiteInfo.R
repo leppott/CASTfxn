@@ -530,10 +530,13 @@ getSiteInfo <- function(TargetSiteID
         photofiles <- list.files(dir_photo)
         have.photos <- FALSE
         for (l in 1:length(photofiles)) {
+            ifelse(!dir.exists(file.path(dir_path, "Photos"))==TRUE
+                   , dir.create(file.path(dir_path, "Photos"))
+                   , FALSE)
             photoname <- photofiles[l]
             if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
                 file.copy(file.path(dir_photo,photoname)
-                          , file.path(dir_path,photoname))
+                          , file.path(dir_path,"Photos",photoname))
                 print(paste0(photoname, " copied."))
                 flush.console()
                 have.photos <- TRUE
