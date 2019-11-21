@@ -314,7 +314,6 @@ getWoE <- function(TargetSiteID
                     fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
                     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                                 , row.names = FALSE, sep = "\t")
-                    next
                 }
             } # End TS LoE
     
@@ -618,6 +617,12 @@ getWoE <- function(TargetSiteID
             dplyr::group_by(StressSampID, Stressor, StressorValue) %>%
             tidyr::spread(key = "Heading", value = "NumLoE", fill = 0) %>%
             dplyr::select(-LoEtrim)
+        if (("NumInNotEval" %in% colnames(dfEvidNECountsWide))==FALSE) {
+            dfEvidNECountsWide$NumInNotEval <- 0
+        }
+        if (("NumOutNotEval" %in% colnames(dfEvidNECountsWide))==FALSE) {
+            dfEvidNECountsWide$NumOutNotEval <- 0
+        }
         dfEvidNECountsWide <- as.data.frame(dfEvidNECountsWide) %>%
             dplyr::group_by(StressSampID, Stressor, StressorValue) %>%
             dplyr::summarise(totNumInNotEval = sum(NumInNotEval)
@@ -709,10 +714,12 @@ getWoE <- function(TargetSiteID
                                   , by.x=c("StressSampID","Stressor","StressorValue")
                                   , by.y=c("StressSampID","Stressor","StressorValue")
                                   , all.x = TRUE)
-        for (ne in 1:length(NEnames)) {
-            nename <- NEnames[ne]
-            dfEvidCountsWide[,nename] <- ifelse(is.na(dfEvidCountsWide[,nename])
-                                                , 0, dfEvidCountsWide[,nename])
+        if (length(NEnames)>0) {
+            for (ne in 1:length(NEnames)) {
+                nename <- NEnames[ne]
+                dfEvidCountsWide[,nename] <- ifelse(is.na(dfEvidCountsWide[,nename])
+                                                    , 0, dfEvidCountsWide[,nename])
+            }
         }
     }
     
@@ -727,13 +734,43 @@ getWoE <- function(TargetSiteID
     
     if (length(colNamesNeeded)>0) {
         for (nm in colNamesNeeded) {
+            print(nm)
+            flush.console()
             dfEvidCountsWide[[nm]] <- 0
         }
     }
     
     dfEvidCountsWide <- dfEvidCountsWide[,c(colNamesKeep, colNamesLoEcounts)]
     
+    # Merge individual LoE with summary LoE
+    dfEvidCountsWide <- merge(dfEvidenceWide, dfEvidCountsWide
+                              , by.x = c("StressSampID", "Stressor", "StressorValue")
+                              , by.y = c("StressSampID", "Stressor", "StressorValue"))
+    
+    # Adjust NumInNotEval and NumOutNotEval if necessary
+    dfEvidCtsNEInTot <- dfEvidCountsWide %>%
+        dplyr::select(StressSampID, Stressor, StressorValue, CO_boxplot
+                      , SR_InCase_LinRegr, SR_InCase_LogRegr
+                      , VP_boxplot_senstaxa, VP_boxplot_toltaxa, TS_barplot)
+    dfEvidCtsNEInTot$NumInNotEval <- rowSums(dfEvidCtsNEInTot[,4:ncol(dfEvidCtsNEInTot)]=="NE"
+                                                      , na.rm = TRUE)
+ 
+    dfEvidCtsNEOutTot <- dfEvidCountsWide %>%
+        dplyr::select(StressSampID, Stressor, StressorValue, SR_OutCase_LinRegr
+                      , SSD_ToxicityCurve)
+    dfEvidCtsNEOutTot$NumOutNotEval <- rowSums(dfEvidCtsNEOutTot[,4:ncol(dfEvidCtsNEOutTot)]=="NE"
+                                                      , na.rm = TRUE)
+    
+    
     # Summarize evidence (tot support, etc.)
+    dfEvidCountsWide <- dplyr::select(dfEvidCountsWide,-NumInNotEval,-NumOutNotEval)
+    
+    dfEvidCountsWide <- merge(dfEvidCountsWide
+                              , dfEvidCtsNEInTot[,c("StressSampID", "Stressor"
+                                                   , "StressorValue", "NumInNotEval")])
+    dfEvidCountsWide <- merge(dfEvidCountsWide
+                              , dfEvidCtsNEOutTot[,c("StressSampID", "Stressor"
+                                                    , "StressorValue", "NumOutNotEval")])
     dfEvidCountsWide <- dfEvidCountsWide %>%
         dplyr::mutate(TotSupport = NumInSupport + NumOutSupport
                       , TotRefute = NumInRefute + NumOutRefute
@@ -746,10 +783,6 @@ getWoE <- function(TargetSiteID
                                                        , "Indeterminate"))))
     
     # Merge basic data back in to summary
-    dfEvidCountsWide <- merge(dfEvidenceWide, dfEvidCountsWide
-                              , by.x = c("StressSampID", "Stressor", "StressorValue")
-                              , by.y = c("StressSampID", "Stressor", "StressorValue"))
-    
     dfEvidBasic <- dfEvidenceLong %>%
         dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, eval(index)
                       , BioDeg, BioNarrative, StressSampID, StressorType, Stressor
