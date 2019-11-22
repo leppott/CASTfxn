@@ -30,7 +30,6 @@ getComparators<- function(TargetSiteID
                           , useBC = FALSE
                           , df_bcdist = data.BCdist
                           , bc_cutoff = 0.05
-                          , dfQuality
                           , dir_results = file.path(wd, "Results")
                           , dir_sub = "SiteInfo") {
 
@@ -41,12 +40,11 @@ getComparators<- function(TargetSiteID
     if (boo_DEBUG == TRUE) {
         TargetSiteID
         df_sites = data_Sites
-        useBC = FALSE
+        useBC = useBC
         df_bcdist = data_BCdist
         bc_cutoff = 0.05
-        dfQuality
-        dir_results = file.path(wd, "Results")
-        dir_sub = "SiteInfo"        
+        dir_results = dir_results
+        dir_sub = "SiteInfo"     
     }
     
     # define pipe
