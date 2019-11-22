@@ -231,7 +231,8 @@ if(useBMI==TRUE){
     dir.sub3 <- "SiteInfo"
     mycomps <- paste0(TargetSiteID,"_BMI_SiteQualities.tab")
     fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
-    msg_info <- paste0("Additional comparator site info, including a list of "
+    msg_info <- paste0("Additional comparator site info, "
+                       , " including a list of "
                        , "comparator sites can be found in the '"
                        , paste0("Results/",dir.sub3), "' foler.")
     
@@ -266,13 +267,13 @@ if(useBMI==TRUE){
     fn_stressors <- paste0(TargetSiteID, "_BMI_StressorsEvaluated.tab")
     fn_strUsed <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fn_stressors)
       
-        if(exists("fn_strUsed")){##IF.boo.pdf.START
+        if(file.exists("fn_strUsed")){##IF.boo.pdf.START
             dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
             stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
             
             msg_strlist <- paste0("Stressors identified candidate causes include "
                                   , stressorlist, ".\n\n")
-        } else if(!exists("fn_strUsed")){
+        } else if(!file.exists("fn_strUsed")){
             msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
         } else {
             msg_strlist <- ""
@@ -557,15 +558,15 @@ if(useAlg==TRUE){
     
     dir.sub3 <- "CandidateCauses"
     fn_stressors <- paste0(TargetSiteID, "_ALGAE_StressorsEvaluated.tab")
-    fn_strUsed <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressors)
+    fn_strUsed <- file.path(dir_results,TargetSiteID,"ALGAE",dir.sub3,fn_stressors)
       
-        if(exists("fn_strUsed")){##IF.boo.pdf.START
+        if(file.exists("fn_strUsed")){##IF.boo.pdf.START
             dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
             stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
             
             msg_strlist <- paste0("Stressors identified candidate causes include "
                                   , stressorlist, ".\n\n")
-        } else if(!exists("fn_strUsed")){
+        } else if(!file.exists("fn_strUsed")){
             msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
         } else {
             msg_strlist <- ""
@@ -589,7 +590,8 @@ if(useAlg==TRUE){
     #
     if(boo_file==TRUE){##IF.boo.pdf.START
       msg_strboxdir <- paste0("All ", txt_grp_msg," plots are in the file '"
-                          , fn_target, "' in the'",  paste0("Results/",dir.sub3), "' folder.\n")
+                          , fn_target, "' in the'", paste0("Results/",dir.sub3)
+                          , "' folder.\n")
     } else if(boo_file==FALSE){
       msg_strboxdir <- paste0("No ", txt_grp_msg," plots exist.\n")
     } else {
