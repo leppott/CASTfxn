@@ -133,23 +133,22 @@ getStressorList <- function(TargetSiteID
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 1
+    TargetSiteID
+    siteCluster=list.SiteSummary$ClustID
+    chemInfo=data_stressInfo
+    clusterChem=compStressAll
+    siteQual2Plot=siteQual2Plot
+    refSamps=allBioRefStressSamps
+    refSites=allBioRefSites
+    siteChem=siteStressAll
+    probsHigh=probsHigh
+    probsLow=probsLow
+    biocomm=bioComm
+    dir_results=dir_results
+    dir_sub="CandidateCauses"
     # all other function inputs defined in example.
   }##IF.boo.DEBUG.END
   #
-
-  # TargetSiteID
-  # siteCluster=list.SiteSummary$ClustID
-  # chemInfo=data_stressInfo
-  # clusterChem=compStressAll
-  # siteQual2Plot=siteQual2Plot
-  # refSamps=allBioRefStressSamps
-  # refSites=allBioRefSites
-  # siteChem=siteStressAll
-  # probsHigh=probsHigh
-  # probsLow=probsLow
-  # biocomm=bioComm
-  # dir_results=dir_results
-  # dir_sub="CandidateCauses"
   # 
   # QC, 20190905
   # chem.info$DirIncStress to lower case
@@ -187,26 +186,26 @@ getStressorList <- function(TargetSiteID
   # Identify all cluster "reference" samples, including modeled ones
   clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSamps)
   clusterRefModSamps <- clusterChem %>%
-      dplyr::filter(stringr::str_detect(StressSampID, "_modeledflow_")) %>%
+      dplyr::filter(stringr::str_detect(StressSampID, "_modeledflow")) %>%
       dplyr::filter(StationID_Master %in% refSites)
-  if (biocomm == "BMI") {
-      clusterRefModSamps <- clusterChem %>%
-          dplyr::filter(stringr::str_detect(StressSampID, "_bmi"))
-      clusterRefModSamps <- unique(clusterRefModSamps)
-      clusterChem <- clusterChem %>%
-          dplyr::filter(stringr::str_detect(StressSampID, "algae"
-                                            , negate = TRUE))
-      clusterChem <- unique(clusterChem)
-      
-  } else if (biocomm == "ALGAE") {
-      clusterRefModSamps <- clusterChem %>%
-          dplyr::filter(stringr::str_detect(StressSampID, "_algae"))
-      clusterRefModSamps <- unique(clusterRefModSamps)
-      clusterChem <- clusterChem %>%
-          dplyr::filter(stringr::str_detect(StressSampID, "bmi"
-                                            , negate = TRUE))
-      clusterChem <- unique(clusterChem)
-  }
+  # if (biocomm == "BMI") {
+  #     clusterRefModSamps <- clusterChem %>%
+  #         dplyr::filter(stringr::str_detect(StressSampID, "_bmi"))
+  #     clusterRefModSamps <- unique(clusterRefModSamps)
+  #     clusterChem <- clusterChem %>%
+  #         dplyr::filter(stringr::str_detect(StressSampID, "algae"
+  #                                           , negate = TRUE))
+  #     clusterChem <- unique(clusterChem)
+  #     
+  # } else if (biocomm == "ALGAE") {
+  #     clusterRefModSamps <- clusterChem %>%
+  #         dplyr::filter(stringr::str_detect(StressSampID, "flow"))
+  #     clusterRefModSamps <- unique(clusterRefModSamps)
+  #     clusterChem <- clusterChem %>%
+  #         dplyr::filter(stringr::str_detect(StressSampID, "flow"
+  #                                           , negate = TRUE))
+  #     clusterChem <- unique(clusterChem)
+  # }
   clusterRefChem <- rbind(clusterRefChem, clusterRefModSamps)
   rm(clusterRefModSamps)
   clusterRefChem <- select_if(clusterRefChem, not_all_na)
