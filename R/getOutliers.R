@@ -27,8 +27,11 @@
 getOutliers <- function(df_data, df_meta) {
     
     # Debug
-    df_data = data_chemRaw
-    df_meta = data_chemInfo
+    boo_DEBUG <- FALSE
+    if (boo_DEBUG==TRUE) {
+        df_data = data_modelRaw
+        df_meta = data_modelInfo
+    }
 
     # Define pipe
     `%>%` <- dplyr::`%>%`
