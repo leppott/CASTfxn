@@ -37,17 +37,22 @@ getDataSets <- function(TargetSiteID
                         , df_stressinfo = data_stressInfo) {
 
     # For QC purposes
-    # TargetSiteID
-    # compSites = comp_sites
-    # df_coOccur = data_bioCoOccur
-    # measParams = measParams
-    # modelParams = modelParams
-    # biocomm = bioComm
-    # bioIndex = colBio
-    # colBioSample = colBioSample
-    # colBioSampDate = colBioSampDate
-    # df_biometrics = bioMetricData
-    # df_stressinfo = data_stressInfo
+    boo_DEBUG <- FALSE
+    
+    if (boo_DEBUG==TRUE) {
+        TargetSiteID
+        compSites = comp_sites
+        df_coOccur = data_bioCoOccur
+        measParams = measParams
+        modelParams = modelParams
+        biocomm = bioComm
+        bioIndex = colBio
+        colBioSample = colBioSample
+        colBioSampDate = colBioSampDate
+        df_biometrics = bioMetricData
+        df_stressinfo = data_stressInfo
+    }
+
 
     # Define pipe
     `%>%` <- dplyr::`%>%`
@@ -57,10 +62,10 @@ getDataSets <- function(TargetSiteID
     
     # Get datafrane of parameters detected at target site (meas & mod)
     df_detects <- df_coOccur %>% dplyr::select_if(not_all_na)
-    useCols <- colnames(df_detects) %in% c("StationID_Master", "StressSampID"
-                                           , "StressSampDate", "RespSampID"
-                                           , "RespSampDate", modelParams
-                                           , measParams)
+    useCols <- intersect(c("StationID_Master", "StressSampID", "StressSampDate"
+                 , "RespSampID", "RespSampDate", modelParams, measParams),
+                 colnames(df_detects))
+    
 
     siteBioStressData <- df_detects[,useCols] %>%
         dplyr::filter(StationID_Master == TargetSiteID) %>%
