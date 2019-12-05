@@ -37,12 +37,15 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     
     # define pipe
     `%>%` <- dplyr::`%>%`
+    boo_DEBUG <- TRUE
     
-    dir_data = file.path(getwd(),"Data")
-    dir_results = file.path(getwd(), "Results")
-    dir_sub = "WoE"
-    df_sites = NULL
-    biocommlist = toupper(biocommlist)
+    if(boo_DEBUG==TRUE) {
+        dir_data = file.path(getwd(),"Data")
+        dir_results = file.path(getwd(), "Results")
+        dir_sub = "WoE"
+        df_sites = NULL
+        biocommlist = toupper(biocommlist)
+    }
     
     
     if (!dir.exists(file.path(dir_results))==TRUE) {
@@ -83,7 +86,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                         fndet <- file.path(woe_path,fndet)
                         df_details <- read.delim(fndet, header = TRUE, sep = "\t"
                                                  , na.strings = c("", NA))
-                        colnames(df_details)[5] <- "IndexScore"
+                        colnames(df_details)[6] <- "IndexScore"
                         if (dfile==1) {
                             df_detBiocomm <- df_details
                         } else {
