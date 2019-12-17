@@ -125,6 +125,9 @@ getStressorList <- function(TargetSiteID
                             , siteChem
                             , probsHigh
                             , probsLow
+                            , DOlim=7
+                            , pHlimLow=6.5
+                            , pHlimHigh=9
                             , biocomm="bmi"
                             , dir_results=file.path(getwd(), "Results")
                             , dir_sub="CandidateCauses") {##FUNCTION.START
@@ -143,6 +146,9 @@ getStressorList <- function(TargetSiteID
     siteChem=siteStressAll
     probsHigh=probsHigh
     probsLow=probsLow
+    DOlim=7
+    pHlimLow=6.5
+    pHlimHigh=9
     biocomm=bioComm
     dir_results=dir_results
     dir_sub="CandidateCauses"
@@ -443,27 +449,51 @@ getStressorList <- function(TargetSiteID
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     c <- 3
   }##IF.boo.DEBUG.END
-  for (c in 3:ncol(site.pctrank)) {
+  for (c in 7:ncol(site.pctrank)) {
     # print(c)
     chemname <- colnames(site.pctrank)[c]
     bad <- is.na(site.pctrank[,c])
     check <- site.pctrank[,c]
     good <- check[!bad]
-    maxSiteVal <- max(good, na.rm = TRUE)
-    minSiteVal <- min(good, na.rm = TRUE)
+    maxSiteRank <- max(good, na.rm = TRUE)
+    minSiteRank <- min(good, na.rm = TRUE)
+    maxSiteVal <- max(as.data.frame(siteChem[, chemname]), na.rm = TRUE)
+    minSiteVal <- min(as.data.frame(siteChem[, chemname]), na.rm = TRUE)
     # DirIncStress ####
     # (not all in chem.info)
     if(chemname %in% chemInfo[, "StdParamName"]){
-      ExpDirIncStress <- (chemInfo[chemInfo[,"StdParamName"]==chemname,"DirIncStress"])[1]
+      ExpDirIncStress <- tolower((chemInfo[chemInfo[,"StdParamName"]==chemname
+                                           ,"DirIncStress"])[1])
     } else {
       ExpDirIncStress <- "unk"
     }
-    if (ExpDirIncStress == "dec") {
-      if (minSiteVal <= probsLow) {
-        stressor <- c(stressor, chemname)
-      }
+    if (grepl("^pH_", chemname, perl=TRUE, ignore.case=FALSE)==TRUE) {
+        if ((minSiteVal < pHlimLow) | (maxSiteVal > pHlimHigh)) {
+            if ((minSiteRank <= probsLow) | (maxSiteRank >= probsHigh)) {
+                stressor <- c(stressor, chemname)
+            }
+        } else {
+            print("pH is not a stressor.")
+            flush.console()
+        }
+        next()
     }
-    if ((ExpDirIncStress == "inc") && (maxSiteVal >= probsHigh)) {
+    if (ExpDirIncStress == "dec") {
+      if (grepl("^DO_", chemname, perl=TRUE, ignore.case=FALSE)==TRUE) {
+
+          if ((minSiteVal < DOlim) & (minSiteRank <= probsLow)) {
+              print("DO is a stressor.")
+              flush.console()
+              stressor <- c(stressor, chemname)
+          } else {
+              print("DO is not a stressor.")
+              flush.console()
+          }
+          
+      } else if (minSiteRank <= probsLow) {
+          stressor <- c(stressor, chemname)
+      }
+    } else if ((ExpDirIncStress == "inc") && (maxSiteRank >= probsHigh)) {
       stressor <- c(stressor, chemname)
     }
   }##FOR~c~END
