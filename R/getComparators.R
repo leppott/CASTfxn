@@ -27,6 +27,7 @@
 #' @export
 getComparators<- function(TargetSiteID
                           , df_sites = data_Sites
+                          , df_bioCoOccur = data_bmiCoOccur
                           , useBC = FALSE
                           , df_bcdist = data.BCdist
                           , bc_cutoff = 0.05
@@ -38,8 +39,9 @@ getComparators<- function(TargetSiteID
     boo_DEBUG <- FALSE
     
     if (boo_DEBUG == TRUE) {
-        TargetSiteID
+        TargetSiteID = TargetSiteID
         df_sites = data_Sites
+        df_bioCoOccur = data_bmiCoOccur
         useBC = useBC
         df_bcdist = data_BCdist
         bc_cutoff = 0.05
@@ -65,6 +67,9 @@ getComparators<- function(TargetSiteID
     
     # Get vector of cluster sites
     clustsites <- as.vector(df_sites$StationID_Master[df_sites$clust == clustnum])
+    
+    eligsites <- as.vector(unique(df_bioCoOccur$StationID_Master))
+    clustsites <- clustsites[clustsites %in% eligsites]
     
     # a Bray-Curtis dissimilarity matrix is provided, use it
     if (useBC == TRUE) {
