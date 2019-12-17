@@ -197,7 +197,7 @@ getCoOccur <- function(df_data
   #
     
     
-    boo_DEBUG <- FALSE
+    boo_DEBUG <- TRUE
     
     if (boo_DEBUG==TRUE) {
         df_data = data_bioCoOccur
@@ -216,6 +216,8 @@ getCoOccur <- function(df_data
         dir_plots = dir_results
         dir_sub = "CoOccurrence"
         col_StressInvScore = col_StressInvScore
+        pHlimLow = 6.5
+        pHlimHigh = 9
     }
 
   # define pipe
@@ -418,7 +420,30 @@ getCoOccur <- function(df_data
                                                     , probs=0.75, na.rm=TRUE)
        # Comp Score for box plot
        ## Use different criteria for some parameters
-       if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
+       if(grepl("^pH_", j, perl = TRUE, ignore.case = FALSE)==TRUE) {
+           vals <- df_data %>%
+               dplyr::filter(StationID_Master==TargetSiteID) %>%
+               dplyr::select(eval(j))
+           vals <- as.vector(vals[!is.na(vals)])
+           if(any(vals<pHlimLow)) {
+               print("pH low")
+               flush.console()
+               # Inverse Scoring
+               df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)]
+                                                      , -1
+                                                      , ifelse(df.i[, j] < df.i[, paste0("q25_",j)]
+                                                               , 1, 0)) 
+           } else if(any(vals>pHlimHigh)) {
+               print("pH high")
+               flush.console()
+               # Regular Scoring
+               df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)]
+                                                      , 1
+                                                      , ifelse(df.i[, j] < df.i[, paste0("q50_",j)]
+                                                               , -1, 0))
+               col_StressInvScore <- setdiff(col_StressInvScore, j)
+           }
+       } else if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
          # Inverse Scoring
          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)], -1
                                     , ifelse(df.i[, j] < df.i[, paste0("q25_",j)], 1, 0)) 
