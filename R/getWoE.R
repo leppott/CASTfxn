@@ -721,7 +721,8 @@ getWoE <- function(TargetSiteID
         dplyr::select(-WoE) %>% dplyr::rename(WoE=WoEnumeric) %>%
         group_by(StationID_Master, BioComm, BioDeg, StressorType) %>%
         dplyr::summarize(NumStressSamples = n_distinct(StressSampID)
-                         , NumStressors = n()
+                         , NumStressors = n_distinct(Stressor)
+                         , WtTotTS_barplot = round(sum(as.integer(TS_barplot), na.rm=0)/n(), 3)
                          , WtTotCO_boxplot = round(sum(as.integer(CO_boxplot), na.rm=0)/n(), 3)
                          , WtTotSR_OutCase_LinRegr = round(sum(as.integer(SR_OutCase_LinRegr)
                                                        , na.rm = TRUE)/n(), 3)
