@@ -68,7 +68,11 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   cat(paste("\tNumber of days lag time between stressor and response sample collection = ",lagdays,"\n",sep=""))
   cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
   cat(paste("\tLower and upper quantiles for identifying stressors = ",probsLow
-            , "-", probsHigh, "\n\n",sep=""))
+            , "-", probsHigh, "\n",sep=""))
+  cat(paste("\tLimit above which DO is not identified as a stressor = ",DOlim
+            , "\n",sep=""))
+  cat(paste("\tLimits between which pH is not identified as a stressor = ",pHlimLow
+            , " and ", pHlimHigh, "\n\n",sep=""))
 
 ```
 
@@ -271,7 +275,7 @@ if(useBMI==TRUE){
             dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
             stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
             
-            msg_strlist <- paste0("Stressors identified candidate causes include "
+            msg_strlist <- paste0("Stressors identified as candidate causes include "
                                   , stressorlist, ".\n\n")
         } else if(!file.exists(fn_strUsed)){
             msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
@@ -388,7 +392,7 @@ if(useBMI==TRUE){
     } else if(file.exists(fn_WoE_ES[1])==TRUE){
         df_ES <- read.delim(file.path(dir_WoE_bmi, fn_target1), header=TRUE, sep="\t")
         df_ES <- dplyr::select(df_ES, -BioComm, BioDeg, StressorType, NumStressSamples
-                               , NumStressors, WtTot_WoE, WtTotCO_boxplot
+                               , NumStressors, WtTot_WoE, WtTotTS_barplot, WtTotCO_boxplot
                                , WtTotSR_InCase_LogRegr, WtTotSR_InCase_LinRegr
                                , WtTotSR_OutCase_LinRegr, WtTotVP_boxplot)
         df_ES <- dplyr::rename(df_ES, SiteID = StationID_Master
@@ -397,11 +401,16 @@ if(useBMI==TRUE){
                                , Stressor_Samples = NumStressSamples
                                , Stressors = NumStressors
                                , Overall_WoE = WtTot_WoE
+                               , TS_Inside = WtTotTS_barplot
                                , CO_boxplot = WtTotCO_boxplot
                                , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
                                , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
                                , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
                                , VP_Boxplot = WtTotVP_boxplot)
+        df_ES <- dplyr::select(df_ES, SiteID, Degraded, Group, Stressor_Samples
+                               , Stressors, Overall_WoE, CO_boxplot
+                               , SR_Inside_LogRegr, SR_Inside_LinRegr
+                               , SR_Outside_LinRegr, VP_Boxplot)
         EScaption <- paste0("Scores for each line of evidence and overall weight "
                         , "of evidence, weighted by number of stressors in each "
                         , "group.")
@@ -447,6 +456,7 @@ if(useBMI==TRUE){
                                 , StressorSampleDate = StressSampDate
                                 , Group = StressorType
                                 , PercentRank = StressorPctRank
+                                , TS_Inside = TS_barplot
                                 , SR_Inside_LogRegr = SR_InCase_LogRegr
                                 , SR_Inside_LinRegr = SR_InCase_LinRegr
                                 , SR_Outside_LinRegr = SR_OutCase_LinRegr
@@ -470,11 +480,11 @@ if(useBMI==TRUE){
         df_det <- dplyr::select(df_det, Degraded, Narrative, CSCI, ResponseSampleDate
                                 , ResponseSampleID, StressorSampleDate
                                 , StressorSampleID, Group, Stressor, StressorValue
-                                , PercentRank, WoE, CO_boxplot, SR_Inside_LogRegr
-                                , SR_Inside_LinRegr, SR_Outside_LinRegr
-                                , VP_SensitiveTaxa, VP_TolerantTaxa
-                                , SSD_ToxicityCurve, TotSupport, TotRefute
-                                , TotIndet, TotNotEval)
+                                , PercentRank, WoE, TS_Inside, CO_boxplot
+                                , SR_Inside_LogRegr, SR_Inside_LinRegr
+                                , SR_Outside_LinRegr, VP_SensitiveTaxa
+                                , VP_TolerantTaxa, SSD_ToxicityCurve, TotSupport
+                                , TotRefute, TotIndet, TotNotEval)
         df_det <- dplyr::arrange(df_det, desc(Degraded), desc(CSCI), StressorSampleDate
                                 , ResponseSampleID, StressorSampleID, Group
                                 , Stressor, StressorValue)
@@ -567,7 +577,7 @@ if(useAlg==TRUE){
             dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
             stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
             
-            msg_strlist <- paste0("Stressors identified candidate causes include "
+            msg_strlist <- paste0("Stressors identified as candidate causes include "
                                   , stressorlist, ".\n\n")
         } else if(!file.exists("fn_strUsed")){
             msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
@@ -645,18 +655,18 @@ if(useAlg==TRUE){
 
 if(useAlg==TRUE){
     dir.sub3 <- "WoE"
-    dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     txt_grp_file <- "boxes"
     txt_grp_msg <- "Weight of evidence data"
     fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
     fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
     fn_target <- c(fn_target1, fn_target2)
-    fn_all <- list.files(dir_WoE_bmi)
+    fn_all <- list.files(dir_WoE_alg)
     boo_file <- all(fn_target %in% fn_all)
     #
     if(boo_file==TRUE){
       msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target
-                          , "' in the'", dir_WoE_bmi, "' folder.\n")
+                          , "' in the'", dir_WoE_alg, "' folder.\n")
     } else if(boo_file==FALSE){
       msg_files <- paste0("No ", txt_grp_msg," exist.\n")
     } else {
@@ -674,17 +684,17 @@ if(useAlg==TRUE){
 
 if(useAlg==TRUE){
     dir.sub3 <- "WoE"
-    dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
-    fn_WoE_ES  <- list.files(path=dir_WoE_bmi, full.names = TRUE
+    fn_WoE_ES  <- list.files(path=dir_WoE_alg, full.names = TRUE
                                      , pattern=fn_target1)
     if(length(fn_WoE_ES)==0){
       txt_NoFile <- "No file exists; weight of evidence summary.\n"
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_ES[1])==TRUE){
-        df_ES <- read.delim(file.path(dir_WoE_bmi, fn_target1), header=TRUE, sep="\t")
+        df_ES <- read.delim(file.path(dir_WoE_alg, fn_target1), header=TRUE, sep="\t")
         df_ES <- dplyr::select(df_ES, -BioComm, BioDeg, StressorType, NumStressSamples
-                               , NumStressors, WtTot_WoE, WtTotCO_boxplot
+                               , NumStressors, WtTot_WoE, WtTotTS_barplot, WtTotCO_boxplot
                                , WtTotSR_InCase_LogRegr, WtTotSR_InCase_LinRegr
                                , WtTotSR_OutCase_LinRegr, WtTotVP_boxplot)
         df_ES <- dplyr::rename(df_ES, SiteID = StationID_Master
@@ -693,11 +703,16 @@ if(useAlg==TRUE){
                                , Stressor_Samples = NumStressSamples
                                , Stressors = NumStressors
                                , Overall_WoE = WtTot_WoE
+                               , TS_Inside = WtTotTS_barplot
                                , CO_boxplot = WtTotCO_boxplot
                                , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
                                , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
                                , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
                                , VP_Boxplot = WtTotVP_boxplot)
+        df_ES <- dplyr::select(df_ES, SiteID, Degraded, Group, Stressor_Samples
+                               , Stressors, Overall_WoE, TS_Inside, CO_boxplot
+                               , SR_Inside_LogRegr, SR_Inside_LinRegr
+                               , SR_Outside_LinRegr, VP_Boxplot)
         EScaption <- paste0("Scores for each line of evidence and overall weight "
                         , "of evidence, weighted by number of stressors in each "
                         , "group.")
@@ -721,17 +736,16 @@ if(useAlg==TRUE){
 ```{r WoEscores_alg}
 
 if(useAlg==TRUE){
-
     dir.sub3 <- "WoE"
-    dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
-    fn_WoE_det  <- list.files(path=dir_WoE_bmi, full.names = TRUE
+    fn_WoE_det  <- list.files(path=dir_WoE_alg, full.names = TRUE
                                      , pattern=fn_target2)
     if(length(fn_WoE_det)==0){
       txt_NoFile <- "No file exists; lines of evidence scores\n"
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_det[1])==TRUE){
-        df_det <- read.delim(file.path(dir_WoE_bmi, fn_target2), header=TRUE, sep="\t")
+        df_det <- read.delim(file.path(dir_WoE_alg, fn_target2), header=TRUE, sep="\t")
         df_det <- dplyr::select(df_det, -Cluster, -BioComm, -NumInSupport
                                 , -NumInRefute, -NumInIndet, -NumInNotEval
                                 , -NumOutSupport, - NumOutRefute, -NumOutIndet
@@ -745,6 +759,7 @@ if(useAlg==TRUE){
                                 , StressorSampleDate = StressSampDate
                                 , Group = StressorType
                                 , PercentRank = StressorPctRank
+                                , TS_Inside = TS_barplot
                                 , SR_Inside_LogRegr = SR_InCase_LogRegr
                                 , SR_Inside_LinRegr = SR_InCase_LinRegr
                                 , SR_Outside_LinRegr = SR_OutCase_LinRegr
@@ -766,17 +781,17 @@ if(useAlg==TRUE){
                                                                  , digits=0
                                                                  , big.mark=",")))))
         df_det <- dplyr::select(df_det, Degraded, Narrative, MMIhybrid
-                                , ResponseSampleDate
-                                , ResponseSampleID, StressorSampleDate
-                                , StressorSampleID, Group, Stressor, StressorValue
-                                , PercentRank, CO_boxplot, SR_Inside_LogRegr
+                                , ResponseSampleDate, ResponseSampleID
+                                , StressorSampleDate, StressorSampleID, Group
+                                , Stressor, StressorValue, PercentRank, WoE
+                                , TS_Inside, CO_boxplot, SR_Inside_LogRegr
                                 , SR_Inside_LinRegr, SR_Outside_LinRegr
                                 , VP_SensitiveTaxa, VP_TolerantTaxa
                                 , SSD_ToxicityCurve, TotSupport, TotRefute
-                                , TotIndet, TotNotEval, WoE)
-        df_det <- dplyr::arrange(df_det, desc(Degraded), desc(MMIhybrid), StressorSampleDate
-                                , ResponseSampleID, StressorSampleID, Group
-                                , Stressor, StressorValue)
+                                , TotIndet, TotNotEval)
+        df_det <- dplyr::arrange(df_det, desc(Degraded), desc(MMIhybrid)
+                                , StressorSampleDate, ResponseSampleID
+                                , StressorSampleID, Group, Stressor, StressorValue)
     
         Detcaption <- paste0("Scores for each line of evidence equal 1 (supports), "
                              , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
@@ -789,9 +804,9 @@ if(useAlg==TRUE){
     } else {
       cat(txt_NoFile)
     }
-    
+
 } else {
-    cat(paste0("No algal data for ", TargetSiteID,".\n"))
+    cat("")
 }
 
 ```
