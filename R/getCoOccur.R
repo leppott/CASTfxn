@@ -197,7 +197,7 @@ getCoOccur <- function(df_data
   #
     
     
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if (boo_DEBUG==TRUE) {
         df_data = data_bioCoOccur
