@@ -30,6 +30,8 @@ getTimeSeq <- function(TargetSiteID
                        , BioResp
                        , df_stress
                        , df_resp
+                       , df_stressinfo
+                       , df_respinfo
                        , dir_results = file.path(getwd(),"Results")
                        , dir_sub = "TimeSequence") {
 
@@ -39,9 +41,11 @@ getTimeSeq <- function(TargetSiteID
     if (boo_DEBUG == TRUE) {
         TargetSiteID
         biocomm = bioComm
-        BioResp = bioIndex
+        BioResp = bioMetricNames
         df_stress = siteStressAll
         df_resp = siteRespAll
+        df_stressinfo = df_allStressInfo
+        df_respinfo = data_bmiMetricsInfo
         dir_results = file.path(getwd(),"Results")
         dir_sub = "TimeSequence"
     }
@@ -108,6 +112,8 @@ getTimeSeq <- function(TargetSiteID
                     , row.names = FALSE, sep = "\t")
 
     }
+    df_stressinfo <- unique(df_stressinfo[,c("Analyte","Label")])
+    df_stress <- merge(df_stress, df_stressinfo, by.x = "variable", by.y = "Analyte")
 
     # Prep response data
     df_resp <- df_resp %>%
@@ -121,7 +127,10 @@ getTimeSeq <- function(TargetSiteID
         dplyr::group_by(RespSampDate, Biometric) %>%
         dplyr::summarize(meanval = signif(mean(ResultValue),digits=3)) %>%
         dplyr::rename(SampDate = RespSampDate, variable = Biometric)
-
+    df_respinfo <- unique(df_respinfo[,c("MetricName","MetricLabel")])
+    df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")
+    df_resp <- dplyr::rename(df_resp, Label=MetricLabel)
+    
     skipflag <- ifelse(nrow(df_resp)==0,TRUE, FALSE)
 
     if (skipflag == FALSE) {
@@ -138,20 +147,22 @@ getTimeSeq <- function(TargetSiteID
 
         # Loop over each stressor
         ppi = 300
-        stresses <- unique(df_stress$variable)
+        stresses <- unique(df_stress[,c("variable","Label")])
         count = 1
         
-        for (s in 1:length(stresses)) {
+        for (s in 1:nrow(stresses)) {
 
-            stressName = stresses[s]
+            stressName = stresses[s,"variable"]
+            stressLabel = as.character(stresses[s,"Label"])
             # print(paste0("s=",s," stressor is "))
 
             # Plot time series for stressor & bio response
-            responses <- unique(df_resp$variable)
-            totplots <- length(stresses)*length(responses)
-            for (r in 1:length(responses)) {
+            responses <- unique(df_resp[,c("variable","Label")])
+            totplots <- nrow(stresses)*nrow(responses)
+            for (r in 1:nrow(responses)) {
 
-                respName = responses[r]
+                respName = responses[r,"variable"]
+                respLabel = as.character(responses[r,"Label"])
 
                 fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressName, "_"
                             , respName, ".png")
@@ -170,11 +181,11 @@ getTimeSeq <- function(TargetSiteID
 
                 p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x=SampDate
                                             , y=as.numeric(meanval)))
-                p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = 2
+                p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = 8
                              , position = ggplot2::position_dodge(preserve = "single"))
                 p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanval)
                                         , hjust= 2, vjust = 0, size=2.5)
-                p_ts <- p_ts + ggplot2::facet_wrap(~ variable, ncol=1, scales="free_y")
+                p_ts <- p_ts + ggplot2::facet_wrap(~ Label, ncol=1, scales="free_y")
                 p_ts <- p_ts + ggplot2::theme_bw()
                 p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
                                        , hjust = 1, size = 8)
