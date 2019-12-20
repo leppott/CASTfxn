@@ -242,6 +242,7 @@ getBioStressorResponses <- function(TargetSiteID
                                     , stressors
                                     , stressorInfo=siteStressInfo
                                     , BioResp
+                                    , BioInfo
                                     , list.MatchBioData
                                     , ref.sites
                                     , siteQual2Plot
@@ -259,6 +260,7 @@ getBioStressorResponses <- function(TargetSiteID
       stressors <-stressorsWPairedResponses
       stressorInfo <- siteStressInfo
       BioResp = bioMetricNames
+      BioInfo = bioMetricInfo
       list.MatchBioData = list_MatchBioData
       ref.sites=allBioRefStressSamps
       siteQual2Plot=siteQual2Plot
@@ -433,6 +435,7 @@ getBioStressorResponses <- function(TargetSiteID
   for (p in 1:length(stressors)) {
 
     stressName <- stressors[p]
+    stressLabel <- as.character(stressorInfo$Label[stressorInfo$StdParamName==stressName])
     varFlag <- 1
     varFlag.b <- 1
 
@@ -459,6 +462,7 @@ getBioStressorResponses <- function(TargetSiteID
       boo_corr <- TRUE
       boo_all <- TRUE
       respName <- BioResp[q]
+      respLabel <- as.character(bioMetricInfo$MetricLabel[bioMetricInfo$MetricName==respName])
       pq <- q.len*(p-1)+q
       pq.len <- p.len * q.len
       
@@ -978,24 +982,28 @@ getBioStressorResponses <- function(TargetSiteID
       boo_plot_targ   <- ifelse(nrow(df_plot_site[!is.na(df_plot_site$Stressor),])>0, TRUE, FALSE)
       
       ## Plot, Variables, Strings
-      str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
-      str_subtitle <- "Linear regression with 75th percentile prediction interval"
-      str_xlab  <- paste0(ifelse(log.yn==TRUE, "Log10 ", ""), stressName)
-      str_ylab  <- respName
+      str_title <- paste0(TargetSiteID, ": Stressor-Response (linear regression) line of evidence")
+      str_subtitle1 <- "Is there evidence of a biological gradient from inside or outside the case?"
+      str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
+      str_subtitle <- stringr::str_wrap(paste0(str_subtitle1,str_subtitle2),75)
+      str_xlab  <- paste0(ifelse(log.yn==TRUE, "Log10 ", ""), stressLabel)
+      str_ylab  <- respLabel
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) {##IF.equation.START
-        str_caption_cl <- paste(paste0("Regression (comparators): ", "y = ", slope_cl, " x + ", intercept_cl)
+        str_caption_cl <- paste(paste0("Regression (comparators, inside the case): "
+                                       , "y = ", slope_cl, " x + ", intercept_cl)
                              , paste0("r2 = ", r2_cl)
                              , paste0("p-value = ", pval.corr_cl)
                              , paste0("n = ", n_str_cl)
                              , paste0("score = ", sr.score_cl)
                              , sep=" ~ ")
       } else {
-        str_caption_cl <- "Regression (comparators):  Less than 3 data points in comparator set."
+        str_caption_cl <- "Regression (comparators, inside the case):  Less than 3 data points in comparator set."
       }##IF.equation.END
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {##IF.equation.START
-        str_caption_all <- paste(paste0("Regression (all): ", "y = ", slope_all, " x + ", intercept_all)
+        str_caption_all <- paste(paste0("Regression (all, outside the case): "
+                                        , "y = ", slope_all, " x + ", intercept_all)
                                 , paste0("r2 = ", r2_all)
                                 , paste0("p-value = ", pval.corr_all)
                                 , paste0("n = ", n_str_all)
@@ -1060,7 +1068,7 @@ getBioStressorResponses <- function(TargetSiteID
       alpha_lm_cl  <- 0.25
       
       ## Plot, Variables, Legend
-      leg_name   <- "Sites"
+      leg_name   <- "Samples"
       leg_labels <- c("all", leg_all_ref, "comparator", leg_cl_ref, "target")
       leg_shape  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_all, col_sites_all_ref, col_sites_cl, col_sites_cl_ref, col_sites_targ)
