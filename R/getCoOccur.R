@@ -198,7 +198,7 @@ getCoOccur <- function(df_data
   #
     
     
-    boo_DEBUG <- FALSE
+    boo_DEBUG <- TRUE
     
     if (boo_DEBUG==TRUE) {
         df_data = data_bioCoOccur
@@ -535,6 +535,15 @@ getCoOccur <- function(df_data
          
          # Get wordy label for the y-axis
          jlabel <- df_stressinfo$Label[df_stressinfo$Analyte==j]
+         legendtitle <- "Degraded"
+         maintitleCO <- paste0(i, ": Co-occurrence line of evidence")
+         subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
+         subtitleCO <- stringr::str_wrap(subtitleCO, 100)
+         
+         maintitleSR <- paste0(i, ": Stressor-response (logistic regression) line of evidence")
+         subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
+         subtitleSR <- stringr::str_wrap(subtitleSR, 100)
+         
          
          # if non-empty
          #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
@@ -550,13 +559,16 @@ getCoOccur <- function(df_data
                             , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
              # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
              #ggplot2::scale_color_manual(values = c("black", "lightskyblue", "red", "darkgreen")) +
-             ggplot2::scale_color_manual(breaks=c("Yes", "No"), values=bio_col
+             ggplot2::scale_color_manual(name=legendtitle
+                                         , breaks=c("Yes", "No"), values=bio_col
                                          , drop=FALSE) +
-             ggplot2::scale_fill_manual(breaks=c("Yes", "No"), values=bio_col
+             ggplot2::scale_fill_manual(name=legendtitle
+                                        , breaks=c("Yes", "No"), values=bio_col
                                         , drop=FALSE) +
-             ggplot2::scale_shape_manual(breaks=c("Yes", "No"), values=bio_shp
+             ggplot2::scale_shape_manual(name=legendtitle
+                                         , breaks=c("Yes", "No"), values=bio_shp
                                          , drop=FALSE) + 
-             ggplot2::labs(title=i, caption=lab.sub) + 
+             ggplot2::labs(title=maintitleCO, subtitle=subtitleCO, caption=lab.sub) + 
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
@@ -638,11 +650,14 @@ getCoOccur <- function(df_data
                             , fill=Bio.Deg), alpha=0.5, size=2, na.rm = TRUE) +
              # ggplot2::geom_jitter(size=2, alpha=0.5
              #                      , ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), width=0, height=0.005) +
-             ggplot2::scale_fill_manual(breaks=c("Yes", "No")
+             ggplot2::scale_fill_manual(name=legendtitle
+                                        , breaks=c("Yes", "No")
                                         , values=bio_col, drop=FALSE) +
-             ggplot2::scale_color_manual(breaks=c("Yes", "No")
+             ggplot2::scale_color_manual(name=legendtitle
+                                         , breaks=c("Yes", "No")
                                          , values=bio_col, drop=FALSE) +
-             ggplot2::scale_shape_manual(breaks=c("Yes", "No")
+             ggplot2::scale_shape_manual(name=legendtitle
+                                         , breaks=c("Yes", "No")
                                          , values=bio_shp, drop=FALSE) +
              ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col
                         , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) +
@@ -655,7 +670,7 @@ getCoOccur <- function(df_data
                                 , color="blue", lwd=1, na.rm = TRUE) +
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-             ggplot2::labs(title=i, caption=lab.sub)
+             ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
            # p2
            # plots_jpg[[2]] <- grDevices::recordPlot()
            ggplot2::ggsave(filename=file.path(dir_path, fn_jpg_p2)
