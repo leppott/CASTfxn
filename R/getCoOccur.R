@@ -177,6 +177,7 @@ getCoOccur <- function(df_data
                        , colGroup
                        , colBio
                        , colStressors
+                       , df_stressinfo
                        , BioNarBrk=c(-2, 0.62, 0.799, 0.919, 2)
                        , BioNarLab=c("very likely altered", "likely altered"
                                        , "possibly altered ", "likely intact")
@@ -208,6 +209,7 @@ getCoOccur <- function(df_data
         colGroup = "clust"
         colBio = colBio
         colStressors = c(stressorsWPairedResponses)
+        df_stressinfo = data_stressInfo
         BioNarBrk = BioNarBrk
         BioNarLab = BioNarLab
         BioDegBrk = BioDegBrk
@@ -508,9 +510,8 @@ getCoOccur <- function(df_data
          ppi       <- 300
          
          # Create (ggplot)
-         lab.sub <- paste0("Comparator sites with higher ", colBio
-                           , " scores and ", j, " (", lab.N, ").\n "
-                           , lab.Score,".")
+         lab.sub <- paste0("Comparator sites with higher ", colBio, " scores and "
+                           , j, " data (", lab.N, ").\n ", lab.Score,".")
          
          bio_col <- c("blue", "dark gray")
          bio_shp <- c(21, 25) # circle and down triangle
@@ -531,6 +532,9 @@ getCoOccur <- function(df_data
          targ_line_col <- "red"
          targ_line_lty <- 2
          targ_line_lwd <- 1
+         
+         # Get wordy label for the y-axis
+         jlabel <- df_stressinfo$Label[df_stressinfo$Analyte==j]
          
          # if non-empty
          #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
@@ -557,7 +561,7 @@ getCoOccur <- function(df_data
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                             , axis.ticks.y=ggplot2::element_blank()) +
-             ggplot2::labs(y=j, x=lab_comp) + 
+             ggplot2::labs(y=jlabel, x=lab_comp) + 
              ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black"
                                  , lty=2, na.rm = TRUE)
            # Capture plot (jpg)
@@ -624,8 +628,8 @@ getCoOccur <- function(df_data
            df.scores.i.n[, "Sc_SR"] <- j_SR_score
 
            #
-           lab.sub <- paste0("All comparator sites with both ", colBio, " and ", j
-                             , " (n=", n_cc_df_plot, ").\n Score = "
+           lab.sub <- paste0("All comparator sites with ", colBio, " and ", j
+                             , " data (n=", n_cc_df_plot, ").\n Score = "
                              , paste(j_SR_score, collapse=", "),".")
 
            # plot2, ggplot ####
@@ -645,7 +649,8 @@ getCoOccur <- function(df_data
              ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black"
                                  , lty=2, na.rm = TRUE) +
              #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) +
-             ggplot2::labs(title=i, y="Relative Probability of Degraded Condition", x=j) +
+             ggplot2::labs(title=i, y="Relative Probability of Degraded Condition"
+                           , x=jlabel) +
              ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
                                 , color="blue", lwd=1, na.rm = TRUE) +
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
