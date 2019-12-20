@@ -228,12 +228,13 @@ getStressorList <- function(TargetSiteID
                            , function(x) is.numeric(clusterChemData[,x])))
   coolvar <- names(allcount)[allcount>2 & alltype]
   
-  groupnames <- unique(subset(chemInfo, chemInfo$Analyte %in% chemnames, select = "GroupName"))
+  groupnames <- unique(subset(chemInfo, chemInfo$Analyte %in% chemnames
+                              , select = "GroupName"))
   numgps <- length(groupnames[,1])
   
   # Plots ####
   ppi <- 300
-  plot_H <- 4
+  plot_H <- 6
   plot_W <- 9
   # Capture each plot in a list for the PDF
   ## https://stackoverflow.com/questions/13273611/how-to-append-a-plot-to-an-existing-pdf-file
@@ -241,7 +242,8 @@ getStressorList <- function(TargetSiteID
   plots.g <- vector(numgps, mode="list")
   # Generate 1 box plot for each group, ref sites in blue, target site in red
   for (g in 1:numgps) {##FOR.g.START
-    gpchems <- subset(chemInfo, GroupName == groupnames[g,], select = "Analyte")
+    gpchems <- subset(chemInfo, GroupName == groupnames[g,]
+                      , select = c("Analyte", "Label"))
     gpcoolvar <- subset(coolvar, coolvar %in% gpchems$Analyte)
     n <- length(gpcoolvar)
     #
@@ -264,9 +266,11 @@ getStressorList <- function(TargetSiteID
       df_plot_wide_valminusmin <- sweep(df_plot_wide, 2, df_plot_wide_min, FUN="-")
       df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
       # reshape from wide to long
-      df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+      df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar
+                                     , variable.name="GrpNm")
       # Remove NaN so get rid of error message?
       df_plot_long <- df_plot_long[!is.na(df_plot_long$value), ]
+      df_plot_long <- merge(gpchems, df_plot_long, by.x="Analyte", by.y="GrpNm")
 
       ## Plot, Data, Cluster_Ref
       # QC for nrow
@@ -278,6 +282,7 @@ getStressorList <- function(TargetSiteID
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
         df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
         df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
+        df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
         boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
       }##IF~nrow(cluster.ref.chem.data)~END
       
@@ -288,7 +293,7 @@ getStressorList <- function(TargetSiteID
       df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
       df_plot_long_targ <- reshape2::melt(df_plot_targ_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
       df_plot_long_targ <- df_plot_long_targ[!is.na(df_plot_long_targ$value), ]
-      
+      df_plot_long_targ <- merge(gpchems, df_plot_long_targ, by.x="Analyte", by.y="GrpNm")
       boo_plot_targ <- ifelse(nrow(siteChem)!=0, TRUE, FALSE)
       
       # Get proper labels to describe "good quality" sites
@@ -305,7 +310,7 @@ getStressorList <- function(TargetSiteID
           qualtext <- "Better quality*"
               str_caption <- paste("*Stressor samples with paired response samples having biological"
                                    ,"quality better than the mimum target site quality.", sep = "\n")
-     } else { 
+      } else { 
           qualtext <- "Reference"
           str_caption <- ""
       }
@@ -354,23 +359,32 @@ getStressorList <- function(TargetSiteID
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
       
+      if (n>9) {
+          yaxistextsize = 5.5
+      } else {
+          yaxistextsize = 7
+      }
+      
       # ggplot, main
       p_SL <- ggplot2::ggplot(data=df_plot_long) + 
-                ggplot2::geom_boxplot(ggplot2::aes(x=GrpNm, y=value))  + 
+                ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                                                   , y=value))  + 
                 ggplot2::coord_flip() + 
                 ggplot2::labs(title=str_title, subtitle=str_subtitle
                               , y=str_xlab, x=str_ylab, caption = str_caption) + 
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
                                , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
                                , axis.text.x = ggplot2::element_blank()
+                               , axis.text.y = ggplot2::element_text(size=yaxistextsize)
                                , axis.ticks.x=ggplot2::element_blank()
-                               , plot.caption = ggplot2::element_text(size=6))
+                               , plot.caption = ggplot2::element_text(size=8))
       #
       # ggplot, points subsets
       ## Cluster, Ref
       if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1
-                                , ggplot2::aes(x=GrpNm, y=value, color="cl_ref"
+                                , ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                                               , y=value, color="cl_ref"
                                                , shape="cl_ref", fill="cl_ref")
                                 , size=1)
       } else {
@@ -382,7 +396,8 @@ getStressorList <- function(TargetSiteID
       if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ
                                             , width=0.1
-                                            , ggplot2::aes(x=GrpNm, y=value
+                                            , ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                                                           , y=value
                                                            , color="targ"
                                                            , shape="targ"
                                                            , fill="targ")
@@ -390,7 +405,13 @@ getStressorList <- function(TargetSiteID
       } else {
         p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ"
                                                         , shape="targ"
-                                                        , fill="targ"))
+                                                        , fill="targ"))# + 
+            # ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
+            #                , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
+            #                , axis.text.x = ggplot2::element_text(size=8)
+            #                , axis.text.y = ggplot2::element_text(size=yaxistextsize)
+            #                , axis.ticks.x=ggplot2::element_blank()
+            #                , plot.caption = ggplot2::element_text(size=8))
       }##IF~boo_plot_targ~END
       #
       # ggplot, Legend
