@@ -204,63 +204,6 @@ knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
     kableExtra::collapse_rows(columns=1:3, valign="top")
 ```
 
-# **BMI RESULTS**
-
-## *Biological Index Distributions*
-
-```{r bmi_box}
-
-if(useBMI==TRUE){
-    dir.sub3 <- "SiteInfo"
-    #TargetSiteID <- "SRCKN001.61"
-    myBMIbox <- paste0(TargetSiteID,"_BMI_IndexBoxplots.png")
-    fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, myBMIbox)
-    if(file.exists(fn_img)==TRUE){
-      knitr::include_graphics(fn_img)
-    } else {
-      cat("No file exists; benthic macroinvertebrate index distributions.\n")
-    }
-} else {
-    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
-}
-
-```
-
-## *Comparator Site Information*
-
-```{r bmicompsiteinfo}
-# Read file summarizing the comparator data and provide it in summary form
-
-if(useBMI==TRUE){
-    dir.sub3 <- "SiteInfo"
-    mycomps <- paste0(TargetSiteID,"_BMI_SiteQualities.tab")
-    fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
-    msg_info <- paste0("Additional comparator site info, "
-                       , " including a list of "
-                       , "comparator sites can be found in the '"
-                       , paste0("Results/",dir.sub3), "' foler.")
-    
-    if(file.exists(fn_comps)==TRUE){
-        cat(msg_info)
-        dfcomps <- read.delim(fn_comps, header = TRUE, sep = "\t")
-        dfcomps <- dplyr::select(dfcomps, -BioComm)
-        compscaption <- paste0("Number of sites by type, group, and quality.")
-        knitr::kable(dfcomps, format=report_format, colnames=colnames(dfcomps)
-                     , caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                                      , font_size = 12, full_width = FALSE
-                                  , position = "left") %>%
-        kableExtra::column_spec(1,bold = TRUE) %>%
-        kableExtra::collapse_rows(columns=1:2, valign="top")
-    } else {
-      cat("No comparator site information is available for benthic macroinvertebrates.\n")
-    }    
-} else {
-    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
-}
-
-```
-
 ## *Potential Candidate Causes*
 
 ```{r BMIStrSelect}
@@ -341,6 +284,63 @@ if(useBMI==TRUE){
     }
 } else {
     cat("")
+}
+
+```
+
+# **BMI RESULTS**
+
+## *Biological Index Distributions*
+
+```{r bmi_box}
+
+if(useBMI==TRUE){
+    dir.sub3 <- "SiteInfo"
+    #TargetSiteID <- "SRCKN001.61"
+    myBMIbox <- paste0(TargetSiteID,"_BMI_IndexBoxplots.png")
+    fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, myBMIbox)
+    if(file.exists(fn_img)==TRUE){
+      knitr::include_graphics(fn_img)
+    } else {
+      cat("No file exists; benthic macroinvertebrate index distributions.\n")
+    }
+} else {
+    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
+}
+
+```
+
+## *Comparator Site Information*
+
+```{r bmicompsiteinfo}
+# Read file summarizing the comparator data and provide it in summary form
+
+if(useBMI==TRUE){
+    dir.sub3 <- "SiteInfo"
+    mycomps <- paste0(TargetSiteID,"_BMI_SiteQualities.tab")
+    fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
+    msg_info <- paste0("Additional comparator site info, "
+                       , " including a list of "
+                       , "comparator sites can be found in the '"
+                       , paste0("Results/",dir.sub3), "' foler.")
+    
+    if(file.exists(fn_comps)==TRUE){
+        cat(msg_info)
+        dfcomps <- read.delim(fn_comps, header = TRUE, sep = "\t")
+        dfcomps <- dplyr::select(dfcomps, -BioComm)
+        compscaption <- paste0("Number of sites by type, group, and quality.")
+        knitr::kable(dfcomps, format=report_format, colnames=colnames(dfcomps)
+                     , caption = compscaption) %>%
+        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                      , font_size = 12, full_width = FALSE
+                                  , position = "left") %>%
+        kableExtra::column_spec(1,bold = TRUE) %>%
+        kableExtra::collapse_rows(columns=1:2, valign="top")
+    } else {
+      cat("No comparator site information is available for benthic macroinvertebrates.\n")
+    }    
+} else {
+    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -559,90 +559,6 @@ if(useAlg==TRUE){
     }    
 } else {
     cat(paste0("No algal data for ", TargetSiteID,".\n"))
-}
-
-```
-
-## *Potential Candidate Causes*
-
-```{r AlgStrSelect}
-
-if(useAlg==TRUE){
-    
-    dir.sub3 <- "CandidateCauses"
-    fn_stressors <- paste0(TargetSiteID, "_ALGAE_StressorsEvaluated.tab")
-    fn_strUsed <- file.path(dir_results,TargetSiteID,"ALGAE",dir.sub3,fn_stressors)
-      
-        if(file.exists("fn_strUsed")){##IF.boo.pdf.START
-            dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
-            stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
-            
-            msg_strlist <- paste0("Stressors identified as candidate causes include "
-                                  , stressorlist, ".\n\n")
-        } else if(!file.exists("fn_strUsed")){
-            msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
-        } else {
-            msg_strlist <- ""
-        }##IF.boo.pdf.START
-        #
-    cat(msg_strlist)
-} else {
-    cat(paste0("No algal data for ", TargetSiteID,".\n"))
-}
-```
-
-```{r files_AlgStrBoxes}
-
-if(useAlg==TRUE){
-    dir.sub3 <- "CandidateCauses"
-    txt_grp_file <- "CandCauses"
-    txt_grp_msg <- "stressor box"
-    fn_target <- paste0(TargetSiteID,"_ALGAE_", txt_grp_file, "_ALL.pdf")
-    fn_all <- list.files(file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3))
-    boo_file <- fn_target %in% fn_all
-    #
-    if(boo_file==TRUE){##IF.boo.pdf.START
-      msg_strboxdir <- paste0("All ", txt_grp_msg," plots are in the file '"
-                          , fn_target, "' in the'", paste0("Results/",dir.sub3)
-                          , "' folder.\n")
-    } else if(boo_file==FALSE){
-      msg_strboxdir <- paste0("No ", txt_grp_msg," plots exist.\n")
-    } else {
-      msg_strboxdir <- ""
-    }##IF.boo.pdf.START
-    #
-    cat(msg_strboxdir)
-} else {
-    cat("")
-}
-
-```
-
-```{r AlgStrBoxPlots, out.extra='style="padding:10px"'}
-
-if(useAlg==TRUE){
-    dir.sub3 <- "CandidateCauses"
-    dir_SiteID <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
-    fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
-                                     , pattern="_ALGAE_CandCauses")
-    fn_BoxPlots_jpg <- fn_BoxPlots[grep(".png", fn_BoxPlots)]
-    if(length(fn_BoxPlots_jpg)==0){
-      txt_NoFile <- "No file exists; box plots.\n"
-      cat(txt_NoFile)
-    } else if(file.exists(fn_BoxPlots_jpg[1])==TRUE){
-      #
-      cat(paste("Box plots are arranged by stressor category. Stressors requiring"
-                , " further evaluation fall outside the ", probsLow, "-", probsHigh
-                , " quantile range.\n\n",sep=""))
-    
-      fn_img <- fn_BoxPlots_jpg
-      knitr::include_graphics(fn_img)
-      #
-    } else {
-      cat(txt_NoFile)
-    }
-} else {
-    cat("")
 }
 
 ```
