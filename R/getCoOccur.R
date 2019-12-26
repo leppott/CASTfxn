@@ -198,7 +198,7 @@ getCoOccur <- function(df_data
   #
     
     
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if (boo_DEBUG==TRUE) {
         df_data = data_bioCoOccur
@@ -535,6 +535,7 @@ getCoOccur <- function(df_data
          
          # Get wordy label for the y-axis
          jlabel <- df_stressinfo$Label[df_stressinfo$Analyte==j]
+         jlog <- df_stressinfo$LogTransf[df_stressinfo$Analyte==j]
          legendtitle <- "Degraded"
          maintitleCO <- paste0(i, ": Co-occurrence line of evidence")
          subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
@@ -548,13 +549,15 @@ getCoOccur <- function(df_data
          # if non-empty
          #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
            # plot1, ggplot ####
-           p1<- ggplot2::ggplot(df.comp.bio.better, ggplot2::aes_string(y=as.name(j)
-                                                , x=colGroup, group=colGroup)) +
+             p1<- ggplot2::ggplot(df.comp.bio.better
+                                  , ggplot2::aes_string(y=as.name(j)
+                                  , x=colGroup, group=colGroup)) +
              ggplot2::geom_boxplot(na.rm = TRUE) +
              ggplot2::coord_flip() + 
              ggplot2::geom_jitter(size=2, alpha=0.5, na.rm=TRUE
-                            , ggplot2::aes_string(color=col.SiteTypeQuality
-                            , shape=col.SiteTypeQuality, fill=col.SiteTypeQuality)) + 
+                                  , ggplot2::aes_string(color=col.SiteTypeQuality
+                                                        , shape=col.SiteTypeQuality
+                                                        , fill=col.SiteTypeQuality)) + 
              ggplot2::geom_hline(yintercept = df.i[,j], color=targ_line_col
                             , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) + 
              # ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL) +
