@@ -181,27 +181,26 @@ getVerifiedPredictions <- function(TargetSiteID
                                    ) {##FUNCTION.START
     
     
-    # TargetSiteID
-    # SSTVanalytes = as.character(SSTVparms) # Used
-    # colBioSample = colBioSample            # Used
-    # stressors = stressorsWPairedResponses  # Used
-    # stressorInfo <- siteStressInfo         # Used
-    # dataBioTaxa = bioTaxaData              # Used
-    # dataMasterTaxa = bioMasterTaxa         # Used
-    # matchedData = list_MatchBioData        # Used
-    # BioIndex_Val = bioIndex                # Used
-    # BioIndex_Nar = "Quality"               # Used
-    # BioIndex_Nar_Deg = "Degraded"          # Used
-    # dir_results=dir_results                # Used
-    # dir_sub="VerifiedPredictions"          # Used
-    # biocomm=bioComm                        # Used
     
   # Debugging
   boo.DEBUG <- FALSE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    matchedData <- list.MatchBioData
-    tv <- 1
+      TargetSiteID
+      SSTVanalytes = as.character(SSTVparms) # Used
+      colBioSample = colBioSample            # Used
+      stressors = stressorsWPairedResponses  # Used
+      stressorInfo <- siteStressInfo         # Used
+      dataBioTaxa = bioTaxaData              # Used
+      dataMasterTaxa = bioMasterTaxa         # Used
+      matchedData = list_MatchBioData        # Used
+      BioIndex_Val = bioIndex                # Used
+      BioIndex_Nar = "Quality"               # Used
+      BioIndex_Nar_Deg = "Degraded"          # Used
+      dir_results=dir_results                # Used
+      dir_sub="VerifiedPredictions"          # Used
+      biocomm=bioComm                        # Used
+      tv <- 1
   }##IF.boo.DEBUG.END
   
   # define pipe
@@ -223,12 +222,14 @@ getVerifiedPredictions <- function(TargetSiteID
       dplyr::select(StdParamName,SSTV,SSTVname,SensMin,SensMax,TolMin,TolMax)
   df_SSTV <- unique(df_SSTV)
   colnames(df_SSTV)[1] <- "Analyte"
-  
+
   SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
   # SSTVnames <- as.character(unique(SSTVnames))
   mtcols <- colnames(dataMasterTaxa)
   # Check whether master taxa file contains SSTVname (tol vals for that stressor)
   for (name in 1:length(SSTVnames)) {  # If more than one SSTV, then must iterate
+      SSTVlabel <- as.character(stressorInfo$Label[stressorInfo$StdParamName==name])
+      
       if (SSTVnames[name] %in% mtcols) {  # Check if TV data in Master Taxa file
 
           if (exists("keepMTcol")) {
@@ -406,6 +407,8 @@ getVerifiedPredictions <- function(TargetSiteID
                   #
                   SSTV.analyte <- as.vector(stressor.SSTV$Analyte)[tv]
                   SSTV.name <- as.vector(stressor.SSTV$SSTVname)[tv]
+                  SSTV.label <- stressorInfo$Label[stressorInfo$Analyte==SSTV.analyte]
+                  SSTV.label <- unique(as.character(SSTV.label))
                   
                   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
                       varFlag <- 0
@@ -619,9 +622,15 @@ getVerifiedPredictions <- function(TargetSiteID
                   
                   {##PLOT VARIABLES ~ START
                       ## Plot, Variables, Strings
-                      str_title <- paste(TargetSiteID, SSTV.analyte, sep=" ~ ")
-                      str_subtitle <- paste0("Samples with better biology (index > "
-                                             , signif(bio_better_thresh, 3), ")")
+                      str_title <- paste0(TargetSiteID, ": Verified prediction "
+                                          ,"line of evidence for ", SSTV.label)
+                      str_title <- stringr::str_wrap(str_title,100)
+                      str_subtitle <- paste0("Do the data support the prediction "
+                                             , " that the abundance of sensitive"
+                                             , " taxa will be lower and tolerant"
+                                             , " taxa will be higher than observed at "
+                                             , " comparator sites with better biology?")
+                      str_subtitle <- stringr::str_wrap(str_subtitle, 100)
                       str_xlab  <- ""
                       str_ylab  <- "Relative Abundance"
                       df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
@@ -629,13 +638,16 @@ getVerifiedPredictions <- function(TargetSiteID
                           , "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
                       str_score_tol <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[
                           , "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
-                      str_caption <- paste0("Score = Tolerant (", str_score_tol
-                                            , "), Sensitive ("
+                      str_caption <- paste0("Score = Tolerant Taxa (", str_score_tol
+                                            , "), Sensitive Taxa ("
                                             , str_score_sens
-                                            , ").\nNumber of samples = better biology (n="
+                                            , ")\nNumber of samples with better biology (n="
                                             , n_records_better_bio
-                                            , "), better biology and not degraded (n="
-                                            , n_records_betterbio_BioDegNo, ").")
+                                            , "); better biology and not degraded (n="
+                                            , n_records_betterbio_BioDegNo, ")"
+                                            , "\nSamples with better biology have "
+                                            , BioIndex_Val, " > "
+                                            , signif(bio_better_thresh, 3))
                       
                       ## Plot, Variables, Colors
                       # col_sites_all     <- "dark gray"
@@ -725,12 +737,18 @@ getVerifiedPredictions <- function(TargetSiteID
                                              , show.legend = FALSE
                                              , na.rm = TRUE) +
                       # Legend, Points
-                      ggplot2::scale_color_manual(breaks = c("Yes", "No")
-                                                  , values = bio_col, drop = FALSE) +
-                      ggplot2::scale_fill_manual(breaks = c("Yes", "No")
-                                                 , values = bio_col, drop = FALSE) +
-                      ggplot2::scale_shape_manual(breaks = c("Yes", "No")
-                                                  , values = bio_shp, drop = FALSE)
+                      ggplot2::scale_color_manual(name="Degraded"
+                                                  , breaks = c("Yes", "No")
+                                                  , values = bio_col
+                                                  , drop = FALSE) +
+                      ggplot2::scale_fill_manual(name="Degraded"
+                                                 , breaks = c("Yes", "No")
+                                                 , values = bio_col
+                                                 , drop = FALSE) +
+                      ggplot2::scale_shape_manual(name="Degraded"
+                                                  , breaks = c("Yes", "No")
+                                                  , values = bio_shp
+                                                  , drop = FALSE)
                   
                   # target site, line (no legend - color outside of aes)
                   p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
