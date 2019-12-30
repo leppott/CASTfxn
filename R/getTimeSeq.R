@@ -36,7 +36,7 @@ getTimeSeq <- function(TargetSiteID
                        , dir_sub = "TimeSequence") {
 
     # Debug
-    boo_DEBUG <- FALSE
+    boo_DEBUG <- TRUE
     
     if (boo_DEBUG == TRUE) {
         TargetSiteID
@@ -178,10 +178,12 @@ getTimeSeq <- function(TargetSiteID
                 print(paste0("Plotting bar graphs for ",stressName," and "
                              ,respName," (",count," of ",totplots,")"))
                 flush.console()
+                
+                colwid =  nrow(df.plot) * 2
 
                 p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x=SampDate
                                             , y=as.numeric(meanval)))
-                p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = 8
+                p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = colwid
                              , position = ggplot2::position_dodge(preserve = "single"))
                 p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanval)
                                         , hjust= 2, vjust = 0, size=2.5)
