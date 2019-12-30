@@ -188,20 +188,78 @@ if(length(fn_all)>0){##IF.boo.pdf.START
 fnSamps <- file.path(dir_data,"SMCSiteSummary.tab")
 dfSamps <- read.delim(fnSamps, header=TRUE, sep="\t")
 dfSamps <- dfSamps[dfSamps$StationID_Master==TargetSiteID,]
-# dfSamps <- data_SampSummary[data_SampSummary$StationID_Master==TargetSiteID,]
 row.names(dfSamps) <- NULL
 dfSamps <- dplyr::select(dfSamps, -SampYear) %>%
     dplyr::rename(Cluster=clust, SampleDate=SampDate) %>%
     dplyr::mutate(SampleDate=lubridate::mdy(SampleDate))
+sampColNames <- colnames(dfSamps)
+coreColNames <- c("StationID_Master", "COMID", "Cluster", "SampleDate")
+sampColNames <- setdiff(sampColNames, coreColNames)
 
-compscaption <- paste0("Samples collected from ", TargetSiteID, " over time.")
-knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
-             , caption = compscaption) %>%
+# Get bmiIndex values, if they exist
+fnBMI <- file.path(dir_data,"SMCBenthicMetricsFinal.tab")
+dfBMI <- read.delim(fnBMI, header=TRUE, sep="\t")
+dfBMI <- dfBMI %>% 
+    dplyr::filter(StationID_Master==TargetSiteID) %>%
+    dplyr::select(StationID_Master, BMISampID, eval(bmiIndex))
+if (nrow(dfBMI)>0) { # There are BMI Index values
+    dfSamps <- merge(dfSamps, dfBMI
+          , by.x = c("StationID_Master","BMISampID")
+          , by.y = c("StationID_Master","BMISampID")
+          , all.x = TRUE)
+} else { # There are no BMI Index values, so add col and set all to NA
+    dfSamps <- dfSamps %>% dplyr::mutate(BMI.Index=NA)
+    colnames(dfSamps[,BMI.Index]) <- bmiIndex
+}
+dfSamps[[bmiIndex]] <- ifelse(is.na(dfSamps[[bmiIndex]]),NA
+                              ,round(dfSamps[[bmiIndex]],3))
+rm(fnBMI, dfBMI)
+
+# Get algIndex values, if they exist
+fnAlg <- file.path(dir_data,"SMCAlgaeMetricsFinal.tab")
+dfAlg <- read.delim(fnAlg, header=TRUE, sep="\t")
+dfAlg <- dfAlg %>% 
+    dplyr::filter(StationID_Master==TargetSiteID) %>%
+    dplyr::select(StationID_Master, AlgSampID, eval(algIndex))
+if (nrow(dfAlg)>0) { # There are BMI Index values
+    dfSamps <- merge(dfSamps, dfAlg
+          , by.x = c("StationID_Master","AlgSampID")
+          , by.y = c("StationID_Master","AlgSampID")
+          , all.x = TRUE)
+} else { # There are no BMI Index values, so add col and set all to NA
+    dfSamps <- dfSamps %>% dplyr::mutate(Alg.Index=NA)
+    colnames(dfSamps[,Alg.Index]) <- algIndex
+}
+dfSamps[[algIndex]] <- ifelse(is.na(dfSamps[[algIndex]]),NA
+                              ,round(dfSamps[[algIndex]],3))
+rm(fnAlg, dfAlg)
+
+dfSamps <- dfSamps %>%
+    dplyr::select(eval(coreColNames), eval(bmiIndex), eval(algIndex)
+                  , eval(sampColNames))
+
+compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
+                       , " Red index scores indicate degraded biological quality.")
+dfSamps <- dplyr::arrange_(dfSamps, "SampleDate", bmiIndex, algIndex)
+dfSamps <- dfSamps %>%
+    dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
+                                , color=ifelse(is.na(CSCI)==TRUE, "black"
+                                , ifelse((CSCI<0.79)==TRUE,"red","black"))
+                                , bold=ifelse(is.na(CSCI)==TRUE, FALSE
+                                , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
+                  , MMIhybrid=kableExtra::cell_spec(MMIhybrid,"html"
+                                , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
+                                , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
+                                , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
+                                , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
+
+knitr::kable(dfSamps, escape=FALSE, format=report_format
+             , colnames=colnames(dfSamps), caption = compscaption) %>%
     kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
                               , font_size = 12, full_width = FALSE
                               , position = "left") %>%
     kableExtra::column_spec(1,bold = TRUE) %>%
-    kableExtra::collapse_rows(columns=1:3, valign="top")
+    kableExtra::collapse_rows(columns=1:4, valign="top")
 ```
 
 ## *Potential Candidate Causes*
