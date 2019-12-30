@@ -317,9 +317,11 @@ getStressorList <- function(TargetSiteID
       
       ## Plot, Variables, Strings
       str_Group <- stringr::str_to_sentence(as.character(groupnames[g,1]))
-      str_title <- TargetSiteID
-      str_subtitle <- paste0("Comparator sites from cluster ", siteCluster)
-      str_xlab <- "Standardized Values"
+      str_title <- paste0(TargetSiteID, ": Selection of detected stressors for"
+                          ," evaluation as causes of impairment")
+      str_title <- stringr::str_wrap(str_title,100)
+      str_subtitle <- paste0("Comparator samples from cluster ", siteCluster)
+      str_xlab <- "Standardized values"
       str_ylab <- str_Group
       
       ## Plot, Variables, Colors
