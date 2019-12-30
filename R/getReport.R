@@ -34,7 +34,7 @@ getReport <- function(TargetSiteID
                       , probsLow=0.25
                       , useBMI
                       , useAlg
-                      , dfSamps = data_SampSummary[data_SampSummary$StationID_Master==TargetSiteID,]
+                      , removeOutliers
                       , dir_results=file.path(getwd(), "Results")
                       , report_type="summary"
                       , report_format="html"
