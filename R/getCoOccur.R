@@ -510,12 +510,12 @@ getCoOccur <- function(df_data
          ppi       <- 300
          
          # Create (ggplot)
-         lab.sub <- paste0("Comparator sites with higher ", colBio, " scores and "
+         lab.sub <- paste0("Comparator samples with higher ", colBio, " scores and paired "
                            , j, " data (", lab.N, ").\n ", lab.Score,".")
          
          bio_col <- c("blue", "dark gray")
          bio_shp <- c(21, 25) # circle and down triangle
-         lab_comp <- paste0("Comparator sites selected from cluster = ",i.Group)
+         lab_comp <- paste0("Comparator samples selected from cluster = ",i.Group)
          
          # scoring lines
          if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
@@ -536,7 +536,7 @@ getCoOccur <- function(df_data
          # Get wordy label for the y-axis
          jlabel <- df_stressinfo$Label[df_stressinfo$Analyte==j]
          jlog <- df_stressinfo$LogTransf[df_stressinfo$Analyte==j]
-         legendtitle <- "Degraded"
+         legendtitle <- "Degraded samples"
          maintitleCO <- paste0(i, ": Co-occurrence line of evidence")
          subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
          subtitleCO <- stringr::str_wrap(subtitleCO, 100)
@@ -643,8 +643,8 @@ getCoOccur <- function(df_data
            df.scores.i.n[, "Sc_SR"] <- j_SR_score
 
            #
-           lab.sub <- paste0("All comparator sites with ", colBio, " and ", j
-                             , " data (n=", n_cc_df_plot, ").\n Score = "
+           lab.sub <- paste0("All comparator samples with ", colBio, " and paired "
+                             , j, " data (n=", n_cc_df_plot, ").\n Score = "
                              , paste(j_SR_score, collapse=", "),".")
 
            # plot2, ggplot ####
@@ -667,7 +667,7 @@ getCoOccur <- function(df_data
              ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black"
                                  , lty=2, na.rm = TRUE) +
              #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) +
-             ggplot2::labs(title=i, y="Relative Probability of Degraded Condition"
+             ggplot2::labs(title=i, y="Relative probability of degraded condition"
                            , x=jlabel) +
              ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
                                 , color="blue", lwd=1, na.rm = TRUE) +
