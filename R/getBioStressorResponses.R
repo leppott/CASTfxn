@@ -1177,13 +1177,14 @@ getBioStressorResponses <- function(TargetSiteID
         }
 
         # other
-        p_SR <- p_SR + ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
+        p_SR <- p_SR + ggplot2::theme_bw() +
+            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
                             , plot.subtitle=ggplot2::element_text(hjust=0.5, size=10)
                             , plot.caption=ggplot2::element_text(size=8)
                             , legend.title=ggplot2::element_text(size=10)
                             , legend.text=ggplot2::element_text(size=8)
                             , axis.title=ggplot2::element_text(size=10)) + 
-                       ggplot2::labs(title=str_title, subtitle = str_subtitle
+            ggplot2::labs(title=str_title, subtitle = str_subtitle
                             , caption=str_caption, x=str_xlab, y=str_ylab)
         #
         print(p_SR)
