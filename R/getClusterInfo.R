@@ -343,10 +343,12 @@ getClusterInfo <- function(TargetSiteID
         ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
                                    , values=leg_fill) + 
         ggplot2::scale_x_discrete(limits=unique(df_ggplot_all$Cluster)) +
+        ggplot2::theme_bw() +
         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                        , plot.subtitle=ggplot2::element_text(hjust=0.5)
                        , plot.caption=ggplot2::element_text(size=8)) + 
-        ggplot2::theme(axis.text.x = ggplot2::element_text(size=6)) +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(size=8)
+                       , axis.text.y = ggplot2::element_text(size=8)) +
         ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab
                                 , caption=str_caption)
     #
