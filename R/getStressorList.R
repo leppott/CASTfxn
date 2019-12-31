@@ -129,10 +129,11 @@ getStressorList <- function(TargetSiteID
                             , pHlimLow=6.5
                             , pHlimHigh=9
                             , biocomm="bmi"
+                            , bioParmsDEL
                             , dir_results=file.path(getwd(), "Results")
                             , dir_sub="CandidateCauses") {##FUNCTION.START
   # DEBUGGING ####
-  boo.DEBUG <- FALSE
+  boo.DEBUG <- TRUE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 1
@@ -150,6 +151,7 @@ getStressorList <- function(TargetSiteID
     pHlimLow=6.5
     pHlimHigh=9
     biocomm=bioComm
+    bioParmsDEL=bioParmsDEL
     dir_results=dir_results
     dir_sub="CandidateCauses"
     # all other function inputs defined in example.
@@ -361,19 +363,22 @@ getStressorList <- function(TargetSiteID
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
       
-      if (n>9) {
-          yaxistextsize = 5.5
+      if (n>8) {
+          yaxistextsize = 6
+          wrap_length = 35
       } else {
           yaxistextsize = 7
+          wrap_length <- 27
       }
       
       # ggplot, main
       p_SL <- ggplot2::ggplot(data=df_plot_long) + 
-                ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
                                                    , y=value))  + 
                 ggplot2::coord_flip() + 
                 ggplot2::labs(title=str_title, subtitle=str_subtitle
                               , y=str_xlab, x=str_ylab, caption = str_caption) + 
+                ggplot2::theme_bw() +
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
                                , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
                                , axis.text.x = ggplot2::element_blank()
@@ -385,7 +390,7 @@ getStressorList <- function(TargetSiteID
       ## Cluster, Ref
       if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1
-                                , ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                                , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
                                                , y=value, color="cl_ref"
                                                , shape="cl_ref", fill="cl_ref")
                                 , size=1)
@@ -398,7 +403,7 @@ getStressorList <- function(TargetSiteID
       if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
         p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ
                                             , width=0.1
-                                            , ggplot2::aes(x=stringr::str_wrap(Label, 20)
+                                            , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
                                                            , y=value
                                                            , color="targ"
                                                            , shape="targ"
@@ -459,9 +464,6 @@ getStressorList <- function(TargetSiteID
   chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
                         , function(x) dplyr::percent_rank(x))
   data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
-  # colnames(data.chem.pctrank)[1] <- "StationID_Master"
-  # colnames(data.chem.pctrank)[2] <- "StressSampleID"
-  # row.names(data.chem.pctrank) <- NULL
   fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
                                            ,"CandCauses_ChemPctRank.tab"))
   utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE
@@ -472,6 +474,8 @@ getStressorList <- function(TargetSiteID
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     c <- 3
   }##IF.boo.DEBUG.END
+  
+  # Handle exceptions from standard stressor list ID
   for (c in 7:ncol(site.pctrank)) {
     # print(c)
     chemname <- colnames(site.pctrank)[c]
@@ -521,6 +525,19 @@ getStressorList <- function(TargetSiteID
     }
   }##FOR~c~END
   stressorlist <- stressor
+  stressorlist <- setdiff(stressorlist, bioParmsDEL)
+  stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
+  stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
+      dplyr::mutate(Biocomm = biocomm)
+  if (nrow(stressorsExcepted)==0) {
+      stressorsExcepted <- rbind(stressorsExcepted,(cbind("None",biocomm)))
+  }
+  colnames(stressorsExcepted) <- c("Stressor","BioComm")
+  # Write stressors excepted table
+  fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                           ,"CandCauses_StressorsExcluded.tab"))
+  utils::write.table(stressorsExcepted, fn.stressorsExc, sep="\t", col.names=TRUE
+                     , row.names = FALSE, append=FALSE)
   
   # LogTransf ####
   # 20190110, get log transformation code from chem.info
