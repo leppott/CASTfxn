@@ -196,24 +196,6 @@ getStressorList <- function(TargetSiteID
   clusterRefModSamps <- clusterChem %>%
       dplyr::filter(stringr::str_detect(StressSampID, "_modeledflow")) %>%
       dplyr::filter(StationID_Master %in% refSites)
-  # if (biocomm == "BMI") {
-  #     clusterRefModSamps <- clusterChem %>%
-  #         dplyr::filter(stringr::str_detect(StressSampID, "_bmi"))
-  #     clusterRefModSamps <- unique(clusterRefModSamps)
-  #     clusterChem <- clusterChem %>%
-  #         dplyr::filter(stringr::str_detect(StressSampID, "algae"
-  #                                           , negate = TRUE))
-  #     clusterChem <- unique(clusterChem)
-  #     
-  # } else if (biocomm == "ALGAE") {
-  #     clusterRefModSamps <- clusterChem %>%
-  #         dplyr::filter(stringr::str_detect(StressSampID, "flow"))
-  #     clusterRefModSamps <- unique(clusterRefModSamps)
-  #     clusterChem <- clusterChem %>%
-  #         dplyr::filter(stringr::str_detect(StressSampID, "flow"
-  #                                           , negate = TRUE))
-  #     clusterChem <- unique(clusterChem)
-  # }
   clusterRefChem <- rbind(clusterRefChem, clusterRefModSamps)
   rm(clusterRefModSamps)
   clusterRefChem <- select_if(clusterRefChem, not_all_na)
@@ -529,10 +511,13 @@ getStressorList <- function(TargetSiteID
   stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
   stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
       dplyr::mutate(Biocomm = biocomm)
+  colnames(stressorsExcepted)[1] <- "Stressor"
+  stressorsExcepted <- merge(stressorsExcepted, chemInfo[,c("Analyte", "Label")]
+                             , by.x = "Stressor", by.y = "Analyte", all.x = TRUE)
   if (nrow(stressorsExcepted)==0) {
-      stressorsExcepted <- rbind(stressorsExcepted,(cbind("None",biocomm)))
+      stressorsExcepted <- rbind(stressorsExcepted,(cbind("None",biocomm,"None")))
   }
-  colnames(stressorsExcepted) <- c("Stressor","BioComm")
+  colnames(stressorsExcepted) <- c("Stressor","BioComm","Label")
   # Write stressors excepted table
   fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
                                            ,"CandCauses_StressorsExcluded.tab"))
