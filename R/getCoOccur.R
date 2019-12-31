@@ -572,6 +572,7 @@ getCoOccur <- function(df_data
                                          , breaks=c("Yes", "No"), values=bio_shp
                                          , drop=FALSE) + 
              ggplot2::labs(title=maintitleCO, subtitle=subtitleCO, caption=lab.sub) + 
+             ggplot2::theme_bw() +
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
@@ -671,6 +672,7 @@ getCoOccur <- function(df_data
                            , x=jlabel) +
              ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
                                 , color="blue", lwd=1, na.rm = TRUE) +
+             ggplot2::theme_bw() +
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
