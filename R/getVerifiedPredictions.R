@@ -711,6 +711,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                     , subtitle = str_subtitle
                                     , y = str_ylab
                                     , caption = str_caption) +
+                      ggplot2::theme_bw() +
                       ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                                      , plot.subtitle = ggplot2::element_text(hjust=0.5)
                                      , axis.title.y = ggplot2::element_blank()) +
