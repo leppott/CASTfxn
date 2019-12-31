@@ -30,6 +30,8 @@
 #' 
 #' @export
 getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
+                               , bmiIndex = "CSCI"
+                               , algIndex = "MMIhybrid"
                                , dir_data = file.path(getwd(),"Data")
                                , dir_results = file.path(getwd(), "Results")
                                , dir_sub = "WoE"
@@ -37,14 +39,16 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     
     # define pipe
     `%>%` <- dplyr::`%>%`
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if(boo_DEBUG==TRUE) {
+        biocommlist = toupper(c("bmi", "algae"))
+        bmiIndex = "CSCI"
+        algIndex = "MMIhybrid"
         dir_data = file.path(getwd(),"Data")
         dir_results = file.path(getwd(), "Results")
         dir_sub = "WoE"
         df_sites = NULL
-        biocommlist = toupper(biocommlist)
     }
     
     
@@ -59,6 +63,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
             if (grepl("^RunStats_\\d{8}\\.tab$", site_dirs[site])) {
                 next()
             }
+            if (grepl("\\.7z$", site_dirs[site])) {
+                next()
+            }
             
             # Get Target Site ID & skip any site folders that are qualified
             TargetSiteID <- site_dirs[site]
@@ -68,6 +75,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
             # 
             for (b in (1:length(biocommlist))) {
                 biocomm = biocommlist[b]
+                if (biocomm=="BMI") { bioIndex = bmiIndex }
+                else { bioIndex = algIndex}
                 # Get WoE path & file lists (under TargetSiteID)
                 woe_path <- file.path(dir_results, TargetSiteID, biocomm, "WoE")
                 woe_detailfiles <- list.files(woe_path, pattern = "WoE_ScoresTable")
@@ -156,20 +165,21 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , Cluster
                    , BioComm
                    , BioDeg
+                   , IndexScore
                    , RespSampID
                    , StressorType
                    , StressSampID
                    , Stressor
                    , StressorValue
                    , StressorPctRank
+                   , WoE
                    , CO_boxplot
                    , SR_InCase_LogRegr
                    , SR_InCase_LinRegr
                    , SR_OutCase_LinRegr
                    , VP_boxplot_senstaxa
                    , VP_boxplot_toltaxa
-                   , SSD_ToxicityCurve
-                   , WoE)
+                   , SSD_ToxicityCurve)
         
         
         df_WoESummary <- merge(df_SitesLatLong, df_strAllSites
@@ -177,21 +187,22 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                                , by.y = "StationID_Master")
         
         df_WoESummary <- df_WoESummary %>%
-            select(StationID_Master
+            dplyr::select(StationID_Master
                    , FinalLatitude
                    , FinalLongitude
                    , clust
                    , BioComm
                    , BioDeg
                    , StressorType
-                   , NumSamples
+                   , NumStressSamples
                    , NumStressors
+                   , WtTot_WoE
                    , WtTotCO_boxplot
                    , WtTotSR_InCase_LogRegr
                    , WtTotSR_InCase_LinRegr
                    , WtTotSR_OutCase_LinRegr
-                   , WtTotVP_boxplot
-                   , WtTot_WoE)
+                   , WtTotVP_boxplot) %>%
+            dplyr::rename(Cluster = clust)
 
     } # Finish iterate through site directories loop
     
