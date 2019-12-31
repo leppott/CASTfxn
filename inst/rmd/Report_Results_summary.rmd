@@ -132,12 +132,14 @@ if(length(fn_all)>0){##IF.boo.pdf.START
   msg_files <- ""
   
 }##IF.boo.pdf.START
+
+cat(msg_files)
 #
 ```
 
 ## *Site Background*
 
-```{r bkgdplots, out.width="80%", out.extra='style="padding:10px"'}
+```{r bkgdplots, out.width="100%", out.extra='style="padding:10px"'}
 dir.sub3 <- "SiteInfo"
 dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub3)
 fn_all  <- list.files(path=dir_SiteID, full.names = TRUE
@@ -317,7 +319,7 @@ if(useBMI==TRUE){
 
 ```
 
-```{r BMIStrBoxPlots, out.extra='style="padding:10px"'}
+```{r BMIStrBoxPlots, out.width="100%", out.extra='style="padding:10px"'}
 
 if(useBMI==TRUE){
     dir.sub3 <- "CandidateCauses"
@@ -350,7 +352,7 @@ if(useBMI==TRUE){
 
 ## *Biological Index Distributions*
 
-```{r bmi_box}
+```{r bmi_box, out.width="70%", out.extra='style="padding:10px"'}
 
 if(useBMI==TRUE){
     dir.sub3 <- "SiteInfo"
@@ -569,7 +571,7 @@ if(useBMI==TRUE){
 
 ## *Biological Index Distributions*
 
-```{r alg_box}
+```{r alg_box, out.width="70%", out.extra='style="padding:10px"'}
 
 if(useAlg==TRUE){
     dir.sub3 <- "SiteInfo"
