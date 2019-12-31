@@ -192,7 +192,7 @@ getSiteInfo <- function(TargetSiteID
     
     ## Plot, Variables, Output Size (inches)
     plot_H <- 4
-    plot_W <- 9
+    plot_W <- 6
     
     #
     mySiteInfo <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID
@@ -272,6 +272,7 @@ getSiteInfo <- function(TargetSiteID
           #                                     , color = "red", fill = "red"
           #                                     , shape = 17))
           ggplot2::labs(title=str_title, subtitle = str_sub, caption=lab.sub) + 
+          ggplot2::theme_bw() +
           ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                          , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
           ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
@@ -302,7 +303,7 @@ getSiteInfo <- function(TargetSiteID
         
         bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
         bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
-        bio_alpha <- c(0.3, 0.5, 1)
+        bio_alpha <- c(0.5, 0.5, 1)
         
         str_title <- "Algal community index scores"
         str_sub <- paste0("Target Site: ", TargetSiteID, ", cluster ", mySiteInfo$clust)
@@ -327,6 +328,7 @@ getSiteInfo <- function(TargetSiteID
             #                                     , color = "red", fill = "red"
             #                                     , shape = 17))
             ggplot2::labs(title=str_title, subtitle = str_sub, caption=lab.sub) + 
+            ggplot2::theme_bw() +
             ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                            , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
@@ -541,11 +543,6 @@ getSiteInfo <- function(TargetSiteID
                 flush.console()
                 have.photos <- TRUE
             }
-            # if (!have.photos) {
-            #     
-            #     print(paste0("No site photos are available for ", TargetSiteID))
-            #     flush.console()
-            # }
         }
     } else { 
         print("Photo directory does not exist.")
@@ -567,7 +564,7 @@ getSiteInfo <- function(TargetSiteID
                     , row.names = FALSE, sep = "\t")
     }
 
-    print("Completed tranferring any available site files.")
+    print("Completed transferring any available site files.")
     flush.console()
     
     # Get background data from fn_bkgdata; use COMID to select single row
@@ -615,62 +612,63 @@ getSiteInfo <- function(TargetSiteID
                            ,", ",cat.sub$Units[i])
             fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
                                                   , cat.sub[i,4], ".png"))
-            p.title <- paste("Potential anthropogenic alterations")
-            p.subtitle <- TargetSiteID
+            p.title <- paste0(TargetSiteID, ": Site background")
+            p.subtitle <- "Potential anthropogenic alterations"
             numcols <- length(unique(df.temp$Scale))/2
             
             print(xlab)
             flush.console()
             
-            if (is.na(df.temp$StudyYear)) {  # Need to facet years as well
+            if (is.na(df.temp$StudyYear)) {  # No study year
                 p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
                                                                , y = signif(val, digits = 2))) +
-                    ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "firebrick4") +
+                    ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
                     ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
                                                     , vjust=-0.2), color = "black", size=3) +
-                    ggplot2::ylim(0, max(df.temp$val)*1.1) +
+                    ggplot2::ylim(0, max(df.temp$val)*1.2) +
                     ggplot2::facet_wrap(Scale~.)
-                p.bkg <- p.bkg + ggthemes::theme_stata() + 
-                    ggplot2::theme(legend.position = "none") +
-                    ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)) +
+                p.bkg <- p.bkg + ggplot2::theme_bw() +
+                ggplot2::theme(legend.position = "none") +
+                    ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                                   , strip.text.y = ggplot2::element_text(size = 8)) +
                     ggplot2::labs(title = p.title, subtitle = p.subtitle
                                   , x = xlab, y = "Value")
                 p.bkg <- p.bkg + 
-                    ggplot2::theme(axis.text.x = ggplot2::element_text(size=7
+                    ggplot2::theme(axis.text.x = ggplot2::element_text(size=8
                                                                        ,angle=45,hjust=1)
-                                   , axis.text.y = ggplot2::element_text(size=8)
+                                   , axis.text.y = ggplot2::element_text(size=7)
                                    , axis.title.x = ggplot2::element_text(size=9, face="bold")
                                    , axis.title.y = ggplot2::element_text(size=9, face="bold")
-                                   , plot.title = ggplot2::element_text(size=10, face="bold")
-                                   , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
-                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W, height=plot_H)
+                                   , plot.title = ggplot2::element_text(size=12, face="bold")
+                                   , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
+                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
                 
-            } else {  # No separate study year to consider in faceting
+            } else {  # Separate study year to consider in faceting
                 
                 p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
                                                                , y = signif(val, digits = 2)
                                                                , group = StudyYear)) +
                     ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
-                                      , fill = "firebrick4") +
+                                      , fill = "darkred") +
                     ggplot2::geom_text(ggplot2::aes(label = signif(val, digits=2)
                                                     , vjust=-0.2), color = "black", size=3) +
-                    ggplot2::ylim(0, max(df.temp$val)*1.1) +
-                    ggplot2::facet_grid(Scale~StudyYear, margins = FALSE)
-                p.bkg <- p.bkg + ggthemes::theme_stata() + 
+                    ggplot2::ylim(0, max(df.temp$val)*1.2) +
+                    ggplot2::facet_grid(stringr::str_wrap(Scale,10)~StudyYear, margins = FALSE)
+                p.bkg <- p.bkg + ggplot2::theme_bw() +
                     ggplot2::theme(legend.position = "none") +
                     ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
                                    , strip.text.y = ggplot2::element_text(size = 8)) +
                     ggplot2::labs(title = p.title, subtitle = p.subtitle
                                   , x = xlab, y = "Value")
                 p.bkg <- p.bkg +
-                    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 7
+                    ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
                                                                        , angle = 45, hjust = 1)
-                                   , axis.text.y = ggplot2::element_text(size=8)
+                                   , axis.text.y = ggplot2::element_text(size=7)
                                    , axis.title.x = ggplot2::element_text(size=9, face="bold")
                                    , axis.title.y = ggplot2::element_text(size=9, face="bold")
-                                   , plot.title = ggplot2::element_text(size=10, face="bold")
-                                   , plot.subtitle = ggplot2::element_text(size=9, face="bold"))
-                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W, height=plot_H)
+                                   , plot.title = ggplot2::element_text(size=12, face="bold")
+                                   , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
+                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
                 
             }  # End creating background plot
             
