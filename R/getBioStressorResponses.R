@@ -272,8 +272,9 @@ getBioStressorResponses <- function(TargetSiteID
 
   
   # Correlation file output header row
-  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName"
-                   , "n", "statistic", "p.value", "estimate", "r2")
+  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "stressLabel"
+                   ,"respName","respLabel", "n", "statistic", "p.value"
+                   , "estimate", "r2")
   
   
   # Community ####
@@ -691,8 +692,12 @@ getBioStressorResponses <- function(TargetSiteID
               c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor
                                          , method="pearson", use="pairwise.complete.obs"))
               df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName
-                                             , respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
-                                             , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
+                                             , stressLabel, respName, respLabel
+                                             , c1S_cl$parameter+1
+                                             , signif(c1S_cl$statistic, 2)
+                                             , signif(c1S_cl$p.value, 2)
+                                             , signif(c1S_cl$estimate, 2)
+                                             , r2_cl))
               #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
               names(df.corr_cl) <- cn_cor_pref
               pval.corr_cl <- signif(c1S_cl$p.value, 2)
@@ -782,7 +787,8 @@ getBioStressorResponses <- function(TargetSiteID
               c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor
                                           , method="pearson", use="pairwise.complete.obs"))
               df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName
-                                              , respName, c1S_all$parameter+1
+                                              , stressLabel, respName, respLabel
+                                              , c1S_all$parameter+1
                                               , signif(c1S_all$statistic, 2)
                                               , signif(c1S_all$p.value, 2)
                                               , signif(c1S_all$estimate, 2)
@@ -916,7 +922,9 @@ getBioStressorResponses <- function(TargetSiteID
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID
                                         , "biocomm"=biocomm
                                         , "stressName"=stressName
+                                        , "stressLabel"=stressLabel
                                         , "respName"=respName
+                                        , "respLabel"=respLabel
                                         , "n_site"=length(df_plot_site)
                                         , "n_all"=n_str_all
                                         , "SR_Score_all"=sr.score_all
@@ -1196,32 +1204,6 @@ getBioStressorResponses <- function(TargetSiteID
         #
       }##IF.boo.Plot.END
 
-
-
-        
-        
-        # #Print equation, r2, and p-value
-        # if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-        #   eqn <- paste("Cluster regression: ", "y =", slope, "x +", intercept
-        #                  , "; ", "r2 =", r2, "; ", "p-value =", pval.corr
-        #                  ,"; ","n =",length(varX))
-        #   symbshape <- c(1, 16, 2, 17, 19)
-        #   symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
-        #   symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", 
-        #                 TargetSiteID)
-        #   graphics::mtext(eqn, side=1, line=4, bty="n", col=c("black"), cex=0.6)
-        #   graphics::legend(varLegOpp, symbname, pch=symbshape, col=symbcol
-        #                    , cex=0.6, lwd="1", bg="white")
-        # }##IF.length.END
-        #
-        
-       
-      
-        
-     # }##plot.pryr.END
-        #~~~~~~~~~~~~~~~~~~~
-        # OLD plot stuff [END]
-        #~~~~~~~~~~~~~~~~~~~
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
       ## PDF, capture plot in list
