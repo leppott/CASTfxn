@@ -291,6 +291,8 @@ getCoOccur <- function(df_data
   df.scores[, "SR_pred_Deg"] <- as.character(NA)
   df.scores[, "Sc_SR"]       <- as.character(NA)
   df.scores[, "biocomm"]     <- as.character(NA)
+  df.scores[, "Label"]       <- as.character(NA)
+  
   # Remove columns
   col.remove <- names(df.scores) %in% colStressors
   df.scores <- df.scores[, !col.remove]
@@ -298,21 +300,6 @@ getCoOccur <- function(df_data
   # remove all rows
   df.scores <- df.scores[0, ]
   
-  #par
-#  par.orig <- par(no.readonly=TRUE)
-  # reset with "par(par.orig)"
-  # using ggplot so don't need par
-  
-  # QC Test
-
-  # num.ID        <- sum(TargetSiteID %in% df_data[,col_ID])
-  # num.Stressors <- sum(colStressors %in% names(df_data))
-  # num.Groups    <- length(unique(df_data[,colGroup]))
-  # 
-  # print(paste0("Items to process; Samples/Stations (n=",num.ID,")."))
-  # print(paste0("Items to process; Stressors (n=",num.Stressors,")."))
-  # print(paste0("Items to process; Groups (n=",num.Groups,")."))
-
   #
   if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
     i <- TargetSiteID[1] 
@@ -747,8 +734,11 @@ getCoOccur <- function(df_data
          }##IF.complete.cases.END
           
          # add biocomm, 20190425
-         df.scores.i.n[, "biocomm"] <- biocomm
-         
+         df.scores.i.n <- df.scores.i.n %>%
+             dplyr::mutate(biocomm = biocomm, Label = unique(jlabel))
+         # df.scores.i.n[, "biocomm"] <- biocomm
+         # df.scores.i.n[, "Label"] <- unique(jlabel)
+
           # Save tabular scores
           utils::write.table(df.scores.i.n, file=fn.scores
                       , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
@@ -768,6 +758,7 @@ getCoOccur <- function(df_data
          df.i.NA[, "Param_Name"] <- j
          # add biocomm, 20190425
          df.i.NA[, "biocomm"] <- biocomm
+         df.i.NA[, "Label"] <- unique(jlabel)
          utils::write.table(df.i.NA, file=fn.scores, col.names = FALSE
                             , row.names=FALSE, sep="\t", append=TRUE)
          
