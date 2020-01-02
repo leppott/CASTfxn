@@ -36,7 +36,7 @@ getTimeSeq <- function(TargetSiteID
                        , dir_sub = "TimeSequence") {
 
     # Debug
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if (boo_DEBUG == TRUE) {
         TargetSiteID
