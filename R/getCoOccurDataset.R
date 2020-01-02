@@ -70,15 +70,16 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # Read data files (stressor and response)
     if (biocomm == "bmi") {
         df_resp <- df_resp[,c("StationID_Master", "BMISampDate", "BMISampID"
-                              , "Quality", index)] %>%
+                              , "Quality", index, "BMISampFlag")] %>%
             dplyr::rename(RespSampDate = BMISampDate) %>%
-            dplyr::rename(RespSampID = BMISampID)
+            dplyr::rename(RespSampID = BMISampID) %>%
+            dplyr::rename(RespSampFlag = BMISampFlag)
     } else if (biocomm == "alg") {
         df_resp <- df_resp[,c("StationID_Master", "AlgSampDate", "AlgSampID"
                               , "Quality", index)] %>%
             dplyr::rename(RespSampDate = AlgSampDate) %>%
             dplyr::rename(RespSampID = AlgSampID) #%>%
-#            dplyr::mutate(RespSampDate = lubridate::mdy(RespSampDate))
+            dplyr::mutate(RespSampFlag = NA)
     } else {
         print("Biological community type not used.")
         flush.console()
@@ -104,10 +105,11 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                       , RespSampID
                       , Quality
                       , eval(index)
+                      , RespSampFlag
                       , eval(modColnames))
     
     rm(df_model, df_resp)
-    respColnames <- c("RespSampID", "Quality", index)
+    respColnames <- c("RespSampID", "Quality", index, "RespSampFlag")
 
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
