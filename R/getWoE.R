@@ -324,10 +324,12 @@ getWoE <- function(TargetSiteID
                                         , header = TRUE, sep = "\t"
                                         , stringsAsFactors = FALSE)
                     colnames(dfCO) <- c("StationID_Master", "Cluster", "StressSampID"
-                                         , "RespSampID", index, "BioNarrative"
-                                         , "BioDegYN", "Stressor", "StressorValue"
-                                         , "n", "q25", "q50", "q75", "Sc_Boxplot"
-                                         , "SR_pred_Deg", "SC_SRLog", "biocomm")
+                                        , "RespSampID", index, "BioNarrative"
+                                        , "BioDegYN", "Stressor", "StressorValue"
+                                        , "n", "q25", "q50", "q75", "Sc_Boxplot"
+                                        , "SR_pred_Deg", "SC_SRLog", "biocomm"
+                                        , "Label")
+                    dfCO <- dplyr::select(dfCO, -Label)
                     dfCO <- dfCO[!is.na(dfCO$StressorValue),]
                     dfCO <- unique(dfCO)
                     
@@ -371,16 +373,19 @@ getWoE <- function(TargetSiteID
             if (chrLoE == "SR") {
                 if (file.exists(file.path(dirLoE,fnSRScores))) {
                     dfSR <- read.table(file.path(dirLoE, fnSRScores)
-                                        , header = TRUE, sep = "\t"
-                                        , stringsAsFactors = FALSE)
+                                       , header = TRUE, sep = "\t"
+                                       , stringsAsFactors = FALSE
+                                       , comment.char = "")
                     
                     colnames(dfSR) <- c("StationID_Master", "Stressor", "Response"
                                         , "StressSampID", "RespSampID", "Quality"
                                         , "StressorValue", "ResponseValue", "biocomm"
+                                        , "stressLabel", "respLabel"
                                         , "n_site", "n_all", "SRlin_ScoreAll"
                                         , "n_clust", "SRlin_ScoreCluster")
                     dfSR <- dfSR[!is.na(dfSR$StressorValue),]
                     dfSR <- unique(dfSR)
+                    dfSR <- dplyr::select(dfSR, -stressLabel, -respLabel)
                     
                     # SR linear regression inside the case
                     dfSRlin_inside <- dfSR %>%
@@ -426,15 +431,15 @@ getWoE <- function(TargetSiteID
                     dfVP <- read.table(file.path(dirLoE,fnVPScores)
                                        , header = TRUE, sep = "\t"
                                        , stringsAsFactors = FALSE)
-                    colnames(dfVP) <- c("RespSampID", "StressSampID"
-                                        , "StationID_Master", "Stressor"
-                                        , "StressorValue", "Response"
-                                        , "ResponseValue", "betterbio_varval_qLO"
-                                        , "betterbio_varval_qHI", "Score", "biocomm"
-                                        , "n", "n_BetterNotDegraded", "IndexValue"
-                                        , "Quality")
+                    colnames(dfVP) <- c("StationID_Master", "RespSampID"
+                                        , "IndexValue", "Quality", "StressSampID"
+                                        , "Label", "Stressor", "StressorValue"
+                                        , "Response", "ResponseValue", "qLoValue_Cutoff"
+                                        , "qHiValue_Cutoff", "Score", "biocomm"
+                                        , "n", "n_BetterNotDegraded")
                     dfVP <- dfVP[!is.na(dfVP$StressorValue),]
                     dfVP <- unique(dfVP)
+                    dfVP <- dplyr::select(dfVP, -Label)
                     
                     # Pull out co-occurrence scores from co-occurrence file
                     dfVP <- dfVP %>%
@@ -495,11 +500,12 @@ getWoE <- function(TargetSiteID
     dfRank <- dplyr::filter(dfRank, !is.na(StressorPctRank))
     
     dfStressInfo <- dfStressInfo %>%
-        select(StdParamName, GroupName) %>%
+        select(StdParamName, GroupName, Label) %>%
         rename(Stressor = StdParamName, StressorType = GroupName)
     
-    dfStrGpRank <- unique(merge(dfRank, dfStressInfo, by.x = "Stressor"
-                         , by.y = "Stressor"))
+    dfStrGpRank <- unique(merge(dfRank, dfStressInfo[,c("Stressor", "StressorType")]
+                                , by.x = "Stressor"
+                                , by.y = "Stressor"))
     
     dfStrGpRankQual <- unique(merge(dfStrGpRank, dfQual
                                     , by.x = c("StationID_Master", "StressSampID")
@@ -525,7 +531,7 @@ getWoE <- function(TargetSiteID
                                          , ComparatorYN, BetterThan)
     dfStrGpRankQual <- rbind(dfStrGpRankQual, dfStrGpRankQualModl)
     
-    if (boo_DEBUG==FALSE) { rm(dfRank, dfStressInfo, dfStrGpRank) }
+    if (boo_DEBUG==FALSE) { rm(dfRank, dfStrGpRank) }
 
     # Merge in Quality info and Stressor Types
     dfEvidenceLong <- merge(dfStrGpRankQual, dfEvidenceLong
@@ -535,18 +541,20 @@ getWoE <- function(TargetSiteID
                                        , "Stressor", "RespSampID"))
     
     # Add additional information to the Long form 
+    dfEvidenceLong <- merge(dfEvidenceLong, dfStressInfo[,c("Stressor","Label")]
+                            , all.x = TRUE)
     dfEvidenceLong <- dfEvidenceLong %>%
         dplyr::rename(Cluster = clust, BioComm = biocomm, Inside_Outside = InOut) %>%
         dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, eval(index)
                       , BioDeg, BioNarrative, Response, ResponseValue, StressSampID
-                      , StressorType, Stressor, StressorValue, StressorPctRank
+                      , StressorType, Label, Stressor, StressorValue, StressorPctRank
                       , Score, n, nType, LoEtrim, LoE, Analysis, Inside_Outside) %>%
         dplyr::mutate(Finding = ifelse(Score=="NE","Not evaluated"
                                        , ifelse(as.numeric(Score)>0, "Supports"
                                        , ifelse(as.numeric(Score)<0, "Refutes"
                                        , ifelse(as.numeric(Score)==0, "Indeterminate"
                                        , NA))))) %>%
-        dplyr::arrange(StressorType, Stressor, StressSampID, LoE)
+        dplyr::arrange(StressorType, Label, StressSampID, LoE)
 
     # Write the detailed data file
     fnEvidLong <- paste0(TargetSiteID,"_", biocomm, "_WoE_DetailedLoEs.tab")
@@ -561,18 +569,20 @@ getWoE <- function(TargetSiteID
                                         , "Stressor", "RespSampID"))
     
     # Add additional information to the Long form for Metrics
+    dfMetricsLong <- merge(dfMetricsLong, dfStressInfo[,c("Stressor","Label")]
+                            , all.x = TRUE)
     dfMetricsLong <- dfMetricsLong %>%
         dplyr::rename(Cluster = clust, BioComm = biocomm, Inside_Outside = InOut) %>%
         dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, eval(index)
                       , BioDeg, BioNarrative, Response, ResponseValue, StressSampID
-                      , StressorType, Stressor, StressorValue, StressorPctRank
+                      , StressorType, Label, Stressor, StressorValue, StressorPctRank
                       , Score, n, nType, LoEtrim, LoE, Analysis, Inside_Outside) %>%
         dplyr::mutate(Finding = ifelse(Score=="NE","Not evaluated"
                                        , ifelse(as.numeric(Score)>0, "Supports"
                                        , ifelse(as.numeric(Score)<0, "Refutes"
                                        , ifelse(as.numeric(Score)==0, "Indeterminate"
                                        , NA))))) %>%
-        dplyr::arrange(StressorType, Stressor, StressSampID, LoE)
+        dplyr::arrange(StressorType, Label, StressSampID, LoE)
 
     # Write the detailed data file
     fnEvidLongMetrics <- paste0(TargetSiteID,"_", biocomm, "_WoE_DetailedMetricsLoEs.tab")
@@ -580,13 +590,12 @@ getWoE <- function(TargetSiteID
                 , col.names = TRUE, row.names = FALSE, sep = "\t")
     
     
-    dfEvidenceWide <- unique(dfEvidenceLong[, c("StressSampID", "Stressor"
-                                                , "StressorValue", "Score"
-                                                , "LoEtrim")])
+    dfEvidenceWide <- unique(dfEvidenceLong[,c("StressSampID","Label","Stressor"
+                                               ,"StressorValue","Score","LoEtrim")])
     # Pivot scores to wide format
     dfEvidenceWide <- dfEvidenceWide %>%
         dplyr::mutate(Score = as.numeric(Score)) %>%
-        dplyr::group_by(StressSampID, Stressor, StressorValue, LoEtrim) %>%
+        dplyr::group_by(StressSampID, Label, Stressor, StressorValue, LoEtrim) %>%
         dplyr::summarize(TotScore = sum(Score)) %>%
         dplyr::rename(Score = TotScore) %>%
         tidyr::spread(key = "LoEtrim", value = sum(Score, na.rm=TRUE), fill=NA)
@@ -596,9 +605,9 @@ getWoE <- function(TargetSiteID
     
     # Provide text interpretation of score
     dfEvidenceCounts <- dfEvidenceLong %>%
-        dplyr::select(RespSampID, StressSampID, Stressor, StressorValue
+        dplyr::select(RespSampID, StressSampID, Label, Stressor, StressorValue
                       , Inside_Outside, Finding, Score) %>%
-        dplyr::group_by(RespSampID, StressSampID, Stressor, StressorValue
+        dplyr::group_by(RespSampID, StressSampID, Label, Stressor, StressorValue
                         , Inside_Outside, Finding, Score) %>%
         dplyr::summarise(NumLoE = n())
     
@@ -633,7 +642,7 @@ getWoE <- function(TargetSiteID
     dfEvidenceCounts <- as.data.frame(dfEvidenceCounts)
     dfEvidCountsWide <- dfEvidenceCounts %>%
         dplyr::select(-Inside_Outside, -Finding, -Score) %>%
-        dplyr::group_by(StressSampID, Stressor, StressorValue) %>%
+        dplyr::group_by(StressSampID, Label, Stressor, StressorValue) %>%
         tidyr::spread(key = "Heading", value = "NumLoE", fill = 0)
 
     # Account for missing columns
@@ -654,8 +663,10 @@ getWoE <- function(TargetSiteID
     
     # Merge individual LoE with summary LoE
     dfEvidCountsWide <- merge(dfEvidenceWide, dfEvidCountsWide
-                              , by.x = c("StressSampID", "Stressor", "StressorValue")
-                              , by.y = c("StressSampID", "Stressor", "StressorValue"))
+                              , by.x = c("StressSampID", "Label", "Stressor"
+                                         , "StressorValue")
+                              , by.y = c("StressSampID", "Label", "Stressor"
+                                         , "StressorValue"))
     
     dfEvidCountsWide <- dfEvidCountsWide %>%
         dplyr::mutate(TotSupport = NumInSupport + NumOutSupport
@@ -671,14 +682,14 @@ getWoE <- function(TargetSiteID
     # Merge basic data back in to summary
     dfEvidBasic <- dfEvidenceLong %>%
         dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, eval(index)
-                      , BioDeg, BioNarrative, StressSampID, StressorType, Stressor
-                      , StressorValue, StressorPctRank)
+                      , BioDeg, BioNarrative, StressSampID, StressorType, Label
+                      , Stressor, StressorValue, StressorPctRank)
     dfEvidBasic <- unique(as.data.frame(dfEvidBasic))
     
     dfEvidCountsWide <- merge(dfEvidBasic, dfEvidCountsWide
-                               , by.x = c("StressSampID", "Stressor"
+                               , by.x = c("StressSampID", "Label", "Stressor"
                                           , "StressorValue", "RespSampID")
-                               , by.y = c("StressSampID", "Stressor"
+                               , by.y = c("StressSampID", "Label", "Stressor"
                                           , "StressorValue", "RespSampID"))
     # Get Sample Dates
     dfEvidCountsWide <- merge(dfEvidCountsWide, dfSampDates)
@@ -687,11 +698,11 @@ getWoE <- function(TargetSiteID
     dfEvidCountsWide <- dfEvidCountsWide %>%
         dplyr::select(StationID_Master, Cluster, BioComm, RespSampID, RespSampDate
                       , eval(index), BioDeg, BioNarrative, StressSampID, StressSampDate
-                      , StressorType, Stressor, StressorValue, StressorPctRank
+                      , StressorType, Label, Stressor, StressorValue, StressorPctRank
                       , eval(LoEcolnames), eval(colNamesLoEcounts), TotSupport
                       , TotRefute, TotIndet, TotNotEval, WoE) %>%
         dplyr::arrange(BioDeg, RespSampDate, StressSampDate, StressorType
-                       , Stressor, StressorValue)
+                       , Label, StressorValue)
 
     fnEvidDetails <- paste0(TargetSiteID,"_",biocomm,"_WoE_ScoresTable.tab")
     write.table(dfEvidCountsWide, file = file.path(dirWoE, fnEvidDetails)
@@ -699,9 +710,10 @@ getWoE <- function(TargetSiteID
 
     # Create sample summary (# samps, min, avg, max values separately for deg/not)
     dfStressorSummary <- dfEvidCountsWide %>%
-        dplyr::select(StationID_Master, eval(index), BioDeg, StressorType
+        dplyr::select(StationID_Master, eval(index), BioDeg, StressorType, Label
                       , Stressor, StressorValue, eval(LoEcolnames), WoE) %>%
-        dplyr::group_by(StationID_Master, eval(index), BioDeg, StressorType, Stressor) %>%
+        dplyr::group_by(StationID_Master, eval(index), BioDeg, StressorType
+                        , Label, Stressor) %>%
         dplyr::summarize(nSamps = n()
                          , MinStressorValue = min(StressorValue, na.rm=TRUE)
                          , AvgStressorValue = mean(StressorValue, na.rm = TRUE)
@@ -730,9 +742,11 @@ getWoE <- function(TargetSiteID
                                                       , na.rm = TRUE)/n(), 3)
                          , WtTotSR_InCase_LogRegr = round(sum(as.integer(SR_InCase_LogRegr)
                                                       , na.rm = TRUE)/n(), 3)
-                         , WtTotVP_boxplot = round(sum(as.integer(VP_boxplot_senstaxa)
-                                               + as.integer(VP_boxplot_toltaxa)
-                                               , na.rm = TRUE)/n(), 3)
+                         , WtTotVP_boxplot = ifelse(all(VP_boxplot_senstaxa=="NE") & 
+                                                    all(VP_boxplot_toltaxa=="NE"), "NE"
+                                            , round(sum(as.integer(VP_boxplot_senstaxa)
+                                                + as.integer(VP_boxplot_toltaxa)
+                                            , na.rm = TRUE)/n(), 3))
                          , WtTot_WoE = round(sum(WoE, na.rm = TRUE)/n(), 3))
     
     endcol <- ncol(dfData4ES)
