@@ -599,7 +599,26 @@ getVerifiedPredictions <- function(TargetSiteID
                                          , by.x = c("RespSampID","StressSampID")
                                          , by.y = c("RespSampID","StressSampID")
                                          , all.x = TRUE)
-                  
+                  df_tbl_scores <- merge(df_tbl_scores
+                                         , unique(stressorInfo[,c("Analyte", "Label")])
+                                         , by.x = "Param_Name"
+                                         , by.y = "Analyte"
+                                         , all.x = TRUE)
+                  df_tbl_scores <- dplyr::select(df_tbl_scores, StationID_Master
+                                                  , RespSampID, eval(bioIndex)
+                                                  , Quality, StressSampID, Label
+                                                  , Param_Name, Param_Value
+                                                  , variable, value, betterbio_varval_qLO
+                                                  , betterbio_varval_qHI, Score
+                                                  , biocomm, n_BetterBio
+                                                  , n_BetterBioDegNo) %>%
+                      dplyr::rename(Stressor = Param_Name
+                                    , StressorValue = Param_Value
+                                    , Response = variable
+                                    , ResponseValue = value
+                                    , qLoValue_Cutoff = betterbio_varval_qLO
+                                    , qHiValue_Cutoff = betterbio_varval_qHI)
+
                   # Save
                   # fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
                   #                         , paste0(TargetSiteID, ".SR.SSTV.Scores.txt"))
