@@ -734,10 +734,8 @@ getCoOccur <- function(df_data
          }##IF.complete.cases.END
           
          # add biocomm, 20190425
-         df.scores.i.n <- df.scores.i.n %>%
-             dplyr::mutate(biocomm = biocomm, Label = unique(jlabel))
-         # df.scores.i.n[, "biocomm"] <- biocomm
-         # df.scores.i.n[, "Label"] <- unique(jlabel)
+         df.scores.i.n[, "biocomm"] <- biocomm
+         df.scores.i.n[, "Label"] <- unique(jlabel)
 
           # Save tabular scores
           utils::write.table(df.scores.i.n, file=fn.scores
