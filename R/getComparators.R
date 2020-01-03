@@ -28,6 +28,7 @@
 getComparators<- function(TargetSiteID
                           , df_sites = data_Sites
                           , df_bioCoOccur = data_bmiCoOccur
+                          , bioIndex = bmiIndex
                           , useBC = FALSE
                           , df_bcdist = data.BCdist
                           , bc_cutoff = 0.05
@@ -42,6 +43,7 @@ getComparators<- function(TargetSiteID
         TargetSiteID = TargetSiteID
         df_sites = data_Sites
         df_bioCoOccur = data_bmiCoOccur
+        bioIndex = bmiIndex
         useBC = useBC
         df_bcdist = data_BCdist
         bc_cutoff = 0.05
@@ -113,7 +115,12 @@ getComparators<- function(TargetSiteID
         comp.sites.info <- df_bcdist.temp
         comp.sites.info$Comment <- ifelse(comp.sites.info[,TargetColName] <= 0.05
                                            , "Cluster_LTEQ05", "Cluster_GT05")
-        write.table(comp.sites.info, fn.compsites, append = FALSE
+        
+        df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID_Master", "RespSampID"
+                                              , bioIndex, "Quality", "RespSampFlag")]
+        comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
+        comp.samps <- dplyr::rename(comp.samps, BCdistance = eval(TargetSiteID))
+        write.table(comp.samps, fn.compsites, append = FALSE
                     , col.names = TRUE, row.names = FALSE, sep = "\t")
 
         # Convert to vector that can be returned in the list generated
