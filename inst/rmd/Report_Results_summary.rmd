@@ -148,8 +148,8 @@ txt_grp_msg <- "background bar graphs"
 #
 if(length(fn_all)>0){##IF.boo.pdf.START
   msg_bkg <- paste0("All ", txt_grp_msg," are in the '"
-                      , paste0("Results/",dir.sub3), "' folder.\n"
-                      , "Selected graphics are shown here.\n\n")
+                    , paste0("Results/",TargetSiteID,"/",dir.sub3)
+                    , "' folder.\nSelected graphics are shown here.\n\n")
   cat(msg_bkg)
   
   desiredbkg <- c("DevelopLULC", "HousePopul", "Imperv", "StreamMetricsHydro")
@@ -271,24 +271,82 @@ knitr::kable(dfSamps, escape=FALSE, format=report_format
 if(useBMI==TRUE){
     
     dir.sub3 <- "CandidateCauses"
-    fn_stressors <- paste0(TargetSiteID, "_BMI_StressorsEvaluated.tab")
-    fn_strUsed <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fn_stressors)
+    fn_stressBMI <- paste0(TargetSiteID, "_BMI_CandCauses_StressorsEvaluated.tab")
+    fn_strUsedBMI <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fn_stressBMI)
+    fn_stressBMIexcl <- paste0(TargetSiteID, "_BMI_CandCauses_StressorsExcluded.tab")
+    fn_strExclBMI <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fn_stressBMIexcl)
       
-        if(file.exists(fn_strUsed)){##IF.boo.pdf.START
-            dfStrUsed <- read.delim(fn_strUsed, header = TRUE, sep = "\t")
-            stressorlist <- paste(as.vector(dfStrUsed[[1]]), collapse = ", ")
+        if(file.exists(fn_strUsedBMI)){##IF.boo.pdf.START
+            dfStrUsedBMI <- read.delim(fn_strUsedBMI, header = TRUE, sep = "\t")
+            stressorlistBMI <- paste(as.vector(dfStrUsedBMI$Label), collapse = "; ")
             
-            msg_strlist <- paste0("Stressors identified as candidate causes include "
-                                  , stressorlist, ".\n\n")
-        } else if(!file.exists(fn_strUsed)){
-            msg_strlist <- paste0("No stressors were identified as possible candidate causes.\n")
+            if(file.exists(fn_strExclBMI)){
+                dfStrExclBMI <- read.delim(fn_strExclBMI, header = TRUE, sep = "\t")
+                notstressorlistBMI <- paste(as.vector(dfStrExclBMI$Label), collapse = "; ")
+                if (notstressorlistBMI[1]=="None") {
+                    msgstrexclBMI <- "No stressors were excluded."
+                } else {
+                    msgstrexclBMI <- paste0("Stressors excluded as potential candidate "
+                                  , "causes of benthic macroinvertebrate impairment "
+                                  , "include ", notstressorlistBMI, ".")
+                }
+            } else { msgstrexclBMI <- "No stressors were excluded."}
+
+            msg_strlistBMI <- paste0("Stressors identified as potential candidate "
+                                  , "causes of benthic macroinvertebrate impairment "
+                                  , "include ", stressorlistBMI, ". ", msgstrexcl
+                                  , "\n\n")
+        } else if(!file.exists(fn_strUsedBMI)){
+            msg_strlistBMI <- paste0("No stressors were identified as possible "
+                                     , "candidate causes of benthic macroinvertebrate "
+                                     , "community impairment.\n\n")
         } else {
-            msg_strlist <- ""
+            msg_strlistBMI <- ""
         }##IF.boo.pdf.START
         #
-    cat(msg_strlist)
+    cat(msg_strlistBMI)
 } else {
-    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
+    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n\n"))
+}
+
+if(useAlg==TRUE){
+    
+    dir.sub3 <- "CandidateCauses"
+    fn_stressALGAE <- paste0(TargetSiteID, "_ALGAE_StressorsEvaluated.tab")
+    fn_strUsedALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressALGAE)
+    fn_stressALGAEexcl <- paste0(TargetSiteID, "_ALGAE_CandCauses_StressorsExcluded.tab")
+    fn_strExclALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressALGAEexcl)
+      
+        if(file.exists(fn_strUsedALGAE)){##IF.boo.pdf.START
+            dfStrUsedALG <- read.delim(fn_strUsedALGAE, header = TRUE, sep = "\t")
+            stressorlistALG <- paste(as.vector(dfStrUsedALG$Label), collapse = "; ")
+            
+            if(file.exists(fn_strExclALGAE)){
+                dfStrExclALG <- read.delim(fn_strExclALGAE, header = TRUE, sep = "\t")
+                notstressorlistALG <- paste(as.vector(dfStrExclALG$Label), collapse = "; ")
+                if (notstressorlistALG[1]=="None") {
+                    msgstrexclALG <- "No stressors were excluded."
+                } else {
+                    msgstrexclALG <- paste0("Stressors excluded as potential candidate "
+                                  , "causes of algal community impairment "
+                                  , "include ", notstressorlistALG, ".")
+                }
+            } else { msgstrexclALG <- "No stressors were excluded."}
+
+            msg_strlistALG <- paste0("Stressors identified as potential candidate "
+                                  , "causes of algal community impairment "
+                                  , "include ", stressorlistALG, ". ", msgstrexclALG
+                                  , "\n\n")
+        } else if(!file.exists(fn_strUsedALGAE)){
+            msg_strlistALG <- paste0("No stressors were identified as possible " 
+                                     , "candidate causes of algal community impairment.\n\n")
+        } else {
+            msg_strlistALG <- ""
+        }##IF.boo.pdf.START
+        #
+    cat(msg_strlistALG)
+} else {
+    cat(paste0("No algae data for ", TargetSiteID,".\n\n"))
 }
 ```
 
@@ -304,7 +362,30 @@ if(useBMI==TRUE){
     #
     if(boo_file==TRUE){##IF.boo.pdf.START
       msg_strboxdir <- paste0("All ", txt_grp_msg," plots are in the file '"
-                          , fn_target, "' in the'",  paste0("Results/",dir.sub3), "' folder.\n")
+                          , fn_target,"' in the'"
+                          , paste0("Results/",TargetSiteID,"/BMI/",dir.sub3)
+                          , "' folder.\n")
+    } else if(boo_file==FALSE){
+      msg_strboxdir <- paste0("No ", txt_grp_msg," plots exist.\n")
+    } else {
+      msg_strboxdir <- ""
+    }##IF.boo.pdf.START
+    #
+    cat(msg_strboxdir)
+
+} else if(useAlg==TRUE){
+    dir.sub3 <- "CandidateCauses"
+    txt_grp_file <- "CandCauses"
+    txt_grp_msg <- "stressor box"
+    fn_target <- paste0(TargetSiteID,"_ALGAE_", txt_grp_file, "_ALL.pdf")
+    fn_all <- list.files(file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3))
+    boo_file <- fn_target %in% fn_all
+    #
+    if(boo_file==TRUE){##IF.boo.pdf.START
+      msg_strboxdir <- paste0("All ", txt_grp_msg," plots are in the file '"
+                          , fn_target,"' in the'"
+                          , paste0("Results/",TargetSiteID,"/ALGAE/",dir.sub3)
+                          , "' folder.\n")
     } else if(boo_file==FALSE){
       msg_strboxdir <- paste0("No ", txt_grp_msg," plots exist.\n")
     } else {
@@ -319,7 +400,7 @@ if(useBMI==TRUE){
 
 ```
 
-```{r BMIStrBoxPlots, out.width="100%", out.extra='style="padding:10px"'}
+```{r StrBoxPlots, out.width="100%", out.extra='style="padding:10px"'}
 
 if(useBMI==TRUE){
     dir.sub3 <- "CandidateCauses"
@@ -342,6 +423,28 @@ if(useBMI==TRUE){
     } else {
       cat(txt_NoFile)
     }
+} else if (useAlg==TRUE) {
+    dir.sub3 <- "CandidateCauses"
+    dir_SiteID <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    fn_BoxPlots  <- list.files(path=dir_SiteID, full.names = TRUE
+                                     , pattern="_ALGAE_CandCauses")
+    fn_BoxPlots_jpg <- fn_BoxPlots[grep(".png", fn_BoxPlots)]
+    
+    if(length(fn_BoxPlots_jpg)==0){
+      txt_NoFile <- "No file exists; box plots.\n"
+      cat(txt_NoFile)
+    } else if(file.exists(fn_BoxPlots_jpg[1])==TRUE){
+      #
+      cat(paste("Box plots are arranged by stressor category. Stressors requiring"
+                , " further evaluation fall outside the ", probsLow, "-", probsHigh
+                , " quantile range.\n\n",sep=""))
+    
+      fn_img <- fn_BoxPlots_jpg
+      knitr::include_graphics(fn_img)
+      #
+    } else {
+      cat(txt_NoFile)
+    }    
 } else {
     cat("")
 }
@@ -382,7 +485,8 @@ if(useBMI==TRUE){
     msg_info <- paste0("Additional comparator site info, "
                        , " including a list of "
                        , "comparator sites can be found in the '"
-                       , paste0("Results/",dir.sub3), "' foler.")
+                       , paste0("Results/",TargetSiteID,"/BMI/",dir.sub3)
+                       , "' folder.")
     
     if(file.exists(fn_comps)==TRUE){
         cat(msg_info)
@@ -415,7 +519,8 @@ if(useBMI==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3)
     txt_grp_file <- "boxes"
-    txt_grp_msg <- "Weight of evidence data"
+    txt_grp_msg <- c("Summarized weight of evidence data"
+                     , "More detailed weight of evidence data")
     fn_target1 <- paste0(TargetSiteID,"_BMI_WoE_ExecSummary.tab")
     fn_target2 <- paste0(TargetSiteID,"_BMI_WoE_ScoresTable.tab")
     fn_target <- c(fn_target1, fn_target2)
@@ -424,17 +529,19 @@ if(useBMI==TRUE){
     #
     if(boo_file==TRUE){
       msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target
-                          , "' in the'", dir_WoE_bmi, "' folder.\n")
+                          , "' in the'", paste0("Results/",TargetSiteID
+                                                ,"/BMI/",dir.sub3)
+                          , "' folder.\n")
     } else if(boo_file==FALSE){
       msg_files <- paste0("No ", txt_grp_msg," exist.\n")
     } else {
       msg_files <- ""
     }
     #
-    cat(msg_files)
 } else {
-    cat("")
+      msg_files <- ""
 }
+cat(msg_files)
 
 ```
 
@@ -468,12 +575,18 @@ if(useBMI==TRUE){
                                , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
                                , VP_Boxplot = WtTotVP_boxplot)
         df_ES <- dplyr::select(df_ES, SiteID, Degraded, Group, Stressor_Samples
-                               , Stressors, Overall_WoE, CO_boxplot
+                               , Stressors, Overall_WoE, TS_Inside, CO_boxplot
                                , SR_Inside_LogRegr, SR_Inside_LinRegr
                                , SR_Outside_LinRegr, VP_Boxplot)
         EScaption <- paste0("Scores for each line of evidence and overall weight "
                         , "of evidence, weighted by number of stressors in each "
-                        , "group.")
+                        , "group. An overall weight of evidence score of 1 "
+                        , "indicates that all evaluated lines of evidence "
+                        , "for all observed stressors in the group support the group "
+                        , "as a cause of impairment. An overall weight of evidence "
+                        , "score of -1 indicates that all evaluated lines of "
+                        , "evidence for all observed stressors in the group "
+                        , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
                      , caption = EScaption) %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
@@ -503,12 +616,13 @@ if(useBMI==TRUE){
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_det[1])==TRUE){
         df_det <- read.delim(file.path(dir_WoE_bmi, fn_target2), header=TRUE, sep="\t")
-        df_det <- dplyr::select(df_det, -Cluster, -BioComm, -NumInSupport
+        df_det <- dplyr::select(df_det, -Cluster, -BioComm, -Stressor, -NumInSupport
                                 , -NumInRefute, -NumInIndet, -NumInNotEval
                                 , -NumOutSupport, - NumOutRefute, -NumOutIndet
                                 , -NumOutNotEval, -StationID_Master)
         df_det <- as.data.frame(unique(df_det))
-        df_det <- dplyr::rename(df_det, ResponseSampleID = RespSampID
+        df_det <- dplyr::rename(df_det, Stressor = Label
+                                , ResponseSampleID = RespSampID
                                 , ResponseSampleDate = RespSampDate
                                 , Degraded = BioDeg
                                 , Narrative = BioNarrative
@@ -600,7 +714,8 @@ if(useAlg==TRUE){
     fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
     msg_info <- paste0("Additional comparator site info, including a list of "
                        , "comparator sites can be found in the '"
-                       , paste0("Results/",dir.sub3), "' foler.")
+                       , paste0("Results/",TargetSiteID,"/ALGAE/",dir.sub3)
+                       , "' folder.")
     
     if(file.exists(fn_comps)==TRUE){
         cat(msg_info)
@@ -633,7 +748,8 @@ if(useAlg==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
     txt_grp_file <- "boxes"
-    txt_grp_msg <- "Weight of evidence data"
+    txt_grp_msg <- c("Summarized weight of evidence data"
+                     , "More detailed weight of evidence data")
     fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
     fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
     fn_target <- c(fn_target1, fn_target2)
@@ -642,7 +758,9 @@ if(useAlg==TRUE){
     #
     if(boo_file==TRUE){
       msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target
-                          , "' in the'", dir_WoE_alg, "' folder.\n")
+                          , "' in the'", paste0("Results/",TargetSiteID
+                                                ,"/ALGAE/",dir.sub3)
+                          , "' folder.\n")
     } else if(boo_file==FALSE){
       msg_files <- paste0("No ", txt_grp_msg," exist.\n")
     } else {
@@ -691,7 +809,13 @@ if(useAlg==TRUE){
                                , SR_Outside_LinRegr, VP_Boxplot)
         EScaption <- paste0("Scores for each line of evidence and overall weight "
                         , "of evidence, weighted by number of stressors in each "
-                        , "group.")
+                        , "group. An overall weight of evidence score of 1 "
+                        , "indicates that all evaluated lines of evidence "
+                        , "for all observed stressors in the group support the group "
+                        , "as a cause of impairment. An overall weight of evidence "
+                        , "score of -1 indicates that all evaluated lines of "
+                        , "evidence for all observed stressors in the group "
+                        , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
                      , caption = EScaption) %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
@@ -722,12 +846,12 @@ if(useAlg==TRUE){
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_det[1])==TRUE){
         df_det <- read.delim(file.path(dir_WoE_alg, fn_target2), header=TRUE, sep="\t")
-        df_det <- dplyr::select(df_det, -Cluster, -BioComm, -NumInSupport
+        df_det <- dplyr::select(df_det, -Cluster, -BioComm, -Stressor, -NumInSupport
                                 , -NumInRefute, -NumInIndet, -NumInNotEval
                                 , -NumOutSupport, - NumOutRefute, -NumOutIndet
                                 , -NumOutNotEval, -StationID_Master)
         df_det <- as.data.frame(unique(df_det))
-        df_det <- dplyr::rename(df_det, ResponseSampleID = RespSampID
+        df_det <- dplyr::rename(df_det, Stressor = Label, ResponseSampleID = RespSampID
                                 , ResponseSampleDate = RespSampDate
                                 , Degraded = BioDeg
                                 , Narrative = BioNarrative
