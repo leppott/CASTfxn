@@ -76,10 +76,10 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
             dplyr::rename(RespSampFlag = BMISampFlag)
     } else if (biocomm == "alg") {
         df_resp <- df_resp[,c("StationID_Master", "AlgSampDate", "AlgSampID"
-                              , "Quality", index)] %>%
+                              , "Quality", index, "AlgSampFlag")] %>%
             dplyr::rename(RespSampDate = AlgSampDate) %>%
-            dplyr::rename(RespSampID = AlgSampID) #%>%
-            dplyr::mutate(RespSampFlag = NA)
+            dplyr::rename(RespSampID = AlgSampID) %>%
+            dplyr::rename(RespSampFlag = AlgSampFlag)
     } else {
         print("Biological community type not used.")
         flush.console()
@@ -133,7 +133,6 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                                                        , "StressSampDate"))]
     
     # Merge site/bmi data with measure data by station & date
-    
     df_coOccur <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas
                             , by = c("StationID_Master" = "StationID_Master"
                             , "RespSampDate" = "StressSampDate"
@@ -147,7 +146,12 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                       , StressSampID, BioComm, eval(respColnames)
                       , eval(modColnames), eval(measColnames)) %>%
         dplyr::select_if(not_all_na)
-    df_coOccur <- df_coOccur[not_all_na(df_coOccur)]
+    
+    if (!("RespSampFlag" %in% colnames(df_coOccur))) {
+        df_coOccur$RespSampFlag <- NA
+        df_coOccur <- df_coOccur[,c(1:8,ncol(df_coOccur),9:(ncol(df_coOccur)-1))]
+    }
+
     df_sites <- df_sites[,c("StationID_Master", "clust")]
     df_coOccur <- merge(df_sites, df_coOccur)
     
