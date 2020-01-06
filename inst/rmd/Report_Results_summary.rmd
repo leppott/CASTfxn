@@ -236,13 +236,28 @@ dfSamps[[algIndex]] <- ifelse(is.na(dfSamps[[algIndex]]),NA
                               ,round(dfSamps[[algIndex]],3))
 rm(fnAlg, dfAlg)
 
+# Get BMISampFlag, if any
+fnCompSamps <- file.path(dir_results, TargetSiteID, "SiteInfo"
+                         , paste0(TargetSiteID,"_COMPARATORS.tab"))
+dfCompSamps <- read.delim(fnCompSamps, header = TRUE, sep = "\t")
+
+dfSiteFlags <- dfCompSamps %>%
+    dplyr::filter(StationID_Master == TargetSiteID) %>%
+    dplyr::select(RespSampID, RespSampFlag) %>%
+    dplyr::rename(BMISampID = RespSampID, BMISampFlag = RespSampFlag)
+
+dfSamps <- merge(dfSamps, dfSiteFlags)
+
 dfSamps <- dfSamps %>%
-    dplyr::select(eval(coreColNames), eval(bmiIndex), eval(algIndex)
-                  , eval(sampColNames))
+    dplyr::select(eval(coreColNames), eval(bmiIndex), BMISampFlag
+                  , eval(algIndex), eval(sampColNames))
+
+# How to get flagged index scores? And how to represent them?
 
 compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
                        , " Red index scores indicate degraded biological quality.")
 dfSamps <- dplyr::arrange_(dfSamps, "SampleDate", bmiIndex, algIndex)
+if (report_format=="html") {
 dfSamps <- dfSamps %>%
     dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
                                 , color=ifelse(is.na(CSCI)==TRUE, "black"
@@ -254,14 +269,24 @@ dfSamps <- dfSamps %>%
                                 , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
                                 , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
                                 , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
+    knitr::kable(dfSamps, escape=FALSE, format=report_format
+                 , colnames=colnames(dfSamps), caption = compscaption) %>%
+        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                  , font_size = 12, full_width = FALSE
+                                  , position = "left") %>%
+        kableExtra::column_spec(1,bold = TRUE) %>%
+        kableExtra::collapse_rows(columns=1:4, valign="top")
 
-knitr::kable(dfSamps, escape=FALSE, format=report_format
-             , colnames=colnames(dfSamps), caption = compscaption) %>%
-    kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                              , font_size = 12, full_width = FALSE
-                              , position = "left") %>%
-    kableExtra::column_spec(1,bold = TRUE) %>%
-    kableExtra::collapse_rows(columns=1:4, valign="top")
+} else {
+    knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
+                 , caption = compscaption) %>%
+        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                  , font_size = 12, full_width = FALSE
+                                  , position = "left") %>%
+        kableExtra::column_spec(1,bold = TRUE) %>%
+        kableExtra::collapse_rows(columns=1:4, valign="top")
+}
+
 ```
 
 ## *Potential Candidate Causes*
@@ -294,8 +319,8 @@ if(useBMI==TRUE){
 
             msg_strlistBMI <- paste0("Stressors identified as potential candidate "
                                   , "causes of benthic macroinvertebrate impairment "
-                                  , "include ", stressorlistBMI, ". ", msgstrexcl
-                                  , "\n\n")
+                                  , "include ", stressorlistBMI, ". "
+                                  , msgstrexclBMI, "\n\n")
         } else if(!file.exists(fn_strUsedBMI)){
             msg_strlistBMI <- paste0("No stressors were identified as possible "
                                      , "candidate causes of benthic macroinvertebrate "
@@ -312,10 +337,12 @@ if(useBMI==TRUE){
 if(useAlg==TRUE){
     
     dir.sub3 <- "CandidateCauses"
-    fn_stressALGAE <- paste0(TargetSiteID, "_ALGAE_StressorsEvaluated.tab")
-    fn_strUsedALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressALGAE)
+    fn_stressALGAE <- paste0(TargetSiteID, "_ALGAE_CandCauses_StressorsEvaluated.tab")
+    fn_strUsedALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3
+                                 , fn_stressALGAE)
     fn_stressALGAEexcl <- paste0(TargetSiteID, "_ALGAE_CandCauses_StressorsExcluded.tab")
-    fn_strExclALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3, fn_stressALGAEexcl)
+    fn_strExclALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3
+                                 , fn_stressALGAEexcl)
       
         if(file.exists(fn_strUsedALGAE)){##IF.boo.pdf.START
             dfStrUsedALG <- read.delim(fn_strUsedALGAE, header = TRUE, sep = "\t")
@@ -475,18 +502,16 @@ if(useBMI==TRUE){
 
 ## *Comparator Site Information*
 
-```{r bmicompsiteinfo}
+```{r bmicompsitesummary}
 # Read file summarizing the comparator data and provide it in summary form
 
 if(useBMI==TRUE){
     dir.sub3 <- "SiteInfo"
     mycomps <- paste0(TargetSiteID,"_BMI_SiteQualities.tab")
     fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
-    msg_info <- paste0("Additional comparator site info, "
-                       , " including a list of "
-                       , "comparator sites can be found in the '"
-                       , paste0("Results/",TargetSiteID,"/BMI/",dir.sub3)
-                       , "' folder.")
+    msg_info <- paste0("Additional comparator site info, including a list of "
+                       , "comparator sites and samples can be found in the '"
+                       , paste0("Results/",TargetSiteID,dir.sub3), "' folder.\n\n")
     
     if(file.exists(fn_comps)==TRUE){
         cat(msg_info)
@@ -501,14 +526,87 @@ if(useBMI==TRUE){
         kableExtra::column_spec(1,bold = TRUE) %>%
         kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
-      cat("No comparator site information is available for benthic macroinvertebrates.\n")
-    }    
+      cat(paste0("No comparator site information is available for benthic"
+          , "macroinvertebrates.\n\n"))
+    }
+
 } else {
     cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
 }
 
 ```
 
+```{r bmicompsitedetails}
+# Read file summarizing the comparator data and provide it in summary form
+
+if(useBMI==TRUE){
+    dir.sub3 <- "SiteInfo"
+    mycompsamps <- paste0(TargetSiteID,"_COMPARATORS.tab")
+    fncompsamps <- file.path(dir_results, TargetSiteID, dir.sub3, mycompsamps)
+
+    if(file.exists(fncompsamps)==TRUE){
+        dfcompsamps <- read.delim(fncompsamps, header = TRUE, sep = "\t"
+                                  , stringsAsFactors = FALSE)
+        dfcompsamps <- dfcompsamps %>%
+            filter(StationID_Master != TargetSiteID)
+        dfbcdist <- unique(dplyr::select(dfcompsamps, StationID_Master
+                                         , BCdistance, Comment))
+        totcompsamps <- nrow(dfbcdist)
+
+        maxbcdist <- 1 - round(max(dfbcdist$BCdistance),2)
+        dfbcdist <- dfbcdist %>%
+            dplyr::select(StationID_Master, Comment) %>%
+            dplyr::group_by(Comment) %>%
+            dplyr::summarise(NumSites = n())
+        
+        dfcompflags <- dfcompsamps %>% 
+            dplyr::select(RespSampID, Quality, RespSampFlag) %>%
+            dplyr::mutate(RespSampFlag = ifelse(is.na(RespSampFlag)
+                                                , "No flags", RespSampFlag)) %>%
+            dplyr::group_by(RespSampFlag, Quality) %>%
+            dplyr::summarise(NumSamps = n()) %>%
+            tidyr::spread(key = Quality, value = NumSamps) %>%
+            dplyr::rename(BMISampFlag = RespSampFlag)
+        
+        numLTEQ <- as.numeric(dfbcdist[2][grepl("LTEQ",dfbcdist[1]),])
+        bc_cutoff <- as.character(stringr::str_extract(dfbcdist[1,1],"\\d{2}"))
+        bc_cutoff <- as.numeric(paste0("0.",bc_cutoff))
+        bc_cutoff <- 1-bc_cutoff
+        numGT <- as.numeric(dfbcdist[2][grepl("GT",dfbcdist[1]),])
+        
+        if (numLTEQ==totcompsamps) {
+            msgbcdist <- paste0("All ", numLTEQ, " comparator sites have >"
+                                , maxbcdist*100, "% expected biological "
+                                , "similarity.\n")
+        } else if (numLTEQ<totcompsamps) {
+            msgbcdist <- paste0(numLTEQ, " comparator sites have >"
+                                , bc_cutoff*100, "% expected biological "
+                                , "similarity and ", numGT, " comparator samples "
+                                , "have between ", bc_cutoff*100, " and "
+                                , maxbcdist*100, " percent expected biological "
+                                , "similarity.\n")
+        }
+        
+        cat(msgbcdist)
+        
+        flagcaption <- paste0("Summary of numbers of samples flagged for "
+                              , "possible inadequacies in the benthic "
+                              , "macroinvertebrate data.")
+        
+        knitr::kable(dfcompflags2, format=report_format, colnames=colnames(dfcompflags2)
+                     , caption = flagcaption) %>%
+        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                      , font_size = 12, full_width = FALSE
+                                  , position = "left") %>%
+        kableExtra::column_spec(1,bold = TRUE) %>%
+        kableExtra::collapse_rows(columns=1, valign="top")
+    }
+    
+} else {
+    cat("")
+}
+
+```
 ## *Weight of Evidence*
 
 ### Overall Findings
