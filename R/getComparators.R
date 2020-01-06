@@ -97,7 +97,7 @@ getComparators<- function(TargetSiteID
         if (num.good<30) {
             df_bcdist.temp <- dplyr::top_n(df_bcdist, -31)
             gap.statement <- cbind.data.frame("getComparators"
-                               , "bc.dist <= 0.05"
+                               , paste0("bc.dist <= ", bc_cutoff)
                                , num.good
                                , paste("max bc.dist for", nrow(df_bcdist.temp)-1
                                        , "comparators ="
@@ -105,16 +105,19 @@ getComparators<- function(TargetSiteID
             colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
         } else {
              gap.statement <- cbind.data.frame("getComparators"
-                                , "bc.dist <= 0.05"
-                                , num.good
-                                , paste("max bc.dist ="
-                                        , max(df_bcdist.temp[,TargetColName])))
+                                               , paste0("bc.dist <= ", bc_cutoff)
+                                               , num.good
+                                               , paste("max bc.dist ="
+                                                    , max(df_bcdist.temp[,TargetColName])))
              colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
         }
         
+        bc_cutofftxt <- ifelse((bc_cutoff * 100) < 10, paste0(0,bc_cutoff*100)
+                                , bc_cutoff*100)
         comp.sites.info <- df_bcdist.temp
         comp.sites.info$Comment <- ifelse(comp.sites.info[,TargetColName] <= 0.05
-                                           , "Cluster_LTEQ05", "Cluster_GT05")
+                                          , paste0("Cluster_LTEQ",bc_cutofftxt)
+                                          , paste0("Cluster_GT",bc_cutofftxt))
         
         df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID_Master", "RespSampID"
                                               , bioIndex, "Quality", "RespSampFlag")]
