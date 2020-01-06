@@ -57,22 +57,15 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         flush.console()
     } else {
         site_dirs <- list.files(dir_results)
+        rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
+        site_dirs <- site_dirs[!site_dirs %in% rmfile]
+        
+        rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        site_dirs <- site_dirs[!site_dirs %in% rmfile]
         
         for (site in (1:length(site_dirs))) {
-            
-            if (grepl("^RunStats_\\d{8}\\.tab$", site_dirs[site])) {
-                next()
-            }
-            if (grepl("\\.7z$", site_dirs[site])) {
-                next()
-            }
-            
-            # Get Target Site ID & skip any site folders that are qualified
+            # Get Target Site ID
             TargetSiteID <- site_dirs[site]
-            # if (grepl("_", TargetSiteID)==TRUE) {
-            #     next     # Site folder is qualified, likely w/an error
-            # }
-            # 
             for (b in (1:length(biocommlist))) {
                 biocomm = biocommlist[b]
                 if (biocomm=="BMI") { bioIndex = bmiIndex }
@@ -202,7 +195,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , WtTotSR_InCase_LinRegr
                    , WtTotSR_OutCase_LinRegr
                    , WtTotVP_boxplot) %>%
-            dplyr::rename(Cluster = clust)
+            dplyr::rename(Cluster = clust, Overall_WoE = WtTot_WoE)
 
     } # Finish iterate through site directories loop
     
