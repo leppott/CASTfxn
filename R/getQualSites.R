@@ -184,18 +184,18 @@ getQualSites<- function(TargetSiteID
                                                , "Better than"
                                                , "All")
                               , Sites = ifelse(stringr::str_detect(Label, "Comp")
-                                               , "ComparatorSites"
+                                               , "ComparatorSamples"
                                                , ifelse(stringr::str_detect(Label
                                                                   , "Clust")
-                                                    , "ClusterSites"
-                                                    , "AllSites"))
+                                                    , "ClusterSamples"
+                                                    , "AllSamples"))
                               , BioComm = biocomm)
             df_qualstats <- df_qualstats %>%
                 dplyr::select(-Label) %>%
                 dplyr::group_by(BioComm, Group, Quality) %>%
                 tidyr::spread(key = "Sites", value = "Count") %>%
-                dplyr::select(BioComm, Group, Quality, ComparatorSites
-                              , ClusterSites, AllSites) %>%
+                dplyr::select(BioComm, Group, Quality, ComparatorSamples
+                              , ClusterSamples, AllSamples) %>%
                 dplyr::arrange(Group, Quality)
             
     } else { # Comparator sites = cluster sites
@@ -233,8 +233,8 @@ getQualSites<- function(TargetSiteID
                                            , "Better than"
                                            , "All")
                           , Sites = ifelse(stringr::str_detect(Label, "Clust")
-                                           , "Cluster sites"
-                                           , "All sites")
+                                           , "Cluster samples"
+                                           , "All samples")
                           , BioComm = biocomm)
         
     }
