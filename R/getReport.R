@@ -58,7 +58,8 @@ getReport <- function(TargetSiteID
   # Report parts
   strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
   strFile_out_ext <- paste0(".", ifelse(report_format=="word", "docx", report_format)) #".docx" # ".html"
-  strFile_out <- paste0(paste("Report_Results", report_type, TargetSiteID, myDate, myTime, sep="_"), strFile_out_ext)
+  strFile_out <- paste0(paste(TargetSiteID, "Results", stringr::str_to_sentence(report_type)
+                              , myDate, myTime, sep="_"), strFile_out_ext)
   #
     # Generate Report
   # Test if RMD file exists
