@@ -122,7 +122,7 @@ getComparators<- function(TargetSiteID
         df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID_Master", "RespSampID"
                                               , bioIndex, "Quality", "RespSampFlag")]
         comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
-        comp.samps <- dplyr::rename(comp.samps, BCdistance = eval(TargetSiteID))
+        comp.samps <- dplyr::rename(comp.samps, BCdistance = eval(TargetColName))
         write.table(comp.samps, fn.compsites, append = FALSE
                     , col.names = TRUE, row.names = FALSE, sep = "\t")
 
