@@ -708,34 +708,47 @@ getWoE <- function(TargetSiteID
     write.table(dfEvidCountsWide, file = file.path(dirWoE, fnEvidDetails)
                 , append = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
 
-    # Create sample summary (# samps, min, avg, max values separately for deg/not)
-    dfStressorSummary <- dfEvidCountsWide %>%
-        dplyr::select(StationID_Master, eval(index), BioDeg, StressorType, Label
-                      , Stressor, StressorValue, eval(LoEcolnames), WoE) %>%
-        dplyr::group_by(StationID_Master, eval(index), BioDeg, StressorType
-                        , Label, Stressor) %>%
-        dplyr::summarize(nSamps = n()
-                         , MinStressorValue = min(StressorValue, na.rm=TRUE)
-                         , AvgStressorValue = mean(StressorValue, na.rm = TRUE)
-                         , MaxStressorValue = max(StressorValue, na.rm = TRUE))
+    ## Create sample summary (# samps, min, avg, max values separately for deg/not)
+    # dfStressorSummary <- dfEvidCountsWide %>%
+    #     dplyr::select(StationID_Master, index, BioDeg, StressorType, Label
+    #                   , Stressor, StressorValue, eval(LoEcolnames), WoE) %>%
+    #     dplyr::group_by(StationID_Master, index, BioDeg, StressorType
+    #                     , Label, Stressor) %>%
+    #     dplyr::summarize(nSamps = n()
+    #                      , MinStressorValue = min(StressorValue, na.rm=TRUE)
+    #                      , AvgStressorValue = mean(StressorValue, na.rm = TRUE)
+    #                      , MaxStressorValue = max(StressorValue, na.rm = TRUE))
     
     # Get the unique "core" columns for the exec summary file
+    startcol <- which(colnames(dfEvidCountsWide)==LoEcolnames[1])
     endcol <- ncol(dfEvidCountsWide)
-    dfEvidCountsWide[,13:endcol][dfEvidCountsWide[,13:endcol]=="NE"] <- NA
+    dfEvidCountsWide[,startcol:endcol][dfEvidCountsWide[,startcol:endcol]=="NE"] <- NA
+    indexcol <- which(colnames(dfEvidCountsWide)==index)
     
     dfData4ES <- unique(dfEvidCountsWide[,c("StationID_Master", "BioComm", "BioDeg"
+                                            , index
+                                            , as.character("RespSampID")
                                             , as.character("StressSampID")
                                             , "StressorType", "Stressor"
                                             , LoEcolnames, "WoE")]) %>%
         dplyr::mutate(WoEnumeric = ifelse(WoE=="Supports", 1
                                          , ifelse(WoE=="Refutes", -1
                                          , 0))) %>%
-        dplyr::select(-WoE) %>% dplyr::rename(WoE=WoEnumeric) %>%
+        dplyr::select(-WoE) %>% dplyr::rename(WoE=WoEnumeric
+                                              , IndexScore = index) #%>%
+    dfData4ES <- dfData4ES %>%
         group_by(StationID_Master, BioComm, BioDeg, StressorType) %>%
-        dplyr::summarize(NumStressSamples = n_distinct(StressSampID)
+        dplyr::summarize(NumRespSamples = n_distinct(RespSampID)
+                         , minIndex = min(IndexScore, na.rm = TRUE)
+                         , meanIndex = mean(IndexScore, na.rm = TRUE)
+                         , maxIndex = max(IndexScore, na.rm = TRUE)
+                         , NumStressSamples = n_distinct(StressSampID)
                          , NumStressors = n_distinct(Stressor)
-                         , WtTotTS_barplot = round(sum(as.integer(TS_barplot), na.rm=0)/n(), 3)
-                         , WtTotCO_boxplot = round(sum(as.integer(CO_boxplot), na.rm=0)/n(), 3)
+                         , WtTot_WoE = round(sum(WoE, na.rm = TRUE)/n(), 3)
+                         , WtTotTS_barplot = round(sum(as.integer(TS_barplot)
+                                                       , na.rm=TRUE)/n(), 3)
+                         , WtTotCO_boxplot = round(sum(as.integer(CO_boxplot)
+                                                       , na.rm=TRUE)/n(), 3)
                          , WtTotSR_OutCase_LinRegr = round(sum(as.integer(SR_OutCase_LinRegr)
                                                        , na.rm = TRUE)/n(), 3)
                          , WtTotSR_InCase_LinRegr = round(sum(as.integer(SR_InCase_LinRegr)
@@ -743,15 +756,15 @@ getWoE <- function(TargetSiteID
                          , WtTotSR_InCase_LogRegr = round(sum(as.integer(SR_InCase_LogRegr)
                                                       , na.rm = TRUE)/n(), 3)
                          , WtTotVP_boxplot = ifelse(all(VP_boxplot_senstaxa=="NE") & 
-                                                    all(VP_boxplot_toltaxa=="NE"), "NE"
+                                                    all(VP_boxplot_toltaxa=="NE")
+                                                    , "NE"
                                             , round(sum(as.integer(VP_boxplot_senstaxa)
                                                 + as.integer(VP_boxplot_toltaxa)
-                                            , na.rm = TRUE)/n(), 3))
-                         , WtTot_WoE = round(sum(WoE, na.rm = TRUE)/n(), 3))
+                                            , na.rm = TRUE)/n(), 3)))
     
+    startcol <- which(colnames(dfData4ES)=="WtTot_WoE")
     endcol <- ncol(dfData4ES)
-    dfEvidCountsWide[,13:endcol][dfEvidCountsWide[,13:endcol]=="NE"] <- NA
-    
+    dfEvidCountsWide[,startcol:endcol][dfEvidCountsWide[,startcol:endcol]=="NE"] <- NA
         
     fnES <- paste0(TargetSiteID,"_",biocomm,"_WoE_ExecSummary.tab")
     write.table(dfData4ES, file = file.path(dirWoE, fnES), append = FALSE
