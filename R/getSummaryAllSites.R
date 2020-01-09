@@ -166,6 +166,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , StressorValue
                    , StressorPctRank
                    , WoE
+                   , TS_barplot
                    , CO_boxplot
                    , SR_InCase_LogRegr
                    , SR_InCase_LinRegr
@@ -186,16 +187,22 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , clust
                    , BioComm
                    , BioDeg
+                   , NumRespSamples
+                   , minIndex
+                   , meanIndex
+                   , maxIndex
                    , StressorType
                    , NumStressSamples
                    , NumStressors
                    , WtTot_WoE
+                   , WtTotTS_barplot
                    , WtTotCO_boxplot
                    , WtTotSR_InCase_LogRegr
                    , WtTotSR_InCase_LinRegr
                    , WtTotSR_OutCase_LinRegr
                    , WtTotVP_boxplot) %>%
-            dplyr::rename(Cluster = clust, Overall_WoE = WtTot_WoE)
+            dplyr::rename(Cluster = clust
+                          , Overall_WoE = WtTot_WoE)
 
     } # Finish iterate through site directories loop
     
