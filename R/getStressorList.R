@@ -482,6 +482,8 @@ getStressorList <- function(TargetSiteID
                 stressor <- c(stressor, chemname)
             }
         } else {
+            if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
+            else { tmpParmDEL <- c(bioParmsDEL, chemname) }
             print("pH is not a stressor.")
             flush.console()
         }
@@ -495,6 +497,8 @@ getStressorList <- function(TargetSiteID
               flush.console()
               stressor <- c(stressor, chemname)
           } else {
+              if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
+              else { tmpParmDEL <- c(bioParmsDEL, chemname) }
               print("DO is not a stressor.")
               flush.console()
           }
@@ -509,6 +513,8 @@ getStressorList <- function(TargetSiteID
   stressorlist <- stressor
   stressorlist <- setdiff(stressorlist, bioParmsDEL)
   stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
+  if (exists("tmpParmDEL")) { stressorsExcepted<-unique(c(stressorsExcepted
+                                                          , tmpParmDEL)) }
   stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
       dplyr::mutate(Biocomm = biocomm)
   colnames(stressorsExcepted)[1] <- "Stressor"
@@ -518,6 +524,7 @@ getStressorList <- function(TargetSiteID
       stressorsExcepted <- rbind(stressorsExcepted,(cbind("None",biocomm,"None")))
   }
   colnames(stressorsExcepted) <- c("Stressor","BioComm","Label")
+  stressorsExcepted <- unique(stressorsExcepted)
   # Write stressors excepted table
   fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
                                            ,"CandCauses_StressorsExcluded.tab"))
