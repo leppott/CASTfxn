@@ -199,42 +199,54 @@ coreColNames <- c("StationID_Master", "COMID", "Cluster", "SampleDate")
 sampColNames <- setdiff(sampColNames, coreColNames)
 
 # Get bmiIndex values, if they exist
-fnBMI <- file.path(dir_data,"SMCBenthicMetricsFinal.tab")
-dfBMI <- read.delim(fnBMI, header=TRUE, sep="\t")
-dfBMI <- dfBMI %>% 
-    dplyr::filter(StationID_Master==TargetSiteID) %>%
-    dplyr::select(StationID_Master, BMISampID, eval(bmiIndex))
-if (nrow(dfBMI)>0) { # There are BMI Index values
-    dfSamps <- merge(dfSamps, dfBMI
-          , by.x = c("StationID_Master","BMISampID")
-          , by.y = c("StationID_Master","BMISampID")
-          , all.x = TRUE)
-} else { # There are no BMI Index values, so add col and set all to NA
-    dfSamps <- dfSamps %>% dplyr::mutate(BMI.Index=NA)
-    colnames(dfSamps[,BMI.Index]) <- bmiIndex
+if (useBMI==TRUE) {
+    
+    fnBMI <- file.path(dir_data,"SMCBenthicMetricsFinal.tab")
+    dfBMI <- read.delim(fnBMI, header=TRUE, sep="\t")
+    dfBMI <- dfBMI %>% 
+        dplyr::filter(StationID_Master==TargetSiteID) %>%
+        dplyr::select(StationID_Master, BMISampID, eval(bmiIndex))
+    if (nrow(dfBMI)>0) { # There are BMI Index values
+        dfSamps <- merge(dfSamps, dfBMI
+              , by.x = c("StationID_Master","BMISampID")
+              , by.y = c("StationID_Master","BMISampID")
+              , all.x = TRUE)
+    } else { # There are no BMI Index values, so add col and set all to NA
+        dfSamps <- dfSamps %>% dplyr::mutate(BMI.Index=NA)
+        colnames(dfSamps[,BMI.Index]) <- bmiIndex
+    }
+    dfSamps[[bmiIndex]] <- ifelse(is.na(dfSamps[[bmiIndex]]),NA
+                                  ,round(dfSamps[[bmiIndex]],3))
+    rm(fnBMI, dfBMI)
+
+} else {
+    dfSamps[[bmiIndex]] <- NA
 }
-dfSamps[[bmiIndex]] <- ifelse(is.na(dfSamps[[bmiIndex]]),NA
-                              ,round(dfSamps[[bmiIndex]],3))
-rm(fnBMI, dfBMI)
+
 
 # Get algIndex values, if they exist
-fnAlg <- file.path(dir_data,"SMCAlgaeMetricsFinal.tab")
-dfAlg <- read.delim(fnAlg, header=TRUE, sep="\t")
-dfAlg <- dfAlg %>% 
-    dplyr::filter(StationID_Master==TargetSiteID) %>%
-    dplyr::select(StationID_Master, AlgSampID, eval(algIndex))
-if (nrow(dfAlg)>0) { # There are BMI Index values
-    dfSamps <- merge(dfSamps, dfAlg
-          , by.x = c("StationID_Master","AlgSampID")
-          , by.y = c("StationID_Master","AlgSampID")
-          , all.x = TRUE)
-} else { # There are no BMI Index values, so add col and set all to NA
-    dfSamps <- dfSamps %>% dplyr::mutate(Alg.Index=NA)
-    colnames(dfSamps[,Alg.Index]) <- algIndex
+if (useAlg==TRUE) {
+    fnAlg <- file.path(dir_data,"SMCAlgaeMetricsFinal.tab")
+    dfAlg <- read.delim(fnAlg, header=TRUE, sep="\t")
+    dfAlg <- dfAlg %>% 
+        dplyr::filter(StationID_Master==TargetSiteID) %>%
+        dplyr::select(StationID_Master, AlgSampID, eval(algIndex))
+    if (nrow(dfAlg)>0) { # There are BMI Index values
+        dfSamps <- merge(dfSamps, dfAlg
+              , by.x = c("StationID_Master","AlgSampID")
+              , by.y = c("StationID_Master","AlgSampID")
+              , all.x = TRUE)
+    } else { # There are no Alg Index values, so add col and set all to NA
+        dfSamps <- dfSamps %>% dplyr::mutate(Alg.Index=NA)
+        colnames(dfSamps[,Alg.Index]) <- algIndex
+    }
+    dfSamps[[algIndex]] <- ifelse(is.na(dfSamps[[algIndex]]),NA
+                                  ,round(dfSamps[[algIndex]],3))
+    rm(fnAlg, dfAlg)
+} else {
+    # Need to add the appropriate data columns to the file here
+    dfSamps[[algIndex]] <- NA
 }
-dfSamps[[algIndex]] <- ifelse(is.na(dfSamps[[algIndex]]),NA
-                              ,round(dfSamps[[algIndex]],3))
-rm(fnAlg, dfAlg)
 
 # Get BMISampFlag, if any
 fnCompSamps <- file.path(dir_results, TargetSiteID, "SiteInfo"
@@ -257,6 +269,7 @@ dfSamps <- dfSamps %>%
 compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
                        , " Red index scores indicate degraded biological quality.")
 dfSamps <- dplyr::arrange_(dfSamps, "SampleDate", bmiIndex, algIndex)
+
 if (report_format=="html") {
 dfSamps <- dfSamps %>%
     dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
@@ -287,6 +300,8 @@ dfSamps <- dfSamps %>%
         kableExtra::collapse_rows(columns=1:4, valign="top")
 }
 
+cat("See data gaps for explanation of flag values.")
+
 ```
 
 ## *Potential Candidate Causes*
@@ -300,39 +315,42 @@ if(useBMI==TRUE){
     fn_strUsedBMI <- file.path(dir_results,TargetSiteID,"BMI",dir.sub3,fn_stressBMI)
     fn_stressBMIexcl <- paste0(TargetSiteID,"_BMI_CandCauses_StressorsExcluded.tab")
     fn_strExclBMI <- file.path(dir_results,TargetSiteID,"BMI",dir.sub3,fn_stressBMIexcl)
+    
+    msgBMIExclReasons <- paste0("Modeled flow metrics may be excluded for analysis for one biological community because they are not expected to impact that community. These same metrics may be included for a different biological community. Dissolved oxygen (DO) may be excluded if it falls below the percentile threshold selected but is above the absolute threshold defined as acceptable. Similarly, pH may be excluded if it falls outside the selected percentile thresholds but inside the absolute values considered acceptable.")
       
         if(file.exists(fn_strUsedBMI)){##IF.boo.pdf.START
             dfStrUsedBMI <- read.delim(fn_strUsedBMI, header = TRUE, sep = "\t")
-            stressorlistBMI <- paste(as.vector(dfStrUsedBMI$Label), collapse = "\n\t* ")
+            stressorlistBMI <- paste(as.vector(dfStrUsedBMI$Label), collapse = "\n\t * ")
             
             if(file.exists(fn_strExclBMI)){
                 dfStrExclBMI <- read.delim(fn_strExclBMI, header = TRUE, sep = "\t")
                 notstressorlistBMI <- paste(as.vector(dfStrExclBMI$Label)
                                             , collapse = "; ")
                 if (notstressorlistBMI[1]=="None") {
-                    msgstrexclBMI <- paste0("No stressors were excluded from "
+                    msgstrexclBMI <- paste0("**No stressors were excluded from "
                                              , "evaluation as potential candidate "
                                              , "causes of benthic macroinvertebrate "
-                                             , "impairment.\n")
+                                             , "impairment.**\n")
                 } else {
-                    msgstrexclBMI <- paste0("Stressors excluded as potential candidate "
+                    msgstrexclBMI <- paste0("**Stressors excluded as potential candidate "
                                   , "causes of benthic macroinvertebrate impairment "
-                                  , "include: ", notstressorlistBMI,".\n")
+                                  , "include:** ", notstressorlistBMI, "\n\n"
+                                  , msgBMIExclReasons, "\n\n")
                 }
-            } else { msgstrexclBMI <- paste0("No stressors were excluded from "
+            } else { msgstrexclBMI <- paste0("**No stressors were excluded from "
                                              , "evaluation as potential candidate "
                                              , "causes of benthic macroinvertebrate "
-                                             , "impairment.\n")
+                                             , "impairment.**\n")
             }
 
-            msg_strlistBMI <- paste0("Stressors identified as potential candidate "
+            msg_strlistBMI <- paste0("**Stressors identified as potential candidate "
                                   , "causes of benthic macroinvertebrate impairment "
-                                  , "include:\n\t* ", stressorlistBMI, "\n\n"
-                                  , msgstrexclBMI, "\n")
+                                  , "include:**\n\t* ", stressorlistBMI, "\n\n"
+                                  , msgstrexclBMI, "\n\n")
         } else if(!file.exists(fn_strUsedBMI)){
-            msg_strlistBMI <- paste0("No stressors were identified as possible "
+            msg_strlistBMI <- paste0("**No stressors were identified as possible "
                                      , "candidate causes of benthic macroinvertebrate "
-                                     , "community impairment.\n\n")
+                                     , "community impairment.**\n\n")
         } else {
             msg_strlistBMI <- ""
         }##IF.boo.pdf.START
@@ -352,6 +370,8 @@ if(useAlg==TRUE){
                                  , "_ALGAE_CandCauses_StressorsExcluded.tab")
     fn_strExclALGAE <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3
                                  , fn_stressALGAEexcl)
+    
+        msgAlgExclReasons <- paste0("Chlorophyll-a, pheophytin-a, and ash-free dry mass from algae are excluded as algal stressors because they represent measures of algae. Modeled flow metrics may be excluded for analysis for one biological community because they are not expected to impact that community. These same metrics may be included for a different biological community. Dissolved oxygen (DO) may be excluded if it falls below the percentile threshold selected but is above the absolute threshold defined as acceptable. Similarly, pH may be excluded if it falls outside the selected percentile thresholds but inside the absolute values considered acceptable.")
       
         if(file.exists(fn_strUsedALGAE)){##IF.boo.pdf.START
             dfStrUsedALG <- read.delim(fn_strUsedALGAE, header = TRUE, sep = "\t")
@@ -362,29 +382,30 @@ if(useAlg==TRUE){
                 notstressorlistALG <- paste(as.vector(dfStrExclALG$Label)
                                             , collapse = "; ")
                 if (notstressorlistALG[1]=="None") {
-                    msgstrexclALG <- paste0("No stressors were excluded from "
+                    msgstrexclALG <- paste0("**No stressors were excluded from "
                                              , "evaluation as potential candidate "
                                              , "causes of algal community "
-                                             , "impairment.\n")
+                                             , "impairment.**\n")
                 } else {
-                    msgstrexclALG <- paste0("Stressors excluded as potential candidate "
+                    msgstrexclALG <- paste0("**Stressors excluded as potential candidate "
                                   , "causes of algal community impairment "
-                                  , "include: ", notstressorlistALG, ".")
+                                  , "include:** ", notstressorlistALG, "\n\n"
+                                  , msgAlgExclReasons, ".\n")
                 }
-            } else { msgstrexclALG <- paste0("No stressors were excluded from "
+            } else { msgstrexclALG <- paste0("**No stressors were excluded from "
                                              , "evaluation as potential candidate "
                                              , "causes of algal community "
-                                             , "impairment.\n")
+                                             , "impairment.**\n")
             }
 
-            msg_strlistALG <- paste0("Stressors identified as potential candidate "
+            msg_strlistALG <- paste0("**Stressors identified as potential candidate "
                                   , "causes of algal community impairment "
-                                  , "include:\n\t* ", stressorlistALG, "\n\n"
-                                  , msgstrexclALG, "\n")
+                                  , "include:**\n\t* ", stressorlistALG, "\n\n"
+                                  , msgstrexclALG, "\n\n")
         } else if(!file.exists(fn_strUsedALGAE)){
-            msg_strlistALG <- paste0("No stressors were identified as possible " 
+            msg_strlistALG <- paste0("**No stressors were identified as possible " 
                                      , "candidate causes of algal community "
-                                     , "impairment.\n\n")
+                                     , "impairment.**\n\n")
         } else {
             msg_strlistALG <- ""
         }##IF.boo.pdf.START
@@ -520,7 +541,7 @@ if(useBMI==TRUE){
 
 ## *Comparator Site Information*
 
-```{r bmicompsitesummary}
+```{r bmicompsitesummarytable}
 # Read file summarizing the comparator data and provide it in summary form
 
 if(useBMI==TRUE){
@@ -554,7 +575,7 @@ if(useBMI==TRUE){
 
 ```
 
-```{r bmicompsitedetails}
+```{r bmicompsitesummarystatement}
 # Read file summarizing the comparator data and provide it in summary form
 
 if(useBMI==TRUE){
@@ -576,15 +597,6 @@ if(useBMI==TRUE){
             dplyr::select(StationID_Master, Comment) %>%
             dplyr::group_by(Comment) %>%
             dplyr::summarise(NumSites = n())
-        
-        dfcompflags <- dfcompsamps %>% 
-            dplyr::select(RespSampID, Quality, RespSampFlag) %>%
-            dplyr::mutate(RespSampFlag = ifelse(is.na(RespSampFlag)
-                                                , "No flags", RespSampFlag)) %>%
-            dplyr::group_by(RespSampFlag, Quality) %>%
-            dplyr::summarise(NumSamps = n()) %>%
-            tidyr::spread(key = Quality, value = NumSamps) %>%
-            dplyr::rename(BMISampFlag = RespSampFlag)
         
         numLTEQ <- dfbcdist %>%
             dplyr::filter(grepl("LTEQ",Comment)) %>%
@@ -613,6 +625,37 @@ if(useBMI==TRUE){
         
         cat(msgbcdist)
         
+    }
+
+} else {
+    cat("")
+}
+
+```
+
+```{r bmicompsiteflags}
+# Read file summarizing the comparator data and provide it in summary form
+
+if(useBMI==TRUE){
+    dir.sub3 <- "SiteInfo"
+    mycompsamps <- paste0(TargetSiteID,"_COMPARATORS.tab")
+    fncompsamps <- file.path(dir_results, TargetSiteID, dir.sub3, mycompsamps)
+
+    if(file.exists(fncompsamps)==TRUE){
+        dfcompsamps <- read.delim(fncompsamps, header = TRUE, sep = "\t"
+                                  , stringsAsFactors = FALSE)
+        dfcompsamps <- dfcompsamps %>%
+            filter(StationID_Master != TargetSiteID)
+
+        dfcompflags <- dfcompsamps %>% 
+            dplyr::select(RespSampID, Quality, RespSampFlag) %>%
+            dplyr::mutate(RespSampFlag = ifelse(is.na(RespSampFlag)
+                                                , "No flags", RespSampFlag)) %>%
+            dplyr::group_by(RespSampFlag, Quality) %>%
+            dplyr::summarise(NumSamps = n()) %>%
+            tidyr::spread(key = Quality, value = NumSamps) %>%
+            dplyr::rename(BMISampFlag = RespSampFlag)
+        
         flagcaption <- paste0("Summary of numbers of samples flagged for "
                               , "possible inadequacies in the benthic "
                               , "macroinvertebrate data.")
@@ -625,6 +668,34 @@ if(useBMI==TRUE){
                                   , position = "left") %>%
         kableExtra::column_spec(1,bold = TRUE) %>%
         kableExtra::collapse_rows(columns=1, valign="top")
+
+    }
+
+} else {
+    cat("")
+}
+
+```
+
+```{r bmicompsiteflagstatement}
+# Read file summarizing the comparator data and provide it in summary form
+
+if(useBMI==TRUE){
+    dir.sub3 <- "SiteInfo"
+    mycompsamps <- paste0(TargetSiteID,"_COMPARATORS.tab")
+    fncompsamps <- file.path(dir_results, TargetSiteID, dir.sub3, mycompsamps)
+
+    if(file.exists(fncompsamps)==TRUE){
+
+        msgflags <- paste0("* Insufficient individuals refers to samples "
+                           , "containing fewer than 250 individuals.\n\n"
+                           , "* Large percent ambiguity refers to samples "
+                           , "with more than 50% ambiguous individuals.\n\n"
+                           , "* Unknown refers to samples for which the"
+                           , "percentage of ambiguous individuals is not"
+                           , "recorded.\n\n")
+        cat(msgflags)
+
     }
     
 } else {
@@ -632,6 +703,7 @@ if(useBMI==TRUE){
 }
 
 ```
+
 ## *Weight of Evidence*
 
 ### Overall Findings
@@ -1087,7 +1159,7 @@ if (any(dfgen$result==0)) {
 } else {
     
     msgnodata <- paste0("All stressor and response data types are available for "
-                        , TargetSiteID, "\n\n.")
+                        , TargetSiteID, ".\n\n")
     cat(msgnodata)
     
 }
@@ -1095,7 +1167,7 @@ if (any(dfgen$result==0)) {
 if (nrow(dfoutliers)>0) {
     
     dfoutliers <- dplyr::select(dfoutliers, -fxnname)
-    dfoutliers$ComparatorSiteID <- stringr::str_extract(dfoutliers2$comment
+    dfoutliers$ComparatorSiteID <- stringr::str_extract(dfoutliers$comment
                                                         , "^[A-Z0-9]*")
     dfoutliers <- dfoutliers %>% 
         dplyr::rename(Stressor = condition, StressorValue = result) %>%
