@@ -4,10 +4,20 @@
 \alias{getStressorList}
 \title{Stressor List}
 \usage{
-getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem,
-  cluster.samps, ref.sites, site.chem, probsHigh, probsLow,
-  biocomm = "bmi", dir_results = file.path(getwd(), "Results"),
-  dir_sub = "CandidateCauses")
+getStressorList(
+  TargetSiteID,
+  site.Clusters,
+  chem.info,
+  cluster.chem,
+  cluster.samps,
+  ref.sites,
+  site.chem,
+  probsHigh,
+  probsLow,
+  biocomm = "bmi",
+  dir_results = file.path(getwd(), "Results"),
+  dir_sub = "CandidateCauses"
+)
 }
 \arguments{
 \item{TargetSiteID}{Site ID}

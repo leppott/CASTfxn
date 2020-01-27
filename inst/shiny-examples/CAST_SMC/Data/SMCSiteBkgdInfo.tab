@@ -1,0 +1,387 @@
+ColName	Category	Subcategory	StudyYear	Scale	ShortName	Units	AbbrFN	Description
+CBNFCat	Disturbance	Agricultural nitrogen	NA	Catchment	Biological N fixation	kg N/ha/yr	AgNitr	"Mean rate of biological nitrogen fixation from the cultivation of crops in kg N/ha/yr, within catchment"
+CBNFWs	Disturbance	Agricultural nitrogen	NA	Watershed	Biological N fixation	kg N/ha/yr	AgNitr	"Mean rate of biological nitrogen fixation from the cultivation of crops in kg N/ha/yr, within watershed"
+FertCat	Disturbance	Agricultural nitrogen	NA	Catchment	Synthetic N fertilizer	kg N/ha/yr	AgNitr	"Mean rate of synthetic nitrogen fertilizer application to agricultural land in kg N/ha/yr, within the catchment"
+FertWs	Disturbance	Agricultural nitrogen	NA	Watershed	Synthetic N fertilizer	kg N/ha/yr	AgNitr	"Mean rate of synthetic nitrogen fertilizer application to agricultural land in kg N/ha/yr, within watershed"
+ManureCat	Disturbance	Agricultural nitrogen	NA	Catchment	Manure application	kg N/ha/yr	AgNitr	"Mean rate of manure application to agricultural land from confined animal feeding operations in kg N/ha/yr, within catchment"
+ManureWs	Disturbance	Agricultural nitrogen	NA	Watershed	Manure application	kg N/ha/yr	AgNitr	"Mean rate of manure application to agricultural land from confined animal feeding operations in kg N/ha/yr, within watershed"
+PctAg2006Slp10Cat	Disturbance	Agriculture land cover	2006	Catchment	10% slope	%	AgLULC	% of catchment area classified as ag land cover (NLCD 2006 classes 81-82) occurring on slopes ? 10%
+PctAg2006Slp10Ws	Disturbance	Agriculture land cover	2006	Watershed	10% slope	%	AgLULC	% of watershed area classified as ag land cover (NLCD 2006 classes 81-82) occurring on slopes ? 10%
+PctAg2006Slp20Cat	Disturbance	Agriculture land cover	2006	Catchment	20% slope	%	AgLULC	% of catchment area classified as ag land cover (NLCD 2006 classes 81-82) occurring on slopes ? 20%
+PctAg2006Slp20Cat	Disturbance	Agriculture land cover	2006	Catchment	20% slope	%	AgLULC	% of watershed area classified as ag land cover (NLCD 2006 classes 81-82) occurring on slopes ? 20%
+PctCrop2001Cat	Disturbance	Agriculture land cover	2001	Catchment	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2001 class 82)
+PctCrop2001CatRp100	Disturbance	Agriculture land cover	2001	Catchment Riparian	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2001 class 82) within a 100-m buffer of NHD streams
+PctCrop2001Ws	Disturbance	Agriculture land cover	2001	Watershed	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2001 class 82)
+PctCrop2001WsRp100	Disturbance	Agriculture land cover	2001	Watershed Riparian	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2001 class 82) within a 100-m buffer of NHD streams
+PctCrop2006Cat	Disturbance	Agriculture land cover	2006	Catchment	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2006 class 82)
+PctCrop2006CatRp100	Disturbance	Agriculture land cover	2006	Catchment Riparian	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2006 class 82) within a 100-m buffer of NHD streams
+PctCrop2006Ws	Disturbance	Agriculture land cover	2006	Watershed	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2006 class 82)
+PctCrop2006WsRp100	Disturbance	Agriculture land cover	2006	Watershed Riparian	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2006 class 82) within a 100-m buffer of NHD streams
+PctCrop2011Cat	Disturbance	Agriculture land cover	2011	Catchment	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2011 class 82)
+PctCrop2011CatRp100	Disturbance	Agriculture land cover	2011	Catchment Riparian	Crop	%	AgLULC	% of catchment area classified as crop land use (NLCD 2011 class 82) within a 100-m buffer of NHD streams
+PctCrop2011Ws	Disturbance	Agriculture land cover	2011	Watershed	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2011 class 82)
+PctCrop2011WsRp100	Disturbance	Agriculture land cover	2011	Watershed Riparian	Crop	%	AgLULC	% of watershed area classified as crop land use (NLCD 2011 class 82) within a 100-m buffer of NHD streams
+PctHay2001Cat	Disturbance	Agriculture land cover	2001	Catchment	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2001 class 81)
+PctHay2001CatRp100	Disturbance	Agriculture land cover	2001	Catchment Riparian	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2001 class 81) within a 100-m buffer of NHD streams
+PctHay2001Ws	Disturbance	Agriculture land cover	2001	Watershed	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2001 class 81)
+PctHay2001WsRp100	Disturbance	Agriculture land cover	2001	Watershed Riparian	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2001 class 81) within a 100-m buffer of NHD streams
+PctHay2006Cat	Disturbance	Agriculture land cover	2006	Catchment	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2006 class 81)
+PctHay2006CatRp100	Disturbance	Agriculture land cover	2006	Catchment Riparian	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2006 class 81) within a 100-m buffer of NHD streams
+PctHay2006Ws	Disturbance	Agriculture land cover	2006	Watershed	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2006 class 81)
+PctHay2006WsRp100	Disturbance	Agriculture land cover	2006	Watershed Riparian	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2006 class 81) within a 100-m buffer of NHD streams
+PctHay2011Cat	Disturbance	Agriculture land cover	2011	Catchment	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2011 class 81)
+PctHay2011CatRp100	Disturbance	Agriculture land cover	2011	Catchment Riparian	Hay	%	AgLULC	% of catchment area classified as hay land use (NLCD 2011 class 81) within a 100-m buffer of NHD streams
+PctHay2011Ws	Disturbance	Agriculture land cover	2011	Watershed	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2011 class 81)
+PctHay2011WsRp100	Disturbance	Agriculture land cover	2011	Watershed Riparian	Hay	%	AgLULC	% of watershed area classified as hay land use (NLCD 2011 class 81) within a 100-m buffer of NHD streams
+PctNonAgIntrodManagVegCat	Disturbance	Managed Vegetation	NA	Catchment	Managed vegetation	%	MngdVeg	"% Nonagriculture nonnative introduced or managed vegetation landcover type reclassed from LANDFIRE Existing Vegetation Type (EVT), within catchment"
+PctNonAgIntrodManagVegCatRp100	Disturbance	Managed Vegetation	NA	Catchment Riparian	Managed vegetation	%	MngdVeg	"% Nonagriculture nonnative introduced or managed vegetation landcover type reclassed from LANDFIRE Existing Vegetation Type (EVT), within catchment and within 100-m buffer of NHD stream lines"
+PctNonAgIntrodManagVegWs	Disturbance	Managed Vegetation	NA	Watershed	Managed vegetation	%	MngdVeg	"% Nonagriculture nonnative introduced or managed vegetation landcover type reclassed from LANDFIRE Existing Vegetation Type (EVT), within watershed"
+PctNonAgIntrodManagVegWsRp100	Disturbance	Managed Vegetation	NA	Watershed Riparian	Managed vegetation	%	MngdVeg	"% Nonagriculture nonnative introduced or managed vegetation landcover type reclassed from LANDFIRE Existing Vegetation Type (EVT), within catchment and within 100-m buffer of NHD stream lines"
+PctUrbHi2001Cat	Disturbance	Developed	2001	Catchment	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2001 class 24)"
+PctUrbHi2001CatRp100	Disturbance	Developed	2001	Catchment Riparian	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2001 class 24) within a 100-m buffer of NHD streams"
+PctUrbHi2001Ws	Disturbance	Developed	2001	Watershed	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2001 class 24)"
+PctUrbHi2001WsRp100	Disturbance	Developed	2001	Watershed Riparian	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2001 class 24) within a 100-m buffer of NHD streams"
+PctUrbHi2006Cat	Disturbance	Developed	2006	Catchment	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2006 class 24)"
+PctUrbHi2006CatRp100	Disturbance	Developed	2006	Catchment Riparian	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2006 class 24) within a 100-m buffer of NHD streams"
+PctUrbHi2006Ws	Disturbance	Developed	2006	Watershed	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2006 class 24)"
+PctUrbHi2006WsRp100	Disturbance	Developed	2006	Watershed Riparian	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2006 class 24) within a 100-m buffer of NHD streams"
+PctUrbHi2011Cat	Disturbance	Developed	2011	Catchment	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2011 class 24)"
+PctUrbHi2011CatRp100	Disturbance	Developed	2011	Catchment Riparian	High	%	DevelopLULC	"% of catchment area classified as developed, high-intensity land use (NLCD 2011 class 24) within a 100-m buffer of NHD streams"
+PctUrbHi2011Ws	Disturbance	Developed	2011	Watershed	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2011 class 24)"
+PctUrbHi2011WsRp100	Disturbance	Developed	2011	Watershed Riparian	High	%	DevelopLULC	"% of watershed area classified as developed, high-intensity land use (NLCD 2011 class 24) within a 100-m buffer of NHD streams"
+PctUrbLo2001Cat	Disturbance	Developed	2001	Catchment	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2001 class 22)"
+PctUrbLo2001CatRp100	Disturbance	Developed	2001	Catchment Riparian	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2001 class 22) within a 100-m buffer of NHD streams"
+PctUrbLo2001Ws	Disturbance	Developed	2001	Watershed	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2001 class 22)"
+PctUrbLo2001WsRp100	Disturbance	Developed	2001	Watershed Riparian	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2001 class 22) within a 100-m buffer of NHD streams"
+PctUrbLo2006Cat	Disturbance	Developed	2006	Catchment	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2006 class 22)"
+PctUrbLo2006CatRp100	Disturbance	Developed	2006	Catchment Riparian	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2006 class 22) within a 100-m buffer of NHD streams"
+PctUrbLo2006Ws	Disturbance	Developed	2006	Watershed	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2006 class 22)"
+PctUrbLo2006WsRp100	Disturbance	Developed	2006	Watershed Riparian	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2006 class 22) within a 100-m buffer of NHD streams"
+PctUrbLo2011Cat	Disturbance	Developed	2011	Catchment	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2011 class 22)"
+PctUrbLo2011CatRp100	Disturbance	Developed	2011	Catchment Riparian	Low	%	DevelopLULC	"% of catchment area classified as developed, low-intensity land use (NLCD 2011 class 22) within a 100-m buffer of NHD streams"
+PctUrbLo2011Ws	Disturbance	Developed	2011	Watershed	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2011 class 22)"
+PctUrbLo2011WsRp100	Disturbance	Developed	2011	Watershed Riparian	Low	%	DevelopLULC	"% of watershed area classified as developed, low-intensity land use (NLCD 2011 class 22) within a 100-m buffer of NHD streams"
+PctUrbMd2001Cat	Disturbance	Developed	2001	Catchment	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2001 class 23)"
+PctUrbMd2001CatRp100	Disturbance	Developed	2001	Catchment Riparian	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2001 class 23) within a 100-m buffer of NHD streams"
+PctUrbMd2001Ws	Disturbance	Developed	2001	Watershed	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2001 class 23)"
+PctUrbMd2001WsRp100	Disturbance	Developed	2001	Watershed Riparian	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2001 class 23) within a 100-m buffer of NHD streams"
+PctUrbMd2006Cat	Disturbance	Developed	2006	Catchment	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2006 class 23)"
+PctUrbMd2006CatRp100	Disturbance	Developed	2006	Catchment Riparian	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2006 class 23) within a 100-m buffer of NHD streams"
+PctUrbMd2006Ws	Disturbance	Developed	2006	Watershed	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2006 class 23)"
+PctUrbMd2006WsRp100	Disturbance	Developed	2006	Watershed Riparian	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2006 class 23) within a 100-m buffer of NHD streams"
+PctUrbMd2011Cat	Disturbance	Developed	2011	Catchment	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2011 class 23)"
+PctUrbMd2011CatRp100	Disturbance	Developed	2011	Catchment Riparian	Medium	%	DevelopLULC	"% of catchment area classified as developed, medium-intensity land use (NLCD 2011 class 23) within a 100-m buffer of NHD streams"
+PctUrbMd2011Ws	Disturbance	Developed	2011	Watershed	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2011 class 23)"
+PctUrbMd2011WsRp100	Disturbance	Developed	2011	Watershed Riparian	Medium	%	DevelopLULC	"% of watershed area classified as developed, medium-intensity land use (NLCD 2011 class 23) within a 100-m buffer of NHD streams"
+PctUrbOp2001Cat	Disturbance	Developed	2001	Catchment	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2001 class 21)"
+PctUrbOp2001CatRp100	Disturbance	Developed	2001	Catchment Riparian	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2001 class 21) within a 100-m buffer of NHD streams"
+PctUrbOp2001Ws	Disturbance	Developed	2001	Watershed	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2001 class 21)"
+PctUrbOp2001WsRp100	Disturbance	Developed	2001	Watershed Riparian	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2001 class 21) within a 100-m buffer of NHD streams"
+PctUrbOp2006Cat	Disturbance	Developed	2006	Catchment	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2006 class 21)"
+PctUrbOp2006CatRp100	Disturbance	Developed	2006	Catchment Riparian	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2006 class 21) within a 100-m buffer of NHD streams"
+PctUrbOp2006Ws	Disturbance	Developed	2006	Watershed	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2006 class 21)"
+PctUrbOp2006WsRp100	Disturbance	Developed	2006	Watershed Riparian	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2006 class 21) within a 100-m buffer of NHD streams"
+PctUrbOp2011Cat	Disturbance	Developed	2011	Catchment	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2011 class 21)"
+PctUrbOp2011CatRp100	Disturbance	Developed	2011	Catchment Riparian	Open space	%	DevelopLULC	"% of catchment area classified as developed, open space land use (NLCD 2011 class 21) within a 100-m buffer of NHD streams"
+PctUrbOp2011Ws	Disturbance	Developed	2011	Watershed	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2011 class 21)"
+PctUrbOp2011WsRp100	Disturbance	Developed	2011	Watershed Riparian	Open space	%	DevelopLULC	"% of watershed area classified as developed, open space land use (NLCD 2011 class 21) within a 100-m buffer of NHD streams"
+PctFire2000Cat	Disturbance	Fire loss	2000	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2000 within catchment
+PctFire2000CatRp100	Disturbance	Fire loss	2000	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2000 within catchment and within 100-m buffer of NHD stream lines
+PctFire2000Ws	Disturbance	Fire loss	2000	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2000 within watershed
+PctFire2000WsRp100	Disturbance	Fire loss	2000	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2000 within watershed and within 100-m buffer of NHD stream lines
+PctFire2001Cat	Disturbance	Fire loss	2001	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2001 within catchment
+PctFire2001CatRp100	Disturbance	Fire loss	2001	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2001 within catchment and within 100-m buffer of NHD stream lines
+PctFire2001Ws	Disturbance	Fire loss	2001	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2001 within watershed
+PctFire2001WsRp100	Disturbance	Fire loss	2001	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2001 within watershed and within 100-m buffer of NHD stream lines
+PctFire2002Cat	Disturbance	Fire loss	2002	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2002 within catchment
+PctFire2002CatRp100	Disturbance	Fire loss	2002	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2002 within catchment and within 100-m buffer of NHD stream lines
+PctFire2002Ws	Disturbance	Fire loss	2002	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2002 within watershed
+PctFire2002WsRp100	Disturbance	Fire loss	2002	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2002 within watershed and within 100-m buffer of NHD stream lines
+PctFire2003Cat	Disturbance	Fire loss	2003	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2003 within catchment
+PctFire2003CatRp100	Disturbance	Fire loss	2003	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2003 within catchment and within 100-m buffer of NHD stream lines
+PctFire2003Ws	Disturbance	Fire loss	2003	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2003 within watershed
+PctFire2003WsRp100	Disturbance	Fire loss	2003	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2003 within watershed and within 100-m buffer of NHD stream lines
+PctFire2004Cat	Disturbance	Fire loss	2004	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2004 within catchment
+PctFire2004CatRp100	Disturbance	Fire loss	2004	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2004 within catchment and within 100-m buffer of NHD stream lines
+PctFire2004Ws	Disturbance	Fire loss	2004	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2004 within watershed
+PctFire2004WsRp100	Disturbance	Fire loss	2004	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2004 within watershed and within 100-m buffer of NHD stream lines
+PctFire2005Cat	Disturbance	Fire loss	2005	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2005 within catchment
+PctFire2005CatRp100	Disturbance	Fire loss	2005	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2005 within catchment and within 100-m buffer of NHD stream lines
+PctFire2005Ws	Disturbance	Fire loss	2005	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2005 within watershed
+PctFire2005WsRp100	Disturbance	Fire loss	2005	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2005 within watershed and within 100-m buffer of NHD stream lines
+PctFire2006Cat	Disturbance	Fire loss	2006	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2006 within catchment
+PctFire2006CatRp100	Disturbance	Fire loss	2006	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2006 within catchment and within 100-m buffer of NHD stream lines
+PctFire2006Ws	Disturbance	Fire loss	2006	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2006 within watershed
+PctFire2006WsRp100	Disturbance	Fire loss	2006	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2006 within watershed and within 100-m buffer of NHD stream lines
+PctFire2007Cat	Disturbance	Fire loss	2007	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2007 within catchment
+PctFire2007CatRp100	Disturbance	Fire loss	2007	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2007 within catchment and within 100-m buffer of NHD stream lines
+PctFire2007Ws	Disturbance	Fire loss	2007	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2007 within watershed
+PctFire2007WsRp100	Disturbance	Fire loss	2007	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2007 within watershed and within 100-m buffer of NHD stream lines
+PctFire2008Cat	Disturbance	Fire loss	2008	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2008 within catchment
+PctFire2008CatRp100	Disturbance	Fire loss	2008	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2008 within catchment and within 100-m buffer of NHD stream lines
+PctFire2008Ws	Disturbance	Fire loss	2008	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2008 within watershed
+PctFire2008WsRp100	Disturbance	Fire loss	2008	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2008 within watershed and within 100-m buffer of NHD stream lines
+PctFire2009Cat	Disturbance	Fire loss	2009	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2009 within catchment
+PctFire2009CatRp100	Disturbance	Fire loss	2009	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2009 within catchment and within 100-m buffer of NHD stream lines
+PctFire2009Ws	Disturbance	Fire loss	2009	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2009 within watershed
+PctFire2009WsRp100	Disturbance	Fire loss	2009	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2009 within watershed and within 100-m buffer of NHD stream lines
+PctFire2010Cat	Disturbance	Fire loss	2010	Catchment	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2010 within catchment
+PctFire2010CatRp100	Disturbance	Fire loss	2010	Catchment Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2010 within catchment and within 100-m buffer of NHD stream lines
+PctFire2010Ws	Disturbance	Fire loss	2010	Watershed	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2010 within watershed
+PctFire2010WsRp100	Disturbance	Fire loss	2010	Watershed Riparian	Forest	%	FireLoss	% Forest loss to fire (fire perimeter) for 2010 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2001Cat	Disturbance	Forest loss	2001	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2001 within catchment
+PctFrstLoss2001CatRp100	Disturbance	Forest loss	2001	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2001 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2001Ws	Disturbance	Forest loss	2001	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2001 within watershed
+PctFrstLoss2001WsRp100	Disturbance	Forest loss	2001	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2001 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2002Cat	Disturbance	Forest loss	2002	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2002 within catchment
+PctFrstLoss2002CatRp100	Disturbance	Forest loss	2002	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2002 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2002Ws	Disturbance	Forest loss	2002	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2002 within watershed
+PctFrstLoss2002WsRp100	Disturbance	Forest loss	2002	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2002 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2003Cat	Disturbance	Forest loss	2003	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2003 within catchment
+PctFrstLoss2003CatRp100	Disturbance	Forest loss	2003	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2003 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2003Ws	Disturbance	Forest loss	2003	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2003 within watershed
+PctFrstLoss2003WsRp100	Disturbance	Forest loss	2003	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2003 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2004Cat	Disturbance	Forest loss	2004	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2004 within catchment
+PctFrstLoss2004CatRp100	Disturbance	Forest loss	2004	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2004 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2004Ws	Disturbance	Forest loss	2004	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2004 within watershed
+PctFrstLoss2004WsRp100	Disturbance	Forest loss	2004	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2004 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2005Cat	Disturbance	Forest loss	2005	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2005 within catchment
+PctFrstLoss2005CatRp100	Disturbance	Forest loss	2005	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2005 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2005Ws	Disturbance	Forest loss	2005	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2005 within watershed
+PctFrstLoss2005WsRp100	Disturbance	Forest loss	2005	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2005 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2006Cat	Disturbance	Forest loss	2006	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2006 within catchment
+PctFrstLoss2006CatRp100	Disturbance	Forest loss	2006	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2006 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2006Ws	Disturbance	Forest loss	2006	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2006 within watershed
+PctFrstLoss2006WsRp100	Disturbance	Forest loss	2006	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2006 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2007Cat	Disturbance	Forest loss	2007	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2007 within catchment
+PctFrstLoss2007CatRp100	Disturbance	Forest loss	2007	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2007 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2007Ws	Disturbance	Forest loss	2007	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2007 within watershed
+PctFrstLoss2007WsRp100	Disturbance	Forest loss	2007	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2007 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2008Cat	Disturbance	Forest loss	2008	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2008 within catchment
+PctFrstLoss2008CatRp100	Disturbance	Forest loss	2008	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2008 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2008Ws	Disturbance	Forest loss	2008	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2008 within watershed
+PctFrstLoss2008WsRp100	Disturbance	Forest loss	2008	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2008 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2009Cat	Disturbance	Forest loss	2009	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2009 within catchment
+PctFrstLoss2009CatRp100	Disturbance	Forest loss	2009	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2009 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2009Ws	Disturbance	Forest loss	2009	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2009 within watershed
+PctFrstLoss2009WsRp100	Disturbance	Forest loss	2009	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2009 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2010Cat	Disturbance	Forest loss	2010	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2010 within catchment
+PctFrstLoss2010CatRp100	Disturbance	Forest loss	2010	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2010 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2010Ws	Disturbance	Forest loss	2010	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2010 within watershed
+PctFrstLoss2010WsRp100	Disturbance	Forest loss	2010	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2010 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2011Cat	Disturbance	Forest loss	2011	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2011 within catchment
+PctFrstLoss2011CatRp100	Disturbance	Forest loss	2011	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2011 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2011Ws	Disturbance	Forest loss	2011	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2011 within watershed
+PctFrstLoss2011WsRp100	Disturbance	Forest loss	2011	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2011 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2012Cat	Disturbance	Forest loss	2012	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2012 within catchment
+PctFrstLoss2012CatRp100	Disturbance	Forest loss	2012	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2012 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2012Ws	Disturbance	Forest loss	2012	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2012 within watershed
+PctFrstLoss2012WsRp100	Disturbance	Forest loss	2012	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2012 within watershed and within 100-m buffer of NHD stream lines
+PctFrstLoss2013Cat	Disturbance	Forest loss	2013	Catchment	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2013 within catchment
+PctFrstLoss2013CatRp100	Disturbance	Forest loss	2013	Catchment Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2013 within catchment and within 100-m buffer of NHD stream lines
+PctFrstLoss2013Ws	Disturbance	Forest loss	2013	Watershed	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2013 within watershed
+PctFrstLoss2013WsRp100	Disturbance	Forest loss	2013	Watershed Riparian	Forest	%	ForestLoss	% Forest cover loss (Tree canopy cover change) for 2013 within watershed and within 100-m buffer of NHD stream lines
+HUDen2010Cat	Disturbance	Housing and population	2010	Catchment	Housing	units or people/km2	HousePopul	Mean housing unit density (housing units/square km) within catchment
+HUDen2010CatRp100	Disturbance	Housing and population	2010	Catchment Riparian	Housing	units or people/km2	HousePopul	Mean housing unit density (housing units/square km) within catchment and within a 100-m buffer of NHD stream lines
+HUDen2010Ws	Disturbance	Housing and population	2010	Watershed	Housing	units or people/km2	HousePopul	Mean housing unit density (housing units/square km) within watershed
+HUDen2010WsRp100	Disturbance	Housing and population	2010	Watershed Riparian	Housing	units or people/km2	HousePopul	Mean housing unit density (housing units/square km) within watershed and within a 100-m buffer of NHD stream lines
+PopDen2010Cat	Disturbance	Housing and population	2010	Catchment	Population	units or people/km2	HousePopul	Mean populating density (people/square km) within catchment
+PopDen2010CatRp100	Disturbance	Housing and population	2010	Catchment Riparian	Population	units or people/km2	HousePopul	Mean populating density (people/square km) within catchment and within a 100-m buffer of NHD stream lines
+PopDen2010Ws	Disturbance	Housing and population	2010	Watershed	Population	units or people/km2	HousePopul	Mean populating density (people/square km) within watershed
+PopDen2010WsRp100	Disturbance	Housing and population	2010	Watershed Riparian	Population	units or people/km2	HousePopul	Mean populating density (people/square km) within watershed and within a 100-m buffer of NHD stream lines
+PctImp2001Cat	Disturbance	Imperviousness	2001	Catchment	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2001) within catchment 
+PctImp2001CatRp100	Disturbance	Imperviousness	2001	Catchment Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2001) within catchment and within a 100-m buffer of NHD stream lines
+PctImp2001Ws	Disturbance	Imperviousness	2001	Watershed	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2001) within watershed
+PctImp2001WsRp100	Disturbance	Imperviousness	2001	Watershed Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2001) within watershed and within a 100-m buffer of NHD stream lines
+PctImp2006Cat	Disturbance	Imperviousness	2006	Catchment	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2006) within catchment 
+PctImp2006CatRp100	Disturbance	Imperviousness	2006	Catchment Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2006) within catchment and within a 100-m buffer of NHD stream lines
+PctImp2006Ws	Disturbance	Imperviousness	2006	Watershed	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2006) within watershed
+PctImp2006WsRp100	Disturbance	Imperviousness	2006	Watershed Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2006) within watershed and within a 100-m buffer of NHD stream lines
+PctImp2011Cat	Disturbance	Imperviousness	2011	Catchment	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2011) within catchment 
+PctImp2011CatRp100	Disturbance	Imperviousness	2011	Catchment Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2011) within catchment and within a 100-m buffer of NHD stream lines
+PctImp2011Ws	Disturbance	Imperviousness	2011	Watershed	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2011) within watershed
+PctImp2011WsRp100	Disturbance	Imperviousness	2011	Watershed Riparian	Impervious surface	%	ImpervNHLD	Mean imperviousness of anthropogenic surfaces (NLCD 2011) within watershed and within a 100-m buffer of NHD stream lines
+RdCrsCat	Disturbance	Road crossings	NA	Catchment	Number	per km2	RoadXings	Density of roads-stream intersections (2010 Census Tiger Lines-NHD stream lines) within catchment (crossings/square km)
+RdCrsSlpWtdCat	Disturbance	Road crossings	NA	Catchment	"Number, slope-weighted"	per km2	RoadXings	Density of roads-stream intersections (2010 Census Tiger Lines-NHD stream lines) multiplied by NHDPlusV21 slope within catchment (crossings*slope/square km)
+RdCrsSlpWtdWs	Disturbance	Road crossings	NA	Watershed	"Number, slope-weighted"	per km2	RoadXings	Density of roads-stream intersections (2010 Census Tiger Lines-NHD stream lines) multiplied by NHDPlusV21 slope within watershed (crossings*slope/square km)
+RdCrsWs	Disturbance	Road crossings	NA	Watershed	Number	per km2	RoadXings	Density of roads-stream intersections (2010 Census Tiger Lines-NHD stream lines) within watershed (crossings/square km)
+RdDensCat	Disturbance	Road density	NA	Catchment	Roads	km/km2	RoadDensity	Density of roads (2010 Census Tiger Lines) within catchment (km/square km)
+RdDensCatRp100	Disturbance	Road density	NA	Catchment Riparian	Roads	km/km2	RoadDensity	Density of roads (2010 Census Tiger Lines) within catchment and within a 100-m buffer of NHD stream lines (km/square km)
+RdDensWs	Disturbance	Road density	NA	Watershed	Roads	km/km2	RoadDensity	Density of roads (2010 Census Tiger Lines) within watershed (km/square km)
+RdDensWsRp100	Disturbance	Road density	NA	Watershed Riparian	Roads	km/km2	RoadDensity	Density of roads (2010 Census Tiger Lines) within watershed and within a 100-m buffer of NHD stream lines (km/square km)
+CoalMineDensCat	Disturbance	Mining	NA	Catchment	Coal mines	mines/km2	Mining	Density of coal mines sites within catchment (mines/square km)
+CoalMineDensWs	Disturbance	Mining	NA	Watershed	Coal mines	mines/km2	Mining	Density of coal mines sites within watershed (mines/square km)
+MineDensCat	Disturbance	Mining	NA	Catchment	Other mines	mines/km2	Mining	Density of mines sites within catchment (mines/square km)
+MineDensCatRp100	Disturbance	Mining	NA	Catchment Riparian	Other mines	mines/km2	Mining	Density of mines sites within catchment and within 100-m buffer of NHD stream lines (mines/square km)
+MineDensWs	Disturbance	Mining	NA	Watershed	Other mines	mines/km2	Mining	Density of mines sites within watershed (mines/square km)
+MineDensWsRp100	Disturbance	Mining	NA	Watershed Riparian	Other mines	mines/km2	Mining	Density of mines sites within watershed and within 100-m buffer of NHD stream lines (mines/square km)
+CanalDensCat	Disturbance	Physical modification (types)	NA	Catchment	"Canals, km"	per km2	PhysModType	"Density of NHDPlus line features classified as canal, ditch, or pipeline within the catchment (km/ square km)"
+CanalDensWs	Disturbance	Physical modification (types)	NA	Watershed	"Canals, km"	per km2	PhysModType	"Density of NHDPlus line features classified as canal, ditch, or pipeline within the upstream watershed (km/ square km)"
+DamDensCat	Disturbance	Physical modification (types)	NA	Catchment	Dams	per km2	PhysModType	Density of georeferenced dams within catchment (dams/ square km)
+DamDensWs	Disturbance	Physical modification (types)	NA	Watershed	Dams	per km2	PhysModType	Density of georeferenced dams within watershed (dams/ square km)
+DamNIDStorCat	Disturbance	Reservoir volume	NA	Catchment	NID	m3/km2	ReservoirVol	Volume all reservoirs (NID_STORA in NID) per unit area of catchment (cubic meters/square km)
+DamNIDStorWs	Disturbance	Reservoir volume	NA	Watershed	NID	m3/km2	ReservoirVol	Volume all reservoirs (NID_STORA in NID) per unit area of watershed (cubic meters/square km)
+DamNrmStorCat	Disturbance	Reservoir volume	NA	Catchment	NORM	m3/km2	ReservoirVol	Volume all reservoirs (NORM_STORA in NID) per unit area of catchment (cubic meters/square km)
+DamNrmStorWs	Disturbance	Reservoir volume	NA	Watershed	NORM	m3/km2	ReservoirVol	Volume all reservoirs (NORM_STORA in NID) per unit area of watershed (cubic meters/square km)
+NABD_DensCat	Disturbance	Physical modification (types)	NA	Catchment	NABD dams	per km2	PhysModType	Density of georeferenced dams within catchment (dams/ square km)
+NABD_DensWs	Disturbance	Physical modification (types)	NA	Watershed	NABD dams	per km2	PhysModType	Density of georeferenced dams within watershed (dams/ square km)
+NABD_NIDStorCat	Disturbance	Reservoir volume	NA	Catchment	NABD (NID)	m3/km2	ReservoirVol	Volume all reservoirs (NID_STORA in NID) per unit area of catchment (cubic meters/square km)
+NABD_NIDStorWs	Disturbance	Reservoir volume	NA	Watershed	NABD (NID)	m3/km2	ReservoirVol	Volume all reservoirs (NID_STORA in NID) per unit area of watershed (cubic meters/square km)
+NABD_NrmStorCat	Disturbance	Reservoir volume	NA	Catchment	NABD (NORM)	m3/km2	ReservoirVol	Volume all reservoirs (NORM_STORA in NID) per unit area of catchment (cubic meters/square km)
+NABD_NrmStorWs	Disturbance	Reservoir volume	NA	Watershed	NABD (NORM)	m3/km2	ReservoirVol	Volume all reservoirs (NORM_STORA in NID) per unit area of watershed (cubic meters/square km)
+CCHEM	Disturbance	Stream metric (habitat)	NA	Catchment	Water chemistry reg.	Score	StreamMetricsHabitat	Regulation of water chemistry component score calculated using catchment metrics.
+CCONN	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Catchment	Hydrologic connectivity	Score	StreamMetricsHydro	Hydrologic connectivity component score calculated using catchment metrics.
+CHABT	Disturbance	Stream metric (habitat)	NA	Catchment	Habitat provision	Score	StreamMetricsHabitat	Habitat provision component score calculated using catchment metrics.
+CHYD	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Catchment	Hydrologic reg.	Score	StreamMetricsHydro	Hydrologic regulation component score calculated using catchment metrics.
+CSED	Disturbance	Stream metric (habitat)	NA	Catchment	Sediment reg.	Score	StreamMetricsHabitat	Sediment regulation component score calculated using catchment metrics.
+CTEMP	Disturbance	Stream metric (habitat)	NA	Catchment	Temperature reg.	Score	StreamMetricsHabitat	Temperature regulation component score calculated using catchment metrics.
+ICI	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Catchment	ICI	Score	StreamMetricsHydro	Index of catchment integrity.
+IWI	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Watershed	IWI	Score	StreamMetricsHydro	Index of watershed integrity.
+WCHEM	Disturbance	Stream metric (habitat)	NA	Watershed	Water chemistry reg.	Score	StreamMetricsHabitat	Regulation of water chemistry component score calculated using watershed metrics.
+WCONN	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Watershed	Hydrologic connectivity	Score	StreamMetricsHydro	Hydrologic connectivity component score calculated using watershed metrics.
+WHABT	Disturbance	Stream metric (habitat)	NA	Watershed	Habitat provision	Score	StreamMetricsHabitat	Habitat provision component score calculated using watershed metrics.
+WHYD	Disturbance	Stream metric (hydrology) and Index of Integrity	NA	Watershed	Hydrologic reg.	Score	StreamMetricsHydro	Hydrologic regulation component score calculated using watershed metrics.
+WSED	Disturbance	Stream metric (habitat)	NA	Watershed	Sediment reg.	Score	StreamMetricsHabitat	Sediment regulation component score calculated using watershed metrics.
+WTEMP	Disturbance	Stream metric (habitat)	NA	Watershed	Temperature reg.	Score	StreamMetricsHabitat	Temperature regulation component score calculated using watershed metrics.
+PctConif2001Cat	Landscape metrics	Forest land cover	2001	Catchment	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2001 class 42)
+PctConif2001CatRp100	Landscape metrics	Forest land cover	2001	Catchment Riparian	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2001 class 42) within a 100-m buffer of NHD streams
+PctConif2001Ws	Landscape metrics	Forest land cover	2001	Watershed	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2001 class 42)
+PctConif2001WsRp100	Landscape metrics	Forest land cover	2001	Watershed Riparian	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2001 class 42) within a 100-m buffer of NHD streams
+PctConif2006Cat	Landscape metrics	Forest land cover	2006	Catchment	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2006 class 42)
+PctConif2006CatRp100	Landscape metrics	Forest land cover	2006	Catchment Riparian	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2006 class 42) within a 100-m buffer of NHD streams
+PctConif2006Ws	Landscape metrics	Forest land cover	2006	Watershed	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2006 class 42)
+PctConif2006WsRp100	Landscape metrics	Forest land cover	2006	Watershed Riparian	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2006 class 42) within a 100-m buffer of NHD streams
+PctConif2011Cat	Landscape metrics	Forest land cover	2011	Catchment	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2011 class 42)
+PctConif2011CatRp100	Landscape metrics	Forest land cover	2011	Catchment Riparian	Coniferous	%	ForestLULC	% of catchment area classified as evergreen forest land cover (NLCD 2011 class 42) within a 100-m buffer of NHD streams
+PctConif2011Ws	Landscape metrics	Forest land cover	2011	Watershed	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2011 class 42)
+PctConif2011WsRp100	Landscape metrics	Forest land cover	2011	Watershed Riparian	Coniferous	%	ForestLULC	% of watershed area classified as evergreen forest land cover (NLCD 2011 class 42) within a 100-m buffer of NHD streams
+PctDecid2001Cat	Landscape metrics	Forest land cover	2001	Catchment	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2001 class 41)
+PctDecid2001CatRp100	Landscape metrics	Forest land cover	2001	Catchment Riparian	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2001 class 41) within a 100-m buffer of NHD streams
+PctDecid2001Ws	Landscape metrics	Forest land cover	2001	Watershed	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2001 class 41)
+PctDecid2001WsRp100	Landscape metrics	Forest land cover	2001	Watershed Riparian	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2001 class 41) within a 100-m buffer of NHD streams
+PctDecid2006Cat	Landscape metrics	Forest land cover	2006	Catchment	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2006 class 41)
+PctDecid2006CatRp100	Landscape metrics	Forest land cover	2006	Catchment Riparian	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2006 class 41) within a 100-m buffer of NHD streams
+PctDecid2006Ws	Landscape metrics	Forest land cover	2006	Watershed	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2006 class 41)
+PctDecid2006WsRp100	Landscape metrics	Forest land cover	2006	Watershed Riparian	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2006 class 41) within a 100-m buffer of NHD streams
+PctDecid2011Cat	Landscape metrics	Forest land cover	2011	Catchment	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2011 class 41)
+PctDecid2011CatRp100	Landscape metrics	Forest land cover	2011	Catchment Riparian	Deciduous	%	ForestLULC	% of catchment area classified as deciduous forest land cover (NLCD 2011 class 41) within a 100-m buffer of NHD streams
+PctDecid2011Ws	Landscape metrics	Forest land cover	2011	Watershed	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2011 class 41)
+PctDecid2011WsRp100	Landscape metrics	Forest land cover	2011	Watershed Riparian	Deciduous	%	ForestLULC	% of watershed area classified as deciduous forest land cover (NLCD 2011 class 41) within a 100-m buffer of NHD streams
+PctMxFst2001Cat	Landscape metrics	Forest land cover	2001	Catchment	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2001 class 43)
+PctMxFst2001CatRp100	Landscape metrics	Forest land cover	2001	Catchment Riparian	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2001 class 43) within a 100-m buffer of NHD streams
+PctMxFst2001Ws	Landscape metrics	Forest land cover	2001	Watershed	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2001 class 43)
+PctMxFst2001WsRp100	Landscape metrics	Forest land cover	2001	Watershed Riparian	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2001 class 43) within a 100-m buffer of NHD streams
+PctMxFst2006Cat	Landscape metrics	Forest land cover	2006	Catchment	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2006 class 43)
+PctMxFst2006CatRp100	Landscape metrics	Forest land cover	2006	Catchment Riparian	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2006 class 43) within a 100-m buffer of NHD streams
+PctMxFst2006Ws	Landscape metrics	Forest land cover	2006	Watershed	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2006 class 43)
+PctMxFst2006WsRp100	Landscape metrics	Forest land cover	2006	Watershed Riparian	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2006 class 43) within a 100-m buffer of NHD streams
+PctMxFst2011Cat	Landscape metrics	Forest land cover	2011	Catchment	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2011 class 43)
+PctMxFst2011CatRp100	Landscape metrics	Forest land cover	2011	Catchment Riparian	Mixed	%	ForestLULC	% of catchment area classified as mixed deciduous/evergreen forest land cover (NLCD 2011 class 43) within a 100-m buffer of NHD streams
+PctMxFst2011Ws	Landscape metrics	Forest land cover	2011	Watershed	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2011 class 43)
+PctMxFst2011WsRp100	Landscape metrics	Forest land cover	2011	Watershed Riparian	Mixed	%	ForestLULC	% of watershed area classified as mixed deciduous/evergreen forest land cover (NLCD 2011 class 43) within a 100-m buffer of NHD streams
+PctGrs2001Cat	Landscape metrics	Grassland/shrub	2001	Catchment	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2001 class 71)
+PctGrs2001CatRp100	Landscape metrics	Grassland/shrub	2001	Catchment Riparian	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2001 class 71) within a 100-m buffer of NHD streams
+PctGrs2001Ws	Landscape metrics	Grassland/shrub	2001	Watershed	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2001 class 71)
+PctGrs2001WsRp100	Landscape metrics	Grassland/shrub	2001	Watershed Riparian	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2001 class 71) within a 100-m buffer of NHD streams
+PctGrs2006Cat	Landscape metrics	Grassland/shrub	2006	Catchment	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2006 class 71)
+PctGrs2006CatRp100	Landscape metrics	Grassland/shrub	2006	Catchment Riparian	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2006 class 71) within a 100-m buffer of NHD streams
+PctGrs2006Ws	Landscape metrics	Grassland/shrub	2006	Watershed	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2006 class 71)
+PctGrs2006WsRp100	Landscape metrics	Grassland/shrub	2006	Watershed Riparian	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2006 class 71) within a 100-m buffer of NHD streams
+PctGrs2011Cat	Landscape metrics	Grassland/shrub	2011	Catchment	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2011 class 71)
+PctGrs2011CatRp100	Landscape metrics	Grassland/shrub	2011	Catchment Riparian	Grassland	%	GrasslandLULC	% of catchment area classified as grassland/herbaceous land cover (NLCD 2011 class 71) within a 100-m buffer of NHD streams
+PctGrs2011Ws	Landscape metrics	Grassland/shrub	2011	Watershed	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2011 class 71)
+PctGrs2011WsRp100	Landscape metrics	Grassland/shrub	2011	Watershed Riparian	Grassland	%	GrasslandLULC	% of watershed area classified as grassland/herbaceous land cover (NLCD 2011 class 71) within a 100-m buffer of NHD streams
+PctShrb2001Cat	Landscape metrics	Grassland/shrub	2001	Catchment	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2001 class 52)
+PctShrb2001CatRp100	Landscape metrics	Grassland/shrub	2001	Catchment Riparian	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2001 class 52) within a 100-m buffer of NHD streams
+PctShrb2001Ws	Landscape metrics	Grassland/shrub	2001	Watershed	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2001 class 52)
+PctShrb2001WsRp100	Landscape metrics	Grassland/shrub	2001	Watershed Riparian	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2001 class 52) within a 100-m buffer of NHD streams
+PctShrb2006Cat	Landscape metrics	Grassland/shrub	2006	Catchment	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2006 class 52)
+PctShrb2006CatRp100	Landscape metrics	Grassland/shrub	2006	Catchment Riparian	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2006 class 52) within a 100-m buffer of NHD streams
+PctShrb2006Ws	Landscape metrics	Grassland/shrub	2006	Watershed	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2006 class 52)
+PctShrb2006WsRp100	Landscape metrics	Grassland/shrub	2006	Watershed Riparian	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2006 class 52) within a 100-m buffer of NHD streams
+PctShrb2011Cat	Landscape metrics	Grassland/shrub	2011	Catchment	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2011 class 52)
+PctShrb2011CatRp100	Landscape metrics	Grassland/shrub	2011	Catchment Riparian	Shrub/scrub	%	GrasslandLULC	% of catchment area classified as shrub/scrub land cover (NLCD 2011 class 52) within a 100-m buffer of NHD streams
+PctShrb2011Ws	Landscape metrics	Grassland/shrub	2011	Watershed	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2011 class 52)
+PctShrb2011WsRp100	Landscape metrics	Grassland/shrub	2011	Watershed Riparian	Shrub/scrub	%	GrasslandLULC	% of watershed area classified as shrub/scrub land cover (NLCD 2011 class 52) within a 100-m buffer of NHD streams
+PctBl2001Cat	Landscape metrics	Ice/snow or barren land cover	2001	Catchment	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2001 class 31)
+PctBl2001CatRp100	Landscape metrics	Ice/snow or barren land cover	2001	Catchment Riparian	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2001 class 31) within a 100-m buffer of NHD streams
+PctBl2001Ws	Landscape metrics	Ice/snow or barren land cover	2001	Watershed	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2001 class 31)
+PctBl2001WsRp100	Landscape metrics	Ice/snow or barren land cover	2001	Watershed Riparian	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2001 class 31) within a 100-m buffer of NHD streams
+PctBl2006Cat	Landscape metrics	Ice/snow or barren land cover	2006	Catchment	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2006 class 31)
+PctBl2006CatRp100	Landscape metrics	Ice/snow or barren land cover	2006	Catchment Riparian	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2006 class 31) within a 100-m buffer of NHD streams
+PctBl2006Ws	Landscape metrics	Ice/snow or barren land cover	2006	Watershed	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2006 class 31)
+PctBl2006WsRp100	Landscape metrics	Ice/snow or barren land cover	2006	Watershed Riparian	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2006 class 31) within a 100-m buffer of NHD streams
+PctBl2011Cat	Landscape metrics	Ice/snow or barren land cover	2011	Catchment	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2011 class 31)
+PctBl2011CatRp100	Landscape metrics	Ice/snow or barren land cover	2011	Catchment Riparian	Barren land	%	BarrenLULC	% of catchment area classified as barren land cover (NLCD 2011 class 31) within a 100-m buffer of NHD streams
+PctBl2011Ws	Landscape metrics	Ice/snow or barren land cover	2011	Watershed	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2011 class 31)
+PctBl2011WsRp100	Landscape metrics	Ice/snow or barren land cover	2011	Watershed Riparian	Barren land	%	BarrenLULC	% of watershed area classified as barren land cover (NLCD 2011 class 31) within a 100-m buffer of NHD streams
+PctIce2001Cat	Landscape metrics	Ice/snow or barren land cover	2001	Catchment	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2001 class 12)
+PctIce2001CatRp100	Landscape metrics	Ice/snow or barren land cover	2001	Catchment Riparian	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2001 class 12) within a 100-m buffer of NHD streams
+PctIce2001Ws	Landscape metrics	Ice/snow or barren land cover	2001	Watershed	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2001 class 12)
+PctIce2001WsRp100	Landscape metrics	Ice/snow or barren land cover	2001	Watershed Riparian	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2001 class 12) within a 100-m buffer of NHD streams
+PctIce2006Cat	Landscape metrics	Ice/snow or barren land cover	2006	Catchment	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2006 class 12)
+PctIce2006CatRp100	Landscape metrics	Ice/snow or barren land cover	2006	Catchment Riparian	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2006 class 12) within a 100-m buffer of NHD streams
+PctIce2006Ws	Landscape metrics	Ice/snow or barren land cover	2006	Watershed	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2006 class 12)
+PctIce2006WsRp100	Landscape metrics	Ice/snow or barren land cover	2006	Watershed Riparian	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2006 class 12) within a 100-m buffer of NHD streams
+PctIce2011Cat	Landscape metrics	Ice/snow or barren land cover	2011	Catchment	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2011 class 12)
+PctIce2011CatRp100	Landscape metrics	Ice/snow or barren land cover	2011	Catchment Riparian	Ice and snow land cover	%	BarrenLULC	% of catchment area classified as ice/snow land cover (NLCD 2011 class 12) within a 100-m buffer of NHD streams
+PctIce2011Ws	Landscape metrics	Ice/snow or barren land cover	2011	Watershed	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2011 class 12)
+PctIce2011WsRp100	Landscape metrics	Ice/snow or barren land cover	2011	Watershed Riparian	Ice and snow land cover	%	BarrenLULC	% of watershed area classified as ice/snow land cover (NLCD 2011 class 12) within a 100-m buffer of NHD streams
+PctHbWet2001Cat	Landscape metrics	Water or wetland	2001	Catchment	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2001 class 95)
+PctHbWet2001CatRp100	Landscape metrics	Water or wetland	2001	Catchment Riparian	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2001 class 95) within a 100-m buffer of NHD streams
+PctHbWet2001Ws	Landscape metrics	Water or wetland	2001	Watershed	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2001 class 95)
+PctHbWet2001WsRp100	Landscape metrics	Water or wetland	2001	Watershed Riparian	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2001 class 95) within a 100-m buffer of NHD streams
+PctHbWet2006Cat	Landscape metrics	Water or wetland	2006	Catchment	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2006 class 95)
+PctHbWet2006CatRp100	Landscape metrics	Water or wetland	2006	Catchment Riparian	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2006 class 95) within a 100-m buffer of NHD streams
+PctHbWet2006Ws	Landscape metrics	Water or wetland	2006	Watershed	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2006 class 95)
+PctHbWet2006WsRp100	Landscape metrics	Water or wetland	2006	Watershed Riparian	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2006 class 95) within a 100-m buffer of NHD streams
+PctHbWet2011Cat	Landscape metrics	Water or wetland	2011	Catchment	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2011 class 95)
+PctHbWet2011CatRp100	Landscape metrics	Water or wetland	2011	Catchment Riparian	Herbaceous wetland	%	WaterWetLULC	% of catchment area classified as herbaceous wetland land cover (NLCD 2011 class 95) within a 100-m buffer of NHD streams
+PctHbWet2011Ws	Landscape metrics	Water or wetland	2011	Watershed	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2011 class 95)
+PctHbWet2011WsRp100	Landscape metrics	Water or wetland	2011	Watershed Riparian	Herbaceous wetland	%	WaterWetLULC	% of watershed area classified as herbaceous wetland land cover (NLCD 2011 class 95) within a 100-m buffer of NHD streams
+PctOw2001Cat	Landscape metrics	Water or wetland	2001	Catchment	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2001 class 11)
+PctOw2001CatRp100	Landscape metrics	Water or wetland	2001	Catchment Riparian	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2001 class 11) within a 100-m buffer of NHD streams
+PctOw2001Ws	Landscape metrics	Water or wetland	2001	Watershed	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2001 class 11)
+PctOw2001WsRp100	Landscape metrics	Water or wetland	2001	Watershed Riparian	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2001 class 11) within a 100-m buffer of NHD streams
+PctOw2006Cat	Landscape metrics	Water or wetland	2006	Catchment	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2006 class 11)
+PctOw2006CatRp100	Landscape metrics	Water or wetland	2006	Catchment Riparian	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2006 class 11) within a 100-m buffer of NHD streams
+PctOw2006Ws	Landscape metrics	Water or wetland	2006	Watershed	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2006 class 11)
+PctOw2006WsRp100	Landscape metrics	Water or wetland	2006	Watershed Riparian	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2006 class 11) within a 100-m buffer of NHD streams
+PctOw2011Cat	Landscape metrics	Water or wetland	2011	Catchment	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2011 class 11)
+PctOw2011CatRp100	Landscape metrics	Water or wetland	2011	Catchment Riparian	Open water	%	WaterWetLULC	% of catchment area classified as open water land cover (NLCD 2011 class 11) within a 100-m buffer of NHD streams
+PctOw2011Ws	Landscape metrics	Water or wetland	2011	Watershed	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2011 class 11)
+PctOw2011WsRp100	Landscape metrics	Water or wetland	2011	Watershed Riparian	Open water	%	WaterWetLULC	% of watershed area classified as open water land cover (NLCD 2011 class 11) within a 100-m buffer of NHD streams
+PctWdWet2001Cat	Landscape metrics	Water or wetland	2001	Catchment	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2001 class 90)
+PctWdWet2001CatRp100	Landscape metrics	Water or wetland	2001	Catchment Riparian	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2001 class 90) within a 100-m buffer of NHD streams
+PctWdWet2001Ws	Landscape metrics	Water or wetland	2001	Watershed	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2001 class 90)
+PctWdWet2001WsRp100	Landscape metrics	Water or wetland	2001	Watershed Riparian	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2001 class 90) within a 100-m buffer of NHD streams
+PctWdWet2006Cat	Landscape metrics	Water or wetland	2006	Catchment	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2006 class 90)
+PctWdWet2006CatRp100	Landscape metrics	Water or wetland	2006	Catchment Riparian	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2006 class 90) within a 100-m buffer of NHD streams
+PctWdWet2006Ws	Landscape metrics	Water or wetland	2006	Watershed	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2006 class 90)
+PctWdWet2006WsRp100	Landscape metrics	Water or wetland	2006	Watershed Riparian	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2006 class 90) within a 100-m buffer of NHD streams
+PctWdWet2011Cat	Landscape metrics	Water or wetland	2011	Catchment	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2011 class 90)
+PctWdWet2011CatRp100	Landscape metrics	Water or wetland	2011	Catchment Riparian	Woody wetland	%	WaterWetLULC	% of catchment area classified as woody wetland land cover (NLCD 2011 class 90) within a 100-m buffer of NHD streams
+PctWdWet2011Ws	Landscape metrics	Water or wetland	2011	Watershed	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2011 class 90)
+PctWdWet2011WsRp100	Landscape metrics	Water or wetland	2011	Watershed Riparian	Woody wetland	%	WaterWetLULC	% of watershed area classified as woody wetland land cover (NLCD 2011 class 90) within a 100-m buffer of NHD streams
+InorgNWetDep_2008Cat	Pollution	Nitrogen	2008	Catchment	Inorganic N deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for inorganic nitrogen wet deposition from nitrate and ammonium for 2008 in kg of N/ha/yr, within catchment"
+InorgNWetDep_2008Ws	Pollution	Nitrogen	2008	Watershed	Inorganic N deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for inorganic nitrogen wet deposition from nitrate and ammonium for 2008 in kg of N/ha/yr, within watershed"
+NH4_2008Cat	Pollution	Nitrogen	2008	Catchment	NH4 deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for ammonium ion concentration wet deposition for 2008 in kg of NH4/ha/yr, within catchment"
+NH4_2008Ws	Pollution	Nitrogen	2008	Watershed	NH4 deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for ammonium ion concentration wet deposition for 2008 in kg of NH4/ha/yr, within watershed"
+NO3_2008Cat	Pollution	Nitrogen	2008	Catchment	NO3 deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for nitrate ion concentration wet deposition for 2008 in kg of NO3/ha/yr, within catchment"
+NO3_2008Ws	Pollution	Nitrogen	2008	Watershed	NO3 deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for nitrate ion concentration wet deposition for 2008 in kg of NO3/ha/yr, within watershed"
+SN_2008Cat	Pollution	Nitrogen	2008	Catchment	S and N deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for average sulfur & nitrogen wet deposition for 2008 in kg of S+N/ha/yr, within catchment"
+SN_2008Ws	Pollution	Nitrogen	2008	Watershed	S and N deposition	kg N or S+N/ha/yr	Nitrogen	"Annual gradient map of precipitation-weighted mean deposition for average sulfur & nitrogen wet deposition for 2008 in kg of S+N/ha/yr, within watershed"
+Pestic97Cat	Pollution	Pesticides	1997	Catchment	Pesticide rate	kg/km2	Pesticides	Mean pesticide use (kg/km2) in yr. 1997 within catchment
+Pestic97Ws	Pollution	Pesticides	1997	Watershed	Pesticide rate	kg/km2	Pesticides	Mean pesticide use (kg/km2) in yr. 1997 within watershed
+NPDESDensCat	Pollution	Regulated sites	NA	Catchment	NPDES	sites/km2	RegulatedSites	Density of permitted NPDES (National Pollutant Discharge Elimination System) sites within catchment (sites/square km)
+NPDESDensCatRp100	Pollution	Regulated sites	NA	Catchment Riparian	NPDES	sites/km2	RegulatedSites	Density of permitted NPDES (National Pollutant Discharge Elimination System) sites within catchment and within a 100-m buffer of NHD stream lines (sites/square km)
+NPDESDensWs	Pollution	Regulated sites	NA	Watershed	NPDES	sites/km2	RegulatedSites	Density of permitted NPDES (National Pollutant Discharge Elimination System) sites within watershed (sites/square km)
+NPDESDensWsRp100	Pollution	Regulated sites	NA	Watershed Riparian	NPDES	sites/km2	RegulatedSites	Density of permitted NPDES (National Pollutant Discharge Elimination System) sites within watershed and within 100-m buffer of NHD stream lines (sites/square km)
+SuperfundDensCat	Pollution	Regulated sites	NA	Catchment	Superfund	sites/km2	RegulatedSites	Density of Superfund sites within catchment (sites/square km)
+SuperfundDensCatRp100	Pollution	Regulated sites	NA	Catchment Riparian	Superfund	sites/km2	RegulatedSites	Density of Superfund sites  within 100-m buffer of NHD stream lines within the catchment (sites/square km)
+SuperfundDensWs	Pollution	Regulated sites	NA	Watershed	Superfund	sites/km2	RegulatedSites	Density of Superfund sites within watershed (sites/square km)
+SuperfundDensWsRp100	Pollution	Regulated sites	NA	Watershed Riparian	Superfund	sites/km2	RegulatedSites	Density of Superfund sites within watershed and within a 100-m buffer of NHD stream lines (sites/square km)
+TRIDensCat	Pollution	Regulated sites	NA	Catchment	TRI	sites/km2	RegulatedSites	Density of TRI (Toxic Release Inventory) sites within catchment (sites/square km)
+TRIDensCatRp100	Pollution	Regulated sites	NA	Catchment Riparian	TRI	sites/km2	RegulatedSites	Density of TRI (Toxic Release Inventory) sites within 100-m buffer of NHD stream lines in the catchment (sites/square km)
+TRIDensWs	Pollution	Regulated sites	NA	Watershed	TRI	sites/km2	RegulatedSites	Density of TRI (Toxic Release Inventory) sites within watershed (sites/square km)
+TRIDensWsRp100	Pollution	Regulated sites	NA	Watershed Riparian	TRI	sites/km2	RegulatedSites	Density of TRI (Toxic Release Inventory) sites within watershed and within a 100-m buffer of NHD stream lines (sites/square km)

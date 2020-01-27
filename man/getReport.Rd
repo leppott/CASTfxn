@@ -4,9 +4,13 @@
 \alias{getReport}
 \title{Report Generation}
 \usage{
-getReport(TargetSiteID, dir_results = file.path(getwd(), "Results"),
-  report_type = "summary", report_format = "html",
-  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"))
+getReport(
+  TargetSiteID,
+  dir_results = file.path(getwd(), "Results"),
+  report_type = "summary",
+  report_format = "html",
+  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}

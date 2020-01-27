@@ -1,8 +1,0 @@
-"fractionname"	"analytename"	"FinalUnit"	"StdParamName"	"Category"	"LogTransf"	"SSD"	"SSTV"	"SensMin"	"SensMax"	"TolMin"	"TolMax"	"UseInStressorID"	"DirIncStress"
-"None"	"MaxMonthQ"	"cms"	"MaxMonthQ"	"Magnitude"	0	0	0	NA	NA	NA	NA	1	"Inc"
-"None"	"Q99"	"cms"	"Q99"	"Magnitude"	0	0	0	NA	NA	NA	NA	1	"Inc"
-"None"	"HighDur"	"days/event"	"HighDur"	"Temporal"	0	0	0	NA	NA	NA	NA	1	"Inc"
-"None"	"HighNum"	"events/yr"	"HighNum"	"Temporal"	0	0	0	NA	NA	NA	NA	1	"Inc"
-"None"	"NoDisturb"	"days"	"NoDisturb"	"Temporal"	0	0	0	NA	NA	NA	NA	1	"Dec"
-"None"	"QmaxIDR"	"none"	"QmaxIDR"	"Variability"	0	0	0	NA	NA	NA	NA	1	"Inc"
-"None"	"RBI"	"none"	"RBI"	"Variability"	0	0	0	NA	NA	NA	NA	1	"Inc"
