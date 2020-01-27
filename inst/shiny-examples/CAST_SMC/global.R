@@ -4,7 +4,12 @@
 library(shiny)
 library(CASTfxn)
 library(shinyjs)
+<<<<<<< Updated upstream
 library(leaflet)
+=======
+#library(shinyFiles)
+# #library(leaflet)
+>>>>>>> Stashed changes
 # library(dplyr)
 # #library(shinyjs)
 # library(cluster)
@@ -39,7 +44,11 @@ source(file.path(".", "external", "getWoE.R"))
 
 dir_data <- file.path(".", "Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.
+<<<<<<< Updated upstream
 dir_wd <- file.path(getwd())
+=======
+#dir_wd <- file.path(getwd())
+>>>>>>> Stashed changes
 ## Stations - PickList
 data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab", sep="")
                             , stringsAsFactors = FALSE)
@@ -48,6 +57,7 @@ LU.Stations <- data.Stations[,"StationID_Master"]
 
 zip_name <- "NULL"
 
+<<<<<<< Updated upstream
 # Functions ####
 getHTML <- function(fn_html){
   #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
@@ -109,6 +119,8 @@ CopyResults <- function(TargetSiteID_Results){
   #
 }##CopyResults~END
 
+=======
+>>>>>>> Stashed changes
 
 # # Sites ####
 # # df.sites.map

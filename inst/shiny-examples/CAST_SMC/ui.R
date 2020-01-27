@@ -18,16 +18,36 @@ shinyUI(fluidPage(
   
   # titlePanel ####
   # Application title
+<<<<<<< Updated upstream
   , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> Test Application, v3, SMC")
+=======
+  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC Demo 2019-10-28")
+>>>>>>> Stashed changes
              ,windowTitle = "Causal Assessment Screening Tool (CAST)")
   
   # sidebarLayout ####
   # Sidebar with a slider input for number of bins 
   , sidebarLayout(
       sidebarPanel(
+<<<<<<< Updated upstream
         
         p("Dir_input = .Data")
         , p("dir_output = .Results")
+=======
+        p("Input and output folders are show below.")
+        , p("To change click the buttons below before choosing a station.")
+        # , verbatimTextOutput("dir_user_input_path")
+  #     , shinyDirButton('dir_user_input', 'Input directory', 'Select the folder with input files')
+      # , shinyDirButton("directory", "Folder select", "Please select a folder")
+       
+        # , verbatimTextOutput("directorypath")
+
+        , p(file.path(".", "Data"))
+ #      , shinyDirButton('dir_user_output', 'Output directory', "Select the folder to contain 'Results' subfolder")
+        
+        , p(file.path("."))
+      , hr()
+>>>>>>> Stashed changes
         , selectInput("Station"
                     , label = "Choose a station for which to generate outputs"
                     , choices = LU.Stations
@@ -41,7 +61,11 @@ shinyUI(fluidPage(
         
         , actionButton("b_RunAll", "Run CAST")
         
+<<<<<<< Updated upstream
         , br()
+=======
+        , hr()
+>>>>>>> Stashed changes
         #, textOutput("boo_zip")
         , downloadButton("b_downloadData", "Download Results") 
         
@@ -54,6 +78,7 @@ shinyUI(fluidPage(
     , mainPanel(
       # tabsetPanel ####
       tabsetPanel(
+<<<<<<< Updated upstream
         # 0.0
         tabPanel("Disclaimer"
                    #, h3("Disclaimer")
@@ -69,6 +94,35 @@ shinyUI(fluidPage(
                  )##tabPanel~Console~END
         
         # 1
+=======
+        # 0
+        tabPanel("Console"
+                 , h3("Console")
+                 , p("During the running of the tool any messages or warnings that would be displayed in the R console
+                     are displayed below.")
+                 ,p("In addition to any messages below there is a progress bar in the lower right.")
+                 , textOutput("text_console_ALL")
+                 )##tabPanel~Console~END
+        # 1
+        , tabPanel("Disclaimer"
+                 , h3("Disclaimer")
+                 , p("Screening tool...and key for plots.")
+                 #, uiOutput("Disclaimer_html")
+                 #, includeHTML(file.path(".", "data", "Disclaimer_Key.html"))
+                 , htmlOutput("Disclaimer_html")
+        )
+        # 2
+        , tabPanel("Results"
+                    , h3("Results Download")
+                    , p("Use the button in the left side bar to save the Results as a single zip file.")
+                   # , actionButton("CreateZip", "Create single zip file")
+                   # , p("Use the button below to download Results as a zip file.")
+                   # , downloadButton("downloadData", label = "Download")
+                   # , downloadButton("downloadData_Test", label = "Download Test")
+                   , htmlOutput("Results_html")
+        )##tabPanel~Output~END
+        # 3.1, SiteInfo
+>>>>>>> Stashed changes
         , tabPanel("Site Info"
                  , h3("Map")
                  , p("If the data exists it will be displayed below.")
@@ -84,7 +138,11 @@ shinyUI(fluidPage(
                  , htmlOutput("Map_html")
                  # check MBSS shiny app for ideas on how to display reactively
                  )##tabPanel~Site Info~END
+<<<<<<< Updated upstream
         # 2
+=======
+        # 3.2, 
+>>>>>>> Stashed changes
         , tabPanel("Cluster Info"
                    , h3("Cluster Info")
                   # , imageOutput("img_Cluster")
@@ -92,6 +150,7 @@ shinyUI(fluidPage(
                  # , actionButton("Create02ClusterInfo", "Create Cluster Info")
                   , textOutput("txt_console_Cluster")
                    )##tabPanel~Cluster Info~END
+<<<<<<< Updated upstream
         # 3
         , tabPanel("Candidate Causes"
                    , h3("Candidate Causes")
@@ -144,6 +203,51 @@ shinyUI(fluidPage(
                    # , downloadButton("downloadData", label = "Download")
                    # , downloadButton("downloadData_Test", label = "Download Test")
                    )##tabPanel~Output~END
+=======
+        # 3.3, CandidateCauses
+        , tabPanel("Candidate Causes"
+                   , h3("Candidate Causes")
+                  # , p("Advanced options = probsLow, probsHigh, biocomm")
+                  # , actionButton("Create03CandidateCauses", "Create Candidate Causes")
+                   , textOutput("txt_console_Candidate")
+                   )##tabPanel~Candidate Causes~END
+        # 3.4, CoOccurrence
+        , tabPanel("Co-Occurrence"
+                   , h3("Co-Occurrence")
+                   #, p("Advanced options = Bio, Stressors, biocomm, index labels and break points")
+                   #, actionButton("Create04CoOccur", "Create Co-Occurrence")
+                   , textOutput("txt_console_CoOccur")
+                   )##tabPanel~Co-Occurrence~END
+        # 3.5, StressorResponse
+        , tabPanel("Stressor Response"
+                   , h3("Stressor Response")
+                  # , p("Advanced options = probsLow, probsHigh, biocomm, BioResp")
+                  # , actionButton("Create05BioStressorResponses", "Create Stressor Responses")
+                   , textOutput("txt_console_SR")
+                   )##tabPanel~Stressor Response~END
+        # 3.6, VerifiedPredictions
+        , tabPanel("Verified Predictions"
+                   , h3("Verified Predictions")
+                  # , p("Advanced options = TBD")
+                  # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+                   , textOutput("txt_console_VP")
+                  )##tabPanel~Verified Predictions~END
+        # 3.7, TimeSequence
+        , tabPanel("Time Sequence"
+                   , h3("Time Sequence")
+                  # , p("Advanced options = TBD")
+                   # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+                   , textOutput("txt_console_VP")
+        )##tabPanel~Verified Predictions~END
+        # 3.8, WoE
+        , tabPanel("Weight of Evidence"
+                   , h3("Weight of Evidence")
+                  # , p("Advanced options = TBD")
+                   # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+                   , textOutput("txt_console_VP")
+        )##tabPanel~Verified Predictions~END
+        
+>>>>>>> Stashed changes
         )##tabsetPanel~END
       )##mainPanel~END
   )##sidebarLayout~END

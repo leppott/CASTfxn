@@ -12,7 +12,11 @@
 options(shiny.maxRequestSize=100*1024^2) # increase max file upload to 100 MB
 
 # Define server logic required to draw a histogram
+<<<<<<< Updated upstream
 shinyServer(function(input, output) {
+=======
+shinyServer(function(input, output, session) {
+>>>>>>> Stashed changes
   
   # Output ####
   
@@ -28,8 +32,21 @@ shinyServer(function(input, output) {
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
   
+<<<<<<< Updated upstream
 
 
+=======
+  
+  getHTML <- function(fn_html){
+    #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
+    fe_html <- file.exists(fn_html)
+    if(fe_html==TRUE){
+      return(includeHTML(fn_html))
+    } else {
+      return(NULL)
+    }
+  }##getHTML~END
+>>>>>>> Stashed changes
   
   output$Map_html <- renderUI({
     getHTML(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html")))
@@ -46,6 +63,7 @@ shinyServer(function(input, output) {
     # }
   })##Map_html~END
   
+<<<<<<< Updated upstream
   output$Disclaimer_html <- renderUI({
     getHTML(file.path(".", "www", "Disclaimer_Key.html"))
     #
@@ -61,6 +79,35 @@ shinyServer(function(input, output) {
     #}
     
     
+=======
+  # output$Disclaimer_html <- renderUI({
+  #   getHTML(file.path(".", "data", "Disclaimer_Key.html"))
+  #   #
+  #   # fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
+  #   # #
+  #   # fe_disclaimer_html <- file.exists(fn_disclaimer_html)
+  #   #
+  #   #if(fe_disclaimer_html==TRUE){
+  #   #  includeHTML(file.path(".", "data", "Disclaimer_Key.html"))
+  #     #HTML(readLines(fn_map_html))
+  #   #} else {
+  #   #  NULL
+  #   #}
+  # })##Disclaimer_html~END
+  
+  output$Disclaimer_html <- renderUI({
+    # get file name as it includes the date and time
+    # TargetSiteID <- input$Station
+    # fn_base <- paste0("Report_Results_summary_", TargetSiteID, "_", "\\d{8}_\\d{6}\\.html")
+    # files_target <- list.files(file.path(".", "Results", TargetSiteID))
+    # boo_html <- grepl(fn_base, files_target, perl = TRUE)
+    # if(sum(boo_html) == 1){
+    #   fn_target_results <- files_target[boo_html]
+    # } else {
+    #   fn_target_results <- NULL
+    # }
+    getHTML(file.path(".", "data", fn_target_results))
+>>>>>>> Stashed changes
   })##Disclaimer_html~END
   
   # Test if zip file exists
@@ -76,6 +123,7 @@ shinyServer(function(input, output) {
    toggleState(id="b_downloadData", condition = file.exists(file.path(".", "Results", fn_zip_toggle)) == TRUE)
   })##~toggleState~END
   
+<<<<<<< Updated upstream
   observeEvent({
     input$Station
   }, {
@@ -83,6 +131,8 @@ shinyServer(function(input, output) {
     CopyResults(TargetSiteID)
   })##~CopyResults
   
+=======
+>>>>>>> Stashed changes
   
   # BUTTONS ####
   # b_download ####
@@ -103,6 +153,41 @@ shinyServer(function(input, output) {
     #, contentType = "application/zip"
   )##downloadData~END
   
+<<<<<<< Updated upstream
+=======
+  # b_dir_user_* ####
+  # Shiny directory buttons
+  # volumes <- c(wd = ".", "R Installation" = R.home(), shinyFiles::getVolumes()())
+  # shinyFiles::shinyDirChoose(input, 'dir_user_input', roots=volumes, session = session)
+  # shinyFiles::shinyDirChoose(input, 'dir_user_output', roots=volumes, session = session)
+  # 
+  # observe({
+  #   cat("\ninput$directory value:\n\n")
+  #   print(input$directory)
+  # })
+  
+
+  
+  ## print to browser
+
+  
+  # output$directorypath <- renderPrint({
+  #   parseDirPath(volumes, input$directory)
+  # })
+  
+
+  #
+ # shinyFiles::shinyDirChoose(input, "dir_user_input", roots = volumes, session = session, restrictions = system.file(package = "base"))
+  #
+  # output$dir_user_input_path <- renderPrint({
+  #   shinyFiles::parseDirPath(volumes, input$dir_user_input)
+  # })
+  
+  
+  # shinyDirChoose(input, "dir_user_input")
+  # dir_user_input <- reactive(input$dir_user_input)
+  
+>>>>>>> Stashed changes
 
   # Run CASTfxn ####
   
@@ -2145,7 +2230,11 @@ shinyServer(function(input, output) {
       # # Create Zip File ####
       # # Increment the progress bar, and update the detail text.
       # msgDetail_A <- "Zip"
+<<<<<<< Updated upstream
       # msgDetail_B <- "Create file"
+=======
+      # msgDetail_B <- "create File"
+>>>>>>> Stashed changes
       # incProgress(1/n_prog, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       # Sys.sleep(mySleepTime)
       # 
@@ -2155,6 +2244,7 @@ shinyServer(function(input, output) {
       # zip(file.path(".", "Results", fn_zip), fn_zip_contents)
       # 
       
+<<<<<<< Updated upstream
       # CopyResults ####
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Results"
@@ -2165,6 +2255,8 @@ shinyServer(function(input, output) {
       CopyResults(TargetSiteID)
 
       
+=======
+>>>>>>> Stashed changes
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
       # Increment the progress bar, and update the detail text.
@@ -2252,6 +2344,7 @@ shinyServer(function(input, output) {
     })##withCallingHandlers~END
   })##observeEvent~Create03CandidateCauses
   
+<<<<<<< Updated upstream
   output$pdf_Candidate <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "CandidateCauses"
@@ -2262,6 +2355,8 @@ shinyServer(function(input, output) {
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
   
+=======
+>>>>>>> Stashed changes
   # 04Co-Occur ####
   observeEvent(input$Create04CoOccur, {
     withCallingHandlers({
@@ -2284,6 +2379,7 @@ shinyServer(function(input, output) {
     #
   })##observeEvent~Create04CoOccur
   
+<<<<<<< Updated upstream
   
   output$pdf_CoOccur <- renderUI({
     TargetSiteID <- input$Station
@@ -2308,6 +2404,8 @@ shinyServer(function(input, output) {
   #   tags$iframe(style="height:600px; width:100%", src=src_pdf)
   # })
   # 
+=======
+>>>>>>> Stashed changes
   # 05SR ####
   observeEvent(input$Create05BioStressorResponses, {
     withCallingHandlers({
@@ -2324,6 +2422,7 @@ shinyServer(function(input, output) {
     })##withCallingHandlers~END
   })##observeEvent~Create05SR
   
+<<<<<<< Updated upstream
   
   output$pdf_SR <- renderUI({
     TargetSiteID <- input$Station
@@ -2335,6 +2434,8 @@ shinyServer(function(input, output) {
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
   
+=======
+>>>>>>> Stashed changes
   # 06VP ####
   
   observeEvent(input$Create06VerifiedPredictions, {
@@ -2352,6 +2453,7 @@ shinyServer(function(input, output) {
     })##withCallingHandlers~END
   })##observeEvent~Create06VP
   
+<<<<<<< Updated upstream
   output$pdf_VP <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "VerifiedPredictions"
@@ -2384,6 +2486,8 @@ shinyServer(function(input, output) {
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
   
+=======
+>>>>>>> Stashed changes
   # 07Results ####
   
   # output$downloadData <- downloadHandler(
