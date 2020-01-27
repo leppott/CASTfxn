@@ -15,7 +15,7 @@
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
 #' 
-#' @return A jpg in SiteID subfoler of the "Results" folder of working directory.  
+#' @return A jpg in SiteID subfolder of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
 #' 
 # @importFrom pryr "%<a-%"
@@ -238,8 +238,15 @@
 #' }
 #
 #' @export
-getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.MatchBioData
-                                    , LogTransf, ref.sites, biocomm="bmi"
+getBioStressorResponses <- function(TargetSiteID
+                                    , stressors
+                                    , stressorInfo=siteStressInfo
+                                    , BioResp
+                                    , BioInfo
+                                    , list.MatchBioData
+                                    , ref.sites
+                                    , siteQual2Plot
+                                    , biocomm="bmi"
                                     , dir_results=file.path(getwd(), "Results")
                                     , dir_sub="StressorResponse"
                                     , boo_pred_warn = TRUE
@@ -248,17 +255,38 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   boo.DEBUG <- FALSE
   ## Trigger DEBUG actions below for when debugging.
   
+  if (boo.DEBUG == TRUE) {
+      TargetSiteID
+      stressors <-stressorsWPairedResponses
+      stressorInfo <- siteStressInfo
+      BioResp = bioMetricNames
+      BioInfo = bioMetricInfo
+      list.MatchBioData = list_MatchBioData
+      ref.sites=allBioRefStressSamps
+      siteQual2Plot=siteQual2Plot
+      biocomm=bioComm
+      dir_results=dir_results
+      dir_sub="StressorResponse"
+      boo_pred_warn = TRUE
+  }
+
+  
   # Correlation file output header row
-  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "stressLabel"
+                   ,"respName","respLabel", "n", "statistic", "p.value"
+                   , "estimate", "r2")
   
   
   # Community ####
-  biocomm <- tolower(biocomm)
+  biocomm <- toupper(biocomm)
+  not_all_na <- function(x) {!all(is.na(x))}
+  # Define pipe
+  `%>%` <- dplyr::`%>%`
+  
   # Check for no data
-  if(biocomm=="bmi"){##IF.biocomm.START
+  # if(biocomm=="BMI"){##IF.biocomm.START
     #
-    bio_prefix <- "BMI"
-    col_Bio_Metrics_SampID <- "BMI.Metrics.SampID"
+    col_Bio_Metrics_SampID <- "RespSampID"
     min_cases <- 20
     all.x.str  <- "all.b.str"
     cl.x.str   <- "cl.b.str"
@@ -273,41 +301,20 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
     stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
     #
-  } else if(biocomm=="algae"){
-    #
-    bio_prefix <- "Alg"
-    col_Bio_Metrics_SampID <- "Algae.Metrics.SampID"
-    min_cases <- 20
-    all.x.str  <- "all.a.str"
-    cl.x.str   <- "cl.a.str"
-    site.x.str <- "site.a.str"
-    all.x.rsp  <- "all.a.rsp"
-    cl.x.rsp   <- "cl.a.rsp"
-    site.x.rsp <- "site.a.rsp"
-    #
-    qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
-    #
-    # missing stressor
-    stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.a.str))]
-    stressors <- stressors[stressors %in% names(list.MatchBioData$all.a.str)]
-    #
-  } else {
-    # Non Valid biological community
-    Msg_Stop <- print(paste0("Non-valid biological community specified (", biocomm,"). Only values of 'bmi' and 'algae' are valid."))
-    stop(Msg_Stop)
-  }##IF.biocomm.END
-  
   
   # QC, site rsp ####
   #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
   if(qc_row_site_rsp==0){##IF~qc_row_site_rsp~START
-    msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain any site response data for the specified biological community (", biocomm, ").")
+    msg_Stop_site_rsp <- paste0("list.MatchBioData does not contain "
+                                , "any site response data for the specified "
+                                , "biological community (", biocomm, ").")
     stop(msg_Stop_site_rsp)
   }##IF~qc_row_site_rsp~START
   
   # QC, bad stressors
   if(length(stressors_missing)>0){##IF~length(stressors_missing)~START
-    msg_warn_stressors_missing <- paste0("The following stressors are missing from the 'list.MatchBioData' input:\n"
+    msg_warn_stressors_missing <- paste0("The following stressors are missing "
+                                         , "from the 'list.MatchBioData' input:\n"
                                          , paste(stressors_missing, collapse=", "))
     warning(msg_warn_stressors_missing)
   }##IF~length(stressors_missing)~END
@@ -328,21 +335,22 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #
   if(length(str_num_false)==0){##IF~len_str~START
   } else {
-    msg_stop_num_str <- paste0(msg_stop_base, "stressors: ", paste(str_num_false, collapse=", "))
+    msg_stop_num_str <- paste0(msg_stop_base, "stressors: "
+                               , paste(str_num_false, collapse=", "))
     stop(msg_stop_num_str)
   }##IF~len_str~END
   #
   if (length(rsp_num_false)==0) {##IF~len_rsp~START
   } else {
-    msg_stop_num_rsp <- paste0(msg_stop_base, "stressors: ", paste(rsp_num_false, collapse=", "))
+    msg_stop_num_rsp <- paste0(msg_stop_base, "stressors: "
+                               , paste(rsp_num_false, collapse=", "))
     stop(msg_stop_num_rsp)
   }##IF~len_rsp~END
   #  
   #}##QC, NUMERIC ~ END
   
-  
   col_StationID  <- "StationID_Master"
-  col_ChemSampID <- "ChemSampleID"
+  col_ChemSampID <- "StressSampID"
 
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -350,14 +358,19 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
-  dir.sub3 <- dir_sub
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
-  #
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
+  
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   # Comment out, 20190423, when remove varLegLoc as input
   # helper
   # RegPlotSet <- getRegPlotSet(varLegLoc)
@@ -393,13 +406,37 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #plots.pq <- vector(length(BioResp), mode="list")
   plots.pq <- vector(q.len*p.len, mode="list")
   ppi<-300
-  varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID, ".SR.", bio_prefix, ".")
+  varFileOut <- file.path(dir_path,paste0(TargetSiteID, "_", biocomm, "_SRLin_"
+                                          , "_"))
+  # varFileOut = paste0("Results/",TargetSiteID, "/", dir.sub3, "/", TargetSiteID
+  #                     , ".SR.", bio_prefix, ".")
   
-  LogTransf <- as.logical(LogTransf)
+  LogTransf <- stressorInfo[stressorInfo$StdParamName %in% stressors
+                            , c("StdParamName","LogTransf")]
+  LogTransf <- unique(LogTransf)
   
+  # Prep site data for merging with scores
+  df_str <- site.b.str %>%
+      tidyr::gather(key = "Stressor", value = "StressorValue"
+                    , c(-StationID_Master, -StressSampID, -RespSampID))
+  df_rsp <- site.b.rsp %>%
+      dplyr::select(-RespSampDate) %>%
+      tidyr::gather(key = "Response", value = "ResponseValue"
+                    , c(-StationID_Master, -StressSampID, -RespSampID, -Quality))
+  df_SiteData <- merge(df_str, df_rsp
+                      , by.x = c("StationID_Master", "StressSampID", "RespSampID")
+                      , by.y = c("StationID_Master", "StressSampID", "RespSampID")
+                      , all = TRUE)
+  df_SiteData <- df_SiteData %>%
+      dplyr::select(StationID_Master, StressSampID, RespSampID, Quality
+                    , Stressor, StressorValue, Response, ResponseValue)
+  rm(df_str, df_rsp)
+
   # FOR.p ####
   for (p in 1:length(stressors)) {
+
     stressName <- stressors[p]
+    stressLabel <- as.character(stressorInfo$Label[stressorInfo$StdParamName==stressName])
     varFlag <- 1
     varFlag.b <- 1
 
@@ -410,7 +447,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
     #     log.yn <- TRUE
     # }##IF.stressName.END
     # 
-    log.yn <- LogTransf[p]
+    log.yn <- as.logical(LogTransf$LogTransf[LogTransf$StdParamName==stressName])
     
     # DEBUG
     if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
@@ -420,10 +457,13 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
 
     # FOR.q ####
     for (q in 1:length(BioResp)) { 
+
       varFlag <- 1
       varFlag.b <- 1
       boo_corr <- TRUE
+      boo_all <- TRUE
       respName <- BioResp[q]
+      respLabel <- as.character(bioMetricInfo$MetricLabel[bioMetricInfo$MetricName==respName])
       pq <- q.len*(p-1)+q
       pq.len <- p.len * q.len
       
@@ -454,20 +494,24 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # QC
       if (nrow(df_plot_all) < min_cases) { 
         txt.score <- "< 20 cases"
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " (", q
+                             , "/", q.len, "); score = ", txt.score)
         message(msg.status)
         next 
       }
       if(sum(is.na(df_plot_all$Stress))==nrow(df_plot_all)) {
         txt.score <- "stressors all NA or NAN"
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = ", txt.score)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " (", q
+                             , "/", q.len, "); score = ", txt.score)
         message(msg.status)
         next 
       }
       
       #get all ref data to plot
-      all.ref.xvar <- subset(all.xvar, all.xvar$StationID_Master %in% ref.sites)
-      all.ref.yvar <- subset(all.yvar, all.yvar$StationID_Master %in% ref.sites)
+      all.ref.xvar <- subset(all.xvar, all.xvar$StressSampID %in% ref.sites)
+      all.ref.yvar <- subset(all.yvar, all.yvar$StressSampID %in% ref.sites)
       #df.plot2 <- merge(all.ref.xvar[,2:3], all.ref.yvar[,2:3], by.x = col_Bio_Metrics_SampID, by.y = col_Bio_Metrics_SampID)
       all.ref.merge <- merge(all.ref.xvar, all.ref.yvar)
       df_plot_all_ref <- all.ref.merge[stats::complete.cases(all.ref.merge), ]
@@ -484,8 +528,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       colnames(df_plot_cl)[colnames(df_plot_cl)==respName]   <- "Response"
       
       #get all cluster ref data to plot
-      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StationID_Master %in% ref.sites)
-      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StationID_Master %in% ref.sites)
+      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StressSampID %in% ref.sites)
+      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StressSampID %in% ref.sites)
       #df.plot4 <- merge(cl.ref.xvar[,2:3], cl.ref.yvar[,2:3], by.x = col_Bio_Metrics_SampID, by.y = col_Bio_Metrics_SampID)
       cl.ref.merge <- merge(cl.ref.xvar, cl.ref.yvar)
       df_plot_cl_ref <- cl.ref.merge[stats::complete.cases(cl.ref.merge), ]
@@ -503,100 +547,279 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       # Log Transform
       if (log.yn == TRUE) {##IF.log.yn.START
-        df_plot_all[, "Stressor"]     <- log10(df_plot_all[, "Stressor"])
-        df_plot_all_ref[, "Stressor"] <- log10(df_plot_all_ref[, "Stressor"])
-        df_plot_cl[, "Stressor"]      <- log10(df_plot_cl[, "Stressor"])
-        df_plot_cl_ref[, "Stressor"]  <- log10(df_plot_cl_ref[, "Stressor"])
-        df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
+          if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_all[, "Stressor"]     <- log10(df_plot_all[, "Stressor"])
+
+          } else {
+              gapcomment <- "No stressor data available for any sites in the cluster."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")          }
+          if (nrow(df_plot_all_ref) > 0) {
+              df_plot_all_ref[, "Stressor"] <- log10(df_plot_all_ref[, "Stressor"])
+
+          } else {
+              gapcomment <- "No stressor data available for reference sites in the cluster."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")          }
+          if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_cl[, "Stressor"]      <- log10(df_plot_cl[, "Stressor"])
+
+          } else {
+              
+              gapcomment <- "No stressor data available for any comparator sites."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")          }
+          if (nrow(df_plot_cl_ref) > 0) {
+              df_plot_cl_ref[, "Stressor"]  <- log10(df_plot_cl_ref[, "Stressor"])
+
+          } else {
+              gapcomment <- "No stressor data available for reference comparator sites."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")          }
+          if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
+              df_plot_site[, "Stressor"]    <- log10(df_plot_site[, "Stressor"])
+
+          } else {
+              gapcomment <- "No stressor data available for the target site."
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          }
+
       }##IF.log.yn.END
       
       # QC for NA/NAN/Inf
       # 20190606, log10 of 0 or negative gives errors for linear model (lm) below.
-      df_plot_all[!is.finite(df_plot_all[, "Stressor"]), "Stressor"]         <- NA
-      df_plot_all_ref[!is.finite(df_plot_all_ref[, "Stressor"]), "Stressor"] <- NA
-      df_plot_cl[!is.finite(df_plot_cl[, "Stressor"]), "Stressor"]           <- NA
-      df_plot_cl_ref[!is.finite(df_plot_cl_ref[, "Stressor"]), "Stressor"]   <- NA
-     
-      
+      if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_all[!is.finite(df_plot_all[, "Stressor"]), "Stressor"]         <- NA
+      }
+      if (nrow(df_plot_all_ref) > 0) {
+          df_plot_all_ref[!is.finite(df_plot_all_ref[, "Stressor"]), "Stressor"] <- NA
+      }
+      if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_cl[!is.finite(df_plot_cl[, "Stressor"]), "Stressor"]           <- NA
+      }
+      if (nrow(df_plot_cl_ref) > 0) {
+          df_plot_cl_ref[!is.finite(df_plot_cl_ref[, "Stressor"]), "Stressor"]   <- NA
+      }
+      if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
+          df_plot_site[!is.finite(df_plot_site[, "Stressor"]), "Stressor"]   <- NA
+      }
       
       #}##NoIssues.Munging.END
-      
       
       # Cluster
       # LM and Corr, Cluster ####
       # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
-        # 20190228, QC for no data
-        model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor, na.action=na.exclude) #cluster only
-        if(boo_pred_warn==TRUE){
-          suppressWarnings(model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75))
-        } else {
-          model_cl_pred <- stats::predict(model_cl, interval = "prediction", level = 0.75)
-        }
-        model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
-        # 
-        slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
-        intercept_cl <- signif(summary(model_cl)$coefficients[[1]], 3)
-        pval_intercept_cl <- signif(summary(model_cl)$coefficients[[7]], 3)
-        pval_slope_cl <- signif(summary(model_cl)$coefficients[[8]], 3)
-        # r2
-        r_cl <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson",use="pairwise.complete.obs")
-        r2_cl <- formatC(r_cl^2, format="f", digits=3)
-        n_str_cl <- length(df_plot_cl$Stressor)
-        # Corelation
-        c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor, method="pearson", use="pairwise.complete.obs"))
-        df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_cl$parameter+1, signif(c1S_cl$statistic, 2)
-                                    , signif(c1S_cl$p.value, 2), signif(c1S_cl$estimate, 2), r2_cl))
-        #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-        names(df.corr_cl) <- cn_cor_pref
-         pval.corr_cl <- signif(c1S_cl$p.value, 2)
-        #
-        # 20180621, scoring
-        slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
-        # exp.dir <- data.lkp.dir[stressName,respName]
-        exp.dir <- -1
-        #
-      } else {
-       boo_corr <- FALSE 
-      }##IF~nrow(df_plot_cl)~END
+          
+          if(stats::sd(df_plot_cl$Stressor, na.rm=TRUE)==0){ # Vertical line
+              boo_corr <- FALSE 
+              
+              gapcomment <- paste0("Stressor data in the comparator set have "
+                                   , "a standard deviation of zero: "
+                                   , "all values are equal.")
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+              
+          } else if(stats::sd(df_plot_cl$Response, na.rm=TRUE)==0) { # Horizontal line
+              boo_corr <- FALSE 
+              
+              gapcomment <- paste0("Response data in the comparator set have "
+                                   , "a standard deviation of zero: "
+                                   , "all values are equal.")
+              gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+              colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+              fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+              fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+              write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+          } else {  # SD <> 0 along vertical and horizontal
+              
+              # 20190228, QC for no data
+              model_cl <- stats::lm(df_plot_cl$Response ~ df_plot_cl$Stressor
+                                    , na.action=na.exclude) #cluster only
+              if(boo_pred_warn==TRUE){
+                  suppressWarnings(model_cl_pred <- stats::predict(model_cl
+                                    , interval = "prediction", level = 0.75))
+              } else {
+                  model_cl_pred <- stats::predict(model_cl
+                                                  , interval = "prediction"
+                                                  , level = 0.75)
+              }
+              model_cl_val  <- cbind(df_plot_cl, model_cl_pred) #predictions for all cluster values
+              # 
+              slope_cl <- signif(summary(model_cl)$coefficients[[2]], 3)
+              intercept_cl <- signif(summary(model_cl)$coefficients[[1]], 3)
+              pval_intercept_cl <- signif(summary(model_cl)$coefficients[[7]], 3)
+              pval_slope_cl <- signif(summary(model_cl)$coefficients[[8]], 3)
+              # r2
+              r_cl <- stats::cor(df_plot_cl$Response, df_plot_cl$Stressor
+                                 , method="pearson",use="pairwise.complete.obs")
+              r2_cl <- formatC(r_cl^2, format="f", digits=3)
+              n_str_cl <- length(df_plot_cl$Stressor)
+              # Correlation
+              c1S_cl <- (stats::cor.test(df_plot_cl$Response, df_plot_cl$Stressor
+                                         , method="pearson", use="pairwise.complete.obs"))
+              df.corr_cl <- data.frame(cbind(TargetSiteID, biocomm, stressName
+                                             , stressLabel, respName, respLabel
+                                             , c1S_cl$parameter+1
+                                             , signif(c1S_cl$statistic, 2)
+                                             , signif(c1S_cl$p.value, 2)
+                                             , signif(c1S_cl$estimate, 2)
+                                             , r2_cl))
+              #names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+              names(df.corr_cl) <- cn_cor_pref
+              pval.corr_cl <- signif(c1S_cl$p.value, 2)
+              #
+              # 20180621, scoring
+              slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
+              # exp.dir <- data.lkp.dir[stressName,respName]
+              
+              # Determine expected direction of slope
+              dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
+              if (dirIncStress == "Inc") {
+                  exp.dir <- -1
+              } else {
+                  exp.dir <- 1
+              }
+              #              
+          } # End std dev If eval
+          
+        } else { # <=2 rows of data
+            boo_corr <- FALSE
+            n_str_cl <- nrow(df_plot_cl)
+       
+            gapcomment <- paste0("Only two paired stressor-response samples "
+                            , "are available for the comparator set.")
+            gaps <- cbind.data.frame("getStressorList", stressName, 0, gapcomment)
+            colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+            fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                   , row.names = FALSE, sep = "\t")      
+       
+        }##IF~nrow(df_plot_cl)~END
       
-      # ALL
-      # LM and Corr, All ####
-      # ~~~ Check QC of Corr Table at end of code ~~~~
-      if(nrow(df_plot_all)>0){##IF~nrow(df_plot_cl)~START
-        # 20190228, QC for no data
-        model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor, na.action=na.exclude) #cluster only
-        if(boo_pred_warn==TRUE){
-          suppressWarnings(model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75))
-        } else {
-          model_all_pred <- stats::predict(model_all, interval = "prediction", level = 0.75)
-        }
-        model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
-        # 
-        slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
-        intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
-        pval_intercept_all <- signif(summary(model_all)$coefficients[[7]], 3)
-        pval_slope_all <- signif(summary(model_all)$coefficients[[8]], 3)
-        # r2
-        r_all <- stats::cor(df_plot_all$Response, df_plot_all$Stressor, method="pearson",use="pairwise.complete.obs")
-        r2_all <- formatC(r_all^2, format="f", digits=3)
-        n_str_all <- length(df_plot_all$Stressor)
-        # Corelation
-        c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor, method="pearson", use="pairwise.complete.obs"))
-        df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName, respName, c1S_all$parameter+1, signif(c1S_all$statistic, 2)
-                                       , signif(c1S_all$p.value, 2), signif(c1S_all$estimate, 2), r2_all))
-        #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-        names(df.corr_all) <- cn_cor_pref
-        pval.corr_all <- signif(c1S_all$p.value, 2)
-        #
-        # 20180621, scoring
-        slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
-        # exp.dir <- data.lkp.dir[stressName,respName]
-        exp.dir <- -1
-        #
-      } else {
-        boo_corr <- FALSE 
-      }##IF~nrow(df_plot_all)~END
+        # ALL
+        # LM and Corr, All ####
+        # ~~~ Check QC of Corr Table at end of code ~~~~
+      if(nrow(df_plot_all)>2){##IF~nrow(df_plot_cl)~START
+          
+            if(stats::sd(df_plot_all$Stressor, na.rm=TRUE)==0){ # Vertical line
+                boo_all <- FALSE 
+                gapcomment <- paste0("Stressor data across all sites in the "
+                                   , "cluster have a standard deviation of "
+                                   , "zero: all values are equal.")
+                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                       , gapcomment)
+                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                          , row.names = FALSE, sep = "\t")
+            } else if(stats::sd(df_plot_all$Response, na.rm=TRUE)==0) {
+                boo_all <- FALSE 
+                gapcomment <- paste0("Response data across all sites in the "
+                                     , "cluster have a standard deviation of "
+                                     , "zero: all values are equal.")
+                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                         , gapcomment)
+                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                            , row.names = FALSE, sep = "\t")
+            } else {  # SD <> 0              
+              # 20190228, QC for no data
+                boo_all <- TRUE 
+              model_all <- stats::lm(df_plot_all$Response ~ df_plot_all$Stressor
+                                     , na.action=na.exclude) #cluster only
+              if(boo_pred_warn==TRUE){
+                  suppressWarnings(model_all_pred <- stats::predict(model_all
+                                                                    , interval = "prediction", level = 0.75))
+              } else {
+                  model_all_pred <- stats::predict(model_all, interval = "prediction"
+                                                   , level = 0.75)
+              }
+              model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
+              # 
+              slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
+              intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
+              pval_intercept_all <- signif(summary(model_all)$coefficients[[7]], 3)
+              pval_slope_all <- signif(summary(model_all)$coefficients[[8]], 3)
+              # r2
+              r_all <- stats::cor(df_plot_all$Response, df_plot_all$Stressor
+                                  , method="pearson",use="pairwise.complete.obs")
+              r2_all <- formatC(r_all^2, format="f", digits=3)
+              n_str_all <- length(df_plot_all$Stressor)
+              # Corelation
+              c1S_all <- (stats::cor.test(df_plot_all$Response, df_plot_all$Stressor
+                                          , method="pearson", use="pairwise.complete.obs"))
+              df.corr_all <- data.frame(cbind(TargetSiteID, biocomm, stressName
+                                              , stressLabel, respName, respLabel
+                                              , c1S_all$parameter+1
+                                              , signif(c1S_all$statistic, 2)
+                                              , signif(c1S_all$p.value, 2)
+                                              , signif(c1S_all$estimate, 2)
+                                              , r2_all))
+              #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName"
+              #, "respName", "n", "statistic", "p.value", "estimate", "r2")
+              names(df.corr_all) <- cn_cor_pref
+              pval.corr_all <- signif(c1S_all$p.value, 2)
+              #
+              # 20180621, scoring
+              slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
+              # exp.dir <- data.lkp.dir[stressName,respName]
+              # exp.dir <- -1
+              #
+          } # End std dev If eval statement
+
+      } else { # <=2 samples
+          boo_all <- FALSE
+          n_str_all <- nrow(df_plot_all)
+
+          gapcomment <- paste0("Only two or fewer paired stressor-response samples "
+                               , "are available for all sites in the cluster.")
+          gaps <- cbind.data.frame("getStressorList", stressName, 0
+                                   , gapcomment)
+          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                      , row.names = FALSE, sep = "\t")
+          
+      }##IF~nrow(df_plot_all)~END              
 
 
       # Corr table output ####
@@ -617,9 +840,9 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         #if(boo.pryr==TRUE){
         # Add biocomm (20190425)
         #df.CorrTable[, "biocomm"] <- biocomm
-        fn_corr <- paste0(TargetSiteID,".SR.",bio_prefix,".Corrs.txt")
+        fn_corr <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Corrs.tab")
         utils::write.table(df.CorrTable
-                           , file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
+                           , file.path(dir_path, fn_corr)
                            , sep="\t", quote=FALSE, row.names=FALSE
                            , col.names=boo.col.names, append=boo.Append)  
         #}
@@ -632,57 +855,76 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         for (f in 1:nrow(df_plot_site)) {##FOR~f~START
           # Score, cluster
           # Generate scores based on slope, significance value, and r2
-          if ((length(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
-            # print to console p (stressName) and q (respName)
-            if (slope.dir_cl == exp.dir) {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
-              txt.score_cl <-  "1"
-              sr.score_cl = 1
-            } else if (slope.dir_cl != exp.dir) {
-              # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
-              txt.score_cl <- "-1"
-              sr.score_cl = -1
-            } else {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
-              txt.score_cl <- "inconclusive"  
-              sr.score_cl = 0
+            if (boo_corr==TRUE) { # Cluster data should be scored
+                if ((nrow(df_plot_cl)>=5) && (abs(pval.corr_cl)<=0.1) && (r2_cl>=0.1)) {##IF~length~START
+                    # print to console p (stressName) and q (respName)
+                    if (slope.dir_cl == exp.dir) {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
+                        txt.score_cl <-  "1"
+                        sr.score_cl = 1
+                    } else if (slope.dir_cl != exp.dir) {
+                        # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
+                        txt.score_cl <- "-1"
+                        sr.score_cl = -1
+                    } else {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
+                        txt.score_cl <- "inconclusive"  
+                        sr.score_cl = 0
+                    }
+                } else {
+                    #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                    txt.score_cl <- "0"  
+                    sr.score_cl = 0
+                }##IF~length~START
+            } else { # <=2 sites in cluster; cannot be scored
+                #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                txt.score_cl <- "NE"  
+                sr.score_cl = NA
             }
-          } else {
-            #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
-            txt.score_cl <- "0"  
-            sr.score_cl = 0
-          }##IF~length~START
+
           # Score, all
-          if ((length(df_plot_all)>=5) && (abs(pval.corr_all)<=0.1) && (r2_all>=0.1)) {##IF~length~START
-            # print to console p (stressName) and q (respName)
-            if (slope.dir_all == exp.dir) {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
-              txt.score_all <-  "1"
-              sr.score_all = 1
-            } else if (slope.dir_all != exp.dir) {
-              # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
-              txt.score_all <- "-1"
-              sr.score_all = -1
-            } else {
-              #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
-              txt.score_all <- "inconclusive"  
-              sr.score_all = 0
+            if (boo_all == TRUE) {
+                if ((length(df_plot_all)>=5) && (abs(pval.corr_all)<=0.1) && (r2_all>=0.1)) {##IF~length~START
+                    # print to console p (stressName) and q (respName)
+                    if (slope.dir_all == exp.dir) {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 1")) 
+                        txt.score_all <-  "1"
+                        sr.score_all = 1
+                    } else if (slope.dir_all != exp.dir) {
+                        # print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = -1"))
+                        txt.score_all <- "-1"
+                        sr.score_all = -1
+                    } else {
+                        #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = inconclusive"))
+                        txt.score_all <- "inconclusive"  
+                        sr.score_all = 0
+                    }
+                } else {
+                    #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
+                    txt.score_all <- "0"  
+                    sr.score_all = 0
+                }##IF~length~START
+            
+            } else { # boo_all == FALSE
+                txt.score_all <- "NE"  
+                sr.score_all = NA
             }
-          } else {
-            #print(paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score = 0"))
-            txt.score_all <- "0"  
-            sr.score_all = 0
-          }##IF~length~START
+
           #
         }##FOR~f~END
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score_all, ", ", txt.score_cl)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " ("
+                             , q, "/", q.len, "); score (all, cluster) = "
+                             , txt.score_all, ", ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
         df.temp2 <- as.data.frame(cbind("StationID_Master"=TargetSiteID
                                         , "biocomm"=biocomm
                                         , "stressName"=stressName
+                                        , "stressLabel"=stressLabel
                                         , "respName"=respName
+                                        , "respLabel"=respLabel
                                         , "n_site"=length(df_plot_site)
                                         , "n_all"=n_str_all
                                         , "SR_Score_all"=sr.score_all
@@ -695,9 +937,20 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
           df.sc.sr <- rbind(df.sc.sr, df.temp2)
         }
         
+        df.sc.sr <- merge(df_SiteData, df.sc.sr
+                          , by.x = c("StationID_Master", "Stressor", "Response")
+                          , by.y = c("StationID_Master", "stressName", "respName")
+                          , all.y = TRUE)
+        df.sc.sr$SR_Score_all <- ifelse(is.na(df.sc.sr$SR_Score_all)
+                                        , "NE"
+                                        , as.character(df.sc.sr$SR_Score_all))
+        df.sc.sr$SR_Score_cluster <- ifelse(is.na(df.sc.sr$SR_Score_cluster)
+                                        , "NE"
+                                        , as.character(df.sc.sr$SR_Score_cluster))
+                                                                        
         #if(boo.pryr==TRUE){
-        fn_scores <- paste0(TargetSiteID,".SR.",bio_prefix,".Scores.txt")
-        fp_scores <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_scores)
+        fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
+        fp_scores <- file.path(dir_path, fn_scores)
         
         boo.Append    <- TRUE
         boo.col.names <- FALSE
@@ -719,7 +972,10 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
         sr.score_all <- "NE"
         sr.score_cl <- "NE"
         txt.score <- "No Data"
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName, " (", p, "/", p.len, "), ", respName, " (", q, "/", q.len, "); score (all, cluster) = ", txt.score)
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
+                             , " (", p, "/", p.len, "), ", respName, " ("
+                             , q, "/", q.len, "); score (all, cluster) = "
+                             , txt.score)
         message(msg.status)
       }##IF~nrow(df_plot_site)~END
       #
@@ -728,40 +984,61 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       
       ## Plot, inputs ####
       ## Plot, portions
-      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref)>0, TRUE, FALSE)
-      boo_plot_cl     <- ifelse(nrow(df_plot_cl)>0, TRUE, FALSE)
-      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref)>0, TRUE, FALSE)
-      boo_plot_targ   <- ifelse(nrow(df_plot_site)>0, TRUE, FALSE)
+      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor),])>0, TRUE, FALSE)
+      boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor),])>0, TRUE, FALSE)
+      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref[!is.na(df_plot_cl_ref$Stressor),])>0, TRUE, FALSE)
+      boo_plot_targ   <- ifelse(nrow(df_plot_site[!is.na(df_plot_site$Stressor),])>0, TRUE, FALSE)
       
       ## Plot, Variables, Strings
-      str_title <- paste(TargetSiteID, stressName, respName, sep=" ~ ")
-      str_subtitle <- "Linear regression with 75th percentile prediction interval"
-      str_xlab  <- paste0(ifelse(log.yn==TRUE, "Log10 ", ""), stressName)
-      str_ylab  <- respName
+      str_title <- paste0(TargetSiteID, ": Stressor-Response (linear regression) line of evidence")
+      str_subtitle1 <- "Is there evidence of a biological gradient from inside or outside the case?"
+      str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
+      str_subtitle <- stringr::str_wrap(paste0(str_subtitle1,str_subtitle2),75)
+      str_xlab  <- paste0(ifelse(log.yn==TRUE, "Log10 ", ""), stressLabel)
+      str_ylab  <- respLabel
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) {##IF.equation.START
-        str_caption_cl <- paste(paste0("Regression (cluster): ", "y = ", slope_cl, " x + ", intercept_cl)
+        str_caption_cl <- paste(paste0("Regression (comparators, inside the case): "
+                                       , "y = ", slope_cl, " x + ", intercept_cl)
                              , paste0("r2 = ", r2_cl)
                              , paste0("p-value = ", pval.corr_cl)
                              , paste0("n = ", n_str_cl)
                              , paste0("score = ", sr.score_cl)
                              , sep=" ~ ")
       } else {
-        str_caption_cl <- "Regression (cluster):  Less than 2 data points in cluster."
+        str_caption_cl <- "Regression (comparators, inside the case):  Less than 3 data points in comparator set."
       }##IF.equation.END
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {##IF.equation.START
-        str_caption_all <- paste(paste0("Regression (all): ", "y = ", slope_all, " x + ", intercept_all)
+        str_caption_all <- paste(paste0("Regression (all, outside the case): "
+                                        , "y = ", slope_all, " x + ", intercept_all)
                                 , paste0("r2 = ", r2_all)
                                 , paste0("p-value = ", pval.corr_all)
                                 , paste0("n = ", n_str_all)
                                 , paste0("score = ", sr.score_all)
                                 , sep=" ~ ")
       } else {
-        str_caption_all <- "Regression (all):  Less than 2 data points."
+        str_caption_all <- "Regression (all):  Less than 3 data points."
       }##IF.equation.END
       #
-      str_caption <- paste0(str_caption_all, "\n", str_caption_cl)
+      if (siteQual2Plot=="not degraded") {
+          qualtext <- "not degraded*"
+          str_caption_qual <- "*Samples rated not degraded."
+          str_caption <- paste0(str_caption_all, "\n", str_caption_cl, "\n", str_caption_qual)
+          leg_all_ref <- qualtext
+          leg_cl_ref <- paste0("comparator ",qualtext)
+      } else if (siteQual2Plot=="better than") {
+          qualtext <- "better quality*"
+          str_caption_qual <-"*Samples with biological quality better than the minimum target site quality."
+          str_caption <- paste0(str_caption_all, "\n", str_caption_cl, "\n", str_caption_qual)
+          leg_all_ref <- qualtext
+          leg_cl_ref <- paste0("comparator ",qualtext)
+      } else { 
+          qualtext <- "all ref"
+          str_caption <- paste0(str_caption_all, "\n", str_caption_cl, "\n", str_caption_qual)
+          leg_all_ref <- "all ref"
+          leg_cl_ref <- "comparator ref"
+      }
 
       ## Plot, Variables, Colors
       col_sites_all     <- "dark gray"
@@ -799,8 +1076,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       alpha_lm_cl  <- 0.25
       
       ## Plot, Variables, Legend
-      leg_name   <- "Sites"
-      leg_labels <- c("all", "all ref", "cluster", "cluster ref", "target")
+      leg_name   <- "Samples"
+      leg_labels <- c("all", leg_all_ref, "comparator", leg_cl_ref, "target")
       leg_shape  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_all, col_sites_all_ref, col_sites_cl, col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
@@ -812,88 +1089,121 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
       # skip plot if no data for target site
       if(boo.Plot==TRUE){##IF.boo.Plot.START
         # ggplot, main
-        p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes_(x=~Stressor,y=~Response, color="all", shape="all", fill="all"), size=cex_sites_all) +
+        p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes_(x=~Stressor,y=~Response
+                    , color="all", shape="all", fill="all"), size=cex_sites_all) +
                  ggplot2::geom_point()
         #  
         # ggplot, point subsets
         # Add points if exist, otherwise plot dummy values
         if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="all ref", shape="all ref", fill="all ref"), size=cex_sites_all_ref)
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref
+                , ggplot2::aes_(x=~Stressor, y=~Response, color="all ref"
+                , shape="all ref", fill="all ref"), size=cex_sites_all_ref)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="all ref", shape="all ref", fill="all ref"))
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="all ref"
+                , shape="all ref", fill="all ref"))
         }##IF~boo_plot_ref~END
         #
         if(boo_plot_cl==TRUE){##IF~boo_plot_cl~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster", shape="cluster", fill="cluster"), size=cex_sites_cl)
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl
+                , ggplot2::aes_(x=~Stressor, y=~Response, color="cluster"
+                , shape="cluster", fill="cluster"), size=cex_sites_cl)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster", shape="cluster", fill="cluster"))
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster"
+                , shape="cluster", fill="cluster"))
         }##IF~boo_plot_cl~END  
         #
         if(boo_plot_cl_ref==TRUE){##IF~boo_plot_cl_ref~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl_ref, ggplot2::aes_(x=~Stressor, y=~Response, color="cluster ref", shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref)
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl_ref
+                , ggplot2::aes_(x=~Stressor, y=~Response, color="cluster ref"
+                , shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster ref", shape="cluster ref", fill="cluster ref"))
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster ref"
+                , shape="cluster ref", fill="cluster ref"))
         }##IF~boo_plot_cl_ref~END
         #
         if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_site, ggplot2::aes_(x=~Stressor,y=~Response, color="target", shape="target", fill="target"), size=cex_sites_targ)
+          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_site
+                , ggplot2::aes_(x=~Stressor,y=~Response, color="target"
+                , shape="target", fill="target"), size=cex_sites_targ)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
+          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="target"
+                , shape="target", fill="target"))
         }
         ##IF~boo_plot_targ~END
         # 
         # Add rest of plot  
-        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-                       ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-                       ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) +
-                       # Linear model (all data)
-                       ggplot2::stat_smooth(data=df_plot_all, method=lm, color=col_line_all, fill=fill_sites_all, alpha=alpha_lm_all, show.legend=FALSE) + 
-                       # Linear model (cluster)
-                       ggplot2::stat_smooth(data=df_plot_cl, method=lm, color=col_line_cl, fill=fill_sites_cl, alpha=alpha_lm_cl, show.legend=FALSE) + 
-                       # Regression, cluster
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~lwr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
-                       ggplot2::geom_line(data=model_cl_val, ggplot2::aes_(y=~upr), color=col_line_cl, linetype="dashed", show.legend=FALSE) + 
-                       # Regression, all
-                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~lwr), color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
-                       ggplot2::geom_line(data=model_all_val, ggplot2::aes_(y=~upr), color=col_line_all, linetype="dashed", show.legend=FALSE, size = 1.25) + 
-                       # other
-                       ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
-                       ggplot2::labs(title=str_title, subtitle = str_subtitle, caption=str_caption, x=str_xlab, y=str_ylab)
+        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name
+                                                   , labels=leg_labels
+                                                   , values=leg_shape)  + 
+                       ggplot2::scale_color_manual(name=leg_name
+                                                   , labels=leg_labels
+                                                   , values=leg_col) +
+                       ggplot2::scale_fill_manual(name=leg_name
+                                                  , labels=leg_labels
+                                                  , values=leg_fill)
+        # Regression, all
+        if (exists("model_all_val")) {
+            # Linear model (all data)
+            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_all
+                                                , method=lm
+                                                , color=col_line_all
+                                                , fill=fill_sites_all
+                                                , alpha=alpha_lm_all
+                                                , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
+                                              , ggplot2::aes_(y=~lwr)
+                                              , color=col_line_all
+                                              , linetype="dashed"
+                                              , show.legend=FALSE
+                                              , size = 1.25)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
+                                              , ggplot2::aes_(y=~upr)
+                                              , color=col_line_all
+                                              , linetype="dashed"
+                                              , show.legend=FALSE, size = 1.25)
+        }
+        # Regression, cluster
+        if (exists("model_cl_val")) {
+            # Linear model (cluster)
+            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_cl
+                                                , method=lm
+                                                , color=col_line_cl
+                                                , fill=fill_sites_cl
+                                                , alpha=alpha_lm_cl
+                                                , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
+                                              , ggplot2::aes_(y=~lwr)
+                                              , color=col_line_cl
+                                              , linetype="dashed"
+                                              , show.legend=FALSE)
+            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
+                                              , ggplot2::aes_(y=~upr)
+                                              , color=col_line_cl
+                                              , linetype="dashed"
+                                              , show.legend=FALSE)
+        }
+
+        # other
+        p_SR <- p_SR + ggplot2::theme_bw() +
+            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
+                            , plot.subtitle=ggplot2::element_text(hjust=0.5, size=10)
+                            , plot.caption=ggplot2::element_text(size=8)
+                            , legend.title=ggplot2::element_text(size=10)
+                            , legend.text=ggplot2::element_text(size=8)
+                            , axis.title=ggplot2::element_text(size=10)) + 
+            ggplot2::labs(title=str_title, subtitle = str_subtitle
+                            , caption=str_caption, x=str_xlab, y=str_ylab)
         #
         print(p_SR)
         plots.pq[[pq]] <- grDevices::recordPlot()
         #
-        fn_jpg <- paste0(varFileOut, make.names(stressName), "_", make.names(respName), ".jpg")
-        ggplot2::ggsave(fn_jpg, p_SR, width=plot_W, height=plot_H, units="in")
+        fn_png <- paste0(varFileOut, make.names(stressName), "_"
+                         , make.names(respName), ".png")
+        ggplot2::ggsave(fn_png, p_SR, width=plot_W, height=plot_H, units="in")
         #
       }##IF.boo.Plot.END
 
-
-
-        
-        
-        # #Print equation, r2, and p-value
-        # if ((length(varX[!is.na(varX)]) > 2) || (length(varY[!is.na(varY)])) > 2) {
-        #   eqn <- paste("Cluster regression: ", "y =", slope, "x +", intercept
-        #                  , "; ", "r2 =", r2, "; ", "p-value =", pval.corr
-        #                  ,"; ","n =",length(varX))
-        #   symbshape <- c(1, 16, 2, 17, 19)
-        #   symbcol <- c("darkgrey", "blue", "cyan4", "blue", "red")
-        #   symbname <- c("All data", "All reference", "Cluster data", "Cluster reference", 
-        #                 TargetSiteID)
-        #   graphics::mtext(eqn, side=1, line=4, bty="n", col=c("black"), cex=0.6)
-        #   graphics::legend(varLegOpp, symbname, pch=symbshape, col=symbcol
-        #                    , cex=0.6, lwd="1", bg="white")
-        # }##IF.length.END
-        #
-        
-       
-      
-        
-     # }##plot.pryr.END
-        #~~~~~~~~~~~~~~~~~~~
-        # OLD plot stuff [END]
-        #~~~~~~~~~~~~~~~~~~~
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
       ## PDF, capture plot in list
@@ -923,7 +1233,7 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   # END ####
   ## PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(getwd(), "Results", TargetSiteID, dir.sub3, paste0(TargetSiteID,".SR.",bio_prefix,".ALL.pdf"))
+  fn_pdf <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,"_SRLin_ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (pq in plots.pq){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
@@ -942,8 +1252,8 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   #
   # CorrPlot ####
   ## read
-  fn_corr <- paste0(TargetSiteID, ".SR.",bio_prefix, ".Corrs.txt")
-  fp_corr <- file.path(wd, dir.sub, dir.sub2, dir.sub3, fn_corr)
+  fn_corr <- paste0(TargetSiteID,"_", biocomm, "_SRLin_Corrs.tab")
+  fp_corr <- file.path(dir_path, fn_corr)
   df_corr <- utils::read.delim(fp_corr)
   
   # QC, 20190313
@@ -961,18 +1271,23 @@ getBioStressorResponses <- function(TargetSiteID, stressors, BioResp, list.Match
   ## transpose 
   # 20190305; shouldn't need mean or unique but just in case, should be complete dups
   df_corr <- unique(df_corr)
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName, fun.aggregate=mean, value.var="estimate"
+  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
+                               , fun.aggregate=mean
+                               , value.var="estimate"
                                , na.rm=TRUE)
   df_corrplot <- t(df_corr_r[,-1])
   colnames(df_corrplot) <- df_corr_r[,1]
   ## jpg
-  fn_jpg_cp <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".SR.",bio_prefix,".CorrPlot.jpg"))
-  grDevices::jpeg(filename = fn_jpg_cp
+  fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                          , "_SRLin_CorrPlot.png"))
+  grDevices::png(filename = fn_png_cp
                   , width = 4 * ppi
                   , height = 3 * ppi
-                  , quality=100
                   )
     corrplot::corrplot(df_corrplot, method="circle")
   grDevices::dev.off()
+  
+  msg.corr <- "Printing correlation plot."
+  message(msg.corr)
   #
 }##FUNCTION.END

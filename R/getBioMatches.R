@@ -6,7 +6,7 @@
 #' 
 #' Required objects:
 #' 
-#' * data.SampSumamry; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 #' 
 #' * data.chem.raw; StationID_Master, ChemSampleID
 #' 

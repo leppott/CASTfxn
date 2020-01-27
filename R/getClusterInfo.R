@@ -8,13 +8,15 @@
 #' 
 #' * TargetSiteID
 #' 
-#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+#' * data_cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 #'  
 #' @param TargetSiteID SiteID
-#' @param site.COMID SiteID
-#' @param site.Clusters site clusters.
+#' @param siteCOMID Site COMID from NHDPlus v2
+#' @param siteCluster Site cluster.
+#' @param siteQual2Plot Type of quality sites. Allowed values are c("reference",
+#' "not degraded", "better than")
 #' @param refSiteCOMIDs reference site COMIDs
-#' @param data.cluster The StreamCat data for each reach with cluster assignments.
+#' @param data_cluster The StreamCat data for each reach with cluster assignments.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 
@@ -40,9 +42,9 @@
 #' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
 #'                    , "ElevCategory"])
 #' if(elev_cat=="HI"){
-#'    data.cluster <- data_Cluster_Hi
+#'    data_cluster <- data_Cluster_Hi
 #' } else if(elev_cat=="LO") {
-#'    data.cluster <- data_Cluster_Lo
+#'    data_cluster <- data_Cluster_Lo
 #' }
 #' 
 #' # Map data
@@ -73,7 +75,7 @@
 #' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
-#'                                 , data.cluster, data.mod
+#'                                 , data_cluster, data.mod
 #'                                 , map_proj, map_outline, map_flowline
 #'                                 , dir_sub=dir_sub)
 #'  
@@ -82,12 +84,12 @@
 #' data.chem.raw <- data_Chem
 #' data.chem.info <- data_ChemInfo
 #' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
+#' siteCluster <- list.SiteSummary$ClustIDs
 #'
 #' #
 #' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=siteCluster
+#'                                 , data_cluster=data_cluster, data.Stations.Info=data.Stations.Info
 #'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 #' 
 #' # Data getClusterInfo
@@ -96,15 +98,17 @@
 #' dir_sub <- "ClusterInfo"
 #' 
 #' # Run getClusterInfo
-#' getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, 
-#'                data.cluster, dir_results, dir_sub)
+#' getClusterInfo(TargetSiteID, site.COMID, siteCluster, ref.reaches, 
+#'                data_cluster, dir_results, dir_sub)
 #' 
 #' @export
 getClusterInfo <- function(TargetSiteID
-                           , site.COMID
-                           , site.Clusters
+                           , siteCOMID
+                           , siteCluster
+                           # , siteQual2Plot
                            , refSiteCOMIDs
-                           , data.cluster
+                           , data_cluster
+                           , data_clusterInfo
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
@@ -116,7 +120,19 @@ getClusterInfo <- function(TargetSiteID
     i <- 2
   }##IF~boo_DEBUG~END
   #
-  useLU <- FALSE
+  
+  # TargetSiteID
+  # siteCOMID=list.SiteSummary$COMID
+  # siteCluster=list.SiteSummary$ClustID
+  # siteQual2Plot=siteQual2Plot
+  # refSiteCOMIDs=allRefReaches
+  # data_cluster = data_cluster
+  # data_clusterInfo = data_clusterInfo
+  # dir_results=file.path(getwd(), "Results")
+  # dir_sub="ClusterInfo"
+  
+  
+  
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
   # dir.sub <- "Results"
@@ -131,36 +147,56 @@ getClusterInfo <- function(TargetSiteID
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
-  if (length(site.Clusters)==0) {
+  if (length(siteCluster)==0) {
     # do not proceed
     # no cluster assignment
     stop(paste("No cluster assignment for", TargetSiteID, sep = " "))
   }
   
-  if (useLU == FALSE) {##IF.useLU.START
-    varMain <- "Clusters w/o Land Use"
-    cluster <- "clust_noland"
-  } else {
-    varMain <- "Clusters w/ Land Use"
-    cluster <- "clust_land"
-  }##IF~useLU~END
-  
-  data.cluster.mySites <- data.cluster[data.cluster$COMID %in% site.COMID,  ]
-  df.plot.3 <- data.cluster[data.cluster$COMID %in% refSiteCOMIDs, ]
-  df.plot.2 <- data.cluster.mySites
-  df.plot   <- data.cluster
+  cluster <- "clust"
+
+  data_cluster.mySites <- data_cluster[data_cluster$COMID %in% siteCOMID,  ]
+  df.plot.3 <- data_cluster[data_cluster$COMID %in% refSiteCOMIDs, ]
+  df.plot.2 <- data_cluster.mySites
+  df.plot   <- data_cluster
 
   # Plots ####
   # Capture each plot in a list for the PDF
-  plots.i <- vector(ncol(data.cluster.mySites)-1, mode="list")
+  plots.i <- vector(ncol(data_cluster.mySites)-1, mode="list")
   ppi<-300
-  for (i in 2:ncol(data.cluster.mySites)) {##FOR.i.START
+  for (i in 2:ncol(data_cluster.mySites)) {##FOR.i.START
     #
-    varYlab <- colnames(data.cluster.mySites)[i]
+    varYlab <- colnames(data_cluster.mySites)[i]
+    varYunits <- as.character(data_clusterInfo$Units[data_clusterInfo$ColName == varYlab])
+    varYgrandscale <- as.character(data_clusterInfo$Scale[data_clusterInfo$ColName == varYlab])
+    varYtext <- as.character(data_clusterInfo$ShortName[data_clusterInfo$ColName == varYlab])
+    
+    # Generate plot title
+    # if (grepl("^.*Ws", varYlab, perl=TRUE)==TRUE) {
+    #     varYlabtext <- gsub("^(.*)(Ws)$", "\\1 in the watershed"
+    #                         , varYlab, perl = TRUE)
+    # } else if (grepl("^.*Cat", varYlab, perl=TRUE)==TRUE) {
+    #     varYlabtext <- gsub("^(.*)(Cat)$", "\\1 in the catchment"
+    #                         , varYlab, perl = TRUE)
+    # } else { varYlabtext <- varYlab }
+    
+    varMain <- paste0(varYtext, " (", varYunits,") in the "
+                      , tolower(varYgrandscale), " by cluster")
+    # if (siteQual2Plot=="not degraded") {
+    #     qualtext <- "not degraded*"
+    #     str_caption <- "*Sites having one or more samples rated not degraded."
+    # } else if (siteQual2Plot=="better than") {
+    #     qualtext <- "better quality*"
+    #     str_caption <- paste("*Sites having one or more samples with biological quality"
+    #                          ,"better than the minimum target site quality.", sep = "\n")
+    # } else { 
+        qualtext <- "Reference"
+        str_caption <- ""
+    # }
     #
     # QC
     i.num <- i -1
-    i.len <- ncol(data.cluster.mySites) - 1
+    i.len <- ncol(data_cluster.mySites) - 1
     i.var <- varYlab
     message(paste0("Processing item, ", i.num, "/", i.len, "; ", i.var))
     utils::flush.console()
@@ -174,6 +210,12 @@ getClusterInfo <- function(TargetSiteID
       utils::flush.console()
       next
     }##IF.myY.END
+    
+    if(varYlab %in% c("clust")){
+        message(paste0("Skipping ", varYlab))
+        utils::flush.console()
+        next
+    }
     #
    #  # OLD PLOT
     {
@@ -264,7 +306,7 @@ getClusterInfo <- function(TargetSiteID
     
     ## Plot, Variables, Legend
     leg_name   <- "Sites"
-    leg_labels <- c("all ref", "target")
+    leg_labels <- c(qualtext, "Target")
     leg_shape  <- c(pch_sites_all_ref, pch_sites_targ)
     leg_col    <- c(col_sites_all_ref, col_sites_targ)
     leg_fill   <- c(fill_sites_all_ref, fill_sites_targ)
@@ -276,24 +318,39 @@ getClusterInfo <- function(TargetSiteID
     # ggplot, point subsets
     ## Ref
     if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1, ggplot2::aes(group=Cluster, y=var, color="ref_all", shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_ref, width=0.1
+                , ggplot2::aes(group=Cluster, y=var, color="ref_all"
+                , shape="ref_all", fill="ref_all"), size=cex_sites_all_ref)
     } else {
-      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all", shape="ref_all", fill="ref_all")) 
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="ref_all"
+                , shape="ref_all", fill="ref_all")) 
     }##IF~boo_plot_ref~END
     ## Target Site
     if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1, ggplot2::aes(group=Cluster, y=var, color="target", shape="target", fill="target"), size=cex_sites_targ)
+      p_cl <- p_cl + ggplot2::geom_jitter(data=df_ggplot_targ, width=0.1
+                , ggplot2::aes(group=Cluster, y=var, color="target"
+                , shape="target", fill="target"), size=cex_sites_targ)
     } else {
-      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
+      p_cl <- p_cl + ggplot2::geom_blank(ggplot2::aes(color="target"
+                , shape="target", fill="target"))
     }##IF~boo_plot_targ~END
-      
-      
+    
     # ggplot, Legend and other
-    p_cl <- p_cl + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-                  ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-                  ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill) + 
-                  ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5)) + 
-                  ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab)
+    p_cl <- p_cl + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels
+                                               , values=leg_shape) + 
+        ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
+                                    , values=leg_col) +
+        ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
+                                   , values=leg_fill) + 
+        ggplot2::scale_x_discrete(limits=unique(df_ggplot_all$Cluster)) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+                       , plot.subtitle=ggplot2::element_text(hjust=0.5)
+                       , plot.caption=ggplot2::element_text(size=8)) + 
+        ggplot2::theme(axis.text.x = ggplot2::element_text(size=8)
+                       , axis.text.y = ggplot2::element_text(size=8)) +
+        ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab
+                                , caption=str_caption)
     #
       
     print(p_cl)
@@ -303,8 +360,9 @@ getClusterInfo <- function(TargetSiteID
     plots.i[[i-1]] <- grDevices::recordPlot()
     
     # Save to JPG
-    fn_jpg <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".cluster.", make.names(varYlab), ".jpg"))
-    ggplot2::ggsave(fn_jpg, p_cl, width=plot_W, height=plot_H, units="in")
+    fn_png <- file.path(wd,dir.sub,dir.sub2,dir.sub3,paste0(TargetSiteID
+                            ,"_Cluster_",make.names(varYlab),".png"))
+    ggplot2::ggsave(fn_png, p_cl, width=plot_W, height=plot_H, units="in")
     
     #
   }##FOR.i.END

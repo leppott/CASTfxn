@@ -19,17 +19,15 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
 #~~~~~~~~~~~~~~~~~
 # from getSiteInfo()
-# data.Stations.Info
-# data.cluster       <- data_Cluster_Hi
-# col.clust.land.no <- "clust_noland"
-# col.clust.land.yes <- "clust_land"
-# all.map.sites <- merge(data.Stations.Info, data.cluster, by.x = "COMID_NHD2", by.y = "COMID")
+# data_Sites
+# data_cluster       <- data_Cluster_Hi
+# all.map.sites <- merge(data_Sites, data_cluster, by.x = "COMID_NHD2", by.y = "COMID")
 ```
 
 # Static Map
 ```{r map_jpg, echo=FALSE, eval=TRUE}
 dir.sub3 <- "SiteInfo"
-fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,".map.jpg"))
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.jpg"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
@@ -47,14 +45,10 @@ if(file.exists(fn_img)==TRUE){
 
  # Leaflet
   ## Data
-  df_leaflet <- data.Stations.Info
+  df_leaflet <- data_Sites
   ### Mark sites for legend
   df_leaflet$MapLeg <- "all sites"
-  if (useLU == TRUE) {
-    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.yes]==myClustIDs[,2], ]
-  } else {
-    df_leaflet_cl <- all.map.sites[all.map.sites[,col.clust.land.no]==myClustIDs[,1], ]
-  }
+  df_leaflet_cl <- all.map.sites[all.map.sites[,"clust"]==myClustID, ]
   df_leaflet[df_leaflet$StationID_Master %in% df_leaflet_cl$StationID_Master, "MapLeg"]<- "cluster sites"
   df_leaflet[is.na(df_leaflet$CARefSite_2017), "CARefSite_2017"] <- 0
   #df_leaflet[df_leaflet$CARefSite_2017==1, "MapLeg"]<- "ref sites"

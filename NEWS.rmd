@@ -37,7 +37,89 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-<<<<<<< Updated upstream
+
+## Changes in Version 0.1.0.9239 (2019-10-07, ARL)
+* General
+    + Minor bug fixes arising from system test to various functions
+* getSummaryAllSites
+    + Summarizes WoE from all target sites in the results folder
+
+## Changes in Version 0.1.0.9238 (2019-10-01, ARL)
+* General
+    + Standardized variable and column names to minimize confusion
+* getStressorList
+    + Adjusted for using only one cluster rathern than multiple options
+    + Adjusted graphs to display quality type instead of "all ref" always
+* getCoOccurDataSet
+    + Generalized "CSCI" or "IBI" to be contents of variable "index"
+* getBioStressorResponses
+    + Adjusted graphs to display quality type instead of "all ref" always
+    
+## Changes in Version 0.1.0.9237 (2019-09-27, ARL)
+* SMCClusterData.tab
+    + Removed extraneous columns (clust_land, clust_noland, TempWS, PrecipWs)
+* Map_Leaflet.rmd
+    + Adjusted calls that relied on multiple cluster options to just one cluster
+* getSiteInfo
+    + Adjusted for using only one cluster rather than multiple options
+* getClusterInfo
+    + Adjusted for using only one cluster rather than multiple options
+    + Adjusted graph to display quality type instead of "all ref" always
+    + Adjusted graph title to be more descriptive
+    + Added caption to better describe quality type
+
+
+## Changes in Version 0.1.0.9236 (2019-9-26)
+
+* getComparators, new function
+    + Uses cluster identification as base comparator set
+    + Adds BC dissimilarity distance matrix if useBC = TRUE
+    + Identifies a minimum of 30 comparator sites from sites
+    having <= bc.cutoff value dissimilarity; exceeds cutoff
+    if <30 sites meet criteria; uses all sites meeting
+    criteria, even if >30.
+
+* getCoOccurDataset, new function
+    + Identifies paired stressor/response data with a user-
+    specified lag time (default = 0) and creates a data set.
+    + This dataset is generated prior to selecting stressors
+    for analysis as potential causes of impairment.
+    + Biocomm-specific, but inclusive of measured/modeled data.
+    + Part of the data prep part of the CASTool.
+
+* getDataGaps, new function
+    + Assembles data gaps identified by other functions into a single table.
+
+* getDataSets, new function
+    + Similar to getCoOccurDataset, but filtered for only stressors
+    that will be used in further analyses to evaluate evidence for causality.
+
+* getQualSites, new function
+    + Identifies sites, reaches and samples representing reference
+    conditions, as identified by the regulatory authority and
+    specified in the Sites data file; sites considered to be
+    not degraded, also as identified by the regulatory authority's
+    numerical threshold for "degraded"; and sites having samples
+    with "better" quality than the worst quality target site sample.
+
+* getSiteBackground, new function
+    + Identifies StreamCat data illustrative of anthropogenic activity
+    that might be found to relate to causal agents. Although it makes
+    no claims about these agents, barplots of their values are presented
+    at multiple scales, if available.
+    + Moves site files from a data folder repository into the target site 
+    results folder.
+
+* getTimeSeq, new function
+    + Prepares barplots of stressor/response values over time, with each
+    stressor/response pair graphed separately, one atop the other.
+
+* getWoE, new function
+    + Pulls together the weight of evidence findings from each separate
+    line of evidence evaluated for the target site and biological community.
+    
+## Changes in Version 0.1.0.9235 (2019-9-05)
+
 # # Changes in Version 0.1.0.9235.007 (2020-01-27)
 
 * Disclaimer_Key
@@ -85,7 +167,7 @@ cat(paste0("Last Update: ",Sys.time()))
 * Keep branch code for Shiny app modifications while also have a branch for code edits.  Will merge later.
 
 # Changes in Version 0.1.0.9235 (2019-09-05)
-=======
+
 ## Changes in Version 0.1.0.9236 (2019-10-22)
 
 * Update Shiny app CAST_SMC.
@@ -100,7 +182,6 @@ cat(paste0("Last Update: ",Sys.time()))
         - RgoogleMaps
 
 ## Changes in Version 0.1.0.9235 (2019-09-05)
->>>>>>> Stashed changes
 
 * getStressorList, Issue #82
     + Add "DirIncStress" to chem.info (raw data).
@@ -109,20 +190,12 @@ cat(paste0("Last Update: ",Sys.time()))
 * getCoOccur, Issue #82
     + Update example to use data.chem.info$DirIncStress to get col.Stressors.InvSc input.
 
-<<<<<<< Updated upstream
 # Changes in Version 0.1.0.9234 (2019-09-05)
-=======
-## Changes in Version 0.1.0.9234 (2019-09-05)
->>>>>>> Stashed changes
 
 * getStressorList, Issue #81
     + File save, remove row names (line 372).
 
-<<<<<<< Updated upstream
-# Changes in Version 0.1.0.9233 (2019-09-05)
-=======
 ## Changes in Version 0.1.0.9233 (2019-09-05)
->>>>>>> Stashed changes
 
 * getCoOccur
     + Modify "pH" in defaults for col.Stressor.InvSc.

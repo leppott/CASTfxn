@@ -9,12 +9,12 @@
 #' chem.info need to include DirIncStress.  Valid values are 'inc' or 'dec'.
 #' 
 #' @param TargetSiteID Site ID
-#' @param site.Clusters Clusters
+#' @param site.Cluster Clusters
 #' @param chem.info chem information
 #' @param cluster.chem chem data cluster.
 #' @param cluster.samps sample cluster.
 #' @param ref.sites reference sites
-#' @param site.chem Chem sites
+#' @param siteChem Chem sites
 #' @param probsHigh probabilities, high
 #' @param probsLow probabilities, low
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
@@ -100,7 +100,7 @@
 #' cluster.chem <- list.data$cluster.chem
 #' cluster.samps <- list.data$cluster.samps
 #' ref.sites <- list.data$ref.sites
-#' site.chem <- list.data$site.chem
+#' siteChem <- list.data$siteChem
 #' dir_sub <- "CandidateCauses"
 #' 
 #' # set cutoff for possible stressor identification
@@ -110,30 +110,61 @@
 #' 
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-#'                                  , cluster.samps, ref.sites, site.chem
+#'                                  , cluster.samps, ref.sites, siteChem
 #'                                  , probsHigh, probsLow, biocomm, dir_results
 #'                                  , dir_sub)
 #                                  
 #' @export
-getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                            , cluster.samps, ref.sites, site.chem
-                            , probsHigh, probsLow, biocomm="bmi"
+getStressorList <- function(TargetSiteID
+                            , siteCluster
+                            , chemInfo
+                            , clusterChem
+                            , siteQual2Plot
+                            , refSamps
+                            , refSites
+                            , siteChem
+                            , probsHigh
+                            , probsLow
+                            , DOlim=7
+                            , pHlimLow=6.5
+                            , pHlimHigh=9
+                            , biocomm="bmi"
+                            , bioParmsDEL
                             , dir_results=file.path(getwd(), "Results")
-                            , dir_sub="CandidateCauses"
-                            ) {##FUNCTION.START
+                            , dir_sub="CandidateCauses") {##FUNCTION.START
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 1
+    TargetSiteID
+    siteCluster=list.SiteSummary$ClustID
+    chemInfo=data_stressInfo
+    clusterChem=compStressAll
+    siteQual2Plot=siteQual2Plot
+    refSamps=allBioRefStressSamps
+    refSites=allBioRefSites
+    siteChem=siteStressAll
+    probsHigh=probsHigh
+    probsLow=probsLow
+    DOlim=7
+    pHlimLow=6.5
+    pHlimHigh=9
+    biocomm=bioComm
+    bioParmsDEL=bioParmsDEL
+    dir_results=dir_results
+    dir_sub="CandidateCauses"
     # all other function inputs defined in example.
   }##IF.boo.DEBUG.END
   #
-  useLU <- FALSE
-  
+  # 
   # QC, 20190905
   # chem.info$DirIncStress to lower case
-  chem.info$DirIncStress <- tolower(chem.info$DirIncStress)
+  chemInfo$DirIncStress <- tolower(chemInfo$DirIncStress)
+  biocomm <- toupper(biocomm)
+  `%>%` <- dplyr::`%>%`
+  not_all_na <- function(x) {!all(is.na(x))}
+  plot_ext <- ".png"
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -141,34 +172,53 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   wd <- dirname(dir_results)
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
-  dir.sub3 <- dir_sub
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
   
-  #
-  stations <- TargetSiteID
-  nolu.cluster <- "clust_noland"
-  lu.cluster <- "clust_land"
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   
+  # stations <- TargetSiteID
+
   # First 2 columns are ChemSampID and StationID_Master
-  cluster.chem.data <- cluster.chem[3:ncol(cluster.chem)]
-  cluster.ref.chem <- subset(cluster.chem, cluster.chem$StationID_Master %in% ref.sites)
-  cluster.ref.chem.data <- cluster.ref.chem[3:ncol(cluster.ref.chem)]
-  chemnames <- names(cluster.chem[,3:ncol(cluster.chem.data)])
-  allcount <- apply(cluster.chem.data, 2, function(x) sum(!is.na(x)))
-  alltype <- unlist(lapply(1:ncol(cluster.chem.data), function(x) is.numeric(cluster.chem[,x])))
+  clusterChemData <- clusterChem[4:ncol(clusterChem)]
+  
+  # Identify all cluster "reference" samples, including modeled ones
+  clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSamps)
+  clusterRefModSamps <- clusterChem %>%
+      dplyr::filter(stringr::str_detect(StressSampID, "_modeledflow")) %>%
+      dplyr::filter(StationID_Master %in% refSites)
+  clusterRefChem <- rbind(clusterRefChem, clusterRefModSamps)
+  rm(clusterRefModSamps)
+  clusterRefChem <- select_if(clusterRefChem, not_all_na)
+  clusterRefChemData <- clusterRefChem[4:ncol(clusterRefChem)]
+  rm(clusterRefChem)
+  
+  useCols <- colnames(clusterRefChemData)
+  clusterChemData <- dplyr::select(clusterChemData, eval(useCols))
+  
+  # Use clusterRefChemData for namees, since non-matching biocomm are exluded
+  chemnames <- colnames(clusterRefChemData)
+  allcount <- apply(clusterChemData, 2, function(x) sum(!is.na(x)))
+  alltype <- unlist(lapply(1:ncol(clusterChemData)
+                           , function(x) is.numeric(clusterChemData[,x])))
   coolvar <- names(allcount)[allcount>2 & alltype]
   
-  groupnames <- unique(subset(chem.info, chem.info$ConvertTo %in% chemnames, select = "GroupName"))
+  groupnames <- unique(subset(chemInfo, chemInfo$Analyte %in% chemnames
+                              , select = "GroupName"))
   numgps <- length(groupnames[,1])
   
   # Plots ####
   ppi <- 300
-  plot_H <- 4
+  plot_H <- 6
   plot_W <- 9
   # Capture each plot in a list for the PDF
   ## https://stackoverflow.com/questions/13273611/how-to-append-a-plot-to-an-existing-pdf-file
@@ -176,8 +226,9 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   plots.g <- vector(numgps, mode="list")
   # Generate 1 box plot for each group, ref sites in blue, target site in red
   for (g in 1:numgps) {##FOR.g.START
-    gpchems <- subset(chem.info, GroupName == groupnames[g,], select = "ConvertTo")
-    gpcoolvar <- subset(coolvar, coolvar %in% gpchems$ConvertTo)
+    gpchems <- subset(chemInfo, GroupName == groupnames[g,]
+                      , select = c("Analyte", "Label"))
+    gpcoolvar <- subset(coolvar, coolvar %in% gpchems$Analyte)
     n <- length(gpcoolvar)
     #
     if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
@@ -186,56 +237,10 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
     }##IF~boo.DEBUG~START
     #
     if(n>0) { ##FOR.n.START
-      # plot.pryr %<a-% {##pryr.START
-      #   maintitle <- paste(groupnames[g,], "Standardized values, All sites in cluster", sep=", ")
-      #   graphics::par(mfrow = c(1,1), mar = c(4,8,1,1))
-      #   if (useLU == TRUE) {##IF.useLU.START
-      #     labmain = paste(stations, ": Cluster", site.Clusters[1,lu.cluster])
-      #   } else {
-      #     labmain = paste(stations, ": Cluster", site.Clusters[1,nolu.cluster])
-      #   }##IF.useLU.END
-      #   labx = paste(maintitle, labmain, sep = "\n")
-      #   graphics::plot(y= 1:n, x= stats::runif(n,0,1), axes = F, type="n", xlab = "", ylab ="",
-      #        xlim = c(0,1), cex.lab = 0.8)
-      #   graphics::title(xlab=labx, line = 1, cex.lab = 0.8)
-      #   graphics::axis(2, at = 1:n, labels = gpcoolvar[1:n], las =1, cex.axis = 0.6)
-      #   for(i in 1:n) {##FOR.i.START
-      #     xvar <- cluster.chem[,gpcoolvar[i]]; dif <- diff(range(xvar, na.rm =T))
-      #     newvar <- (xvar-min(xvar, na.rm=T))/dif
-      #     graphics::boxplot(newvar, at = i,boxwex=0.5, horizontal =T, add =T,axes = F
-      #             , outcex = 0.6, staplewex = 1, medlwd = 0.9, boxlwd = 0.8)
-      #     good.ref.data <- cluster.ref.chem.data[,gpcoolvar[i]][!is.na(cluster.ref.chem[,gpcoolvar[i]])]
-      #     if (length(good.ref.data) != 0) {##IF.length.START
-      #       point2 <- (cluster.ref.chem.data[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-      #       graphics::points(point2, rep(i,length(point2)), col = "blue", pch = 15,cex=0.6, bg = 2)
-      #     }##IF.length.END
-      #     point1 <- (site.chem[,gpcoolvar[i]]-min(xvar, na.rm=T))/dif 
-      #     graphics::points(point1, rep(i,length(point1)), col = "red", pch = 19,cex=0.6, bg = 2)
-      #   }##FOR.i.END
-      #   graphics::box(bty="l") 
-      # }##pryr.END
-      # 
-      # # PDF, capture plot in list
-      # #lst.plots.g[[g]] <- grDevices::recordPlot()
-      # #plots.g[[g]] <- plot.pryr
-      # #assign(paste0("plot_",g),plot.pryr)
-      # plot.pryr
-      # plots.g[[g]] <- grDevices::recordPlot()
-      # 
-      # # JPG, create
-      # grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",TargetSiteID,
-      #                                   ".boxes.", make.names(groupnames[g,]), ".jpg"), width = 4*ppi,
-      #                 height = 3*ppi, pointsize = 8, quality = 100, bg = "white",
-      #                 res = ppi)
-      #   plot.pryr
-      # grDevices::dev.off()
-      #
-      
-      
-      # ggplot ####
-      
+
       ## Plot, Data, Cluster
-      df_plot_wide <- as.data.frame(cluster.chem[,gpcoolvar])
+        #In next line changed clusterChem to ClusterChemData
+      df_plot_wide <- as.data.frame(clusterChemData[,gpcoolvar])
       colnames(df_plot_wide) <- gpcoolvar 
       # need as.data.frame and colnames for groups with only 1 parameter
       df_plot_wide_min <- apply(df_plot_wide, 2, min, na.rm=TRUE)
@@ -245,39 +250,62 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       df_plot_wide_valminusmin <- sweep(df_plot_wide, 2, df_plot_wide_min, FUN="-")
       df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
       # reshape from wide to long
-      df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+      df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar
+                                     , variable.name="GrpNm")
       # Remove NaN so get rid of error message?
       df_plot_long <- df_plot_long[!is.na(df_plot_long$value), ]
+      df_plot_long <- merge(gpchems, df_plot_long, by.x="Analyte", by.y="GrpNm")
 
       ## Plot, Data, Cluster_Ref
       # QC for nrow
       boo_plot_ref <- FALSE
-      if(nrow(cluster.ref.chem.data)>0){##IF~nrow(cluster.ref.chem.data)~START
-        df_plot_ref_wide <- as.data.frame(cluster.ref.chem.data[, gpcoolvar])
+      if(nrow(clusterRefChemData)>0){##IF~nrow(cluster.ref.chem.data)~START
+        df_plot_ref_wide <- as.data.frame(clusterRefChemData[, gpcoolvar])
         colnames(df_plot_ref_wide) <- gpcoolvar 
         df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
         df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
         df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
+        df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
         boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
       }##IF~nrow(cluster.ref.chem.data)~END
       
       ## Plot, Data, Target Site
-      df_plot_targ_wide <- as.data.frame(site.chem[, gpcoolvar])
+      df_plot_targ_wide <- as.data.frame(siteChem[, gpcoolvar])
       colnames(df_plot_targ_wide) <- gpcoolvar
       df_plot_targ_wide_valminusmin <- sweep(df_plot_targ_wide, 2, df_plot_wide_min, FUN="-")
       df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
       df_plot_long_targ <- reshape2::melt(df_plot_targ_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
       df_plot_long_targ <- df_plot_long_targ[!is.na(df_plot_long_targ$value), ]
+      df_plot_long_targ <- merge(gpchems, df_plot_long_targ, by.x="Analyte", by.y="GrpNm")
+      boo_plot_targ <- ifelse(nrow(siteChem)!=0, TRUE, FALSE)
       
-      boo_plot_targ <- ifelse(nrow(site.chem)!=0, TRUE, FALSE)
-      
+      # Get proper labels to describe "good quality" sites
+      if (siteQual2Plot=="not degraded") {
+          qualtext <- "Not degraded*"
+          if (biocomm=="BMI") {
+              str_caption <- paste0("*Stressor samples paired with benthic "
+                                    , "macroinvertebrate samples rated not degraded.")
+          } else if (biocomm=="ALGAE") {
+              str_caption <- paste0("*Stressor samples paired with algae "
+                                    , "samples rated not degraded.")
+          }
+      } else if (siteQual2Plot=="better than") {
+          qualtext <- "Better quality*"
+              str_caption <- paste("*Stressor samples with paired response samples having biological"
+                                   ,"quality better than the mimum target site quality.", sep = "\n")
+      } else { 
+          qualtext <- "Reference"
+          str_caption <- ""
+      }
       
       ## Plot, Variables, Strings
-      str_Group <- as.character(groupnames[g,1])
-      str_title <- TargetSiteID
-      str_subtitle <- paste0("Cluster ", site.Clusters[1,nolu.cluster], " (all sites)")
-      str_xlab <- "Standardized Values"
+      str_Group <- stringr::str_to_sentence(as.character(groupnames[g,1]))
+      str_title <- paste0(TargetSiteID, ": Selection of detected stressors for"
+                          ," evaluation as causes of impairment")
+      str_title <- stringr::str_wrap(str_title,100)
+      str_subtitle <- paste0("Comparator samples from cluster ", siteCluster)
+      str_xlab <- "Standardized values"
       str_ylab <- str_Group
       
       ## Plot, Variables, Colors
@@ -308,55 +336,103 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
       cex_sites_all_ref <- cex_sites_all
       cex_sites_cl      <- cex_mod*0.95
       cex_sites_cl_ref  <- cex_sites_cl
-      cex_sites_targ    <- cex_mod*1.2
+      cex_sites_targ    <- cex_mod*1.5
       
       ## Plot, Variables, Legend
-      leg_name   <- "Sites"
-      leg_labels <- c("cluster ref", "target")
+      leg_name   <- "Samples"
+      leg_labels <- c(qualtext, "Target")
       leg_shape  <- c(pch_sites_cl_ref, pch_sites_targ)
       leg_col    <- c(col_sites_cl_ref, col_sites_targ)
       leg_fill   <- c(fill_sites_cl_ref, fill_sites_targ)
       
+      if (n>8) {
+          yaxistextsize = 6
+          wrap_length = 35
+      } else {
+          yaxistextsize = 7
+          wrap_length <- 27
+      }
+      
       # ggplot, main
       p_SL <- ggplot2::ggplot(data=df_plot_long) + 
-                ggplot2::geom_boxplot(ggplot2::aes(x=GrpNm, y=value))  + 
+                ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                                   , y=value))  + 
                 ggplot2::coord_flip() + 
-                ggplot2::labs(title=str_title, subtitle=str_subtitle, y=str_xlab, x=str_ylab) + 
-                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5), plot.subtitle=ggplot2::element_text(hjust=0.5), axis.text.x = ggplot2::element_blank(), axis.ticks.x=ggplot2::element_blank())
+                ggplot2::labs(title=str_title, subtitle=str_subtitle
+                              , y=str_xlab, x=str_ylab, caption = str_caption) + 
+                ggplot2::theme_bw() +
+                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
+                               , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
+                               , axis.text.x = ggplot2::element_blank()
+                               , axis.text.y = ggplot2::element_text(size=yaxistextsize)
+                               , axis.ticks.x=ggplot2::element_blank()
+                               , plot.caption = ggplot2::element_text(size=8))
       #
       # ggplot, points subsets
       ## Cluster, Ref
       if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="cl_ref", shape="cl_ref", fill="cl_ref"), size=1)
+        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1
+                                , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                               , y=value, color="cl_ref"
+                                               , shape="cl_ref", fill="cl_ref")
+                                , size=1)
       } else {
-        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref", shape="cl_ref", fill="cl_ref")) 
+        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref"
+                                                        , shape="cl_ref"
+                                                        , fill="cl_ref")) 
       }##IF~boo_plot_ref~END
       ## Target Site
       if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ, width=0.1, ggplot2::aes(x=GrpNm, y=value, color="targ", shape="targ", fill="targ"), size=1)
+        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ
+                                            , width=0.1
+                                            , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                                           , y=value
+                                                           , color="targ"
+                                                           , shape="targ"
+                                                           , fill="targ")
+                                            , size=1.5)
       } else {
-        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ", shape="targ", fill="targ"))
+        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ"
+                                                        , shape="targ"
+                                                        , fill="targ"))# + 
+            # ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
+            #                , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
+            #                , axis.text.x = ggplot2::element_text(size=8)
+            #                , axis.text.y = ggplot2::element_text(size=yaxistextsize)
+            #                , axis.ticks.x=ggplot2::element_blank()
+            #                , plot.caption = ggplot2::element_text(size=8))
       }##IF~boo_plot_targ~END
       #
       # ggplot, Legend
-      p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
-                ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
-                ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels, values=leg_fill)
+      p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name
+                                                 , labels=leg_labels
+                                                 , values=leg_shape)  + 
+                ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
+                                            , values=leg_col) +
+                ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
+                                           , values=leg_fill)
       
       
       #
       print(p_SL)
       plots.g[[g]] <- grDevices::recordPlot()
       #
-      fn_jpg <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID, ".boxes.", make.names(groupnames[g,]), ".jpg"))
-      ggplot2::ggsave(fn_jpg, p_SL, width=plot_W, height=plot_H, units="in")
+      # fn_title <- make.names(groupnames[g,])
+      fn_title <- stringr::str_to_title(str_Group)
+      fn_title <- gsub("\\s","",fn_title)
+      fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                            , "_CandCauses_", fn_title, plot_ext))
+      # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
+      #                                       , make.names(groupnames[g,]), plot_ext))
+      ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
       
     }##IF.n.END
   }##FOR.g.END
   
   # PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(wd, dir.sub, dir.sub2, dir.sub3, paste0(TargetSiteID,".boxes.ALL.pdf"))
+  fn_pdf <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                       ,"CandCauses_ALL.pdf"))
   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (i in plots.g){##FOR.gp.START
       #grDevices::replayPlot(g.plot)
@@ -367,46 +443,93 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   rm(plots.g)
   
   # Data File ####
-  chem.pctrank <- apply(cluster.chem[,3:ncol(cluster.chem)], 2, function(x) dplyr::percent_rank(x))
-  data.chem.pctrank <- as.data.frame(chem.pctrank)
-  data.chem.pctrank <- cbind(cluster.chem$StationID_Master,
-                             cluster.chem$ChemSampleID,data.chem.pctrank)
-  colnames(data.chem.pctrank)[1] <- "StationID_Master"
-  colnames(data.chem.pctrank)[2] <- "ChemSampleID"
-  row.names(data.chem.pctrank) <- NULL
-  fn.pctrank <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID, ".chem.pctrank.", biocomm, ".txt"))
-  utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE, row.names = FALSE)
+  chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
+                        , function(x) dplyr::percent_rank(x))
+  data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
+  fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                           ,"CandCauses_ChemPctRank.tab"))
+  utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE
+                     , row.names = FALSE, append=FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
   stressor <- c("none")
   # 
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     c <- 3
   }##IF.boo.DEBUG.END
-  for (c in 3:ncol(site.pctrank)) {
-    print(c)
+  
+  # Handle exceptions from standard stressor list ID
+  for (c in 7:ncol(site.pctrank)) {
+    # print(c)
     chemname <- colnames(site.pctrank)[c]
     bad <- is.na(site.pctrank[,c])
     check <- site.pctrank[,c]
     good <- check[!bad]
-    maxSiteVal <- max(good, na.rm = TRUE)
-    minSiteVal <- min(good, na.rm = TRUE)
+    maxSiteRank <- max(good, na.rm = TRUE)
+    minSiteRank <- min(good, na.rm = TRUE)
+    maxSiteVal <- max(as.data.frame(siteChem[, chemname]), na.rm = TRUE)
+    minSiteVal <- min(as.data.frame(siteChem[, chemname]), na.rm = TRUE)
     # DirIncStress ####
     # (not all in chem.info)
-    if(chemname %in% chem.info[, "StdParamName"]){
-      ExpDirIncStress <- (chem.info[chem.info[, "StdParamName"] == chemname, "DirIncStress"])[1]
+    if(chemname %in% chemInfo[, "StdParamName"]){
+      ExpDirIncStress <- tolower((chemInfo[chemInfo[,"StdParamName"]==chemname
+                                           ,"DirIncStress"])[1])
     } else {
       ExpDirIncStress <- "unk"
     }
-    if (ExpDirIncStress == "dec") {
-      if (minSiteVal <= probsLow) {
-        stressor <- c(stressor, chemname)
-      }
+    if (grepl("^pH_", chemname, perl=TRUE, ignore.case=FALSE)==TRUE) {
+        if ((minSiteVal < pHlimLow) | (maxSiteVal > pHlimHigh)) {
+            if ((minSiteRank <= probsLow) | (maxSiteRank >= probsHigh)) {
+                stressor <- c(stressor, chemname)
+            }
+        } else {
+            if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
+            else { tmpParmDEL <- c(bioParmsDEL, chemname) }
+            print("pH is not a stressor.")
+            flush.console()
+        }
+        next()
     }
-    if ((ExpDirIncStress == "inc") && (maxSiteVal >= probsHigh)) {
+    if (ExpDirIncStress == "dec") {
+      if (grepl("^DO_", chemname, perl=TRUE, ignore.case=FALSE)==TRUE) {
+
+          if ((minSiteVal < DOlim) & (minSiteRank <= probsLow)) {
+              print("DO is a stressor.")
+              flush.console()
+              stressor <- c(stressor, chemname)
+          } else {
+              if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
+              else { tmpParmDEL <- c(bioParmsDEL, chemname) }
+              print("DO is not a stressor.")
+              flush.console()
+          }
+          
+      } else if (minSiteRank <= probsLow) {
+          stressor <- c(stressor, chemname)
+      }
+    } else if ((ExpDirIncStress == "inc") && (maxSiteRank >= probsHigh)) {
       stressor <- c(stressor, chemname)
     }
   }##FOR~c~END
   stressorlist <- stressor
+  stressorlist <- setdiff(stressorlist, bioParmsDEL)
+  stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
+  if (exists("tmpParmDEL")) { stressorsExcepted<-unique(c(stressorsExcepted
+                                                          , tmpParmDEL)) }
+  stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
+      dplyr::mutate(Biocomm = biocomm)
+  colnames(stressorsExcepted)[1] <- "Stressor"
+  stressorsExcepted <- merge(stressorsExcepted, chemInfo[,c("Analyte", "Label")]
+                             , by.x = "Stressor", by.y = "Analyte", all.x = TRUE)
+  if (nrow(stressorsExcepted)==0) {
+      stressorsExcepted <- rbind(stressorsExcepted,(cbind("None",biocomm,"None")))
+  }
+  colnames(stressorsExcepted) <- c("Stressor","BioComm","Label")
+  stressorsExcepted <- unique(stressorsExcepted)
+  # Write stressors excepted table
+  fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                           ,"CandCauses_StressorsExcluded.tab"))
+  utils::write.table(stressorsExcepted, fn.stressorsExc, sep="\t", col.names=TRUE
+                     , row.names = FALSE, append=FALSE)
   
   # LogTransf ####
   # 20190110, get log transformation code from chem.info
@@ -414,12 +537,12 @@ getStressorList <- function(TargetSiteID, site.Clusters, chem.info, cluster.chem
   `%>%` <- dplyr::`%>%`
   #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
   # need to use max (default of 1) in case of duplicates
-  chem.info_LogTransf <- chem.info %>% 
-                            dplyr::group_by(StdParamName) %>% 
-                              dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
+  chemInfo_LogTransf <- chemInfo %>% 
+      dplyr::group_by(StdParamName) %>%
+      dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
   stressorlist4merge <- data.frame(StdParamName=stressorlist, Sort=1:length(stressorlist))
   # merge
-  LogTransf_merge <- merge(stressorlist4merge, chem.info_LogTransf, all.x=TRUE)
+  LogTransf_merge <- merge(stressorlist4merge, chemInfo_LogTransf, all.x=TRUE)
   # sort 
   LogTransf_merge <- LogTransf_merge[order(LogTransf_merge$Sort), ]
   # NA to 0

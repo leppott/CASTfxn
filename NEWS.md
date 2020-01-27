@@ -3,7 +3,7 @@ NEWS
 <Erik.Leppo@tetratech.com>
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
-    #> Last Update: 2020-01-27 11:56:00
+    #> Last Update: 2019-09-27 17:36:13
 
 Planned Updates
 ===============
@@ -25,114 +25,53 @@ Future Updates
 Version History
 ===============
 
-\# Changes in Version 0.1.0.9235.007 (2020-01-27)
-=================================================
+Changes in Version 0.1.0.9237 (2019-09-27, ARL)
+-----------------------------------------------
 
-## Changes in Version 0.1.0.9236 (2019-9-26)
+-   SMCClusterData.tab
+    -   Removed extraneous columns (clust\_land, clust\_noland, TempWS, PrecipWs)
+-   Map\_Leaflet.rmd
+    -   Adjusted calls that relied on multiple cluster options to just one cluster
+-   getSiteInfo
+    -   Adjusted for using only one cluster rather than multiple options
+-   getClusterInfo
+    -   Adjusted for using only one cluster rather than multiple options
+    -   Adjusted graph to display quality type instead of "all ref" always
+    -   Adjusted graph title to be more descriptive
+    -   Added caption to better describe quality type
+-   getStressorList
+    -   Adjusted for using only one cluster rathern than multiple options
+-   getCoOccurDataSet
+    -   Generalized "CSCI" or "IBI" to be contents of variable "index"
 
-  - getComparators, new function
-      - Uses cluster identification as base comparator set
-      - Adds BC dissimilarity distance matrix if useBC = TRUE
-      - Identifies a minimum of 30 comparator sites from sites
-        having <= bc.cutoff value dissimilarity; exceeds cutoff
-        if <30 sites meet criteria; uses all sites meeting 
-        criteria, even if >30.
+Changes in Version 0.1.0.9236 (2019-9-26)
+-----------------------------------------
 
-  - getCoOccurDataset, new function
-      - Identifies paired stressor/response data with a user-
-        specified lag time (default = 0) and creates a data set.
-      - This dataset is generated prior to selecting stressors
-        for analysis as potential causes of impairment.
-      - Biocomm-specific, but inclusive of measured/modeled data.
-      - Part of the data prep part of the CASTool.
+-   getComparators, new function
+    -   Uses cluster identification as base comparator set
+    -   Adds BC dissimilarity distance matrix if useBC = TRUE
+    -   Identifies a minimum of 30 comparator sites from sites having &lt;= bc.cutoff value dissimilarity; exceeds cutoff if &lt;30 sites meet criteria; uses all sites meeting criteria, even if &gt;30.
+-   getCoOccurDataset, new function
+    -   Identifies paired stressor/response data with a user- specified lag time (default = 0) and creates a data set.
+    -   This dataset is generated prior to selecting stressors for analysis as potential causes of impairment.
+    -   Biocomm-specific, but inclusive of measured/modeled data.
+    -   Part of the data prep part of the CASTool.
+-   getDataGaps, new function
+    -   Assembles data gaps identified by other functions into a single table.
+-   getDataSets, new function
+    -   Similar to getCoOccurDataset, but filtered for only stressors that will be used in further analyses to evaluate evidence for causality.
+-   getQualSites, new function
+    -   Identifies sites, reaches and samples representing reference conditions, as identified by the regulatory authority and specified in the Sites data file; sites considered to be not degraded, also as identified by the regulatory authority's numerical threshold for "degraded"; and sites having samples with "better" quality than the worst quality target site sample.
+-   getSiteBackground, new function
+    -   Identifies StreamCat data illustrative of anthropogenic activity that might be found to relate to causal agents. Although it makes no claims about these agents, barplots of their values are presented at multiple scales, if available.
+    -   Moves site files from a data folder repository into the target site results folder.
+-   getTimeSeq, new function
+    -   Prepares barplots of stressor/response values over time, with each stressor/response pair graphed separately, one atop the other.
+-   getWoE, new function
+    -   Pulls together the weight of evidence findings from each separate line of evidence evaluated for the target site and biological community.
 
-  - getDataGaps, new function
-      - Assembles data gaps identified by other functions into a
-        single, final table.
-
-  - getDataSets, new function
-      - Similar to getCoOccurDataset, but filtered for only stressors
-        that will be used in further analyses to evaluate evidence for 
-        causality.
-
-  - getQualSites, new function
-      - Identifies sites, reaches and samples representing reference
-        conditions, as identified by the regulatory authority and
-        specified in the Sites data file; sites considered to be
-        not degraded, also as identified by the regulatory authority's
-        numerical threshold for "degraded"; and sites having samples
-        with "better" quality than the worst quality target site sample.
-
-  - getSiteBackground, new function
-      - Identifies StreamCat data illustrative of anthropogenic activity
-        that might be found to relate to causal agents. Although it makes 
-        no claims about these agents, barplots of their values are presented 
-        at multiple scales, if available.
-      - Moves site files from a data folder repository into the 
-        target site results folder.
-
-  - getTimeSeq, new function
-      - Prepares barplots of stressor/response values over time, with each
-        stressor/response pair graphed separately, one atop the other.
-
-  - getWoE, new function
-      - Pulls together the weight of evidence findings from each separate
-        line of evidence evaluated for the target site and biological community.
-
-## Changes in Version 0.1.0.9235 (2019-9-05)
-
--   Disclaimer\_Key
-
-    -   Move creation to data-raw
-
-    -   Move file location folder from data to www.
-
--   NEWS - modify structure.
-
-Changes in Version 0.1.0.9235.006 (2019-11-06)
-==============================================
-
--   Add package down website.
-    -   Partial.
-
-Changes in Version 0.1.0.9235.005 (2019-10-29)
-==============================================
-
--   Shiny\_SMC
-    -   Move Results back out of www folder.
-    -   Function to copy Results to www.
-    -   Add function to end of Run\_All.
-    -   Remove wwwin global.
-    -   ObserveEvent on StationID for CopyResults.
-
-Changes in Version 0.1.0.9235.004 (2019-10-28)
-==============================================
-
--   Shiny\_SMC
-    -   Move Results to www folder.
-    -   Add PDF viewer to each tab.
-
-Changes in Version 0.1.0.9235.003 (2019-10-28)
-==============================================
-
--   Shiny, Disclaimer\_Key.HTML
-    -   toc\_depth from 3 to 2.
-        -   Takes up less space.
-
-Changes in Version 0.1.0.9235.002 (2019-10-28)
-==============================================
-
--   Updates for state of files as of COB 10-24.
-
-Changes in Version 0.1.0.9235.001 (2019-10-28)
-==============================================
-
--   New Branch on GitHub (201910\_Shiny\_SMC)
--   Roll back to 2019-10-24 close of business edits.
--   Keep branch code for Shiny app modifications while also have a branch for code edits. Will merge later.
-
-Changes in Version 0.1.0.9235 (2019-09-05)
-==========================================
+Changes in Version 0.1.0.9235 (2019-9-05)
+-----------------------------------------
 
 -   getStressorList, Issue \#82
     -   Add "DirIncStress" to chem.info (raw data).
@@ -141,31 +80,31 @@ Changes in Version 0.1.0.9235 (2019-09-05)
 -   getCoOccur, Issue \#82
     -   Update example to use data.chem.info$DirIncStress to get col.Stressors.InvSc input.
 
-Changes in Version 0.1.0.9234 (2019-09-05)
-==========================================
+Changes in Version 0.1.0.9234 (2019-9-05)
+-----------------------------------------
 
 -   getStressorList, Issue \#81
     -   File save, remove row names (line 372).
 
-Changes in Version 0.1.0.9233 (2019-09-05)
-==========================================
+Changes in Version 0.1.0.9233 (2019-9-05)
+-----------------------------------------
 
 -   getCoOccur
     -   Modify "pH" in defaults for col.Stressor.InvSc.
 
 Changes in Version 0.1.0.9232 (2019-07-11)
-==========================================
+------------------------------------------
 
 -   Shiny, map
     -   Update map data for SMC.
 
 Changes in Version 0.1.0.9231 (2019-07-11)
-==========================================
+------------------------------------------
 
 -   Shiny, map, 2 versions, COMID and SiteID
 
 Changes in Version 0.1.0.9230 (2019-06-26)
-==========================================
+------------------------------------------
 
 -   Working on Shiny app. Incomplete. Issue \#30.
     -   Renamed CAST\_v3 to CAST\_AZ
@@ -177,32 +116,32 @@ Changes in Version 0.1.0.9230 (2019-06-26)
     -   boo\_DEBUG for testings.
 
 Changes in Version 0.1.0.9229 (2019-06-24)
-==========================================
+------------------------------------------
 
 -   getClusterInfo, Issue \#76
     -   Add data.cluster as input parameter.
 
 Changes in Version 0.1.0.9229 (2019-06-24)
-==========================================
+------------------------------------------
 
 -   getClusterInfo, Issue \#80
     -   Add TargetSiteID as input parameter.
 
 Changes in Version 0.1.0.9228 (2019-06-24)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses, Issue \#79
     -   Suppress warnings for "predict".
 
 Changes in Version 0.1.0.9227 (2019-06-24)
-==========================================
+------------------------------------------
 
 -   Working on Shiny app. Incomplete. Issue \#30.
 -   getSiteInfo, Issue \#78
     -   Update code to use function variable map\_proj instead of example variable my.aea.
 
 Changes in Version 0.1.0.9226 (2019-06-06)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses, Issue \#75
     -   Modify lm() sections.
@@ -210,7 +149,7 @@ Changes in Version 0.1.0.9226 (2019-06-06)
         -   na.action inside of lm()
 
 Changes in Version 0.1.0.9225 (2019-06-06)
-==========================================
+------------------------------------------
 
 -   Update ShinyApp included in package, Issue \#30
     -   runShinyExample
@@ -228,12 +167,12 @@ Changes in Version 0.1.0.9225 (2019-06-06)
     -   getVerifiedPredictions
 
 Changes in Version 0.1.0.9224 (2019-05-31)
-==========================================
+------------------------------------------
 
 -   Add testing, Issue \#72.
 
 Changes in Version 0.1.0.9223 (2019-05-31)
-==========================================
+------------------------------------------
 
 -   runShinyExample, Issue 30
 -   Added additional Shiny Apps to the package.
@@ -243,7 +182,7 @@ Changes in Version 0.1.0.9223 (2019-05-31)
 -   Added parameter to function to run the different Shiny apps.
 
 Changes in Version 0.1.0.9222 (2019-05-20)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Modify scoring on box plot for DO and pH, Issue \#70
@@ -253,7 +192,7 @@ Changes in Version 0.1.0.9222 (2019-05-20)
     -   Modify scoring threshold quantiles on box plot.
 
 Changes in Version 0.1.0.9221 (2019-05-20)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Modify scores for SR plot (plot2), Issue \#71
@@ -263,14 +202,14 @@ Changes in Version 0.1.0.9221 (2019-05-20)
     -   Removed "StagedInstall: yes"
 
 Changes in Version 0.1.0.9220 (2019-05-16)
-==========================================
+------------------------------------------
 
 -   Changes for R 3.6.0 devtools, Issue \#65
     -   Readme
         -   Rebuild.
 
 Changes in Version 0.1.0.9219 (2019-05-16)
-==========================================
+------------------------------------------
 
 -   Changes for R 3.6.0 devtools, Issue \#65
     -   Readme
@@ -286,7 +225,7 @@ Changes in Version 0.1.0.9218 (2019-05-16)
         -   Updated badges, <https://github.com/Naereen/badges>
 
 Changes in Version 0.1.0.9217 (2019-05-16)
-==========================================
+------------------------------------------
 
 -   Changes for R 3.6.0 devtools, Issue \#65
     -   Need extra line for install from GitHub. Update readme.
@@ -296,7 +235,7 @@ Changes in Version 0.1.0.9217 (2019-05-16)
     -   <https://github.com/Naereen/badges>
 
 Changes in Version 0.1.0.9216 (2019-05-16)
-==========================================
+------------------------------------------
 
 -   Changes for R 3.6.0 staged install, Issue \#65
     -   Do not store package directory to any object. Always call with system.file.
@@ -308,14 +247,14 @@ Changes in Version 0.1.0.9216 (2019-05-16)
         -   pryr, removed from Suggests, used prior to conversion to all ggplot2 plots.
 
 Changes in Version 0.1.0.9215 (2019-05-16)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponse
     -   Modify correlation file output, Issue \#68
         -   Update QC check for new "n" column.
 
 Changes in Version 0.1.0.9214 (2019-05-15)
-==========================================
+------------------------------------------
 
 -   getVerifiedPredictions
     -   Add biocomm as input.
@@ -330,13 +269,13 @@ Changes in Version 0.1.0.9214 (2019-05-15)
         -   Correlations file, add "n".
 
 Changes in Version 0.1.0.9213 (2019-05-14)
-==========================================
+------------------------------------------
 
 -   getVerifiedPredictions
     -   Update description Value.
 
 Changes in Version 0.1.0.9212 (2019-05-13)
-==========================================
+------------------------------------------
 
 -   getVerifiedPredictions, Issue \#57
     -   Add "n" to plot in caption.
@@ -347,19 +286,19 @@ Changes in Version 0.1.0.9212 (2019-05-13)
     -   Error/stop message for no "worse" bio sites for comparison.
 
 Changes in Version 0.1.0.9211 (2019-05-10)
-==========================================
+------------------------------------------
 
 -   getVerifiedPredictions, Issue \#57
     -   Add better bio, degraded = no points to the plot
 
 Changes in Version 0.1.0.9210 (2019-05-09)
-==========================================
+------------------------------------------
 
 -   getReport fails, Issue \#67
     -   Update for changes in BioStressorResponses scores output, Issue \#58
 
 Changes in Version 0.1.0.9209 (2019-05-06)
-==========================================
+------------------------------------------
 
 -   Fixes after running "check" in RStudio.
     -   Add package reference to functions that are not base package functions.
@@ -383,7 +322,7 @@ Changes in Version 0.1.0.9209 (2019-05-06)
         -   StagedInstall: yes
 
 Changes in Version 0.1.0.9208 (2019-05-06)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponse, Issue \#58.
     -   2nd Score.
@@ -394,13 +333,13 @@ Changes in Version 0.1.0.9208 (2019-05-06)
         -   SRCKN001.61.SR.BMI.Scores.txt
 
 Changes in Version 0.1.0.9207 (2019-05-02)
-==========================================
+------------------------------------------
 
 -   getSSDplot
     -   Add na.rm=TRUE to ggplot references to avoid warning messages, Issue \#56.
 
 Changes in Version 0.1.0.9206 (2019-05-02)
-==========================================
+------------------------------------------
 
 -   R v3.6.0., StagedInstall, Issue \#65
     -   DESCRIPTION
@@ -413,7 +352,7 @@ Changes in Version 0.1.0.9206 (2019-05-02)
     -   Update leaflet map RMD with SiteInfo subdirectory for static map. Issue \#64
 
 Changes in Version 0.1.0.9205 (2019-05-01)
-==========================================
+------------------------------------------
 
 -   Shiny App, Issue \#30.
     -   Add COMID select with map.
@@ -421,7 +360,7 @@ Changes in Version 0.1.0.9205 (2019-05-01)
     -   Report and most functions.
 
 Changes in Version 0.1.0.9204 (2019-04-26)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Tweaks trying to find why fails for a user.
@@ -430,7 +369,7 @@ Changes in Version 0.1.0.9204 (2019-04-26)
         -   QC check on cor file header add "biocomm".
 
 Changes in Version 0.1.0.9203 (2019-04-25)
-==========================================
+------------------------------------------
 
 -   biocomm name on file scoring outputs, Issue \#64.
     -   getBioStressorResponses.
@@ -449,12 +388,12 @@ Changes in Version 0.1.0.9203 (2019-04-25)
 -   Add DT package to DESCRIPTION IMPORTS.
 
 Changes in Version 0.1.0.9202 (2019-04-25)
-==========================================
+------------------------------------------
 
 -   Remove function getRegPlotSet, Issue \#63.
 
 Changes in Version 0.1.0.9201 (2019-04-23)
-==========================================
+------------------------------------------
 
 -   Remove unused inputs, Issue \#60
     -   getVerifiedPredictions
@@ -465,26 +404,26 @@ Changes in Version 0.1.0.9201 (2019-04-23)
         -   varLegLoc
 
 Changes in Version 0.1.0.9200 (2019-04-23)
-==========================================
+------------------------------------------
 
 -   getVerifiedPredictions
     -   Make inputs more generic, Issue \#59
         -   "bmi" to "bio".
 
 Changes in Version 0.1.0.9199 (2019-04-23)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Example 2 (AZ) site to SRCKN001.61 to match other examples.
 
 Changes in Version 0.1.0.9198 (2019-04-23)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Scoring. No slope score to zero.
 
 Changes in Version 0.1.0.9197 (2019-04-23)
-==========================================
+------------------------------------------
 
 -   Declare "directory" as a required input.
     -   getStressorList
@@ -498,7 +437,7 @@ Changes in Version 0.1.0.9197 (2019-04-23)
     -   Update names in output.
 
 Changes in Version 0.1.0.9196 (2019-04-22)
-==========================================
+------------------------------------------
 
 -   getBioMatches
     -   Missing inputs:
@@ -514,7 +453,7 @@ Changes in Version 0.1.0.9196 (2019-04-22)
     -   CASTfxn\_Vignette.RMD
 
 Changes in Version 0.1.0.9195 (2019-04-22)
-==========================================
+------------------------------------------
 
 -   Rename getStressorSpecificRegressions to getVerifiedPredictions
     -   getStressorSpecificRegressions.R
@@ -524,65 +463,65 @@ Changes in Version 0.1.0.9195 (2019-04-22)
     -   Update examples for updates in functions.
 
 Changes in Version 0.1.0.9194 (2019-04-22)
-==========================================
+------------------------------------------
 
 -   Remove old deprecated functions.
 
 Changes in Version 0.1.0.9193 (2019-04-18)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Set minimum number of cluster samples 3 rather than 1.
         -   predict and corr.test were failing with only 2 records.
 
 Changes in Version 0.1.0.9192 (2019-04-18)
-==========================================
+------------------------------------------
 
 -   getCoOccur
 -   Allow for special characters (e.g., %) in stressors.
 -   Error message for stressors not in input data.
 
 Changes in Version 0.1.0.9191 (2019-04-17)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Attempt to remove warning messages from plot 1 (p1).
         -   If skip geom\_jitter the plot is missing parts so leave alone.
 
 Changes in Version 0.1.0.9190 (2019-04-17)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Update regression plot with 2nd regression line. Issue \#55.
 
 Changes in Version 0.1.0.9189 (2019-04-16)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Unwind removing Stressor plot. Keep for now. Issue \#54.
     -   Make edits to p2 to avoid warnings; Issue \#56.
 
 Changes in Version 0.1.0.9188 (2019-04-16)
-==========================================
+------------------------------------------
 
 -   Add na.rm=TRUE to ggplot statements to avoid warnings; Issue \#56.
     -   getCoOccur
 
 Changes in Version 0.1.0.9187 (2019-04-16)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Remove stressor plot (p2). Issue \#54
 
 Changes in Version 0.1.0.9186 (2019-04-15)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Fix 'df.corr' object not found.
         -   Previously renamed df.corr to df.corr\_cl. Missed a reference.
 
 Changes in Version 0.1.0.9185 (2019-04-15)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   NA for stressor values.
@@ -591,7 +530,7 @@ Changes in Version 0.1.0.9185 (2019-04-15)
         -   Message to console.
 
 Changes in Version 0.1.0.9184 (2019-04-12)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Minor edits to 0.1.0.9083 changes (r2).
@@ -600,26 +539,26 @@ Changes in Version 0.1.0.9184 (2019-04-12)
         -   Warning for those requested but missing from data.
 
 Changes in Version 0.1.0.9183 (2019-04-12)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Modify linear regression plot, Issue \#55.
     -   Incomplete. Still need 2nd regression for just the cluster.
 
 Changes in Version 0.1.0.9182 (2019-04-12)
-==========================================
+------------------------------------------
 
 -   Move the SR plot from getCoOccur to getBioStressorResponses, Issue \#54.
     -   Prepare code, did not make changes.
 
 Changes in Version 0.1.0.9181 (2019-04-12)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Update stop message for no response data.
 
 Changes in Version 0.1.0.9180 (2019-04-12)
-==========================================
+------------------------------------------
 
 -   make.names; undo edits for TargetSiteID in names for folders and files.
     -   Some start with numbers and that is ok.
@@ -632,7 +571,7 @@ Changes in Version 0.1.0.9180 (2019-04-12)
     -   Boxplot not saving to TargetSiteID folder (line 414).
 
 Changes in Version 0.1.0.9179 (2019-04-11)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Line 262-267 QC check failed.
@@ -644,13 +583,13 @@ Changes in Version 0.1.0.9179 (2019-04-11)
     -   getClusterInfo
 
 Changes in Version 0.1.0.9178 (2019-03-22)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   End if no site response data (list.MatchBioData$site.a.rsp).
 
 Changes in Version 0.1.0.9177 (2019-03-22)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   End message for no data rather than error crash.
@@ -660,38 +599,38 @@ Changes in Version 0.1.0.9177 (2019-03-22)
     -   Example, remove "c" from col.ID.
 
 Changes in Version 0.1.0.9176 (2019-03-21)
-==========================================
+------------------------------------------
 
 -   Report\_Results\_summary
     -   lines 155-175, SR.BMI.Scores. read statement corrected.
 
 Changes in Version 0.1.0.9175 (2019-03-21)
-==========================================
+------------------------------------------
 
 -   Report\_Results\_summary
     -   lines 132-152, SR.BMI.Corrs. read statement corrected.
 
 Changes in Version 0.1.0.9174 (2019-03-15)
-==========================================
+------------------------------------------
 
 -   Report\_Results\_summary
     -   Update show CoOccur for uneven box and SR plots.
 
 Changes in Version 0.1.0.9173 (2019-03-15)
-==========================================
+------------------------------------------
 
 -   Report\_Results\_summary
     -   Show SSTV plots.
     -   Update show CoOccur for no data.
 
 Changes in Version 0.1.0.9172 (2019-03-15)
-==========================================
+------------------------------------------
 
 -   Report\_Results\_summary
     -   Show CoOccurrence plots.
 
 Changes in Version 0.1.0.9171 (2019-03-13)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Modify QC check for header for correlation plot data.
@@ -700,13 +639,13 @@ Changes in Version 0.1.0.9171 (2019-03-13)
     -   Make same modification as getBioStressorResponses.
 
 Changes in Version 0.1.0.9171 (2019-03-13)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
 -   Add QC check for header for correlation plot data.
 
 Changes in Version 0.1.0.9170 (2019-03-11)
-==========================================
+------------------------------------------
 
 -   getStressorSpecificRegressions
     -   Add ref.sites as a required input parameter.
@@ -715,7 +654,7 @@ Changes in Version 0.1.0.9170 (2019-03-11)
     -   Report\_Results\_summary.rmd
 
 Changes in Version 0.1.0.9169 (2019-03-11)
-==========================================
+------------------------------------------
 
 -   Assign cluster in "algae" example.
 -   getBioStressorResponses
@@ -727,7 +666,7 @@ Changes in Version 0.1.0.9169 (2019-03-11)
         -   Update dcast statement to include fun.aggregate = mean.
 
 Changes in Version 0.1.0.9168 (2019-03-08)
-==========================================
+------------------------------------------
 
 -   Modify QC procedures for plotting missing categories of data.
     -   getStressorRef
@@ -736,7 +675,7 @@ Changes in Version 0.1.0.9168 (2019-03-08)
     -   getBioStressorResponses
 
 Changes in Version 0.1.0.9167 (2019-03-08)
-==========================================
+------------------------------------------
 
 -   Assign data.cluster based on information in data\_Sites.
     -   Modify examples in each function.
@@ -749,7 +688,7 @@ Changes in Version 0.1.0.9167 (2019-03-08)
         -   getStressorSpecificRegressions
 
 Changes in Version 0.1.0.9166 (2019-03-07)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Fix errors from testing.
@@ -758,14 +697,14 @@ Changes in Version 0.1.0.9166 (2019-03-07)
         -   Output item message for ones skipped.
 
 Changes in Version 0.1.0.9165 (2019-03-05)
-==========================================
+------------------------------------------
 
 -   getStressorList
     -   Fails when have no reference sites.
         -   Change trigger for plotting ref sites.
 
 Changes in Version 0.1.0.9164 (2019-03-05)
-==========================================
+------------------------------------------
 
 -   getStressorSpecificRegressions.R
     -   Revised plot output. Issue \#50 and 44.
@@ -786,13 +725,13 @@ Changes in Version 0.1.0.9164 (2019-03-05)
     -   Move pryr package from imports to suggests. Issue \#52.
 
 Changes in Version 0.1.0.9163 (2019-02-26)
-==========================================
+------------------------------------------
 
 -   getClusterInfo.R
     -   Fix y-axis label the same for all plots, Issue \#48.
 
 Changes in Version 0.1.0.9162 (2019-02-19)
-==========================================
+------------------------------------------
 
 -   getStressorSpecificRegressions.
     -   ggplot graphics, Issue \#41.
@@ -800,7 +739,7 @@ Changes in Version 0.1.0.9162 (2019-02-19)
     -   Other changes proposed to this function.
 
 Changes in Version 0.1.0.9161 (2019-02-18)
-==========================================
+------------------------------------------
 
 -   Add geom\_blank for ggplots where may not have a data group (e.g., cluster ref).
 -   Use same structure as in getBioStressorResponses.
@@ -808,51 +747,51 @@ Changes in Version 0.1.0.9161 (2019-02-18)
     -   getClusterInfo
 
 Changes in Version 0.1.0.9160 (2019-02-15)
-==========================================
+------------------------------------------
 
 -   getStressorList
     -   Change "box" plots to ggplot. Issue \#41.
     -   Remove importFrom pryr "%&lt;a-%".
 
 Changes in Version 0.1.0.9159 (2019-02-15)
-==========================================
+------------------------------------------
 
 -   getRegPlotSet
     -   Mark functions as keyword internal so not in the help list
 
 Changes in Version 0.1.0.9158 (2019-02-15)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses
     -   Remove importFrom pryr "%&lt;a-%".
         -   No longer needed with gglot graphics.
 
 Changes in Version 0.1.0.9157 (2019-02-15)
-==========================================
+------------------------------------------
 
 -   getClusterInfo
     -   Updated plot title to match old graphic. Issue \#41.
 
 Changes in Version 0.1.0.9156 (2019-02-14)
-==========================================
+------------------------------------------
 
 -   getClusterInfo
     -   Convert to ggplot. Issue \#41.
 
 Changes in Version 0.1.0.9155 (2019-02-14)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponse
     -   Fix plot error when missing a subset of data. Issue \#43.
 
 Changes in Version 0.1.0.9154 (2019-02-11)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponse
     -   Fix PDF output after conversion to ggplot.
 
 Changes in Version 0.1.0.9153 (2019-02-08)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponse
     -   Add ref.sites as an input.
@@ -860,20 +799,20 @@ Changes in Version 0.1.0.9153 (2019-02-08)
     -   Edit code for clarity
 
 Changes in Version 0.1.0.9152 (2019-02-07)
-==========================================
+------------------------------------------
 
 -   getClusterInfo
     -   Fixed siteClusters v. site.Clusters as a parameter.
 
 Changes in Version 0.1.0.9151 (2019-02-07)
-==========================================
+------------------------------------------
 
 -   getBioStressorResponses, Issue \#7
     -   Convert plot to ggplot
         -   Test mode so not active.
 
 Changes in Version 0.1.0.9150 (2019-02-06)
-==========================================
+------------------------------------------
 
 -   getSiteInfo, Issue \#32 and Issue \#4
     -   Add required objects to function input arguments.
@@ -898,7 +837,7 @@ Changes in Version 0.1.0.9150 (2019-02-06)
         -   Map takes 10 to 15 seconds with ggplot.
 
 Changes in Version 0.1.0.9149 (2019-02-06)
-==========================================
+------------------------------------------
 
 -   getStressorList
     -   Error with NA reporting. Issue \#38.
@@ -915,21 +854,21 @@ Changes in Version 0.1.0.9149 (2019-02-06)
     -   getStressorSpecificRegressions
 
 Changes in Version 0.1.0.9148 (2019-02-05)
-==========================================
+------------------------------------------
 
 -   Merget getBMIStressorRespones and getAlgStressorResponses into a single function, Issue \#34
     -   getBioStressorResponses
     -   Deprecated BMI and Alg version with keyword internal.
 
 Changes in Version 0.1.0.9147 (2019-02-05)
-==========================================
+------------------------------------------
 
 -   Merge getBMIMatches and getAlgMatches into single function, Issue \#33.
     -   getBioMatches
     -   Deprecated BMI and Alg version with keyword internal.
 
 Changes in Version 0.1.0.9146 (2019-02-04)
-==========================================
+------------------------------------------
 
 -   Remove clustertype, Issue \#31
     -   Function inputs.
@@ -951,7 +890,7 @@ Changes in Version 0.1.0.9146 (2019-02-04)
         -   Analysis
 
 Changes in Version 0.1.0.9145 (2019-02-04)
-==========================================
+------------------------------------------
 
 -   Remove useLU, Issue \#31
     -   Function inputs.
@@ -974,12 +913,12 @@ Changes in Version 0.1.0.9145 (2019-02-04)
         -   Analysis
 
 Changes in Version 0.1.0.9144 (2019-02-01)
-==========================================
+------------------------------------------
 
 -   Add shiny to DESCRIPTION
 
 Changes in Version 0.1.0.9143 (2019-02-01)
-==========================================
+------------------------------------------
 
 -   Add Shiny. Issue \#30.
     -   Added demo app (default, not CAST).
@@ -987,14 +926,14 @@ Changes in Version 0.1.0.9143 (2019-02-01)
         -   Includes links in help file to Shiny.io app online.
 
 Changes in Version 0.1.0.9142 (2019-02-01)
-==========================================
+------------------------------------------
 
 -   getCoOccur.R, Issue \#25
     -   Add individual plots as jpg.
         -   Use ggsave instead of jpeg (as with other functions).
 
 Changes in Version 0.1.0.9141 (2019-01-31)
-==========================================
+------------------------------------------
 
 -   getCoOccur.R, Issue \#25
     -   Details
@@ -1023,7 +962,7 @@ Changes in Version 0.1.0.9141 (2019-01-31)
     -   Add data\_CoOccur\_AZ\_Hi
 
 Changes in Version 0.1.0.9140 (2019-01-24)
-==========================================
+------------------------------------------
 
 -   getCoOccur.R, Issue \#25
     -   Add debugging.
@@ -1038,14 +977,14 @@ Changes in Version 0.1.0.9140 (2019-01-24)
         -   Update points and legend to match box plot.
 
 Changes in Version 0.1.0.9139 (2019-01-18)
-==========================================
+------------------------------------------
 
 -   Overall Report
     -   getReport.R
     -   inst/rmd/Report\_Results\_overall.rmd
 
 Changes in Version 0.1.0.9138 (2019-01-17)
-==========================================
+------------------------------------------
 
 -   getReport
     -   Modified QC check for "summary" report.
@@ -1054,32 +993,32 @@ Changes in Version 0.1.0.9138 (2019-01-17)
     -   BMI.SR plots show all with p value &lt; 0.05.
 
 Changes in Version 0.1.0.9137 (2019-01-11)
-==========================================
+------------------------------------------
 
 -   Update logtransf, Issue \#23
     -   getStressorSpecificResponses
         -   Slightly different code. Use example from getStressorList.
 
 Changes in Version 0.1.0.9136 (2019-01-10)
-==========================================
+------------------------------------------
 
 -   Update logtransf, Issue \#23
     -   getAlgStressorResponses
     -   getBMIStressorResponses
 
 Changes in Version 0.1.0.9135 (2019-01-10)
-==========================================
+------------------------------------------
 
 -   getStressorList
     -   Add LogTransf to output. Issue \#23
 
 Changes in Version 0.1.0.9134 (2019-01-10)
-==========================================
+------------------------------------------
 
 -   Misnumbered v0.1.0.9033 as 9032
 
 Changes in Version 0.1.0.9133 (2019-01-10)
-==========================================
+------------------------------------------
 
 -   getBMIStressorResponses
     -   Ensure certain variables are not log transformed. Issue \#24.
@@ -1087,38 +1026,38 @@ Changes in Version 0.1.0.9133 (2019-01-10)
     -   Tweak plot output from changes made in previous update. Issue \#23
 
 Changes in Version 0.1.0.9132 (2019-01-10)
-==========================================
+------------------------------------------
 
 -   getBMIStressorResponses
     -   Fix duplicate output to console. Issue \#23.
 
 Changes in Version 0.1.0.9131 (2019-01-07)
-==========================================
+------------------------------------------
 
 -   getSiteInfo
     -   Map\_Leaflet.rmd missing
     -   inst/RMD was mistakenly in .gitignore
 
 Changes in Version 0.1.0.9130 (2018-12-18)
-==========================================
+------------------------------------------
 
 -   getSiteInfo
     -   Add a leaflet map output as HTML (R Notebook).
 
 Changes in Version 0.1.0.9129 (2018-12-18)
-==========================================
+------------------------------------------
 
 -   getAlgStressorResponses
     -   Add PDF of plots.
 
 Changes in Version 0.1.0.9128 (2018-12-18)
-==========================================
+------------------------------------------
 
 -   Update getReport template RMD for Algae corrplot.
     -   \_Results\_summary.rmd
 
 Changes in Version 0.1.0.9127 (2018-12-18)
-==========================================
+------------------------------------------
 
 -   Update data documentation
     -   data\_AlgCounts
@@ -1129,7 +1068,7 @@ Changes in Version 0.1.0.9127 (2018-12-18)
     -   Alg.Metrics.SampID to Algae.Metrics.SampID
 
 Changes in Version 0.1.0.9126 (2018-12-14)
-==========================================
+------------------------------------------
 
 -   getAlgStressorResponses
     -   Update with changes made to getBMIStressorResponses
@@ -1139,7 +1078,7 @@ Changes in Version 0.1.0.9126 (2018-12-14)
     -   data\_Algcounts
 
 Changes in Version 0.1.0.9125 (2018-12-14)
-==========================================
+------------------------------------------
 
 -   Vignette Update
     -   CASTfxn
@@ -1152,7 +1091,7 @@ Changes in Version 0.1.0.9125 (2018-12-14)
     -   getAlgStressorResponses.R
 
 Changes in Version 0.1.0.9124 (2018-12-13)
-==========================================
+------------------------------------------
 
 -   getSSDplot
     -   Add example to save created plot.
@@ -1160,7 +1099,7 @@ Changes in Version 0.1.0.9124 (2018-12-13)
     -   Tweak summary report for names change of SSTV correlations file.
 
 Changes in Version 0.1.0.9123 (2018-12-12)
-==========================================
+------------------------------------------
 
 -   getStressorSpecificRegressions
     -   Modify inputs.
@@ -1173,7 +1112,7 @@ Changes in Version 0.1.0.9123 (2018-12-12)
     -   Data description.
 
 Changes in Version 0.1.0.9122 (2018-12-11)
-==========================================
+------------------------------------------
 
 -   getBMIStressors
     -   Update input variables.
@@ -1182,13 +1121,13 @@ Changes in Version 0.1.0.9122 (2018-12-11)
     -   Update for change in text file outputs from getBMIStressors.
 
 Changes in Version 0.1.0.9121 (2018-12-10)
-==========================================
+------------------------------------------
 
 -   getBMIStressors
     -   Fix error in df.CorrTable creation.
 
 Changes in Version 0.1.0.9120 (2018-12-06)
-==========================================
+------------------------------------------
 
 -   Modify plots to output a combined PDF as well as individual JPG files. Issue \#19.
     -   .SSTV.
@@ -1202,14 +1141,14 @@ Changes in Version 0.1.0.9120 (2018-12-06)
     -   getAlgStressorResponses
 
 Changes in Version 0.1.0.9119 (2018-12-06)
-==========================================
+------------------------------------------
 
 -   Modify plots to output a combined PDF as well as individual JPG files. Issue \#19.
     -   .SR.BMI.
         -   getBMIStressorResponse
 
 Changes in Version 0.1.0.9119 (2018-12-06)
-==========================================
+------------------------------------------
 
 -   Modify plots to output a combined PDF as well as individual JPG files. Issue \#19.
     -   .cluster.
@@ -1222,7 +1161,7 @@ Changes in Version 0.1.0.9119 (2018-12-06)
         -   getStressorSpecificRegressions
 
 Changes in Version 0.1.0.9118 (2018-12-06)
-==========================================
+------------------------------------------
 
 -   Modify plots to output a combined PDF as well as individual JPG files. Issue \#19.
     -   .boxes.
@@ -1230,7 +1169,7 @@ Changes in Version 0.1.0.9118 (2018-12-06)
 -   Added pryr package to aid in capture of plots for use in PDF output.
 
 Changes in Version 0.1.0.9117 (2018-12-05)
-==========================================
+------------------------------------------
 
 -   Report
     -   Add CoOccurrence table.
@@ -1239,7 +1178,7 @@ Changes in Version 0.1.0.9117 (2018-12-05)
         -   Stop message for "all" report.
 
 Changes in Version 0.1.0.9116 (2018-12-05)
-==========================================
+------------------------------------------
 
 -   getReport
     -   Modify summary report to check if file exists
@@ -1249,7 +1188,7 @@ Changes in Version 0.1.0.9116 (2018-12-05)
     -   TSV to TXT for scores to match other data file outputs.
 
 Changes in Version 0.1.0.9115 (2018-11-13)
-==========================================
+------------------------------------------
 
 -   getReport
     -   Function to output report.
@@ -1260,44 +1199,44 @@ Changes in Version 0.1.0.9115 (2018-11-13)
     -   Add rmarkdown to IMPORTS
 
 Changes in Version 0.1.0.9114 (2018-11-12)
-==========================================
+------------------------------------------
 
 -   getBMIStressorResponses
     -   Update jpg file name output. Issue \#16.
         -   Missing "dot" between SiteID and BMI.SR.
 
 Changes in Version 0.1.0.9113 (2018-11-12)
-==========================================
+------------------------------------------
 
 -   Report\_Results.rmd
     -   New results report.
 
 Changes in Version 0.1.0.9112 (2018-10-17)
-==========================================
+------------------------------------------
 
 -   data.R
     -   Remove non-ASCII characters so the package will build properly.
     -   Chemical names and units combinations were the culprit; n=334.
 
 Changes in Version 0.1.0.9111 (2018-10-17)
-==========================================
+------------------------------------------
 
 -   Elevation Vignette.
 
 Changes in Version 0.1.0.9110 (2018-10-16)
-==========================================
+------------------------------------------
 
 -   data.R
     -   data\_SSD\_generator, correct typo. Issue \#11.
     -   Add more details to other data sets.
 
 Changes in Version 0.1.0.9109 (2018-10-16)
-==========================================
+------------------------------------------
 
 -   Add getElev function.
 
 Changes in Version 0.1.0.9108 (2018-10-10)
-==========================================
+------------------------------------------
 
 -   Vignette.
     -   Fix errors.
@@ -1316,7 +1255,7 @@ Changes in Version 0.1.0.9108 (2018-10-10)
         -   Category
 
 Changes in Version 0.1.0.9107 (2018-10-10)
-==========================================
+------------------------------------------
 
 -   getSiteInfo
     -   Add user defined "Results" folder. Issue \#13
@@ -1324,7 +1263,7 @@ Changes in Version 0.1.0.9107 (2018-10-10)
     -   Makes the function more generic. Issue \#4
 
 Changes in Version 0.1.0.9106 (2018-10-10)
-==========================================
+------------------------------------------
 
 -   Merged Vignette branch (v0.1.0.9104) in previous committ (0.1.0.9105).
 -   Added project to TravisCI.
@@ -1332,13 +1271,13 @@ Changes in Version 0.1.0.9106 (2018-10-10)
     -   Add badges.
 
 Changes in Version 0.1.0.9104 (2018-08-02)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Update save directory code.
 
 Changes in Version 0.1.0.9103 (2018-08-02)
-==========================================
+------------------------------------------
 
 -   DESCRIPTION
     -   Add authors in plain text
@@ -1353,7 +1292,7 @@ Changes in Version 0.1.0.9103 (2018-08-02)
     -   Added ".cluster." after SiteID to output plot names.
 
 Changes in Version 0.1.0.9102 (2018-07-11)
-==========================================
+------------------------------------------
 
 -   getBMIStressorResponses
     -   More detailed console message.
@@ -1362,14 +1301,14 @@ Changes in Version 0.1.0.9102 (2018-07-11)
     -   Fix error with inset value for legend by using as.numeric.
 
 Changes in Version 0.1.0.9101 (2018-07-10)
-==========================================
+------------------------------------------
 
 -   getClusterInfo
     -   Add QC print output to code.
     -   Added QC check to ensure Y data for box plot is not all NA or is not non-numeric.
 
 Changes in Version 0.1.0.9100 (2018-07-10)
-==========================================
+------------------------------------------
 
 -   Use Ann's fork of CASTfxn as basis for fork in my repository.
 -   Jumping ahead to version "9100" to differentiate.
@@ -1394,7 +1333,7 @@ Changes in Version 0.1.0.9100 (2018-07-10)
 -   Will need to follow up with examples in other functions.
 
 Changes in Version 0.1.0.9044 (2017-06-22)
-==========================================
+------------------------------------------
 
 -   Add dataset "data\_Cluster\_Lo".
     -   Add to data-raw and to data.R
@@ -1421,33 +1360,33 @@ Changes in Version 0.1.0.9044 (2017-06-22)
     -   data\_SSD\_permethrin
 
 Changes in Version 0.1.0.9043 (2017-06-21)
-==========================================
+------------------------------------------
 
 -   getBMIStressorResponses
     -   Review for scoring.
     -   Change loop variable from r to q to avoid conflict with r and r2.
 
 Changes in Version 0.1.0.9042 (2017-06-21)
-==========================================
+------------------------------------------
 
 -   getCoOccur
     -   Fix help file with too wide text.
 
 Changes in Version 0.1.0.9041 (2017-06-21)
-==========================================
+------------------------------------------
 
 -   getSSDplot examples.
     -   Assign return plots to variables.
     -   Additional example to demonstrate adding points to the plot.
 
 Changes in Version 0.1.0.9040 (2017-06-21)
-==========================================
+------------------------------------------
 
 -   Scoring output.
     -   getCoOccur
 
 Changes in Version 0.1.0.9039 (2017-06-20)
-==========================================
+------------------------------------------
 
 -   Rename 2 functions with "get" to match others.
     -   CoOccur
@@ -1455,7 +1394,7 @@ Changes in Version 0.1.0.9039 (2017-06-20)
     -   Update vignette.
 
 Changes in Version 0.1.0.9038 (2017-06-20)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getStressorSpecificRegressions
@@ -1467,44 +1406,44 @@ Changes in Version 0.1.0.9038 (2017-06-20)
     -   Data for data.SSTV.totabund in getStressorSpecificRegressions.
 
 Changes in Version 0.1.0.9037 (2017-06-16)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getAlgStressorReponses
 
 Changes in Version 0.1.0.9036 (2017-06-16)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getAlgMatches
 
 Changes in Version 0.1.0.9035 (2017-06-16)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getStressorSpecificRegressions
     -   Need input file data.SSTV.totabund
 
 Changes in Version 0.1.0.9034 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getBMIStressorResponses
 
 Changes in Version 0.1.0.9033 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getBMImatches
 
 Changes in Version 0.1.0.9032 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getClusterInfo
 
 Changes in Version 0.1.0.9031 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getStressorList
@@ -1518,7 +1457,7 @@ Changes in Version 0.1.0.9031 (2017-06-15)
     -   getStressorSpecificRegressions
 
 Changes in Version 0.1.0.9030 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Update examples. Issue \#5.
     -   getChemDataSubsets
@@ -1528,7 +1467,7 @@ Changes in Version 0.1.0.9030 (2017-06-15)
     -   data\_Cluster\_Hi
 
 Changes in Version 0.1.0.9029 (2017-06-15)
-==========================================
+------------------------------------------
 
 -   Add vignette.
     -   Add package `imager` to Suggests in DESCRIPTION.
@@ -1536,7 +1475,7 @@ Changes in Version 0.1.0.9029 (2017-06-15)
     -   getSiteInfo function.
 
 Changes in Version 0.1.0.9028 (2017-06-14)
-==========================================
+------------------------------------------
 
 -   GIS data.
     -   Standardize projection for GIS layers.
@@ -1557,7 +1496,7 @@ Changes in Version 0.1.0.9028 (2017-06-14)
     -   Modify reference to match code.
 
 Changes in Version 0.1.0.9027 (2017-06-14)
-==========================================
+------------------------------------------
 
 -   Add GIS data.
     -   data.R
@@ -1575,14 +1514,14 @@ Changes in Version 0.1.0.9027 (2017-06-14)
     -   data\_Chem
 
 Changes in Version 0.1.0.9026 (2017-06-12)
-==========================================
+------------------------------------------
 
 -   Add data\_BMIcounts.
     -   Update data.R.
     -   Update getStressorSpecificRegressions example.
 
 Changes in Version 0.1.0.9025 (2017-06-12)
-==========================================
+------------------------------------------
 
 -   Modify examples for TargetSite and getSiteInfo. Issue \#5
     -   getAlgmatches, getAlgStressorResponses, getBMImatches, getBMIStressorResponses , getClusterInfo, getStressorList, getStressorSpecificRegressions.
@@ -1590,14 +1529,14 @@ Changes in Version 0.1.0.9025 (2017-06-12)
     -   getAlgmatches, getBMImatches, getClusterInfo, getStressorSpecificRegressions
 
 Changes in Version 0.1.0.9024 (2017-06-12)
-==========================================
+------------------------------------------
 
 -   getChemDataSubset
     -   default useLU to FALSE.
     -   Error if no cluster information. Added "stop" condition.
 
 Changes in Version 0.1.0.9023 (2017-06-11)
-==========================================
+------------------------------------------
 
 -   Update example in getChemDataSubset. Issue \#5.
     -   Create data\_ChemInfo
@@ -1605,7 +1544,7 @@ Changes in Version 0.1.0.9023 (2017-06-11)
     -   Remove "dontrun" in example.
 
 Changes in Version 0.1.0.9022 (2017-06-11)
-==========================================
+------------------------------------------
 
 -   Add AZ data to "data-raw" and "data". Issue \#5.
 -   getSiteInfo.R
@@ -1614,7 +1553,7 @@ Changes in Version 0.1.0.9022 (2017-06-11)
     -   Turn off "donotrun" in example.
 
 Changes in Version 0.1.0.9021 (2017-06-08)
-==========================================
+------------------------------------------
 
 -   Add data requirements to "get" functions in the "details" section.
     -   Include column names for required imports
@@ -1637,7 +1576,7 @@ Changes in Version 0.1.0.9019 (2017-06-07)
 -   Modify format of NEWS file. Issue \#1.
 
 Changes in Version 0.1.0.9018 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Check issues addressed:
     -   Depends R &gt;= 2.1.0
@@ -1652,7 +1591,7 @@ Changes in Version 0.1.0.9018 (2017-06-06)
     -   Modify text; font size and justification
 
 Changes in Version 0.1.0.9017 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Update functions for package dependencies, e.g., readOGR to rgdal::readOGR.
     -   getSiteInfo; rgdal
@@ -1660,65 +1599,65 @@ Changes in Version 0.1.0.9017 (2017-06-06)
     -   getStressorList; dplyr
 
 Changes in Version 0.1.0.9016 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Rename SSD function to SSDplot due to conflict with stats::SSD.
 -   Update CASTfxn.R for function name change.
 
 Changes in Version 0.1.0.9015 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Fix StressorList return value. Issue \#2.
 
 Changes in Version 0.1.0.9014 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Fix SSD function. Issue \#3.
 
 Changes in Version 0.1.0.9013 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add CASTfxn.R so the package has a help file.
 
 Changes in Version 0.1.0.9012 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getStressorSpecificRegressions.
 
 Changes in Version 0.1.0.9011 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getAlgStressorResponses.
 
 Changes in Version 0.1.0.9010 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getBMIStressorResponses.
 
 Changes in Version 0.1.0.9009 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getBMImatches.
 
 Changes in Version 0.1.0.9008 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getStressorList.
 
 Changes in Version 0.1.0.9007 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getClusterInfo.
 -   SSD.R
     -   Remove "conf=0.95" from qnorm function.
 
 Changes in Version 0.1.0.9006 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getChemDataSubsets.
 
 Changes in Version 0.1.0.9005 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   Add function getSiteInfo.
 -   Add Imports to DESCRIPTION.
@@ -1732,14 +1671,14 @@ Changes in Version 0.1.0.9005 (2017-06-06)
     -   RgoogleMaps
 
 Changes in Version 0.1.0.9004 (2017-06-06)
-==========================================
+------------------------------------------
 
 -   CoOccur function.
     -   Update example. Remove 2nd Stressors line.
     -   Update details from Sue Norton presentation 2017-06-05.
 
 Changes in Version 0.1.0.9003 (2017-06-05)
-==========================================
+------------------------------------------
 
 -   SSD function, non-functional at this point
     -   raw data
@@ -1756,12 +1695,12 @@ Changes in Version 0.1.0.9003 (2017-06-05)
     -   data.R, add description of data
 
 Changes in Version 0.1.0.9002 (2017-05-27)
-==========================================
+------------------------------------------
 
 -   Knit README.RMD so README.md will display on GitHub.
 
 Changes in Version 0.1.0.9001 (2017-05-27)
-==========================================
+------------------------------------------
 
 -   Added basic package structure.
     -   Folders (data, data-raw, inst/doc, inst/extdata, man, R, vignettes)
@@ -1769,6 +1708,6 @@ Changes in Version 0.1.0.9001 (2017-05-27)
 -   Update DESCRIPTION, NEWS, and README
 
 Changes in Version 0.1.0 (2017-05-27)
-=====================================
+-------------------------------------
 
 -   Initial commit on GitHub.
