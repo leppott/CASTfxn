@@ -4,8 +4,15 @@
 \alias{getBioMatches}
 \title{Biological and Chemistry data matches.}
 \usage{
-getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary,
-  data.chem.raw, data.bio.metrics, biocomm = "BMI")
+getBioMatches(
+  stressors,
+  list.data,
+  list.SiteSummary,
+  data.SampSummary,
+  data.chem.raw,
+  data.bio.metrics,
+  biocomm = "BMI"
+)
 }
 \arguments{
 \item{stressors}{stressors}

@@ -3,7 +3,6 @@
 \docType{package}
 \name{CASTfxn}
 \alias{CASTfxn}
-\alias{CASTfxn-package}
 \title{CASTfxn: functions for Causal Assessment Screening Tool (CAST)}
 \description{
 Custom functions for CAST.

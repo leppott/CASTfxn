@@ -38,15 +38,16 @@ Imports: corrplot,
   reshape2,
   rgdal, 
   rgeos, 
-  RgoogleMaps, 
   shiny, 
+  shinyFiles,
   shinyjs,
   sp,
   stats,
   stringr,
+  tidyr, 
   utils, 
   wrapr 
 Suggests: 
     imager,
     testthat
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
