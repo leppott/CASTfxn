@@ -37,6 +37,9 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9240 (2020-01-27)
+
+* Create new package after merging branches and resolving conflicts.
 
 ## Changes in Version 0.1.0.9239 (2019-10-07, ARL)
 * General

@@ -6,13 +6,13 @@
 \usage{
 getVerifiedPredictions(
   TargetSiteID,
-  data.SampSummary,
-  data.bio.taxa.raw,
-  data.chem.info,
-  data.SSTV.totabund,
-  data.MT.bio,
+  SSTVanalytes,
+  colBioSample,
+  stressors,
+  stressorInfo,
+  dataBioTaxa,
+  dataMasterTaxa,
   matchedData,
-  ref.sites,
   BioIndex_Val = "IBI",
   BioIndex_Nar = "NarRat",
   BioIndex_Nar_Deg = "Violates",
@@ -24,19 +24,11 @@ getVerifiedPredictions(
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{data.SampSummary}{x}
+\item{dataBioTaxa}{x}
 
-\item{data.bio.taxa.raw}{x}
-
-\item{data.chem.info}{x}
-
-\item{data.SSTV.totabund}{x}
-
-\item{data.MT.bio}{Master Taxa list for biological data}
+\item{dataMasterTaxa}{Master Taxa list for biological data}
 
 \item{matchedData}{matched biological and chemical stressor data.}
-
-\item{ref.sites}{Vector of reference sites IDs.}
 
 \item{BioIndex_Val}{Column name for biological index value; list.MatchBioData$site.b.rsp}
 
@@ -49,6 +41,14 @@ getVerifiedPredictions(
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "VerifiedPredictions"}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+
+\item{data.SampSummary}{x}
+
+\item{data_stressInfo}{x}
+
+\item{data.SSTV.totabund}{x}
+
+\item{ref.sites}{Vector of reference sites IDs.}
 }
 \value{
 Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
@@ -60,13 +60,13 @@ Get verified predictions.
 \details{
 Required objects:
 
-* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
+* data.SampSummary; StationID_Master, CollDate, StressSampID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
 
-* data.bio.taxa.raw; BMI.Metrics.SampID
+* dataBioTaxa; BMISampID
 
-* data.chem.info; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
+* data_stressInfo; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
 
-* data.SSTV.totabund; BMI.Metrics.SampID, StationID_Master, ChemSampleID, SSTV.analyte
+* data.SSTV.totabund; BMISampID, StationID_Master, StressSampID, SSTV.analyte
 , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
 
 * TargetSiteID
@@ -83,7 +83,7 @@ data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
 data.algae.metrics <- data_AlgMetrics
 data.mod           <- data_ReachMod
-data.MT.bio        <- data_BMIMasterTaxa
+dataMasterTaxa        <- data_BMIMasterTaxa
 
 # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
 elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
@@ -129,14 +129,14 @@ list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 # Data getChemDataSubsets
 # data, example included with package
 data.chem.raw  <- data_Chem
-data.chem.info <- data_ChemInfo
+data_stressInfo <- data_ChemInfo
 site.COMID     <- list.SiteSummary$COMID
 site.Clusters  <- list.SiteSummary$ClustIDs
 
 # Run getChemDataSubsets
 list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
+                                , data.chem.raw=data.chem.raw, data_stressInfo=data_stressInfo)
 
 # Data getStressorList
 chem.info     <- list.data$chem.info
@@ -170,11 +170,11 @@ list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.S
   
 # Data getVerifiedPredictions
 # data import, example
-# data.bio.taxa.raw  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+# dataBioTaxa  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #
 # data, example included with package
-data.bio.taxa.raw  <- data_BMIcounts
+dataBioTaxa  <- data_BMIcounts
 data.SSTV.totabund <- data_BMIRelAbund
 BioIndex_Val       <- "IBI"
 BioIndex_Nar       <- "NarRat"
@@ -185,10 +185,10 @@ biocomm <- "bmi"
 # Run getVerifiedPredictions
 getVerifiedPredictions(TargetSiteID
                        , data.SampSummary
-                       , data.bio.taxa.raw
-                       , data.chem.info
+                       , dataBioTaxa
+                       , data_stressInfo
                        , data.SSTV.totabund
-                       , data.MT.bio
+                       , dataMasterTaxa
                        , list.MatchBioData
                        , ref.sites
                        , BioIndex_Val

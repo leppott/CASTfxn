@@ -6,6 +6,11 @@
 \usage{
 getReport(
   TargetSiteID,
+  probsHigh = 0.75,
+  probsLow = 0.25,
+  useBMI,
+  useAlg,
+  removeOutliers,
   dir_results = file.path(getwd(), "Results"),
   report_type = "summary",
   report_format = "html",
