@@ -4,9 +4,15 @@
 \alias{getClusterInfo}
 \title{Cluster Info}
 \usage{
-getClusterInfo(TargetSiteID, site.COMID, site.Clusters, refSiteCOMIDs,
-  data.cluster, dir_results = file.path(getwd(), "Results"),
-  dir_sub = "ClusterInfo")
+getClusterInfo(
+  TargetSiteID,
+  site.COMID,
+  site.Clusters,
+  refSiteCOMIDs,
+  data.cluster,
+  dir_results = file.path(getwd(), "Results"),
+  dir_sub = "ClusterInfo"
+)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}

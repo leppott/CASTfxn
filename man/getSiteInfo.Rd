@@ -4,11 +4,22 @@
 \alias{getSiteInfo}
 \title{Site Info}
 \usage{
-getSiteInfo(TargetSiteID, dir_results = file.path(getwd(), "Results"),
-  data.Stations.Info, data.SampSummary, data.303d.ComID, data.bmi.metrics,
-  data.algae.metrics, data.cluster, data.mod, map_proj = NULL,
-  map_outline = NULL, map_flowline = NULL, map_flowline2 = NULL,
-  dir_sub = "SiteInfo")
+getSiteInfo(
+  TargetSiteID,
+  dir_results = file.path(getwd(), "Results"),
+  data.Stations.Info,
+  data.SampSummary,
+  data.303d.ComID,
+  data.bmi.metrics,
+  data.algae.metrics,
+  data.cluster,
+  data.mod,
+  map_proj = NULL,
+  map_outline = NULL,
+  map_flowline = NULL,
+  map_flowline2 = NULL,
+  dir_sub = "SiteInfo"
+)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}

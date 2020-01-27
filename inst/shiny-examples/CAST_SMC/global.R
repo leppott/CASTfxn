@@ -4,7 +4,7 @@
 library(shiny)
 library(CASTfxn)
 library(shinyjs)
-# #library(leaflet)
+library(leaflet)
 # library(dplyr)
 # #library(shinyjs)
 # library(cluster)

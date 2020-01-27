@@ -4,14 +4,24 @@
 \alias{getCoOccur}
 \title{Co-Occurrence Plots}
 \usage{
-getCoOccur(df.data, TargetSiteID = NULL, col.ID, col.Group, col.Bio,
-  col.Stressors, Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
-  Bio.Nar.Lab = c("very likely altered", "likely altered",
-  "possibly altered ", "likely intact"), Bio.Deg.Brk = c(-2, 0.799, 2),
-  Bio.Deg.Lab = c("Yes", "No"), biocomm = "bmi",
-  dir.plots = file.path(getwd(), "Results"), dir_sub = "CoOccurrence",
-  col.Stressors.InvSc = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.",
-  "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU"))
+getCoOccur(
+  df.data,
+  TargetSiteID = NULL,
+  col.ID,
+  col.Group,
+  col.Bio,
+  col.Stressors,
+  Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
+  Bio.Nar.Lab = c("very likely altered", "likely altered", "possibly altered ",
+    "likely intact"),
+  Bio.Deg.Brk = c(-2, 0.799, 2),
+  Bio.Deg.Lab = c("Yes", "No"),
+  biocomm = "bmi",
+  dir.plots = file.path(getwd(), "Results"),
+  dir_sub = "CoOccurrence",
+  col.Stressors.InvSc = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk",
+    "DO_uf_mg_L", "pH", "pH_SU")
+)
 }
 \arguments{
 \item{df.data}{data frame with data.}

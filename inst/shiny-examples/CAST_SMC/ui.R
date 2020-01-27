@@ -54,19 +54,20 @@ shinyUI(fluidPage(
     , mainPanel(
       # tabsetPanel ####
       tabsetPanel(
-        # 0
-        tabPanel("Console"
+        # 0.0
+        tabPanel("Disclaimer"
+                   #, h3("Disclaimer")
+                   #, p("Screening tool...and key for plots.")
+                   #, uiOutput("Disclaimer_html")
+                   #, includeHTML(file.path(".", "data", "Disclaimer_Key.html"))
+                   , htmlOutput("Disclaimer_html")
+        )
+        # 0.5
+        , tabPanel("Console"
                  , h3("Console")
                  , textOutput("text_console_ALL")
                  )##tabPanel~Console~END
-        # 0.5
-        , tabPanel("Disclaimer"
-                 , h3("Disclaimer")
-                 , p("Screening tool...and key for plots.")
-                 #, uiOutput("Disclaimer_html")
-                 #, includeHTML(file.path(".", "data", "Disclaimer_Key.html"))
-                 , htmlOutput("Disclaimer_html")
-        )
+        
         # 1
         , tabPanel("Site Info"
                  , h3("Map")
