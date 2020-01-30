@@ -1,0 +1,12 @@
+name: CAST_Map_StationID
+title: CAST_Map_StationID
+username:
+account: leppott
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1733500
+bundleId: 2763993
+url: https://leppott.shinyapps.io/CAST_Map_StationID/
+when: 1580394865.68421
+asMultiple: FALSE
+asStatic: FALSE

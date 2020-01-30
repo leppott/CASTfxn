@@ -30,7 +30,7 @@ getComparators<- function(TargetSiteID
                           , useBC = FALSE
                           , df_bcdist = data.BCdist
                           , bc_cutoff = 0.05
-                          , dir_results = file.path(wd, "Results")
+                          , dir_results = file.path(getwd(), "Results")
                           , dir_sub = "SiteInfo") {
   # For QC purposes
   # TargetSiteID = TargetSiteID
@@ -119,7 +119,7 @@ getComparators<- function(TargetSiteID
   }
   
   fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-  fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+  fn.gaps <- file.path(getwd(),"Results",TargetSiteID,fn.gaps)
   write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE
               , row.names = FALSE, sep = "\t")
   

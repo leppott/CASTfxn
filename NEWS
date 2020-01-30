@@ -3,7 +3,7 @@ NEWS
 <Erik.Leppo@tetratech.com>
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
-    #> Last Update: 2020-01-27 18:25:53
+    #> Last Update: 2020-01-30 13:59:34
 
 Planned Updates
 ===============
@@ -24,6 +24,15 @@ Future Updates
 
 Version History
 ===============
+
+Changes in Version 0.1.0.9241 (2020-01-30)
+------------------------------------------
+
+-   Fixes to Shiny Apps
+    -   CAST\_Map\_StationID
+        -   Renamed from SiteID to StationID.
+    -   CAST\_SMC
+        -   Partial fix. Runs but not completely.
 
 Changes in Version 0.1.0.9240 (2020-01-27)
 ------------------------------------------

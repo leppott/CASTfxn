@@ -15,7 +15,7 @@ source("global.R")
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("SEP - CAST - SiteID Selection")
+  titlePanel("SEP - CAST - Station ID Selection")
 
   # Sidebar with a slider input for number of bins 
   , sidebarLayout(
@@ -25,11 +25,11 @@ shinyUI(fluidPage(
        #             min = 1,
        #             max = 50,
        #             value = 30)
-      helpText("The map takes 20 seconds to load.")
+      helpText("The map takes 20 seconds to load.  Please be patient.")
       #, actionButton("map.streams.add", "Add Streams to Map")
       , br()
-      , helpText("Use the button (or the map) to select a SiteID for analysis.")
-      , selectInput("siteid.select", "Select SiteID:"
+      , helpText("Use the button (or the map) to select a Station ID.")
+      , selectInput("siteid.select", "Select Station ID:"
                     , choices=c("SMC04134", "905S15201", "907S05514", mySites)
                     , selected="SMC04134"
                     #, selected="20331944"# diversion but long and easy to spot on map
@@ -37,6 +37,9 @@ shinyUI(fluidPage(
                             
       , br()
       #, actionButton("zoom.comid", "Zoom to Selected ComID")
+      , p("After choosing a Station ID to access the CAST app click the link below.
+          Remember your Station ID as this is not transfered between apps.")
+      , a("https://leppott.shinyapps.io/CAST_SMC", href="https://leppott.shinyapps.io/CAST_SMC")
       
     )##sidebarPanel.END
     

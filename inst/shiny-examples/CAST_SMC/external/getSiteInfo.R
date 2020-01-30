@@ -128,7 +128,7 @@ getSiteInfo <- function(TargetSiteID
                         , data_bmiMetrics=NULL
                         , bmiIndexGp = "IBI"
                         , data_algMetrics=NULL
-                        , algIndexGpGp = "IBI"
+                        , algIndexGp = "IBI"
                         , comp_sites=NULL
                         , data_cluster
                         , data_mods
@@ -230,7 +230,7 @@ getSiteInfo <- function(TargetSiteID
     rm(gap.good, gap.bad)
     
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+    fn.gaps <- file.path(".", "Results", TargetSiteID, fn.gaps)
     write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
     
@@ -530,7 +530,7 @@ getSiteInfo <- function(TargetSiteID
     have.photos <- FALSE
     for (l in 1:length(photofiles)) {
       photoname <- photofiles[l]
-      if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
+      if (stringr::str_detect(photoname, eval(TargetSiteID))==TRUE) {
         file.copy(file.path(dir_photo,photoname)
                   , file.path(dir_path,photoname))
         print(paste0(photoname, " copied."))
@@ -558,7 +558,7 @@ getSiteInfo <- function(TargetSiteID
     colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
     
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+    fn.gaps <- file.path(getwd(), "Results", TargetSiteID, fn.gaps)
     write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
   }

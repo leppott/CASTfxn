@@ -1,17 +1,14 @@
 # Global Shiny Stuff
 
-# Pakcages
+# Packages ####
 library(shiny)
 library(CASTfxn)
 library(shinyjs)
-<<<<<<< Updated upstream
 library(leaflet)
-=======
+library(readxl)
+library(stringr)
 #library(shinyFiles)
-# #library(leaflet)
->>>>>>> Stashed changes
 # library(dplyr)
-# #library(shinyjs)
 # library(cluster)
 # library(dplyr)
 # library(ggplot2)
@@ -19,36 +16,25 @@ library(leaflet)
 # library(maptools)
 # library(raster)
 # library(RColorBrewer)
-# library(readxl)
+
 # library(reshape)
 # library(rgdal)
 # library(rgeos)
 # library(RgoogleMaps)
 # library(rpart)
 
-# Source
+# Source ####
 #source(file.path(".", "external", "runCASTfxn.R"))
 source(file.path(".", "external", "getTimeSeq.R"))
 source(file.path(".", "external", "getWoE.R"))
 
-#
-#setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CAST_v2")
+# Global Variables ####
+url_map <- a("Shiny Station Selection Map", href="https://leppott.shinyapps.io/CAST_Map_SiteID")
 
-# # data directory
-# dn_data <- file.path(getwd(), "data")
-# 
-# 
-# # Site
-# LU.Stations <- read.delim(file.path(dn_data, "data.Stations.LookUp.tab"), stringsAsFactors = FALSE)
-
-
+# data directory
 dir_data <- file.path(".", "Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.
-<<<<<<< Updated upstream
-dir_wd <- file.path(getwd())
-=======
-#dir_wd <- file.path(getwd())
->>>>>>> Stashed changes
+dir_wd <- file.path(".")
 ## Stations - PickList
 data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab", sep="")
                             , stringsAsFactors = FALSE)
@@ -57,7 +43,6 @@ LU.Stations <- data.Stations[,"StationID_Master"]
 
 zip_name <- "NULL"
 
-<<<<<<< Updated upstream
 # Functions ####
 getHTML <- function(fn_html){
   #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
@@ -119,8 +104,6 @@ CopyResults <- function(TargetSiteID_Results){
   #
 }##CopyResults~END
 
-=======
->>>>>>> Stashed changes
 
 # # Sites ####
 # # df.sites.map

@@ -35,7 +35,7 @@ getDataGaps<- function(TargetSiteID
                        , stressors
                        , biocomm = "BMI"
                        , list_biomatches = list.bmi.matches
-                       , dir_results = file.path(wd, "Results")
+                       , dir_results = file.path(getwd(), "Results")
                        , dir_sub = "SiteInfo") {
   
   # QC

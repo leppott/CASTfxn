@@ -37,6 +37,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9241 (2020-01-30)
+
+* Fixes to Shiny Apps
+    + CAST_Map_StationID
+        - Renamed from SiteID to StationID.
+    + CAST_SMC
+        - Partial fix.  Runs but not completely.
+
 ## Changes in Version 0.1.0.9240 (2020-01-27)
 
 * Create new package after merging branches and resolving conflicts.

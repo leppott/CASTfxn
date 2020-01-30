@@ -31,6 +31,7 @@
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
+#' @param wd Working directory, default = getwd()
 #' 
 #' @return Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
 #' in working directory of box plots and a single PDF of all plots.
@@ -178,6 +179,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , dir_results=file.path(getwd(), "Results")
                                    , dir_sub="VerifiedPredictions"
                                    , biocomm="bmi"
+                                   , wd = getwd()
 ) {##FUNCTION.START
   
   
