@@ -379,7 +379,7 @@ getCoOccur <- function(df_data
   
      #
     if(boo_DEBUG==TRUE){##IF.boo_DEBUG.START
-      j <- colStressors[3]
+      j <- colStressors[1]
       #par(mfrow=c(3,2))
     }##IF.boo_DEBUG.END
     # outside loop just in case forget to turn off debug flag
@@ -442,7 +442,8 @@ getCoOccur <- function(df_data
                                     , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
        }##IF~j_in_InvSc~END
        df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
-       
+       df.i[is.na(df.i[, paste0("Sc_Box_", j)]), paste0("Sc_Box_", j)] <- "NE"
+
        # Plots
        # Need to filter df.i to get rid of NA for "j" (stressor)
        # order values by j then get multiple comp scores
