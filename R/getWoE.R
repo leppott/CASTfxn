@@ -281,6 +281,7 @@ getWoE <- function(TargetSiteID
             if (chrLoE == "TS") {
                 if (file.exists(file.path(dirLoE,fnTSScores))) {
                     # Pull data into temp data structure
+                    # Currently not scored, so file does not exist--ever
                     next
     
                 } else {
@@ -735,7 +736,7 @@ getWoE <- function(TargetSiteID
                                          , ifelse(WoE=="Refutes", -1
                                          , 0))) %>%
         dplyr::select(-WoE) %>% dplyr::rename(WoE=WoEnumeric
-                                              , IndexScore = index) #%>%
+                                              , IndexScore = index)
     dfData4ES <- dfData4ES %>%
         group_by(StationID_Master, BioComm, BioDeg, StressorType) %>%
         dplyr::summarize(NumRespSamples = n_distinct(RespSampID)
@@ -745,27 +746,31 @@ getWoE <- function(TargetSiteID
                          , NumStressSamples = n_distinct(StressSampID)
                          , NumStressors = n_distinct(Stressor)
                          , WtTot_WoE = round(sum(WoE, na.rm = TRUE)/n(), 3)
-                         , WtTotTS_barplot = round(sum(as.integer(TS_barplot)
-                                                       , na.rm=TRUE)/n(), 3)
-                         , WtTotCO_boxplot = round(sum(as.integer(CO_boxplot)
-                                                       , na.rm=TRUE)/n(), 3)
-                         , WtTotSR_OutCase_LinRegr = round(sum(as.integer(SR_OutCase_LinRegr)
-                                                       , na.rm = TRUE)/n(), 3)
-                         , WtTotSR_InCase_LinRegr = round(sum(as.integer(SR_InCase_LinRegr)
-                                                      , na.rm = TRUE)/n(), 3)
-                         , WtTotSR_InCase_LogRegr = round(sum(as.integer(SR_InCase_LogRegr)
-                                                      , na.rm = TRUE)/n(), 3)
-                         , WtTotVP_boxplot = ifelse(all(VP_boxplot_senstaxa=="NE") & 
-                                                    all(VP_boxplot_toltaxa=="NE")
-                                                    , "NE"
+                         , WtTotTS_barplot = ifelse(all(is.na(TS_barplot)), NA
+                                                    , round(sum(as.integer(TS_barplot)
+                                                    , na.rm=TRUE)/n(), 3))
+                         , WtTotCO_boxplot = ifelse(all(is.na(CO_boxplot)), NA
+                                                    , round(sum(as.integer(CO_boxplot)
+                                                    , na.rm=TRUE)/n(), 3))
+                         , WtTotSR_InCase_LogRegr = ifelse(all(is.na(SR_InCase_LogRegr)), NA
+                                                    , round(sum(as.integer(SR_InCase_LogRegr)
+                                                    , na.rm = TRUE)/n(), 3))
+                         , WtTotSR_InCase_LinRegr = ifelse(all(is.na(SR_InCase_LinRegr)), NA
+                                                    , round(sum(as.integer(SR_InCase_LinRegr)
+                                                    , na.rm = TRUE)/n(), 3))
+                         , WtTotSR_OutCase_LinRegr = ifelse(all(is.na(SR_OutCase_LinRegr)), NA
+                                                    , round(sum(as.integer(SR_OutCase_LinRegr)
+                                                    , na.rm = TRUE)/n(), 3))
+                         , WtTotVP_boxplot = ifelse(all(is.na(VP_boxplot_senstaxa)) & 
+                                                    all(is.na(VP_boxplot_toltaxa)), NA
                                             , round(sum(as.integer(VP_boxplot_senstaxa)
                                                 + as.integer(VP_boxplot_toltaxa)
                                             , na.rm = TRUE)/n(), 3)))
     
     startcol <- which(colnames(dfData4ES)=="WtTot_WoE")
     endcol <- ncol(dfData4ES)
-    dfEvidCountsWide[,startcol:endcol][dfEvidCountsWide[,startcol:endcol]=="NE"] <- NA
-        
+    dfData4ES[,startcol:endcol][is.na(dfData4ES[,startcol:endcol])] <- "NE"
+
     fnES <- paste0(TargetSiteID,"_",biocomm,"_WoE_ExecSummary.tab")
     write.table(dfData4ES, file = file.path(dirWoE, fnES), append = FALSE
                 , col.names = TRUE, row.names = FALSE, sep = "\t")
