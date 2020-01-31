@@ -170,29 +170,10 @@ getClusterInfo <- function(TargetSiteID
     varYunits <- as.character(data_clusterInfo$Units[data_clusterInfo$ColName == varYlab])
     varYgrandscale <- as.character(data_clusterInfo$Scale[data_clusterInfo$ColName == varYlab])
     varYtext <- as.character(data_clusterInfo$ShortName[data_clusterInfo$ColName == varYlab])
-    
-    # Generate plot title
-    # if (grepl("^.*Ws", varYlab, perl=TRUE)==TRUE) {
-    #     varYlabtext <- gsub("^(.*)(Ws)$", "\\1 in the watershed"
-    #                         , varYlab, perl = TRUE)
-    # } else if (grepl("^.*Cat", varYlab, perl=TRUE)==TRUE) {
-    #     varYlabtext <- gsub("^(.*)(Cat)$", "\\1 in the catchment"
-    #                         , varYlab, perl = TRUE)
-    # } else { varYlabtext <- varYlab }
-    
     varMain <- paste0(varYtext, " (", varYunits,") in the "
                       , tolower(varYgrandscale), " by cluster")
-    # if (siteQual2Plot=="not degraded") {
-    #     qualtext <- "not degraded*"
-    #     str_caption <- "*Sites having one or more samples rated not degraded."
-    # } else if (siteQual2Plot=="better than") {
-    #     qualtext <- "better quality*"
-    #     str_caption <- paste("*Sites having one or more samples with biological quality"
-    #                          ,"better than the minimum target site quality.", sep = "\n")
-    # } else { 
-        qualtext <- "Reference"
-        str_caption <- ""
-    # }
+    qualtext <- "Reference"
+    str_caption <- ""
     #
     # QC
     i.num <- i -1
@@ -217,44 +198,11 @@ getClusterInfo <- function(TargetSiteID
         next
     }
     #
-   #  # OLD PLOT
-    {
-   #  #plot.pryr %<a-% {##pryr.START
-   #    #
-   #   graphics::boxplot(myY~myX, main = varMain, xlab ="Cluster"
-   #                      , ylab = varYlab, medlwd = 0.8, boxwex = 0.5, boxlty = 1
-   #                      , boxlwd = 0.8, col ="lightgray")
-   #    #~~~~~~~~~~~~~
-   #    # add points to plots for reference sites
-   #    myY.ref <- df.plot.3[,i]
-   #    myX.ref <- df.plot.3[,cluster]
-   #    graphics::points(myX.ref,myY.ref,col="blue",cex=0.7,pch=19)
-   #    #~~~~~~~~~~~~~
-   #    # add points to plots for selected sites
-   #    myY.targ <- df.plot.2[,i]
-   #    myX.targ <- df.plot.2[,cluster]
-   #    graphics::points(myX.targ,myY.targ,col="red",cex=0.8,pch=19)
-   #    #
-   # }##pryr.END
-    #
-    #
-    # PDF, capture plot in list
-    #plot.pryr
-    #plots.i[[i-1]] <- grDevices::recordPlot()
-    #
-    # JPG, Create
-    # grDevices::jpeg(filename = paste0("Results/",TargetSiteID,"/",
-    #                                   TargetSiteID,".cluster.",varYlab,".jpg"),
-    #             width = 4*ppi, height = 3*ppi, pointsize = 8,
-    #             quality = 100, bg = "white", res = ppi)
-    #   plot.pryr  
-    # grDevices::dev.off() ##JPEG.END
-    }
-    
     # ggplot ####
     
     ## Plot, Variables, Strings
     str_title <- varMain
+    str_sub <- TargetSiteID
     str_xlab  <- "Cluster"
     str_ylab  <- colnames(df.plot)[i]
     
@@ -349,8 +297,8 @@ getClusterInfo <- function(TargetSiteID
                        , plot.caption=ggplot2::element_text(size=8)) + 
         ggplot2::theme(axis.text.x = ggplot2::element_text(size=8)
                        , axis.text.y = ggplot2::element_text(size=8)) +
-        ggplot2::labs(title=str_title, x=str_xlab, y=str_ylab
-                                , caption=str_caption)
+        ggplot2::labs(title=str_title, subtitle = str_sub, x=str_xlab
+                      , y=str_ylab, caption=str_caption)
     #
       
     print(p_cl)
