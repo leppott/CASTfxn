@@ -1,0 +1,14 @@
+ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	GroupNum	GroupName	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID	DirIncStress
+None	MaxMonthQ	cms	MaxMonthQ	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	Q99	cms	Q99	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	HighNum	events/yr	HighNum	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	HighDur	days/event	HighDur	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	NoDisturb	days	NoDisturb	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Dec
+None	QmaxIDR	none	QmaxIDR	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	RBI	none	RBI	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
+None	HighDur_Dry	days/event	HighDur_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Dec
+None	HighNumDry	events/yr	HighNumDry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
+None	MaxMonthQ_Dry	cms	MaxMonthQ_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
+None	NoDisturb_Dry	days	NoDisturb_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Dec
+None	Qmax_Dry	none	Qmax_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
+None	QmaxIDR_All	none	QmaxIDR_All	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc

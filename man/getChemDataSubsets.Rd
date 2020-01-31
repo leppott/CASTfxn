@@ -4,8 +4,15 @@
 \alias{getChemDataSubsets}
 \title{Chemical Data Subsets}
 \usage{
-getChemDataSubsets(TargetSiteID, comid, cluster, data.cluster,
-  data.Stations.Info, data.chem.raw, data.chem.info)
+getChemDataSubsets(
+  TargetSiteID,
+  comid,
+  cluster,
+  data.cluster,
+  data.Stations.Info,
+  data.chem.raw,
+  data.chem.info
+)
 }
 \arguments{
 \item{TargetSiteID}{SiteID}

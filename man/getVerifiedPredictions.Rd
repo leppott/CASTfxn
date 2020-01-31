@@ -4,11 +4,22 @@
 \alias{getVerifiedPredictions}
 \title{Verified Predictions}
 \usage{
-getVerifiedPredictions(TargetSiteID, data.SampSummary, data.bio.taxa.raw,
-  data.chem.info, data.SSTV.totabund, data.MT.bio, matchedData, ref.sites,
-  BioIndex_Val = "IBI", BioIndex_Nar = "NarRat",
-  BioIndex_Nar_Deg = "Violates", dir_results = file.path(getwd(),
-  "Results"), dir_sub = "VerifiedPredictions", biocomm = "bmi")
+getVerifiedPredictions(
+  TargetSiteID,
+  data.SampSummary,
+  data.bio.taxa.raw,
+  data.chem.info,
+  data.SSTV.totabund,
+  data.MT.bio,
+  matchedData,
+  ref.sites,
+  BioIndex_Val = "IBI",
+  BioIndex_Nar = "NarRat",
+  BioIndex_Nar_Deg = "Violates",
+  dir_results = file.path(getwd(), "Results"),
+  dir_sub = "VerifiedPredictions",
+  biocomm = "bmi"
+)
 }
 \arguments{
 \item{TargetSiteID}{Site ID}

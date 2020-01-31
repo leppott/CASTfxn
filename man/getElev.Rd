@@ -4,8 +4,13 @@
 \alias{getElev}
 \title{Elevation}
 \usage{
-getElev(df_loc, Lat, Long, elev_units = "meters",
-  proj_loc = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+getElev(
+  df_loc,
+  Lat,
+  Long,
+  elev_units = "meters",
+  proj_loc = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+)
 }
 \arguments{
 \item{df_loc}{Data frame with location information}
@@ -53,6 +58,6 @@ df_elev <- getElev(df_loc, Lat, Long, elev_units, proj_loc)
 
 /dontrun{
 # Save Results
-write.table(df_elev, "Elev.tsv", sep="\\t", row.names=FALSE, col.names = TRUE)
+write.table(df_elev, "Elev.tsv", sep="\t", row.names=FALSE, col.names = TRUE)
 }
 }

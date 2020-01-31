@@ -4,10 +4,18 @@
 \alias{getBioStressorResponses}
 \title{Biological Stressor Responses}
 \usage{
-getBioStressorResponses(TargetSiteID, stressors, BioResp,
-  list.MatchBioData, LogTransf, ref.sites, biocomm = "bmi",
+getBioStressorResponses(
+  TargetSiteID,
+  stressors,
+  BioResp,
+  list.MatchBioData,
+  LogTransf,
+  ref.sites,
+  biocomm = "bmi",
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "StressorResponse", boo_pred_warn = TRUE)
+  dir_sub = "StressorResponse",
+  boo_pred_warn = TRUE
+)
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
