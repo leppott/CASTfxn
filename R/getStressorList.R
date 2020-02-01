@@ -165,6 +165,7 @@ getStressorList <- function(TargetSiteID
   `%>%` <- dplyr::`%>%`
   not_all_na <- function(x) {!all(is.na(x))}
   plot_ext <- ".png"
+  outliercols <- c("IQRmethod", "SDmethod", "Outlier")
   
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
@@ -186,10 +187,11 @@ getStressorList <- function(TargetSiteID
   
   dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   
-  # stations <- TargetSiteID
-
   # First 2 columns are ChemSampID and StationID_Master
   clusterChemData <- clusterChem[4:ncol(clusterChem)]
+  clusterChemData <- dplyr::select_if(clusterChemData, not_all_na)
+  clustChemCols <- colnames(clusterChemData)
+  clustChemCols <- clustChemCols[!(clustChemCols %in% outliercols)]
   
   # Identify all cluster "reference" samples, including modeled ones
   clusterRefChem <- subset(clusterChem, clusterChem$StressSampID %in% refSamps)
@@ -198,23 +200,57 @@ getStressorList <- function(TargetSiteID
       dplyr::filter(StationID_Master %in% refSites)
   clusterRefChem <- rbind(clusterRefChem, clusterRefModSamps)
   rm(clusterRefModSamps)
-  clusterRefChem <- select_if(clusterRefChem, not_all_na)
-  clusterRefChemData <- clusterRefChem[4:ncol(clusterRefChem)]
+  if (nrow(clusterRefChem)==0) {
+      # No reference sites in the comparator set
+  } else {
+      clusterRefChem <- select_if(clusterRefChem, not_all_na)
+      clusterRefChemData <- clusterRefChem[4:ncol(clusterRefChem)]
+      clustRefChemCols <- colnames(clusterRefChemData)
+      clustRefChemCols <- clustRefChemCols[!(clustRefChemCols %in% outliercols)]
+      addcols <- setdiff(clustChemCols, clustRefChemCols)
+      if (length(addcols)>0) {
+          for (add in 1:length(addcols)) {
+              addcolname <- addcols[add]
+              clusterRefChemData[[addcolname]] <- NA
+          }
+          clusterRefChemData <- dplyr::select(clusterRefChemData, clustChemCols)
+      }
+  }
   rm(clusterRefChem)
   
-  useCols <- colnames(clusterRefChemData)
-  clusterChemData <- dplyr::select(clusterChemData, eval(useCols))
-  
-  # Use clusterRefChemData for namees, since non-matching biocomm are exluded
-  chemnames <- colnames(clusterRefChemData)
+  chemnames <- colnames(clusterChemData)
+  chemnames <- chemnames[!(chemnames %in% c("IQRmethod", "SDmethod", "Outlier"))]
   allcount <- apply(clusterChemData, 2, function(x) sum(!is.na(x)))
   alltype <- unlist(lapply(1:ncol(clusterChemData)
                            , function(x) is.numeric(clusterChemData[,x])))
   coolvar <- names(allcount)[allcount>2 & alltype]
-  
   groupnames <- unique(subset(chemInfo, chemInfo$Analyte %in% chemnames
                               , select = "GroupName"))
   numgps <- length(groupnames[,1])
+  
+  # Get data having <=2 samples in cluster, write to data gaps & add to eliminated
+  uncoolvar <- setdiff(chemnames, coolvar)
+  if (length(uncoolvar)>0) {
+      df_allcount <- as.data.frame(allcount)
+      df_allcount <- cbind(rownames(df_allcount), df_allcount, row.names=NULL)
+      colnames(df_allcount)[1] <- "Stressor"
+      df_allcount <- dplyr::filter(df_allcount, Stressor %in% uncoolvar)
+      for (s in 1:nrow(df_allcount)) {
+          elimName <- as.character(df_allcount$Stressor[s])
+          gapcomment <- paste0("Result (number of samples) is too few for analysis.")
+          gaps <- cbind.data.frame("getStressorList", elimName
+                                   , df_allcount$allcount[s]
+                                   , gapcomment)
+          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                      , row.names = FALSE, sep = "\t")          
+          if (!exists("tmpParmDEL")){ tmpParmDEL <- elimName } 
+          else { tmpParmDEL <- c(tmpParmDEL, elimName) }
+      }
+          
+  }
   
   # Plots ####
   ppi <- 300
@@ -259,15 +295,16 @@ getStressorList <- function(TargetSiteID
       ## Plot, Data, Cluster_Ref
       # QC for nrow
       boo_plot_ref <- FALSE
-      if(nrow(clusterRefChemData)>0){##IF~nrow(cluster.ref.chem.data)~START
+      if(exists("clusterRefChemData")){##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_wide <- as.data.frame(clusterRefChemData[, gpcoolvar])
-        colnames(df_plot_ref_wide) <- gpcoolvar 
+        # colnames(df_plot_ref_wide) <- gpcoolvar 
         df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
         df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
-        df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
+        # df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
         df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
         boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
+        boo_plot_ref <- ifelse(all(is.na(df_plot_long_ref$value)), FALSE, TRUE)
       }##IF~nrow(cluster.ref.chem.data)~END
       
       ## Plot, Data, Target Site
@@ -441,8 +478,8 @@ getStressorList <- function(TargetSiteID
     }##FOR.gp.END
   grDevices::dev.off()
   rm(plots.g)
-  
-  # Data File ####
+
+  # Percentile Data File ####
   chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
                         , function(x) dplyr::percent_rank(x))
   data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
@@ -454,7 +491,7 @@ getStressorList <- function(TargetSiteID
   stressor <- c("none")
   # 
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    c <- 3
+    c <- 7
   }##IF.boo.DEBUG.END
   
   # Handle exceptions from standard stressor list ID
@@ -483,7 +520,7 @@ getStressorList <- function(TargetSiteID
             }
         } else {
             if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
-            else { tmpParmDEL <- c(bioParmsDEL, chemname) }
+            else { tmpParmDEL <- c(tmpParmDEL, chemname) }
             print("pH is not a stressor.")
             flush.console()
         }
@@ -498,7 +535,7 @@ getStressorList <- function(TargetSiteID
               stressor <- c(stressor, chemname)
           } else {
               if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
-              else { tmpParmDEL <- c(bioParmsDEL, chemname) }
+              else { tmpParmDEL <- c(tmpParmDEL, chemname) }
               print("DO is not a stressor.")
               flush.console()
           }
@@ -510,11 +547,22 @@ getStressorList <- function(TargetSiteID
       stressor <- c(stressor, chemname)
     }
   }##FOR~c~END
+  
+  # if (exists("tmpParmDEL")) {
+  #     bioParmsDEL <- c(bioParmsDEL, tmpParmDEL)
+  #     bioParmsDEL <- unique(bioParmsDEL)
+  # }
+  
+  # Stressor list contains stressors to proceed in analysis
+  # bioParmsDEL contains parameters that don't apply for this biocomm
+  # tmpParmDEL contains parameters with <= only 2 sample points for cluster data
   stressorlist <- stressor
   stressorlist <- setdiff(stressorlist, bioParmsDEL)
   stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
-  if (exists("tmpParmDEL")) { stressorsExcepted<-unique(c(stressorsExcepted
-                                                          , tmpParmDEL)) }
+  if (exists("tmpParmDEL")) { 
+      stressorsExcepted<-unique(c(stressorsExcepted, tmpParmDEL)) 
+      stressorlist <- setdiff(stressorlist, tmpParmDEL)
+  }
   stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
       dplyr::mutate(Biocomm = biocomm)
   colnames(stressorsExcepted)[1] <- "Stressor"
@@ -548,6 +596,17 @@ getStressorList <- function(TargetSiteID
   # NA to 0
   LogTransf_merge[is.na(LogTransf_merge[,"max_LogTransf"]), "max_LogTransf"] <- 0
   
+  
+  # # Data File ####
+  stressorlist_trim <- stressorlist[stressorlist != "none"]
+  data.chemVals <- clusterChem %>%
+      dplyr::select(StationID_Master, StressSampID, StressSampDate, IQRmethod
+                    , SDmethod, Outlier, eval(stressorlist_trim))
+  fn.chemVals <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                           ,"CandCauses_ChemValues.tab"))
+  utils::write.table(data.chemVals, fn.chemVals, sep="\t", col.names=TRUE
+                     , row.names = FALSE, append=FALSE)
+
   # create output ####
   myStressors <- list(stressors = stressorlist, site.stressor.pctrank = site.pctrank
                       , stressors_LogTransf=LogTransf_merge$max_LogTransf)
