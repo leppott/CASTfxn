@@ -986,6 +986,7 @@ shinyServer(function(input, output, session) {
       message("Loading GIS files.")
       outline <- rgdal::readOGR(dsn = "Data/SMCBoundary", layer = "SMCBoundary_aea")
       flowline <- rgdal::readOGR(dsn = "Data/SMCReaches", layer = "SMCReaches_aea")
+      # warning z-dimension discarded.  "pointDropZ = TRUE" does not remove the warning
       
       # Specify user-defined variables
       # Stressors
