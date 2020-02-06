@@ -152,7 +152,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                                , by.y = c("StationID_Master", "clust"))
         
         df_WoEDetails <- df_WoEDetails %>%
-            select(StationID_Master
+            dplyr::select(StationID_Master
                    , FinalLatitude
                    , FinalLongitude
                    , Cluster
@@ -202,7 +202,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , WtTotSR_OutCase_LinRegr
                    , WtTotVP_boxplot) %>%
             dplyr::rename(Cluster = clust
-                          , Overall_WoE = WtTot_WoE)
+                          , Overall_WoE = WtTot_WoE) %>%
+            dplyr::arrange(StationID_Master, desc(BioComm)
+                           , desc(BioDeg), StressorType)
 
     } # Finish iterate through site directories loop
     
