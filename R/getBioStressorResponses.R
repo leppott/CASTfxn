@@ -560,7 +560,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for any sites in the cluster."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -572,7 +572,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for reference sites in the cluster."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -585,7 +585,7 @@ getBioStressorResponses <- function(TargetSiteID
           } else {
               
               gapcomment <- "No stressor data available for any comparator sites."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -597,7 +597,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for reference comparator sites."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -609,7 +609,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for the target site."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -651,7 +651,7 @@ getBioStressorResponses <- function(TargetSiteID
               gapcomment <- paste0("Stressor data in the comparator set have "
                                    , "a standard deviation of zero: "
                                    , "all values are equal.")
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -665,7 +665,7 @@ getBioStressorResponses <- function(TargetSiteID
               gapcomment <- paste0("Response data in the comparator set have "
                                    , "a standard deviation of zero: "
                                    , "all values are equal.")
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -721,7 +721,7 @@ getBioStressorResponses <- function(TargetSiteID
        
             gapcomment <- paste0("Only two paired stressor-response samples "
                             , "are available for the comparator set.")
-            gaps <- cbind.data.frame("getStressorList", stressName, 0, gapcomment)
+            gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0, gapcomment)
             colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
             fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
@@ -740,7 +740,7 @@ getBioStressorResponses <- function(TargetSiteID
                 gapcomment <- paste0("Stressor data across all sites in the "
                                    , "cluster have a standard deviation of "
                                    , "zero: all values are equal.")
-                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -752,7 +752,7 @@ getBioStressorResponses <- function(TargetSiteID
                 gapcomment <- paste0("Response data across all sites in the "
                                      , "cluster have a standard deviation of "
                                      , "zero: all values are equal.")
-                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                          , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -810,7 +810,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           gapcomment <- paste0("Only two or fewer paired stressor-response samples "
                                , "are available for all sites in the cluster.")
-          gaps <- cbind.data.frame("getStressorList", stressName, 0
+          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                    , gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
