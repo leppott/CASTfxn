@@ -235,9 +235,12 @@ getStressorList <- function(TargetSiteID
       df_allcount <- cbind(rownames(df_allcount), df_allcount, row.names=NULL)
       colnames(df_allcount)[1] <- "Stressor"
       df_allcount <- dplyr::filter(df_allcount, Stressor %in% uncoolvar)
+      df_labels <- unique(as.data.frame(dplyr::select(chemInfo, Analyte, Label)))
+      df_allcount <- merge(df_allcount, df_labels, by.x = "Stressor"
+                           , by.y = "Analyte", all.x = TRUE)
       for (s in 1:nrow(df_allcount)) {
-          elimName <- as.character(df_allcount$Stressor[s])
-          gapcomment <- paste0("Result (number of samples) is too few for analysis.")
+          elimName <- as.character(df_allcount$Label[s])
+          gapcomment <- paste0("Number of comparator samples is too few for analysis.")
           gaps <- cbind.data.frame("getStressorList", elimName
                                    , df_allcount$allcount[s]
                                    , gapcomment)
