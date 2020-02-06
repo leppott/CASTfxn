@@ -30,6 +30,7 @@ getTimeSeq <- function(TargetSiteID
                        , BioResp
                        , df_stress
                        , df_resp
+                       , stressors
                        , df_stressinfo
                        , df_respinfo
                        , dir_results = file.path(getwd(),"Results")
@@ -44,6 +45,7 @@ getTimeSeq <- function(TargetSiteID
         BioResp = bioMetricNames
         df_stress = siteStressAll
         df_resp = siteRespAll
+        stressors = stressorsWPairedResponses
         df_stressinfo = df_allStressInfo
         df_respinfo = data_bmiMetricsInfo
         dir_results = file.path(getwd(),"Results")
