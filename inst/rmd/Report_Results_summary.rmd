@@ -36,7 +36,7 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     TargetSiteID <- "403S01272"
     dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
   } else if(DEBUG.CaseNumber==4){
-    TargetSiteID <- "907S05514"
+    TargetSiteID <- "905S15201"
     dir_data <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data"
     dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
     probsHigh <- 0.75
@@ -1065,15 +1065,14 @@ if(useAlg==TRUE){
 
 # **DATA GAPS**
 ```{r datagaps}
-
 dir_gaps <- file.path(dir_results, TargetSiteID)
 fn_gaps <- file.path(dir_gaps, paste0(TargetSiteID,"_datagaps.tab"))
-
 df_gaps <- read.delim(fn_gaps, header = TRUE, sep = "\t")
 
 dfgen <- dplyr::filter(df_gaps, fxnname=="general")
 dfpairs <- dplyr::filter(df_gaps, fxnname=="getCoOccurDataset")
 dfoutliers <- dplyr::filter(df_gaps, fxnname=="Comparator outliers")
+dflimitdata <- dplyr::filter(df_gaps, fxnname=="getStressorList")
 
 if(any(dfpairs$result==0)) {
     nopairs <- dfpairs %>%
@@ -1129,8 +1128,7 @@ if (any(dfgen$result==0)) {
     nodatacaption <- "Missing stressor or response data"
     knitr::kable(msgnodata, format=report_format, caption = nodatacaption
                  , col.names = "Data type") %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12)
+        kableExtra::kable_styling(bootstrap_options="condensed", font_size=12)
 
 } else {
     
@@ -1140,23 +1138,41 @@ if (any(dfgen$result==0)) {
     
 }
 
+if (nrow(dflimitdata)>0) {
+    limdatacaption <- paste0("Limited data were available from comparator "
+                             , "samples for the following stressors identified at "
+                             , TargetSiteID, ". No evaluation is possible.")
+    
+    dflimitdata <- dflimitdata %>%
+        dplyr::select(condition, result, comment) %>%
+        dplyr::rename(Stressor = condition
+                      , NumberPairedSamples = result
+                      , Finding = comment)
+    dflimitdata <- unique(as.data.frame(dflimitdata, row.names = NULL))
+
+    knitr::kable(dflimitdata, format=report_format, caption = limdatacaption
+                 , col.names = colnames(dflimitdata)) %>%
+        kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12)
+
+}
+
 if (nrow(dfoutliers)>0) {
     
     dfoutliers <- dplyr::select(dfoutliers, -fxnname)
     dfoutliers$ComparatorSiteID <- stringr::str_extract(dfoutliers$comment
                                                         , "^[A-Z0-9]*")
-    dfoutliers <- dfoutliers %>% 
+    dfoutliers <- unique(as.data.frame(dfoutliers, row.names = NULL)) %>% 
         dplyr::rename(Stressor = condition, StressorValue = result) %>%
         dplyr::select(ComparatorSiteID, Stressor, StressorValue) %>%
         dplyr::arrange(ComparatorSiteID, Stressor)
+    # dfoutliers <- unique(as.data.frame(dfoutliers, row.names = NULL))
     outcaption <- paste0("Comparator site outliers that were removed. "
                          , "Values were transformed prior to evaluating "
                          , "for outliers as necessary.")
 
     knitr::kable(dfoutliers, format=report_format, caption = outcaption
                  , col.names = colnames(dfoutliers)) %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12)
+        kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12)
 
 } else {
     
