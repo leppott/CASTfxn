@@ -39,7 +39,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     
     # define pipe
     `%>%` <- dplyr::`%>%`
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if(boo_DEBUG==TRUE) {
         wd = "C:/Users/ann.lincoln/Documents/SEP_CAST"
@@ -264,7 +264,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     print("Completed compiling WoE summary.")
     flush.console()
     
-    fnStressorVals <- file.path(dir_results, paste0("OveralStressorValues_"
+    fnStressorVals <- file.path(dir_results, paste0("OverallStressorValues_"
                                                     , myDate, ".tab"))
     write.table(df_StrValsAll, fnStressorVals, append = FALSE, col.names = TRUE
                 , row.names = FALSE, sep = "\t")
