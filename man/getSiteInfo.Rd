@@ -14,7 +14,7 @@ getSiteInfo(
   data_bmiMetrics = NULL,
   bmiIndexGp = "IBI",
   data_algMetrics = NULL,
-  algIndexGpGp = "IBI",
+  algIndexGp = "IBI",
   comp_sites = NULL,
   data_cluster,
   data_mods,
@@ -32,13 +32,21 @@ getSiteInfo(
 
 \item{data_Sites}{data_Sites}
 
+\item{data_bkgdata}{background data}
+
 \item{data_SampSummary}{data_SampSummary}
 
 \item{data_303d}{data_303d}
 
 \item{data_bmiMetrics}{data_bmiMetrics}
 
+\item{bmiIndexGp}{BMI index group; default = "IBI"}
+
 \item{data_algMetrics}{data_algMetrics}
+
+\item{algIndexGp}{Algal index group; default = "IBI"}
+
+\item{comp_sites}{Comparator site; default = NULL}
 
 \item{data_cluster}{data_cluster}
 
@@ -52,9 +60,13 @@ getSiteInfo(
 
 \item{map_flowline2}{Typically NHD+ flowline.  Can be more than one but plotted the same.}
 
-\item{dir_results}{Directory for results.  Default = "Results".}
+\item{dir_photo}{Directory with photos; Default = ./Data/Photos}
+
+\item{dir_results}{Directory for results.  Default = ./Results}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+
+\item{data_bnkinfo}{background info}
 }
 \value{
 A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 

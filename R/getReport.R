@@ -9,6 +9,11 @@
 #' Only the "summary" report is active. 
 #' 
 #' @param TargetSiteID SiteID
+#' @param probsHigh High probability
+#' @param probsLow Low probability
+#' @param useBMI use Benthic Macroinvertebrate Data
+#' @param useAlg use Algae data
+#' @param removeOutliers Should outliers be removed.  Default = TRUE
 #' @param dir_results Directory with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = HTML
@@ -34,7 +39,7 @@ getReport <- function(TargetSiteID
                       , probsLow=0.25
                       , useBMI
                       , useAlg
-                      , removeOutliers
+                      , removeOutliers = TRUE
                       , dir_results=file.path(getwd(), "Results")
                       , report_type="summary"
                       , report_format="html"

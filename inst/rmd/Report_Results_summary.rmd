@@ -23,32 +23,32 @@ DEBUG.CaseNumber <- 4
 `%>%` <- dplyr::`%>%`
 #
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-  if(DEBUG.CaseNumber==1){##IF.DEBUG.CaseNumber.START
-    TargetSiteID <- "SMC01049"
-    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
-    probsHigh <- 0.75
-    probsLow <- 0.25
-    report_format="html"
-  } else if(DEBUG.CaseNumber==2){
-    TargetSiteID <- "907S02774"
-    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
-  } else if(DEBUG.CaseNumber==3){
-    TargetSiteID <- "403S01272"
-    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
-  } else if(DEBUG.CaseNumber==4){
-    TargetSiteID <- "907S05514"
-    dir_data <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data"
-    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
-    probsHigh <- 0.75
-    probsLow <- 0.25
-    useAlg <- FALSE
-    useBMI <- TRUE
-    report_format="html"
-    removeOutliers <- TRUE
-    useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
-    lagdays=10
-    siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
-  }##IF.DEBUG.CaseNumber.END
+  # if(DEBUG.CaseNumber==1){##IF.DEBUG.CaseNumber.START
+  #   TargetSiteID <- "SMC01049"
+  #   dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  #   probsHigh <- 0.75
+  #   probsLow <- 0.25
+  #   report_format="html"
+  # } else if(DEBUG.CaseNumber==2){
+  #   TargetSiteID <- "907S02774"
+  #   dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  # } else if(DEBUG.CaseNumber==3){
+  #   TargetSiteID <- "403S01272"
+  #   dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  # } else if(DEBUG.CaseNumber==4){
+  #   TargetSiteID <- "907S05514"
+  #   dir_data <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data"
+  #   dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  #   probsHigh <- 0.75
+  #   probsLow <- 0.25
+  #   useAlg <- FALSE
+  #   useBMI <- TRUE
+  #   report_format="html"
+  #   removeOutliers <- TRUE
+  #   useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
+  #   lagdays=10
+  #   siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
+  # }##IF.DEBUG.CaseNumber.END
 }##IF.boo.DEBUG.END
 
 ```

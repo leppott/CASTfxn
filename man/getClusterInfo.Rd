@@ -26,12 +26,11 @@ getClusterInfo(
 
 \item{data_cluster}{The StreamCat data for each reach with cluster assignments.}
 
+\item{data_clusterInfo}{data file for cluster info.}
+
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "ClusterInfo"}
-
-\item{siteQual2Plot}{Type of quality sites. Allowed values are c("reference",
-"not degraded", "better than")}
 }
 \value{
 A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.

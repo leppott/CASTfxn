@@ -4,7 +4,8 @@
 \name{data_BMIcounts}
 \alias{data_BMIcounts}
 \title{Benthic Macroinvertebrate counts example data}
-\format{A data frame with 57,012 rows and 24 variables:
+\format{
+A data frame with 57,012 rows and 24 variables:
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{StationID}}{Station ID}
@@ -30,7 +31,8 @@
           \item{\code{BMISampID}}{a character vector}
           \item{\code{BMI.Metrics.SampID}}{a character vector}
           \item{\code{ElevCategory}}{a character vector}
-}}
+}
+}
 \source{
 example data
 }

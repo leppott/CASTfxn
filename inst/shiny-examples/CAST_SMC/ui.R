@@ -25,7 +25,7 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins 
   , sidebarLayout(
       sidebarPanel(
-         uiOutput("URL_Shiny_Map")
+        # uiOutput("URL_Shiny_Map") # works but not as nice as a straight link
         # , p("Dir_input = .Data")
         # , p("dir_output = .Results")
         # , p("Input and output folders are show below.")
@@ -41,7 +41,7 @@ shinyUI(fluidPage(
         
         #, p(file.path("."))
         #, hr()
-        , selectInput("Station"
+        selectInput("Station"
                     , label = "Choose a Station ID below for which to generate outputs."
                     , choices = LU.Stations
                     , selected = LU.Stations[1]
@@ -92,7 +92,7 @@ shinyUI(fluidPage(
                  , h3("Console")
                  , p("During the running of the tool any messages or warnings that would be displayed in the R console
                      are displayed below.")
-                 ,p("In addition to any messages below there is a progress bar in the lower right.")
+                 ,p("In addition to any text below there is a progress bar in the lower right.")
                  , textOutput("text_console_ALL")
                  )##tabPanel~Console~END
        # # 2

@@ -203,6 +203,8 @@ getVerifiedPredictions <- function(TargetSiteID
       tv <- 1
   }##IF.boo.DEBUG.END
   
+  wd <- getwd() #2020-02-05
+  
   # define pipe
   `%>%` <- dplyr::`%>%`
   col.Bio.Deg   <- "Bio.Deg"
@@ -245,7 +247,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                       , row.names = FALSE, sep = "\t")
           if (exists("deleteSSTVname")) {
@@ -267,12 +269,14 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                       , row.names = FALSE, sep = "\t")
           
-          print(gapcomment)
-          flush.console()
+          msg <- gapcomment
+          message(msg)
+          # print(msg)
+          # flush.console()
           
           boo.continue = FALSE
       } # NO SSTV stressors are used; exit function cleanly
@@ -286,15 +290,21 @@ getVerifiedPredictions <- function(TargetSiteID
 
       # Keep taxa with SSTValues, discard those without
       if (length(keepMTcol)==1) {
-          print("Got only 1 SSTV stressor!")
-          flush.console()
+          msg <- "Got only 1 SSTV stressor!"
+          message(msg)
+          # print(msg)
+          # flush.console()
           df_SSTVtaxa <- df_SSTVtaxa[!is.na(df_SSTVtaxa[,keepMTcol]),]
           
       } else { # Two or more SSTV stressors exist ### NOT TESTED WITH DATA
-          print("Got 2 or more SSTV stressors!")
-          flush.console()
-          print(keepMTcol)
-          flush.console()
+          msg <- "Got 2 or more SSTV stressors!"
+          message(msg)
+          # print(msg)
+          # flush.console()
+          msg <- keepMTcol
+          message(msg)
+          # print(msg)
+          # flush.console()
           df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[,-1]))>=1,]
           
       }
@@ -316,12 +326,14 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-          fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                       , row.names = FALSE, sep = "\t")
           
-          print(gapcomment)
-          flush.console()          
+          msg <- gapcomment
+          message(msg)
+          # print(msg)
+          # flush.console()          
           boo.continue = FALSE
       }
   } else {
@@ -417,14 +429,18 @@ getVerifiedPredictions <- function(TargetSiteID
                   #
                   
                   tv.len <- nrow(stressor.SSTV)
-                  print(paste0("Item (", tv, "/", tv.len,"); Stressor = ", SSTV.analyte))
-                  utils::flush.console()
+                  msg <- paste0("Item (", tv, "/", tv.len,"); Stressor = ", SSTV.analyte)
+                  message(msg)
+                  # print(msg)
+                  # utils::flush.console()
                   
                   # skip if SSTV = ""
                   ## 20181211
                   if(is.na(SSTV.name)==TRUE | SSTV.name==""){
-                      print("No data; SKIP")
-                      utils::flush.console()
+                      msg <- "No data; SKIP"
+                      message(msg)
+                      # print(msg)
+                      # utils::flush.console()
                       next
                   }
                   
@@ -605,7 +621,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                          , by.y = "Analyte"
                                          , all.x = TRUE)
                   df_tbl_scores <- dplyr::select(df_tbl_scores, StationID_Master
-                                                  , RespSampID, eval(bioIndex)
+                                                  , RespSampID, eval(BioIndex_Val)
                                                   , Quality, StressSampID, Label
                                                   , Param_Name, Param_Value
                                                   , variable, value, betterbio_varval_qLO

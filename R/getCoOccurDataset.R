@@ -26,6 +26,7 @@
 #' @param lagdays The number of days allowed between the stressor sample date
 #' and the response sample date, where stressor must always be sampled prior to 
 #' the response sample collection. Default = 0 (same day).
+#' @param removeOutliers Boolean value on whether to remove outliers.  Default = TRUE.
 #' 
 #' @return A dataframe containing matched stressor response data based on 
 #' same-day matching.

@@ -23,9 +23,8 @@ getQualSites(
 )
 }
 \arguments{
-\item{TargetSiteID}{Site ID}
-
-\item{df_sites}{Sites table containing site ids and reference flags. 
+\item{TargetSiteID}{Site ID
+ @param df_sites Sites table containing site ids and reference flags. 
 Default = "data_Sites".}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
@@ -33,26 +32,32 @@ Default = "data_Sites".}
 \item{df_qual}{Biological index and metrics data for the specified biocomm. 
 Default = "data.bmi.metrics".}
 
-\item{colBio}{Name of the column for the biological response index measure. 
-Default = "CSCI".}
+\item{colBio}{Name of the column for the biological response index measure; Default = "CSCI".}
+
+\item{colBioSample}{Column name for biological sample; Default = "RespSampID"}
 
 \item{comp_sites}{Vector containing comparator site identifiers.}
 
-\item{colSample}{Name of the column for the response sample identifier. 
-Default = "BMI.Metrics.SampID".}
+\item{useBC}{Boolean for using Bray Curtis model.  Default = FALSE}
 
-\item{Bio.Deg.Brk}{Biological assessment degraded status, cut function breaks. 
+\item{BioNarBrk}{Breaks for cut function for biological index.  CA CSCI Default is =
+c(-2, 0.62, 0.799, 0.919, 2)}
+
+\item{BioNarLab}{Labels for biological index.  CA CSCI Default =  c("very likely altered"
+, "likely altered", "possibly altered", "likely intact")}
+
+\item{BioDegBrk}{Biological assessment degraded status, cut function breaks. 
 Should be in order from bad (low) to good (high). 
 Default = c(-2, 0.799, 2)}
 
-\item{Bio.Deg.Lab}{Biological assessment degraded status, cut function labels. 
+\item{BioDegLab}{Biological assessment degraded status, cut function labels. 
 Should be in order from bad (low) to good (high).
 Defaults are referenced in the code so if change the code will break. 
 Default = c("Yes", "No").}
 
-\item{siteQual2Plot}{The quality of site desired for plotting on graphs. 
-Default = reference. Allowed values are "reference", "not degraded", or 
-"better than" the minimum target sample quality.}
+\item{dir_results}{directory for results; Default = ./Results}
+
+\item{ColStressSample}{Column name for Stress sample ID; Default = StressSampID}
 }
 \value{
 A list with vectors containing all sites or comparator sites that are

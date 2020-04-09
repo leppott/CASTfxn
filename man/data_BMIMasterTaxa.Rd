@@ -4,7 +4,8 @@
 \name{data_BMIMasterTaxa}
 \alias{data_BMIMasterTaxa}
 \title{data_BMIMasterTaxa}
-\format{A data frame with 824 observations on the following 60 variables.
+\format{
+A data frame with 824 observations on the following 60 variables.
 \describe{
           \item{\code{GenusFinal}}{a factor with levels }
           \item{\code{STORET}}{a logical vector}
@@ -66,7 +67,8 @@
           \item{\code{FinesTolVal_hi}}{a numeric vector}
           \item{\code{FinesTolVal_low}}{a numeric vector}
           \item{\code{SpecCondTolVal}}{a numeric vector}
-}}
+}
+}
 \source{
 example data, Arizona
 }

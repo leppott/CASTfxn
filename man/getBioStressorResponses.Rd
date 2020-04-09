@@ -24,11 +24,17 @@ getBioStressorResponses(
 
 \item{stressors}{stressors}
 
+\item{stressorInfo}{stressor info}
+
 \item{BioResp}{Biological response variables.  For example, BMI metrics or Algae metrics.}
+
+\item{BioInfo}{Bio info}
 
 \item{list.MatchBioData}{list of matched biological (BMI or algae) and stressor data.}
 
 \item{ref.sites}{Reference sites.}
+
+\item{siteQual2Plot}{site quality to plot}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
@@ -37,8 +43,6 @@ getBioStressorResponses(
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "StressorResponse"}
 
 \item{boo_pred_warn}{Should warnings for prediction be suppressed.  Default = TRUE.}
-
-\item{LogTransf}{Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.}
 }
 \value{
 A jpg in SiteID subfolder of the "Results" folder of working directory.  

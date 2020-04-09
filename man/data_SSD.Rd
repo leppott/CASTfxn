@@ -4,7 +4,8 @@
 \name{data_SSD}
 \alias{data_SSD}
 \title{SSD example data}
-\format{A data frame with 16 rows and 28 variables:
+\format{
+A data frame with 16 rows and 28 variables:
 \describe{
           \item{Taxa}{Taxa}
           \item{Exposure_mgperL}{Exposure mg/L}
@@ -34,7 +35,8 @@
           \item{Year}{Year}
           \item{Title}{Title}
           \item{Source}{Source}
-}}
+}
+}
 \source{
 example data
 }

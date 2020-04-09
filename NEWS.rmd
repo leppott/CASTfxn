@@ -37,6 +37,31 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9243 (2020-02-05)
+
+* 2020-04-09, found missing from GitHub.  Reloaded.
+* Updates to CAST_SMC shiny.
+    + Code tweaks.
+    + Test sites to top of SMCSitesFinal.tab
+    + Suppress warning for readOGR.
+    + Update Disclaimer to most recent version.
+    + Update progress bar.
+* Declare additional parameters and fix working directory references.
+    + getSiteInfo
+    + getQualSites
+    + getClusterInfo
+    + getTimeSeq
+    + getBioStressorResponses
+    + getVerifiedPredictions
+    + getWoE
+* Send print to message
+    + getSiteInfo
+    + getTimeSeq
+    + getVerifiedPrecitions
+    + getWoE
+* ggplot add na.rm
+    + getTimeSeq
+
 ## Changes in Version 0.1.0.9242 (2020-02-03)
 
 * Update data in Shiny_SMC folder.

@@ -121,8 +121,10 @@ getWoE <- function(TargetSiteID
         dirLoE <- dfLoE$ResultsDir[l]
         
         scored <- ifelse(booUse == 1, " which was evaluated.", " which was not evaluated.")
-        print(paste0("Processing ", chrLoE, scored))
-        flush.console()
+        msg <- paste0("Processing ", chrLoE, scored)
+        message(msg)
+        # print(msg)
+        # flush.console()
         
         if(booUse==0){ # LoE was not evaluated. Need to enter NE scores for given LoE
             
@@ -272,7 +274,7 @@ getWoE <- function(TargetSiteID
                                      , gapcomment)
             colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
             write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
         } else { # booUse==1; If an LoE wasn't evaluated, skip to the next LoE
@@ -311,7 +313,7 @@ getWoE <- function(TargetSiteID
                                              , gapcomment)
                     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                    fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
                     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                                 , row.names = FALSE, sep = "\t")
                 }
@@ -414,11 +416,11 @@ getWoE <- function(TargetSiteID
     
                     # Metrics
                     dfMetrics <- dfTemp %>%
-                        dplyr::filter(!Response %in% bioIndex)
+                        dplyr::filter(!Response %in% index)
                     
                     # Index
                     dfTemp <- dfTemp %>%
-                        dplyr::filter(Response %in% bioIndex)
+                        dplyr::filter(Response %in% index)
                     
                 } else {
                     # No scores available
@@ -513,13 +515,13 @@ getWoE <- function(TargetSiteID
     
     # Need to separately grab modeled flow data and merge with resp samps (all for station) & rbind
     dfStrGpRankModl <- dfStrGpRank[grepl("_modeledflow",dfStrGpRank$StressSampID),]
-    dfQualModl <- dfQual[,c("StationID_Master","clust","RespSampID",bioIndex
+    dfQualModl <- dfQual[,c("StationID_Master","clust","RespSampID",index
                             ,"BioDeg","BioNarrative","ComparatorYN","BetterThan")]
     dfStrGpRankQualModl <- unique(merge(dfStrGpRankModl, dfQualModl))
     dfStrGpRankQualModl <- dplyr::select(dfStrGpRankQualModl, StationID_Master
                                          , -StressSampID, Stressor, StressorPctRank
                                          , StressorType, clust, RespSampID
-                                         , eval(bioIndex), BioDeg, BioNarrative
+                                         , eval(index), BioDeg, BioNarrative
                                          , ComparatorYN, BetterThan)
     dfStrGpRankQualModl <- merge(dfStrGpRankQualModl, dfSampDates
                                  , by.x = c("StationID_Master", "RespSampID")
@@ -527,7 +529,7 @@ getWoE <- function(TargetSiteID
     dfStrGpRankQualModl <- dplyr::select(dfStrGpRankQualModl, StationID_Master
                                          , StressSampID, Stressor, StressorPctRank
                                          , StressorType, clust, RespSampID
-                                         , eval(bioIndex), BioDeg, BioNarrative
+                                         , eval(index), BioDeg, BioNarrative
                                          , ComparatorYN, BetterThan)
     dfStrGpRankQual <- rbind(dfStrGpRankQual, dfStrGpRankQualModl)
     

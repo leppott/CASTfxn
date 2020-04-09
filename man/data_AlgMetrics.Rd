@@ -4,7 +4,8 @@
 \name{data_AlgMetrics}
 \alias{data_AlgMetrics}
 \title{Algae metrics example data}
-\format{A data frame with 124 observations on the following 52 variables.
+\format{
+A data frame with 124 observations on the following 52 variables.
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{Algae.Metrics.SampID}}{a factor with levels }
@@ -58,7 +59,8 @@
           \item{\code{PhosphorusClass.L.tot}}{a numeric vector}
           \item{\code{NitrogenClass.H.tot}}{a numeric vector}
           \item{\code{NitrogenClass.L.tot}}{a numeric vector}
-}}
+}
+}
 \source{
 example data
 }

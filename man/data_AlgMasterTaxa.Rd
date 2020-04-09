@@ -4,7 +4,8 @@
 \name{data_AlgMasterTaxa}
 \alias{data_AlgMasterTaxa}
 \title{Algae Master Taxa}
-\format{A data frame with 557 observations on the following 23 variables.
+\format{
+A data frame with 557 observations on the following 23 variables.
 \describe{
           \item{\code{FinalID}}{a factor with levels } 
           \item{\code{Phylum}}{a factor with levels \code{Heterokontophyta}}
@@ -29,7 +30,8 @@
            \item{\code{Nitrogen_class}}{a factor with levels \code{H} \code{L}}
            \item{\code{TaxaGroup}}{a logical vector}
            \item{\code{GroupName}}{a factor with levels }
-}}
+}
+}
 \source{
 example data
 }

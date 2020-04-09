@@ -4,7 +4,8 @@
 \name{data_Sites}
 \alias{data_Sites}
 \title{Sites example data}
-\format{A data frame with 2,244 observations on the following 23 variables:
+\format{
+A data frame with 2,244 observations on the following 23 variables:
 \describe{
           \item{STATION_CD}{Station Code}
               \item{\code{STATION_CD}}{Station Code}
@@ -30,7 +31,8 @@
                \item{\code{CARefSite_2017}}{a character vector}
                \item{\code{COMID_NHD2}}{a numeric vector}
                \item{\code{ElevCategory}}{Elevation Category; Hi or Lo, break point at 5,000 ft}
-}}
+}
+}
 \source{
 example data
 }

@@ -8,6 +8,7 @@ getTimeSeq(
   TargetSiteID,
   biocomm = "BMI",
   BioResp,
+  stressors,
   df_stress,
   df_resp,
   df_stressinfo,
@@ -21,20 +22,21 @@ getTimeSeq(
 
 \item{biocomm}{Biological community; algae or BMI. Default = "BMI".}
 
-\item{BioResp}{Biological response variable names. For example, BMI metrics
-or Algae metrics.}
+\item{BioResp}{Biological response variable names. For example, BMI metrics or Algae metrics.}
+
+\item{stressors}{stressors}
 
 \item{df_stress}{Stressor values.}
 
 \item{df_resp}{Response values for the specified biological community and metrics.}
 
+\item{df_stressinfo}{data frame, stress info}
+
+\item{df_respinfo}{data frame, response info}
+
 \item{dir_results}{Directory containing all results. Default = "file.path(getwd(),"Results")"}
 
-\item{dir_sub}{Subdirectory for outputs from this function. Default = "TemporalSequence"}
-
-\item{stressors}{stressors}
-
-\item{colname.SampID}{Name of the column for the response sample identifier.}
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "TimeSequence"}
 }
 \value{
 One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the

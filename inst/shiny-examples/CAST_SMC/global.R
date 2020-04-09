@@ -9,6 +9,7 @@ library(readxl)
 library(stringr)
 library(dplyr)
 library(ggrepel)
+library(tidyr)
 #library(shinyFiles)
 # library(dplyr)
 # library(cluster)
@@ -27,8 +28,8 @@ library(ggrepel)
 
 # Source ####
 #source(file.path(".", "external", "runCASTfxn.R"))
-source(file.path(".", "external", "getTimeSeq.R"))
-source(file.path(".", "external", "getWoE.R"))
+# source(file.path(".", "external", "getTimeSeq.R"))
+# source(file.path(".", "external", "getWoE.R"))
 
 # Global Variables ####
 url_map <- a("Shiny Station Selection Map", href="https://leppott.shinyapps.io/CAST_Map_SiteID")
@@ -55,6 +56,8 @@ getHTML <- function(fn_html){
     return(NULL)
   }
 }##getHTML~END
+
+not_all_na <- function(x) {!all(is.na(x))}
 
 # www Results ####
 

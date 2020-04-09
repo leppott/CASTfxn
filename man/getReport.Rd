@@ -10,7 +10,7 @@ getReport(
   probsLow = 0.25,
   useBMI,
   useAlg,
-  removeOutliers,
+  removeOutliers = TRUE,
   dir_results = file.path(getwd(), "Results"),
   report_type = "summary",
   report_format = "html",
@@ -19,6 +19,16 @@ getReport(
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
+
+\item{probsHigh}{High probability}
+
+\item{probsLow}{Low probability}
+
+\item{useBMI}{use Benthic Macroinvertebrate Data}
+
+\item{useAlg}{use Algae data}
+
+\item{removeOutliers}{Should outliers be removed.  Default = TRUE}
 
 \item{dir_results}{Directory with subfolders named by SiteID.  Default = Results folder in working directory.}
 

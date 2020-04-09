@@ -4,7 +4,8 @@
 \name{data_SampSummary}
 \alias{data_SampSummary}
 \title{Sample summary example data}
-\format{A data frame with 3,577 rows and 7 variables:
+\format{
+A data frame with 3,577 rows and 7 variables:
 \describe{
           \item{StationID_Master}{Station ID}
           \item{CollDate}{Station ID}
@@ -13,7 +14,8 @@
           \item{PhabSampID}{SampleID, Phab}
           \item{BMI.Metrics.SampID}{SampleID, BMI Metrics}
           \item{Algae.Metrics.SampID}{SampleID, Algae Metrics}
-}}
+}
+}
 \source{
 example data
 }

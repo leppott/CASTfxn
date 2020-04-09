@@ -36,6 +36,8 @@ Default = "data.bmi.metrics".}
 and the response sample date, where stressor must always be sampled prior to 
 the response sample collection. Default = 0 (same day).}
 
+\item{removeOutliers}{Boolean value on whether to remove outliers.  Default = TRUE.}
+
 \item{df_mod}{Dataframe containing modeled stressor data for all sites that 
 have it. Default = "data.model.raw".}
 

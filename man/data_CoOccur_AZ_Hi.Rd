@@ -4,7 +4,8 @@
 \name{data_CoOccur_AZ_Hi}
 \alias{data_CoOccur_AZ_Hi}
 \title{Co-Occurence example data (AZ hi)}
-\format{A data frame with 351 rows and 285 variables:
+\format{
+A data frame with 351 rows and 285 variables:
 \describe{
           \item{\code{StationID_Master}}{}
           \item{\code{Group}}{a numeric vector}
@@ -291,7 +292,8 @@
           \item{\code{Zinc_f_mg_L}}{a numeric vector}
           \item{\code{Zinc_uf_mg_L}}{a numeric vector}
           \item{\code{Zirconium_95_uf_pCi_L}}{a logical vector}
-}}
+}
+}
 \source{
 example data
 }

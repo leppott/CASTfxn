@@ -12,7 +12,7 @@ getComparators(
   useBC = FALSE,
   df_bcdist = data.BCdist,
   bc_cutoff = 0.05,
-  dir_results = file.path(wd, "Results"),
+  dir_results = file.path(getwd(), "Results"),
   dir_sub = "SiteInfo"
 )
 }
