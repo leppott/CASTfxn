@@ -911,7 +911,8 @@ shinyServer(function(input, output, session) {
   }##Run_VP~END
   
   Run_ALL <- function(){
-    shiny::withProgress({
+    #
+   shiny::withProgress({
       #
       # Number of increments
       prog_n <- 26 + 7 # confirmed 20200205 (getQS:getWoE repeats for 1661:2447)
@@ -935,7 +936,7 @@ shinyServer(function(input, output, session) {
       if (file.exists(fn_zip)==TRUE){
         file.remove(fn_zip)
       }##IF~file.exists~END
-      
+
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Load Ann's files and such
       gitpath <- file.path(".", "external") # might need something different
@@ -954,16 +955,16 @@ shinyServer(function(input, output, session) {
       # source(file.path(gitpath, "getQualSites.R"))
       # source(file.path(gitpath, "getSummaryAllSites.R"))
       # source(file.path(gitpath, "getReport.R"))
-      
+
       # source(file.path(gitpath, "getDataGaps.R"))
       # source(file.path(gitpath, "getSiteBackground.R"))
-      
+
       # put in global
       #not_all_na <- function(x) {!all(is.na(x))}
-      
+
       # Timer, Start
       startprep.time <- Sys.time()
-      
+
       # Required user-designated options
       wd <- file.path(".")
       dir_data <- file.path(wd, "Data")
@@ -980,8 +981,8 @@ shinyServer(function(input, output, session) {
       biocommlist <- c("bmi","algae")
       siteQual2Plot = "not degraded" # options:"reference","better than","not degraded"
       report_format="html"    # word, pdf are the other options
-      
-      
+
+
       # Specify Base Filenames # These are the files used to run the analyses
       # Data Files ####
       prog_cnt <- prog_cnt + 1
@@ -1014,20 +1015,20 @@ shinyServer(function(input, output, session) {
       # GIS
       # outline <- rgdal::readOGR(dsn = "Data/SMCBoundary", layer = "SMCBoundary_aea")
       # flowline <- rgdal::readOGR(dsn = "Data/SMCReaches", layer = "SMCReaches_aea")
-      
+
       # Load GIS files
       message("Loading GIS files.")
       outline <- rgdal::readOGR(dsn = "Data/SMCBoundary", layer = "SMCBoundary_aea", pointDropZ = TRUE)
       flowline <- suppressWarnings(rgdal::readOGR(dsn = "Data/SMCReaches", layer = "SMCReaches_aea", pointDropZ = TRUE))
       # warning z-dimension discarded.  "pointDropZ = TRUE" does not remove the warning
-      
+
       # Specify user-defined variables
       # Stressors
       meas.stress <- c("ChemSampleID", "PhabSampID", "FldChemSampID")
       chem.stress <- c("ChemSampleID", "FldChemSampID")
       hab.stress <- "PhabSampID"
       mod.stress <- "FlowSampID"
-      
+
       # BMI responses
       bmi_thresholds <- c(-2, 0.62, 0.799, 0.919, 2)
       bmi_narrative <- c("very likely altered", "likely altered"
@@ -1040,7 +1041,7 @@ shinyServer(function(input, output, session) {
       # bmiMetrics <- c(bmiIndex, "MMI", "OoverE", "Taxonomic_Richness"
       #                 , "Intolerant_Percent", "Shredder_Taxa", "Clinger_PercentTaxa"
       #                 , "Coleoptera_PercentTaxa", "EPT_PercentTaxa")
-      
+
 
       # Algal responses
       alg_thresholds <- c(-2, 0.82, 2)
@@ -1074,9 +1075,9 @@ shinyServer(function(input, output, session) {
       #                 , "propsppIndicatorClass_Cu_high_rawhybrid"
       #                 , "propsppOrgNNHHONF_rawhybrid"
       #                 , "propsppIndicatorClass_TN_low_rawhybrid")
-      
+
       # USGS aea for SoCal is below
-      socal.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 
+      socal.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
                 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
                 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # aea used for AZ is below
@@ -1084,19 +1085,19 @@ shinyServer(function(input, output, session) {
       #             +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       my.aea = socal.aea
 
-      
+
       #~~~~~~~~~~~~~~~~~~~~~~~
       # Read datafiles
       ## Get site location info and other metadata (e.g., waterbody name)
       data_Sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
       rm(fn.Sites.Info)
-      
+
       # Get sample summary data
       data_SampSummary <- read.delim(fn.SampSummary, header = TRUE, sep = "\t")
       data_mods        <- data_ReachMod   # Check this
       data_303d  <- data_303d       # Check this
       rm(fn.SampSummary)
-      
+
       # CAST, Chem & other measured data ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1109,13 +1110,13 @@ shinyServer(function(input, output, session) {
       colMeasInvScore = as.vector(data_chemInfo$StdParamName[data_chemInfo$DirIncStress=="Dec"])
       SSTVparms <- unique(data_chemInfo$StdParamName[data_chemInfo$SSTV==1])
       rm(fn.cheminfo)
-      
+
       # Get metadata for modeled stressor data
       data_modelInfo <- read.delim(fn.modelinfo, header = TRUE, sep = "\t")
       data_modelInfo <- mutate(data_modelInfo, Analyte = StdParamName)
       colModelInvScore = as.vector(data_modelInfo$StdParamName[data_modelInfo$DirIncStress=="Dec"])
       rm(fn.modelinfo)
-      
+
       # Combine metadata for all stressor into one datafile
       chemMetaNames <- colnames(data_chemInfo)
       modelMetaNames <- colnames(data_modelInfo)
@@ -1126,7 +1127,7 @@ shinyServer(function(input, output, session) {
       }
       data_modelInfo <- data_modelInfo[,chemMetaNames]
       data_stressInfo <- rbind(data_chemInfo, data_modelInfo)
-      
+
       ## Get measured stressor values
       data_chemAll <- read.delim(fn.chemdata, header = TRUE, sep = "\t",
                                  na.strings = "NA")
@@ -1154,7 +1155,7 @@ shinyServer(function(input, output, session) {
       measParams <- as.vector(unique(data_chemRaw$StdParamName))
       algParams <- as.vector(unique(data_chemRaw$StdParamName[grepl("^AFDM|^Chlor_a|^Pheophytin"
                                                                     ,data_chemRaw$StdParamName)]))
-      
+
       # Get modeled stressor data
       data_modelAll <- read.delim(fn.modeldata, header = TRUE, sep = "\t")
       useParams      <- data_modelInfo$StdParamName[data_modelInfo$UseInStressorID == 1]
@@ -1174,7 +1175,7 @@ shinyServer(function(input, output, session) {
                                         , "StdParamName", "ResultValue", "SampleDate"
                                         , "IQRmethod", "SDmethod", "Outlier")]
       rm(fn.modeldata, data_modelAll)
-      
+
       # Identify modeled parameters to keep or delete (per SCCWRP)
       modelParams <- as.vector(unique(data_modelRaw$StdParamName))
       bmiModelParamsKeep <- c("HighDur_Wet", "HighNum_Dry", "MaxMonthQ_Wet"
@@ -1185,7 +1186,7 @@ shinyServer(function(input, output, session) {
                               , "NoDisturb_Dry", "Qmax_Dry", "QmaxIDR_All")
       algModelParamsDEL <- setdiff(modelParams, algModelParamsKeep)
       algParamsDEL <- c(algModelParamsDEL, algParams)
-      
+
       # Prepare df_allStress file
       data_modeltrim <- as.data.frame(data_modelRaw) %>%
         dplyr::select(StationID_Master, ChemSampleID, StdParamName, SampleDate
@@ -1195,10 +1196,10 @@ shinyServer(function(input, output, session) {
         dplyr::select(StationID_Master, ChemSampleID, StdParamName, SampleDate
                       , ResultValue, IQRmethod, SDmethod, Outlier)
       data_Stress <- rbind(data_meastrim, data_modeltrim)
-      
+
       # Combine measured and modeled parameters with inverse scoring
       col_StressInvScore <- c(colMeasInvScore, colModelInvScore)
-      
+
       # CAST, BMI, taxonomic data ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1207,12 +1208,12 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       #
       data_BMIcounts <- read.table(fn.bmi.raw, header = TRUE, sep = "\t")
-      
+
       data_MTbmi <- read.table(fn.MT.bmi, header = TRUE, sep = "\t",
                                stringsAsFactors = FALSE)
       # data_bmiTaxaRaw <- mutate(data_bmiTaxaRaw, BMI.Metrics.SampID = BMISampID)
       rm(fn.bmi.raw, fn.MT.bmi)
-      
+
       # CAST, BMI, metrics ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1242,7 +1243,7 @@ shinyServer(function(input, output, session) {
         select(-CollDate)
       data_bmiMetrics <- unique(data_bmiMetrics)
       rm(fn.bmi.metrics)
-      
+
       data_cscicore <- read.delim(fn.bmi.cscicore, header = TRUE, sep = "\t"
                                   , na.strings = "NA", stringsAsFactors = FALSE)
       data_cscicore <- data_cscicore[,c("stationid", "county", "smcshed", "latitude"
@@ -1264,12 +1265,12 @@ shinyServer(function(input, output, session) {
                , PctAmbigInd = pcnt_ambiguous_individuals) %>%
         select(StationID_Master, BMISampID, BMISampCount, PctAmbigInd, BMISampFlag)
       data_cscicore <- unique(data_cscicore)
-      
+
       data_bmiMetrics <- merge(data_bmiMetrics, data_cscicore
                                , by.x = c("StationID_Master", "BMISampID")
                                , by.y = c("StationID_Master", "BMISampID")
                                , all.x = TRUE)
-      
+
       data_tmpbmicount <- unique(data_BMIcounts[,c("BMISampID","SampleTotAbund")])
       data_bmiMetrics <- data_bmiMetrics %>%
         mutate(BMISampCount = ifelse(is.na(BMISampCount)
@@ -1278,7 +1279,7 @@ shinyServer(function(input, output, session) {
         mutate(BMISampFlag = ifelse(is.na(BMISampFlag) & (BMISampCount < 250)
                                     , "Insufficient number of individuals", BMISampFlag))
       rm(data_tmpbmicount)
-      
+
       data_bmiMetrics <- data_bmiMetrics %>%
         mutate(BMISampFlag = ifelse(is.na(PctAmbigInd) & is.na(BMISampFlag)
                                     , ifelse(BMISampCount >= 250
@@ -1289,7 +1290,7 @@ shinyServer(function(input, output, session) {
                                              , paste0("Insufficient number of and unknown "
                                                       ,"percent ambiguous individuals")
                                              , BMISampFlag)))
-      
+
       # CAST, BMI, metrics metadata ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1302,7 +1303,7 @@ shinyServer(function(input, output, session) {
       data_bmiMetricsInfo <- data_bmiMetricsInfo[,c("MetricName",	"MetricLabel", "IndexYN")]
       bmiMetrics <- as.vector(data_bmiMetricsInfo$MetricName)
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN=="Yes"])
-      
+
       # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_bmiCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
@@ -1318,7 +1319,7 @@ shinyServer(function(input, output, session) {
       data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, bmiParamsKEEP)
       # write.table(data_bmiCoOccur, file.path(getwd(),"Results","bmiCoOccur.tab")
       #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
-      
+
       # CAST, Alg, metrics ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1332,7 +1333,7 @@ shinyServer(function(input, output, session) {
         dplyr::mutate(AlgSampDate = lubridate::mdy(AlgSampDate)) %>%
         dplyr::mutate(AlgSampFlag = NA)
       rm(fn.alg.metrics)
-      
+
       # CAST, Alg, metrics metadata ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1344,7 +1345,7 @@ shinyServer(function(input, output, session) {
                                         na.strings = "NA", stringsAsFactors = FALSE)
       algMetrics <- as.vector(data_AlgMetricsInfo$MetricName)
       algIndex <- as.character(data_AlgMetricsInfo$MetricName[data_AlgMetricsInfo$IndexYN=="Yes"])
-      
+
       # CAST, Alg taxonomic data ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1353,12 +1354,12 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       #
       data_AlgCounts <- read.table(fn.alg.raw, header = TRUE, sep = "\t")
-      
+
       data_AlgMasterTaxa <- read.table(fn.MT.alg, header = TRUE, sep = "\t",
                                        stringsAsFactors = FALSE)
       rm(fn.alg.raw, fn.MT.alg)
-      # 
-      
+      #
+
       # # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_algCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
@@ -1374,29 +1375,29 @@ shinyServer(function(input, output, session) {
       data_algCoOccur <- dplyr::select(data_algCoOccur, algParamsKEEP)
       # write.table(data_algCoOccur, file.path(getwd(),"Results","algCoOccur.tab")
       #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
-      
+
       # Get cluster data
       data_cluster <- read.delim(fn.cluster, header = TRUE, sep = "\t")
       rm(fn.cluster)
-      
+
       # Get cluster data metadata
       data_clusterInfo <- read.delim(fn.clusterinfo, header = TRUE, sep = "\t")
       rm(fn.clusterinfo)
-      
+
       # Get background data (StreamCat)
       df_bkgdata <- read.table(fn.bkgdata, header = TRUE, sep = "\t"
                                , na.strings = c("","NA"))
-      
+
       # Get background metadata
       df_bkginfo <- read.table(fn.bkginfo, header = TRUE, sep = "\t"
                                , na.strings = c("", "NA")
                                , stringsAsFactors = FALSE)
-      
+
       if (useBC == TRUE) {
         # Get BC dissimilarity distance matrix to subset cluster sites to comparators
         data_BCdist <- read.delim(fn.bcdist, header = TRUE, sep = "\t")
       }
-      
+
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # RUN CASTool
@@ -1408,25 +1409,25 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       #
       #df_targets <- read_excel(fn.targets, col_names = TRUE, trim_ws = TRUE, skip = 0)
-      
+
       endprep.time <- Sys.time()
       elapsedprep.time <- round(endprep.time - startprep.time, 2)
-      msg <- paste("Prep completed in", elapsedprep.time) 
+      msg <- paste("Prep completed in", elapsedprep.time)
       # print(msg)
       # flush.console()
       message(msg)
-      
-      
+
+
       ifelse(!dir.exists(file.path(dir_results))==TRUE
              , dir.create(file.path(dir_results))
              , FALSE)
-      
+
       fn_runstats <- paste0("RunStats_", format.Date(Sys.Date(),"%Y%m%d"), ".tab")
       df_runstats <- as.data.frame(cbind("TargetSiteID", "Biocomm", "NumStressors"
                                          , "NumLoE", "ElapsedTime"))
       write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
                   , col.names = FALSE, row.names = FALSE, sep = "\t")
-      
+
       # Main Code ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1441,27 +1442,27 @@ shinyServer(function(input, output, session) {
         # if (is.na(TargetSiteID)) {
         #   next()
         # }
-        msg <- paste0("Evaluating site: ",TargetSiteID) 
+        msg <- paste0("Evaluating site: ",TargetSiteID)
         message(msg)
         # print(msg)
         # flush.console()
-        
+
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # Biocomm-independent functions
-        
+
         # Create high-level results folder structure
         dir_sub2 <- TargetSiteID
         ifelse(!dir.exists(file.path(dir_results, dir_sub2))==TRUE
                , dir.create(file.path(dir_results, dir_sub2))
                , FALSE)
-        
+
         # Establish data gaps file
         gaps <- cbind.data.frame("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = FALSE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
-        
+
         # getComparators ####
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -1470,9 +1471,9 @@ shinyServer(function(input, output, session) {
         Sys.sleep(mySleepTime)
         # Identify comparator sites
         # This is predicated on the fact that BC distance is calculated based on
-        # expected benthic macroinvertebrate taxa. If there are ever different 
+        # expected benthic macroinvertebrate taxa. If there are ever different
         # BC matrices for different biocomms, then this must move into the biocomm
-        # loop or it needs to be run more than once for each biocomm here, since 
+        # loop or it needs to be run more than once for each biocomm here, since
         # it's used in getSiteInfo immediately afterward.
         list.CompSites <- getComparators(TargetSiteID
                                          , df_sites = data_Sites
@@ -1490,7 +1491,7 @@ shinyServer(function(input, output, session) {
         message(msg)
         # print(msg)
         # flush.console()
-        
+
         # getSiteInfo ####
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -1519,11 +1520,11 @@ shinyServer(function(input, output, session) {
                                         , dir_photo = file.path(getwd(),"Data","Photos")
                                         , dir_results = dir_results
                                         , dir_sub = "SiteInfo")
-        # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo, 
-        #                                Samps = mySamps, 
-        #                                BMImetrics = myBMImetrics, 
-        #                                AlgMetrics = myAlgaeMetrics, 
-        #                                COMID = myCOMID, 
+        # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo,
+        #                                Samps = mySamps,
+        #                                BMImetrics = myBMImetrics,
+        #                                AlgMetrics = myAlgaeMetrics,
+        #                                COMID = myCOMID,
         #                                ClustID = myClustID,
         #                                impair = myImpairments,
         #                                mods = myReachMods
@@ -1532,7 +1533,7 @@ shinyServer(function(input, output, session) {
         message(msg)
         # print(msg)
         # flush.console()
-        
+
         # getClusterInfo ####
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -1552,7 +1553,7 @@ shinyServer(function(input, output, session) {
         message(msg)
         # print(msg)
         # flush.console()
-        
+
         # Munge str/resp ####
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -1565,25 +1566,25 @@ shinyServer(function(input, output, session) {
         avail.data <- avail.data[,c(6:ncol(avail.data))]
         avail.data <- avail.data %>% select_if(not_all_na)
         samptypes <- names(avail.data)
-        
+
         wd <- file.path(".") #2020-02-03
-        
+
         if (any(samptypes %in% meas.stress)) { # Either chem or phab samps exist
           useMeasStress = TRUE
           if (!any(samptypes %in% chem.stress)) {         # No chem samps
             gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0
                                                 , "No chemistry stressors available.")
             colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-            
+
             gap.phab.stress <- cbind.data.frame("general", "HabStress", 1
                                                 , "Habitat stressors available.")
             colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-            
+
           } else if (!any(samptypes %in% hab.stress)) {   # No habitat samps
             gap.phab.stress <- cbind.data.frame("general", "HabStress", 0
                                                 , "No habitat stressors available.")
             colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-            
+
             gap.chem.stress <- cbind.data.frame("general", "ChemStress", 1
                                                 , "Chemistry stressors available.")
             colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
@@ -1591,7 +1592,7 @@ shinyServer(function(input, output, session) {
             gap.phab.stress <- cbind.data.frame("general", "HabStress", 1
                                                 , "Habitat stressors available.")
             colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-            
+
             gap.chem.stress <- cbind.data.frame("general", "ChemStress", 1
                                                 , "Chemistry stressors available.")
             colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
@@ -1602,11 +1603,11 @@ shinyServer(function(input, output, session) {
           useMeasStress = FALSE
           gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0, "No chemistry stressors available.")
           colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-          
+
           gap.phab.stress <- cbind.data.frame("general", "HabStress", 0, "No habitat stressors available.")
           colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
         } ### End If statement for measured stressors
-        
+
         if (any(samptypes %in% mod.stress)) {
           useModStress = TRUE
           gap.mod.stress <- cbind.data.frame("general", "useModStress", 1, "Modeled stressors available.")
@@ -1616,12 +1617,12 @@ shinyServer(function(input, output, session) {
           } else {
             df_allStress <- data_modelRaw
           }
-        } else { 
-          useModStress = FALSE 
+        } else {
+          useModStress = FALSE
           gap.mod.stress <- cbind.data.frame("general", "useModStress", 0, "No modeled stressors available.")
           colnames(gap.mod.stress) <- c("fxnname", "condition", "result", "comment")
         } ### End If statement for modeled stressors
-        
+
         if (any(samptypes == bmiResp)) {
           useBMI = TRUE
           gap.bmi.rsp <- cbind.data.frame("general", "useBMI", 1, "BMI responses available.")
@@ -1631,7 +1632,7 @@ shinyServer(function(input, output, session) {
           gap.bmi.rsp <- cbind.data.frame("general", "useBMI", 0, "No BMI responses available.")
           colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
         } ### End If statement for benthic macroinvertebrate responses
-        
+
         if (any(samptypes == algResp)) {
           useAlg = TRUE
           gap.alg.rsp <- cbind.data.frame("general", "useALG", 1, "Algae responses available.")
@@ -1641,23 +1642,23 @@ shinyServer(function(input, output, session) {
           gap.alg.rsp <- cbind.data.frame("general", "useALG", 0, "No algae responses available.")
           colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
         } ### End If statement for measured stressorsalgal responses
-        
+
         gaps <- rbind.data.frame(gap.chem.stress, gap.phab.stress, gap.mod.stress
                                  , gap.bmi.rsp, gap.alg.rsp)
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
-        
+
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # if ((useMeasStress==FALSE) & (useModStress==FALSE)) {
         #     # No stressor data available
         #     gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0, "No chemistry stressors available.")
         #     colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
         # }
-        
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
-        
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         for (b in 1:length(biocommlist)) {
 
           noStressors <- FALSE
@@ -2447,7 +2448,7 @@ shinyServer(function(input, output, session) {
                       , row.names = FALSE, sep = "\t")
 
         } ### End biocomm loop
-        
+
         # getReport ####
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -2466,11 +2467,11 @@ shinyServer(function(input, output, session) {
                   , report_format="html"
                   , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
                   #, dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
-        
+
         # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
         #    , chem.info, stressors, stressors_logtransf, data.SSTV.totabund)
-        # 
-        
+        #
+
         dfGaps <- read.table(file.path(dir_results, TargetSiteID
                                        , paste0(TargetSiteID,"_datagaps.tab"))
                              , header = TRUE, sep="\t")
@@ -2479,12 +2480,12 @@ shinyServer(function(input, output, session) {
                                       , paste0(TargetSiteID,"_datagaps.tab"))
                     , append = FALSE, col.names = TRUE, row.names = FALSE
                     , sep = "\t")
-        
+
       #} ### End TargetSite loop
-      
+
       rm(site)
       #~~~~~~~~~~~~~~~~~~~~~~~~
-      
+
       # getSummaryAllSites ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -2498,11 +2499,11 @@ shinyServer(function(input, output, session) {
                          , dir_results = file.path(getwd(), "Results")
                          , dir_sub = "WoE"
                          , df_sites = NULL)
-      
+
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # end of Ann's skeleton code, 2020-02-03
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
+
       # Determine and print elapsed time
       end.time <- Sys.time()
       elapsed.time <- end.time - start.time
@@ -2511,15 +2512,15 @@ shinyServer(function(input, output, session) {
       # print(msg)
       # flush.console()
       rm(site)
-      
-      
+
+
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
+
       msgDetail_A <- "Base Data"
       msgDetail_B <- "Load input data"
       incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
-      
+
       # CopyResults ####
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -2534,7 +2535,7 @@ shinyServer(function(input, output, session) {
       # Copy from Results to www/Results
       CopyResults(TargetSiteID)
 
-      
+
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
@@ -2549,24 +2550,40 @@ shinyServer(function(input, output, session) {
       incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
-      
+
       #
     }, message = "Run ALL")##witProgress~END
   }##Run_ALL~END
   
   # 00RunAll ####
   
+  # observeEvent(input$b_RunAll, {
+  #   updateTabsetPanel(session, "tsp_Main", selected = "pan_console")
+  #   })
+  
+  # observe({
+  #   # use tabsetPanel 'id' argument to change tabs
+  #   if (input$b_RunAll > 0) {
+  #     updateTabsetPanel(session, "tsp_Main", selected = "pan_console")
+  #   } else {
+  #     updateTabsetPanel(session, "tsp_Main", selected = "pan_disclaimer")
+  #   }
+  # })
+  # 
   observeEvent(input$b_RunAll, {
+    #
+    # Change focus to console tab
+    #updateTabsetPanel(session, "tsp_Main", selected = "pan_console")
     withCallingHandlers({
-      shinyjs::html(id="text_console_ALL", html="")
-      # Run function that shows console output
-      Run_ALL()
-      }
-      , message = function(m) {
-        shinyjs::html(id = "text_console_ALL", html = m$message, add = FALSE)
-      }
-      , warning = function(m) {
-        shinyjs::html(id = "text_console_ALL", html = paste0(" ... ", m$message), add = TRUE)
+        shinyjs::html(id="text_console_ALL", html="")
+        # Run function that shows console output
+        Run_ALL()
+        }
+        , message = function(m) {
+          shinyjs::html(id = "text_console_ALL", html = m$message, add = FALSE)
+        }
+        , warning = function(m) {
+          shinyjs::html(id = "text_console_ALL", html = paste0(" ... ", m$message), add = TRUE)
       })##withCallingHandlers~END
   })##observeEvent~input$b_RunAll~ENDs
   

@@ -18,7 +18,7 @@ shinyUI(fluidPage(
   
   # titlePanel ####
   # Application title
-  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC Demo 2020-02-05")
+  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC Demo 2020-09-23")
              ,windowTitle = "Causal Assessment Screening Tool (CAST)")
   
   # sidebarLayout ####
@@ -41,7 +41,18 @@ shinyUI(fluidPage(
         
         #, p(file.path("."))
         #, hr()
-        selectInput("Station"
+        
+         h3("Disclaimer")
+        , p("The CAST is a Causal Assessment Screening Tool.  Its intended to assist 
+        the City and its agents to rapidly screen and identify the causes of biological 
+        impairment in a given waterbody, and thereby assist with prioritizing restoration 
+        and protection actions.  Due the CAST's reliance on currently available and sometimes 
+        incomplete data, however, it is not intended to be a final arbiter on causal assessments 
+        analyses, nor does it represent any commitments by the City to perform any specific
+        projects, studies, or other actions.")
+        , hr()
+        , h4("User Selection:")
+        , selectInput("Station"
                     , label = "Choose a Station ID below for which to generate outputs."
                     , choices = LU.Stations
                     , selected = LU.Stations[1]
@@ -78,23 +89,24 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     , mainPanel(
       # tabsetPanel ####
-      tabsetPanel(
+      tabsetPanel(id = "tsp_Main"
         # 0.0
-        tabPanel("Disclaimer and Plot Key"
+        , tabPanel(title = "Console", value = "pan_console"
+                   , h3("Console")
+                   , p("During the running of the tool any messages or warnings that would be displayed in the R console
+                     are displayed below.")
+                   ,p("In addition to any text below there is a progress bar in the lower right.")
+                   , textOutput("text_console_ALL")
+        )##tabPanel~Console~END
+       , tabPanel("Plot Key", value = "pan_legends"
                    #, h3("Disclaimer")
                    #, p("Screening tool...and key for plots.")
                    #, uiOutput("Disclaimer_html")
-                   , includeHTML(file.path(".", "www", "Disclaimer_Key.html"))
+                   , includeHTML(file.path(".", "www", "Legend_Key.html"))
                    #, htmlOutput("Disclaimer_html")
                   )##tabPanel~Disclaimer~END
         # 0.5
-       , tabPanel("Console"
-                 , h3("Console")
-                 , p("During the running of the tool any messages or warnings that would be displayed in the R console
-                     are displayed below.")
-                 ,p("In addition to any text below there is a progress bar in the lower right.")
-                 , textOutput("text_console_ALL")
-                 )##tabPanel~Console~END
+       
        # # 2
        # , tabPanel("Results"
        #            , h3("Results Download")

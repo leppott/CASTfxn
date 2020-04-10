@@ -449,8 +449,8 @@ getVerifiedPredictions <- function(TargetSiteID
                   chem.info_LogTransf <- stressorInfo %>% 
                       dplyr::group_by(StdParamName) %>% 
                       dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
-                  LogTransf <- chem.info_LogTransf[chem.info_LogTransf[,"StdParamName"]==SSTV.analyte
-                                                   , "max_LogTransf"]
+                  LogTransf <- chem.info_LogTransf[chem.info_LogTransf[,"StdParamName", TRUE]==SSTV.analyte
+                                                   , "max_LogTransf", TRUE]
                   LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
                   log.yn <- LogTransf
                   

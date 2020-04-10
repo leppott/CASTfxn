@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-04-09 09:29:36
+    #> Last Update: 2020-04-10 11:04:43
 
 # Planned Updates
 
@@ -25,9 +25,23 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9243 (2020-02-05)
+## Changes in Version 0.1.0.9244 (2020-04-10)
 
-  - 2020-04-09, found missing from GitHub. Reloaded.
+  - getVerifiedPredictions
+      - Update with drop = TRUE to deal with tidyverse corruption of
+        data formats.
+  - runShinyExamples.R
+      - Update examples, details, and default (CAST\_SMC).
+  - Shiny\_SMC
+      - Change order of tabs to have Console first.
+      - Copy disclaimer to sidebar.
+      - Rename Disclaimer\_Key to Legend\_Key.
+          - Minor edits.
+
+## Changes in Version 0.1.0.9243 (2020-04-09)
+
+  - 2020-04-09, found missing from GitHub. Reloaded version from
+    2020-02-05.
   - Updates to CAST\_SMC shiny.
       - Code tweaks.
       - Test sites to top of SMCSitesFinal.tab

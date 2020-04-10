@@ -10,7 +10,7 @@ library(rmarkdown)
 
 # 1. Define RMD #####
 dn_input <- file.path(".", "data-raw", "Legends")
-fn_rmd   <- "Disclaimer_Key.rmd"
+fn_rmd   <- "Legend_Key.rmd"
 dn_output <- file.path(".", "inst", "shiny-examples", "CAST_SMC", "www")
 
 # 2. render/knit RMD
