@@ -256,7 +256,7 @@ getQualSites<- function(TargetSiteID
                                  , gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
     }

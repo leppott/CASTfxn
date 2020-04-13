@@ -37,6 +37,31 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9245 (2020-04-13)
+
+* getReport.R
+    + Add "useBC" and "lagdays" as input parameters.
+* getQualSites.R
+    + Fix working directory reference.
+* Shiny CAST_SMC
+    + server.R, Run_ALL
+        - Add "stringsAsFactors = FALSE" to read.delim().
+    + dplyr::select
+        - Add "all_of".  More tidyverse stuff.
+* Report_Results_summary.rmd
+    + Comment out lines without inputs.
+        - siteQual2Plot
+        - DOlim
+        - pHlimLow
+        - pHlimHigh
+* SiteInfo.R
+    + Modify is.na to avoid more tidyverse corruption.
+        - is.na(df.temp$StudyYear)
+        - is.na(df.temp[, "StudyYear", TRUE])
+* getOutliers.R
+    + Get rid of 'NaN' introduced warning.
+        - Add filter for LogTranf == 1 and ResultValue <= 0.
+
 ## Changes in Version 0.1.0.9244 (2020-04-10)
 
 * getVerifiedPredictions

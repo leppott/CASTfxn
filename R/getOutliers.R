@@ -47,6 +47,7 @@ getOutliers <- function(df_data, df_meta) {
                      , by.x = "StdParamName", by.y = "StdParamName"
                      , all.x = TRUE)
     df_data <- df_data %>%
+        dplyr::mutate(ResultValue = ifelse(LogTransf == 1 & ResultValue <= 0, NA, ResultValue)) %>% 
         dplyr::filter(!is.na(ResultValue)) %>%
         dplyr::mutate(TransfResult = ifelse(LogTransf==1
                                             , log10(ResultValue)

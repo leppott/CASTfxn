@@ -13,6 +13,8 @@
 #' @param probsLow Low probability
 #' @param useBMI use Benthic Macroinvertebrate Data
 #' @param useAlg use Algae data
+#' @param useBC  Use Bray-Curtis biological dissimilarity distance matrix.  Default = TRUE
+#' @param lagdays Number of days between sample dates.  Default = 10.
 #' @param removeOutliers Should outliers be removed.  Default = TRUE
 #' @param dir_results Directory with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
@@ -39,6 +41,8 @@ getReport <- function(TargetSiteID
                       , probsLow=0.25
                       , useBMI
                       , useAlg
+                      , useBC = TRUE
+                      , lagdays = TRUE
                       , removeOutliers = TRUE
                       , dir_results=file.path(getwd(), "Results")
                       , report_type="summary"

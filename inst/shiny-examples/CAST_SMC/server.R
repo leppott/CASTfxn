@@ -1089,11 +1089,11 @@ shinyServer(function(input, output, session) {
       #~~~~~~~~~~~~~~~~~~~~~~~
       # Read datafiles
       ## Get site location info and other metadata (e.g., waterbody name)
-      data_Sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
+      data_Sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       rm(fn.Sites.Info)
 
       # Get sample summary data
-      data_SampSummary <- read.delim(fn.SampSummary, header = TRUE, sep = "\t")
+      data_SampSummary <- read.delim(fn.SampSummary, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       data_mods        <- data_ReachMod   # Check this
       data_303d  <- data_303d       # Check this
       rm(fn.SampSummary)
@@ -1105,14 +1105,14 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       ## Get metadata for all measured stressors
-      data_chemInfo <- read.delim(fn.cheminfo, header = TRUE, sep = "\t")
+      data_chemInfo <- read.delim(fn.cheminfo, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       data_chemInfo <- mutate(data_chemInfo, Analyte = StdParamName)
       colMeasInvScore = as.vector(data_chemInfo$StdParamName[data_chemInfo$DirIncStress=="Dec"])
       SSTVparms <- unique(data_chemInfo$StdParamName[data_chemInfo$SSTV==1])
       rm(fn.cheminfo)
 
       # Get metadata for modeled stressor data
-      data_modelInfo <- read.delim(fn.modelinfo, header = TRUE, sep = "\t")
+      data_modelInfo <- read.delim(fn.modelinfo, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       data_modelInfo <- mutate(data_modelInfo, Analyte = StdParamName)
       colModelInvScore = as.vector(data_modelInfo$StdParamName[data_modelInfo$DirIncStress=="Dec"])
       rm(fn.modelinfo)
@@ -1130,7 +1130,7 @@ shinyServer(function(input, output, session) {
 
       ## Get measured stressor values
       data_chemAll <- read.delim(fn.chemdata, header = TRUE, sep = "\t",
-                                 na.strings = "NA")
+                                 na.strings = "NA", stringsAsFactors = FALSE)
       analytes      <- data_stressInfo$StdParamName[data_stressInfo$UseInStressorID == 1]
       data_chemRaw <- data_chemAll[data_chemAll$StdParamName %in% analytes,]
       data_chemRaw <- data_chemRaw %>%
@@ -1157,7 +1157,7 @@ shinyServer(function(input, output, session) {
                                                                     ,data_chemRaw$StdParamName)]))
 
       # Get modeled stressor data
-      data_modelAll <- read.delim(fn.modeldata, header = TRUE, sep = "\t")
+      data_modelAll <- read.delim(fn.modeldata, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       useParams      <- data_modelInfo$StdParamName[data_modelInfo$UseInStressorID == 1]
       data_modelRaw <- data_modelAll[data_modelAll$StdParamName %in% useParams,]
       data_modelRaw <- data_modelRaw %>%
@@ -1316,7 +1316,8 @@ shinyServer(function(input, output, session) {
                                            , removeOutliers = boo_removeOutliers)
       # returns df_coOccur as data_bmiCoOccur
       bmiParamsKEEP <- setdiff(colnames(data_bmiCoOccur), bmiModelParamsDEL)
-      data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, bmiParamsKEEP)
+      data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, all_of(bmiParamsKEEP))
+      # 2020-04-10, add "all_of" to excise tidyverse message.
       # write.table(data_bmiCoOccur, file.path(getwd(),"Results","bmiCoOccur.tab")
       #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
 
@@ -1372,16 +1373,16 @@ shinyServer(function(input, output, session) {
                                            , removeOutliers = boo_removeOutliers)
       # returns df_coOccur as data_algCoOccur
       algParamsKEEP <- setdiff(colnames(data_algCoOccur), algParamsDEL)
-      data_algCoOccur <- dplyr::select(data_algCoOccur, algParamsKEEP)
+      data_algCoOccur <- dplyr::select(data_algCoOccur, all_of(algParamsKEEP))
       # write.table(data_algCoOccur, file.path(getwd(),"Results","algCoOccur.tab")
       #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
 
       # Get cluster data
-      data_cluster <- read.delim(fn.cluster, header = TRUE, sep = "\t")
+      data_cluster <- read.delim(fn.cluster, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       rm(fn.cluster)
 
       # Get cluster data metadata
-      data_clusterInfo <- read.delim(fn.clusterinfo, header = TRUE, sep = "\t")
+      data_clusterInfo <- read.delim(fn.clusterinfo, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       rm(fn.clusterinfo)
 
       # Get background data (StreamCat)
@@ -1395,7 +1396,7 @@ shinyServer(function(input, output, session) {
 
       if (useBC == TRUE) {
         # Get BC dissimilarity distance matrix to subset cluster sites to comparators
-        data_BCdist <- read.delim(fn.bcdist, header = TRUE, sep = "\t")
+        data_BCdist <- read.delim(fn.bcdist, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       }
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2426,9 +2427,6 @@ shinyServer(function(input, output, session) {
           # print(msg)
           # flush.console()
 
-          #***Fails*HERE***####
-          # 2nd run through on Alg, ~24 min
-
           # Write run-time stats to file
           endsite.time <- Sys.time()
           elapsedsite.time <- endsite.time - startsite.time
@@ -2448,6 +2446,10 @@ shinyServer(function(input, output, session) {
                       , row.names = FALSE, sep = "\t")
 
         } ### End biocomm loop
+        
+        
+        #***Fails*HERE***####
+        # RMD doesn't have all the parts needed.
 
         # getReport ####
         prog_cnt <- prog_cnt + 1
@@ -2461,8 +2463,10 @@ shinyServer(function(input, output, session) {
                   , probsLow=probsLow
                   , useBMI=useBMI
                   , useAlg=useAlg
+                  , useBC = useBC
+                  , lagdays = lagdays
                   , removeOutliers=boo_removeOutliers
-                  , dir_results=file.path(getwd(), "Results")
+                  , dir_results=file.path(".", "Results")
                   , report_type="summary"
                   , report_format="html"
                   , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))

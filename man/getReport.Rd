@@ -10,6 +10,8 @@ getReport(
   probsLow = 0.25,
   useBMI,
   useAlg,
+  useBC = TRUE,
+  lagdays = TRUE,
   removeOutliers = TRUE,
   dir_results = file.path(getwd(), "Results"),
   report_type = "summary",
@@ -27,6 +29,10 @@ getReport(
 \item{useBMI}{use Benthic Macroinvertebrate Data}
 
 \item{useAlg}{use Algae data}
+
+\item{useBC}{Use Bray-Curtis biological dissimilarity distance matrix.  Default = TRUE}
+
+\item{lagdays}{Number of days between sample dates.  Default = 10.}
 
 \item{removeOutliers}{Should outliers be removed.  Default = TRUE}
 

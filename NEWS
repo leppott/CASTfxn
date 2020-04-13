@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-04-10 11:04:43
+    #> Last Update: 2020-04-13 16:25:57
 
 # Planned Updates
 
@@ -24,6 +24,31 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9245 (2020-04-13)
+
+  - getReport.R
+      - Add “useBC” and “lagdays” as input parameters.
+  - getQualSites.R
+      - Fix working directory reference.
+  - Shiny CAST\_SMC
+      - server.R, Run\_ALL
+          - Add “stringsAsFactors = FALSE” to read.delim().
+      - dplyr::select
+          - Add “all\_of”. More tidyverse stuff.
+  - Report\_Results\_summary.rmd
+      - Comment out lines without inputs.
+          - siteQual2Plot
+          - DOlim
+          - pHlimLow
+          - pHlimHigh
+  - SiteInfo.R
+      - Modify is.na to avoid more tidyverse corruption.
+          - is.na(df.temp$StudyYear)
+          - is.na(df.temp\[, “StudyYear”, TRUE\])
+  - getOutliers.R
+      - Get rid of ‘NaN’ introduced warning.
+          - Add filter for LogTranf == 1 and ResultValue \<= 0.
 
 ## Changes in Version 0.1.0.9244 (2020-04-10)
 

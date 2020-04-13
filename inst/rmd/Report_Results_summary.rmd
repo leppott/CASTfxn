@@ -66,13 +66,14 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   cat(paste("\tRemove outliers? ",removeOutliers,"\n",sep=""))
   cat(paste("\tUse expected biological similarity filter? ",useBC,"\n",sep=""))
   cat(paste("\tNumber of days lag time between stressor and response sample collection = ",lagdays,"\n",sep=""))
-  cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
+ # siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
+  #cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
   cat(paste("\tLower and upper quantiles for identifying stressors = ",probsLow
             , "-", probsHigh, "\n",sep=""))
-  cat(paste("\tLimit above which DO is not identified as a stressor = ",DOlim
-            , "\n",sep=""))
-  cat(paste("\tLimits between which pH is not identified as a stressor = ",pHlimLow
-            , " and ", pHlimHigh, "\n\n",sep=""))
+  # cat(paste("\tLimit above which DO is not identified as a stressor = ",DOlim
+  #           , "\n",sep=""))
+  # cat(paste("\tLimits between which pH is not identified as a stressor = ",pHlimLow
+  #           , " and ", pHlimHigh, "\n\n",sep=""))
 
 ```
 
