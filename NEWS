@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-04-13 16:25:57
+    #> Last Update: 2020-04-14 15:18:38
 
 # Planned Updates
 
@@ -24,6 +24,13 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9246 (2020-04-14)
+
+  - getSiteInfo.R
+      - Clear warning about only first element used.
+  - getBioStressorResponses
+      - Add “formula = y \~ x” to avoid message.
 
 ## Changes in Version 0.1.0.9245 (2020-04-13)
 

@@ -633,8 +633,8 @@ getSiteInfo <- function(TargetSiteID
             message(msg)
             # print(msg)
             # flush.console()
-            
-            if (is.na(df.temp[, "StudyYear", TRUE])) {  # No study year
+            # QC 20200413 ####
+            if (is.na(sort(df.temp[, "StudyYear", TRUE], na.last = TRUE)[1])) {  # No study year
                 p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
                                                                , y = signif(val, digits = 2))) +
                     ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +

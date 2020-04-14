@@ -1163,6 +1163,7 @@ getBioStressorResponses <- function(TargetSiteID
                                                 , color=col_line_all
                                                 , fill=fill_sites_all
                                                 , alpha=alpha_lm_all
+                                                , formula = y ~ x # Added to avaoid message
                                                 , show.legend=FALSE)
             p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
                                               , ggplot2::aes_(y=~lwr)
@@ -1184,6 +1185,7 @@ getBioStressorResponses <- function(TargetSiteID
                                                 , color=col_line_cl
                                                 , fill=fill_sites_cl
                                                 , alpha=alpha_lm_cl
+                                                , formula = y ~ x # Added to avaoid message
                                                 , show.legend=FALSE)
             p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
                                               , ggplot2::aes_(y=~lwr)
