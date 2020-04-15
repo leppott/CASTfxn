@@ -73,7 +73,8 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       addLegend("bottomleft", colors=c("green", "blue", "purple", "orange", "red", "black")
                 , labels=c("Watersheds", "Streams", "Streams (mouse-over)", "Sites", "Sites (mouse-over)", "Sites (selected)")
                 , values=NA
-                )
+                ) %>%
+      addMiniMap(toggleDisplay = TRUE)
   })#output$map.smc.END
   
   # # Reactive expression for the data subsetted to what the user selected

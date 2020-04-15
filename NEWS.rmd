@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9247 (2020-04-15)
+
+* Shiny map apps CAST_Map_StationID and CAST_MAP_COMID
+    + Add mini map
+
 ## Changes in Version 0.1.0.9246 (2020-04-14)
 
 * getSiteInfo.R

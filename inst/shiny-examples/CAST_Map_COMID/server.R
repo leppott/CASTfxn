@@ -73,7 +73,8 @@ shinyServer(function(input, output, session) {##ShinyServer.START
       # Legend
       addLegend("bottomleft", colors=c("green", "blue", "red", "orange", "gray")
                 , labels=c("Watersheds", "Streams", "Stream (mouse-over)", "Stream (selected)", "Sites")
-                , values=NA)
+                , values=NA) %>%
+      addMiniMap(toggleDisplay = TRUE)
       #
   })#output$map.smc.END
   

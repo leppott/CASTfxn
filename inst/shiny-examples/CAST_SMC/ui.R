@@ -18,7 +18,7 @@ shinyUI(fluidPage(
   
   # titlePanel ####
   # Application title
-  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC Demo 2020-09-23")
+  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC Demo 2020-04-23")
              ,windowTitle = "Causal Assessment Screening Tool (CAST)")
   
   # sidebarLayout ####
