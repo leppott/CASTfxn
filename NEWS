@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-04-15 07:41:19
+    #> Last Update: 2020-04-20 08:33:22
 
 # Planned Updates
 
@@ -24,6 +24,29 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9248 (2020-04-20)
+
+  - Report\_Results\_summary.rmd
+      - Replace CSCI and MMIdiatom with bmiIndex and algIndex.
+      - arrange\_ to arrange (line 271) to avoid deprecation message.
+  - getReport
+      - Define pipe so can be used in RMD.
+      - Additional input parameters
+          - dir\_data
+          - bmiIndex
+          - algIndex
+      - Modify message for missing RMD.
+      - Formatting to avoid error when render the RMD.
+  - CAST\_SMC
+      - server.R
+          - Update call to getReport()
+  - getSummaryAllSites.R
+      - print() to message()
+      - Replace list.files() and checks for files with list.dirs().
+      - Fix formatting on an if else statement.
+  - Shiny CAST\_COMID
+      - Stream reaches not showing, uncommented that section.
 
 ## Changes in Version 0.1.0.9247 (2020-04-15)
 

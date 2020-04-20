@@ -20,6 +20,9 @@
 #' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = HTML
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
+#' @param dir_data Directory with data.  Default = "./Data".
+#' @param bmiIndex Column name for BMI index.  Default = "CSCI".
+#' @param algIndex Column name for Algae index.  Default = "MMIdiatom"
 #' 
 #' @return A report for the provided SiteID in the provided format (html or word) 
 #' in the results directory.
@@ -29,10 +32,15 @@
 #' dir_results <- file.path(getwd(), "Results")
 #' report_type <- "summary"
 #' report_format <- "html"
+#' useBMI = TRUE
+#' useAlg = FALSE
+#' bmiIndex = "CSCI"
+#' algIndex = "MMIhybrid"
+#' dir_data <- file.path(getwd(), "Data")
 #'  
 #' \dontrun{
 #' # Run Function
-#' getReport(TargetSiteID, dir_results, report_type, report_format)
+#' getReport(TargetSiteID, dir_results, report_type, report_format, useBMI = useBMI, useAlg = useAlg, bmiIndex = bmiIndex, algIndex = algIndex, dir_data = dir_data)
 #' }
 #
 #' @export
@@ -42,13 +50,19 @@ getReport <- function(TargetSiteID
                       , useBMI
                       , useAlg
                       , useBC = TRUE
-                      , lagdays = TRUE
+                      , lagdays = 10
                       , removeOutliers = TRUE
                       , dir_results=file.path(getwd(), "Results")
                       , report_type="summary"
                       , report_format="html"
-                      , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
+                      , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                      , dir_data = file.path(".", "Data")
+                      , bmiIndex = "CSCI"
+                      , algIndex = "MMIdiatom"){##FUNCTION.START
   #
+  # Define pipe
+  `%>%` <- dplyr::`%>%`
+  
   # Date and Time for output
   myDate <- format(Sys.Date(),"%Y%m%d")
   myTime <- format(Sys.time(),"%H%M%S")
@@ -73,28 +87,26 @@ getReport <- function(TargetSiteID
     # Generate Report
   # Test if RMD file exists
   if (file.exists(strFile_RMD)){##IF.file.exists.START
-    #suppressWarnings(
-    rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
-                      , output_dir=file.path(dir_results, TargetSiteID), quiet=TRUE)
-    #)
+    #suppressWarnings()  # Use quiet = TRUE instead
+   # rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
+   #                   , output_dir=file.path(dir_results, TargetSiteID), quiet=TRUE)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-    Msg.Line1 <- "Provided report template file directory does not include the necessary RMD file to generate the report.  So no report will be generated."
-    #Msg.Line2 <- "The default report directory can be modified in config.R (ContData.env$myReport.Dir) and used as input to the function (fun.myConfig)."
+    Msg.Line1 <- "Provided report template file directory does not include the necessary RMD "
+    Msg.Line2 <- " file to generate the report.  So no report will be generated."
     Msg.Line3 <- paste0("file = ", paste0("Report_Results_", report_type, ".rmd"))
     Msg.Line4 <- paste0("directory = ", dir_rmd)
-    Msg <- paste(Msg.Line0, Msg.Line1
-                 #, Msg.Line2
-                 , Msg.Line3, Msg.Line4, Msg.Line0, sep="\n\n")
-    cat(Msg)
-    utils::flush.console()
+    Msg <- paste(Msg.Line0, Msg.Line1, Msg.Line2, Msg.Line3, Msg.Line4, Msg.Line0, sep="\n\n")
+    # cat(Msg)
+    # utils::flush.console()
+    message(Msg)
   }##IF.file.exists.END
   # 
   # User Feedback
-  print("Task COMPLETE.  Report generated.")
-  print(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
+  message("Task COMPLETE.  Report generated.")
+  message(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
                , report_type, "), Report Format (", report_format, ")."))
-  utils::flush.console()
+  #utils::flush.console()
   #
 }##FUNCTION.END
 

@@ -187,7 +187,6 @@ if(length(fn_all)>0){##IF.boo.pdf.START
 
 ```{r sampsummary}
 # Read file summarizing the comparator data and provide it in summary form
-
 fnSamps <- file.path(dir_data,"SMCSiteSummary.tab")
 dfSamps <- read.delim(fnSamps, header=TRUE, sep="\t")
 dfSamps <- dfSamps[dfSamps$StationID_Master==TargetSiteID,]
@@ -269,16 +268,16 @@ dfSamps <- dfSamps %>%
 
 compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
                        , " Red index scores indicate degraded biological quality.")
-dfSamps <- dplyr::arrange_(dfSamps, "SampleDate", bmiIndex, algIndex)
+dfSamps <- dplyr::arrange(dfSamps, "SampleDate", bmiIndex, algIndex)
 
 if (report_format=="html") {
 dfSamps <- dfSamps %>%
-    dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
+    dplyr::mutate(bmiIndex=kableExtra::cell_spec(CSCI, "html"
                                 , color=ifelse(is.na(CSCI)==TRUE, "black"
                                 , ifelse((CSCI<0.79)==TRUE,"red","black"))
                                 , bold=ifelse(is.na(CSCI)==TRUE, FALSE
                                 , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
-                  , MMIhybrid=kableExtra::cell_spec(MMIhybrid,"html"
+                  , algIndex=kableExtra::cell_spec(MMIhybrid,"html"
                                 , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
                                 , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
                                 , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE

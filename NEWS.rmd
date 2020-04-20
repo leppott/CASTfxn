@@ -37,6 +37,29 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9248 (2020-04-20)
+
+* Report_Results_summary.rmd
+    + Replace CSCI and MMIdiatom with bmiIndex and algIndex.
+    + arrange_ to arrange (line 271) to avoid deprecation message.
+* getReport
+    + Define pipe so can be used in RMD.
+    + Additional input parameters
+        - dir_data
+        - bmiIndex
+        - algIndex
+    + Modify message for missing RMD.
+    + Formatting to avoid error when render the RMD.
+* CAST_SMC
+    + server.R
+        - Update call to getReport()
+* getSummaryAllSites.R
+    + print() to message()
+    + Replace list.files() and checks for files with list.dirs().
+    + Fix formatting on an if else statement.
+* Shiny CAST_COMID
+    + Stream reaches not showing, uncommented that section.
+
 ## Changes in Version 0.1.0.9247 (2020-04-15)
 
 * Shiny map apps CAST_Map_StationID and CAST_MAP_COMID

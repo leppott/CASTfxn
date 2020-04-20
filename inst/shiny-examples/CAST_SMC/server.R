@@ -2466,10 +2466,13 @@ shinyServer(function(input, output, session) {
                   , useBC = useBC
                   , lagdays = lagdays
                   , removeOutliers=boo_removeOutliers
-                  , dir_results=file.path(".", "Results")
+                  , dir_results=file.path(getwd(), "Results")
                   , report_type="summary"
                   , report_format="html"
-                  , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
+                  , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                  , dir_data = file.path(getwd(), "Data")
+                  , bmiIndex = "CSCI"
+                  , algIndex = "MMIhybrid")
                   #, dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
 
         # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData

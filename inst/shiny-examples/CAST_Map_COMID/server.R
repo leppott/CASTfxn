@@ -20,7 +20,7 @@ shinyServer(function(input, output, session) {##ShinyServer.START
   pal.tidal <- colorBin(palette=c("red", "blue"), domain=lines.flowline.proj$LENGTHKM)
   pal.smc   <- colorFactor(palette = "Set3", domain=poly.smc.proj$CUNAME)
   
-  # Map
+  # Map ####
   output$map <- renderLeaflet({
     #
     leaflet() %>%
@@ -36,12 +36,12 @@ shinyServer(function(input, output, session) {##ShinyServer.START
                   , color="green"
                   , fill=FALSE
                   , group="Watersheds") %>%
-      # addPolylines(data=lines.flowline.proj
-      #              , color="blue"
-      #              , popup=~COMID
-      #              , highlightOptions=highlightOptions(bringToFront=TRUE
-      #                                                  , color="red" )
-      #              , group="Streams") %>%
+      addPolylines(data=lines.flowline.proj
+                   , color="blue"
+                   , popup=~COMID
+                   , highlightOptions=highlightOptions(bringToFront=TRUE
+                                                       , color="red" )
+                   , group="Streams") %>%
       addPolylines(data=lines.flowline.proj[lines.flowline.proj$COMID == "20331944", ]
                    , color="orange"
                    , popup=~COMID

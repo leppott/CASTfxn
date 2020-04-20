@@ -25,7 +25,6 @@
 #' stressor percent rank among comparators, number of paired samples, and 
 #' final weight of evidence.
 #' 
-#' 
 #' @keywords internal
 #' 
 #' @export
@@ -53,23 +52,28 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     
     
     if (!dir.exists(file.path(dir_results))==TRUE) {
-        print("Results directory not found.")
-        flush.console()
+        message("Results directory not found.")
+        #flush.console()
     } else {
-        site_dirs <- list.files(dir_results)
-        rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
-        site_dirs <- site_dirs[!site_dirs %in% rmfile]
+        # site_dirs <- list.files(dir_results)
+        # rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
+        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
+        # # Remove .zip or .7z files
+        # rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)]
+        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
         
-        rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
-        site_dirs <- site_dirs[!site_dirs %in% rmfile]
+        site_dirs <- list.dirs(dir_results, full.names = FALSE, recursive = FALSE)
         
         for (site in (1:length(site_dirs))) {
             # Get Target Site ID
             TargetSiteID <- site_dirs[site]
             for (b in (1:length(biocommlist))) {
                 biocomm = biocommlist[b]
-                if (biocomm=="BMI") { bioIndex = bmiIndex }
-                else { bioIndex = algIndex}
+                if (biocomm=="BMI") { 
+                    bioIndex = bmiIndex 
+                } else { 
+                    bioIndex = algIndex
+                }
                 # Get WoE path & file lists (under TargetSiteID)
                 woe_path <- file.path(dir_results, TargetSiteID, biocomm, "WoE")
                 woe_detailfiles <- list.files(woe_path, pattern = "WoE_ScoresTable")
@@ -78,9 +82,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 # If there are no files matching criteria, move on
                 # If there are one or more (for each biocomm), read them
                 if (length(woe_detailfiles)==0) {
-                    print(paste0("No WoE detailed scores available for "
+                    message(paste0("No WoE detailed scores available for "
                                  , TargetSiteID, " for ", biocomm, "."))
-                    flush.console()
+                    #flush.console()
                 } else {
                     for (dfile in (1:length(woe_detailfiles))) {
                         # Read file
@@ -98,9 +102,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 }
                 
                 if (length(woe_stressfiles)==0) {
-                    print(paste0("No WoE executive summary found for "
+                    message(paste0("No WoE executive summary found for "
                                  , TargetSiteID, " for ", biocomm, "."))
-                    flush.console()
+                    #flush.console()
                 } else {
                     for (dfile in (1:length(woe_stressfiles))) {
                         # Read file
@@ -217,8 +221,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     write.table(df_WoEDetails, fnDetails, append = FALSE, col.names = TRUE
                 , row.names = FALSE, sep = "\t")
     
-    print("Completed compiling WoE summary.")
-    flush.console()
+    message("Completed compiling WoE summary.")
+    #flush.console()
     
     
 }
