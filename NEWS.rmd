@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9249 (2020-04-23)
+
+* Shiny app, RPP_SMC
+    + Add user inputs.
+    + Currate included data.
+
 ## Changes in Version 0.1.0.9248 (2020-04-20)
 
 * Report_Results_summary.rmd
