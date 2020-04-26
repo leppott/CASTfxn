@@ -292,22 +292,28 @@ getStressorList <- function(TargetSiteID
       df_plot_long <- reshape2::melt(df_plot_wide_mod, measure.vars=gpcoolvar
                                      , variable.name="GrpNm")
       # Remove NaN so get rid of error message?
-      df_plot_long <- df_plot_long[!is.na(df_plot_long$value), ]
+      df_plot_long <- df_plot_long[!is.na(df_plot_long$value),]
       df_plot_long <- merge(gpchems, df_plot_long, by.x="Analyte", by.y="GrpNm")
 
       ## Plot, Data, Cluster_Ref
-      # QC for nrow
+      # QC for nrow 
+      # This is where an NA in the 
       boo_plot_ref <- FALSE
       if(exists("clusterRefChemData")){##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_wide <- as.data.frame(clusterRefChemData[, gpcoolvar])
         # colnames(df_plot_ref_wide) <- gpcoolvar 
         df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
-        df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
-        # df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
-        df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
-        boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
-        boo_plot_ref <- ifelse(all(is.na(df_plot_long_ref$value)), FALSE, TRUE)
+        refchemcolnames <- colnames(df_plot_ref_wide_mod)
+        if (gpcoolvar %in% refchemcolnames) {
+            df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+            # df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
+            df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
+            boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
+            boo_plot_ref <- ifelse(all(is.na(df_plot_long_ref$value)), FALSE, TRUE)
+        } else {
+            boo_plot_ref <- FALSE
+        }
       }##IF~nrow(cluster.ref.chem.data)~END
       
       ## Plot, Data, Target Site
