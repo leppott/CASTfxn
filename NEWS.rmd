@@ -37,6 +37,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9250 (2020-05-04)
+
+* Shiny app, RPP_SMC
+   + Rework visual design.
+   + Include Stations map as a tab.
+   + Include Reach map as a tab.
+   + Other tweaks.
+
 ## Changes in Version 0.1.0.9249 (2020-04-23)
 
 * Shiny app, RPP_SMC

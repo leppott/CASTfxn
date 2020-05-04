@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-04-23 14:23:57
+    #> Last Update: 2020-05-04 13:50:23
 
 # Planned Updates
 
@@ -24,6 +24,14 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9250 (2020-05-04)
+
+  - Shiny app, RPP\_SMC
+      - Rework visual design.
+      - Include Stations map as a tab.
+      - Include Reach map as a tab.
+      - Other tweaks.
 
 ## Changes in Version 0.1.0.9249 (2020-04-23)
 

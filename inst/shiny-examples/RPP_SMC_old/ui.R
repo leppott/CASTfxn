@@ -1,0 +1,284 @@
+#
+# This is the user-interface definition of a Shiny web application. You can
+# run the application by clicking 'Run App' above.
+#
+# Find out more about building applications with Shiny here:
+# 
+#    http://shiny.rstudio.com/
+#
+
+# Packages
+#library(shiny)
+
+# Source Pages ####
+# Load files for individual screens
+tab_Disclaimer <- source("external/tab_Disclaimer.R", local=TRUE)$value
+
+# Define UI for application that draws a histogram
+shinyUI(
+  #fluidPage(
+  
+  # Need for console messages to Shiny
+  #shinyjs::useShinyjs()
+  
+  # titlePanel ####
+  # Application title
+  # , titlePanel(HTML("Restoration-Protection Prioritization (RPP) Tool <br/> version: Demo 2020-04-23")
+  #            , windowTitle = "RPP Tool")
+  
+  navbarPage("titleNavBarPage"
+             , theme = "bootstrap.css"
+             , inverse = TRUE
+             , tab_Disclaimer
+             )## navbarPage~ END
+)##shinyUI~END
+  
+ #  # sidebarLayout ####
+ #  # Sidebar with a slider input for number of bins 
+ #  , sidebarLayout(
+ #      sidebarPanel(
+ #        # uiOutput("URL_Shiny_Map") # works but not as nice as a straight link
+ #        # , p("Dir_input = .Data")
+ #        # , p("dir_output = .Results")
+ #        # , p("Input and output folders are show below.")
+ #        # , p("To change click the buttons below before choosing a station.")
+ #        # , verbatimTextOutput("dir_user_input_path")
+ #  #     , shinyDirButton('dir_user_input', 'Input directory', 'Select the folder with input files')
+ #      # , shinyDirButton("directory", "Folder select", "Please select a folder")
+ #       
+ #        # , verbatimTextOutput("directorypath")
+ # 
+ #        #, p(file.path(".", "Data"))
+ # #      , shinyDirButton('dir_user_output', 'Output directory', "Select the folder to contain 'Results' subfolder")
+ #        
+ #        #, p(file.path("."))
+ #        #, hr()
+ #        
+ #         h3("Disclaimer")
+ #        , p("The RPP is a screening tool.  Its intended to assist 
+ #        the City and its agents to rapidly screen and assist with prioritizing restoration 
+ #        and protection actions.  Due the tool's reliance on currently available and sometimes 
+ #        incomplete data, however, it is not intended to be a final arbiter on assessment
+ #        analyses, nor does it represent any commitments by the City to perform any specific
+ #        projects, studies, or other actions.")
+ #        , hr()
+ #        , h4("Selection, COMID")
+ #        , selectInput("Station"
+ #                    , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
+ #                    , choices = LU.Stations
+ #                    , selected = LU.Stations[1]
+ #        )
+ # 
+ #        , p("If COMID is not known then click the link below to the mapping app to find your desired COMID.")
+ #        #, a("Shiny Station ID Selection Map", href="https://leppott.shinyapps.io/CAST_Map_StationID")
+ #        #, hr()
+ #        , a("https://leppott.shinyapps.io/CAST_Map_COMID", href="https://leppott.shinyapps.io/CAST_Map_COMID")
+ # 
+ #        , hr()
+ # 
+ #        
+ #        
+ #        # , p("RPP 'data' and 'results' directories are by default part of the Shiny application.")
+ #        # , hr()
+ #        
+ #        #
+ #        # , selectInput("BioComm"
+ #        #               , label = "Choose biological community"
+ #        #               , choices = c("bmi", "algae")
+ #        #               , selected = "bmi")
+ #        , p("Click the button below to generate outputs.")
+ #        , p("Make any modifications to inputs and settings on the tabs to the right before starting the analysis.")
+ #        , p("After clicking the button results will appear to the right in tabs by output type.")
+ #        , actionButton("b_RunAll", "Run RPP")
+ #        
+ #        , hr()
+ # 
+ #        #, textOutput("boo_zip")
+ #        , p("Click the button below to download a zip file of all result outputs.")
+ #        , p("It will not be active until results are ready.")
+ #        , downloadButton("b_downloadData", "Download Results") 
+ # 
+ #        # set size of sidebar (out of 12)
+ #        #, width=3 # can invoke "ERROR: [uv_write] broken pipe"
+ #      )##sidebarPanel~END
+ #     
+ #    # mainPanel ####
+ #    # Show a plot of the generated distribution
+ #    , mainPanel(
+ #      # tabsetPanel ####
+ #      tabsetPanel(id = "tsp_Main"
+ #        # 0.0
+ #        , tabPanel(title = "Console", value = "pan_console"
+ #                   , h3("Console")
+ #                   , p("During the running of the tool any messages or warnings that would be displayed in the R console
+ #                     are displayed below.")
+ #                   ,p("In addition to any text below there is a progress bar in the lower right.")
+ #                   , textOutput("text_console_ALL")
+ #        )##tabPanel~Console~END
+ #        
+ #        , tabPanel(title = "Input, User Criteria", value = "pan_input_user"
+ #                   , h3("User-Defined Input Criteria")
+ #                   , p("Default criteria are specified below.")
+ #                   , hr()
+ #                   , h4("User Inputs")
+ #                   , numericInput("cxndist_km", "Connectivity distance (km)", value = 5, min = 0)
+ #                   , checkboxInput("useHWbonus", "Use HW bonus?", value = FALSE)
+ #                   , checkboxInput("useBCGbonus", "Use BCG bonus?", value = FALSE)
+ #                   , checkboxInput("useDownstream", "Use downstream reaches?", value = FALSE)
+ #                   , numericInput("year_max", "Maximum year", value = format(Sys.Date(), "%Y"), max = format(Sys.Date(), "%Y"))
+ #                   , numericInput("year_min", "Minimum year", value = lubridate::year(Sys.Date()) - 12)
+ #                   , br()
+ #                   , checkboxInput("useCASTresults", "Use CAST files?", value = FALSE)
+ #                   , p("If using CAST files will need to select and upload files on the next tab, 'Input, CAST files'.")
+ #                   
+ #        )
+ #        , tabPanel(title = "Input, CAST files", value = "pan_input_CAST"
+ #                   , h3("User input files from CAST")
+ #                   , p("If want to use CAST files as inputs in the RPP tool then check the box above.")  
+ #                   , p("With the buttons below select file locations on C: for CAST 'data' and 'results'.")
+ #                   , p("Then click the 'upload' button.")
+ #                   , hr()
+ #                   , p("Select directory, CAST, Data")
+ #                   , shinyDirButton("dir_CAST_Data", "Choose directory, CAST, Data", "Upload")
+ #                   , verbatimTextOutput("dir_txt_CAST_Data")
+ #                   , hr()
+ #                   , p("Select direcory, CAST, Results")
+ #                   , shinyDirButton("dir_CAST_Results", "Choose directory, CAST, Results", "Upload")
+ #                   , verbatimTextOutput("dir_txt_CAST_Results")
+ #                   , hr()
+ #                   , p("Expected files by directory")
+ #                   , tableOutput("table_fn_CAST")
+ #        )
+ #        , tabPanel(title = "Input, Possible Stressors", value = "pan_input_stressors"
+ #                  , h3("Weights for Possible Stressors")
+ #                  , tableOutput("table_wt_count")
+ #                  , actionButton("b_Wts_Reset", "Reset all weights to '1'")
+ #                  , br(), br()
+ #                  , actionButton("b_Wts_Import", "Use weights from user import.")
+ #                  #, p("Button to use imported file.")
+ #                  , hr()
+ #                  , h4("Weights, Stressors")
+ #                  , sliderInput("wt_hab_evenflow", "Evenness of flow habitat types", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_hab_phi", "Index of physical habitat integrity", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_hab_ripcov", "Riparian cover (sum of three layers)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_modflow_wetmax", "Wet-season maximum mean monthly streamflow (m3/s)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_modflow_avg99", "Average 99th percentile of daily stream flow (m3/s)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_modflow_rbi", "Dry season Richards-Baker Index (flashiness)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_nutr_chla", "Particulate chlorophyll a (mg/m2)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_nutr_no2", "Dissolved nitrate as N (mg/L)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_nutr_p", "Total phosphorus as P (mg/L)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_nutr_n", "Total nitrogen (mg/L)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_wq_alk", "Dissovled alkalinity as calcium carbonate (mg/L)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_wq_do", "Field-measured dissolved oxygen (mg/L", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_wq_cond", "Field-measured specific conductivity (uS/cm)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_wq_tds", "Total dissolved solids (mg/L)", min = 0, max = 2, value = 1)
+ #                  , sliderInput("wt_wq_wtemp", "Field-measured water temperature (degrees C)", min = 0, max = 2, value = 1)
+ #                  , h4("Weights, Indicators")
+ #                  , sliderInput("wt_Pot_BCG", label = "wt_Pot_BCG", value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Pot_CxnBCG", label = "wt_Pot_CxnBCG",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Pot_Stress", label = "wt_Pot_Stress",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Pot_CxnStress", label = "wt_Pot_CxnStress",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Threat_Fire", label = "wt_Threat_Fire",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Threat_LU", label = "wt_Threat_LU",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Opp_ParksNow", label = "wt_Opp_ParksNow",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Opp_MSCPs", label = "wt_Opp_MSCPs",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Opp_NASVIBCG", label = "wt_Opp_NASVIBCG",  value = 1, min = 0, max = 2)
+ #                  , sliderInput("wt_Opp_UserDefined", label = "wt_Opp_UserDefined",  value = 1, min = 0, max = 2)
+ #        
+ #        )
+ #        
+ #        , tabPanel(title = "Metadata", value = "tab_metadata"
+ #                   , h3("RPP Tool Metadata")
+ #                   , p("list out terms"))
+ #       
+ #        
+ #       # , tabPanel("Plot Key", value = "pan_legends"
+ #       #             #, h3("Disclaimer")
+ #       #             #, p("Screening tool...and key for plots.")
+ #       #             #, uiOutput("Disclaimer_html")
+ #       #             , includeHTML(file.path(".", "www", "Legend_Key.html"))
+ #       #             #, htmlOutput("Disclaimer_html")
+ #       #            )##tabPanel~Disclaimer~END
+ #        # 0.5
+ #       
+ #       # # 2
+ #       # , tabPanel("Results"
+ #       #            , h3("Results Download")
+ #       #            , p("Use the button in the left side bar to save the Results as a single zip file.")
+ #       #            # , actionButton("CreateZip", "Create single zip file")
+ #       #            # , p("Use the button below to download Results as a zip file.")
+ #       #            # , downloadButton("downloadData", label = "Download")
+ #       #            # , downloadButton("downloadData_Test", label = "Download Test")
+ #       #            , htmlOutput("Results_html")
+ #       #            )##tabPanel~Results~END
+ #       #  # 3.1, SiteInfo
+ #       #  , tabPanel("Site Info"
+ #       #           , h3("Map")
+ #       #           , p("If the data exists it will be displayed below.")
+ #       #           # , textOutput("StationID")
+ #       #           # , textOutput("fn_Map")
+ #       #           # , textOutput("fe_Map")
+ #       #           # , p("Advanced options = none")
+ #       #           #, actionButton("Create01Map", "Create Map")
+ #       #           , textOutput("text_console_Map")
+ #       #           #, includeHTML(file.path(".", "Results", "SRCKN001.61", "SiteInfo", paste0("SRCKN001.61", ".map.leaflet.html")))
+ #       #           #, includeHTML(output$fn_Map)
+ #       #           #, uiOutput("Map_html")
+ #       #           , htmlOutput("Map_html")
+ #       #           # check MBSS shiny app for ideas on how to display reactively
+ #       #           )##tabPanel~Site Info~END
+ #       #  # 3.2, 
+ #       #  , tabPanel("Cluster Info"
+ #       #             , h3("Cluster Info")
+ #       #            # , imageOutput("img_Cluster")
+ #       #            , p("Advanced options = TBD")
+ #       #           # , actionButton("Create02ClusterInfo", "Create Cluster Info")
+ #       #            , textOutput("txt_console_Cluster")
+ #       #             )##tabPanel~Cluster Info~END
+ #       #  # 3.3, CandidateCauses
+ #       #  , tabPanel("Candidate Causes"
+ #       #             , h3("Candidate Causes")
+ #       #            # , p("Advanced options = probsLow, probsHigh, biocomm")
+ #       #            # , actionButton("Create03CandidateCauses", "Create Candidate Causes")
+ #       #             , textOutput("txt_console_Candidate")
+ #       #             )##tabPanel~Candidate Causes~END
+ #       #  # 3.4, CoOccurrence
+ #       #  , tabPanel("Co-Occurrence"
+ #       #             , h3("Co-Occurrence")
+ #       #             #, p("Advanced options = Bio, Stressors, biocomm, index labels and break points")
+ #       #             #, actionButton("Create04CoOccur", "Create Co-Occurrence")
+ #       #             , textOutput("txt_console_CoOccur")
+ #       #             )##tabPanel~Co-Occurrence~END
+ #       #  # 3.5, StressorResponse
+ #       #  , tabPanel("Stressor Response"
+ #       #             , h3("Stressor Response")
+ #       #            # , p("Advanced options = probsLow, probsHigh, biocomm, BioResp")
+ #       #            # , actionButton("Create05BioStressorResponses", "Create Stressor Responses")
+ #       #             , textOutput("txt_console_SR")
+ #       #             )##tabPanel~Stressor Response~END
+ #       #  # 3.6, VerifiedPredictions
+ #       #  , tabPanel("Verified Predictions"
+ #       #             , h3("Verified Predictions")
+ #       #            # , p("Advanced options = TBD")
+ #       #            # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+ #       #             , textOutput("txt_console_VP")
+ #       #            )##tabPanel~Verified Predictions~END
+ #       #  # 3.7, TimeSequence
+ #       #  , tabPanel("Time Sequence"
+ #       #             , h3("Time Sequence")
+ #       #            # , p("Advanced options = TBD")
+ #       #             # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+ #       #             , textOutput("txt_console_VP")
+ #       #            )##tabPanel~Time Sequence~END
+ #       #  # 3.8, WoE
+ #       #  , tabPanel("Weight of Evidence"
+ #       #             , h3("Weight of Evidence")
+ #       #            # , p("Advanced options = TBD")
+ #       #             # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
+ #       #             , textOutput("txt_console_VP")
+ #       #            )##tabPanel~WoE~END
+ #       
+ #        )##tabsetPanel~END
+ #      )##mainPanel~END
+ #  )##sidebarLayout~END
+# ))##shinyUI~END

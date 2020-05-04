@@ -1,9 +1,9 @@
 #
-# This is the server logic of a Shiny web application. You can run the
+# This is the server logic of a Shiny web application. You can run the 
 # application by clicking 'Run App' above.
 #
 # Find out more about building applications with Shiny here:
-#
+# 
 #    http://shiny.rstudio.com/
 #
 
@@ -16,35 +16,35 @@ options(shiny.maxRequestSize=100*1024^2) # increase max file upload to 100 MB
 shinyServer(function(input, output, session) {
 
   # Output ####
-
+  
   volumes=c(C = 'c:/')
-
+  
   shinyDirChoose(input
                  , 'dir_CAST_Data'
                  , roots=volumes)
   output$dir_txt_CAST_Data <- renderPrint({parseDirPath(volumes, input$dir_CAST_Data)})
-
+  
   shinyDirChoose(input
                  , 'dir_CAST_Results'
                  , roots=volumes)
   output$dir_txt_CAST_Results <- renderPrint({parseDirPath(volumes, input$dir_CAST_Results)})
-
-
+  
+  
   #url_map <- a("Shiny Site Selection Map", href="https://leppott.shinyapps.io/CAST_Map_SiteID")
   output$URL_Shiny_Map <- renderUI({tagList("URL link", url_map)})
-
+  
   output$StationID <- renderText({
     paste0("Selected Station = ", input$Station)
   })##StationID~END
-
+  
   output$fn_Map <- renderText({
     file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))
   })##fn_Map~END
-
+  
   output$fe_Map <- renderText({
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
-
+  
   output$table_wt_count <- renderTable({
     cnt_0 <- ifelse(input$wt_hab_evenflow == 0, 1, 0) +
       ifelse(input$wt_hab_phi == 0, 1, 0) +
@@ -121,15 +121,15 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_Opp_MSCPs == 2, 1, 0) +
       ifelse(input$wt_Opp_NASVIBCG == 2, 1, 0) +
       ifelse(input$wt_Opp_UserDefined == 2, 1, 0)
-
+    
     txt_wt_desc <- c("Exclude", "Default", "Double Count")
     data.frame("Weights" = c("0", "1", "2")
                , "Description" = txt_wt_desc
                , "Count" = c(cnt_0, cnt_1, cnt_2)
                , row.names = NULL)
-
+    
   })##count_wt_1
-
+  
   output$table_fn_CAST <- renderTable({
     fn_data <- c("SMC_AllStressData.tab"
                  , "SMC_AllStressInfo.tab"
@@ -166,7 +166,7 @@ shinyServer(function(input, output, session) {
     #   return(NULL)
     # }
   })##Map_html~END
-
+  
   # output$Disclaimer_html <- renderUI({
   #   getHTML(file.path(".", "www", "Disclaimer_Key.html"))
   #   #
@@ -182,37 +182,37 @@ shinyServer(function(input, output, session) {
   #   #}
   #   #getHTML(file.path(".", "Data", fn_target_results))
   # })##Disclaimer_html~END
-
+  
   # Test if zip file exists
   output$boo_zip <- function() {
     fn_zip_boo <- paste0(input$Station, ".zip")
     return(file.exists(file.path(".", "Results", fn_zip_boo)) == TRUE)
   }##boo_zip~END
-
+  
   # Observe ####
-
+  
   observeEvent({
     c(input$Station, input$b_RunAll)
   } , {
    fn_zip_toggle <- paste0(input$Station, ".zip")
    toggleState(id="b_downloadData", condition = file.exists(file.path(".", "Results", fn_zip_toggle)) == TRUE)
   })##~toggleState~END
-
+  
   observeEvent({
     input$Station
   }, {
     TargetSiteID <- input$Station
     CopyResults(TargetSiteID)
   })##~CopyResults
-
-
+  
+  
   # BUTTONS ####
   # b_download ####
   # Downloadable csv of selected dataset
   output$b_downloadData <- downloadHandler(
     # use index and date time as file name
     #myDateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")
-
+    
     filename = function() {
       paste0(input$Station, "_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip")
     },
@@ -224,39 +224,39 @@ shinyServer(function(input, output, session) {
     }##content~END
     #, contentType = "application/zip"
   )##downloadData~END
-
-  # b_dir_user_*
+  
+  # b_dir_user_* 
   # Shiny directory buttons
   # volumes <- c(wd = ".", "R Installation" = R.home(), shinyFiles::getVolumes()())
   # shinyFiles::shinyDirChoose(input, 'dir_user_input', roots=volumes, session = session)
   # shinyFiles::shinyDirChoose(input, 'dir_user_output', roots=volumes, session = session)
-  #
+  # 
   # observe({
   #   cat("\ninput$directory value:\n\n")
   #   print(input$directory)
   # })
-
+  
   observeEvent(input$b_Wts_Reset, {
     #
     # Reset all Weights to '1'.
-
-
+    
+    
   })##observeEvent~input$b_Wts_Reset~ENDs
 
   observeEvent(input$b_Wts_Import, {
     #
     # Reset all Weights to '1'.
-
-
+    
+    
   })##observeEvent~input$b_Wts_Import~ENDs
-
+  
   ## print to browser
 
-
+  
   # output$directorypath <- renderPrint({
   #   parseDirPath(volumes, input$directory)
   # })
-
+  
 
   #
  # shinyFiles::shinyDirChoose(input, "dir_user_input", roots = volumes, session = session, restrictions = system.file(package = "base"))
@@ -264,14 +264,14 @@ shinyServer(function(input, output, session) {
   # output$dir_user_input_path <- renderPrint({
   #   shinyFiles::parseDirPath(volumes, input$dir_user_input)
   # })
-
-
+  
+  
   # shinyDirChoose(input, "dir_user_input")
   # dir_user_input <- reactive(input$dir_user_input)
 
 
   # Run CASTfxn ####
-
+  
   # foo_testCallHandler <- function() {
   #   message("Processing item, 1/94; Al2O3Cat")
   #   Sys.sleep(1)
@@ -283,8 +283,8 @@ shinyServer(function(input, output, session) {
   # }
   # Only works with messages (not cat or print)
   # https://github.com/daattali/advanced-shiny/tree/master/show-warnings-messages
-
-
+  
+  
   Run_Map <- function(){
     shiny::withProgress({
       #
@@ -294,7 +294,7 @@ shinyServer(function(input, output, session) {
       #TargetSiteID <- "SRCKN001.61"
       TargetSiteID <- input$Station
       dir_results <- file.path(".", "Results")
-
+      
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Data getSiteInfo
       # data, example included with package
@@ -338,10 +338,10 @@ shinyServer(function(input, output, session) {
                     +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
                     +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # projection for outline
-      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
       +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       map_proj <- my.aea
-      #
+      # 
       # Increment the progress bar, and update the detail text.
       incProgress(1/n_inc, detail = "Load input data")
       #
@@ -367,8 +367,8 @@ shinyServer(function(input, output, session) {
     , message = "Creating BioStressoResponses"
     )##withProgress~END
   }##Run_Map~END
-
-
+  
+  
   Run_Cluster <- function() {
     shiny::withProgress({
       #
@@ -425,7 +425,7 @@ shinyServer(function(input, output, session) {
       +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
       +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # projection for outline
-      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
       +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       map_proj <- my.aea
       #
@@ -504,7 +504,7 @@ shinyServer(function(input, output, session) {
     , message = "Creating Cluster Info"
     )##withProgress~END
   }##Run_Cluster~END
-
+  
   Run_Candidate <- function(){
     shiny::withProgress({
       #
@@ -545,7 +545,7 @@ shinyServer(function(input, output, session) {
       } else if(elev_cat=="LO") {
         data.cluster <- data_Cluster_Lo
       }
-
+      
       # Map data
       # San Diego
       #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
@@ -564,11 +564,11 @@ shinyServer(function(input, output, session) {
       +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
       +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # projection for outline
-      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
       +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       map_proj <- my.aea
       #
-      dir_sub <- "SiteInfo"
+      dir_sub <- "SiteInfo" 
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "SiteInfo"
@@ -589,7 +589,7 @@ shinyServer(function(input, output, session) {
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
       # Data getChemDataSubsets
-      # data import, example
+      # data import, example 
       # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
       # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
       site.COMID     <- list.SiteSummary$COMID
@@ -624,7 +624,7 @@ shinyServer(function(input, output, session) {
       #
       # set cutoff for possible stressor identification
       probsLow  <- 0.10
-      probsHigh <- 0.90
+      probsHigh <- 0.90 
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Stressor List"
@@ -646,7 +646,7 @@ shinyServer(function(input, output, session) {
       , message = "Creating Candidate Causes"
     )##withProgress~END
   }##Run_Candidate~END
-
+  
   Run_CoOccur <- function(){
     shiny::withProgress({
       #
@@ -706,7 +706,7 @@ shinyServer(function(input, output, session) {
     , message = "Creating Co-Occurrence plots"
     )##withProgress~END
   }##Run_CoOccur~END
-
+  
   Run_BSR <- function(){
     shiny::withProgress({
       #
@@ -747,7 +747,7 @@ shinyServer(function(input, output, session) {
       } else if(elev_cat=="LO") {
         data.cluster <- data_Cluster_Lo
       }
-
+      
       # Map data
       # San Diego
       #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
@@ -766,11 +766,11 @@ shinyServer(function(input, output, session) {
       +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
       +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # projection for outline
-      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
       +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       map_proj <- my.aea
       #
-      dir_sub <- "SiteInfo"
+      dir_sub <- "SiteInfo" 
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "SiteInfo"
@@ -791,7 +791,7 @@ shinyServer(function(input, output, session) {
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
       # Data getChemDataSubsets
-      # data import, example
+      # data import, example 
       # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
       # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
       site.COMID     <- list.SiteSummary$COMID
@@ -826,7 +826,7 @@ shinyServer(function(input, output, session) {
       #
       # set cutoff for possible stressor identification
       probsLow  <- 0.10
-      probsHigh <- 0.90
+      probsHigh <- 0.90 
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Stressor List"
@@ -855,7 +855,7 @@ shinyServer(function(input, output, session) {
       } else if(biocomm=="algae"){
         data.bio.metrics <- data_AlgMetrics
       }
-
+      
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Matches"
@@ -865,14 +865,14 @@ shinyServer(function(input, output, session) {
       # Run getBioMatches
       list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
                                          , data.chem.raw, data.bio.metrics, biocomm)
-
+      
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Stressor Responses"
       msgDetail_B <- "Load input data"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Data getBioStressorResponses, BMI
+      # Data getBioStressorResponses, BMI 
       if(biocomm=="bmi"){
         BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
                      , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
@@ -880,7 +880,7 @@ shinyServer(function(input, output, session) {
       } else if(biocomm=="algae"){
         BioResp <- colnames(data.bio.metrics[6:52])
       }
-
+       
       dir_sub <- "StressorResponse"
       #
       # Increment the progress bar, and update the detail text.
@@ -888,10 +888,10 @@ shinyServer(function(input, output, session) {
       msgDetail_B <- "Run"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       #
-      # Run getBioStressorResponses, BMI
+      # Run getBioStressorResponses, BMI               
       getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
                               , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
-
+      
       #
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Bio Stressor Responses"
@@ -902,7 +902,7 @@ shinyServer(function(input, output, session) {
     , message = "Creating BioStressor Responses"
     )##withProgress~END
   }##Run_BSR~END
-
+  
   Run_VP <- function(){
     withProgress({
       #TargetSiteID <- "SRCKN001.61"
@@ -953,10 +953,10 @@ shinyServer(function(input, output, session) {
       +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
       +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       # projection for outline
-      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
+      my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
       +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
       map_proj <- my.aea
-      #
+      # 
       # Increment the progress bar, and update the detail text.
       msgDetail_A <- "Load input data"
       msgDetail_B <- "SiteInfo"
@@ -1019,7 +1019,7 @@ shinyServer(function(input, output, session) {
       msgDetail_A <- "Load input data"
       msgDetail_B <- "ChemDataSubsets"
       incProgress(1/n_inc, detail = paste0(msgDetail_A, "; ", msgDetail_B))
-
+      
       # Run getClusterInfo
       getClusterInfo(site.COMID, site.Clusters, ref.reaches, dir_results, dir_sub)
       #
@@ -1032,7 +1032,7 @@ shinyServer(function(input, output, session) {
     , message = "Creating Verified Predictions"
     )##withProgress~END
   }##Run_VP~END
-
+  
   Run_ALL <- function(){
     #
    shiny::withProgress({
@@ -1065,17 +1065,17 @@ shinyServer(function(input, output, session) {
       #gitpath <- file.path(".", "external") # might need something different
       # source(file.path(gitpath, "getCoOccurDataset.R"))
       # Loaded in global.R
-
-
+    
+      
       # Connectivity variables
       cxndist_km    <- input$cxndist_km #5
       useHWbonus    <- input$useHWbonus #0 # FALSE (default)
       useBCGbonus   <- input$useBCGbonus #0 # FALSE (default)
       useDownstream <- input$useDownstream #0 # FALSE (default)
-
-
-
-
+      
+      
+      
+      
 
       # put in global
       #not_all_na <- function(x) {!all(is.na(x))}
@@ -1083,7 +1083,7 @@ shinyServer(function(input, output, session) {
       # Timer, Start
       startprep.time <- Sys.time()
 
-
+     
 
       # CopyResults ####
       prog_cnt <- prog_cnt + 1
@@ -1118,13 +1118,13 @@ shinyServer(function(input, output, session) {
       #
     }, message = "Run ALL")##witProgress~END
   }##Run_ALL~END
-
+  
   # 00RunAll ####
-
+  
   # observeEvent(input$b_RunAll, {
   #   updateTabsetPanel(session, "tsp_Main", selected = "pan_console")
   #   })
-
+  
   # observe({
   #   # use tabsetPanel 'id' argument to change tabs
   #   if (input$b_RunAll > 0) {
@@ -1133,7 +1133,7 @@ shinyServer(function(input, output, session) {
   #     updateTabsetPanel(session, "tsp_Main", selected = "pan_disclaimer")
   #   }
   # })
-  #
+  # 
   observeEvent(input$b_RunAll, {
     #
     # Change focus to console tab
@@ -1150,10 +1150,10 @@ shinyServer(function(input, output, session) {
           shinyjs::html(id = "text_console_ALL", html = paste0(" ... ", m$message), add = TRUE)
       })##withCallingHandlers~END
   })##observeEvent~input$b_RunAll~ENDs
-
-
+  
+  
   # 01Map ####
-
+  
   observeEvent(input$Create01Map, {
     # Console messages to Shiny
     #https://deanattali.com/blog/advanced-shiny-tips/
@@ -1172,11 +1172,11 @@ shinyServer(function(input, output, session) {
     , warning = function(m) {
       shinyjs::html(id = "text_console_Map", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
-
+    
   })##observeEvent~Create01Map
-
+  
   # 02Cluster ####
-
+  
   observeEvent(input$Create02ClusterInfo, {
     withCallingHandlers({
       shinyjs::html(id = "txt_console_Cluster", html = "")
@@ -1191,7 +1191,7 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = "txt_console_Cluster", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create02Cluster
-
+  
   # 03Candidate ####
   # No messages to capture
   observeEvent(input$Create03CandidateCauses, {
@@ -1208,7 +1208,7 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = "txt_console_Candidate", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create03CandidateCauses
-
+  
 
   output$pdf_Candidate <- renderUI({
     TargetSiteID <- input$Station
@@ -1219,7 +1219,7 @@ shinyServer(function(input, output, session) {
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
-
+  
 
   # 04Co-Occur ####
   observeEvent(input$Create04CoOccur, {
@@ -1239,12 +1239,12 @@ shinyServer(function(input, output, session) {
     # display results
     #fn_img <- list.files(file.path(".", "Results", input$Station, "CoOccurrence"), ".jpg")
     # create HTML from RMD
-
+    
     #
   })##observeEvent~Create04CoOccur
+  
 
-
-
+  
   output$pdf_CoOccur <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "CoOccurrence"
@@ -1254,7 +1254,7 @@ shinyServer(function(input, output, session) {
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
-
+  
 
   # output$pdf_CoOccur <- renderUI({
   #   TargetSiteID <- input$Station
@@ -1267,7 +1267,7 @@ shinyServer(function(input, output, session) {
   #   #                  , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"), sep="/")
   #   tags$iframe(style="height:600px; width:100%", src=src_pdf)
   # })
-  #
+  # 
 
   # 05SR ####
   observeEvent(input$Create05BioStressorResponses, {
@@ -1284,9 +1284,9 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = "txt_console_SR", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create05SR
+  
 
-
-
+  
   output$pdf_SR <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "StressorResponse"
@@ -1296,9 +1296,9 @@ shinyServer(function(input, output, session) {
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
-
+  
   # 06VP ####
-
+  
   observeEvent(input$Create06VerifiedPredictions, {
     withCallingHandlers({
       shinyjs::html(id = "txt_console_VP", html = "")
@@ -1313,7 +1313,7 @@ shinyServer(function(input, output, session) {
       shinyjs::html(id = "txt_console_VP", html = paste0(" ... ", m$message), add = TRUE)
     })##withCallingHandlers~END
   })##observeEvent~Create06VP
-
+  
 
   output$pdf_VP <- renderUI({
     TargetSiteID <- input$Station
@@ -1324,9 +1324,9 @@ shinyServer(function(input, output, session) {
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
-
+  
   # Time Sequence ####
-
+  
   output$pdf_TS_BMI <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "TimeSequence"
@@ -1336,7 +1336,7 @@ shinyServer(function(input, output, session) {
                          , paste0(TargetSiteID, ".", txt_file, ".ALL.pdf"))
     tags$iframe(style="height:600px; width:100%", src=src_pdf)
   })
-
+  
   output$pdf_TS_Alg <- renderUI({
     TargetSiteID <- input$Station
     txt_dir  <- "TimeSequence"
@@ -1348,7 +1348,7 @@ shinyServer(function(input, output, session) {
   })
 
   # 07Results ####
-
+  
   # output$downloadData <- downloadHandler(
   #   filename <- function() {
   #     paste0(input$Station, ".zip")
@@ -1364,13 +1364,13 @@ shinyServer(function(input, output, session) {
   #   }##content~END
   #   , contentType = "application/zip"
   # )##downloadData~END
-  #
-  #
+  # 
+  #  
   # output$downloadData_Test <- downloadHandler(
   #   filename <- function() {
   #     paste("tst", "zip", sep=".")
   #   },
-  #
+  # 
   #   content <- function(file) {
   #     file.copy("test.zip", file)
   #   },
@@ -1378,9 +1378,9 @@ shinyServer(function(input, output, session) {
   # )##downloadData_Test~END
   # #outputOptions(output, "downloadData_Test", suspendWhenHidden=FALSE)
   # # https://groups.google.com/forum/#!topic/shiny-discuss/TWikVyknHYA
-  #
-  #
-  #
+  # 
+  # 
+  # 
   # observeEvent(input$CreateZip, {
   #   fn_zip <- paste0(input$Station, ".zip")
   #   # Generate Zip file
@@ -1390,298 +1390,7 @@ shinyServer(function(input, output, session) {
   #   # communicate that it is done to the user?!  file.exists?
   #   #
   # })##observeEvent~CreateZip~END
-
-  # Help ####
-  output$help_html <- renderUI({
-    fn_help_html <- file.path(".", "www", "ShinyHelp.html")
-    fe_help_html <- file.exists(fn_help_html)
-    if(fe_help_html==TRUE){
-      return(includeHTML(fn_help_html))
-    } else {
-      return(NULL)
-    }##IF~fe_help_html~END
-  })##help_html~END
-  
-  # Map, Stations ####
-  # Stop Shiny App when close browser
-  session$onSessionEnded(stopApp)
-  
-  # palette
-  pal.tidal <- colorBin(palette=c("red", "blue"), domain=lines.flowline.proj$LENGTHKM)
-  pal.smc   <- colorFactor(palette = "Set3", domain=poly.smc.proj$CUNAME)
-  
-  # Map
-  output$map_station <- renderLeaflet({
-    #
-    leaflet() %>%
-      # Groups, Base
-      addTiles(group="OSM (default)") %>%  #default tile too cluttered
-      addProviderTiles("CartoDB.Positron", group="Positron") %>%
-      addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") %>%
-      # Groups, Overlay
-      addPolygons(data=poly.smc.proj
-                  , color="green"
-                  , fill=FALSE
-                  , group="Watersheds"
-      ) %>%
-      addPolylines(data=lines.flowline.proj
-                   , color= "blue"
-                   , highlightOptions=highlightOptions(bringToFront=TRUE, color="purple" )
-                   , popup=~paste0(GNIS_NAME, as.character("<br> COMID = "), COMID)
-                   , group="Streams"
-      ) %>%
-      addCircles(data=df.sites.map
-                 , lng=~FinalLongitude
-                 , lat=~FinalLatitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
-                 , color="orange"
-                 , group="Sites"
-                 , highlightOptions = highlightOptions(bringToFront = TRUE, color="red")
-                 , radius=20
-      ) %>%
-      addCircles(data=df.sites.map[df.sites.map[, "StationID_Master"]=="SMC04134", ]
-                 , lng=~FinalLongitude
-                 , lat=~FinalLatitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
-                 , color="black"
-                 , group="Sites_selected"
-                 , layerId = "layer_site_selected"
-                 , radius=30
-      ) %>%
-      # Bounding (to SMC region)
-      fitBounds(lng1 = poly.smc.proj@bbox[1]
-                , lat1 = poly.smc.proj@bbox[4]
-                , lng2 = poly.smc.proj@bbox[3]
-                , lat2 = poly.smc.proj@bbox[2]
-      ) %>%
-      # Layers
-      addLayersControl(
-        baseGroups = c("OSM (default)", "Positron", "Toner Lite")
-        , overlayGroups=c("Watersheds", "Streams", "Sites")
-      ) %>%
-      # Legend
-      addLegend("bottomleft", colors=c("green", "blue", "purple", "orange", "red", "black")
-                , labels=c("Watersheds", "Streams", "Streams (mouse-over)", "Sites", "Sites (mouse-over)", "Sites (selected)")
-                , values=NA
-      ) %>%
-      addMiniMap(toggleDisplay = TRUE)
-  })#output$map.smc.END
-  
-  # # Reactive expression for the data subsetted to what the user selected
-  # filteredData <- reactive({
-  #   #lines.flowline.proj[lines.flowline.proj$COMID == input$comid.select, ]
-  #   #if(input$comid.select!="Erik"){
-  #     lines.flowline.proj[lines.flowline.proj$COMID == input$comid.select, ]
-  #     #lines.flowline.proj[lines.flowline.proj$COMID == "20331944", ]
-  #   #} else {
-  #   #  lines.flowline.proj
-  #   #}
-  # })
-  # # # Reactive values for dimensions of subsetted data
-  # fD.centroid <- reactive({
-  #   c(filteredData$CENTROID_X, filteredData$CENTROID_Y)
-  #   #c(-117.1, 32.8)
-  # })
-  # 
-  
-  # myX <- -117.1
-  #myX <- filteredData$CENTROID_X
-  
-  # x <- fD.bbox[1]
-  
-  # fD.bbox <- lines.flowline.proj@bbox
-  # #fD.bbox <- filteredData@bbox
-  # 
-  # fD.cent.lat <- mean(fD.bbox[2], fD.bbox[4])
-  # fD.cent.lng <- mean(fD.bbox[1], fD.bbox[3])
-  
-  #  
-  #  
-  # # Modify Polylines
-  #observe({
-  observeEvent(input$siteid.select,{
-    #
-    df_filtered <- df.sites.map[df.sites.map$StationID_Master == input$siteid.select, ]
-    
-    #
-    # get centroid (use mean just in case have duplicates)
-    view.cent <- c(mean(df_filtered$FinalLongitude), mean(df_filtered$FinalLatitude))
-    #
-    # modify map
-    leafletProxy("map_station") %>%
-      #clearShapes() %>%  # removes all layers
-      removeShape("layer_site_selected") %>%
-      #addPolylines(data=filteredData()
-      addCircles(data=df_filtered
-                 , lng=~FinalLongitude
-                 , lat=~FinalLatitude
-                 , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
-                 , color = "black"
-                 , group = "Sites_selected"
-                 , layerId = "layer_site_selected"
-                 , radius=30) %>%
-      # addPolylines(data=df_filtered
-      #              , color="orange"
-      #              , popup=~COMID
-      #              #, highlightOptions=highlightOptions(bringToFront=TRUE
-      #              #                                    , color="red" )
-      #              , group="Streams_Select"
-      #              , layerId = "layer_Stream_Select") %>%
-      #setView(fD.centroid[1], fD.centroid[2], zoom=10)
-      #setView(view.cent[1], view.cent[2], zoom=10)
-      #  #fitBounds(df_filtered@bbox[1], df_filtered@bbox[2], df_filtered@bbox[3], df_filtered@bbox[4])
-      setView(view.cent[1], view.cent[2], zoom = 16) # 1= whole earth
-    
-    
-    #setView(filteredData$CENTROID_X, filteredData$CENTROID_Y, zoom=10)
-    
-    #setView(filteredData@bbox[1], filteredData@bbox[4], zoom=10)
-    #setView(getCenter(filteredData())[1], getCenter(filteredData())[2], zoom=10)
-    # centroid.lat <- mean(lines.flowline.proj@bbox[2], lines.flowline.proj@bbox[4])
-    # centroid.lng <- mean(lines.flowline.proj@bbox[1], lines.flowline.proj@bbox[3])
-    # centroid.lat <- 32.75
-    # centroid.lng <- 117.1
-    # setView(centroid.lng, centroid.lat, zoom=10)
-    #setView(lng=fD.bounds[1], lat=fD.bounds[2], zoom=10)
-    
-    #     setView(lng=fD.cent.lng, lat=fD.cent.lat, zoom=10)
-    #setView(-120, 34, zoom=10)
-
-  })##ObserverEvent ~ input$siteid.select ~ END
-  
-  
-  # Map, Reach ####
-  output$map_reach <- renderLeaflet({
-    #
-    leaflet() %>%
-      # Groups, Base
-      addTiles(group="OSM (default)") %>%  #default tile too cluttered
-      addProviderTiles("CartoDB.Positron", group="Positron") %>%
-      addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") %>%
-      #addProviderTiles(providers$OpenTopoMap, group="TopoMap (Open)") %>%
-      #addProviderTiles(providers$Esri.WorldTopoMap, group="TopoMap (ESRI)") %>%
-      #addProviderTiles(providers$Esri.WorldImagery, group="Imagery (ESRI)") %>%
-      # # Groups, Overlay
-      addPolygons(data=poly.smc.proj
-                  , color="green"
-                  , fill=FALSE
-                  , group="Watersheds") %>%
-      addPolylines(data=lines.flowline.proj
-                   , color="blue"
-                   , popup=~COMID
-                   , highlightOptions=highlightOptions(bringToFront=TRUE
-                                                       , color="red" )
-                   , group="Streams") %>%
-      addPolylines(data=lines.flowline.proj[lines.flowline.proj$COMID == "20331944", ]
-                   , color="orange"
-                   , popup=~COMID
-                   #, highlightOptions=highlightOptions(bringToFront=TRUE
-                   #                                    , color="red" )
-                   , layerId = "layer_Stream_Select"
-                   , group="Streams_Select") %>%
-      addPolylines(data=lines.flowline.proj
-                   , color= ~pal.tidal(LENGTHKM)
-                   , layerId = "layer_color"
-                   , group="lines_color") %>%
-      addCircles(data=df.sites.map
-                 , lng=~FinalLongitude
-                 , lat=~FinalLatitude
-                 , popup=~StationID_Master
-                 , color="gray"
-                 , group="Sites"
-                 #, radius=~CSCI
-                 ) %>%
-      # # Bounding
-      fitBounds(lng1 = poly.smc.proj@bbox[1]
-                , lat1 = poly.smc.proj@bbox[4]
-                , lng2 = poly.smc.proj@bbox[3]
-                , lat2 = poly.smc.proj@bbox[2]) %>%
-      # Layers
-      addLayersControl(baseGroups=c("OSM (default)", "Positron", "Toner Lite"
-                                    , "TopoMap (Open)", "TopoMap (ESRI)", "Imagery (ESRI)")
-                       , overlayGroups=c("Watersheds", "Sites", "Streams_Select", "Streams", "lines_color")
-                       , options=layersControlOptions(collapsed=TRUE)) %>%
-      # Legend
-      addLegend("bottomleft", colors=c("green", "blue", "red", "orange", "gray")
-                , labels=c("Watersheds", "Streams", "Stream (mouse-over)", "Stream (selected)", "Sites")
-                , values=NA) %>%
-      addMiniMap(toggleDisplay = TRUE)
-    #
-  })#output$map_reach ~ END
-  
-  # # Reactive expression for the data subsetted to what the user selected
-  # filteredData <- reactive({
-  #   #lines.flowline.proj[lines.flowline.proj$COMID == input$comid.select, ]
-  #   #if(input$comid.select!="Erik"){
-  #     lines.flowline.proj[lines.flowline.proj$COMID == input$comid.select, ]
-  #     #lines.flowline.proj[lines.flowline.proj$COMID == "20331944", ]
-  #   #} else {
-  #   #  lines.flowline.proj
-  #   #}
-  # })
-  # # # Reactive values for dimensions of subsetted data
-  # fD.centroid <- reactive({
-  #   c(filteredData$CENTROID_X, filteredData$CENTROID_Y)
-  #   #c(-117.1, 32.8)
-  # })
-  # 
-  
-  # myX <- -117.1
-  #myX <- filteredData$CENTROID_X
-  
-  # x <- fD.bbox[1]
-  
-  # fD.bbox <- lines.flowline.proj@bbox
-  # #fD.bbox <- filteredData@bbox
-  # 
-  # fD.cent.lat <- mean(fD.bbox[2], fD.bbox[4])
-  # fD.cent.lng <- mean(fD.bbox[1], fD.bbox[3])
-  
-  #  
-  #  
-  # # Modify Polylines
-  #observe({
-  observeEvent(input$comid.select,{
-    #
-    filteredData <- lines.flowline.proj[lines.flowline.proj$COMID == input$comid.select, ]
-    #
-    # get centroid
-    view.cent <- c(filteredData$CENTROID_X, filteredData$CENTROID_Y)
-    #
-    # modify map
-    leafletProxy("map_reach") %>%
-      #clearShapes() %>%  # removes all layers
-      removeShape("layer_Stream_Select") %>%
-      #addPolylines(data=filteredData()
-      addPolylines(data=filteredData
-                   , color="orange"
-                   , popup=~COMID
-                   #, highlightOptions=highlightOptions(bringToFront=TRUE
-                   #                                    , color="red" )
-                   , group="Streams_Select"
-                   , layerId = "layer_Stream_Select") %>%
-      #setView(fD.centroid[1], fD.centroid[2], zoom=10)
-      #setView(view.cent[1], view.cent[2], zoom=10)
-      fitBounds(filteredData@bbox[1], filteredData@bbox[2], filteredData@bbox[3], filteredData@bbox[4])
-    #setView(filteredData$CENTROID_X, filteredData$CENTROID_Y, zoom=10)
-    
-    #setView(filteredData@bbox[1], filteredData@bbox[4], zoom=10)
-    #setView(getCenter(filteredData())[1], getCenter(filteredData())[2], zoom=10)
-    # centroid.lat <- mean(lines.flowline.proj@bbox[2], lines.flowline.proj@bbox[4])
-    # centroid.lng <- mean(lines.flowline.proj@bbox[1], lines.flowline.proj@bbox[3])
-    # centroid.lat <- 32.75
-    # centroid.lng <- 117.1
-    # setView(centroid.lng, centroid.lat, zoom=10)
-    #setView(lng=fD.bounds[1], lat=fD.bounds[2], zoom=10)
-    
-    #     setView(lng=fD.cent.lng, lat=fD.cent.lat, zoom=10)
-    #setView(-120, 34, zoom=10)
-    
-    
-    
-  })##ObserveEvent ~ comid.select ~ END
   
   
   
-
 })##server~END
