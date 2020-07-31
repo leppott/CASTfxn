@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9251 (2020-07-31)
+
+* File clean up.
+* Add version numbers to titles of Shiny apps (RPP_SMC and CAST_SMC).
+
 ## Changes in Version 0.1.0.9250 (2020-05-04)
 
 * Shiny app, RPP_SMC

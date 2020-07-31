@@ -1,4 +1,5 @@
-# Global Shiny Stuff
+# Shiny, Global
+# RPP - SMC
 
 # Packages ####
 library(shiny)

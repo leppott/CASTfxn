@@ -1,10 +1,5 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
+# Shiny, UI
+# RPP - SMC
 #
 
 # Packages
@@ -23,15 +18,16 @@ shinyjs::useShinyjs()
 
 # Define UI for application that draws a histogram
 shinyUI(
-
-  navbarPage("Restoration and Protection Potential (RPP)"
-             , theme = "bootstrap.css"
-             , inverse = TRUE
-             , tab_Disclaimer()
-             , tab_Map_Station()
-             , tab_Map_Reach()
-             , tab_RPP_Calc()
-             , tab_Help()
-             )## navbarPage~ END
+  # fluidPage(
+	  navbarPage("Restoration and Protection Potential (RPP), SMC v0.1.0.9251"
+				 , theme = "bootstrap.css"
+				 , inverse = TRUE
+				 , tab_Disclaimer()
+				 , tab_Map_Station()
+				 , tab_Map_Reach()
+				 , tab_RPP_Calc()
+				 , tab_Help()
+		)## navbarPage~ END
+  # )##fluidPage~END
 )##shinyUI~END
   

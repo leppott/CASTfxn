@@ -1,13 +1,10 @@
+# tab_Map_Station
+# RPP, SMC
+
 function(){
-  tabPanel("Map, Stations"
-    # Sidebar with a slider input for number of bins 
+  tabPanel("Map, Stations" 
     , sidebarLayout(
       sidebarPanel(
-        # sliderInput("bins",
-        #             "Number of bins:",
-        #             min = 1,
-        #             max = 50,
-        #             value = 30)
         helpText("The map can take up to 10 seconds to load.  Please be patient.")
         #, actionButton("map.streams.add", "Add Streams to Map")
         , br()
@@ -16,7 +13,7 @@ function(){
                       , choices=c("SMC04134", "905S15201", "907S05514", mySites)
                       , selected="SMC04134"
                       #, selected="20331944"# diversion but long and easy to spot on map
-        ) 
+        )##selectInput~END
         
         , br()
         #, actionButton("zoom.comid", "Zoom to Selected ComID")
