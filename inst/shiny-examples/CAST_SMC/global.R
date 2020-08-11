@@ -33,6 +33,11 @@ library(tidyr)
 # Global Variables ####
 url_map <- a("Shiny Station Selection Map", href="https://leppott.shinyapps.io/CAST_Map_SiteID")
 
+# Targeted Locations
+## Add to selection boxes to easy to pick out.
+targ_SiteID <- c("SMC04134", "905S15201", "907S05514", "SMC12246", "907SDSDR8"
+                , "907SDSDR9", "SMC04134", "905SDYSA7", "906S02246", "SMC01606")
+
 # data directory
 dir_data <- file.path(".", "Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.

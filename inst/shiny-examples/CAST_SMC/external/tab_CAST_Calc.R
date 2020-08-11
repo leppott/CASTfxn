@@ -24,7 +24,7 @@ function(){
                 h4("User Selection:")
                , selectInput("Station"
                              , label = "Choose a Station ID below for which to generate outputs."
-                             , choices = LU.Stations
+                             , choices = c(targ_SiteID, LU.Stations)
                              , selected = LU.Stations[1]
                )
                

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-11 15:04:25
+    #> Last Update: 2020-08-11 16:04:01
 
 # Planned Updates
 
@@ -25,7 +25,14 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9252 (2020-08-10)
+## Changes in Version 0.1.0.9253 (2020-08-11)
+
+  - Shiny, RPP\_SMC
+      - Targeted SiteID and COMID to top of pick lists.
+  - Shiny, RPP\_CAST
+      - Targeted SiteID to top of pick lists.
+
+## Changes in Version 0.1.0.9252 (2020-08-11)
 
   - Vignettes
       - CASTfxn, not working

@@ -52,6 +52,12 @@ url_map <- a("Shiny Reach Selection Map", href="https://leppott.shinyapps.io/CAS
 # setting this option. Here we'll raise limit to 300MB.
 options(shiny.maxRequestSize = 300*1024^2)
 
+# Targeted Locations
+## Add to selection boxes to easy to pick out.
+targ_SiteID <- c("SMC04134", "905S15201", "907S05514", "SMC12246", "907SDSDR8"
+                , "907SDSDR9", "SMC04134", "905SDYSA7", "906S02246", "SMC01606")
+targ_COMID <- c("20331398", "20324447", "20331434", "20330890", "20329782"
+                , "20331170", "20331408")
 
 # data directory
 dir_data <- file.path(".", "Data")

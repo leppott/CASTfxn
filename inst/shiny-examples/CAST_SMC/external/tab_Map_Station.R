@@ -10,7 +10,7 @@ function(){
         , br()
         , helpText("Use the button (or the map) to select a Station ID.")
         , selectInput("siteid.select", "Select Station ID:"
-                      , choices=c("SMC04134", "905S15201", "907S05514", mySites)
+					  , choices=c(targ_SiteID, mySites)
                       , selected="SMC04134"
                       #, selected="20331944"# diversion but long and easy to spot on map
         )##selectInput~END

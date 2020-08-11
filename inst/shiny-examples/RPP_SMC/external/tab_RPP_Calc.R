@@ -25,11 +25,12 @@ function(){
                    h4("Selection, COMID")
                   , selectInput("COMID_RPP"
                               , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
-                              , choices = myComID
+                              , choices = c(NA, targ_COMID, myComID)
                               , selected = myComID[1]
                   )
 
-                  , p("If COMID is not known then click the 'Map, Reach' tab above to use the mapping feature to find your desired COMID.")
+                  , p("If COMID is not known then click the 'Map, Reach' or 'Map, Station' tab above to 
+                      use the mapping feature to find your desired COMID.")
                   #, a("Shiny Station ID Selection Map", href="https://leppott.shinyapps.io/CAST_Map_StationID")
                   #, hr()
                   #, a("https://leppott.shinyapps.io/CAST_Map_COMID", href="https://leppott.shinyapps.io/CAST_Map_COMID")

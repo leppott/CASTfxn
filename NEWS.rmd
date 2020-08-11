@@ -37,7 +37,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-## Changes in Version 0.1.0.9252 (2020-08-10)
+## Changes in Version 0.1.0.9253 (2020-08-11)
+
+* Shiny, RPP_SMC
+    + Targeted SiteID and COMID to top of pick lists.
+* Shiny, RPP_CAST
+     + Targeted SiteID to top of pick lists.
+
+## Changes in Version 0.1.0.9252 (2020-08-11)
 
 * Vignettes
     + CASTfxn, not working
