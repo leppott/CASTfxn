@@ -19,6 +19,84 @@ shinyServer(function(input, output, session) {
   pal.smc   <- colorFactor(palette = "Set3", domain=poly.smc.proj$CUNAME)
   
   # Map
+  
+  map_x <- leaflet() %>% addTiles() %>% setView(-93.65, 42.0285, zoom = 17)
+  map_y <- plot(1:10, main = Sys.time())
+  output$map_map_x <- leaflet::renderLeaflet({
+   # aa <- "20200802"
+    #shiny::validate(need(aa == "20200803"), "Validate fail")
+    map_x
+  })
+  
+  output$map_map_y <- renderPlot({
+    #shiny::validate(need(1 == 2), message = "Validate fail", label = "something")
+    map_y
+    
+  })
+  
+  
+  # Station, test ####
+  output$map_station2 <- leaflet::renderLeaflet({
+    #
+    
+    # map_x
+    
+    
+    # leaflet() %>%
+    #   # Groups, Base
+    #   addTiles(group="OSM (default)") %>%  #default tile too cluttered
+    #   addProviderTiles("CartoDB.Positron", group="Positron") %>%
+    #   addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") #%>%
+    #   # # Groups, Overlay
+      # addPolygons(data=poly.smc.proj
+      #             , color="green"
+      #             , fill=FALSE
+      #             , group="Watersheds")
+      # ) %>%
+      # addPolylines(data=lines.flowline.proj
+      #              , color= "blue"
+      #              , highlightOptions=highlightOptions(bringToFront=TRUE, color="purple" )
+      #              , popup=~paste0(GNIS_NAME, as.character("<br> COMID = "), COMID)
+      #              , group="Streams"
+      # ) %>%
+      # addCircles(data=df.sites.map
+      #            , lng=~FinalLongitude
+      #            , lat=~FinalLatitude
+      #            , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
+      #            , color="orange"
+      #            , group="Sites"
+      #            , highlightOptions = highlightOptions(bringToFront = TRUE, color="red")
+      #            , radius=20
+      # ) %>%
+      # addCircles(data=df.sites.map[df.sites.map[, "StationID_Master"]=="SMC04134", ]
+      #            , lng=~FinalLongitude
+      #            , lat=~FinalLatitude
+      #            , popup=~paste0(StationID_Master, as.character("<br>"), WaterbodyName)
+      #            , color="black"
+      #            , group="Sites_selected"
+      #            , layerId = "layer_site_selected"
+      #            , radius=30
+      # ) %>%
+      # # Bounding (to SMC region)
+      # fitBounds(lng1 = poly.smc.proj@bbox[1]
+      #           , lat1 = poly.smc.proj@bbox[4]
+      #           , lng2 = poly.smc.proj@bbox[3]
+      #           , lat2 = poly.smc.proj@bbox[2]
+      # ) %>%
+      # # Layers
+      # addLayersControl(
+      #   baseGroups = c("OSM (default)", "Positron", "Toner Lite")
+      #   , overlayGroups=c("Watersheds", "Streams", "Sites")
+      # ) %>%
+      # # Legend
+      # addLegend("bottomleft", colors=c("green", "blue", "purple", "orange", "red", "black")
+      #           , labels=c("Watersheds", "Streams", "Streams (mouse-over)", "Sites", "Sites (mouse-over)", "Sites (selected)")
+      #           , values=NA
+      # ) %>%
+      # addMiniMap(toggleDisplay = TRUE)
+  })#output$map.station2 ~ END
+  
+  # Station ####
   output$map_station <- renderLeaflet({
     #
     leaflet() %>%
@@ -2699,6 +2777,10 @@ shinyServer(function(input, output, session) {
       incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
+      
+      # enable download button
+      shinyjs::enable("b_downloadData")
+      
 
       #
     }, message = "Run ALL")##witProgress~END

@@ -56,7 +56,9 @@ function(){
                   #, textOutput("boo_zip")
                   , p("Click the button below to download a zip file of all result outputs.")
                   , p("It will not be active until results are ready.")
-                  , downloadButton("b_downloadData", "Download Results")
+                  , shinyjs::useShinyjs() # doesn't work unless in include this line (even though it is in UI.R)
+                  , shinyjs::disabled(downloadButton("b_downloadData", "Download Results"))
+                  # , downloadButton("b_downloadData", "Download Results")
 
                   # set size of sidebar (out of 12)
                   #, width=3 # can invoke "ERROR: [uv_write] broken pipe"

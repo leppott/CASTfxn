@@ -39,6 +39,10 @@ shinyServer(function(input, output, session) {
   output$fe_Map <- renderText({
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
+  
+  output$Selected_COMID4SiteID <- renderText({
+    df.sites.map[df.sites.map[, "StationID_Master"] == input$siteid.select, "COMID_NHD2"]
+  })
 
   output$table_wt_count <- renderTable({
     cnt_0 <- ifelse(input$wt_hab_evenflow == 0, 1, 0) +
@@ -209,12 +213,12 @@ shinyServer(function(input, output, session) {
     #myDateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")
 
     filename = function() {
-      paste0(input$Station, "_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip")
+      paste0(input$COMID_RPP, "_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip")
     },
     content = function(fname) {##content~START
       # tmpdir <- tempdir()
       #setwd(tempdir())
-      file.copy(file.path(".", "Results", paste0(input$Station, ".zip")), fname)
+      file.copy(file.path(".", "Results", paste0(input$COMID_RPP, ".zip")), fname)
       #
     }##content~END
     #, contentType = "application/zip"
@@ -1110,6 +1114,10 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       #
 
+      # Enable download button.
+      shinyjs::enable("b_downloadData")
+      
+      
       #
     }, message = "Run ALL")##witProgress~END
   }##Run_ALL~END

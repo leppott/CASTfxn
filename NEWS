@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-07-31 13:52:03
+    #> Last Update: 2020-08-11 15:04:25
 
 # Planned Updates
 
@@ -24,6 +24,16 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9252 (2020-08-10)
+
+  - Vignettes
+      - CASTfxn, not working
+      - Slight tweaks to Analysis and Elevation.
+  - Shiny, RPP\_SMC
+      - Station map shows corresponding COMID for selected StationID.
+  - Shiny, RPP\_CAST
+      - Attempt to fix station map
 
 ## Changes in Version 0.1.0.9251 (2020-07-31)
 
