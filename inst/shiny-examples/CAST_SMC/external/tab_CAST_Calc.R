@@ -22,12 +22,12 @@ function(){
                #, p(file.path("."))
                #, hr()
                 h4("User Selection:")
-               , selectInput("Station"
-                             , label = "Choose a Station ID below for which to generate outputs."
-                             , choices = c(targ_SiteID, LU.Stations)
-                             , selected = LU.Stations[1]
-               )
-               
+              , selectInput("Station"
+                            , label = "Choose a Station ID below for which to generate outputs."
+                            , choices = c(targ_SiteID, LU.Stations)
+                            , selected = LU.Stations[1]
+              )
+
                , p("If Station ID is not known then click the map tab above to find your desired Station ID.")
                , hr()
                
@@ -61,19 +61,19 @@ function(){
                            , tabPanel(title = "Console", value = "pan_console"
                                       , h3("Console")
                                       , p("During the running of the tool any messages or warnings that would be displayed in the R console
-                     are displayed below.")
+                                          are displayed below.")
                                       ,p("In addition to any text below there is a progress bar in the lower right.")
                                       , textOutput("text_console_ALL")
                            )##tabPanel~Console~END
-                           , tabPanel("Plot Key", value = "pan_legends"
-                                      #, h3("Disclaimer")
-                                      #, p("Screening tool...and key for plots.")
-                                      #, uiOutput("Disclaimer_html")
-                                      , includeHTML(file.path(".", "www", "Legend_Key.html"))
-                                      #, htmlOutput("Disclaimer_html")
-                           )##tabPanel~Disclaimer~END
-                           # 0.5
-                           
+                     , tabPanel("Plot Key", value = "pan_legends"
+                                #, h3("Disclaimer")
+                                #, p("Screening tool...and key for plots.")
+                                #, uiOutput("Disclaimer_html")
+       #                         , includeHTML(file.path(".", "www", "Legend_Key.html"))
+                                #, htmlOutput("Disclaimer_html")
+                     )##tabPanel~Disclaimer~END
+                     # # 0.5
+
                            # # 2
                            # , tabPanel("Results"
                            #            , h3("Results Download")
@@ -100,7 +100,7 @@ function(){
                            #           , htmlOutput("Map_html")
                            #           # check MBSS shiny app for ideas on how to display reactively
                            #           )##tabPanel~Site Info~END
-                           #  # 3.2, 
+                           #  # 3.2,
                            #  , tabPanel("Cluster Info"
                            #             , h3("Cluster Info")
                            #            # , imageOutput("img_Cluster")
@@ -150,7 +150,7 @@ function(){
                            #             # , actionButton("Create06VerifiedPredictions", "Create Verified Predictions")
                            #             , textOutput("txt_console_VP")
                            #            )##tabPanel~WoE~END
-                           
+
                )##tabsetPanel~END
              )##mainPanel~END
            )##sidebarLayout~END

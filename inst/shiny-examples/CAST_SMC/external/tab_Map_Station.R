@@ -1,5 +1,5 @@
 # tab_Map_Station
-# RPP, SMC
+# CAST, SMC
 
 function(){
   tabPanel("Map, Stations" 
@@ -17,18 +17,14 @@ function(){
         
         , br()
         #, actionButton("zoom.comid", "Zoom to Selected ComID")
-        , p("After choosing a Station ID click the stream reach to get the Reach ID (COMID)
-            for use with the RPP-Calc tab analysis.")
+        , p("After choosing a Station ID the map will zoom to its location.")
         
       )##sidebarPanel.END
       
       # Show a plot of the generated distribution
       , mainPanel(
-        #tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
-        p(paste0("Erik; ", Sys.time()))
+        tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}")
         , leafletOutput("map_station", height = "85vh")
-        #, p()
-        
       )##mainPanel.END
     )##sidebarLayout.END
   )##tabPanel ~ END

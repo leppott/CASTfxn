@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9254 (2020-08-14)
+
+* Shiny
+    + CAST_SMC
+        - Fix map by disabling plot legend explanation.
+    + Remove unused Shiny apps
+        - CAST_Map_COMID
+        - CAST_Map_StationID
+
 ## Changes in Version 0.1.0.9253 (2020-08-11)
 
 * Shiny, RPP_SMC
