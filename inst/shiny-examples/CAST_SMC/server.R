@@ -1366,7 +1366,7 @@ shinyServer(function(input, output, session) {
                , ResultValue, SampleDate) %>%
         group_by(StationID_Master, ChemSampleID, SampDate, StdParamName
                  , SampleDate) %>%
-        summarize(MeanResultValue = mean(ResultValue)) %>%
+        summarize(MeanResultValue = mean(ResultValue), .groups = "drop_last") %>%
         rename(ResultValue = MeanResultValue)
       data_chemRaw <- unique(data_chemRaw)
       data_outliers <- getOutliers(df_data = data_chemRaw

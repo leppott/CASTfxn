@@ -480,7 +480,8 @@ getVerifiedPredictions <- function(TargetSiteID
                   bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID_Master
                                                   , BMISampID) %>%
                       dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
-                                       , TolRelAbund = sum(TolTaxa, na.rm = TRUE))
+                                       , TolRelAbund = sum(TolTaxa, na.rm = TRUE)
+                                       , .groups = "drop_last")
                   bmi.taxa.raw <- dplyr::rename(bmi.taxa.raw, RespSampID = BMISampID)
                   
                   all.match.b.resp <- bmi.taxa.raw[bmi.taxa.raw$RespSampID %in%

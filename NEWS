@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-14 08:53:18
+    #> Last Update: 2020-08-14 13:41:19
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9255 (2020-08-15)
+
+  - dplyr::summarize(), add .groups = “drop\_last”
+      - Shiny app CAST\_SMC
+      - Shiny app RPP\_SMC
 
 ## Changes in Version 0.1.0.9254 (2020-08-14)
 

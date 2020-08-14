@@ -598,7 +598,7 @@ getWoE <- function(TargetSiteID
     dfEvidenceWide <- dfEvidenceWide %>%
         dplyr::mutate(Score = as.numeric(Score)) %>%
         dplyr::group_by(StressSampID, Label, Stressor, StressorValue, LoEtrim) %>%
-        dplyr::summarize(TotScore = sum(Score)) %>%
+        dplyr::summarize(TotScore = sum(Score), .groups = "drop_last") %>%
         dplyr::rename(Score = TotScore) %>%
         tidyr::spread(key = "LoEtrim", value = sum(Score, na.rm=TRUE), fill=NA)
     dfEvidenceWide <- as.data.frame(dfEvidenceWide)
@@ -762,7 +762,8 @@ getWoE <- function(TargetSiteID
                                                     , "NE"
                                             , round(sum(as.integer(VP_boxplot_senstaxa)
                                                 + as.integer(VP_boxplot_toltaxa)
-                                            , na.rm = TRUE)/n(), 3)))
+                                            , na.rm = TRUE)/n(), 3))
+                         , .groups = "drop_last")
     
     startcol <- which(colnames(dfData4ES)=="WtTot_WoE")
     endcol <- ncol(dfData4ES)

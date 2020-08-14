@@ -88,7 +88,7 @@ getTimeSeq <- function(TargetSiteID
         #        , SampID = ChemSampleID) %>%
         # dplyr::select(BioQuality, SampleDate, variable, value) %>%
         dplyr::group_by(StressSampDate, StdParamName) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3)) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3), .groups = "drop_last") %>%
         dplyr::rename(SampDate = StressSampDate, variable = StdParamName) %>%
         dplyr::filter(variable %in% stressors)
 
@@ -131,7 +131,7 @@ getTimeSeq <- function(TargetSiteID
         dplyr::filter(!is.na(ResultValue)
                , Biometric %in% BioResp) %>%
         dplyr::group_by(RespSampDate, Biometric) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3)) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3), .groups = "drop_last") %>%
         dplyr::rename(SampDate = RespSampDate, variable = Biometric)
     df_respinfo <- unique(df_respinfo[,c("MetricName","MetricLabel")])
     df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")

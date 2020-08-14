@@ -68,7 +68,8 @@ getStressorScores <- function(dfSites, dfAllStressVals, fnWeights) { # FUNCTION.
         dplyr::filter(!is.na(WtAdjVal)) %>%
         dplyr::group_by(COMID) %>%
         dplyr::summarize(sumWeights = sum(Weight)
-                         , StressorScore = 1-sum(WtAdjVal)/(sumWeights))
+                         , StressorScore = 1-sum(WtAdjVal)/(sumWeights)
+                         , .groups = "drop_last")
     
     myStressorScores <- list(dfStrScores = dfStrScores, dfWeights = dfWeights
                              , dfWtNormStressRecent = dfStrValRecentWts)

@@ -28,7 +28,7 @@ getBCGtiers <- function(fn_Index2BCG, fn_predIndexByReach, fn_obsIndexBySite
     breakpoints <- dfCSCI2BCG %>%
         dplyr::group_by(BCGLevel) %>%
         dplyr::summarize(minCSCI = min(CSCI, na.rm = TRUE)
-                         , maxCSCI = max(CSCI, na.rm = TRUE)) %>%
+                         , maxCSCI = max(CSCI, na.rm = TRUE), .groups = "drop_last") %>%
         dplyr::mutate(cutoff=0)
     
     for (i in 1:max(breakpoints$BCGLevel)) {
