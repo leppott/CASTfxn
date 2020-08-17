@@ -23,8 +23,8 @@ shinyUI(fluidPage(
   
   # Need for console messages to Shiny
   shinyjs::useShinyjs()
-  # , navbarPage("Causal Assessment Screening Tool (CAST), SMC v0.1.0.9251"
-  , navbarPage(paste0("Causal Assessment Screening Tool (CAST), SMC v0.1.0.9251, Test run time = ", Sys.time())
+  , navbarPage("Causal Assessment Screening Tool (CAST), SMC v0.1.0.9255"
+  #, navbarPage(paste0("Causal Assessment Screening Tool (CAST), SMC v0.1.0.9251, Test run time = ", Sys.time())
              , theme = "bootstrap.css"
              , inverse = TRUE
              , tab_Disclaimer()

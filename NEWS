@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-14 13:41:19
+    #> Last Update: 2020-08-17 15:21:53
 
 # Planned Updates
 
@@ -24,6 +24,10 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9256 (2020-08-17)
+
+  - Tweak to Shiny app CAST\_SMC
 
 ## Changes in Version 0.1.0.9255 (2020-08-15)
 

@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9256 (2020-08-17)
+
+* Tweak to Shiny app CAST_SMC
+
 ## Changes in Version 0.1.0.9255 (2020-08-15)
 
 * dplyr::summarize(), add .groups = "drop_last"

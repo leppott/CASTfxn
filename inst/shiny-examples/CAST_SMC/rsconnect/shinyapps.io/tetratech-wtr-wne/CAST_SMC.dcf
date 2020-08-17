@@ -1,0 +1,12 @@
+name: CAST_SMC
+title: CAST_SMC
+username:
+account: tetratech-wtr-wne
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2671320
+bundleId: 3517077
+url: https://tetratech-wtr-wne.shinyapps.io/CAST_SMC/
+when: 1597429472.5676
+asMultiple: FALSE
+asStatic: FALSE

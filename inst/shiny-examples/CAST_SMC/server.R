@@ -1141,6 +1141,7 @@ shinyServer(function(input, output, session) {
     #
    shiny::withProgress({
       #
+      start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
       prog_n <- 26 + 7 # confirmed 20200205 (getQS:getWoE repeats for 1661:2447)
       prog_inc <- 1/prog_n
@@ -2717,7 +2718,7 @@ shinyServer(function(input, output, session) {
 
       #} ### End TargetSite loop
 
-      rm(site)
+      #rm(site) # error, remove 2020-08-17
       #~~~~~~~~~~~~~~~~~~~~~~~~
 
       # getSummaryAllSites ####
@@ -2739,13 +2740,14 @@ shinyServer(function(input, output, session) {
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       # Determine and print elapsed time
-      end.time <- Sys.time()
-      elapsed.time <- end.time - start.time
-      msg <- paste(site, "sites completed in", elapsed.time)
-      message(msg)
-      # print(msg)
-      # flush.console()
-      rm(site)
+    #   end.time <- Sys.time()
+    #   elapsed.time <- end.time - start.time
+    #  # msg <- paste(site, "sites completed in", elapsed.time)
+    # #  msg <- paste(TargetSiteID, "sites completed in", elapsed.time)
+    #   message(msg)
+    #   # print(msg)
+    #   # flush.console()
+    #   rm(TargetSiteID)  # Comment out 20200817
 
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
