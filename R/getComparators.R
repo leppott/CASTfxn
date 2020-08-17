@@ -79,6 +79,8 @@ getComparators<- function(TargetSiteID
         # Subset the BC file for sites in rows = cluster sites; target site is 2nd column
         if (grepl("^\\d+\\w*$", TargetSiteID)==TRUE) {
             TargetColName <- paste0("X",TargetSiteID)
+        } else if (grepl("-", TargetSiteID)) {
+            TargetColName <- stringr::str_replace(TargetSiteID, "-", "\\.")
         } else {
             TargetColName <- TargetSiteID
         }

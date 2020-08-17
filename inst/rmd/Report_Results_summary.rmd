@@ -23,6 +23,34 @@ DEBUG.CaseNumber <- 4
 `%>%` <- dplyr::`%>%`
 #
 if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+#<<<<<<< 201909_ARL
+  if(DEBUG.CaseNumber==1){##IF.DEBUG.CaseNumber.START
+    TargetSiteID <- "SMC01049"
+    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+    probsHigh <- 0.75
+    probsLow <- 0.25
+    report_format="html"
+  } else if(DEBUG.CaseNumber==2){
+    TargetSiteID <- "907S02774"
+    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  } else if(DEBUG.CaseNumber==3){
+    TargetSiteID <- "403S01272"
+    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+  } else if(DEBUG.CaseNumber==4){
+    TargetSiteID <- "905S15201"
+    dir_data <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data"
+    dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
+    probsHigh <- 0.75
+    probsLow <- 0.25
+    useAlg <- FALSE
+    useBMI <- TRUE
+    report_format="html"
+    removeOutliers <- TRUE
+    useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
+    lagdays=10
+    siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
+  }##IF.DEBUG.CaseNumber.END
+#=======
   # if(DEBUG.CaseNumber==1){##IF.DEBUG.CaseNumber.START
   #   TargetSiteID <- "SMC01049"
   #   dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
@@ -49,6 +77,7 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   #   lagdays=10
   #   siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
   # }##IF.DEBUG.CaseNumber.END
+#>>>>>>> master
 }##IF.boo.DEBUG.END
 
 ```
@@ -66,9 +95,14 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   cat(paste("\tRemove outliers? ",removeOutliers,"\n",sep=""))
   cat(paste("\tUse expected biological similarity filter? ",useBC,"\n",sep=""))
   cat(paste("\tNumber of days lag time between stressor and response sample collection = ",lagdays,"\n",sep=""))
- # siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
-  #cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
-  cat(paste("\tLower and upper quantiles for identifying stressors = ",probsLow
+#<<<<<<< 201909_ARL
+  cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
+  cat(paste("\tLower and upper percentiles for identifying stressors = ",probsLow
+#=======
+# # siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than","not degraded"
+#  #cat(paste("\tQuality of site displayed on analysis graphics? ",siteQual2Plot,"\n",sep=""))
+#  cat(paste("\tLower and upper quantiles for identifying stressors = ",probsLow
+#>>>>>>> master
             , "-", probsHigh, "\n",sep=""))
   # cat(paste("\tLimit above which DO is not identified as a stressor = ",DOlim
   #           , "\n",sep=""))
@@ -258,7 +292,7 @@ dfSiteFlags <- dfCompSamps %>%
     dplyr::select(RespSampID, RespSampFlag) %>%
     dplyr::rename(BMISampID = RespSampID, BMISampFlag = RespSampFlag)
 
-dfSamps <- merge(dfSamps, dfSiteFlags)
+dfSamps <- merge(dfSamps, dfSiteFlags, all.x = TRUE)
 
 dfSamps <- dfSamps %>%
     dplyr::select(eval(coreColNames), eval(bmiIndex), BMISampFlag
@@ -271,36 +305,72 @@ compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
 dfSamps <- dplyr::arrange(dfSamps, "SampleDate", bmiIndex, algIndex)
 
 if (report_format=="html") {
-dfSamps <- dfSamps %>%
-    dplyr::mutate(bmiIndex=kableExtra::cell_spec(CSCI, "html"
-                                , color=ifelse(is.na(CSCI)==TRUE, "black"
-                                , ifelse((CSCI<0.79)==TRUE,"red","black"))
-                                , bold=ifelse(is.na(CSCI)==TRUE, FALSE
-                                , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
-                  , algIndex=kableExtra::cell_spec(MMIhybrid,"html"
-                                , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
-                                , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
-                                , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
-                                , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
-    knitr::kable(dfSamps, escape=FALSE, format=report_format
-                 , colnames=colnames(dfSamps), caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                                  , font_size = 12, full_width = FALSE
-                                  , position = "left") %>%
-        kableExtra::column_spec(1,bold = TRUE) %>%
-        kableExtra::collapse_rows(columns=1:4, valign="top")
+#<<<<<<< 201909_ARL
+    # if (nrow(dfSamps)>0) {
+        dfSamps <- dfSamps %>%
+            dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
+                                        , color=ifelse(is.na(CSCI)==TRUE, "black"
+                                        , ifelse((CSCI<0.79)==TRUE,"red","black"))
+                                        , bold=ifelse(is.na(CSCI)==TRUE, FALSE
+                                        , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
+                          , MMIhybrid=kableExtra::cell_spec(MMIhybrid,"html"
+                                        , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
+                                        , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
+                                        , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
+                                        , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
+            knitr::kable(dfSamps, escape=FALSE, format=report_format
+                         , colnames=colnames(dfSamps), caption = compscaption) %>%
+                kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                          , font_size = 12, full_width = FALSE
+                                          , position = "left") %>%
+                kableExtra::column_spec(1,bold = TRUE) %>%
+                kableExtra::collapse_rows(columns=1:4, valign="top")
+        
+        } else {
+            knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
+                         , caption = compscaption) %>%
+                kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                                          , font_size = 12, full_width = FALSE
+                                          , position = "left") %>%
+                kableExtra::column_spec(1,bold = TRUE) %>%
+                kableExtra::collapse_rows(columns=1:4, valign="top")
+        }
+        
+        cat("See data gaps for explanation of flag values.")
+# } else {
+#     cat("No sample data available.")
+# }
+#=======
+#dfSamps <- dfSamps %>%
+#    dplyr::mutate(bmiIndex=kableExtra::cell_spec(CSCI, "html"
+#                                , color=ifelse(is.na(CSCI)==TRUE, "black"
+#                                , ifelse((CSCI<0.79)==TRUE,"red","black"))
+#                                , bold=ifelse(is.na(CSCI)==TRUE, FALSE
+#                                , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
+#                  , algIndex=kableExtra::cell_spec(MMIhybrid,"html"
+#                                , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
+#                                , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
+#                               , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
+#                                , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
+#    knitr::kable(dfSamps, escape=FALSE, format=report_format
+#                 , colnames=colnames(dfSamps), caption = compscaption) %>%
+#        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+#                                  , font_size = 12, full_width = FALSE
+#                                  , position = "left") %>%
+#        kableExtra::column_spec(1,bold = TRUE) %>%
+#        kableExtra::collapse_rows(columns=1:4, valign="top")
+#
+#} else {
+#    knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
+#                 , caption = compscaption) %>%
+#        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+#                                  , font_size = 12, full_width = FALSE
+#                                  , position = "left") %>%
+#        kableExtra::column_spec(1,bold = TRUE) %>%
+#        kableExtra::collapse_rows(columns=1:4, valign="top")
+#}
+#>>>>>>> master
 
-} else {
-    knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
-                 , caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                                  , font_size = 12, full_width = FALSE
-                                  , position = "left") %>%
-        kableExtra::column_spec(1,bold = TRUE) %>%
-        kableExtra::collapse_rows(columns=1:4, valign="top")
-}
-
-cat("See data gaps for explanation of flag values.")
 
 ```
 
@@ -357,7 +427,8 @@ if(useBMI==TRUE){
         #
     cat(msg_strlistBMI)
 } else {
-    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n\n"))
+    cat(paste0("**No benthic macroinvertebrate data are available for "
+               , TargetSiteID,".**\n\n"))
 }
 
 if(useAlg==TRUE){
@@ -412,7 +483,7 @@ if(useAlg==TRUE){
         #
     cat(msg_strlistALG)
 } else {
-    cat(paste0("No algae data for ", TargetSiteID,".\n\n"))
+    cat(paste0("**No algae data are available for ", TargetSiteID,".**\n\n"))
 }
 ```
 
@@ -475,7 +546,7 @@ if(useBMI==TRUE){
                                      , pattern="_BMI_CandCauses")
     fn_BoxPlots_jpg <- fn_BoxPlots[grep(".png", fn_BoxPlots)]
     if(length(fn_BoxPlots_jpg)==0){
-      txt_NoFile <- "No file exists; box plots.\n"
+      txt_NoFile <- ""
       cat(txt_NoFile)
     } else if(file.exists(fn_BoxPlots_jpg[1])==TRUE){
       #
@@ -497,7 +568,7 @@ if(useBMI==TRUE){
     fn_BoxPlots_jpg <- fn_BoxPlots[grep(".png", fn_BoxPlots)]
     
     if(length(fn_BoxPlots_jpg)==0){
-      txt_NoFile <- "No file exists; box plots.\n"
+      txt_NoFile <- ""
       cat(txt_NoFile)
     } else if(file.exists(fn_BoxPlots_jpg[1])==TRUE){
       #
@@ -531,7 +602,7 @@ if(useBMI==TRUE){
     if(file.exists(fn_img)==TRUE){
       knitr::include_graphics(fn_img)
     } else {
-      cat("No file exists; benthic macroinvertebrate index distributions.\n")
+      cat("Benthic macroinvertebrate index distributions are not available.\n")
     }
 } else {
     cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
@@ -565,12 +636,11 @@ if(useBMI==TRUE){
         kableExtra::column_spec(1,bold = TRUE) %>%
         kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
-      cat(paste0("No comparator site information is available for benthic"
-          , "macroinvertebrates.\n\n"))
+      cat("")
     }
 
 } else {
-    cat(paste0("No benthic macroinvertebrate data for ", TargetSiteID,".\n"))
+    cat(paste0("No benthic macroinvertebrate dataare available for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -601,7 +671,11 @@ if(useBMI==TRUE){
         numLTEQ <- dfbcdist %>%
             dplyr::filter(grepl("LTEQ",Comment)) %>%
             dplyr::select(NumSites)
-        numLTEQ <- as.numeric(numLTEQ)
+        if (nrow(numLTEQ)==0) {
+            numLTEQ <- as.numeric(0)
+        } else {
+            numLTEQ <- as.numeric(numLTEQ)
+        }
         bc_cutoff <- as.character(stringr::str_extract(dfbcdist[1,1],"\\d{2}"))
         bc_cutoff <- as.numeric(paste0("0.",bc_cutoff))
         bc_cutoff <- 1-bc_cutoff
@@ -691,8 +765,8 @@ if(useBMI==TRUE){
                            , "containing fewer than 250 individuals.\n\n"
                            , "* Large percent ambiguity refers to samples "
                            , "with more than 50% ambiguous individuals.\n\n"
-                           , "* Unknown refers to samples for which the"
-                           , "percentage of ambiguous individuals is not"
+                           , "* Unknown refers to samples for which the "
+                           , "percentage of ambiguous individuals is not "
                            , "recorded.\n\n")
         cat(msgflags)
 
@@ -708,50 +782,22 @@ if(useBMI==TRUE){
 
 ### Overall Findings
 
-```{r filelist_WoE_bmi}
-
-if(useBMI==TRUE){
-    dir.sub3 <- "WoE"
-    dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3)
-    txt_grp_file <- "boxes"
-    txt_grp_msg <- c("Summarized weight of evidence data"
-                     , "More detailed weight of evidence data")
-    fn_target1 <- paste0(TargetSiteID,"_BMI_WoE_ExecSummary.tab")
-    fn_target2 <- paste0(TargetSiteID,"_BMI_WoE_ScoresTable.tab")
-    fn_target <- c(fn_target1, fn_target2)
-    fn_all <- list.files(dir_WoE_bmi)
-    boo_file <- all(fn_target %in% fn_all)
-    #
-    if(boo_file==TRUE){
-      msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target
-                          , "' in the'", paste0("Results/",TargetSiteID
-                                                ,"/BMI/",dir.sub3)
-                          , "' folder.\n")
-    } else if(boo_file==FALSE){
-      msg_files <- paste0("No ", txt_grp_msg," exist.\n")
-    } else {
-      msg_files <- ""
-    }
-    #
-} else {
-      msg_files <- ""
-}
-cat(msg_files)
-
-```
-
 ```{r WoEsummary_bmi}
 
 if(useBMI==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3)
+    txt_grp_msg <- "Overall summary weight of evidence data"
     fn_target1 <- paste0(TargetSiteID,"_BMI_WoE_ExecSummary.tab")
     fn_WoE_ES  <- list.files(path=dir_WoE_bmi, full.names = TRUE
                                      , pattern=fn_target1)
     if(length(fn_WoE_ES)==0){
-      txt_NoFile <- "No file exists; weight of evidence summary.\n"
+      txt_NoFile <- paste0("No ", tolower(txt_grp_msg)," exist.\n")
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_ES[1])==TRUE){
+        msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target1
+                          , "' in the'", dir_WoE_bmi, "' folder.\n")
+
         df_ES <- read.delim(file.path(dir_WoE_bmi, fn_target1), header=TRUE, sep="\t")
         df_ES <- dplyr::select(df_ES, -BioComm, BioDeg, StressorType, NumStressSamples
                                , NumStressors, WtTot_WoE, WtTotTS_barplot, WtTotCO_boxplot
@@ -783,7 +829,7 @@ if(useBMI==TRUE){
                         , "evidence for all observed stressors in the group "
                         , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
-                     , caption = EScaption) %>%
+                     , caption = EScaption, align = 'lllccccccccc') %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
                                       , font_size = 12) %>%
             kableExtra::collapse_rows(columns=1:2, valign="top")
@@ -791,25 +837,28 @@ if(useBMI==TRUE){
       cat(txt_NoFile)
     }
 } else {
-    cat("")
+    cat(paste0("No benthic macroinvertebrate data are available for ", TargetSiteID,".\n"))
 }
 
 ```
 
-### Stressor Scores
+### Stressor-Specific Scores
 
 ```{r WoEscores_bmi}
 
 if(useBMI==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_bmi <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3)
+    txt_grp_msg <- "Detailed weight of evidence data"
     fn_target2 <- paste0(TargetSiteID,"_BMI_WoE_ScoresTable.tab")
     fn_WoE_det  <- list.files(path=dir_WoE_bmi, full.names = TRUE
                                      , pattern=fn_target2)
     if(length(fn_WoE_det)==0){
-      txt_NoFile <- "No file exists; lines of evidence scores\n"
+      txt_NoFile <- "No detailed stressor-specific weight of evidence is available.\n"
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_det[1])==TRUE){
+        msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target2
+                          , "' in the'", dir_WoE_bmi, "' folder.\n")
         df_det <- read.delim(file.path(dir_WoE_bmi, fn_target2), header=TRUE, sep="\t")
         df_det <- dplyr::select(df_det, -Cluster, -BioComm, -Stressor, -NumInSupport
                                 , -NumInRefute, -NumInIndet, -NumInNotEval
@@ -861,7 +910,7 @@ if(useBMI==TRUE){
         Detcaption <- paste0("Scores for each line of evidence equal 1 (supports), "
                              , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
         knitr::kable(df_det, format=report_format, colnames=colnames(df_det)
-                     , caption = Detcaption) %>%
+                     , caption = Detcaption, align='llcclclllrrlcccccccccccc') %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
                                       , font_size = 12) %>%
             kableExtra::column_spec(1,bold = TRUE) %>%
@@ -871,7 +920,7 @@ if(useBMI==TRUE){
     }
 
 } else {
-    cat("")
+    cat(paste0("No benthic macroinvertebrate data are available for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -890,10 +939,10 @@ if(useAlg==TRUE){
     if(file.exists(fn_img)==TRUE){
       knitr::include_graphics(fn_img)
     } else {
-      cat("No file exists; benthic macroinvertebrate index distributions.\n")
+      cat("Algae index distributions are not available.\n")
     }
 } else {
-    cat(paste0("No algal data for ", TargetSiteID,".\n"))
+    cat(paste0("No algal data are available for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -925,10 +974,10 @@ if(useAlg==TRUE){
         kableExtra::column_spec(1,bold = TRUE) %>%
         kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
-      cat("No comparator site information is available for benthic macroinvertebrates.\n")
+      cat("No comparator site information is available for algae.\n")
     }    
 } else {
-    cat(paste0("No algal data for ", TargetSiteID,".\n"))
+    cat(paste0("No algal data are available for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -937,54 +986,25 @@ if(useAlg==TRUE){
 
 ### Overall Findings
 
-```{r filelist_WoE_alg}
-
-if(useAlg==TRUE){
-    dir.sub3 <- "WoE"
-    dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
-    txt_grp_file <- "boxes"
-    txt_grp_msg <- c("Summarized weight of evidence data"
-                     , "More detailed weight of evidence data")
-    fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
-    fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
-    fn_target <- c(fn_target1, fn_target2)
-    fn_all <- list.files(dir_WoE_alg)
-    boo_file <- all(fn_target %in% fn_all)
-    #
-    if(boo_file==TRUE){
-      msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target
-                          , "' in the'", paste0("Results/",TargetSiteID
-                                                ,"/ALGAE/",dir.sub3)
-                          , "' folder.\n")
-    } else if(boo_file==FALSE){
-      msg_files <- paste0("No ", txt_grp_msg," exist.\n")
-    } else {
-      msg_files <- ""
-    }
-    #
-    cat(msg_files)
-} else {
-    cat(paste0("No algal data for ", TargetSiteID,".\n"))
-}
-
-```
-
 ```{r WoEsummary_alg}
 
 if(useAlg==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    txt_grp_msg <- "Overall summary weight of evidence data"
     fn_target1 <- paste0(TargetSiteID,"_ALGAE_WoE_ExecSummary.tab")
     fn_WoE_ES  <- list.files(path=dir_WoE_alg, full.names = TRUE
                                      , pattern=fn_target1)
     if(length(fn_WoE_ES)==0){
-      txt_NoFile <- "No file exists; weight of evidence summary.\n"
+      txt_NoFile <- paste0("No ", tolower(txt_grp_msg)," exist.\n")
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_ES[1])==TRUE){
+        msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target1
+                          , "' in the'", dir_WoE_alg, "' folder.\n")
+
         df_ES <- read.delim(file.path(dir_WoE_alg, fn_target1), header=TRUE, sep="\t")
         df_ES <- dplyr::select(df_ES, -BioComm, BioDeg, StressorType, NumStressSamples
-                               , NumStressors, WtTot_WoE, WtTotTS_barplot
-                               , WtTotCO_boxplot
+                               , NumStressors, WtTot_WoE, WtTotTS_barplot, WtTotCO_boxplot
                                , WtTotSR_InCase_LogRegr, WtTotSR_InCase_LinRegr
                                , WtTotSR_OutCase_LinRegr, WtTotVP_boxplot)
         df_ES <- dplyr::rename(df_ES, SiteID = StationID_Master
@@ -1013,41 +1033,43 @@ if(useAlg==TRUE){
                         , "evidence for all observed stressors in the group "
                         , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
-                     , caption = EScaption) %>%
+                     , caption = EScaption, align = 'lllccccccccc') %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
                                       , font_size = 12) %>%
             kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
       cat(txt_NoFile)
     }
-    
 } else {
-    cat("")
+    cat(paste0("No algae data are available for ", TargetSiteID,".\n"))
 }
-
 ```
 
-### Stressor Scores
+### Stressor-Specific Scores
 
 ```{r WoEscores_alg}
 
 if(useAlg==TRUE){
     dir.sub3 <- "WoE"
     dir_WoE_alg <- file.path(dir_results, TargetSiteID, "ALGAE", dir.sub3)
+    txt_grp_msg <- "Detailed weight of evidence data"
     fn_target2 <- paste0(TargetSiteID,"_ALGAE_WoE_ScoresTable.tab")
     fn_WoE_det  <- list.files(path=dir_WoE_alg, full.names = TRUE
                                      , pattern=fn_target2)
     if(length(fn_WoE_det)==0){
-      txt_NoFile <- "No file exists; lines of evidence scores\n"
+      txt_NoFile <- "No detailed stressor-specific weight of evidence is available.\n"
       cat(txt_NoFile)      
     } else if(file.exists(fn_WoE_det[1])==TRUE){
+        msg_files <- paste0(txt_grp_msg," are found in the file '", fn_target2
+                          , "' in the'", dir_WoE_alg, "' folder.\n")
         df_det <- read.delim(file.path(dir_WoE_alg, fn_target2), header=TRUE, sep="\t")
         df_det <- dplyr::select(df_det, -Cluster, -BioComm, -Stressor, -NumInSupport
                                 , -NumInRefute, -NumInIndet, -NumInNotEval
                                 , -NumOutSupport, - NumOutRefute, -NumOutIndet
                                 , -NumOutNotEval, -StationID_Master)
         df_det <- as.data.frame(unique(df_det))
-        df_det <- dplyr::rename(df_det, Stressor = Label, ResponseSampleID = RespSampID
+        df_det <- dplyr::rename(df_det, Stressor = Label
+                                , ResponseSampleID = RespSampID
                                 , ResponseSampleDate = RespSampDate
                                 , Degraded = BioDeg
                                 , Narrative = BioNarrative
@@ -1076,23 +1098,22 @@ if(useAlg==TRUE){
                                                          , format(StressorValue
                                                                  , digits=0
                                                                  , big.mark=",")))))
-        df_det <- dplyr::select(df_det, Degraded, Narrative, MMIhybrid
-                                , ResponseSampleDate, ResponseSampleID
-                                , StressorSampleDate, StressorSampleID, Group
-                                , Stressor, StressorValue, PercentRank, WoE
-                                , TS_Inside, CO_boxplot, SR_Inside_LogRegr
-                                , SR_Inside_LinRegr, SR_Outside_LinRegr
-                                , VP_SensitiveTaxa, VP_TolerantTaxa
-                                , SSD_ToxicityCurve, TotSupport, TotRefute
-                                , TotIndet, TotNotEval)
-        df_det <- dplyr::arrange(df_det, desc(Degraded), desc(MMIhybrid)
-                                , StressorSampleDate, ResponseSampleID
-                                , StressorSampleID, Group, Stressor, StressorValue)
+        df_det <- dplyr::select(df_det, Degraded, Narrative, MMIhybrid, ResponseSampleDate
+                                , ResponseSampleID, StressorSampleDate
+                                , StressorSampleID, Group, Stressor, StressorValue
+                                , PercentRank, WoE, TS_Inside, CO_boxplot
+                                , SR_Inside_LogRegr, SR_Inside_LinRegr
+                                , SR_Outside_LinRegr, VP_SensitiveTaxa
+                                , VP_TolerantTaxa, SSD_ToxicityCurve, TotSupport
+                                , TotRefute, TotIndet, TotNotEval)
+        df_det <- dplyr::arrange(df_det, desc(Degraded), desc(MMIhybrid), StressorSampleDate
+                                , ResponseSampleID, StressorSampleID, Group
+                                , Stressor, StressorValue)
     
         Detcaption <- paste0("Scores for each line of evidence equal 1 (supports), "
                              , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
         knitr::kable(df_det, format=report_format, colnames=colnames(df_det)
-                     , caption = Detcaption) %>%
+                     , caption = Detcaption, align='llcclclllrrlcccccccccccc') %>%
             kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
                                       , font_size = 12) %>%
             kableExtra::column_spec(1,bold = TRUE) %>%
@@ -1102,27 +1123,46 @@ if(useAlg==TRUE){
     }
 
 } else {
-    cat("")
+    cat(paste0("No algae data are available for ", TargetSiteID,".\n"))
 }
 
 ```
 
 # **DATA GAPS**
 ```{r datagaps}
-
 dir_gaps <- file.path(dir_results, TargetSiteID)
 fn_gaps <- file.path(dir_gaps, paste0(TargetSiteID,"_datagaps.tab"))
-
 df_gaps <- read.delim(fn_gaps, header = TRUE, sep = "\t")
 
 dfgen <- dplyr::filter(df_gaps, fxnname=="general")
+dfpairs <- dplyr::filter(df_gaps, fxnname=="getCoOccurDataset")
 dfoutliers <- dplyr::filter(df_gaps, fxnname=="Comparator outliers")
+dflimitdata <- dplyr::filter(df_gaps, fxnname=="getStressorList")
+
+if(any(dfpairs$result==0)) {
+    nopairs <- dfpairs %>%
+        dplyr::filter(result==0) %>%
+        dplyr::select(comment)
+    nopairs <- unique(as.vector(nopairs))
+    for (sr in 1:length(nopairs)) {
+        tempmsg <- nopairs[sr]
+        if (sr==1) {
+            msgNoPairs <- tempmsg
+        } else {
+            msgNoPairs <- c(msgNoPairs, tempmsg)
+        }
+    }
+    rm(tempmsg)
+    msgNoPairs <- as.character(msgNoPairs$comment)
+    cat(msgNoPairs)
+}
+
 
 if (any(dfgen$result==0)) {
     nodatacond <- dfgen %>%
         dplyr::filter(result==0) %>%
         dplyr::select(condition)
-    nodatacond <- as.vector(nodatacond$condition)
+    nodatacond <- unique(as.vector(nodatacond$condition))
     
     for (c in 1:length(nodatacond)) {
         
@@ -1153,8 +1193,7 @@ if (any(dfgen$result==0)) {
     nodatacaption <- "Missing stressor or response data"
     knitr::kable(msgnodata, format=report_format, caption = nodatacaption
                  , col.names = "Data type") %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12)
+        kableExtra::kable_styling(bootstrap_options="condensed", font_size=12)
 
 } else {
     
@@ -1164,23 +1203,41 @@ if (any(dfgen$result==0)) {
     
 }
 
+if (nrow(dflimitdata)>0) {
+    limdatacaption <- paste0("Limited data were available from comparator "
+                             , "samples for the following stressors identified at "
+                             , TargetSiteID, ". No evaluation is possible.")
+    
+    dflimitdata <- dflimitdata %>%
+        dplyr::select(condition, result, comment) %>%
+        dplyr::rename(Stressor = condition
+                      , NumberPairedSamples = result
+                      , Finding = comment)
+    dflimitdata <- unique(as.data.frame(dflimitdata, row.names = NULL))
+
+    knitr::kable(dflimitdata, format=report_format, caption = limdatacaption
+                 , col.names = colnames(dflimitdata)) %>%
+        kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12)
+
+}
+
 if (nrow(dfoutliers)>0) {
     
     dfoutliers <- dplyr::select(dfoutliers, -fxnname)
     dfoutliers$ComparatorSiteID <- stringr::str_extract(dfoutliers$comment
                                                         , "^[A-Z0-9]*")
-    dfoutliers <- dfoutliers %>% 
+    dfoutliers <- unique(as.data.frame(dfoutliers, row.names = NULL)) %>% 
         dplyr::rename(Stressor = condition, StressorValue = result) %>%
         dplyr::select(ComparatorSiteID, Stressor, StressorValue) %>%
         dplyr::arrange(ComparatorSiteID, Stressor)
+    # dfoutliers <- unique(as.data.frame(dfoutliers, row.names = NULL))
     outcaption <- paste0("Comparator site outliers that were removed. "
                          , "Values were transformed prior to evaluating "
                          , "for outliers as necessary.")
 
     knitr::kable(dfoutliers, format=report_format, caption = outcaption
                  , col.names = colnames(dfoutliers)) %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12)
+        kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12)
 
 } else {
     

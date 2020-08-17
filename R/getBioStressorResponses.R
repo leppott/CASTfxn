@@ -462,6 +462,14 @@ getBioStressorResponses <- function(TargetSiteID
     # 
     log.yn <- as.logical(LogTransf$LogTransf[LogTransf$StdParamName==stressName])
     
+    # Determine expected direction of slope
+    dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
+    if (dirIncStress == "Inc") {
+        exp.dir <- -1
+    } else {
+        exp.dir <- 1
+    }
+    
     # DEBUG
     if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
       message(paste0("p; ",p, "; ", stressors[p]))
@@ -485,7 +493,7 @@ getBioStressorResponses <- function(TargetSiteID
       # QC
       if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
         message(paste0("Item (", pq, "/", pq.len, ")"))
-        message(paste0("q; ", respName))
+        message(paste0("q; ", q, "; ", respName))
         flush.console()
       }##IF.boo.DEBUG.END
       
@@ -565,7 +573,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for any sites in the cluster."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -577,7 +585,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for reference sites in the cluster."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -590,7 +598,7 @@ getBioStressorResponses <- function(TargetSiteID
           } else {
               
               gapcomment <- "No stressor data available for any comparator sites."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -602,7 +610,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for reference comparator sites."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -614,7 +622,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           } else {
               gapcomment <- "No stressor data available for the target site."
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -648,7 +656,7 @@ getBioStressorResponses <- function(TargetSiteID
       # Cluster
       # LM and Corr, Cluster ####
       # ~~~ Check QC of Corr Table at end of code ~~~~
-      if(nrow(df_plot_cl)>2){##IF~nrow(df_plot_cl)~START
+      if(nrow(df_plot_cl[complete.cases(df_plot_cl),])>2){##IF~nrow(df_plot_cl)~START
           
           if(stats::sd(df_plot_cl$Stressor, na.rm=TRUE)==0){ # Vertical line
               boo_corr <- FALSE 
@@ -656,7 +664,7 @@ getBioStressorResponses <- function(TargetSiteID
               gapcomment <- paste0("Stressor data in the comparator set have "
                                    , "a standard deviation of zero: "
                                    , "all values are equal.")
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -670,7 +678,7 @@ getBioStressorResponses <- function(TargetSiteID
               gapcomment <- paste0("Response data in the comparator set have "
                                    , "a standard deviation of zero: "
                                    , "all values are equal.")
-              gaps <- cbind.data.frame("getStressorList", stressName, 0
+              gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
               colnames(gaps) <- c("fxnname", "condition", "result", "comment")
               fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -717,15 +725,6 @@ getBioStressorResponses <- function(TargetSiteID
               #
               # 20180621, scoring
               slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
-              # exp.dir <- data.lkp.dir[stressName,respName]
-              
-              # Determine expected direction of slope
-              dirIncStress <- unique(stressorInfo$DirIncStress[stressorInfo$StdParamName==stressName])
-              if (dirIncStress == "Inc") {
-                  exp.dir <- -1
-              } else {
-                  exp.dir <- 1
-              }
               #              
           } # End std dev If eval
           
@@ -735,7 +734,7 @@ getBioStressorResponses <- function(TargetSiteID
        
             gapcomment <- paste0("Only two paired stressor-response samples "
                             , "are available for the comparator set.")
-            gaps <- cbind.data.frame("getStressorList", stressName, 0, gapcomment)
+            gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0, gapcomment)
             colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
             fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
@@ -747,14 +746,14 @@ getBioStressorResponses <- function(TargetSiteID
         # ALL
         # LM and Corr, All ####
         # ~~~ Check QC of Corr Table at end of code ~~~~
-      if(nrow(df_plot_all)>2){##IF~nrow(df_plot_cl)~START
+      if(nrow(df_plot_all[complete.cases(df_plot_all),])>2){##IF~nrow(df_plot_cl)~START
           
             if(stats::sd(df_plot_all$Stressor, na.rm=TRUE)==0){ # Vertical line
                 boo_all <- FALSE 
                 gapcomment <- paste0("Stressor data across all sites in the "
                                    , "cluster have a standard deviation of "
                                    , "zero: all values are equal.")
-                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                        , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -766,7 +765,7 @@ getBioStressorResponses <- function(TargetSiteID
                 gapcomment <- paste0("Response data across all sites in the "
                                      , "cluster have a standard deviation of "
                                      , "zero: all values are equal.")
-                gaps <- cbind.data.frame("getStressorList", stressName, 0
+                gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                          , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -824,7 +823,7 @@ getBioStressorResponses <- function(TargetSiteID
 
           gapcomment <- paste0("Only two or fewer paired stressor-response samples "
                                , "are available for all sites in the cluster.")
-          gaps <- cbind.data.frame("getStressorList", stressName, 0
+          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0
                                    , gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -992,8 +991,6 @@ getBioStressorResponses <- function(TargetSiteID
         message(msg.status)
       }##IF~nrow(df_plot_site)~END
       #
-      
-
       
       ## Plot, inputs ####
       ## Plot, portions
@@ -1267,42 +1264,43 @@ getBioStressorResponses <- function(TargetSiteID
   #
   # CorrPlot ####
   ## read
-  fn_corr <- paste0(TargetSiteID,"_", biocomm, "_SRLin_Corrs.tab")
-  fp_corr <- file.path(dir_path, fn_corr)
-  df_corr <- utils::read.delim(fp_corr)
-  
-  # QC, 20190313
-  # QC, Corr table ####
-  ## Special case where the function doesn't save the header row
-  ### Unable to track down cause so implement QC check here.
-  #cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-  cn_cor_x    <- colnames(df_corr)
-  cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
-  if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
-    df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
-    utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
-  }##IF~length~END
-  
-  ## transpose 
-  # 20190305; shouldn't need mean or unique but just in case, should be complete dups
-  df_corr <- unique(df_corr)
-  df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
-                               , fun.aggregate=mean
-                               , value.var="estimate"
-                               , na.rm=TRUE)
-  df_corrplot <- t(df_corr_r[,-1])
-  colnames(df_corrplot) <- df_corr_r[,1]
-  ## jpg
-  fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                          , "_SRLin_CorrPlot.png"))
-  grDevices::png(filename = fn_png_cp
-                  , width = 4 * ppi
-                  , height = 3 * ppi
-                  )
-    corrplot::corrplot(df_corrplot, method="circle")
-  grDevices::dev.off()
-  
-  msg.corr <- "Printing correlation plot."
-  message(msg.corr)
+  if (boo_corr==TRUE) {
+      fn_corr <- paste0(TargetSiteID,"_", biocomm, "_SRLin_Corrs.tab")
+      fp_corr <- file.path(dir_path, fn_corr)
+      df_corr <- utils::read.delim(fp_corr)
+      
+      # QC, 20190313
+      # QC, Corr table ####
+      ## Special case where the function doesn't save the header row
+      ### Unable to track down cause so implement QC check here.
+      #cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+      cn_cor_x    <- colnames(df_corr)
+      cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
+      if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
+          df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+          utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
+      }##IF~length~END
+      
+      ## transpose 
+      # 20190305; shouldn't need mean or unique but just in case, should be complete dups
+      df_corr <- unique(df_corr)
+      df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
+                                   , fun.aggregate=mean
+                                   , value.var="estimate"
+                                   , na.rm=TRUE)
+      df_corrplot <- t(df_corr_r[,-1])
+      colnames(df_corrplot) <- df_corr_r[,1]
+      ## jpg
+      fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                              , "_SRLin_CorrPlot.png"))
+      grDevices::png(filename = fn_png_cp
+                     , width = 4 * ppi
+                     , height = 3 * ppi)
+      corrplot::corrplot(df_corrplot, method="circle")
+      grDevices::dev.off()
+      
+      msg.corr <- "Printing correlation plot."
+      message(msg.corr)
+  }
   #
 }##FUNCTION.END

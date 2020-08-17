@@ -41,33 +41,50 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     boo_DEBUG <- FALSE
     
     if(boo_DEBUG==TRUE) {
+        wd = "C:/Users/ann.lincoln/Documents/SEP_CAST"
         biocommlist = toupper(c("bmi", "algae"))
         bmiIndex = "CSCI"
         algIndex = "MMIhybrid"
-        dir_data = file.path(getwd(),"Data")
-        dir_results = file.path(getwd(), "Results")
+        dir_data = file.path(wd,"Data")
+        dir_results = file.path(wd, "Results")
         dir_sub = "WoE"
         df_sites = NULL
     }
     
-    
-    if (!dir.exists(file.path(dir_results))==TRUE) {
-        message("Results directory not found.")
-        #flush.console()
-    } else {
-        # site_dirs <- list.files(dir_results)
-        # rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
-        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
-        # # Remove .zip or .7z files
-        # rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)]
-        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
+#<<<<<<< 201909_ARL
+    ### Start ####
+    if (!dir.exists(file.path(dir_results))==TRUE) { # Check for results dir
+        print("Results directory not found.")
+        flush.console()
+    } else { # Results dir exists
+        site_dirs <- list.files(dir_results)
+        rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
+        site_dirs <- site_dirs[!site_dirs %in% rmfile]
         
-        site_dirs <- list.dirs(dir_results, full.names = FALSE, recursive = FALSE)
+        rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
+#=======
+# Pull Request, 20200817   
+#    if (!dir.exists(file.path(dir_results))==TRUE) {
+#        message("Results directory not found.")
+#        #flush.console()
+#    } else {
+#        # site_dirs <- list.files(dir_results)
+#        # rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
+#        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
+#        # # Remove .zip or .7z files
+#        # rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)]
+#        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
+#        
+#        site_dirs <- list.dirs(dir_results, full.names = FALSE, recursive = FALSE)
+#>>>>>>> master
         
-        for (site in (1:length(site_dirs))) {
+        for (site in (1:length(site_dirs))) { # Loop over each site
             # Get Target Site ID
             TargetSiteID <- site_dirs[site]
-            for (b in (1:length(biocommlist))) {
+            print(paste0("Evaluating ", TargetSiteID))
+            flush.console()
+            for (b in (1:length(biocommlist))) { # For each biological community
                 biocomm = biocommlist[b]
                 if (biocomm=="BMI") { 
                     bioIndex = bmiIndex 
@@ -84,7 +101,12 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 if (length(woe_detailfiles)==0) {
                     message(paste0("No WoE detailed scores available for "
                                  , TargetSiteID, " for ", biocomm, "."))
+#<<<<<<< 201909_ARL
+                    flush.console()
+                    next()
+#=======
                     #flush.console()
+#>>>>>>> master
                 } else {
                     for (dfile in (1:length(woe_detailfiles))) {
                         # Read file
@@ -139,7 +161,49 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 df_strAllSites <- rbind(df_strAllSites, df_strSite)
             }
             
-            
+            # get candidate causes path and chem value file lists (BMI only)
+            # candcause_path <- file.path(dir_results, TargetSiteID, "BMI"
+            #                             , "CandidateCauses")
+            # cc_valuefiles <- list.files(candcause_path, pattern = "ChemValues")
+
+            # Transpose, add biocomm, TargetSiteID to chemvalues
+            # if (length(cc_valuefiles)==0) {
+            #     print(paste0("No stressor values file found for "
+            #                  , TargetSiteID, " for ", biocomm, "."))
+            #     flush.console()
+            #     next()
+            # } else {
+            #     for (valfile in (1:length(cc_valuefiles))) {
+            #         # Read file
+            #         fnStrVals <- cc_valuefiles[valfile]
+            #         fnStrVals <- file.path(candcause_path,fnStrVals)
+            #         df_StrVals <- read.delim(fnStrVals, header = TRUE
+            #                                  , sep = "\t"
+            #                                  , na.strings = c("", NA))
+            #         dfStrValsLong <- df_StrVals %>%
+            #             dplyr::select(-IQRmethod, -SDmethod, -Outlier) %>%
+            #             tidyr::gather(key = "Stressor", value = "StressorValue"
+            #                           , na.rm = TRUE
+            #                           , -StationID_Master, -StressSampID
+            #                           , -StressSampDate) %>%
+            #             dplyr::mutate(TargetSite = TargetSiteID
+            #                           , BioComm = "BMI") %>%
+            #             dplyr::select(TargetSite, BioComm, StationID_Master
+            #                           , StressSampID, StressSampDate, Stressor
+            #                           , StressorValue)
+            #         
+            #     }
+            #     
+            #     if (site==1) {
+            #         df_StrValsAll <- dfStrValsLong
+            #     } else {
+            #         df_StrValsAll <- rbind(df_StrValsAll, dfStrValsLong)
+            #     }
+            #     
+            # } # Complete compilation of stressor values
+            # 
+            # cc_valuefiles <- NULL
+
         } # Finish iterate through sites in results folder
         
         # Merge with site data to get latitude and longitude
@@ -156,7 +220,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                                , by.y = c("StationID_Master", "clust"))
         
         df_WoEDetails <- df_WoEDetails %>%
-            select(StationID_Master
+            dplyr::select(StationID_Master
                    , FinalLatitude
                    , FinalLongitude
                    , Cluster
@@ -206,7 +270,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                    , WtTotSR_OutCase_LinRegr
                    , WtTotVP_boxplot) %>%
             dplyr::rename(Cluster = clust
-                          , Overall_WoE = WtTot_WoE)
+                          , Overall_WoE = WtTot_WoE) %>%
+            dplyr::arrange(StationID_Master, desc(BioComm)
+                           , desc(BioDeg), StressorType)
 
     } # Finish iterate through site directories loop
     
@@ -224,6 +290,15 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     message("Completed compiling WoE summary.")
     #flush.console()
     
+    fnStressorVals <- file.path(dir_results, paste0("OverallStressorValues_"
+                                                    , myDate, ".tab"))
+    write.table(df_StrValsAll, fnStressorVals, append = FALSE, col.names = TRUE
+                , row.names = FALSE, sep = "\t")
+    
+    print("Completed compiling stressor values.")
+    flush.console()
+    
+    rm(list = ls())
     
 }
     
