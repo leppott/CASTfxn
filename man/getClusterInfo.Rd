@@ -6,10 +6,11 @@
 \usage{
 getClusterInfo(
   TargetSiteID,
-  site.COMID,
-  site.Clusters,
+  siteCOMID,
+  siteCluster,
   refSiteCOMIDs,
-  data.cluster,
+  data_cluster,
+  data_clusterInfo,
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "ClusterInfo"
 )
@@ -17,13 +18,15 @@ getClusterInfo(
 \arguments{
 \item{TargetSiteID}{SiteID}
 
-\item{site.COMID}{SiteID}
+\item{siteCOMID}{Site COMID from NHDPlus v2}
 
-\item{site.Clusters}{site clusters.}
+\item{siteCluster}{Site cluster.}
 
 \item{refSiteCOMIDs}{reference site COMIDs}
 
-\item{data.cluster}{The StreamCat data for each reach with cluster assignments.}
+\item{data_cluster}{The StreamCat data for each reach with cluster assignments.}
+
+\item{data_clusterInfo}{data file for cluster info.}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
@@ -42,7 +45,7 @@ Required objects:
 
 * TargetSiteID
 
-* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
+* data_cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 }
 \examples{
 
@@ -62,9 +65,9 @@ data.mod           <- data_ReachMod
 elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
                    , "ElevCategory"])
 if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
+   data_cluster <- data_Cluster_Hi
 } else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
+   data_cluster <- data_Cluster_Lo
 }
 
 # Map data
@@ -95,7 +98,7 @@ dir_sub <- "SiteInfo"
 list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
                                 , data.SampSummary, data.303d.ComID
                                 , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
+                                , data_cluster, data.mod
                                 , map_proj, map_outline, map_flowline
                                 , dir_sub=dir_sub)
  
@@ -104,12 +107,12 @@ list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
 data.chem.raw <- data_Chem
 data.chem.info <- data_ChemInfo
 site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
+siteCluster <- list.SiteSummary$ClustIDs
 
 #
 # Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
+list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=siteCluster
+                                , data_cluster=data_cluster, data.Stations.Info=data.Stations.Info
                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
 
 # Data getClusterInfo
@@ -118,7 +121,7 @@ refSiteCOMIDs <- list.data$ref.reaches
 dir_sub <- "ClusterInfo"
 
 # Run getClusterInfo
-getClusterInfo(TargetSiteID, site.COMID, site.Clusters, ref.reaches, 
-               data.cluster, dir_results, dir_sub)
+getClusterInfo(TargetSiteID, site.COMID, siteCluster, ref.reaches, 
+               data_cluster, dir_results, dir_sub)
 
 }

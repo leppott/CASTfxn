@@ -1,64 +1,89 @@
 # Global Shiny Stuff
 
-# Pakcages
-library(shiny)
-library(CASTfxn)
+# Packages ####
+library(shiny)   # for Shiny app
+library(CASTfxn) # 
 library(shinyjs)
-<<<<<<< Updated upstream
-library(leaflet)
-=======
-#library(shinyFiles)
-# #library(leaflet)
->>>>>>> Stashed changes
-# library(dplyr)
-# #library(shinyjs)
+library(leaflet) # used for map
+library(readxl)  # import Excel data
+library(stringr)
+library(dplyr)
+library(ggrepel)
+library(tidyr)
+# Old not needed
+# library(shinyFiles)
 # library(cluster)
-# library(dplyr)
 # library(ggplot2)
 # library(maps)
 # library(maptools)
 # library(raster)
 # library(RColorBrewer)
-# library(readxl)
 # library(reshape)
 # library(rgdal)
 # library(rgeos)
 # library(RgoogleMaps)
 # library(rpart)
 
-# Source
-#source(file.path(".", "external", "runCASTfxn.R"))
-source(file.path(".", "external", "getTimeSeq.R"))
-source(file.path(".", "external", "getWoE.R"))
+# Source ####
+# source(file.path(".", "external", "runCASTfxn.R"))
+# source(file.path(".", "external", "getTimeSeq.R"))
+# source(file.path(".", "external", "getWoE.R"))
 
-#
-#setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CAST_v2")
+# Global Variables ####
 
-# # data directory
-# dn_data <- file.path(getwd(), "data")
-# 
-# 
-# # Site
-# LU.Stations <- read.delim(file.path(dn_data, "data.Stations.LookUp.tab"), stringsAsFactors = FALSE)
-
-
+# data directory
 dir_data <- file.path(".", "Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.
-<<<<<<< Updated upstream
-dir_wd <- file.path(getwd())
-=======
-#dir_wd <- file.path(getwd())
->>>>>>> Stashed changes
+dir_wd <- file.path(".")
 ## Stations - PickList
 data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab", sep="")
                             , stringsAsFactors = FALSE)
 LU.Stations <- data.Stations[,"StationID_Master"]
 
-
 zip_name <- "NULL"
 
-<<<<<<< Updated upstream
+# Targeted Locations
+## Add to selection boxes to easy to pick out.
+targ_SiteID <- c("SMC04134", "905S15201", "907S05514", "SMC12246", "907SDSDR8"
+                 , "907SDSDR9", "SMC04134", "905SDYSA7", "906S02246", "SMC01606")
+
+
+# Clean up ####
+# Remove www\Results (and sub dirs) at start up (and recreate)
+dir_www_Results <- file.path(".", "www", "Results")
+ifelse(dir.exists(dir_www_Results)==TRUE, unlink(dir_www_Results, recursive = TRUE), NA)
+ifelse(dir.exists(dir_www_Results)==FALSE, dir.create(dir_www_Results), NA)
+
+# Map/GIS data ####
+# # Sites ###
+# # df.sites.map
+fn.sites <- "df.sites.map.rda"
+load(file.path(dir_data, fn.sites))
+
+# SMC watersheds ####
+# poly.smc.proj
+fn.SMC <- "poly.smc.proj.rda"
+load(file.path(dir_data, fn.SMC))
+
+# Flowlines ###
+# lines.flowline.proj
+fn.Flowline.SMC <- "lines.flowline.proj.rda"
+load(file.path(dir_data, fn.Flowline.SMC))
+
+# SiteIDs ###
+#mySites <- df.sites.map[,"StationID_Master"]
+mySites <- as.character(sort(unique(df.sites.map[, "StationID_Master"])))
+
+# COMIDs ###
+myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
+
+# Map height fix
+#https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height
+
+
 # Functions ####
+
+# get HTML
 getHTML <- function(fn_html){
   #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
   fe_html <- file.exists(fn_html)
@@ -69,13 +94,8 @@ getHTML <- function(fn_html){
   }
 }##getHTML~END
 
-# www Results ####
-
-# Remove www\Results (and sub dirs) at start up (and recreate)
-dir_www_Results <- file.path(".", "www", "Results")
-ifelse(dir.exists(dir_www_Results)==TRUE, unlink(dir_www_Results, recursive = TRUE), NA)
-ifelse(dir.exists(dir_www_Results)==FALSE, dir.create(dir_www_Results), NA)
-
+# Not all NA
+not_all_na <- function(x) {!all(is.na(x))}
 
 # Copy over Results for Display
 # TargetSiteID_Results <- "403S01784" # "801RB8197" # "403S01784"
@@ -118,31 +138,3 @@ CopyResults <- function(TargetSiteID_Results){
   }##FOR~i~END
   #
 }##CopyResults~END
-
-=======
->>>>>>> Stashed changes
-
-# # Sites ####
-# # df.sites.map
-# fn.sites <- "df.sites.map.rda"
-# load(file.path(dn_data, fn.sites))
-# 
-# # SMC watersheds #####
-# # poly.smc.proj
-# fn.SMC <- "poly.smc.proj.rda"
-# load(file.path(dn_data, fn.SMC))
-# 
-# # Flowlines ####
-# # lines.flowline.proj
-# fn.Flowline.SMC <- "lines.flowline.proj.rda"
-# load(file.path(dn_data, fn.Flowline.SMC))
-# 
-# # SiteIDs ####
-# mySites <- df.sites.map[,"StationID_Master"]
-# 
-# # COMIDs ####
-# myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
-
-
-# Map height fix
-#https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height

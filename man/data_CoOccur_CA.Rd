@@ -4,7 +4,8 @@
 \name{data_CoOccur_CA}
 \alias{data_CoOccur_CA}
 \title{Co-Occurence example data (CA)}
-\format{A data frame with 2,769 rows and 739 variables:
+\format{
+A data frame with 2,769 rows and 739 variables:
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{SWAMP_Station_Code}}{a factor with levels }
@@ -745,7 +746,8 @@
           \item{\samp{Zn__g}}{a numeric vector}
           \item{\code{Zn_f_mg_L}}{a numeric vector}
           \item{\code{Zn_uf_mg_L}}{a numeric vector}
-}}
+}
+}
 \source{
 example data
 }

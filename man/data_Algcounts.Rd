@@ -4,7 +4,8 @@
 \name{data_Algcounts}
 \alias{data_Algcounts}
 \title{Algae Counts}
-\format{A data frame with 4882 observations on the following 10 variables
+\format{
+A data frame with 4882 observations on the following 10 variables
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{AlgalSampIdent}}{a numeric vector}
@@ -15,7 +16,8 @@
           \item{\code{Individuals}}{a numeric vector}
           \item{\code{AdjFinalCount}}{a numeric vector}
           \item{\code{RelAbund}}{a numeric vector}
-}}
+}
+}
 \source{
 example data
 }

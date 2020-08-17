@@ -6,39 +6,51 @@
 \usage{
 getSiteInfo(
   TargetSiteID,
-  dir_results = file.path(getwd(), "Results"),
-  data.Stations.Info,
-  data.SampSummary,
-  data.303d.ComID,
-  data.bmi.metrics,
-  data.algae.metrics,
-  data.cluster,
-  data.mod,
+  data_Sites,
+  data_bkgdata,
+  data_bkginfo,
+  data_SampSummary,
+  data_303d,
+  data_bmiMetrics = NULL,
+  bmiIndexGp = "IBI",
+  data_algMetrics = NULL,
+  algIndexGp = "IBI",
+  comp_sites = NULL,
+  data_cluster,
+  data_mods,
   map_proj = NULL,
   map_outline = NULL,
   map_flowline = NULL,
   map_flowline2 = NULL,
+  dir_photo = file.path(getwd(), "Data", "Photos"),
+  dir_results = file.path(getwd(), "Results"),
   dir_sub = "SiteInfo"
 )
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
-\item{dir_results}{Directory for results.  Default = "Results".}
+\item{data_Sites}{data_Sites}
 
-\item{data.Stations.Info}{data.Stations.Info}
+\item{data_bkgdata}{background data}
 
-\item{data.SampSummary}{data.SampSummary}
+\item{data_SampSummary}{data_SampSummary}
 
-\item{data.303d.ComID}{data.303d.ComID}
+\item{data_303d}{data_303d}
 
-\item{data.bmi.metrics}{data.bmi.metrics}
+\item{data_bmiMetrics}{data_bmiMetrics}
 
-\item{data.algae.metrics}{data.algae.metrics}
+\item{bmiIndexGp}{BMI index group; default = "IBI"}
 
-\item{data.cluster}{data.cluster}
+\item{data_algMetrics}{data_algMetrics}
 
-\item{data.mod}{data.mod}
+\item{algIndexGp}{Algal index group; default = "IBI"}
+
+\item{comp_sites}{Comparator site; default = NULL}
+
+\item{data_cluster}{data_cluster}
+
+\item{data_mods}{data_mods}
 
 \item{map_proj}{Map projection.  If no projection is provided an unprojected map is created without flowlines.}
 
@@ -48,7 +60,13 @@ getSiteInfo(
 
 \item{map_flowline2}{Typically NHD+ flowline.  Can be more than one but plotted the same.}
 
+\item{dir_photo}{Directory with photos; Default = ./Data/Photos}
+
+\item{dir_results}{Directory for results.  Default = ./Results}
+
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+
+\item{data_bnkinfo}{background info}
 }
 \value{
 A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
@@ -66,8 +84,8 @@ Requires package rgdal.
 
 Required objects:
 
-* data.Stations.Info; StationID_Master, FinalLatitude, FinalLongitude
-, WaterbodyName, GIS_County, CARefSite_2017, COMID_NHD2
+* data_Sites; StationID_Master, FinalLatitude, FinalLongitude
+, WaterbodyName, GIS_County, CARefSite_2017, COMID
 
 * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
 , BMI.Metrics.SampID, Algae.Metrics.SampID
@@ -91,7 +109,7 @@ dir_results <- file.path(getwd(), "Results")
 
 # Data
 # data import, example
-#data.Stations.Info <- read.delim(paste(myDir.Data,"data.Stations.Info.tab",sep=""))
+#data_Sites <- read.delim(paste(myDir.Data,"data_Sites.tab",sep=""))
 #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
 #                               , na.strings = c(""," "))
 #data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
@@ -102,7 +120,7 @@ dir_results <- file.path(getwd(), "Results")
 
 # Data getSiteInfo
 # data, example included with package
-data.Stations.Info <- data_Sites
+data_Sites <- data_Sites
 data.SampSummary   <- data_SampSummary
 data.303d.ComID    <- data_303d
 data.bmi.metrics   <- data_BMIMetrics
@@ -110,8 +128,7 @@ data.algae.metrics <- data_AlgMetrics
 data.mod           <- data_ReachMod
 
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                    , "ElevCategory"])
+elev_cat <- toupper(data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
 if(elev_cat=="HI"){
    data.cluster <- data_Cluster_Hi
 } else if(elev_cat=="LO") {
@@ -145,7 +162,7 @@ dir_sub <- "SiteInfo"
 # Run getSiteInfo
 list.SiteSummary <- getSiteInfo(TargetSiteID
                                 , dir_results
-                                , data.Stations.Info
+                                , data_Sites
                                 , data.SampSummary
                                 , data.303d.ComID
                                 , data.bmi.metrics

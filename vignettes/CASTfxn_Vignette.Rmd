@@ -17,7 +17,7 @@ library(CASTfxn)
 ```
 
 # Introduction
-`CASTfxn` was created by Tetra Tech, Inc. for in 2018 to support the Causal Assessment Screening Tool.  This tool aides data managers to more quickly analyze large amounts of data for causal assessment.  It is not meant to be the final arbiter.  But it can aid in the filtering the data.
+`CASTfxn` was created by Tetra Tech, Inc.  in 2018 to support the Causal Assessment Screening Tool.  This tool aides data managers to more quickly analyze large amounts of data for causal assessment.  It is not meant to be the final arbiter.  But it can aid in the filtering the data.
 
 It is envisioned that this library can be a living package and will add additional functions and routines in the future.
 
@@ -95,7 +95,7 @@ TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 
 CurrentDir <- getwd()
-myDir.Data <- paste(CurrentDir,"data/",sep="/")
+myDir.Data <- file.path(CurrentDir, "data")
 
 # data, example included with package
 data.Stations.Info <- data_Sites

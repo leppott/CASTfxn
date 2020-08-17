@@ -1,0 +1,25 @@
+MetricName	MetricLabel	IndexYN
+MMIdiatom	Diatom MMI	No
+propsppOxyReqDO_10_rawdiatom	Proportion of diatom species OxyReq.DO_10	No
+cntsppBCG3_rawdiatom	Count of diatom species BCG3	No
+propCyclotella_rawdiatom	Proportion of Cyclotella diatom species	No
+propSurirella_rawdiatom	Proportion of Surirella diatom species	No
+propsppIndicatorClass_TP_low_rawdiatom	Proportion of diatom species IndicatorClass_TP_low	No
+propsppOrgNNHHONF_rawdiatom	Proportion of diatom species OrgN.NHHONF	No
+MMIsba	Soft-bodied algae MMI	No
+cntsppBCG3_rawsba	Count of soft-bodied algae species BCG3	No
+propsppIndicatorClass_NonRef_rawsba	Proportion of soft-bodied algae species IndicatorClass_NonRef	No
+propsppGreen_rawsba	Proportion of soft-bodied algae species Green	No
+cntsppIndicatorClass_Cu_high_rawsba	Count of soft-bodied algae species IndicatorClass_Cu_high	No
+cntsppIndicatorClass_TP_high_rawsba	Count of soft-bodied algae species IndicatorClass_TP_high	No
+cntsppIndicatorClass_DOC_high_rawsba	Count of soft-bodied algae species IndicatorClass_DOC_high	No
+propsppmosttol_rawsba	Proportion of soft-bodied algae species most tolerant	No
+MMIhybrid	Hybrid MMI (Algal index)	Yes
+cntsppBCG3_rawhybrid	Count of hybrid (diatom and soft-bodied) species BCG3	No
+propCyclotella_rawhybrid	Proportion of hybrid (diatom and soft-bodied) Cyclotella species	No
+propsppOxyReqDO_10_rawhybrid	Proportion of hybrid (diatom and soft-bodied) species OxyReq.DO_10	No
+propSurirella_rawhybrid	Proportion of hybrid (diatom and soft-bodied) Surirella species	No
+propsppIndicatorClass_DOC_high_rawhybrid	Proportion of hybrid (diatom and soft-bodied) species IndicatorClass_DOC_high	No
+propsppIndicatorClass_Cu_high_rawhybrid	Proportion of hybrid (diatom and soft-bodied) species IndicatorClass_Cu_high	No
+propsppOrgNNHHONF_rawhybrid	Proportion of hybrid (diatom and soft-bodied) species OrgN.NHHONF	No
+propsppIndicatorClass_TN_low_rawhybrid	Proportion of hybrid (diatom and soft-bodied) species IndicatorClass_TN_low	No

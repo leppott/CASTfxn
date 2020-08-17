@@ -82,7 +82,7 @@ knitr::kable(table(df_elev$ElevCategory, df_elev$ElevCat2), caption="Elevation C
 
 # Plot 1, Elevation Category
 p1 <- ggplot(df_elev, aes(Elevation, elevation, color=ElevCategory)) + 
-  geom_point() + 
+  geom_point(na.rm = TRUE) + 
   geom_hline(yintercept=5000, color="blue") + 
   geom_vline(xintercept=5000, color="blue") + 
   labs(x="Elevation (ft) [AZ data]", y="Elevation (ft) [elevatr package]")

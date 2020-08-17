@@ -4,7 +4,8 @@
 \name{data_Cluster_Lo}
 \alias{data_Cluster_Lo}
 \title{Low  elevation cluster example data}
-\format{A data frame with 10,593 rows and 98 variables:
+\format{
+A data frame with 10,593 rows and 98 variables:
 \describe{
           \item{COMID}{NHDplus COMID}
           \item{\code{COMID}}{a numeric vector}
@@ -105,7 +106,8 @@
           \item{\code{clust_noland}}{a numeric vector}
           \item{\code{clust_land}}{a numeric vector}
           \item{\code{ElevCategory}}{a character vector}
-}}
+}
+}
 \source{
 example data
 }

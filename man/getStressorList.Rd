@@ -6,15 +6,20 @@
 \usage{
 getStressorList(
   TargetSiteID,
-  site.Clusters,
-  chem.info,
-  cluster.chem,
-  cluster.samps,
-  ref.sites,
-  site.chem,
+  siteCluster,
+  chemInfo,
+  clusterChem,
+  siteQual2Plot,
+  refSamps,
+  refSites,
+  siteChem,
   probsHigh,
   probsLow,
+  DOlim = 7,
+  pHlimLow = 6.5,
+  pHlimHigh = 9,
   biocomm = "bmi",
+  bioParmsDEL,
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "CandidateCauses"
 )
@@ -22,17 +27,7 @@ getStressorList(
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{site.Clusters}{Clusters}
-
-\item{chem.info}{chem information}
-
-\item{cluster.chem}{chem data cluster.}
-
-\item{cluster.samps}{sample cluster.}
-
-\item{ref.sites}{reference sites}
-
-\item{site.chem}{Chem sites}
+\item{siteChem}{Chem sites}
 
 \item{probsHigh}{probabilities, high}
 
@@ -43,6 +38,16 @@ getStressorList(
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+
+\item{site.Cluster}{Clusters}
+
+\item{chem.info}{chem information}
+
+\item{cluster.chem}{chem data cluster.}
+
+\item{cluster.samps}{sample cluster.}
+
+\item{ref.sites}{reference sites}
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory with box plots.
@@ -132,7 +137,7 @@ chem.info <- list.data$chem.info
 cluster.chem <- list.data$cluster.chem
 cluster.samps <- list.data$cluster.samps
 ref.sites <- list.data$ref.sites
-site.chem <- list.data$site.chem
+siteChem <- list.data$siteChem
 dir_sub <- "CandidateCauses"
 
 # set cutoff for possible stressor identification
@@ -142,7 +147,7 @@ biocomm <- "bmi"
 
 # Run getStressorList
 list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                                 , cluster.samps, ref.sites, site.chem
+                                 , cluster.samps, ref.sites, siteChem
                                  , probsHigh, probsLow, biocomm, dir_results
                                  , dir_sub)
 }

@@ -4,12 +4,14 @@
 \name{data_ReachMod}
 \alias{data_ReachMod}
 \title{Reach modified status example data}
-\format{A data frame with 1,428 rows and 3 variables:
+\format{
+A data frame with 1,428 rows and 3 variables:
 \describe{
           \item{COMID}{NHDplus COMID}
           \item{ReachModStatus}{Reach modified flow status}
           \item{ModReason}{Reach modified flow reason}
-}}
+}
+}
 \source{
 example data
 }

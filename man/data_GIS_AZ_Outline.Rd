@@ -4,7 +4,8 @@
 \name{data_GIS_AZ_Outline}
 \alias{data_GIS_AZ_Outline}
 \title{AZ state outline}
-\format{Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
+\format{
+Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
 
 \describe{
 ..@ data       :'data.frame':	1 obs. of  51 variables:
@@ -80,7 +81,8 @@
 .. .. ..$ : chr [1:2] "min" "max"
 ..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
 .. .. ..@ projargs: chr "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-}}
+}
+}
 \source{
 example data
 }

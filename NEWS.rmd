@@ -37,6 +37,174 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9256 (2020-08-17)
+
+* Tweak to Shiny app CAST_SMC
+
+## Changes in Version 0.1.0.9255 (2020-08-15)
+
+* dplyr::summarize(), add .groups = "drop_last"
+    + Shiny app CAST_SMC
+    + Shiny app RPP_SMC
+
+## Changes in Version 0.1.0.9254 (2020-08-14)
+
+* Shiny
+    + CAST_SMC
+        - Fix map by disabling plot legend explanation.
+    + Remove unused Shiny apps
+        - CAST_Map_COMID
+        - CAST_Map_StationID
+
+## Changes in Version 0.1.0.9253 (2020-08-11)
+
+* Shiny, RPP_SMC
+    + Targeted SiteID and COMID to top of pick lists.
+* Shiny, RPP_CAST
+     + Targeted SiteID to top of pick lists.
+
+## Changes in Version 0.1.0.9252 (2020-08-11)
+
+* Vignettes
+    + CASTfxn, not working
+    + Slight tweaks to Analysis and Elevation.
+* Shiny, RPP_SMC
+    + Station map shows corresponding COMID for selected StationID.
+* Shiny, RPP_CAST
+    + Attempt to fix station map
+
+## Changes in Version 0.1.0.9251 (2020-07-31)
+
+* File clean up.
+* Add version numbers to titles of Shiny apps (RPP_SMC and CAST_SMC).
+
+## Changes in Version 0.1.0.9250 (2020-05-04)
+
+* Shiny app, RPP_SMC
+   + Rework visual design.
+   + Include Stations map as a tab.
+   + Include Reach map as a tab.
+   + Other tweaks.
+
+## Changes in Version 0.1.0.9249 (2020-04-23)
+
+* Shiny app, RPP_SMC
+    + Add user inputs.
+    + Currate included data.
+
+## Changes in Version 0.1.0.9248 (2020-04-20)
+
+* Report_Results_summary.rmd
+    + Replace CSCI and MMIdiatom with bmiIndex and algIndex.
+    + arrange_ to arrange (line 271) to avoid deprecation message.
+* getReport
+    + Define pipe so can be used in RMD.
+    + Additional input parameters
+        - dir_data
+        - bmiIndex
+        - algIndex
+    + Modify message for missing RMD.
+    + Formatting to avoid error when render the RMD.
+* CAST_SMC
+    + server.R
+        - Update call to getReport()
+* getSummaryAllSites.R
+    + print() to message()
+    + Replace list.files() and checks for files with list.dirs().
+    + Fix formatting on an if else statement.
+* Shiny CAST_COMID
+    + Stream reaches not showing, uncommented that section.
+
+## Changes in Version 0.1.0.9247 (2020-04-15)
+
+* Shiny map apps CAST_Map_StationID and CAST_MAP_COMID
+    + Add mini map
+
+## Changes in Version 0.1.0.9246 (2020-04-14)
+
+* getSiteInfo.R
+    + Clear warning about only first element used.
+* getBioStressorResponses
+    + Add "formula = y ~ x" to avoid message.
+
+## Changes in Version 0.1.0.9245 (2020-04-13)
+
+* getReport.R
+    + Add "useBC" and "lagdays" as input parameters.
+* getQualSites.R
+    + Fix working directory reference.
+* Shiny CAST_SMC
+    + server.R, Run_ALL
+        - Add "stringsAsFactors = FALSE" to read.delim().
+    + dplyr::select
+        - Add "all_of".  More tidyverse stuff.
+* Report_Results_summary.rmd
+    + Comment out lines without inputs.
+        - siteQual2Plot
+        - DOlim
+        - pHlimLow
+        - pHlimHigh
+* SiteInfo.R
+    + Modify is.na to avoid more tidyverse corruption.
+        - is.na(df.temp$StudyYear)
+        - is.na(df.temp[, "StudyYear", TRUE])
+* getOutliers.R
+    + Get rid of 'NaN' introduced warning.
+        - Add filter for LogTranf == 1 and ResultValue <= 0.
+
+## Changes in Version 0.1.0.9244 (2020-04-10)
+
+* getVerifiedPredictions
+    + Update with drop = TRUE to deal with tidyverse corruption of data formats.
+* runShinyExamples.R
+    + Update examples, details, and default (CAST_SMC).
+* Shiny_SMC
+    + Change order of tabs to have Console first.
+    + Copy disclaimer to sidebar.
+    + Rename Disclaimer_Key to Legend_Key.
+        - Minor edits.
+
+## Changes in Version 0.1.0.9243 (2020-04-09)
+
+* 2020-04-09, found missing from GitHub.  Reloaded version from 2020-02-05.
+* Updates to CAST_SMC shiny.
+    + Code tweaks.
+    + Test sites to top of SMCSitesFinal.tab
+    + Suppress warning for readOGR.
+    + Update Disclaimer to most recent version.
+    + Update progress bar.
+* Declare additional parameters and fix working directory references.
+    + getSiteInfo
+    + getQualSites
+    + getClusterInfo
+    + getTimeSeq
+    + getBioStressorResponses
+    + getVerifiedPredictions
+    + getWoE
+* Send print to message
+    + getSiteInfo
+    + getTimeSeq
+    + getVerifiedPrecitions
+    + getWoE
+* ggplot add na.rm
+    + getTimeSeq
+
+## Changes in Version 0.1.0.9242 (2020-02-03)
+
+* Update data in Shiny_SMC folder.
+    + Data from collaborator's most recent version.
+
+## Changes in Version 0.1.0.9241 (2020-01-30)
+
+* Fixes to Shiny Apps
+    + CAST_Map_StationID
+        - Renamed from SiteID to StationID.
+    + CAST_SMC
+        - Partial fix.  Runs but not completely.
+
+## Changes in Version 0.1.0.9240 (2020-01-27)
+
+* Create new package after merging branches and resolving conflicts.
 
 ## Changes in Version 0.1.0.9239 (2019-10-07, ARL)
 * General

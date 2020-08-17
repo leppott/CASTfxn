@@ -1,493 +1,493 @@
-ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	GroupNum	GroupName	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID	DirIncStress	SSTVname	MinWQO_CAR9	MCL_Primary	MCL_Secondary
-None	E. coli	MPN/100 mL	E_coli_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		126		
-None	Enterococcus	MPN/100 mL	Enterococcus_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		33		
-None	"Coliform, Fecal"	MPN/100 mL	FecalColiform_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc				
-None	"Coliform, Total"	MPN/100 mL	TotalColiform_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDD(o,p')"	ng/g dw	DDD_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDD(o,p')"	ug/L	DDD_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDD(p,p')"	ng/g dw	DDD_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDD(p,p')"	ug/L	DDD_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDE(o,p')"	ng/g dw	DDE_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDE(o,p')"	ug/L	DDE_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDE(p,p')"	ng/g dw	DDE_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDE(p,p')"	ug/L	DDE_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDMU(p,p')"	ng/g dw	DDMU_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDMU(p,p')"	ug/L	DDMU_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDT(o,p')"	ng/g dw	DDT_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDT(o,p')"	ug/L	DDT_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDT(p,p')"	ng/g dw	DDT_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"DDT(p,p')"	ug/L	DDT_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc				
-none	IPI	none	IPI	18	habitat	0	0	0	NA	NA	NA	NA	1	Dec				
-none	Ev_FlowHab_score	none	Ev_FlowHab_score	18	habitat	0	0	0	NA	NA	NA	NA	1	Dec				
-none	H_AqHab_score	none	H_AqHab_score	18	habitat	0	0	0	NA	NA	NA	NA	1	Dec				
-none	H_SubNat_score	none	H_SubNat_score	18	habitat	0	0	0	NA	NA	NA	NA	1	Dec				
-none	PCT_SAFN_score	none	PCT_SAFN_score	18	habitat	0	0	0	1	2	4	5	1	Inc				
-none	XCMG_score	none	XCMG_score	18	habitat	0	0	0	NA	NA	NA	NA	1	Dec				
-Total	Terbutryn	ug/L	Terbutryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Thiobencarb	ug/L	Thiobencarb_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc			70	1
-Total	Atrazine	ug/L	Atrazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Total	Molinate	ug/L	Molinate_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc			20	
-Total	Oxadiazon	ng/g dw	Oxadiazon_ng_g_dw	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Oxadiazon	ug/L	Oxadiazon_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Prometon	ug/L	Prometon_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Prometryn	ug/L	Prometryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Propazine	ug/L	Propazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Secbumeton	ug/L	Secbumeton_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Simazine	ug/L	Simazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc			4	
-Total	Simetryn	ug/L	Simetryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Terbuthylazine	ug/L	Terbuthylazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Ametryn	ug/L	Ametryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Atraton	ug/L	Atraton_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dacthal	ng/g dw	Dacthal_tot_ng_g_dw	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dacthal	ug/L	Dacthal_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Calcium	mg/L	Calcium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc				
-Not Recorded	Fluoride	mg/L	Fluoride_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		1	2	
-Dissolved	Potassium	mg/L	Potassium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Potassium	mg/L	Potassium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Sodium	mg/L	Sodium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		0.006		
-Total	Sodium	mg/L	Sodium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		0.006		
-Dissolved	Sulfate	mg/L	Sulfate_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		65		
-Total	Calcium	mg/L	Calcium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Chloride	mg/L	Chloride_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		50		
-Dissolved	Aluminum	ug/L	Aluminum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			1	200
-Dissolved	Antimony	ug/L	Antimony_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.006	
-Total	Antimony	ug/L	Antimony_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.006	
-Total	Aluminum	mg/kg dw	Aluminum_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Aluminum	ug/L	Aluminum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			1	200
-Total	Cobalt	ug/L	Cobalt_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Copper	ug/L	Copper_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				1000
-Total	Copper	mg/kg dw	Copper_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Copper	ug/L	Copper_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				1000
-Dissolved	Iron	ug/L	Iron_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		0.3		300
-Total	Iron	ug/L	Iron_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		0.3		300
-Dissolved	Lead	ug/L	Lead_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	Lead	mg/kg dw	Lead_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Lead	ug/L	Lead_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Magnesium	mg/L	Magnesium_f_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Magnesium	mg/L	Magnesium_uf_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Manganese	ug/L	Manganese_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		0.05		50
-Total	Manganese	mg/kg dw	Manganese_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Manganese	ug/L	Manganese_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		0.05		50
-Dissolved	Mercury	ng/L	Mercury_f_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.002	
-Total	Mercury	ng/L	Mercury_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.002	
-Total	Mercury	mg/kg dw	Mercury_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Molybdenum	ug/L	Molybdenum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Molybdenum	ug/L	Molybdenum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Nickel	ug/L	Nickel_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.1	
-Total	Nickel	mg/kg dw	Nickel_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Nickel	ug/L	Nickel_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.1	
-Dissolved	Selenium	ug/L	Selenium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Total	Selenium	ug/L	Selenium_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Dissolved	Silver	ug/L	Silver_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				100
-Dissolved	Arsenic	ug/L	Arsenic_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Total	Arsenic	mg/kg dw	Arsenic_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Arsenic	ug/L	Arsenic_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Dissolved	Barium	ug/L	Barium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Total	Barium	ug/L	Barium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Dissolved	Beryllium	ug/L	Beryllium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.004	
-Total	Beryllium	ug/L	Beryllium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.004	
-Total	Boron	mg/L	Boron_uf_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		0.75		
-Dissolved	Cadmium	ug/L	Cadmium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.005	
-Total	Cadmium	mg/kg dw	Cadmium_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Cadmium	ug/L	Cadmium_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.005	
-Dissolved	Chromium	ug/L	Chromium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Total	Chromium	mg/kg dw	Chromium_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Chromium	ug/L	Chromium_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc			0.05	
-Dissolved	Cobalt	ug/L	Cobalt_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Silver	ug/L	Silver_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				100
-Dissolved	Strontium	ug/L	Strontium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Strontium	ug/L	Strontium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Thallium	ug/L	Thallium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.002	
-Total	Thallium	ug/L	Thallium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc			0.002	
-Dissolved	Tin	ug/L	Tin_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Tin	ug/L	Tin_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Titanium	ug/L	Titanium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Titanium	ug/L	Titanium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Vanadium	ug/L	Vanadium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Vanadium	ug/L	Vanadium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Zinc	ug/L	Zinc_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				5000
-Total	Silver	mg/kg dw	Silver_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Zinc	ug/L	Zinc_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc				5000
-Total	Zinc	mg/kg dw	Zinc_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc				
-Particulate	Chlorophyll a	mg/m2	Chlor_a_particulate_mg_m2	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Particulate	Chlorophyll a	ug/L	Chlor_a_particulate_ug_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Dissolved Inorganic Carbon	mg/L	DIC_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Ammonia as N	mg/L	NH3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		0.025		
-Total	Ammonia as N	mg/L	NH3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		0.025		
-Dissolved	Nitrite as N	mg/L	NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Dissolved	Dissolved Organic Carbon	mg/L	DOC_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Nitrate as N	mg/L	NO3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Not Recorded	Nitrate as N	mg/L	NO3_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Total	Nitrate as N	mg/L	NO3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Not Recorded	Nitrite as N	mg/L	NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Particulate	AFDM_Algae	g/m2	AFDM_algae_particulate_g_m2	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Nitrate + Nitrite as N	mg/L	NO3NO2_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Total	Phosphorus as P	mg/L	P_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		0.05		
-Particulate	Pheophytin a	ug/L	Pheophytin_a_particulate_ug_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	OrthoPhosphate as P	mg/L	PO4_P_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Silica as SiO2	mg/L	Silica_SiO2_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Silica as SiO2	mg/L	Silica_SiO2_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nitrogen, Total Kjeldahl"	mg/L	TKN_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Not Recorded	"Nitrogen, Total"	mg/L	TN_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nitrogen, Total"	mg/L	TN_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Total Organic Carbon	% dw	TOC_pct_dw	7	Nutrients	0	0	0	NA	NA	NA	NA	1	Inc				
-Total	Total Organic Carbon	mg/L	TOC_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Nitrate + Nitrite as N	mg/L	NO3NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Not Recorded	Nitrate + Nitrite as N	mg/L	NO3NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Total	Biphenyl	ug/L	Biphenyl_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Toluene	ug/L	Toluene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			150	
-Total	"Trimethylbenzene, 1,2,4-"	ug/L	Trimethylbenzene_124_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Trimethylbenzene, 1,3,5-"	ug/L	Trimethylbenzene_135_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Xylene, m/p-"	ug/L	Xylene_m_p_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			1750	
-Total	"Xylene, o-"	ug/L	Xylene_o_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			1750	
-Total	Benzene	ug/L	Benzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Total	"Butylbenzene, n-"	ug/L	Butylbenzene_n_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Butylbenzene, sec-"	ug/L	Butylbenzene_sec_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Butylbenzene, tert-"	ug/L	Butylbenzene_tert_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Caffeine	ug/L	Caffeine_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Ethylbenzene	ug/L	Ethylbenzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			300	
-Total	Isopropylbenzene	ug/L	Isopropylbenzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Isopropyltoluene, p-"	ug/L	Isopropyltoluene_p_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Methyl Tert-butyl Ether	ug/L	Methyl_TertbutylEther_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc			13	5
-Total	"Propylbenzene, n-"	ug/L	Propylbenzene_n_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Aldrin	ng/g dw	Aldrin_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Aldrin	ug/L	Aldrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlordane, cis-"	ng/g dw	Chlordane_cis_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlordane, cis-"	ug/L	Chlordane_cis_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			0.1	
-Total	"Chlordane, trans-"	ng/g dw	Chlordane_trans_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlordane, trans-"	ug/L	Chlordane_trans_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			0.1	
-Total	"Chlordene, cis-"	ug/L	Chlordene_cis_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlordene, trans-"	ug/L	Chlordene_trans_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dieldrin	ng/g dw	Dieldrin_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dieldrin	ug/L	Dieldrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endosulfan I	ng/g dw	Endosulfan_I_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endosulfan I	ug/L	Endosulfan_I_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endosulfan II	ug/L	Endosulfan_II_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endosulfan Sulfate	ug/L	Endosulfan_Sulfate_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endrin Aldehyde	ug/L	Endrin_Aldehyde_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endrin Ketone	ug/L	Endrin_Ketone_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endrin	ng/g dw	Endrin_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Endrin	ug/L	Endrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, alpha-"	ng/g dw	HCH_alpha_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, alpha-"	ug/L	HCH_alpha_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, beta-"	ng/g dw	HCH_beta_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, beta-"	ug/L	HCH_beta_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, delta-"	ug/L	HCH_delta_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, gamma-"	ng/g dw	HCH_gamma_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"HCH, gamma-"	ug/L	HCH_gamma_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Heptachlor Epoxide	ng/g dw	Heptachlor_Epoxide_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Heptachlor Epoxide	ug/L	Heptachlor_Epoxide_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			0.01	
-Total	Heptachlor	ng/g dw	Heptachlor_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Heptachlor	ug/L	Heptachlor_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			0.01	
-Total	Hexachlorobenzene	ng/g dw	Hexachlorobenzene_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Hexachlorobenzene	ug/L	Hexachlorobenzene_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Total	Hexachlorobutadiene	ug/L	Hexachlorobutadiene_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Methoxychlor	ng/g dw	Methoxychlor_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Methoxychlor	ug/L	Methoxychlor_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc			30	
-Total	Oxychlordane	ng/g dw	Oxychlordane_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Oxychlordane	ug/L	Oxychlordane_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Tedion	ug/L	Tedion_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bromobenzene	ug/L	Bromobenzene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bromochloromethane	ug/L	Bromochloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bromodichloromethane	ug/L	Bromodichloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bromoform	ug/L	Bromoform_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Carbon Tetrachloride	ug/L	Carbon_Tetrachloride_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			0.5	
-Total	Chlorobenzene	ug/L	Chlorobenzene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			70	
-Total	Chloroform	ug/L	Chloroform_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlorotoluene, 2-"	ug/L	Chlorotoluene_2_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Chlorotoluene, 4-"	ug/L	Chlorotoluene_4_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dibromo-3-Chloropropane, 1,2-"	ug/L	Dibromo_3_chloropropane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			0.2	
-Total	Dibromochloromethane	ug/L	Dibromochloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dibromoethane, 1,2-"	ug/L	Dibromoethane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dibromomethane	ug/L	Dibromomethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dichlorobenzene, 1,2-"	ug/L	Dichlorobenzene_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			600	
-Total	"Dichlorobenzene, 1,3-"	ug/L	Dichlorobenzene_13_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dichlorobenzene, 1,4-"	ug/L	Dichlorobenzene_14_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Dichloroethane, 1,1-"	ug/L	Dichloroethane_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Dichloroethane, 1,2-"	ug/L	Dichloroethane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			0.5	
-Total	"Dichloroethylene, 1,1-"	ug/L	Dichloroethylene_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			6	
-Total	"Dichloroethylene, cis 1,2-"	ug/L	Dichloroethylene_cis_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			6	
-Total	"Dichloroethylene, trans 1,2-"	ug/L	Dichloroethylene_trans_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			10	
-Total	"Dichloropropane, 1,2-"	ug/L	Dichloropropane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Dichloropropane, 1,3-"	ug/L	Dichloropropane_13_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dichloropropane, 2,2-"	ug/L	Dichloropropane_22_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dichloropropene, 1,1-"	ug/L	Dichloropropene_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Mirex	ng/g dw	Mirex_tot_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Mirex	ug/L	Mirex_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nonachlor, cis-"	ng/g dw	Nonachlor_cis_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nonachlor, cis-"	ug/L	Nonachlor_cis_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nonachlor, trans-"	ng/g dw	Nonachlor_trans_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Nonachlor, trans-"	ug/L	Nonachlor_trans_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Tetrachloroethane, 1,1,1,2-"	ug/L	Tetrachloroethane_1112-ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Tetrachloroethane, 1,1,2,2-"	ug/L	Tetrachloroethane_1122_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			1	
-Total	Tetrachloroethylene	ug/L	Tetrachloroethylene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Trichlorobenzene, 1,2,3-"	ug/L	Trichlorobenzene_123_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Trichlorobenzene, 1,2,4-"	ug/L	Trichlorobenzene_124_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Trichloroethane, 1,1,1-"	ug/L	Trichloroethane_111_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			200	
-Total	"Trichloroethane, 1,1,2-"	ug/L	Trichloroethane_112_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	Trichloroethylene	ug/L	Trichloroethylene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc			5	
-Total	"Trichloropropane, 1,2,3-"	ug/L	Trichloropropane_123_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Aspon	ug/L	Aspon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Azinphos Ethyl	ug/L	Azinphos_Ethyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Azinphos Methyl	ug/L	Azinphos_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bolstar	ug/L	Bolstar_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Carbophenothion	ug/L	Carbophenothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Chlorfenvinphos	ug/L	Chlorfenvinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Chlorpyrifos Methyl	ug/L	Chlorpyrifos_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Chlorpyrifos	ug/L	Chlorpyrifos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Ciodrin	ug/L	Ciodrin_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Coumaphos	ug/L	Coumaphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Demeton-s	ug/L	Demeton_s_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Diazinon	ug/L	Diazinon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dichlofenthion	ug/L	Dichlofenthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dichlorvos	ug/L	Dichlorvos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dicrotophos	ug/L	Dicrotophos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dimethoate	ug/L	Dimethoate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Dioxathion	ug/L	Dioxathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Disulfoton	ug/L	Disulfoton_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Ethion	ug/L	Ethion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Ethoprop	ug/L	Ethoprop_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Famphur	ug/L	Famphur_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fenchlorphos	ug/L	Fenchlorphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fenitrothion	ug/L	Fenitrothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fensulfothion	ug/L	Fensulfothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fenthion	ug/L	Fenthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fonofos	ug/L	Fonofos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Leptophos	ug/L	Leptophos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Malathion	ug/L	Malathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Merphos	ug/L	Merphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Methidathion	ug/L	Methidathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Mevinphos	ug/L	Mevinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Naled	ug/L	Naled_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Parathion, Ethyl"	ug/L	Parathion_Ethyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Parathion, Methyl"	ug/L	Parathion_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Phorate	ug/L	Phorate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Phosmet	ug/L	Phosmet_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Phosphamidon	ug/L	Phosphamidon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Sulfotep	ug/L	Sulfotep_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Terbufos	ug/L	Terbufos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Tetrachlorvinphos	ug/L	Tetrachlorvinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Thionazin	ug/L	Thionazin_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Tokuthion	ug/L	Tokuthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Trichlorfon	ug/L	Trichlorfon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Trichloronate	ug/L	Trichloronate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Acenaphthene	ug/L	Acenaphthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Acenaphthylene	ug/L	Acenaphthylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Anthracene	ug/L	Anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Benz(a)anthracene	ug/L	Benz_a_anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Benzo(a)pyrene	ug/L	Benzo_a_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc			2	
-Total	Benzo(b)fluoranthene	ug/L	Benzo_b_fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Benzo(e)pyrene	ug/L	Benzo_e_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Benzo(g,h,i)perylene"	ug/L	Benzo_ghi_perylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Benzo(k)fluoranthene	ug/L	Benzo_k_fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Chrysene	ug/L	Chrysene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dibenz(a,h)anthracene"	ug/L	Dibenz_ah_anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Dimethylnaphthalene, 2,6-"	ug/L	Dimethylnaphthalene_26_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fluoranthene	ug/L	Fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fluorene	ug/L	Fluorene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Indeno(1,2,3-c,d)pyrene"	ug/L	Indeno_123cd_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Methylnaphthalene, 1-"	ug/L	Methylnaphthalene_1_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Methylnaphthalene, 2-"	ug/L	Methylnaphthalene_2_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Methylphenanthrene, 1-"	ug/L	Methylphenanthrene_1_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Naphthalene	ug/L	Naphthalene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Phenanthrene	ug/L	Phenanthrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Pyrene	ug/L	Pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Trimethylnaphthalene, 2,3,5-"	ug/L	Trimethylnaphthalene_235_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 005	ug/L	PCB005_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 008	ng/g dw	PCB008_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 008	ug/L	PCB008_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 015	ug/L	PCB015_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 018	ng/g dw	PCB018_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 018	ug/L	PCB018_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 027	ng/g dw	PCB027_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 027	ug/L	PCB027_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 028/31	ng/g dw	PCB028_31_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 028	ug/L	PCB028_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 029	ng/g dw	PCB029_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 029	ug/L	PCB029_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 031	ug/L	PCB031_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 033	ng/g dw	PCB033_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 033	ug/L	PCB033_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 044	ng/g dw	PCB044_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 044	ug/L	PCB044_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 049	ng/g dw	PCB049_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 049	ug/L	PCB049_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 052	ng/g dw	PCB052_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 052	ug/L	PCB052_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 056/60	ng/g dw	PCB056_60_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 056	ug/L	PCB056_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 060	ug/L	PCB060_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 064	ng/g dw	PCB064_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 066	ng/g dw	PCB066_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 066	ug/L	PCB066_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 070	ng/g dw	PCB070_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 070	ug/L	PCB070_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 074	ng/g dw	PCB074_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 074	ug/L	PCB074_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 077	ng/g dw	PCB077_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 077	ug/L	PCB077_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 087	ng/g dw	PCB087_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 087	ug/L	PCB087_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 095	ng/g dw	PCB095_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 095	ug/L	PCB095_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 097	ng/g dw	PCB097_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 097	ug/L	PCB097_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 099	ng/g dw	PCB099_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 099	ug/L	PCB099_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 101	ng/g dw	PCB101_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 101	ug/L	PCB101_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 105	ng/g dw	PCB105_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 105	ug/L	PCB105_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 110/151	ug/L	PCB110_151_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 110	ng/g dw	PCB110_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 110	ug/L	PCB110_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 114	ng/g dw	PCB114_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 114	ug/L	PCB114_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 118	ng/g dw	PCB118_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 118	ug/L	PCB118_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 126	ng/g dw	PCB126_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 126	ug/L	PCB126_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 128	ng/g dw	PCB128_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 128	ug/L	PCB128_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 137	ng/g dw	PCB137_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 137	ug/L	PCB137_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 138/158	ng/g dw	PCB138_158_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 138	ug/L	PCB138_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 141	ng/g dw	PCB141_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 141	ug/L	PCB141_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 146	ng/g dw	PCB146_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 149	ng/g dw	PCB149_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 149	ug/L	PCB149_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 151	ng/g dw	PCB151_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 151	ug/L	PCB151_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 153	ng/g dw	PCB153_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 153	ug/L	PCB153_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 156	ng/g dw	PCB156_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 156	ug/L	PCB156_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 157	ng/g dw	PCB157_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 157	ug/L	PCB157_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 158	ug/L	PCB158_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 169	ng/g dw	PCB169_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 170	ng/g dw	PCB170_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 170	ug/L	PCB170_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 174	ng/g dw	PCB174_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 174	ug/L	PCB174_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 177	ng/g dw	PCB177_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 177	ug/L	PCB177_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 180	ng/g dw	PCB180_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 180	ug/L	PCB180_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 183	ug/L	PCB183_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 187	ng/g dw	PCB187_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 187	ug/L	PCB187_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 189	ng/g dw	PCB189_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 189	ug/L	PCB189_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 194	ng/g dw	PCB194_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 194	ug/L	PCB194_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 195	ng/g dw	PCB195_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 195	ug/L	PCB195_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 198	ng/g dw	PCB198_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 199	ng/g dw	PCB199_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 200	ng/g dw	PCB200_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 200	ug/L	PCB200_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 201	ng/g dw	PCB201_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 201	ug/L	PCB201_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 203	ng/g dw	PCB203_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 203	ug/L	PCB203_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 206	ng/g dw	PCB206_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 206	ug/L	PCB206_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 209	ng/g dw	PCB209_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	PCB 209	ug/L	PCB209_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bifenthrin	ng/g dw	Bifenthrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Bifenthrin	ug/L	Bifenthrin_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	Cinerin-1	ug/L	Cinerin_1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Cinerin-2	ug/L	Cinerin_2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Cinerin-1	ng/g dw	Cinerin1_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Cinerin-2	ng/g dw	Cinerin2_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Cyfluthrin, Total"	ng/g dw	Cyfluthrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Cyfluthrin, Total"	ug/L	Cyfluthrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	"Cyhalothrin, Total lambda-"	ng/g dw	Cyhalothrin_lambda_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Cyhalothrin, Total lambda-"	ug/L	Cyhalothrin_Total_lambda_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	"Cypermethrin, Total"	ng/g dw	Cypermethrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Cypermethrin, Total"	ug/L	Cypermethrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	Deltamethrin/Tralomethrin	ug/L	Deltamethrin_Tralomethrin_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Deltamethrin	ug/L	Deltamethrin_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	Deltamethrin/Tralomethrin	ng/g dw	DeltamethrinTralomethrine_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Esfenvalerate/Fenvalerate-1	ug/L	Esfenvalerate_Fenvalerate_1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Esfenvalerate/Fenvalerate-2	ug/L	Esfenvalerate_Fenvalerate_2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Esfenvalerate/Fenvalerate, Total"	ug/L	Esfenvalerate_Fenvalerate_Total_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Esfenvalerate/Fenvalerate, Total"	ng/g dw	EsfenvalerateFenvalerate_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fenpropathrin	ng/g dw	Fenpropathrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Fenpropathrin	ug/L	Fenpropathrin_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Jasmolin-1	ug/L	Jasmolin1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Jasmolin-2	ug/L	Jasmolin2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Jasmolin-1	ng/g dw	Jasmolin1_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Jasmolin-2	ng/g dw	Jasmolin2_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Permethrin, cis-"	ng/g dw	Permethrin_cis_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Permethrin, cis-"	ug/L	Permethrin_cis_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Permethrin, Total"	ug/L	Permethrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc				
-Total	"Permethrin, trans-"	ng/g dw	Permethrin_trans_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	"Permethrin, trans-"	ug/L	Permethrin_trans_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Pyrethrin-1	ng/g dw	Pyrethrin_1_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Pyrethrin-2	ng/g dw	Pyrethrin_2_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Pyrethrin-1	ug/L	Pyrethrin1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Pyrethrin-2	ug/L	Pyrethrin2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc				
-<0.0039 mm	Clay	%	Clay_LT0_0039mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-<0.005 mm	Clay	%	Clay_LT0_005mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-4.75 to <75 mm	Gravel	%	Gravel_4_75_LT75mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Dec				
-Total	Moisture	%	MoistureTotal_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	0					
-0.0625 to <2.0 mm	Sand	%	Sand_0_0625_LT2mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-Coarse 2.0 to <4.75 mm	Sand	%	SandCoarse_2_LT4_75mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-Fine 0.075 to <0.425 mm	Sand	%	SandFine_0_075_LT0_425mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-Medium 0.425 to <2.0 mm	Sand	%	SandMed_0_425_LT2mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-0.0039 to <0.0625 mm	Silt	%	Silt_0_0039_LT0_0625mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-0.005 to <0.075 mm	Silt	%	Silt_0_005_LT0_075mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc				
-Total	Terphenyl-d14(Surrogate)	ug/L	Terphenyl_d14_surrogate_ug_L	15	Surrogate	1	0	0	NA	NA	NA	NA	0					
-Total	Anatoxin-A	ug/L	Anatoxin_A_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Desmethyl-LR	ug/L	Desmethyl_LR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Desmethyl-RR	ug/L	Desmethyl_RR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Domoic Acid	ug/L	Domoic_Acid_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-LA	ug/L	Microcystin_LA_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-LF	ug/L	Microcystin_LF_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-LR	ug/L	Microcystin_LR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-LW	ug/L	Microcystin_LW_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-LY	ug/L	Microcystin_LY_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-RR	ug/L	Microcystin_RR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Microcystin-YR	ug/L	Microcystin_YR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Nodularin	ug/L	Nodularin_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Okadaic Acid	ug/L	Okadaic_Acid_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Particulate	"Microcystins, Total"	ug/L	TotalMicrocystins_particulate_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Particulate	"Microcystins, Total"	ug/m2	TotalMicrocystins_particulate_ug_m2	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_None	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_Total	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_uf_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Acid Neutralizing Capacity	ueq/L	ANC_ueq_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-None	"Color, True"	CU	ColorTrue_CU	17	Water quality	0	0	0	NA	NA	NA	NA	0			20		15
-Dissolved	"Color, True"	CU	ColorTrue_f_CU	17	Water quality	0	0	0	NA	NA	NA	NA	0			20		15
-Field_None	"Oxygen, Dissolved"	mg/L	DO_fld_mg_L	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec				
-Field_Total	"Oxygen, Dissolved"	mg/L	DO_fld_mg_L	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec				
-Field_None	Glide/Pool Channel Alteration	none	GlidePoolChannelAlt_fld	17	Water quality	0	0	0	NA	NA	NA	NA	0					
-Dissolved	Hardness as CaCO3	mg/L	Hardness_CaCO3_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Total	Hardness as CaCO3	mg/L	Hardness_CaCO3_uf_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_None	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec				
-Field_Total	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec				
-Field_None	pH	none	pH_fld_SU	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec				
-None	pH	none	pH_SU	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec				
-Field_None	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_Total	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_Total	Silica	mg/L	Silica_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc				
-Field_Total	Silica as SiO2	mg/L	Silica_SiO2_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc				
-Field_None	SpecificConductivity	uS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal			
-Field_Total	SpecificConductivity	µS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal			
-Field_Total	SpecificConductivity	uS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal			
-Total	SpecificConductivity	uS/cm	SpecificConductivity_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal			
-Particulate	Suspended Sediment Concentration	mg/L	SuspendedSediment_particulate_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Dissolved	Total Dissolved Solids	mg/L	TDS_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		300		
-Field_None	TransectsSampled	count	Transects_count	17	Water quality	0	0	0	NA	NA	NA	NA	0					
-Particulate	Total Suspended Solids	mg/L	TSS_particulate_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_None	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		20		5
-Field_Total	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		20		5
-Total	Turbidity	NTU	Turbidity_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		20		5
-Field_None	Velocity	ft/s	Velocity_fld_ft_s	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc				
-Field_None	Temperature	°C	WaterTemp_fld_degC	17	Water quality	0	0	0	NA	NA	NA	NA	1	Inc				
-Field_None	Temperature	Deg C	WaterTemp_fld_degC	17	Water quality	0	0	0	NA	NA	NA	NA	1	Inc				
+ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	GroupNum	GroupName	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID	DirIncStress	SSTVname	Label	MinWQO_CAR9	MCL_Primary	MCL_Secondary
+None	E. coli	MPN/100 mL	E_coli_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		E. coli (most probable number/100 mL)	126		
+None	Enterococcus	MPN/100 mL	Enterococcus_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		Enterococcus (most probable number/100 mL)	33		
+None	"Coliform, Fecal"	MPN/100 mL	FecalColiform_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		Fecal coliform (most probable number/100 mL)			
+None	"Coliform, Total"	MPN/100 mL	TotalColiform_MPN_100mL	1	Bacteria	1	0	0	NA	NA	NA	NA	1	Inc		Total coliform (most probable number/100 mL)			
+Total	"DDD(o,p')"	ng/g dw	DDD_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDD (ng/g dry weight)"			
+Total	"DDD(o,p')"	ug/L	DDD_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDD (µg/L)"			
+Total	"DDD(p,p')"	ng/g dw	DDD_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDD (ng/g dry weight)"			
+Total	"DDD(p,p')"	ug/L	DDD_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDD (µg/L)"			
+Total	"DDE(o,p')"	ng/g dw	DDE_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDE (ng/g dry weight)"			
+Total	"DDE(o,p')"	ug/L	DDE_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDE (µg/L)"			
+Total	"DDE(p,p')"	ng/g dw	DDE_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDE (ng/g dry weight)"			
+Total	"DDE(p,p')"	ug/L	DDE_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDE (µg/L)"			
+Total	"DDMU(p,p')"	ng/g dw	DDMU_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDMU (ng/g dry weight)"			
+Total	"DDMU(p,p')"	ug/L	DDMU_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDMU (µg/L)"			
+Total	"DDT(o,p')"	ng/g dw	DDT_o_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDT (ng/g dry weight)"			
+Total	"DDT(o,p')"	ug/L	DDT_o_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"o,p'-DDT (µg/L)"			
+Total	"DDT(p,p')"	ng/g dw	DDT_p_pprime_tot_ng_g_dw	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDT (ng/g dry weight)"			
+Total	"DDT(p,p')"	ug/L	DDT_p_pprime_ug_L	2	DDT and metabolites	1	0	0	NA	NA	NA	NA	1	Inc		"p,p'-DDT (µg/L)"			
+None	IPI	none	IPI	18	Habitat	0	0	0	NA	NA	NA	NA	1	Dec		Index of physical habitat integrity			
+None	Ev_FlowHab_score	none	Ev_FlowHab_score	18	Habitat	0	0	0	NA	NA	NA	NA	1	Dec		Evenness of flow habitat types			
+None	H_AqHab_score	none	H_AqHab_score	18	Habitat	0	0	0	NA	NA	NA	NA	1	Dec		Shannon diversity of natural in-channel cover types			
+None	H_SubNat_score	none	H_SubNat_score	18	Habitat	0	0	0	NA	NA	NA	NA	1	Dec		Shannon diversity of natural substrate types			
+None	PCT_SAFN_score	none	PCT_SAFN_score	18	Habitat	0	0	0	1	2	4	5	1	Inc		Percent sand and fine substrate			
+None	XCMG_score	none	XCMG_score	18	Habitat	0	0	0	NA	NA	NA	NA	1	Dec		Riparian cover (sum of three layers)			
+Total	Terbutryn	ug/L	Terbutryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Terbutryn (µg/L)			
+Total	Thiobencarb	ug/L	Thiobencarb_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Thiobencarb (µg/L)		70	1
+Total	Atrazine	ug/L	Atrazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Atrazine (µg/L)		1	
+Total	Molinate	ug/L	Molinate_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Molinate (µg/L)		20	
+Total	Oxadiazon	ng/g dw	Oxadiazon_ng_g_dw	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Oxadiazon (ng/g dry weight)			
+Total	Oxadiazon	ug/L	Oxadiazon_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Oxadiazon (µg/L)			
+Total	Prometon	ug/L	Prometon_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Prometon (µg/L)			
+Total	Prometryn	ug/L	Prometryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Prometryn (µg/L)			
+Total	Propazine	ug/L	Propazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Propazine (µg/L)			
+Total	Secbumeton	ug/L	Secbumeton_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Secbumeton (µg/L)			
+Total	Simazine	ug/L	Simazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Simazine (µg/L)		4	
+Total	Simetryn	ug/L	Simetryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Simetryn (µg/L)			
+Total	Terbuthylazine	ug/L	Terbuthylazine_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Terbuthylazine (µg/L)			
+Total	Ametryn	ug/L	Ametryn_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Ametryn (µg/L)			
+Total	Atraton	ug/L	Atraton_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Atraton (µg/L)			
+Total	Dacthal	ng/g dw	Dacthal_tot_ng_g_dw	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Dacthal (ng/g dry weight)			
+Total	Dacthal	ug/L	Dacthal_ug_L	4	Herbicide	1	0	0	NA	NA	NA	NA	1	Inc		Dacthal (µg/L)			
+Particulate	AFDM_Algae	g/m2	AFDM_algae_particulate_g_m2	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Ash-free dry mass from algae (g/m2)			
+Dissolved	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved alkalinity as calcium carbonate (mg/L)			
+Field_None	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured alkalinity as calcium carbonate (mg/L)			
+Field_Total	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured alkalinity as calcium carbonate (mg/L)			
+Total	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_uf_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total alkalinity as calcium carbonate (mg/L)			
+Dissolved	Aluminum	ug/L	Aluminum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved aluminum (µg/L)		1	200
+Total	Aluminum	mg/kg dw	Aluminum_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total aluminum (mg/kg dry weight)			
+Total	Aluminum	ug/L	Aluminum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total aluminum (µg/L)		1	200
+Total	Acid Neutralizing Capacity	ueq/L	ANC_ueq_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Acid neutralizing capacity (µeq/L)			
+Dissolved	Antimony	ug/L	Antimony_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved antimony (µg/L)		0.006	
+Total	Antimony	ug/L	Antimony_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total antimony (µg/L)		0.006	
+Dissolved	Arsenic	ug/L	Arsenic_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved arsenic (µg/L)		0.05	
+Total	Arsenic	mg/kg dw	Arsenic_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Acid neutralizing capacity (mg/kg dry weight)			
+Total	Arsenic	ug/L	Arsenic_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total arsenic (µg/L)		0.05	
+Dissolved	Barium	ug/L	Barium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved barium (µg/L)		1	
+Total	Barium	ug/L	Barium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total barium (µg/L)		1	
+Dissolved	Beryllium	ug/L	Beryllium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved beryllium (µg/L)		0.004	
+Total	Beryllium	ug/L	Beryllium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total beryllium (µg/L)		0.004	
+Total	Bifenthrin	ng/g dw	Bifenthrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total bifenthrin (ng/g dry weight)			
+Total	Bifenthrin	ug/L	Bifenthrin_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		Total bifenthrin (µg/L)			
+Total	Boron	mg/L	Boron_uf_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total boron (mg/L)	0.75		
+Dissolved	Cadmium	ug/L	Cadmium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved cadmium (µg/L)		0.005	
+Total	Cadmium	mg/kg dw	Cadmium_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total cadmium (mg/kg dry weight)			
+Total	Cadmium	ug/L	Cadmium_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total cadmium (µg/L)		0.005	
+Dissolved	Calcium	mg/L	Calcium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved calcium (mg/L)			
+Total	Calcium	mg/L	Calcium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Total calcium (mg/L)			
+Particulate	Chlorophyll a	mg/m2	Chlor_a_particulate_mg_m2	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Particulate chlorophyll a (mg/m2)			
+Particulate	Chlorophyll a	ug/L	Chlor_a_particulate_ug_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Particulate chlorophyll a (µg/L)			
+Dissolved	Chloride	mg/L	Chloride_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved chloride (mg/L)	50		
+Dissolved	Chromium	ug/L	Chromium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved chromium (µg/L)		0.05	
+Total	Chromium	mg/kg dw	Chromium_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total chromium (mg/kg dry weight)			
+Total	Chromium	ug/L	Chromium_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total chromium (µg/L)		0.05	
+Total	Cinerin-1	ug/L	Cinerin_1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cinerin-1 (µg/L)			
+Total	Cinerin-2	ug/L	Cinerin_2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cinerin-2 (µg/L)			
+Total	Cinerin-1	ng/g dw	Cinerin1_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cinerin-1 (ng/g dry weight)			
+Total	Cinerin-2	ng/g dw	Cinerin2_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cinerin-2 (ng/g dry weight)			
+Dissolved	Cobalt	ug/L	Cobalt_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved cobalt (µg/L)			
+Total	Cobalt	ug/L	Cobalt_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total cobalt (µg/L)			
+None	"Color, True"	CU	ColorTrue_CU	17	Water quality	0	0	0	NA	NA	NA	NA	0			True color (color units)	20		15
+Dissolved	"Color, True"	CU	ColorTrue_f_CU	17	Water quality	0	0	0	NA	NA	NA	NA	0			Dissolved true color (color units)	20		15
+Dissolved	Copper	ug/L	Copper_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved copper (µg/L)			1000
+Total	Copper	mg/kg dw	Copper_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total copper (mg/kg dry weight)			
+Total	Copper	ug/L	Copper_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total copper (µg/L)			1000
+Total	"Cyfluthrin, Total"	ng/g dw	Cyfluthrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		"Total cyfluthrin, total (ng/g dry weight)"			
+Total	"Cyfluthrin, Total"	ug/L	Cyfluthrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		"Total cyfluthrin, total (µg/L)"			
+Total	"Cyhalothrin, Total lambda-"	ng/g dw	Cyhalothrin_lambda_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total lambda-cyhalothrin (ng/g dry weight)			
+Total	"Cyhalothrin, Total lambda-"	ug/L	Cyhalothrin_Total_lambda_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		Total lambda-cyhalothrin (µg/L)			
+Total	"Cypermethrin, Total"	ng/g dw	Cypermethrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cypermethrin (ng/g dry weight)			
+Total	"Cypermethrin, Total"	ug/L	Cypermethrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		Total cypermethrin (µg/L)			
+Total	Deltamethrin/Tralomethrin	ug/L	Deltamethrin_Tralomethrin_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total deltamethrin/tralomethrin (µg/L)			
+Total	Deltamethrin	ug/L	Deltamethrin_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		Total deltamethrin (µg/L)			
+Total	Deltamethrin/Tralomethrin	ng/g dw	DeltamethrinTralomethrine_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total deltamethrin/tralomethrin (ng/g dry weight)			
+Dissolved	Dissolved Inorganic Carbon	mg/L	DIC_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved inorganic carbon (mg/L)			
+Field_None	"Oxygen, Dissolved"	mg/L	DO_fld_mg_L	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec		Field-measured dissolved oxygen (mg/L)			
+Field_Total	"Oxygen, Dissolved"	mg/L	DO_fld_mg_L	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec		Field-measured dissolved oxygen (mg/L)			
+Dissolved	Dissolved Organic Carbon	mg/L	DOC_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved organic carbon (mg/L)			
+Total	Esfenvalerate/Fenvalerate-1	ug/L	Esfenvalerate_Fenvalerate_1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total esfenvalerate/fenvalerate-1 (µg/L)			
+Total	Esfenvalerate/Fenvalerate-2	ug/L	Esfenvalerate_Fenvalerate_2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total esfenvalerate/fenvalerate-2 (µg/L)			
+Total	"Esfenvalerate/Fenvalerate, Total"	ug/L	Esfenvalerate_Fenvalerate_Total_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total esfenvalerate/fenvalerate (µg/L)			
+Total	"Esfenvalerate/Fenvalerate, Total"	ng/g dw	EsfenvalerateFenvalerate_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total esfenvalerate/fenvalerate (ng/g dry weight)			
+Total	Fenpropathrin	ng/g dw	Fenpropathrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total fenpropathrin (ng/g dry weight)			
+Total	Fenpropathrin	ug/L	Fenpropathrin_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total fenpropathrin (µg/L)			
+Not Recorded	Fluoride	mg/L	Fluoride_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Fluoride (mg/L)	1	2	
+Field_None	Glide/Pool Channel Alteration	none	GlidePoolChannelAlt_fld	17	Water quality	0	0	0	NA	NA	NA	NA	0			Acid neutralizing capacity (µeq/none)			
+Dissolved	Hardness as CaCO3	mg/L	Hardness_CaCO3_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved hardness as calcium carbonate (mg/L)			
+Total	Hardness as CaCO3	mg/L	Hardness_CaCO3_uf_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total hardness as calcium carbonate (mg/L)			
+Dissolved	Iron	ug/L	Iron_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved iron (µg/L)	0.3		300
+Total	Iron	ug/L	Iron_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total iron (µg/L)	0.3		300
+Total	Jasmolin-1	ng/g dw	Jasmolin1_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total jasmolin-1 (ng/g dry weight)			
+Total	Jasmolin-1	ug/L	Jasmolin1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total jasmolin-1 (µg/L)			
+Total	Jasmolin-2	ng/g dw	Jasmolin2_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total jasmolin-2 (ng/g dry weight)			
+Total	Jasmolin-2	ug/L	Jasmolin2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total jasmolin-2 (µg/L)			
+Dissolved	Lead	ug/L	Lead_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved lead (µg/L)			
+Total	Lead	mg/kg dw	Lead_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total lead (mg/kg dry weight)			
+Total	Lead	ug/L	Lead_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total lead (µg/L)			
+Dissolved	Magnesium	mg/L	Magnesium_f_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved magnesium (mg/L)			
+Total	Magnesium	mg/L	Magnesium_uf_mg_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total magnesium (mg/L)			
+Dissolved	Manganese	ug/L	Manganese_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved manganese (µg/L)	0.05		50
+Total	Manganese	mg/kg dw	Manganese_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total manganese (mg/kg dry weight)			
+Total	Manganese	ug/L	Manganese_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total manganese (µg/L)	0.05		50
+Dissolved	Mercury	ng/L	Mercury_f_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved mercury (µg/L)		0.002	
+Total	Mercury	ng/L	Mercury_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total mercury (µg/L)		0.002	
+Total	Mercury	mg/kg dw	Mercury_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total mercury (mg/kg dry weight)			
+Dissolved	Molybdenum	ug/L	Molybdenum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved molybdenum (µg/L)			
+Total	Molybdenum	ug/L	Molybdenum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total molybdenum (µg/L)			
+Dissolved	Ammonia as N	mg/L	NH3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved ammonia as N (mg/L)	0.025		
+Total	Ammonia as N	mg/L	NH3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total ammonia as N (mg/L)	0.025		
+Dissolved	Nickel	ug/L	Nickel_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved nickel (µg/L)		0.1	
+Total	Nickel	mg/kg dw	Nickel_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total nickel (mg/kg dry weight)			
+Total	Nickel	ug/L	Nickel_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total nickel (µg/L)		0.1	
+Dissolved	Nitrite as N	mg/L	NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrite as N (µg/L)		1	
+Not Recorded	Nitrite as N	mg/L	NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrite as N (µg/L)		1	
+Dissolved	Nitrate as N	mg/L	NO3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate as N (µg/L)		10	
+Not Recorded	Nitrate as N	mg/L	NO3_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrate as N (µg/L)		10	
+Total	Biphenyl	ug/L	Biphenyl_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Biphenyl (µg/L)			
+Total	Toluene	ug/L	Toluene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Toluene (µg/L)		150	
+Total	"Trimethylbenzene, 1,2,4-"	ug/L	Trimethylbenzene_124_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		"1,2,4-Trimethylbenzene (µg/L)"			
+Total	"Trimethylbenzene, 1,3,5-"	ug/L	Trimethylbenzene_135_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		"1,3,5-Trimethylbenzene (µg/L)"			
+Total	"Xylene, m/p-"	ug/L	Xylene_m_p_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		m- and p-Xylenes (µg/L)		1750	
+Total	"Xylene, o-"	ug/L	Xylene_o_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		o-Xylene (µg/L)		1750	
+Total	Benzene	ug/L	Benzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Benzene (µg/L)		1	
+Total	"Butylbenzene, n-"	ug/L	Butylbenzene_n_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		n-Butylbenzene (µg/L)			
+Total	"Butylbenzene, sec-"	ug/L	Butylbenzene_sec_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		sec-Butylbenzene (µg/L)			
+Total	"Butylbenzene, tert-"	ug/L	Butylbenzene_tert_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		tert-Butylbenzene (µg/L)			
+Total	Caffeine	ug/L	Caffeine_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	0	Inc		Caffeine (µg/L)			
+Total	Ethylbenzene	ug/L	Ethylbenzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Ethylbenzene (µg/L)		300	
+Total	Isopropylbenzene	ug/L	Isopropylbenzene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Isopropylbenzene (µg/L)			
+Total	"Isopropyltoluene, p-"	ug/L	Isopropyltoluene_p_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		p-Isopropyltoluene (µg/L)			
+Total	Methyl Tert-butyl Ether	ug/L	Methyl_TertbutylEther_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Methyl tert-butyl ether (µg/L)		13	5
+Total	"Propylbenzene, n-"	ug/L	Propylbenzene_n_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		n-Propylbenzene (µg/L)			
+Total	Aldrin	ng/g dw	Aldrin_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Aldrin (ng/g dry weight)			
+Total	Aldrin	ug/L	Aldrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Aldrin (µg/L)			
+Total	"Chlordane, cis-"	ng/g dw	Chlordane_cis_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		cis-Chlordane (ng/g dry weight)			
+Total	"Chlordane, cis-"	ug/L	Chlordane_cis_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		cis-Chlordane (µg/L)		0.1	
+Total	"Chlordane, trans-"	ng/g dw	Chlordane_trans_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		trans-Chlordane (ng/g dry weight)			
+Total	"Chlordane, trans-"	ug/L	Chlordane_trans_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		trans-Chlordane (µg/L)		0.1	
+Total	"Chlordene, cis-"	ug/L	Chlordene_cis_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		cis-Chlordene (µg/L)			
+Total	"Chlordene, trans-"	ug/L	Chlordene_trans_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		trans-Chlordene (µg/L)			
+Total	Dieldrin	ng/g dw	Dieldrin_tot_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Dieldrin (ng/g dry weight)			
+Total	Dieldrin	ug/L	Dieldrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Dieldrin (µg/L)			
+Total	Endosulfan I	ng/g dw	Endosulfan_I_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endosulfan I (ng/g dry weight)			
+Total	Endosulfan I	ug/L	Endosulfan_I_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endosulfan I (µg/L)			
+Total	Endosulfan II	ug/L	Endosulfan_II_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endosulfan II (µg/L)			
+Total	Endosulfan Sulfate	ug/L	Endosulfan_Sulfate_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endosulfan sulfate (µg/L)			
+Total	Endrin Aldehyde	ug/L	Endrin_Aldehyde_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endrin aldehyde (µg/L)			
+Total	Endrin Ketone	ug/L	Endrin_Ketone_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endrin ketone (µg/L)			
+Total	Endrin	ng/g dw	Endrin_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endrin (ng/g dry weight)			
+Total	Endrin	ug/L	Endrin_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Endrin (µg/L)			
+Total	"HCH, alpha-"	ng/g dw	HCH_alpha_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		alpha-HCH (ng/g dry weight)			
+Total	"HCH, alpha-"	ug/L	HCH_alpha_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		alpha-HCH (µg/L)			
+Total	"HCH, beta-"	ng/g dw	HCH_beta_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		beta-HCH (ng/g dry weight)			
+Total	"HCH, beta-"	ug/L	HCH_beta_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		beta-HCH (µg/L)			
+Total	"HCH, delta-"	ug/L	HCH_delta_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		delta-HCH (µg/L)			
+Total	"HCH, gamma-"	ng/g dw	HCH_gamma_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		gamma-HCH (ng/g dry weight)			
+Total	"HCH, gamma-"	ug/L	HCH_gamma_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		gamma-HCH (µg/L)			
+Total	Heptachlor Epoxide	ng/g dw	Heptachlor_Epoxide_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Heptachlor epoxide (ng/g dry weight)			
+Total	Heptachlor Epoxide	ug/L	Heptachlor_Epoxide_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Heptachlor epoxide (µg/L)		0.01	
+Total	Heptachlor	ng/g dw	Heptachlor_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Heptachlor (ng/g dry weight)			
+Total	Heptachlor	ug/L	Heptachlor_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Heptachlor (µg/L)		0.01	
+Total	Hexachlorobenzene	ng/g dw	Hexachlorobenzene_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Hexachlorobenzene (ng/g dry weight)			
+Total	Hexachlorobenzene	ug/L	Hexachlorobenzene_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Hexachlorobenzene (µg/L)		1	
+Total	Hexachlorobutadiene	ug/L	Hexachlorobutadiene_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Hexachlorobutadiene (µg/L)			
+Total	Methoxychlor	ng/g dw	Methoxychlor_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Methoxychlor (ng/g dry weight)			
+Total	Methoxychlor	ug/L	Methoxychlor_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Methoxychlor (µg/L)		30	
+Total	Oxychlordane	ng/g dw	Oxychlordane_ng_g_dw	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Oxychlordane (ng/g dry weight)			
+Total	Oxychlordane	ug/L	Oxychlordane_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Oxychlordane (µg/L)			
+Total	Tedion	ug/L	Tedion_ug_L	8	Organochlorine	1	0	0	NA	NA	NA	NA	1	Inc		Tedion (µg/L)			
+Total	Bromobenzene	ug/L	Bromobenzene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Bromobenzene (µg/L)			
+Total	Bromochloromethane	ug/L	Bromochloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Bromochloromethane (µg/L)			
+Total	Bromodichloromethane	ug/L	Bromodichloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Bromodichloromethane (µg/L)			
+Total	Bromoform	ug/L	Bromoform_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Bromoform (µg/L)			
+Total	Carbon Tetrachloride	ug/L	Carbon_tetrachloride_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Carbon tetrachloride (µg/L)		0.5	
+Total	Chlorobenzene	ug/L	Chlorobenzene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Chlorobenzene (µg/L)		70	
+Total	Chloroform	ug/L	Chloroform_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Chloroform (µg/L)			
+Total	"Chlorotoluene, 2-"	ug/L	Chlorotoluene_2_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		2-Chlorotoluene (µg/L)			
+Total	"Chlorotoluene, 4-"	ug/L	Chlorotoluene_4_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		4-Chlorotoluene (µg/L)			
+Total	"Dibromo-3-Chloropropane, 1,2-"	ug/L	Dibromo_3_chloropropane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dibromo-3-chloropropane (µg/L)"		0.2	
+Total	Dibromochloromethane	ug/L	Dibromochloromethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Dibromochloromethane (µg/L)			
+Total	"Dibromoethane, 1,2-"	ug/L	Dibromoethane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dibromoethane (µg/L)"			
+Total	Dibromomethane	ug/L	Dibromomethane_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Dibromomethane (µg/L)			
+Total	"Dichlorobenzene, 1,2-"	ug/L	Dichlorobenzene_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dichlorobenzene (µg/L)"		600	
+Total	"Dichlorobenzene, 1,3-"	ug/L	Dichlorobenzene_13_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,3-Dichlorobenzene (µg/L)"			
+Total	"Dichlorobenzene, 1,4-"	ug/L	Dichlorobenzene_14_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,4-Dichlorobenzene (µg/L)"		5	
+Total	"Dichloroethane, 1,1-"	ug/L	Dichloroethane_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1-Dichloroethane (µg/L)"		5	
+Total	"Dichloroethane, 1,2-"	ug/L	Dichloroethane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dichloroethane (µg/L)"		0.5	
+Total	"Dichloroethylene, 1,1-"	ug/L	Dichloroethylene_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1-Dichloroethylene (µg/L)"		6	
+Total	"Dichloroethylene, cis 1,2-"	ug/L	Dichloroethylene_cis_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"cis-1,2--Dichloroethylene (µg/L)"		6	
+Total	"Dichloroethylene, trans 1,2-"	ug/L	Dichloroethylene_trans_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"trans 1,2--Dichloroethylene (µg/L)"		10	
+Total	"Dichloropropane, 1,2-"	ug/L	Dichloropropane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dichloropropane (µg/L)"		5	
+Total	"Dichloropropane, 1,3-"	ug/L	Dichloropropane_13_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,3-Dichloropropane (µg/L)"			
+Total	"Dichloropropane, 2,2-"	ug/L	Dichloropropane_22_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"2,2-Dichloropropane (µg/L)"			
+Total	"Dichloropropene, 1,1-"	ug/L	Dichloropropene_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1-Dichloropropene (µg/L)"			
+Total	Mirex	ng/g dw	Mirex_tot_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Mirex (ng/g dry weight)			
+Total	Mirex	ug/L	Mirex_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Mirex (µg/L)			
+Total	"Nonachlor, cis-"	ng/g dw	Nonachlor_cis_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		cis-Nonachlor (ng/g dry weight)			
+Total	"Nonachlor, cis-"	ug/L	Nonachlor_cis_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		cis-Nonachlor (µg/L)			
+Total	"Nonachlor, trans-"	ng/g dw	Nonachlor_trans_ng_g_dw	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		trans-Nonachlor (ng/g dry weight)			
+Total	"Nonachlor, trans-"	ug/L	Nonachlor_trans_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		trans-Nonachlor (µg/L)			
+Total	"Tetrachloroethane, 1,1,1,2-"	ug/L	Tetrachloroethane_1112-ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1,1,2-Tetrachloroethane (µg/L)"			
+Total	"Tetrachloroethane, 1,1,2,2-"	ug/L	Tetrachloroethane_1122_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1,2,2-Tetrachloroethane (µg/L)"		1	
+Total	Tetrachloroethylene	ug/L	Tetrachloroethylene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Tetrachloroethylene (µg/L)		5	
+Total	"Trichlorobenzene, 1,2,3-"	ug/L	Trichlorobenzene_123_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2,3-Trichlorobenzene (µg/L)"			
+Total	"Trichlorobenzene, 1,2,4-"	ug/L	Trichlorobenzene_124_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2,4-Trichlorobenzene (µg/L)"		5	
+Total	"Trichloroethane, 1,1,1-"	ug/L	Trichloroethane_111_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1,1-Trichloroethane (µg/L)"		200	
+Total	"Trichloroethane, 1,1,2-"	ug/L	Trichloroethane_112_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1,2-Trichloroethane (µg/L)"		5	
+Total	Trichloroethylene	ug/L	Trichloroethylene_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		Trichloroethylene (µg/L)		5	
+Total	"Trichloropropane, 1,2,3-"	ug/L	Trichloropropane_123_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2,3-Trichloropropane (µg/L)"			
+Total	Aspon	ug/L	Aspon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Aspon (µg/L)			
+Total	Azinphos Ethyl	ug/L	Azinphos_Ethyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Ethyl azinphos (µg/L)			
+Total	Azinphos Methyl	ug/L	Azinphos_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Methyl azinphos (µg/L)			
+Total	Bolstar	ug/L	Bolstar_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Bolstar (µg/L)			
+Total	Carbophenothion	ug/L	Carbophenothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Carbophenothion (µg/L)			
+Total	Chlorfenvinphos	ug/L	Chlorfenvinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Chlorfenvinphos (µg/L)			
+Total	Chlorpyrifos Methyl	ug/L	Chlorpyrifos_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Methyl chlorpyrifos (µg/L)			
+Total	Chlorpyrifos	ug/L	Chlorpyrifos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Chlorpyrifos (µg/L)			
+Total	Ciodrin	ug/L	Ciodrin_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Ciodrin (µg/L)			
+Total	Coumaphos	ug/L	Coumaphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Coumaphos (µg/L)			
+Total	Demeton-s	ug/L	Demeton_s_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Demeton-s (µg/L)			
+Total	Diazinon	ug/L	Diazinon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Diazinon (µg/L)			
+Total	Dichlofenthion	ug/L	Dichlofenthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Dichlofenthion (µg/L)			
+Total	Dichlorvos	ug/L	Dichlorvos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Dichlorvos (µg/L)			
+Total	Dicrotophos	ug/L	Dicrotophos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Dicrotophos (µg/L)			
+Total	Dimethoate	ug/L	Dimethoate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Dimethoate (µg/L)			
+Total	Dioxathion	ug/L	Dioxathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Dioxathion (µg/L)			
+Total	Disulfoton	ug/L	Disulfoton_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Disulfoton (µg/L)			
+Total	Ethion	ug/L	Ethion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Ethion (µg/L)			
+Total	Ethoprop	ug/L	Ethoprop_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Ethoprop (µg/L)			
+Total	Famphur	ug/L	Famphur_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Famphur (µg/L)			
+Total	Fenchlorphos	ug/L	Fenchlorphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Fenchlorphos (µg/L)			
+Total	Fenitrothion	ug/L	Fenitrothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Fenitrothion (µg/L)			
+Total	Fensulfothion	ug/L	Fensulfothion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Fensulfothion (µg/L)			
+Total	Fenthion	ug/L	Fenthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Fenthion (µg/L)			
+Total	Fonofos	ug/L	Fonofos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Fonofos (µg/L)			
+Total	Leptophos	ug/L	Leptophos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Leptophos (µg/L)			
+Total	Malathion	ug/L	Malathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Malathion (µg/L)			
+Total	Merphos	ug/L	Merphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Merphos (µg/L)			
+Total	Methidathion	ug/L	Methidathion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Methidathion (µg/L)			
+Total	Mevinphos	ug/L	Mevinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Mevinphos (µg/L)			
+Total	Naled	ug/L	Naled_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Naled (µg/L)			
+Total	"Parathion, Ethyl"	ug/L	Parathion_Ethyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Ethyl parathion (µg/L)			
+Total	"Parathion, Methyl"	ug/L	Parathion_Methyl_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Methyl parathion (µg/L)			
+Total	Phorate	ug/L	Phorate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Phorate (µg/L)			
+Total	Phosmet	ug/L	Phosmet_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Phosmet (µg/L)			
+Total	Phosphamidon	ug/L	Phosphamidon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Phosphamidon (µg/L)			
+Total	Sulfotep	ug/L	Sulfotep_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Sulfotep (µg/L)			
+Total	Terbufos	ug/L	Terbufos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Terbufos (µg/L)			
+Total	Tetrachlorvinphos	ug/L	Tetrachlorvinphos_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Tetrachlorvinphos (µg/L)			
+Total	Thionazin	ug/L	Thionazin_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Thionazin (µg/L)			
+Total	Tokuthion	ug/L	Tokuthion_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Tokuthion (µg/L)			
+Total	Trichlorfon	ug/L	Trichlorfon_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Trichlorfon (µg/L)			
+Total	Trichloronate	ug/L	Trichloronate_ug_L	10	Organophosphate	1	0	0	NA	NA	NA	NA	1	Inc		Trichloronate (µg/L)			
+Total	Acenaphthene	ug/L	Acenaphthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Acenaphthene (µg/L)			
+Total	Acenaphthylene	ug/L	Acenaphthylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Acenaphthylene (µg/L)			
+Total	Anthracene	ug/L	Anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Anthracene (µg/L)			
+Total	Benz(a)anthracene	ug/L	Benz_a_anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benz(a)anthracene (µg/L)			
+Total	Benzo(a)pyrene	ug/L	Benzo_a_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(a)pyrene *ug/L)		2	
+Total	Benzo(b)fluoranthene	ug/L	Benzo_b_fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(b)fluoranthene (µg/L)			
+Total	Benzo(e)pyrene	ug/L	Benzo_e_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(e)pyrene (µg/L)			
+Total	"Benzo(g,h,i)perylene"	ug/L	Benzo_ghi_perylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"Benzo(g,h,i)perylene (µg/L)"			
+Total	Benzo(k)fluoranthene	ug/L	Benzo_k_fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(k)fluoranthene (µg/L)			
+Total	Chrysene	ug/L	Chrysene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Chrysene (µg/L)			
+Total	"Dibenz(a,h)anthracene"	ug/L	Dibenz_ah_anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"Dibenz(a,h)anthracene (µg/L)"			
+Total	"Dimethylnaphthalene, 2,6-"	ug/L	Dimethylnaphthalene_26_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"2,6-Dimethylnaphthalene (µg/L)"			
+Total	Fluoranthene	ug/L	Fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Fluoranthene (µg/L)			
+Total	Fluorene	ug/L	Fluorene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Fluorene (µg/L)			
+Total	"Indeno(1,2,3-c,d)pyrene"	ug/L	Indeno_123cd_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"Indeno(1,2,3-c,d)pyrene (µg/L)"			
+Total	"Methylnaphthalene, 1-"	ug/L	Methylnaphthalene_1_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		1-Methylnaphthalene (µg/L)			
+Total	"Methylnaphthalene, 2-"	ug/L	Methylnaphthalene_2_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		2-Methylnaphthalene (µg/L)			
+Total	"Methylphenanthrene, 1-"	ug/L	Methylphenanthrene_1_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		1-Methylphenanthrene (µg/L)			
+Total	Naphthalene	ug/L	Naphthalene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Naphthalene (µg/L)			
+Total	Phenanthrene	ug/L	Phenanthrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Phenanthrene (µg/L)			
+Total	Pyrene	ug/L	Pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Pyrene (µg/L)			
+Total	"Trimethylnaphthalene, 2,3,5-"	ug/L	Trimethylnaphthalene_235_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"2,3,5-Trimethylnaphthalene (µg/L)"			
+Total	PCB 005	ug/L	PCB005_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 005 (µg/L)			
+Total	PCB 008	ng/g dw	PCB008_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 008 (ng/g dry weight)			
+Total	PCB 008	ug/L	PCB008_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 008 (µg/L)			
+Total	PCB 015	ug/L	PCB015_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 015 (µg/L)			
+Total	PCB 018	ng/g dw	PCB018_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 018 (ng/g dry weight)			
+Total	PCB 018	ug/L	PCB018_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 018 (µg/L)			
+Total	PCB 027	ng/g dw	PCB027_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 027 (ng/g dry weight)			
+Total	PCB 027	ug/L	PCB027_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 027 (µg/L)			
+Total	PCB 028/31	ng/g dw	PCB028_31_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 028/31 (ng/g dry weight)			
+Total	PCB 028	ug/L	PCB028_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 028 (µg/L)			
+Total	PCB 029	ng/g dw	PCB029_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 029 (ng/g dry weight)			
+Total	PCB 029	ug/L	PCB029_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 029 (µg/L)			
+Total	PCB 031	ug/L	PCB031_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 031 (µg/L)			
+Total	PCB 033	ng/g dw	PCB033_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 033 (ng/g dry weight)			
+Total	PCB 033	ug/L	PCB033_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 033 (µg/L)			
+Total	PCB 044	ng/g dw	PCB044_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 044 (ng/g dry weight)			
+Total	PCB 044	ug/L	PCB044_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 044 (µg/L)			
+Total	PCB 049	ng/g dw	PCB049_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 049 (ng/g dry weight)			
+Total	PCB 049	ug/L	PCB049_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 049 (µg/L)			
+Total	PCB 052	ng/g dw	PCB052_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 052 (ng/g dry weight)			
+Total	PCB 052	ug/L	PCB052_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 052 (µg/L)			
+Total	PCB 056/60	ng/g dw	PCB056_60_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 056/60 (ng/g dry weight)			
+Total	PCB 056	ug/L	PCB056_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 056 (µg/L)			
+Total	PCB 060	ug/L	PCB060_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 060 (µg/L)			
+Total	PCB 064	ng/g dw	PCB064_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 064 (ng/g dry weight)			
+Total	PCB 066	ng/g dw	PCB066_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 066 (ng/g dry weight)			
+Total	PCB 066	ug/L	PCB066_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 066 (µg/L)			
+Total	PCB 070	ng/g dw	PCB070_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 070 (ng/g dry weight)			
+Total	PCB 070	ug/L	PCB070_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 070 (µg/L)			
+Total	PCB 074	ng/g dw	PCB074_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 074 (ng/g dry weight)			
+Total	PCB 074	ug/L	PCB074_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 074 (µg/L)			
+Total	PCB 077	ng/g dw	PCB077_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 077 (ng/g dry weight)			
+Total	PCB 077	ug/L	PCB077_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 077 (µg/L)			
+Total	PCB 087	ng/g dw	PCB087_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 087 (ng/g dry weight)			
+Total	PCB 087	ug/L	PCB087_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 087 (µg/L)			
+Total	PCB 095	ng/g dw	PCB095_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 095 (ng/g dry weight)			
+Total	PCB 095	ug/L	PCB095_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 095 (µg/L)			
+Total	PCB 097	ng/g dw	PCB097_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 097 (ng/g dry weight)			
+Total	PCB 097	ug/L	PCB097_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 097 (µg/L)			
+Total	PCB 099	ng/g dw	PCB099_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 099 (ng/g dry weight)			
+Total	PCB 099	ug/L	PCB099_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 099 (µg/L)			
+Total	PCB 101	ng/g dw	PCB101_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 101 (ng/g dry weight)			
+Total	PCB 101	ug/L	PCB101_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 101 (µg/L)			
+Total	PCB 105	ng/g dw	PCB105_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 105 (ng/g dry weight)			
+Total	PCB 105	ug/L	PCB105_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 105 (µg/L)			
+Total	PCB 110/151	ug/L	PCB110_151_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 110/151 (µg/L)			
+Total	PCB 110	ng/g dw	PCB110_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 110 (ng/g dry weight)			
+Total	PCB 110	ug/L	PCB110_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 110 (µg/L)			
+Total	PCB 114	ng/g dw	PCB114_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 114 (ng/g dry weight)			
+Total	PCB 114	ug/L	PCB114_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 114 (µg/L)			
+Total	PCB 118	ng/g dw	PCB118_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 118 (ng/g dry weight)			
+Total	PCB 118	ug/L	PCB118_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 118 (µg/L)			
+Total	PCB 126	ng/g dw	PCB126_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 126 (ng/g dry weight)			
+Total	PCB 126	ug/L	PCB126_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 126 (µg/L)			
+Total	PCB 128	ng/g dw	PCB128_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 128 (ng/g dry weight)			
+Total	PCB 128	ug/L	PCB128_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 128 (µg/L)			
+Total	PCB 137	ng/g dw	PCB137_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 137 (ng/g dry weight)			
+Total	PCB 137	ug/L	PCB137_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 137 (µg/L)			
+Total	PCB 138/158	ng/g dw	PCB138_158_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 138/158 (ng/g dry weight)			
+Total	PCB 138	ug/L	PCB138_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 138 (µg/L)			
+Total	PCB 141	ng/g dw	PCB141_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 141 (ng/g dry weight)			
+Total	PCB 141	ug/L	PCB141_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 141 (µg/L)			
+Total	PCB 146	ng/g dw	PCB146_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 146 (ng/g dry weight)			
+Total	PCB 149	ng/g dw	PCB149_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 149 (ng/g dry weight)			
+Total	PCB 149	ug/L	PCB149_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 149 (µg/L)			
+Total	PCB 151	ng/g dw	PCB151_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 151 (ng/g dry weight)			
+Total	PCB 151	ug/L	PCB151_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 151 (µg/L)			
+Total	PCB 153	ng/g dw	PCB153_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 153 (ng/g dry weight)			
+Total	PCB 153	ug/L	PCB153_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 153 (µg/L)			
+Total	PCB 156	ng/g dw	PCB156_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 156 (ng/g dry weight)			
+Total	PCB 156	ug/L	PCB156_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 156 (µg/L)			
+Total	PCB 157	ng/g dw	PCB157_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 157 (ng/g dry weight)			
+Total	PCB 157	ug/L	PCB157_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 157 (µg/L)			
+Total	PCB 158	ug/L	PCB158_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 158 (µg/L)			
+Total	PCB 169	ng/g dw	PCB169_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 169 (ng/g dry weight)			
+Total	PCB 170	ng/g dw	PCB170_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 170 (ng/g dry weight)			
+Total	PCB 170	ug/L	PCB170_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 170 (µg/L)			
+Total	PCB 174	ng/g dw	PCB174_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 174 (ng/g dry weight)			
+Total	PCB 174	ug/L	PCB174_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 174 (µg/L)			
+Total	PCB 177	ng/g dw	PCB177_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 177 (ng/g dry weight)			
+Total	PCB 177	ug/L	PCB177_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 177 (µg/L)			
+Total	PCB 180	ng/g dw	PCB180_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 180 (ng/g dry weight)			
+Total	PCB 180	ug/L	PCB180_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 180 (µg/L)			
+Total	PCB 183	ug/L	PCB183_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 183 (µg/L)			
+Total	PCB 187	ng/g dw	PCB187_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 187 (ng/g dry weight)			
+Total	PCB 187	ug/L	PCB187_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 187 (µg/L)			
+Total	PCB 189	ng/g dw	PCB189_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 189 (ng/g dry weight)			
+Total	PCB 189	ug/L	PCB189_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 189 (µg/L)			
+Total	PCB 194	ng/g dw	PCB194_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 194 (ng/g dry weight)			
+Total	PCB 194	ug/L	PCB194_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 194 (µg/L)			
+Total	PCB 195	ng/g dw	PCB195_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 195 (ng/g dry weight)			
+Total	PCB 195	ug/L	PCB195_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 195 (µg/L)			
+Total	PCB 198	ng/g dw	PCB198_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 198 (ng/g dry weight)			
+Total	PCB 199	ng/g dw	PCB199_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 199 (ng/g dry weight)			
+Total	PCB 200	ng/g dw	PCB200_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 200 (ng/g dry weight)			
+Total	PCB 200	ug/L	PCB200_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 200 (µg/L)			
+Total	PCB 201	ng/g dw	PCB201_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 201 (ng/g dry weight)			
+Total	PCB 201	ug/L	PCB201_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 201 (µg/L)			
+Total	PCB 203	ng/g dw	PCB203_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 203 (ng/g dry weight)			
+Total	PCB 203	ug/L	PCB203_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 203 (µg/L)			
+Total	PCB 206	ng/g dw	PCB206_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 206 (ng/g dry weight)			
+Total	PCB 206	ug/L	PCB206_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 206 (µg/L)			
+Total	PCB 209	ng/g dw	PCB209_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 209 (ng/g dry weight)			
+Total	PCB 209	ug/L	PCB209_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 209 (µg/L)			
+Total	Nitrate as N	mg/L	NO3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate as N (µg/L)		10	
+Dissolved	Nitrate + Nitrite as N	mg/L	NO3NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate and nitrite as N (µg/L)		10	
+Not Recorded	Nitrate + Nitrite as N	mg/L	NO3NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Not Recorded nitrate and nitrite as N (µg/L)		10	
+Total	Nitrate + Nitrite as N	mg/L	NO3NO2_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate and nitrite as N (µg/L)		10	
+Field_None	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Acid neutralizing capacity (µeq/%)			
+Field_Total	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Acid neutralizing capacity (µeq/%)			
+Total	Phosphorus as P	mg/L	P_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total phosphorus as P (mg/L)	0.05		
+Total	"Permethrin, cis-"	ng/g dw	Permethrin_cis_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cis-permethrin (ng/g dry weight)			
+Total	"Permethrin, cis-"	ug/L	Permethrin_cis_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cis-permethrin (µg/L)			
+Total	"Permethrin, Total"	ug/L	Permethrin_Total_ug_L	13	Pyrethroids	1	1	0	NA	NA	NA	NA	1	Inc		Total permethrin (µg/L)			
+Total	"Permethrin, trans-"	ng/g dw	Permethrin_trans_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total trans-permethrin (ng/g dry weight)			
+Total	"Permethrin, trans-"	ug/L	Permethrin_trans_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total trans-permethrin (µg/L)			
+Field_None	pH	none	pH_fld_SU	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec		Field-measured pH (SU)			
+None	pH	none	pH_SU	17	Water quality	0	0	0	NA	NA	NA	NA	1	Dec		pH (SU)			
+Particulate	Pheophytin a	ug/L	Pheophytin_a_particulate_ug_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Particulate pheophytin a (µg/L)			
+Dissolved	OrthoPhosphate as P	mg/L	PO4_P_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved orthophosphate as P (mg/L)			
+Dissolved	Potassium	mg/L	Potassium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved potassium (mg/L)			
+Total	Potassium	mg/L	Potassium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Total potassium (mg/L)			
+Total	Pyrethrin-1	ng/g dw	Pyrethrin_1_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total pyrethrin-1 (ng/g dry weight)			
+Total	Pyrethrin-2	ng/g dw	Pyrethrin_2_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total pyrethrin-2 (ng/g dry weight)			
+Total	Pyrethrin-1	ug/L	Pyrethrin1_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total pyrethrin-1 (µg/L)			
+Total	Pyrethrin-2	ug/L	Pyrethrin2_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total pyrethrin-2 (µg/L)			
+Field_None	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured salinity (ppt)			
+Field_Total	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured salinity (ppt)			
+Dissolved	Selenium	ug/L	Selenium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved selenium (µg/L)		0.05	
+Total	Selenium	ug/L	Selenium_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total selenium (µg/L)		0.05	
+Field_Total	Silica	mg/L	Silica_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Acid neutralizing capacity (µeq/L)			
+Dissolved	Silica as SiO2	mg/L	Silica_SiO2_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved silica as SiO2 (mg/L)			
+Field_Total	Silica as SiO2	mg/L	Silica_SiO2_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Acid neutralizing capacity (µeq/L)			
+Total	Silica as SiO2	mg/L	Silica_SiO2_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total silica as SiO2 (mg/L)			
+Dissolved	Silver	ug/L	Silver_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved silver (µg/L)			100
+Total	Silver	mg/kg dw	Silver_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total silver (mg/kg dry weight)			
+Total	Silver	ug/L	Silver_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total silver (µg/L)			100
+Dissolved	Sodium	mg/L	Sodium_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved sodium (mg/L)	0.006		
+<0.0039 mm	Clay	%	Clay_LT0_0039mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Clay, less than 0.0039 mm (%)"			
+<0.005 mm	Clay	%	Clay_LT0_005mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Clay, less than 0.005 mm (%)"			
+4.75 to <75 mm	Gravel	%	Gravel_4_75_LT75mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Dec		"Gravel, 4.75 to less than 75 mm (%)"			
+Total	Moisture	%	MoistureTotal_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	0			Total moisture (%)			
+0.0625 to <2.0 mm	Sand	%	Sand_0_0625_LT2mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Sand, 0.0625 to less than 2 mm (%)"			
+Coarse 2.0 to <4.75 mm	Sand	%	SandCoarse_2_LT4_75mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Coarse sand, 2 to less than 4.75 mm (%)"			
+Fine 0.075 to <0.425 mm	Sand	%	SandFine_0_075_LT0_425mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Fine sand, 0.075 to less than 0.425 mm (%)"			
+Medium 0.425 to <2.0 mm	Sand	%	SandMed_0_425_LT2mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Medium sand, 0.425 to less than 2 mm (%)"			
+0.0039 to <0.0625 mm	Silt	%	Silt_0_0039_LT0_0625mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Silt, 0.0039 to less than 0.0625 mm (%)"			
+0.005 to <0.075 mm	Silt	%	Silt_0_005_LT0_075mm_pct	14	Sediment general	0	0	0	NA	NA	NA	NA	1	Inc		"Silt, 0.005 to less than 0.075 mm (%)"			
+Total	Terphenyl-d14(Surrogate)	ug/L	Terphenyl_d14_surrogate_ug_L	15	Surrogate	1	0	0	NA	NA	NA	NA	0			Terphenyl-d14 (ug/L)			
+Total	Anatoxin-A	ug/L	Anatoxin_A_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Anatoxin-a (µg/L)			
+Total	Desmethyl-LR	ug/L	Desmethyl_LR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Desmethyl microcystin LR (µg/L)			
+Total	Desmethyl-RR	ug/L	Desmethyl_RR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Desmethyl microcystin RR (µg/L)			
+Total	Domoic Acid	ug/L	Domoic_Acid_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Domoic acid (µg/L)			
+Total	Microcystin-LA	ug/L	Microcystin_LA_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin LA (µg/L)			
+Total	Microcystin-LF	ug/L	Microcystin_LF_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin LF (µg/L)			
+Total	Microcystin-LR	ug/L	Microcystin_LR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin LR (µg/L)			
+Total	Microcystin-LW	ug/L	Microcystin_LW_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin LW (µg/L)			
+Total	Microcystin-LY	ug/L	Microcystin_LY_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin LY (µg/L)			
+Total	Microcystin-RR	ug/L	Microcystin_RR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microcystin RR (µg/L)			
+Total	Microcystin-YR	ug/L	Microcystin_YR_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Microsystin YR (µg/L)			
+Total	Nodularin	ug/L	Nodularin_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Nodularin (µg/L)			
+Total	Okadaic Acid	ug/L	Okadaic_Acid_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Okadaic acid (most protoble number)			
+Particulate	"Microcystins, Total"	ug/L	TotalMicrocystins_particulate_ug_L	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Total particulate microcystins (µg/L)			
+Particulate	"Microcystins, Total"	ug/m2	TotalMicrocystins_particulate_ug_m2	16	Toxins	1	0	0	NA	NA	NA	NA	1	Inc		Total particulate microcystins (ug/m2)			
+Total	Sodium	mg/L	Sodium_uf_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Total sodium (mg/L)	0.006		
+Field_None	SpecificConductivity	uS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal	Field-measured specific conductivity (µS/cm)			
+Field_Total	SpecificConductivity	µS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal	Field-measured specific conductivity (µS/cm)			
+Field_Total	SpecificConductivity	uS/cm	SpecificConductivity_fld_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal	Field-measured specific conductivity (µS/cm)			
+Total	SpecificConductivity	uS/cm	SpecificConductivity_uS_cm	17	Water quality	1	0	1	1	2	5	6	1	Inc	SpecCondTolVal	Specific conductivity (µS/cm)			
+Dissolved	Strontium	ug/L	Strontium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved strontium (µg/L)			
+Total	Strontium	ug/L	Strontium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total strontium (µg/L)			
+Dissolved	Sulfate	mg/L	Sulfate_f_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved sulfate (mg/L)	65		
+Particulate	Suspended Sediment Concentration	mg/L	SuspendedSediment_particulate_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Suspended particulates (mg/L)			
+Dissolved	Total Dissolved Solids	mg/L	TDS_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total dissolved solids (mg/L)	300		
+Dissolved	Thallium	ug/L	Thallium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved thallium (µg/L)		0.002	
+Total	Thallium	ug/L	Thallium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total thallium (µg/L)		0.002	
+Dissolved	Tin	ug/L	Tin_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved tin (µg/L)			
+Total	Tin	ug/L	Tin_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total tin (µg/L)			
+Dissolved	Titanium	ug/L	Titanium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved titanium (µg/L)			
+Total	Titanium	ug/L	Titanium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total titanium (µg/L)			
+Total	"Nitrogen, Total Kjeldahl"	mg/L	TKN_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total Kjeldahl nitrogen (mg/L)			
+Not Recorded	"Nitrogen, Total"	mg/L	TN_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrogen (mg/L)			
+Total	"Nitrogen, Total"	mg/L	TN_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrogen (mg/L)			
+Total	Total Organic Carbon	% dw	TOC_pct_dw	7	Nutrients	0	0	0	NA	NA	NA	NA	1	Inc		Total organic carbon (percent dry weight)			
+Total	Total Organic Carbon	mg/L	TOC_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total organic carbon (mg/L)			
+Field_None	TransectsSampled	count	Transects_count	17	Water quality	0	0	0	NA	NA	NA	NA	0			Acid neutralizing capacity (µeq/count)			
+Particulate	Total Suspended Solids	mg/L	TSS_particulate_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total suspended solids (mg/L)			
+Field_None	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured turbidity (NTU)	20		5
+Field_Total	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured turbidity (NTU)	20		5
+Total	Turbidity	NTU	Turbidity_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Turbidity (NTU)	20		5
+Dissolved	Vanadium	ug/L	Vanadium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved vanadium (µg/L)			
+Total	Vanadium	ug/L	Vanadium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total vanadium (µg/L)			
+Field_None	Velocity	ft/s	Velocity_fld_ft_s	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured velocity (ft/s)			
+Field_None	Temperature	°C	WaterTemp_fld_degC	17	Water quality	0	0	0	NA	NA	NA	NA	1	Inc		Field-measured water temperature (degrees C)			
+Field_None	Temperature	Deg C	WaterTemp_fld_degC	17	Water quality	0	0	0	NA	NA	NA	NA	1	Inc		Field-measured water temperature (degrees C)			
+Dissolved	Zinc	ug/L	Zinc_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved zinc (µg/L)			5000
+Total	Zinc	mg/kg dw	Zinc_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total zinc (mg/kg dry weight)			
+Total	Zinc	ug/L	Zinc_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total zinc (µg/L)			5000

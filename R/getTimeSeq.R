@@ -9,15 +9,18 @@
 #' Uses the libraries dplyr, tidyr, ggplot2, and ggrepel.
 #'
 #' @param TargetSiteID Site ID
-#' @param stressors stressors
 #' @param biocomm Biological community; algae or BMI. Default = "BMI".
-#' @param BioResp Biological response variable names. For example, BMI metrics
-#' or Algae metrics.
+#' @param BioResp Biological response variable names. For example, BMI metrics or Algae metrics.
+#' @param stressors stressors
 #' @param df_stress Stressor values.
 #' @param df_resp Response values for the specified biological community and metrics.
-#' @param colname.SampID Name of the column for the response sample identifier.
+#' @param df_stressinfo data frame, stress info
+#' @param df_respinfo data frame, response info
 #' @param dir_results Directory containing all results. Default = "file.path(getwd(),"Results")"
-#' @param dir_sub Subdirectory for outputs from this function. Default = "TemporalSequence"
+#' @param dir_sub Subdirectory for outputs from this function. Default = "TimeSequence"
+# @param stressors stressors
+
+# @param colname.SampID Name of the column for the response sample identifier.
 #'
 #' @return One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the
 #'        "Results" folder of working directory. No scores are currently generated.
@@ -28,6 +31,7 @@
 getTimeSeq <- function(TargetSiteID
                        , biocomm = "BMI"
                        , BioResp
+                       , stressors
                        , df_stress
                        , df_resp
                        , stressors
@@ -86,13 +90,15 @@ getTimeSeq <- function(TargetSiteID
         #        , SampID = ChemSampleID) %>%
         # dplyr::select(BioQuality, SampleDate, variable, value) %>%
         dplyr::group_by(StressSampDate, StdParamName) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3)) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3), .groups = "drop_last") %>%
         dplyr::rename(SampDate = StressSampDate, variable = StdParamName) %>%
         dplyr::filter(variable %in% stressors)
 
     if (any(is.na(df_stress$SampDate))) {
-        print("NA values in Sample Date indicative of modeled stressor data.")
-        flush.console()
+        msg <- "NA values in Sample Date indicative of modeled stressor data."
+        message(msg)
+        # print(msg)
+        # flush.console()
         df_NAs <- as.data.frame(dplyr::filter(df_stress, is.na(SampDate))) %>%
             dplyr::select(variable)
         df_stress <- dplyr::filter(df_stress, !is.na(SampDate)) # Removes modeled stressors, which have not date
@@ -109,7 +115,7 @@ getTimeSeq <- function(TargetSiteID
             }
         }
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
 
@@ -127,7 +133,7 @@ getTimeSeq <- function(TargetSiteID
         dplyr::filter(!is.na(ResultValue)
                , Biometric %in% BioResp) %>%
         dplyr::group_by(RespSampDate, Biometric) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3)) %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3), .groups = "drop_last") %>%
         dplyr::rename(SampDate = RespSampDate, variable = Biometric)
     df_respinfo <- unique(df_respinfo[,c("MetricName","MetricLabel")])
     df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")
@@ -176,19 +182,21 @@ getTimeSeq <- function(TargetSiteID
                                            , levels = c(stressName, respName))
                 maxStress <- max(df.plot$meanval[df.plot$variable==stressName])
                 maxResp <- max(df.plot$meanval[df.plot$variable==respName])
-
-                print(paste0("Plotting bar graphs for ",stressName," and "
-                             ,respName," (",count," of ",totplots,")"))
-                flush.console()
+                
+                msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") ", stressName, " and "
+                              , respName)
+                message(msg)
+                # print(msg)
+                # flush.console()
                 
                 colwid =  nrow(df.plot) * 2
 
                 p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x=SampDate
                                             , y=as.numeric(meanval)))
                 p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = colwid
-                             , position = ggplot2::position_dodge(preserve = "single"))
+                             , position = ggplot2::position_dodge(preserve = "single"), na.rm = TRUE)
                 p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanval)
-                                        , hjust= 2, vjust = 0, size=2.5)
+                                        , hjust= 2, vjust = 0, size=2.5, na.rm = TRUE)
                 p_ts <- p_ts + ggplot2::facet_wrap(~ Label, ncol=1, scales="free_y")
                 p_ts <- p_ts + ggplot2::theme_bw()
                 p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
@@ -206,8 +214,10 @@ getTimeSeq <- function(TargetSiteID
 
         } # End loop over stressors
     } else {
-        print(paste("No ",biocomm,"response data available for", TargetSiteID))
-        flush.console()
+        # print(paste("No ",biocomm,"response data available for", TargetSiteID))
+        # flush.console()
+        msg <- paste("No ",biocomm,"response data available for", TargetSiteID)
+        message(msg)
     }
 
 }

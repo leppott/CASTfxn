@@ -1,0 +1,10 @@
+MetricName	MetricLabel	IndexYN
+CSCI	CSCI	Yes
+MMI	MMI	No
+OoverE	O/E	No
+Taxonomic_Richness	Taxonomic richness	No
+Intolerant_Percent	Percent intolerant individuals	No
+Shredder_Taxa	Number of shredder taxa	No
+Clinger_PercentTaxa	Percent of clinger taxa	No
+Coleoptera_PercentTaxa	Percent of coleoptera taxa	No
+EPT_PercentTaxa	Percent of EPT taxa	No
