@@ -35,7 +35,7 @@ getReport <- function(TargetSiteID
                       , useBMI
                       , useAlg
                       , removeOutliers
-                      , dir_results=file.path(getwd(), "Results")
+                      , dir_results=dir_results
                       , report_type="summary"
                       , report_format="html"
                       , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
@@ -65,7 +65,8 @@ getReport <- function(TargetSiteID
   # Test if RMD file exists
   if (file.exists(strFile_RMD)){##IF.file.exists.START
     #suppressWarnings(
-    rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document"), output_file=strFile_out
+    rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document")
+                      , output_file=strFile_out
                       , output_dir=file.path(dir_results, TargetSiteID), quiet=TRUE)
     #)
   } else {
