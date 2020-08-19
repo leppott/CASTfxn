@@ -136,8 +136,8 @@ getSiteInfo <- function(TargetSiteID
                         , map_outline=NULL
                         , map_flowline=NULL
                         , map_flowline2=NULL
-                        , dir_photo = file.path(getwd(),"Data","Photos")
-                        , dir_results = file.path(getwd(), "Results")
+                        , dir_photo = file.path(dir_data,"Photos")
+                        , dir_results = dir_results
                         , dir_sub = "SiteInfo") {
     #
    
@@ -545,6 +545,7 @@ getSiteInfo <- function(TargetSiteID
             }
         }
     } else { 
+        have.photos <- FALSE
         print("Photo directory does not exist.")
         flush.console()
     }
