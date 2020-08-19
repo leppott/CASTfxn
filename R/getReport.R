@@ -34,8 +34,13 @@ getReport <- function(TargetSiteID
                       , probsLow=0.25
                       , useBMI
                       , useAlg
-                      , removeOutliers
-                      , dir_results=dir_results
+                      , useBC = TRUE
+                      , removeOutliers = TRUE
+                      , lagdays = 10
+                      , bmiIndex = "CSCI"
+                      , algIndex = "MMIhybrid"
+                      , dir_data = file.path(".", "Data")
+                      , dir_results = dir_results
                       , report_type="summary"
                       , report_format="html"
                       , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
