@@ -546,8 +546,10 @@ getSiteInfo <- function(TargetSiteID
         }
     } else { 
         have.photos <- FALSE
-        print("Photo directory does not exist.")
-        flush.console()
+        # print("Photo directory does not exist.")
+        # flush.console()
+        msg <- "Photo directory does not exist."
+        message(msg)
     }
     
     if (!have.photos) {
