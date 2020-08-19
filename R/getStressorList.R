@@ -213,7 +213,7 @@ getStressorList <- function(TargetSiteID
               addcolname <- addcols[add]
               clusterRefChemData[[addcolname]] <- NA
           }
-          clusterRefChemData <- dplyr::select(clusterRefChemData, clustChemCols)
+          clusterRefChemData <- dplyr::select(clusterRefChemData, all_of(clustChemCols))
       }
   }
   rm(clusterRefChem)
@@ -590,8 +590,6 @@ getStressorList <- function(TargetSiteID
   
   # LogTransf ####
   # 20190110, get log transformation code from chem.info
-  # define pipe
-  `%>%` <- dplyr::`%>%`
   #x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
   # need to use max (default of 1) in case of duplicates
   chemInfo_LogTransf <- chemInfo %>% 
