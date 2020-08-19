@@ -13,26 +13,28 @@
 #' Uses the library dplyr.
 #' 
 #' @param TargetSiteID Site ID
-#' @param comp_sites Vector containing comparator site identifiers.
-#' @param df_sites Sites table containing site ids and reference flags. 
+#'  @param df_sites Sites table containing site ids and reference flags. 
 #' Default = "data_Sites".
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param df_qual Biological index and metrics data for the specified biocomm. 
-#' Default = "data.bmi.metrics".
-#' @param colBio Name of the column for the biological response index measure. 
-#' Default = "CSCI".
-#' @param colSample Name of the column for the response sample identifier. 
-#' Default = "BMI.Metrics.SampID".
-#' @param Bio.Deg.Brk Biological assessment degraded status, cut function breaks. 
+#' Default = "data.bmi.metrics". 
+#' @param colBio Name of the column for the biological response index measure; Default = "CSCI".
+#' @param colBioSample Column name for biological sample; Default = "RespSampID" 
+#' @param ColStressSample Column name for Stress sample ID; Default = StressSampID 
+#' @param comp_sites Vector containing comparator site identifiers.
+#' @param useBC Boolean for using Bray Curtis model.  Default = FALSE
+#' @param BioNarBrk Breaks for cut function for biological index.  CA CSCI Default is =  
+#' c(-2, 0.62, 0.799, 0.919, 2)
+#' @param BioNarLab Labels for biological index.  CA CSCI Default =  c("very likely altered"
+#' , "likely altered", "possibly altered", "likely intact") 
+#' @param BioDegBrk Biological assessment degraded status, cut function breaks. 
 #' Should be in order from bad (low) to good (high). 
 #' Default = c(-2, 0.799, 2)
-#' @param Bio.Deg.Lab Biological assessment degraded status, cut function labels. 
+#' @param BioDegLab Biological assessment degraded status, cut function labels. 
 #' Should be in order from bad (low) to good (high).
 #' Defaults are referenced in the code so if change the code will break. 
 #' Default = c("Yes", "No").
-#' @param siteQual2Plot The quality of site desired for plotting on graphs. 
-#' Default = reference. Allowed values are "reference", "not degraded", or 
-#' "better than" the minimum target sample quality.
+#' @param dir_results directory for results; Default = ./Results
 #' 
 #' @return A list with vectors containing all sites or comparator sites that are
 #' reference, not degraded ("good"), or having samples with index scores better 
@@ -138,12 +140,12 @@ getQualSites<- function(TargetSiteID
     
     # Generate matrix of Quality vs. Comparator/Cluster/All, and same but only better than
     # First get max(degraded) site index value
-    maxDegSiteIndexVal <- max(df_qual[,bioIndex][df_qual$StationID_Master==TargetSiteID])
+    maxDegSiteIndexVal <- max(df_qual[,colBio][df_qual$StationID_Master==TargetSiteID])
     myCluster <- unique(df_qual[,"clust"][df_qual$StationID_Master==TargetSiteID])
     
     if (useBC == TRUE) { # There are comparator sites defined by biosimilarity
         df_qual[, "ComparatorYN"] <- ifelse(df_qual$StationID_Master %in% comp_sites, "Yes", "No")
-        df_qual[, "BetterThan"] <- ifelse(df_qual[,bioIndex]>maxDegSiteIndexVal, "Yes", "No")
+        df_qual[, "BetterThan"] <- ifelse(df_qual[,colBio]>maxDegSiteIndexVal, "Yes", "No")
         
         df_qualstats <- df_qual %>%
             dplyr::mutate(CompSites = ifelse(ComparatorYN=="Yes", 1, 0)
@@ -200,7 +202,7 @@ getQualSites<- function(TargetSiteID
             
     } else { # Comparator sites = cluster sites
 
-        df_qual[, "BetterThan"] <- ifelse(df_qual[,bioIndex]>maxDegSiteIndexVal, "Yes", "No")
+        df_qual[, "BetterThan"] <- ifelse(df_qual[,colBio]>maxDegSiteIndexVal, "Yes", "No")
         
         df_qualstats <- df_qual %>%
             dplyr::mutate(ClustSites = ifelse((clust==myCluster), 1, 0)
@@ -254,7 +256,7 @@ getQualSites<- function(TargetSiteID
                                  , gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
     }

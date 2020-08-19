@@ -1,0 +1,21 @@
+---
+title: "RPP Tool Help"
+#subtitle: "help"
+#author: "`r Sys.getenv('USERNAME')`"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+output:
+  html_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+```
+
+To use the RPP Tool a stream reach code (NHD+ COMID) is required.
+
+To aid in the selection of a reach use the "Map-Reach" tab.
+
+If the reach is not known but a SiteID is known use the "Map-Station" tab to identify the reach based on the site location.
+
+RPP Tool results will be compiled into a zip file for download.

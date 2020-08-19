@@ -6,14 +6,17 @@
 #' 
 #' @param TargetSiteID Site ID
 #' @param stressors stressors
+#' @param stressorInfo stressor info
 #' @param BioResp Biological response variables.  For example, BMI metrics or Algae metrics.
+#' @param BioInfo Bio info
 #' @param list.MatchBioData list of matched biological (BMI or algae) and stressor data.
-#' @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' @param ref.sites Reference sites.
+#' @param siteQual2Plot site quality to plot
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
+# @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' 
 #' @return A jpg in SiteID subfolder of the "Results" folder of working directory.  
 #' And two tab-delimited text files; stressor correlations and scores.
@@ -270,6 +273,14 @@ getBioStressorResponses <- function(TargetSiteID
       boo_pred_warn = TRUE
   }
 
+  # # list output
+  # all.b.str  <- list.MatchBioData[["all.b.str"]]
+  # all.b.rsp  <- list.MatchBioData[["all.b.rsp"]]
+  # cl.b.str   <- list.MatchBioData[["cl.b.str"]]
+  # cl.b.rsp   <- list.MatchBioData[["cl.b.rsp"]]
+  # site.b.str <- list.MatchBioData[["site.b.str"]]
+  # site.b.rsp <- list.MatchBioData[["site.b.rsp"]]
+  
   
   # Correlation file output header row
   cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "stressLabel"
@@ -416,10 +427,12 @@ getBioStressorResponses <- function(TargetSiteID
   LogTransf <- unique(LogTransf)
   
   # Prep site data for merging with scores
-  df_str <- site.b.str %>%
+  ##site.b.str %>%
+  df_str <- list.MatchBioData[["site.b.str"]] %>% 
       tidyr::gather(key = "Stressor", value = "StressorValue"
                     , c(-StationID_Master, -StressSampID, -RespSampID))
-  df_rsp <- site.b.rsp %>%
+  #site.b.rsp %>%
+  df_rsp <- list.MatchBioData[["site.b.rsp"]] %>% 
       dplyr::select(-RespSampDate) %>%
       tidyr::gather(key = "Response", value = "ResponseValue"
                     , c(-StationID_Master, -StressSampID, -RespSampID, -Quality))
@@ -471,7 +484,7 @@ getBioStressorResponses <- function(TargetSiteID
       boo_corr <- TRUE
       boo_all <- TRUE
       respName <- BioResp[q]
-      respLabel <- as.character(bioMetricInfo$MetricLabel[bioMetricInfo$MetricName==respName])
+      respLabel <- as.character(BioInfo$MetricLabel[BioInfo$MetricName==respName])
       pq <- q.len*(p-1)+q
       pq.len <- p.len * q.len
       
@@ -1147,6 +1160,7 @@ getBioStressorResponses <- function(TargetSiteID
                                                 , color=col_line_all
                                                 , fill=fill_sites_all
                                                 , alpha=alpha_lm_all
+                                                , formula = y ~ x # Added to avaoid message
                                                 , show.legend=FALSE)
             p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
                                               , ggplot2::aes_(y=~lwr)
@@ -1168,6 +1182,7 @@ getBioStressorResponses <- function(TargetSiteID
                                                 , color=col_line_cl
                                                 , fill=fill_sites_cl
                                                 , alpha=alpha_lm_cl
+                                                , formula = y ~ x # Added to avaoid message
                                                 , show.legend=FALSE)
             p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
                                               , ggplot2::aes_(y=~lwr)

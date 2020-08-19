@@ -5,64 +5,67 @@
 \title{Co-Occurrence Plots}
 \usage{
 getCoOccur(
-  df.data,
+  df_data,
   TargetSiteID = NULL,
-  col.ID,
-  col.Group,
-  col.Bio,
-  col.Stressors,
-  Bio.Nar.Brk = c(-2, 0.62, 0.799, 0.919, 2),
-  Bio.Nar.Lab = c("very likely altered", "likely altered", "possibly altered ",
+  col_ID,
+  colStressSamp,
+  colRespSamp,
+  colGroup,
+  colBio,
+  colStressors,
+  df_stressinfo,
+  BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2),
+  BioNarLab = c("very likely altered", "likely altered", "possibly altered ",
     "likely intact"),
-  Bio.Deg.Brk = c(-2, 0.799, 2),
-  Bio.Deg.Lab = c("Yes", "No"),
+  BioDegBrk = c(-2, 0.799, 2),
+  BioDegLab = c("Yes", "No"),
   biocomm = "bmi",
-  dir.plots = file.path(getwd(), "Results"),
+  dir_plots = file.path(getwd(), "Results"),
   dir_sub = "CoOccurrence",
-  col.Stressors.InvSc = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk",
+  col_StressInvScore = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk",
     "DO_uf_mg_L", "pH", "pH_SU")
 )
 }
 \arguments{
-\item{df.data}{data frame with data.}
+\item{df_data}{data frame with data.}
 
 \item{TargetSiteID}{ID of station/sample to plot; can be single or multiple.
-Default is first entry in df.data[, col.ID]}
+Default is first entry in df_data[, col_ID]}
 
-\item{col.ID}{df.data column with unique Station/Sample identifier.}
+\item{col_ID}{df_data column with unique Station/Sample identifier.}
 
-\item{col.Group}{df.data column with grouping variable.}
+\item{colGroup}{df_data column with grouping variable.}
 
-\item{col.Bio}{df.data column with biological numeric value.}
+\item{colBio}{df_data column with biological numeric value.}
 
-\item{col.Stressors}{df.data column(s) with stressor variable(s); can be 
+\item{colStressors}{df_data column(s) with stressor variable(s); can be 
 single or multiple.}
 
-\item{Bio.Nar.Brk}{Biological assessment narrative, cut function breaks.
+\item{BioNarBrk}{Biological assessment narrative, cut function breaks.
 Should be in order from bad (low) to good (high). 
 Default = c(-2, 0.62, 0.799, 0.919, 2)}
 
-\item{Bio.Nar.Lab}{Biological assessment narrative, cut function labels.
+\item{BioNarLab}{Biological assessment narrative, cut function labels.
 Should be in order from bad (low) to good (high).  
 Default = c("very likely altered", "likely altered", "possibly altered ", 
 "likely intact")}
 
-\item{Bio.Deg.Brk}{Biological assessment degraded status, cut function breaks. 
+\item{BioDegBrk}{Biological assessment degraded status, cut function breaks. 
 Should be in order from bad (low) to good (high). 
 Default = c(-2, 0.799, 2)}
 
-\item{Bio.Deg.Lab}{Biological assessment degraded status, cut function labels. 
+\item{BioDegLab}{Biological assessment degraded status, cut function labels. 
 Should be in order from bad (low) to good (high).
 Defaults are referenced in the code so if change the code will break. 
 Default = c("Yes", "No").}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
-\item{dir.plots}{Directory to save plots.  Default = working directory and Results.}
+\item{dir_plots}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
 
-\item{col.Stressor.InvSc}{Stressors as columns of df.data that have inverse scoring for box plots.
+\item{col.Stressor.InvSc}{Stressors as columns of df_data that have inverse scoring for box plots.
 Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
 , "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")}
 }
@@ -128,7 +131,7 @@ Cut function is used to assign narrative categories and degraded status based
 on provided biological score.
 Ensures criteria are applied the same across all sites.
 
-The Bio.Deg.Lab has to remain as the default values of Yes and No.  
+The BioDegLab has to remain as the default values of Yes and No.  
 Other values will break the code.
 
 Only a single biological measurement is used.  But multiple stressors can be
@@ -140,67 +143,67 @@ Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 # Example #1, CA data (multiple sites)
 #
 #Load Data
-df.data <- data_CoOccur_CA
+df_data <- data_CoOccur_CA
 #
-col.Group     <- "Group"
-col.Bio       <- "CSCI"
-col.Stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
-col.ID        <- "StationID_Master"
+colGroup     <- "Group"
+colBio       <- "CSCI"
+colStressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
+col_ID        <- "StationID_Master"
 #
-Bio.Nar.Brk <- c(-2, 0.62, 0.799, 0.919, 2)
-Bio.Nar.Lab <- c("very likely altered", "likely altered"
+BioNarBrk <- c(-2, 0.62, 0.799, 0.919, 2)
+BioNarLab <- c("very likely altered", "likely altered"
                 , "possibly altered ", "likely intact")
-Bio.Deg.Brk <- c(-2, 0.799, 2)
-Bio.Deg.Lab <- c("Yes", "No")
+BioDegBrk <- c(-2, 0.799, 2)
+BioDegLab <- c("Yes", "No")
 biocomm <- "bmi"
-dir.plots <- file.path(getwd(), "Results")
+dir_plots <- file.path(getwd(), "Results")
 dir_sub <- "CoOccurrence"
 #
 TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
 #
 # Specify stressors by name
-col.Stressors.InvSc <- c("DO_uf_mg_L", "pH")
+col_StressInvScore <- c("DO_uf_mg_L", "pH")
 
 #
-getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
-        , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab 
-        , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
+getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
+        , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab 
+        , biocomm, dir_plots, dir_sub, col_StressInvScore
         )
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Example #2, AZ data (single site)
 #
 TargetSiteID <- c("SRCKN001.61")
 #
-# Cluster Data based on elevation category
+# comparator Data based on elevation category
 boo_Lo <- TargetSiteID \%in\% data_CoOccur_AZ_Lo$StationID_Master
 if(boo_Lo==TRUE){
-   df.data <- data_CoOccur_AZ_Lo
+   df_data <- data_CoOccur_AZ_Lo
 } else {
-   df.data <- data_CoOccur_AZ_Hi
+   df_data <- data_CoOccur_AZ_Hi
 }
 #
-col.Group     <- "Group"
-col.Bio       <- "IBI"
-col.Stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-col.ID        <- "StationID_Master"
+colGroup     <- "Group"
+colBio       <- "IBI"
+colStressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
+col_ID        <- "StationID_Master"
 #
-Bio.Nar.Brk <- c(0, 45, 52, 100)
-Bio.Nar.Lab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
-Bio.Deg.Brk <- c(0, 45, 100)
-Bio.Deg.Lab <- c("Yes", "No")
+BioNarBrk <- c(0, 45, 52, 100)
+BioNarLab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
+BioDegBrk <- c(0, 45, 100)
+BioDegLab <- c("Yes", "No")
 biocomm <- "bmi"
-dir.plots <- file.path(getwd(), "Results")
+dir_plots <- file.path(getwd(), "Results")
 dir_sub <- "CoOccurrence"
 
 # Specify stressors by name
-#col.Stressors.InvSc <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
+#col_StressInvScore <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
 # Get stressors from chem.info
-col.Stressors.InvSc <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"] 
+col_StressInvScore <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"] 
 
 #
-getCoOccur(df.data, TargetSiteID, col.ID, col.Group, col.Bio, col.Stressors
-        , Bio.Nar.Brk, Bio.Nar.Lab, Bio.Deg.Brk, Bio.Deg.Lab
-        , biocomm, dir.plots, dir_sub, col.Stressors.InvSc
+getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
+        , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
+        , biocomm, dir_plots, dir_sub, col_StressInvScore
         )
 
 }

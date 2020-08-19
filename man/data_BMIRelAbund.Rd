@@ -4,7 +4,8 @@
 \name{data_BMIRelAbund}
 \alias{data_BMIRelAbund}
 \title{BMI Relative Abundance}
-\format{A data frame with 55,319 rows and 11 variables
+\format{
+A data frame with 55,319 rows and 11 variables
 \describe{
           \item{StationID}{Station ID}
           \item{BenSampID}{BenSampID}
@@ -17,7 +18,8 @@
           \item{Station_Date}{Station_Date}
           \item{BMISampID}{BMISampID}
           \item{BMI.Metrics.SampID}{BMI.Metrics.SampID}
-}}
+}
+}
 \source{
 example data
 }

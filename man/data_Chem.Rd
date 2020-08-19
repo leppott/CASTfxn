@@ -4,7 +4,9 @@
 \name{data_Chem}
 \alias{data_Chem}
 \title{Chem data}
-\format{An object of class \code{data.frame} with 104577 rows and 19 columns.}
+\format{
+An object of class \code{data.frame} with 104577 rows and 19 columns.
+}
 \source{
 example data
 }

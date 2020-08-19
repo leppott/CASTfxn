@@ -4,12 +4,14 @@
 \name{data_SSD_generator}
 \alias{data_SSD_generator}
 \title{SSD example data (generator file)}
-\format{A data frame with 5 rows and 3 variables:
+\format{
+A data frame with 5 rows and 3 variables:
 \describe{
           \item{Taxa}{Taxa names}
           \item{Exposure}{Exposure mg/L}
           \item{ResponseType}{Response type; LC50}
-}}
+}
+}
 \source{
 example data
 }

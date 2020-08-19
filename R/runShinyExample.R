@@ -8,37 +8,33 @@
 #' 
 #' * CAST_Map_COMID
 #' 
-#'     + Selection of COMID on a map or by pull down.
+#'     + Selection of StationID on a map or by pull down.
 #'     
-#'     + https://leppott.shinyapps.io/CAST_Map/
+#'     + https://leppott.shinyapps.io/CAST_Map_StationID/
 #'     
-#' * CAST_v1
+#' * CAST_SMC
 #'     
-#'     + No longer in the package, kept for reference only.
-#' 
-#'     + Original design for Shiny App.
-#'     
-#'     + https://leppott.shinyapps.io/CAST/
+#'     + https://leppott.shinyapps.io/CAST_SMC/
 #'     
 #' * CAST_AZ
 #' 
 #'     + Updated Shiny App with AZ data.
 #' 
 #' @param appname Name of the Shiny app to run.  Valid values are 
-#' "CAST_Map_COMID", "CAST_Map_SiteID", "CAST_AZ", and "CAST_SMC".  Default = "CAST_AZ".
+#' "CAST_Map_COMID", "CAST_Map_StationID", "CAST_AZ", and "CAST_SMC".  Default = "CAST_SMC".
 
 #'
 #' @examples
 #' \dontrun{
-#' # AZ
-#' runShinyExample("CAST_AZ")
+#' # SMC
+#' runShinyExample("CAST_SMC")
 #' 
 #' # Map
-#' runShinyExample("CAST_Map_COMID")
+#' runShinyExample("CAST_Map_StationID")
 #' }
 #
 #' @export
-runShinyExample <- function(appname="CAST_AZ"){##FUNCTION.START
+runShinyExample <- function(appname="CAST_SMC"){##FUNCTION.START
   #
   #appDir <- system.file("shiny-examples", appname, package = "CASTfxn")
   #if (appDir == "") {

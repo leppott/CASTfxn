@@ -1,8 +1,0 @@
-pandoc: 2.7.3
-pkgdown: 1.4.1
-pkgdown_sha: ~
-articles:
-  Analysis: Analysis.html
-  CASTfxn_Vignette: CASTfxn_Vignette.html
-  Elevation_Vignette: Elevation_Vignette.html
-

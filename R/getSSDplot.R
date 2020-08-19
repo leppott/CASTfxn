@@ -117,7 +117,8 @@ getSSDplot <- function(Data, ResponseType, Taxa, Exposure) {
   # Calculate geometric mean
   DF.TRIAL.P <- as.data.frame(Data %>% 
                                 dplyr::group_by(Taxa, ResponseType) %>% 
-                                dplyr::summarize(Conc_1_Mean_Standardized = psych::geometric.mean(Exposure)))
+                                dplyr::summarize(Conc_1_Mean_Standardized = psych::geometric.mean(Exposure)
+                                                 , .groups = "drop_last"))
   
   #
   DF.TRIAL.P <- DF.TRIAL.P[order(DF.TRIAL.P$Conc_1_Mean_Standardized),] ## orders dataset by mean values

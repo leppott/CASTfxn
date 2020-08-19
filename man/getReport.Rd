@@ -6,14 +6,38 @@
 \usage{
 getReport(
   TargetSiteID,
+  probsHigh = 0.75,
+  probsLow = 0.25,
+  useBMI,
+  useAlg,
+  useBC = TRUE,
+  lagdays = 10,
+  removeOutliers = TRUE,
   dir_results = file.path(getwd(), "Results"),
   report_type = "summary",
   report_format = "html",
-  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+  dir_data = file.path(".", "Data"),
+  bmiIndex = "CSCI",
+  algIndex = "MMIdiatom"
 )
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
+
+\item{probsHigh}{High probability}
+
+\item{probsLow}{Low probability}
+
+\item{useBMI}{use Benthic Macroinvertebrate Data}
+
+\item{useAlg}{use Algae data}
+
+\item{useBC}{Use Bray-Curtis biological dissimilarity distance matrix.  Default = TRUE}
+
+\item{lagdays}{Number of days between sample dates.  Default = 10.}
+
+\item{removeOutliers}{Should outliers be removed.  Default = TRUE}
 
 \item{dir_results}{Directory with subfolders named by SiteID.  Default = Results folder in working directory.}
 
@@ -22,6 +46,12 @@ getReport(
 \item{report_format}{Requested report output format (html or word).  Default = HTML}
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
+
+\item{dir_data}{Directory with data.  Default = "./Data".}
+
+\item{bmiIndex}{Column name for BMI index.  Default = "CSCI".}
+
+\item{algIndex}{Column name for Algae index.  Default = "MMIdiatom"}
 }
 \value{
 A report for the provided SiteID in the provided format (html or word) 
@@ -42,9 +72,14 @@ TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 report_type <- "summary"
 report_format <- "html"
+useBMI = TRUE
+useAlg = FALSE
+bmiIndex = "CSCI"
+algIndex = "MMIhybrid"
+dir_data <- file.path(getwd(), "Data")
  
 \dontrun{
 # Run Function
-getReport(TargetSiteID, dir_results, report_type, report_format)
+getReport(TargetSiteID, dir_results, report_type, report_format, useBMI = useBMI, useAlg = useAlg, bmiIndex = bmiIndex, algIndex = algIndex, dir_data = dir_data)
 }
 }

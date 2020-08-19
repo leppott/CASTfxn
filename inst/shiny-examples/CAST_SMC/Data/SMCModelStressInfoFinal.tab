@@ -1,14 +1,167 @@
-ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	GroupNum	GroupName	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID	DirIncStress
-None	MaxMonthQ	cms	MaxMonthQ	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	Q99	cms	Q99	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	HighNum	events/yr	HighNum	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	HighDur	days/event	HighDur	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	NoDisturb	days	NoDisturb	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Dec
-None	QmaxIDR	none	QmaxIDR	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	RBI	none	RBI	19	Flow metrics affecting bmi	0	0	0	NA	NA	NA	NA	1	Inc
-None	HighDur_Dry	days/event	HighDur_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Dec
-None	HighNumDry	events/yr	HighNumDry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
-None	MaxMonthQ_Dry	cms	MaxMonthQ_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
-None	NoDisturb_Dry	days	NoDisturb_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Dec
-None	Qmax_Dry	none	Qmax_Dry	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
-None	QmaxIDR_All	none	QmaxIDR_All	20	Flow metrics affecting algae	0	0	0	NA	NA	NA	NA	1	Inc
+ANALYSIS_TYPE	CHEMICAL_NAME	FinalUnit	StdParamName	GroupNum	GroupName	LogTransf	SSD	SSTV	SensMin	SensMax	TolMin	TolMax	UseInStressorID	DirIncStress	Label
+None	BFR_Average	NA	BFR_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average base flow recession coefficient
+None	BFR_Dry	NA	BFR_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season base flow recession coefficient
+None	BFR_Wet	NA	BFR_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season base flow recession coefficient
+None	C_Average	NA	C_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	C_C_All	ratio	C_C_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Overall Colwell's constancy, a measure of flow uniformity"
+None	C_C_Average	ratio	C_C_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Average Colwell's constancy, a measure of flow uniformity"
+None	C_C_Dry	ratio	C_C_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Dry-season Colwell's constancy, a measure of flow uniformity"
+None	C_C_Wet	ratio	C_C_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Wet-season Colwell's constancy, a measure of flow uniformity"
+None	C_CP_All	ratio	C_CP_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Overall maximized Colwell's constancy, the likelihood that flow is constant throughout the year"
+None	C_CP_Average	ratio	C_CP_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Average maximized Colwell's constancy, the likelihood that flow is constant throughout the year"
+None	C_CP_Dry	ratio	C_CP_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Dry-season maximized Colwell's constancy, the likelihood that flow is constant throughout the year"
+None	C_CP_Wet	ratio	C_CP_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Wet-season maximized Colwell's constancy, the likelihood that flow is constant throughout the year"
+None	C_Dry	NA	C_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	C_M_All	ratio	C_M_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Overall Colwell's contingency, the repeatability of season patterns"
+None	C_M_Average	ratio	C_M_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Average Colwell's contingency, the repeatability of season patterns"
+None	C_M_Dry	ratio	C_M_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Dry-season Colwell's contingency, the repeatability of season pattern"
+None	C_M_Wet	ratio	C_M_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Wet-season Colwell's contingency, the repeatability of season patterns"
+None	C_MP_All	ratio	C_MP_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Overall maximized Colwell's contingency, the likelihood that the pattern of high and low flow events is repeated across years"
+None	C_MP_Average	ratio	C_MP_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Average maximized Colwell's contingency, the likelihood that the pattern of high and low flow events is repeated across years"
+None	C_MP_Dry	ratio	C_MP_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Dry-season maximized Colwell's contingency, the likelihood that the pattern of high and low flow events is repeated across years"
+None	C_MP_Wet	ratio	C_MP_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Wet-season maximized Colwell's contingency, the likelihood that the pattern of high and low flow events is repeated across years"
+None	C_P_All	ratio	C_P_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Overall Colwell's predictability, the likelihood of being able to predict high and low flow events"
+None	C_P_Average	ratio	C_P_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Average Colwell's predictability, the likelihood of being able to predict high and low flow events"
+None	C_P_Dry	ratio	C_P_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Dry-season Colwell's predictability, the likelihood of being able to predict high and low flow events"
+None	C_P_Wet	ratio	C_P_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	"Wet-season Colwell's predictability, the likelihood of being able to predict high and low flow events"
+None	C_Wet	NA	C_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	CP_Average	NA	CP_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	CP_Dry	ratio	CP_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	CP_Wet	ratio	CP_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	FracYearsNoFlow_Average	fraction	FracYearsNoFlow_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average fraction of years with at least one no-flow day
+None	FracYearsNoFlow_Dry	fraction	FracYearsNoFlow_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season fraction of years with at least one no-flow day during the dry season
+None	FracYearsNoFlow_Wet	fraction	FracYearsNoFlow_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season fraction of years with at least one no-flow day during the wet season
+None	HighDur_Average	days/event	HighDur_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual longest number of consecutive days that flow was greater than the high-flow threshold (days/event)
+None	HighDur_Dry	days/event	HighDur_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	1	Inc	Dry-season median longest # days flow > high-flow threshold (days/event)
+None	HighDur_Wet	days/event	HighDur_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	1	Inc	Wet-season median longest # days flow > high-flow threshold (days/event)
+None	HighNum_All	events/year	HighNum_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual number of continuous events that flow was greater than the high-flow threshold (events/yr)
+None	HighNum_Average	events/year	HighNum_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual number of continuous events that flow was greater than the high-flow threshold (events/yr)
+None	HighNum_Dry	events/year	HighNum_Dry	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Dry-season median # continuous events flow > high-flow threshold (events/yr)
+None	HighNum_Wet	events/year	HighNum_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median number of continuous events that flow was greater than the high-flow threshold (events/yr)
+None	Hydroperiod_All	fraction	Hydroperiod_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall fraction of period of analysis with flows
+None	Hydroperiod_Average	fraction	Hydroperiod_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average fraction of period of analysis with flows
+None	Hydroperiod_Dry	fraction	Hydroperiod_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season fraction of period of analysis with flows
+None	Hydroperiod_Wet	fraction	Hydroperiod_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season fraction of period of analysis with flows
+None	LowDur_All	days/event	LowDur_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual longest number of consecutive days that flow was less than or equal to the low-flow threshold (days/event)
+None	LowDur_Average	days/event	LowDur_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual longest number of consecutive days that flow was less than or equal to the low-flow threshold (days/event)
+None	LowDur_Dry	days/event	LowDur_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season median longest number of consecutive days that flow was less than or equal to the low-flow threshold (days/event)
+None	LowDur_Wet	days/event	LowDur_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median longest number of consecutive days that flow was less than or equal to the low-flow threshold (days/event)
+None	LowNum_Average	events/year	LowNum_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	LowNum_Dry	events/year	LowNum_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	LowNum_Wet	events/year	LowNum_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	M_Average	NA	M_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	M_Dry	NA	M_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	M_Wet	NA	M_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	MaxMonth_Average	month	MaxMonth_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average month of maximum mean monthly streamflow (month)
+None	MaxMonth_Dry	month	MaxMonth_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season month of maximum mean monthly streamflow (month)
+None	MaxMonth_Wet	month	MaxMonth_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season month of maximum mean monthly streamflow (month)
+None	MaxMonthQ_All	m3/s	MaxMonthQ_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall maximum mean monthly streamflow (m3/s)
+None	MaxMonthQ_Average	m3/s	MaxMonthQ_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average maximum mean monthly streamflow (m3/s)
+None	MaxMonthQ_Dry	m3/s	MaxMonthQ_Dry	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Dry-season maximum mean monthly streamflow (m3/s)
+None	MaxMonthQ_Wet	m3/s	MaxMonthQ_Wet	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Wet-season maximum mean monthly streamflow (m3/s)
+None	MedianNoFlowDays_All	days/y	MedianNoFlowDays_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual number of no-flow days (days/yr)
+None	MedianNoFlowDays_Average	days/y	MedianNoFlowDays_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual number of no-flow days (days/yr)
+None	MedianNoFlowDays_Dry	days/y	MedianNoFlowDays_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season median annual number of no-flow days (days/yr)
+None	MedianNoFlowDays_Wet	days/y	MedianNoFlowDays_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median annual number of no-flow days (days/yr)
+None	MinMonth_Average	month	MinMonth_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average month of minimum mean monthly streamflow (month)
+None	MinMonth_Dry	month	MinMonth_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season month of minimum mean monthly streamflow (month)
+None	MinMonth_Wet	month	MinMonth_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season month of minimum mean monthly streamflow (month)
+None	MinMonthQ_All	m3/s	MinMonthQ_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall minimum mean monthly streamflow (m3/s)
+None	MinMonthQ_Average	m3/s	MinMonthQ_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average minimum mean monthly streamflow (m3/s)
+None	MinMonthQ_Dry	m3/s	MinMonthQ_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season minimum mean monthly streamflow (m3/s)
+None	MinMonthQ_Wet	m3/s	MinMonthQ_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season minimum mean monthly streamflow (m3/s)
+None	MP_Average	NA	MP_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	MP_Dry	NA	MP_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	MP_Wet	NA	MP_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	NoDisturb_All	days	NoDisturb_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual longest number of consecutive days that flow between the low- and high-flow threshold (days)
+None	NoDisturb_Average	days	NoDisturb_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	1	Inc	Avg median annual longest # days between the low- and high-flow threshold (days)
+None	NoDisturb_Dry	days	NoDisturb_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	1	Inc	Dry-season median longest # days between the low- and high-flow threshold (days)
+None	NoDisturb_Wet	days	NoDisturb_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median longest number of consecutive days that flow between the low- and high-flow threshold (days)
+None	P_Average	NA	P_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	P_Dry	NA	P_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	P_Wet	NA	P_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	PDC50_Average	NA	PDC50_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	PDC50_Dry	NA	PDC50_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	PDC50_Wet	NA	PDC50_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	Per_LowFlow_All	proportion	Per_LowFlow_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall percent of time with flow below 0.0283 m3/s
+None	Per_LowFlow_Average	proportion	Per_LowFlow_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average percent of time with flow below 0.0283 m3/s
+None	Per_LowFlow_Dry	proportion	Per_LowFlow_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season percent of time with flow below 0.0283 m3/s
+None	Per_LowFlow_Wet	proportion	Per_LowFlow_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season percent of time with flow below 0.0283 m3/s
+None	PercentLF_Average	percent	PercentLF_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	PercentLF_Dry	percent	PercentLF_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	PercentLF_Wet	percent	PercentLF_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	
+None	Q01_All	m3/s	Q01_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 1st percentile of daily streamflow (m3/s)
+None	Q01_Average	m3/s	Q01_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 1st percentile of daily streamflow (m3/s)
+None	Q01_Dry	m3/s	Q01_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 1st percentile of daily streamflow (m3/s)
+None	Q01_Wet	m3/s	Q01_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 1st percentile of daily streamflow (m3/s)
+None	Q05_All	m3/s	Q05_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 5th percentile of daily streamflow (m3/s)
+None	Q05_Average	m3/s	Q05_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 5th percentile of daily streamflow (m3/s)
+None	Q05_Dry	m3/s	Q05_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 5th percentile of daily streamflow (m3/s)
+None	Q05_Wet	m3/s	Q05_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 5th percentile of daily streamflow (m3/s)
+None	Q10_All	m3/s	Q10_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 10th percentile of daily streamflow (m3/s)
+None	Q10_Average	m3/s	Q10_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 10th percentile of daily streamflow (m3/s)
+None	Q10_Dry	m3/s	Q10_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 10th percentile of daily streamflow (m3/s)
+None	Q10_Wet	m3/s	Q10_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 10th percentile of daily streamflow (m3/s)
+None	Q25_All	m3/s	Q25_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 25th percentile of daily streamflow (m3/s)
+None	Q25_Average	m3/s	Q25_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 25th percentile of daily streamflow (m3/s)
+None	Q25_Dry	m3/s	Q25_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 25th percentile of daily streamflow (m3/s)
+None	Q25_Wet	m3/s	Q25_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 25th percentile of daily streamflow (m3/s)
+None	Q50_All	m3/s	Q50_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 50th percentile of daily streamflow (m3/s)
+None	Q50_Average	m3/s	Q50_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 50th percentile of daily streamflow (m3/s)
+None	Q50_Dry	m3/s	Q50_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 50th percentile of daily streamflow (m3/s)
+None	Q50_Wet	m3/s	Q50_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 50th percentile of daily streamflow (m3/s)
+None	Q75_All	m3/s	Q75_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 75th percentile of daily streamflow (m3/s)
+None	Q75_Average	m3/s	Q75_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 75th percentile of daily streamflow (m3/s)
+None	Q75_Dry	m3/s	Q75_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 75th percentile of daily streamflow (m3/s)
+None	Q75_Wet	m3/s	Q75_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 75th percentile of daily streamflow (m3/s)
+None	Q90_All	m3/s	Q90_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 90th percentile of daily streamflow (m3/s)
+None	Q90_Average	m3/s	Q90_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 90th percentile of daily streamflow (m3/s)
+None	Q90_Dry	m3/s	Q90_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 90th percentile of daily streamflow (m3/s)
+None	Q90_Wet	m3/s	Q90_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 90th percentile of daily streamflow (m3/s)
+None	Q95_All	m3/s	Q95_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 95th percentile of daily streamflow (m3/s)
+None	Q95_Average	m3/s	Q95_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average 95th percentile of daily streamflow (m3/s)
+None	Q95_Dry	m3/s	Q95_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 95th percentile of daily streamflow (m3/s)
+None	Q95_Wet	m3/s	Q95_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 95th percentile of daily streamflow (m3/s)
+None	Q99_All	m3/s	Q99_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall 99th percentile of daily streamflow (m3/s)
+None	Q99_Average	m3/s	Q99_Average	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Average 99th percentile of daily streamflow (m3/s)
+None	Q99_Dry	m3/s	Q99_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season 99th percentile of daily streamflow (m3/s)
+None	Q99_Wet	m3/s	Q99_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season 99th percentile of daily streamflow (m3/s)
+None	Qmax_All	m3/s	Qmax_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual maximum daily streamflow (m3/s)
+None	Qmax_Average	m3/s	Qmax_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual maximum daily streamflow (m3/s)
+None	Qmax_Dry	m3/s	Qmax_Dry	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Dry-season median annual maximum daily streamflow (m3/s)
+None	Qmax_Wet	m3/s	Qmax_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median annual maximum daily streamflow (m3/s)
+None	QmaxIDR_All	m3/s	QmaxIDR_All	19	Modeled flow metrics	1	0	0	NA	NA	NA	NA	1	Inc	Overall difference between 90th and 10th percentiles of annual maxima (m3/s)
+None	QmaxIDR_Average	m3/s	QmaxIDR_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average difference between 90th and 10th percentiles of annual maxima (m3/s)
+None	QmaxIDR_Dry	m3/s	QmaxIDR_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season difference between 90th and 10th percentiles of annual maxima (m3/s)
+None	QmaxIDR_Wet	m3/s	QmaxIDR_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season difference between 90th and 10th percentiles of annual maxima (m3/s)
+None	Qmean_All	m3/s	Qmean_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall mean streamflow for the period of analysis (m3/s)
+None	Qmean_Average	m3/s	Qmean_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average mean streamflow for the period of analysis (m3/s)
+None	Qmean_Dry	m3/s	Qmean_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season mean streamflow for the period of analysis (m3/s)
+None	Qmean_Wet	m3/s	Qmean_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season mean streamflow for the period of analysis (m3/s)
+None	QmeanIDR_All	m3/s	QmeanIDR_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall difference between 90th and 10th percentiles of annual means (m3/s)
+None	QmeanIDR_Average	m3/s	QmeanIDR_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average difference between 90th and 10th percentiles of annual means (m3/s)
+None	QmeanIDR_Dry	m3/s	QmeanIDR_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season difference between 90th and 10th percentiles of annual means (m3/s)
+None	QmeanIDR_Wet	m3/s	QmeanIDR_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season difference between 90th and 10th percentiles of annual means (m3/s)
+None	QmeanMEDIAN_All	m3/s	QmeanMEDIAN_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual mean daily streamflow (m3/s)
+None	QmeanMEDIAN_Average	m3/s	QmeanMEDIAN_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual mean daily streamflow (m3/s)
+None	QmeanMEDIAN_Dry	m3/s	QmeanMEDIAN_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season median annual mean daily streamflow (m3/s)
+None	QmeanMEDIAN_Wet	m3/s	QmeanMEDIAN_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median annual mean daily streamflow (m3/s)
+None	Qmed_All	m3/s	Qmed_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual median daily streamflow (m3/s)
+None	Qmed_Average	m3/s	Qmed_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual median daily streamflow (m3/s)
+None	Qmed_Dry	m3/s	Qmed_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season median annual median daily streamflow (m3/s)
+None	Qmed_Wet	m3/s	Qmed_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median annual median daily streamflow (m3/s)
+None	Qmin_All	m3/s	Qmin_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall median annual minimum daily streamflow (m3/s)
+None	Qmin_Average	m3/s	Qmin_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average median annual minimum daily streamflow (m3/s)
+None	Qmin_Dry	m3/s	Qmin_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season median annual minimum daily streamflow (m3/s)
+None	Qmin_Wet	m3/s	Qmin_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season median annual minimum daily streamflow (m3/s)
+None	QminIDR_All	m3/s	QminIDR_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall difference between 90th and 10th percentiles of annual minima (m3/s)
+None	QminIDR_Average	m3/s	QminIDR_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average difference between 90th and 10th percentiles of annual minima (m3/s)
+None	QminIDR_Dry	m3/s	QminIDR_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season difference between 90th and 10th percentiles of annual minima (m3/s)
+None	QminIDR_Wet	m3/s	QminIDR_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season difference between 90th and 10th percentiles of annual minima (m3/s)
+None	RBI_All	none	RBI_All	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Overall Richards-Baker Index (flashiness)
+None	RBI_Average	none	RBI_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average Richards-Baker Index (flashiness)
+None	RBI_Dry	none	RBI_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	1	Inc	Dry-season Richards-Baker Index (flashiness)
+None	RBI_Wet	none	RBI_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season Richards-Baker Index (flashiness)
+None	SFR_Average	proportion	SFR_Average	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Average storm-flow recession (90th percentile of percent daily change)
+None	SFR_Dry	proportion	SFR_Dry	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Dry-season storm-flow recession (90th percentile of percent daily change)
+None	SFR_Wet	proportion	SFR_Wet	19	Modeled flow metrics	0	0	0	NA	NA	NA	NA	0	Inc	Wet-season storm-flow recession (90th percentile of percent daily change)

@@ -4,14 +4,16 @@
 \name{data_303d}
 \alias{data_303d}
 \title{303d listing example data}
-\format{A data frame with 2,244 rows and 4 variables:
+\format{
+A data frame with 2,244 rows and 4 variables:
 \describe{
           \item{COMID}{NHDplus COMID}
           \item{WATER.BODY.NAME}{Waterbody Name}
           \item{POLLUTANT}{Pollutant}
           \item{FINAL.LISTING.DECISION}{Final listing decision}
           \item{ElevCategory}{}
-}}
+}
+}
 \source{
 example data
 }

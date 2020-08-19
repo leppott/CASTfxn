@@ -4,11 +4,13 @@
 \name{data_SSD_permethrin}
 \alias{data_SSD_permethrin}
 \title{SSD example data (permethrin)}
-\format{A data frame with 48 rows and 2 variables:
+\format{
+A data frame with 48 rows and 2 variables:
 \describe{
           \item{Taxa}{Taxa names}
           \item{Exposure}{Exposure mg/L}
-}}
+}
+}
 \source{
 example data
 }

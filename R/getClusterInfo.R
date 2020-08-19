@@ -13,10 +13,11 @@
 #' @param TargetSiteID SiteID
 #' @param siteCOMID Site COMID from NHDPlus v2
 #' @param siteCluster Site cluster.
-#' @param siteQual2Plot Type of quality sites. Allowed values are c("reference",
-#' "not degraded", "better than")
+# @param siteQual2Plot Type of quality sites. Allowed values are c("reference",
+# "not degraded", "better than")
 #' @param refSiteCOMIDs reference site COMIDs
 #' @param data_cluster The StreamCat data for each reach with cluster assignments.
+#' @param data_clusterInfo data file for cluster info.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
 #' 

@@ -4,7 +4,8 @@
 \name{data_BMIMetrics}
 \alias{data_BMIMetrics}
 \title{Benthic macroinvertebrate metrics example data}
-\format{A data frame with 957 rows and 32 variables:
+\format{
+A data frame with 957 rows and 32 variables:
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{Year}}{a numeric vector}
@@ -37,7 +38,8 @@
           \item{\code{O_E}}{a character vector}
           \item{\code{MMI_Score}}{a numeric vector}
           \item{\code{ElevCategory}}{a character vector}
-}}
+}
+}
 \source{
 example data
 }

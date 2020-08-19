@@ -4,7 +4,8 @@
 \name{data_GIS_Flow_HI}
 \alias{data_GIS_Flow_HI}
 \title{NHD+ flow line example data, AZ high gradient}
-\format{Formal class 'SpatialLinesDataFrame' [package "sp"] with 4 slots, 87.7 Mb:
+\format{
+Formal class 'SpatialLinesDataFrame' [package "sp"] with 4 slots, 87.7 Mb:
 \describe{
   ..@ data       :'data.frame': 5658 obs. of  836 variables:
   .. ..$ OBJECTID                      : int [1:5658] 2099383 2099384 2099420 2099421 2099422 2099423 2099424 2099425 2099426 2099427 ...
@@ -610,7 +611,8 @@
   .. .. ..$ : chr [1:2] "min" "max"
   ..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
   .. .. ..@ projargs: chr "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-}}
+}
+}
 \source{
 example data
 }
