@@ -52,7 +52,7 @@ getWoE <- function(TargetSiteID
     boo_DEBUG <- FALSE
     
     if (boo_DEBUG == TRUE) {
-        TargetSiteID
+        TargetSiteID = TargetSiteID
         biocomm = bioComm
         index = bioIndex
         dir_results = dir_results
@@ -767,9 +767,9 @@ getWoE <- function(TargetSiteID
                                                 + as.integer(VP_boxplot_toltaxa)
                                             , na.rm = TRUE)/n(), 3)))
     
-    startcol <- which(colnames(dfData4ES)=="WtTot_WoE")
-    endcol <- ncol(dfData4ES)
-    dfData4ES[,startcol:endcol][is.na(dfData4ES[,startcol:endcol])] <- "NE"
+    # startcol <- which(colnames(dfData4ES)=="WtTot_WoE")
+    # endcol <- ncol(dfData4ES)
+    # dfData4ES[,startcol:endcol][is.na(dfData4ES[,startcol:endcol])] <- "NE"
 
     fnES <- paste0(TargetSiteID,"_",biocomm,"_WoE_ExecSummary.tab")
     write.table(dfData4ES, file = file.path(dirWoE, fnES), append = FALSE
