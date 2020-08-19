@@ -75,8 +75,8 @@ fn.cluster <- file.path(dir_data, "SMCClusterData.tab")
 fn.clusterinfo <- file.path(dir_data,"SMCClusterInfo.tab")
 fn.bkgdata <- file.path(dir_data, "SMCSiteBkgdData.tab")
 fn.bkginfo <- file.path(dir_data, "SMCSiteBkgdInfo.tab")
-outline <- rgdal::readOGR(dsn = "Data/SMCBoundary", layer = "SMCBoundary_aea")
-flowline <- rgdal::readOGR(dsn = "Data/SMCReaches", layer = "SMCReaches_aea")
+outline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCBoundary"), layer = "SMCBoundary_aea")
+flowline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCReaches"), layer = "SMCReaches_aea")
 
 # Specify user-defined variables
 # Stressors
@@ -365,7 +365,7 @@ data_algCoOccur <- getCoOccurDataset(dataDir = dir_data
                                      , removeOutliers = removeOutliers)
 # returns df_coOccur as data_algCoOccur
 algParamsKEEP <- setdiff(colnames(data_algCoOccur), algParamsDEL)
-data_algCoOccur <- dplyr::select(data_algCoOccur, algParamsKEEP)
+data_algCoOccur <- dplyr::select(data_algCoOccur, all_of(algParamsKEEP))
 # write.table(data_algCoOccur, file.path(getwd(),"Results","algCoOccur.tab")
 #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
 
@@ -410,11 +410,7 @@ df_runstats <- as.data.frame(cbind("TargetSiteID", "Biocomm", "NumStressors"
 write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
             , col.names = FALSE, row.names = FALSE, sep = "\t")
 
-# TargetSiteID = "905S015201"
-# site = 1
-# TargetSiteID = "902S01097"
-# site = 1
-# for (site in 1:length(TargetSiteID)) {
+### Evaluate each target site
 for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
     TargetSiteID <- df_targets$TargetSiteID[site]
@@ -1315,8 +1311,13 @@ for (site in 1:nrow(df_targets)) {
               , probsLow=probsLow
               , useBMI=useBMI
               , useAlg=useAlg
+              , useBC=TRUE
               , removeOutliers=removeOutliers
-              , dir_results=file.path(getwd(), "Results")
+              , lagdays=lagdays
+              , bmiIndex=bmiIndex
+              , algIndex=algIndex
+              , dir_data=dir_data
+              , dir_results=dir_results
               , report_type="summary"
               , report_format="html"
               # , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
@@ -1342,8 +1343,9 @@ rm(site)
 getSummaryAllSites(biocommlist = c("bmi", "algae")
                    , bmiIndex = "CSCI"
                    , algIndex = "MMIhybrid"
-                   , dir_data = file.path(getwd(),"Data")
-                   , dir_results = file.path(getwd(), "Results")
+                   , dir_data = dir_data
+                   , dir_results = dir_results
                    , dir_sub = "WoE"
                    , df_sites = NULL)
 
+rm(list=ls())
