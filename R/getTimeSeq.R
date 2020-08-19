@@ -34,7 +34,6 @@ getTimeSeq <- function(TargetSiteID
                        , stressors
                        , df_stress
                        , df_resp
-                       , stressors
                        , df_stressinfo
                        , df_respinfo
                        , dir_results = file.path(getwd(),"Results")

@@ -41,7 +41,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     boo_DEBUG <- FALSE
     
     if(boo_DEBUG==TRUE) {
-        wd = "C:/Users/ann.lincoln/Documents/SEP_CAST"
+        wd = dir_data #"C:/Users/ann.lincoln/Documents/SEP_CAST"
         biocommlist = toupper(c("bmi", "algae"))
         bmiIndex = "CSCI"
         algIndex = "MMIhybrid"
@@ -61,7 +61,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
         site_dirs <- site_dirs[!site_dirs %in% rmfile]
         
-        rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        #rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)] # zip or 7z
         site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
 #=======
 # Pull Request, 20200817   

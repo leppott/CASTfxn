@@ -7,9 +7,10 @@
 # library(devtools)
 # install_github("leppott/CASTfxn")
 
-rm(list=ls())
+#rm(list=ls())
 
-gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
+#gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
+gitpath <- file.path(system.file(package = "CASTfxn"), "R")
 
 # Set up required functions ### DO NOT CHANGE! #
 library(CASTfxn)
@@ -38,7 +39,8 @@ not_all_na <- function(x) {!all(is.na(x))}
 startprep.time <- Sys.time()
 
 # Required user-designated options
-wd <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+#wd <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+wd <- getwd()
 dir_data <- file.path(wd, "Data")
 dir_results <- file.path(wd, "Results")
 removeOutliers <- TRUE
@@ -1319,8 +1321,8 @@ for (site in 1:nrow(df_targets)) {
               , dir_results=file.path(getwd(), "Results")
               , report_type="summary"
               , report_format="html"
-              # , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
-              , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
+               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
+             # , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
 
     # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
     #    , chem.info, stressors, stressors_logtransf, data.SSTV.totabund)

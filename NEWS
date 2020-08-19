@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-17 15:21:53
+    #> Last Update: 2020-08-19 09:04:06
 
 # Planned Updates
 
@@ -24,6 +24,30 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9259 (2020-08-19)
+
+  - GGplots, add na.rm = TRUE for geom\_\* and \*\_smooth. Issue \#87
+      - getBioStressorResponses.
+      - getCoOccur
+          - Formatting only. Already included na.rm.
+  - Fixes from merge.
+      - getSummaryAllSites.R
+          - Reference to local directory included in merge.
+      - getTimeSeq
+          - Duplicate “stressors” parameter
+  - runShinyExamples.R
+      - Update for current names of Shiny apps in package.
+  - getWoE.R
+      - Parameters didn’t match the function.
+
+## Changes in Version 0.1.0.9258 (2020-08-17)
+
+  - Rebuild and repost.
+
+## Changes in Version 0.1.0.9257 (2020-08-17)
+
+  - Merged 201909\_ARL branch as pull request \#86.
 
 ## Changes in Version 0.1.0.9256 (2020-08-17)
 
