@@ -54,14 +54,13 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
 #<<<<<<< 201909_ARL
     ### Start ####
     if (!dir.exists(file.path(dir_results))==TRUE) { # Check for results dir
-        print("Results directory not found.")
-        flush.console()
+        message("Results directory not found.")
     } else { # Results dir exists
         site_dirs <- list.files(dir_results)
         rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
         site_dirs <- site_dirs[!site_dirs %in% rmfile]
         
-        rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)]
         site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
 #=======
 # Pull Request, 20200817   
@@ -80,7 +79,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
 #>>>>>>> master
         
         for (site in (1:length(site_dirs))) { # Loop over each site
-            # Get Target Site ID
+                # Get Target Site ID
             TargetSiteID <- site_dirs[site]
             print(paste0("Evaluating ", TargetSiteID))
             flush.console()
@@ -113,7 +112,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                         fndet <- woe_detailfiles[dfile]
                         fndet <- file.path(woe_path,fndet)
                         df_details <- read.delim(fndet, header = TRUE, sep = "\t"
-                                                 , na.strings = c("", NA))
+                                                 , na.strings = c("", NA)
+                                                 , stringsAsFactors = FALSE)
                         colnames(df_details)[6] <- "IndexScore"
                         if (dfile==1) {
                             df_detBiocomm <- df_details
@@ -133,7 +133,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                         fnstr <- woe_stressfiles[dfile]
                         fnstr <- file.path(woe_path,fnstr)
                         df_stress <- read.delim(fnstr, header = TRUE, sep = "\t"
-                                                , na.strings = c("", NA))
+                                                , na.strings = c("", NA)
+                                                , stringsAsFactors = FALSE)
                         if (dfile==1) {
                             df_strBiocomm <- df_stress
                         } else {
