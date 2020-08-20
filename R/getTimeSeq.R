@@ -34,7 +34,6 @@ getTimeSeq <- function(TargetSiteID
                        , stressors
                        , df_stress
                        , df_resp
-                       , stressors
                        , df_stressinfo
                        , df_respinfo
                        , dir_results = file.path(getwd(),"Results")
@@ -50,7 +49,7 @@ getTimeSeq <- function(TargetSiteID
         df_stress = siteStressAll
         df_resp = siteRespAll
         stressors = stressorsWPairedResponses
-        df_stressinfo = df_allStressInfo
+        df_stressinfo = data_stressInfo
         df_respinfo = data_bmiMetricsInfo
         dir_results = file.path(getwd(),"Results")
         dir_sub = "TimeSequence"
@@ -80,17 +79,14 @@ getTimeSeq <- function(TargetSiteID
 
     # Prep measured stressor data
     df_stress <- df_stress %>%
-        dplyr::select_if(not_all_na) %>%
         dplyr::select(-StationID_Master, -IQRmethod, -SDmethod, -Outlier) %>%
+        dplyr::select_if(not_all_na) %>%
         tidyr::gather(key = StdParamName, value = ResultValue
                , -StressSampID, -StressSampDate) %>%
         dplyr::filter(!is.na(ResultValue)) %>%
-        # dplyr::mutate(variable = StdParamName
-        #        , value = ResultValue
-        #        , SampID = ChemSampleID) %>%
-        # dplyr::select(BioQuality, SampleDate, variable, value) %>%
         dplyr::group_by(StressSampDate, StdParamName) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3), .groups = "drop_last") %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3)
+                         , .groups = "drop_last") %>%
         dplyr::rename(SampDate = StressSampDate, variable = StdParamName) %>%
         dplyr::filter(variable %in% stressors)
 
