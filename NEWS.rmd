@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9260 (2020-08-20)
+
+* Shiny CAST_SMC
+    + Add help file and make active.
+        - Create RMD and create file in data-raw folder.
+    + Make Map legend key file active.
+    
 ## Changes in Version 0.1.0.9259 (2020-08-19)
 
 * GGplots, add na.rm = TRUE for geom_* and *_smooth.  Issue #87

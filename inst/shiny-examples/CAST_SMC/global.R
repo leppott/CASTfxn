@@ -84,15 +84,15 @@ myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
 # Functions ####
 
 # get HTML
-getHTML <- function(fn_html){
-  #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
-  fe_html <- file.exists(fn_html)
-  if(fe_html==TRUE){
-    return(includeHTML(fn_html))
-  } else {
-    return(NULL)
-  }
-}##getHTML~END
+# getHTML <- function(fn_html){
+#   #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
+#   fe_html <- file.exists(fn_html)
+#   if(fe_html==TRUE){
+#     return(includeHTML(fn_html))
+#   } else {
+#     return(NULL)
+#   }
+# }##getHTML~END
 
 # Not all NA
 not_all_na <- function(x) {!all(is.na(x))}

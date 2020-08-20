@@ -259,16 +259,36 @@ shinyServer(function(input, output, session) {
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
 
-
-  getHTML <- function(fn_html){
-    #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
+  # Help ####
+  output$help_html <- renderUI({
+    fn_html <- file.path(".", "www", "ShinyHelp.html")
     fe_html <- file.exists(fn_html)
     if(fe_html==TRUE){
       return(includeHTML(fn_html))
     } else {
       return(NULL)
-    }
-  }##getHTML~END
+    }##IF~fe_html~END
+  })##help_html~END
+
+#  getHTML <- function(fn_html){
+#    #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
+#    fe_html <- file.exists(fn_html)
+#    if(fe_html==TRUE){
+#      return(includeHTML(fn_html))
+#    } else {
+#      return(NULL)
+#    }
+#  }##getHTML~END
+  
+  output$LegKey_html <- renderUI({
+    fn_html <- file.path(".", "www", "Legend_Key.html")
+    fe_html <- file.exists(fn_html)
+   if(fe_html==TRUE){
+     return(includeHTML(fn_html))
+   } else {
+     return(NULL)
+   }##IF ~ fe_html ~ END
+  })##LegKey_html~END
 
   output$Map_html <- renderUI({
     getHTML(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html")))
@@ -285,21 +305,7 @@ shinyServer(function(input, output, session) {
     # }
   })##Map_html~END
 
-  # output$Disclaimer_html <- renderUI({
-  #   getHTML(file.path(".", "www", "Disclaimer_Key.html"))
-  #   #
-  #   # fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
-  #   # #
-  #   # fe_disclaimer_html <- file.exists(fn_disclaimer_html)
-  #   #
-  #   #if(fe_disclaimer_html==TRUE){
-  #   #  includeHTML(file.path(".", "data", "Disclaimer_Key.html"))
-  #     #HTML(readLines(fn_map_html))
-  #   #} else {
-  #   #  NULL
-  #   #}
-  #   #getHTML(file.path(".", "Data", fn_target_results))
-  # })##Disclaimer_html~END
+
 
   # Test if zip file exists
   output$boo_zip <- function() {
