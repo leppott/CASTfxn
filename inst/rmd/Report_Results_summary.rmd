@@ -239,7 +239,7 @@ if (useBMI==TRUE) {
     dfBMI <- read.delim(fnBMI, header=TRUE, sep="\t")
     dfBMI <- dfBMI %>% 
         dplyr::filter(StationID_Master==TargetSiteID) %>%
-        dplyr::select(StationID_Master, BMISampID, eval(bmiIndex))
+        dplyr::select(StationID_Master, BMISampID, all_of(bmiIndex))
     if (nrow(dfBMI)>0) { # There are BMI Index values
         dfSamps <- merge(dfSamps, dfBMI
               , by.x = c("StationID_Master","BMISampID")
@@ -295,41 +295,40 @@ dfSiteFlags <- dfCompSamps %>%
 dfSamps <- merge(dfSamps, dfSiteFlags, all.x = TRUE)
 
 dfSamps <- dfSamps %>%
-    dplyr::select(eval(coreColNames), eval(bmiIndex), BMISampFlag
-                  , eval(algIndex), eval(sampColNames))
+    dplyr::select(all_of(coreColNames), all_of(bmiIndex), BMISampFlag
+                  , all_of(algIndex), all_of(sampColNames))
 
 # How to get flagged index scores? And how to represent them?
 
 compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
                        , " Red index scores indicate degraded biological quality.")
-dfSamps <- dplyr::arrange(dfSamps, "SampleDate", bmiIndex, algIndex)
+dfSamps <- dplyr::arrange_(dfSamps, "SampleDate", bmiIndex, algIndex)
 
 if (report_format=="html") {
 #<<<<<<< 201909_ARL
     # if (nrow(dfSamps)>0) {
-        dfSamps <- dfSamps %>%
-            dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
-                                        , color=ifelse(is.na(CSCI)==TRUE, "black"
-                                        , ifelse((CSCI<0.79)==TRUE,"red","black"))
-                                        , bold=ifelse(is.na(CSCI)==TRUE, FALSE
-                                        , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
-                          , MMIhybrid=kableExtra::cell_spec(MMIhybrid,"html"
-                                        , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
-                                        , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
-                                        , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
-                                        , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
-            knitr::kable(dfSamps, escape=FALSE, format=report_format
-                         , colnames=colnames(dfSamps), caption = compscaption) %>%
-                kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                                          , font_size = 12, full_width = FALSE
-                                          , position = "left") %>%
-                kableExtra::column_spec(1,bold = TRUE) %>%
-                kableExtra::collapse_rows(columns=1:4, valign="top")
+    dfSamps <- dfSamps %>%
+        dplyr::mutate(CSCI=kableExtra::cell_spec(CSCI, "html"
+                        , color=ifelse(is.na(CSCI)==TRUE, "black"
+                        , ifelse((CSCI<0.79)==TRUE,"red","black"))
+                            , bold=ifelse(is.na(CSCI)==TRUE, FALSE
+                            , ifelse((CSCI<0.79)==TRUE,TRUE,FALSE)))
+                         , MMIhybrid=kableExtra::cell_spec(MMIhybrid,"html"
+                            , color=ifelse(is.na(MMIhybrid)==TRUE, "black"
+                            , ifelse((MMIhybrid<0.82)==TRUE,"red","black"))
+                                , bold=ifelse(is.na(MMIhybrid)==TRUE, FALSE
+                                , ifelse((MMIhybrid<0.82)==TRUE,TRUE,FALSE))))
+        knitr::kable(dfSamps, escape=FALSE, format=report_format
+                , colnames=colnames(dfSamps), caption = compscaption) %>%
+            kableExtra::kable_styling(bootstrap_options = "condensed"
+                , font_size = 12, full_width = FALSE, position = "left") %>%
+            kableExtra::column_spec(1,bold = TRUE) %>%
+            kableExtra::collapse_rows(columns=1:4, valign="top")
         
         } else {
             knitr::kable(dfSamps, format=report_format, colnames=colnames(dfSamps)
                          , caption = compscaption) %>%
-                kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+                kableExtra::kable_styling(bootstrap_options = "condensed"
                                           , font_size = 12, full_width = FALSE
                                           , position = "left") %>%
                 kableExtra::column_spec(1,bold = TRUE) %>%
@@ -630,7 +629,7 @@ if(useBMI==TRUE){
         compscaption <- paste0("Number of sites by type, group, and quality.")
         knitr::kable(dfcomps, format=report_format, colnames=colnames(dfcomps)
                      , caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+        kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12, full_width = FALSE
                                   , position = "left") %>%
         kableExtra::column_spec(1,bold = TRUE) %>%
@@ -737,8 +736,8 @@ if(useBMI==TRUE){
         knitr::kable(dfcompflags, format=report_format
                      , colnames=colnames(dfcompflags)
                      , caption = flagcaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
-                                      , font_size = 12, full_width = FALSE
+        kableExtra::kable_styling(bootstrap_options = "condensed"
+                                  , font_size = 12, full_width = FALSE
                                   , position = "left") %>%
         kableExtra::column_spec(1,bold = TRUE) %>%
         kableExtra::collapse_rows(columns=1, valign="top")
@@ -830,7 +829,7 @@ if(useBMI==TRUE){
                         , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
                      , caption = EScaption, align = 'lllccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+            kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12) %>%
             kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
@@ -911,7 +910,7 @@ if(useBMI==TRUE){
                              , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
         knitr::kable(df_det, format=report_format, colnames=colnames(df_det)
                      , caption = Detcaption, align='llcclclllrrlcccccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+            kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12) %>%
             kableExtra::column_spec(1,bold = TRUE) %>%
             kableExtra::collapse_rows(columns=1:8, valign="top")
@@ -968,7 +967,7 @@ if(useAlg==TRUE){
         compscaption <- paste0("Number of sites by type, group, and quality.")
         knitr::kable(dfcomps, format=report_format, colnames=colnames(dfcomps)
                      , caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+        kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12, full_width = FALSE
                                   , position = "left") %>%
         kableExtra::column_spec(1,bold = TRUE) %>%
@@ -1034,7 +1033,7 @@ if(useAlg==TRUE){
                         , "refute the group as a cause of impairment.")
         knitr::kable(df_ES, format=report_format, colnames=colnames(df_ES)
                      , caption = EScaption, align = 'lllccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+            kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12) %>%
             kableExtra::collapse_rows(columns=1:2, valign="top")
     } else {
@@ -1114,7 +1113,7 @@ if(useAlg==TRUE){
                              , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
         knitr::kable(df_det, format=report_format, colnames=colnames(df_det)
                      , caption = Detcaption, align='llcclclllrrlcccccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = c("striped","condensed")
+            kableExtra::kable_styling(bootstrap_options = "condensed"
                                       , font_size = 12) %>%
             kableExtra::column_spec(1,bold = TRUE) %>%
             kableExtra::collapse_rows(columns=1:8, valign="top")
