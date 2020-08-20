@@ -239,7 +239,7 @@ getStressorList <- function(TargetSiteID
       df_allcount <- merge(df_allcount, df_labels, by.x = "Stressor"
                            , by.y = "Analyte", all.x = TRUE)
       for (s in 1:nrow(df_allcount)) {
-          elimName <- as.character(df_allcount$Label[s])
+          elimName <- as.character(df_allcount$Stressor[s])
           gapcomment <- paste0("Number of comparator samples is too few for analysis.")
           gaps <- cbind.data.frame("getStressorList", elimName
                                    , df_allcount$allcount[s]
@@ -294,6 +294,8 @@ getStressorList <- function(TargetSiteID
       # Remove NaN so get rid of error message?
       df_plot_long <- df_plot_long[!is.na(df_plot_long$value),]
       df_plot_long <- merge(gpchems, df_plot_long, by.x="Analyte", by.y="GrpNm")
+      
+      if(nrow(df_plot_long)>0) {boo_plot <- TRUE} else {boo_plot <- FALSE}
 
       ## Plot, Data, Cluster_Ref
       # QC for nrow 
@@ -301,12 +303,13 @@ getStressorList <- function(TargetSiteID
       boo_plot_ref <- FALSE
       if(exists("clusterRefChemData")){##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_wide <- as.data.frame(clusterRefChemData[, gpcoolvar])
-        # colnames(df_plot_ref_wide) <- gpcoolvar 
+        colnames(df_plot_ref_wide) <- gpcoolvar
         df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
         refchemcolnames <- colnames(df_plot_ref_wide_mod)
         if (gpcoolvar %in% refchemcolnames) {
-            df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar, variable.name = "GrpNm")
+            df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar
+                                               , variable.name = "GrpNm")
             # df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
             df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x="Analyte", by.y="GrpNm")
             boo_plot_ref <- ifelse(nrow(df_plot_long_ref)>0, TRUE, FALSE)
@@ -399,79 +402,74 @@ getStressorList <- function(TargetSiteID
           wrap_length <- 27
       }
       
-      # ggplot, main
-      p_SL <- ggplot2::ggplot(data=df_plot_long) + 
-                ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
-                                                   , y=value))  + 
-                ggplot2::coord_flip() + 
-                ggplot2::labs(title=str_title, subtitle=str_subtitle
-                              , y=str_xlab, x=str_ylab, caption = str_caption) + 
-                ggplot2::theme_bw() +
-                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
-                               , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
-                               , axis.text.x = ggplot2::element_blank()
-                               , axis.text.y = ggplot2::element_text(size=yaxistextsize)
-                               , axis.ticks.x=ggplot2::element_blank()
-                               , plot.caption = ggplot2::element_text(size=8))
-      #
-      # ggplot, points subsets
-      ## Cluster, Ref
-      if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1
-                                , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
-                                               , y=value, color="cl_ref"
-                                               , shape="cl_ref", fill="cl_ref")
-                                , size=1)
-      } else {
-        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref"
-                                                        , shape="cl_ref"
-                                                        , fill="cl_ref")) 
-      }##IF~boo_plot_ref~END
-      ## Target Site
-      if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-        p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ
-                                            , width=0.1
-                                            , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
-                                                           , y=value
-                                                           , color="targ"
-                                                           , shape="targ"
-                                                           , fill="targ")
-                                            , size=1.5)
-      } else {
-        p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ"
-                                                        , shape="targ"
-                                                        , fill="targ"))# + 
-            # ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
-            #                , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
-            #                , axis.text.x = ggplot2::element_text(size=8)
-            #                , axis.text.y = ggplot2::element_text(size=yaxistextsize)
-            #                , axis.ticks.x=ggplot2::element_blank()
-            #                , plot.caption = ggplot2::element_text(size=8))
-      }##IF~boo_plot_targ~END
-      #
-      # ggplot, Legend
-      p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name
-                                                 , labels=leg_labels
-                                                 , values=leg_shape)  + 
-                ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
-                                            , values=leg_col) +
-                ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
-                                           , values=leg_fill)
-      
-      
-      #
-      print(p_SL)
-      plots.g[[g]] <- grDevices::recordPlot()
-      #
-      # fn_title <- make.names(groupnames[g,])
-      fn_title <- stringr::str_to_title(str_Group)
-      fn_title <- gsub("\\s","",fn_title)
-      fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                            , "_CandCauses_", fn_title, plot_ext))
-      # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
-      #                                       , make.names(groupnames[g,]), plot_ext))
-      ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
-      
+      if (boo_plot==TRUE) { # No rows in df_plot_long
+          # ggplot, main
+          p_SL <- ggplot2::ggplot(data=df_plot_long) + 
+              ggplot2::geom_boxplot(ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                                 , y=value))  + 
+              ggplot2::coord_flip() + 
+              ggplot2::labs(title=str_title, subtitle=str_subtitle
+                            , y=str_xlab, x=str_ylab, caption = str_caption) + 
+              ggplot2::theme_bw() +
+              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5,size=10)
+                             , plot.subtitle=ggplot2::element_text(hjust=0.5,size=10)
+                             , axis.text.x = ggplot2::element_blank()
+                             , axis.text.y = ggplot2::element_text(size=yaxistextsize)
+                             , axis.ticks.x=ggplot2::element_blank()
+                             , plot.caption = ggplot2::element_text(size=8))
+          #
+          # ggplot, points subsets
+          ## Cluster, Ref
+          if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
+              p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_ref, width=0.1
+                                                  , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                                                 , y=value, color="cl_ref"
+                                                                 , shape="cl_ref", fill="cl_ref")
+                                                  , size=1)
+          } else {
+              p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref"
+                                                              , shape="cl_ref"
+                                                              , fill="cl_ref")) 
+          }##IF~boo_plot_ref~END
+          ## Target Site
+          if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
+              p_SL <- p_SL + ggplot2::geom_jitter(data=df_plot_long_targ
+                                                  , width=0.1
+                                                  , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
+                                                                 , y=value
+                                                                 , color="targ"
+                                                                 , shape="targ"
+                                                                 , fill="targ")
+                                                  , size=1.5)
+          } else {
+              p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ"
+                                                              , shape="targ"
+                                                              , fill="targ"))# + 
+          }##IF~boo_plot_targ~END
+          #
+          # ggplot, Legend
+          p_SL <- p_SL + ggplot2::scale_shape_manual(name=leg_name
+                                                     , labels=leg_labels
+                                                     , values=leg_shape)  + 
+              ggplot2::scale_color_manual(name=leg_name, labels=leg_labels
+                                          , values=leg_col) +
+              ggplot2::scale_fill_manual(nam=leg_name, labels=leg_labels
+                                         , values=leg_fill)
+          
+          
+          #
+          print(p_SL)
+          plots.g[[g]] <- grDevices::recordPlot()
+          #
+          # fn_title <- make.names(groupnames[g,])
+          fn_title <- stringr::str_to_title(str_Group)
+          fn_title <- gsub("\\s","",fn_title)
+          fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                                , "_CandCauses_", fn_title, plot_ext))
+          # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
+          #                                       , make.names(groupnames[g,]), plot_ext))
+          ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
+      }##IF.boo_plot==TRUE
     }##IF.n.END
   }##FOR.g.END
   
@@ -489,11 +487,18 @@ getStressorList <- function(TargetSiteID
   rm(plots.g)
 
   # Percentile Data File ####
-  chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
-                        , function(x) dplyr::percent_rank(x))
-  data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
-  fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
-                                           ,"CandCauses_ChemPctRank.tab"))
+  if (nrow(clusterChem)>1) { # more than one sample from target site exists for cluster
+      chem.pctrank <- apply(clusterChem[,4:ncol(clusterChem)], 2
+                            , function(x) dplyr::percent_rank(x))
+      data.chem.pctrank <- cbind(clusterChem[,1:3], as.data.frame(chem.pctrank))
+      fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                               ,"CandCauses_ChemPctRank.tab"))
+  } else { # only one target sample exists
+      data.chem.pctrank <- cbind(clusterChem[,1:3], clusterChem[,4:ncol(clusterChem)])
+      data.chem.pctrank[,4:ncol(data.chem.pctrank)] <- 1
+      fn.pctrank <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+                                               ,"CandCauses_ChemPctRank.tab"))
+  }
   utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE
                      , row.names = FALSE, append=FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
@@ -565,9 +570,9 @@ getStressorList <- function(TargetSiteID
   # Stressor list contains stressors to proceed in analysis
   # bioParmsDEL contains parameters that don't apply for this biocomm
   # tmpParmDEL contains parameters with <= only 2 sample points for cluster data
-  stressorlist <- stressor
-  stressorlist <- setdiff(stressorlist, bioParmsDEL)
-  stressorsExcepted <- intersect(stressorlist, bioParmsDEL)
+  # stressorlist <- stressor
+  stressorlist <- setdiff(stressor, bioParmsDEL)
+  stressorsExcepted <- intersect(stressor, bioParmsDEL)
   if (exists("tmpParmDEL")) { 
       stressorsExcepted<-unique(c(stressorsExcepted, tmpParmDEL)) 
       stressorlist <- setdiff(stressorlist, tmpParmDEL)
