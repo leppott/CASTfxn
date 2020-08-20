@@ -412,8 +412,7 @@ write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
             , col.names = FALSE, row.names = FALSE, sep = "\t")
 
 ### Evaluate each target site
-for (site in 1:3) {
-# for (site in 1:nrow(df_targets)) {
+for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
     TargetSiteID <- df_targets$TargetSiteID[site]
     if (is.na(TargetSiteID)) {
