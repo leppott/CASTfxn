@@ -10,6 +10,7 @@
 rm(list=ls())
 
 gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
+gitpath <- file.path(system.file(package = "CASTfxn"), "extdata")
 
 # Set up required functions ### DO NOT CHANGE! #
 library(CASTfxn)
@@ -17,28 +18,29 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 library(stringr)
-source(file.path(gitpath, "getCoOccurDataset.R"))
-source(file.path(gitpath, "getTimeSeq.R"))
-source(file.path(gitpath, "getDataSets.R"))
-source(file.path(gitpath, "getComparators.R"))
-source(file.path(gitpath, "getSiteInfo.R"))
-source(file.path(gitpath, "getClusterInfo.R"))
-source(file.path(gitpath, "getStressorList.R"))
-source(file.path(gitpath, "getCoOccur.R"))
-source(file.path(gitpath, "getBioStressorResponses.R"))
-source(file.path(gitpath, "getVerifiedPredictions.R"))
-source(file.path(gitpath, "getOutliers.R"))
-source(file.path(gitpath, "getWoE.R"))
-source(file.path(gitpath, "getQualSites.R"))
-source(file.path(gitpath, "getSummaryAllSites.R"))
-source(file.path(gitpath, "getReport.R"))
+# source(file.path(gitpath, "getCoOccurDataset.R"))
+# source(file.path(gitpath, "getTimeSeq.R"))
+# source(file.path(gitpath, "getDataSets.R"))
+# source(file.path(gitpath, "getComparators.R"))
+# source(file.path(gitpath, "getSiteInfo.R"))
+# source(file.path(gitpath, "getClusterInfo.R"))
+# source(file.path(gitpath, "getStressorList.R"))
+# source(file.path(gitpath, "getCoOccur.R"))
+# source(file.path(gitpath, "getBioStressorResponses.R"))
+# source(file.path(gitpath, "getVerifiedPredictions.R"))
+# source(file.path(gitpath, "getOutliers.R"))
+# source(file.path(gitpath, "getWoE.R"))
+# source(file.path(gitpath, "getQualSites.R"))
+# source(file.path(gitpath, "getSummaryAllSites.R"))
+# source(file.path(gitpath, "getReport.R"))
 
 not_all_na <- function(x) {!all(is.na(x))}
 
 startprep.time <- Sys.time()
 
 # Required user-designated options
-wd <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+#wd <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+wd <- getwd()
 dir_data <- file.path(wd, "Data")
 dir_results <- file.path(wd, "Results")
 printClusterInfo <- FALSE
