@@ -10,15 +10,19 @@
 #' Uses the libraries dplyr and tidyr.
 #' 
 #' @param TargetSiteID Site ID
-#' @param dfRank Percent rank of each stressor in the distribution of comparator sites.
-#' @param df_coOccur CoOccur dataframe corresponding with stressors and specified biocomm
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
-#' @param index Index name (IBI, CSCI, ASCI, etc.) Default = "IBI".
-#' @param dir_results Directory to save plots.  Default = working directory and Results.
-#' @param CO_sub Subdirectory containing co-occurrence results. Default = "CoOccurrence".
-#' @param SR_sub Subdirectory containing stressor-response results. Default = "StressorResponse".
-#' @param VP_sub Subdirectory containing verified prediction results.  Default = "VerifiedPredictions".
-#' @param SSD_sub Subdirectory containing SSD results. Default = "SSD".
+#' @param index Index name (IBI, CSCI, ASCI, etc.) Default = "IBI". 
+#' @param dir_results Directory to save plots.  Default = working directory and Results. 
+#' @param dfLoE data frame, LoE
+#' @param dfQual data frame, Qual
+#' @param dfRank Percent rank of each stressor in the distribution of comparator sites.
+#' @param dfStressInfo data frame, StressInfo 
+#' @param df_coOccur CoOccur dataframe corresponding with stressors and specified biocomm
+#' @param BioResp BioResp
+# @param CO_sub Subdirectory containing co-occurrence results. Default = "CoOccurrence".
+# @param SR_sub Subdirectory containing stressor-response results. Default = "StressorResponse".
+# @param VP_sub Subdirectory containing verified prediction results.  Default = "VerifiedPredictions".
+# @param SSD_sub Subdirectory containing SSD results. Default = "SSD".
 #' 
 #' @return Four tab-delimited tables containing weight of evidence information:
 #'         summary of the site results by stressor; more detailed review of 

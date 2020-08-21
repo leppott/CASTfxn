@@ -638,8 +638,10 @@ getCoOccur <- function(df_data
 
            # plot2, ggplot ####
            p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
-             ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg
-                            , fill=Bio.Deg), alpha=0.5, size=2, na.rm = TRUE) +
+             ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg)
+                                 , alpha=0.5
+                                 , size=2
+                                 , na.rm = TRUE) +
              # ggplot2::geom_jitter(size=2, alpha=0.5
              #                      , ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg), width=0, height=0.005) +
              ggplot2::scale_fill_manual(name=legendtitle
@@ -658,8 +660,11 @@ getCoOccur <- function(df_data
              #ggplot2::geom_hline(yintercept = 0.5, color="black", lty=2) +
              ggplot2::labs(title=i, y="Relative probability of degraded condition"
                            , x=jlabel) +
-             ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
-                                , color="blue", lwd=1, na.rm = TRUE) +
+             ggplot2::geom_line(ggplot2::aes(y=y.name, x=x)
+                                , data=newdat
+                                , color="blue"
+                                , lwd=1
+                                , na.rm = TRUE) +
              ggplot2::theme_bw() +
              ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +

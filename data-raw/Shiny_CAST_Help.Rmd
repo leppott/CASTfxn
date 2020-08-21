@@ -1,0 +1,23 @@
+---
+title: "CAST Tool Help"
+#subtitle: "help"
+#author: "`r Sys.getenv('USERNAME')`"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+output:
+  html_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+```
+
+To use the CAST Tool a station ID code is required.
+
+To aid in the selection of a station use the "Map, Stations" tab.
+
+The map functions much list Google Earth (zoom in/out, pan, selection of elements, turn on/off layers, etc)
+
+Tool results will be compiled into a zip file for download.
+
+The download button will not be active until the results are ready.

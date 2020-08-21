@@ -27,17 +27,17 @@ getWoE(
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
+\item{dfLoE}{data frame, LoE}
+
+\item{dfQual}{data frame, Qual}
+
 \item{dfRank}{Percent rank of each stressor in the distribution of comparator sites.}
+
+\item{dfStressInfo}{data frame, StressInfo}
 
 \item{df_coOccur}{CoOccur dataframe corresponding with stressors and specified biocomm}
 
-\item{CO_sub}{Subdirectory containing co-occurrence results. Default = "CoOccurrence".}
-
-\item{SR_sub}{Subdirectory containing stressor-response results. Default = "StressorResponse".}
-
-\item{VP_sub}{Subdirectory containing verified prediction results.  Default = "VerifiedPredictions".}
-
-\item{SSD_sub}{Subdirectory containing SSD results. Default = "SSD".}
+\item{BioResp}{BioResp}
 }
 \value{
 Four tab-delimited tables containing weight of evidence information:

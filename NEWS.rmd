@@ -37,6 +37,7 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+
 ## Changes in Pull Request #88.9001 (2020-08-21).
 
 * CASTool_CA.r 
@@ -44,6 +45,37 @@ cat(paste0("Last Update: ",Sys.time()))
     + Change gitpath from local PC to system.file
     + Comment out source for package functions.
     + wd to getwd()
+
+## Changes in Version 0.1.0.9260 (2020-08-20)
+
+* Shiny CAST_SMC
+    + Add help file and make active.
+        - Create RMD and create file in data-raw folder.
+    + Make Map legend key file active.
+    
+## Changes in Version 0.1.0.9259 (2020-08-19)
+
+* GGplots, add na.rm = TRUE for geom_* and *_smooth.  Issue #87
+    + getBioStressorResponses.
+    + getCoOccur
+        - Formatting only.  Already included na.rm.
+* Fixes from merge.
+    + getSummaryAllSites.R
+        - Reference to local directory included in merge.
+    + getTimeSeq
+        - Duplicate "stressors" parameter
+* runShinyExamples.R
+    + Update for current names of Shiny apps in package.
+* getWoE.R
+    + Parameters didn't match the function.
+    
+## Changes in Version 0.1.0.9258 (2020-08-17)
+
+* Rebuild and repost.
+
+## Changes in Version 0.1.0.9257 (2020-08-17)
+
+* Merged 201909_ARL branch as pull request #86.
 
 ## Changes in Version 0.1.0.9256 (2020-08-17)
 

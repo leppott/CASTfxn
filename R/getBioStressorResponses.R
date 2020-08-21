@@ -1099,112 +1099,136 @@ getBioStressorResponses <- function(TargetSiteID
       # skip plot if no data for target site
       if(boo.Plot==TRUE){##IF.boo.Plot.START
         # ggplot, main
-        p_SR <- ggplot2::ggplot(df_plot_all, ggplot2::aes_(x=~Stressor,y=~Response
-                    , color="all", shape="all", fill="all"), size=cex_sites_all) +
-                 ggplot2::geom_point()
+        p_SR <- ggplot2::ggplot(df_plot_all
+                                , ggplot2::aes_(x=~Stressor,y=~Response
+                                                , color="all", shape="all", fill="all")
+                    , size=cex_sites_all) +
+                 ggplot2::geom_point(na.rm = TRUE)
         #  
         # ggplot, point subsets
         # Add points if exist, otherwise plot dummy values
         if(boo_plot_ref==TRUE){##IF~boo_plot_ref~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_all_ref
+          p_SR <- p_SR + 
+            ggplot2::geom_point(data=df_plot_all_ref
                 , ggplot2::aes_(x=~Stressor, y=~Response, color="all ref"
-                , shape="all ref", fill="all ref"), size=cex_sites_all_ref)
+                                , shape="all ref", fill="all ref")
+                , size=cex_sites_all_ref
+                , na.rm = TRUE)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="all ref"
-                , shape="all ref", fill="all ref"))
+          p_SR <- p_SR + 
+            ggplot2::geom_blank(ggplot2::aes(color="all ref"
+                                             , shape="all ref", fill="all ref"))
         }##IF~boo_plot_ref~END
         #
         if(boo_plot_cl==TRUE){##IF~boo_plot_cl~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl
+          p_SR <- p_SR + 
+            ggplot2::geom_point(data=df_plot_cl
                 , ggplot2::aes_(x=~Stressor, y=~Response, color="cluster"
-                , shape="cluster", fill="cluster"), size=cex_sites_cl)
+                                , shape="cluster", fill="cluster")
+                , size=cex_sites_cl
+                , na.rm = TRUE)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster"
-                , shape="cluster", fill="cluster"))
+          p_SR <- p_SR + 
+            ggplot2::geom_blank(ggplot2::aes(color="cluster", shape="cluster", fill="cluster"))
         }##IF~boo_plot_cl~END  
         #
         if(boo_plot_cl_ref==TRUE){##IF~boo_plot_cl_ref~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_cl_ref
+          p_SR <- p_SR + 
+            ggplot2::geom_point(data=df_plot_cl_ref
                 , ggplot2::aes_(x=~Stressor, y=~Response, color="cluster ref"
-                , shape="cluster ref", fill="cluster ref"), size=cex_sites_cl_ref)
+                                , shape="cluster ref", fill="cluster ref")
+                , size=cex_sites_cl_ref
+                , na.rm = TRUE)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="cluster ref"
-                , shape="cluster ref", fill="cluster ref"))
+          p_SR <- p_SR + 
+            ggplot2::geom_blank(ggplot2::aes(color="cluster ref", shape="cluster ref", fill="cluster ref"))
         }##IF~boo_plot_cl_ref~END
         #
         if(boo_plot_targ==TRUE){##IF~boo_plot_targ~START
-          p_SR <- p_SR + ggplot2::geom_point(data=df_plot_site
+          p_SR <- p_SR + 
+            ggplot2::geom_point(data=df_plot_site
                 , ggplot2::aes_(x=~Stressor,y=~Response, color="target"
-                , shape="target", fill="target"), size=cex_sites_targ)
+                                , shape="target", fill="target")
+                , size=cex_sites_targ
+                , na.rm = TRUE)
         } else {
-          p_SR <- p_SR + ggplot2::geom_blank(ggplot2::aes(color="target"
-                , shape="target", fill="target"))
+          p_SR <- p_SR + 
+            ggplot2::geom_blank(ggplot2::aes(color="target", shape="target", fill="target"))
         }
         ##IF~boo_plot_targ~END
         # 
         # Add rest of plot  
-        p_SR <- p_SR + ggplot2::scale_shape_manual(name=leg_name
-                                                   , labels=leg_labels
-                                                   , values=leg_shape)  + 
-                       ggplot2::scale_color_manual(name=leg_name
-                                                   , labels=leg_labels
-                                                   , values=leg_col) +
-                       ggplot2::scale_fill_manual(name=leg_name
-                                                  , labels=leg_labels
-                                                  , values=leg_fill)
+        p_SR <- p_SR + 
+          ggplot2::scale_shape_manual(name=leg_name, labels=leg_labels, values=leg_shape)  + 
+          ggplot2::scale_color_manual(name=leg_name, labels=leg_labels, values=leg_col) +
+          ggplot2::scale_fill_manual(name=leg_name, labels=leg_labels, values=leg_fill)
         # Regression, all
         if (exists("model_all_val")) {
             # Linear model (all data)
-            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_all
-                                                , method=lm
-                                                , color=col_line_all
-                                                , fill=fill_sites_all
-                                                , alpha=alpha_lm_all
-                                                , formula = y ~ x # Added to avaoid message
-                                                , show.legend=FALSE)
-            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
-                                              , ggplot2::aes_(y=~lwr)
-                                              , color=col_line_all
-                                              , linetype="dashed"
-                                              , show.legend=FALSE
-                                              , size = 1.25)
-            p_SR <- p_SR + ggplot2::geom_line(data=model_all_val
-                                              , ggplot2::aes_(y=~upr)
-                                              , color=col_line_all
-                                              , linetype="dashed"
-                                              , show.legend=FALSE, size = 1.25)
+            p_SR <- p_SR + 
+              ggplot2::stat_smooth(data=df_plot_all
+                                  , method=lm
+                                  , color=col_line_all
+                                  , fill=fill_sites_all
+                                  , alpha=alpha_lm_all
+                                  , formula = y ~ x # Added to avaoid message
+                                  , show.legend=FALSE
+                                  , na.rm = TRUE)
+            p_SR <- p_SR + 
+              ggplot2::geom_line(data=model_all_val
+                                , ggplot2::aes_(y=~lwr)
+                                , color=col_line_all
+                                , linetype="dashed"
+                                , show.legend=FALSE
+                                , size = 1.25
+                                , na.rm = TRUE)
+            p_SR <- p_SR + 
+              ggplot2::geom_line(data=model_all_val
+                                , ggplot2::aes_(y=~upr)
+                                , color=col_line_all
+                                , linetype="dashed"
+                                , show.legend=FALSE
+                                , size = 1.25
+                                , na.rm = TRUE)
         }
         # Regression, cluster
         if (exists("model_cl_val")) {
             # Linear model (cluster)
-            p_SR <- p_SR + ggplot2::stat_smooth(data=df_plot_cl
-                                                , method=lm
-                                                , color=col_line_cl
-                                                , fill=fill_sites_cl
-                                                , alpha=alpha_lm_cl
-                                                , formula = y ~ x # Added to avaoid message
-                                                , show.legend=FALSE)
-            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
-                                              , ggplot2::aes_(y=~lwr)
-                                              , color=col_line_cl
-                                              , linetype="dashed"
-                                              , show.legend=FALSE)
-            p_SR <- p_SR + ggplot2::geom_line(data=model_cl_val
-                                              , ggplot2::aes_(y=~upr)
-                                              , color=col_line_cl
-                                              , linetype="dashed"
-                                              , show.legend=FALSE)
+            p_SR <- p_SR + 
+              ggplot2::stat_smooth(data=df_plot_cl
+                                  , method=lm
+                                  , color=col_line_cl
+                                  , fill=fill_sites_cl
+                                  , alpha=alpha_lm_cl
+                                  , formula = y ~ x # Added to avaoid message
+                                  , show.legend=FALSE
+                                  , na.rm = TRUE)
+            p_SR <- p_SR + 
+              ggplot2::geom_line(data=model_cl_val
+                                , ggplot2::aes_(y=~lwr)
+                                , color=col_line_cl
+                                , linetype="dashed"
+                                , show.legend=FALSE
+                                , na.rm = TRUE)
+            p_SR <- p_SR + 
+              ggplot2::geom_line(data=model_cl_val
+                                , ggplot2::aes_(y=~upr)
+                                , color=col_line_cl
+                                , linetype="dashed"
+                                , show.legend=FALSE
+                                , na.rm = TRUE)
         }
 
         # other
-        p_SR <- p_SR + ggplot2::theme_bw() +
-            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
+        p_SR <- p_SR + 
+          ggplot2::theme_bw() +
+          ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5, size=12)
                             , plot.subtitle=ggplot2::element_text(hjust=0.5, size=10)
                             , plot.caption=ggplot2::element_text(size=8)
                             , legend.title=ggplot2::element_text(size=10)
                             , legend.text=ggplot2::element_text(size=8)
                             , axis.title=ggplot2::element_text(size=10)) + 
-            ggplot2::labs(title=str_title, subtitle = str_subtitle
+          ggplot2::labs(title=str_title, subtitle = str_subtitle
                             , caption=str_caption, x=str_xlab, y=str_ylab)
         #
         print(p_SR)
