@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+
+## Changes in Pull Request #88.9001 (2020-08-21).
+
+* CASTool_CA.r 
+    + Move from R/ to inst/extdata/
+    + Change gitpath from local PC to system.file
+    + Comment out source for package functions.
+    + wd to getwd()
+
 ## Changes in Version 0.1.0.9260 (2020-08-20)
 
 * Shiny CAST_SMC

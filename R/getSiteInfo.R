@@ -28,24 +28,18 @@
 #' A subdirectory is created for each SiteID.
 #' 
 #' @param TargetSiteID SiteID
+#' @param dir_results Directory for results.  Default = "Results".
 #' @param data_Sites data_Sites
-#' @param data_bkgdata background data
-#' @param data_bnkinfo background info
 #' @param data_SampSummary data_SampSummary
 #' @param data_303d data_303d
 #' @param data_bmiMetrics data_bmiMetrics
-#' @param bmiIndexGp BMI index group; default = "IBI"
 #' @param data_algMetrics data_algMetrics
-#' @param algIndexGp Algal index group; default = "IBI"
-#' @param comp_sites Comparator site; default = NULL
 #' @param data_cluster data_cluster
 #' @param data_mods data_mods
 #' @param map_proj Map projection.  If no projection is provided an unprojected map is created without flowlines.
 #' @param map_outline Outline for map, typically State border.
 #' @param map_flowline Typically NHD+ flowline.
 #' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
-#' @param dir_photo Directory with photos; Default = ./Data/Photos
-#' @param dir_results Directory for results.  Default = ./Results
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
 #' 
 #' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
@@ -134,7 +128,7 @@ getSiteInfo <- function(TargetSiteID
                         , data_bmiMetrics=NULL
                         , bmiIndexGp = "IBI"
                         , data_algMetrics=NULL
-                        , algIndexGp = "IBI"
+                        , algIndexGpGp = "IBI"
                         , comp_sites=NULL
                         , data_cluster
                         , data_mods
@@ -142,8 +136,8 @@ getSiteInfo <- function(TargetSiteID
                         , map_outline=NULL
                         , map_flowline=NULL
                         , map_flowline2=NULL
-                        , dir_photo = file.path(getwd(), "Data", "Photos")
-                        , dir_results = file.path(getwd(), "Results")
+                        , dir_photo = file.path(dir_data,"Photos")
+                        , dir_results = dir_results
                         , dir_sub = "SiteInfo") {
     #
    
@@ -242,7 +236,7 @@ getSiteInfo <- function(TargetSiteID
         rm(gap.good, gap.bad)
         
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
         write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
         
@@ -525,8 +519,8 @@ getSiteInfo <- function(TargetSiteID
     strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
     dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
     # rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-    rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-                , output_format=paste0(report_format, "_document")
+    rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
+                , output_format=paste0(report_format,"_document")
                 , output_file=strFile_out
                 , output_dir=dir_map
                 , quiet=TRUE)
@@ -545,40 +539,36 @@ getSiteInfo <- function(TargetSiteID
             if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
                 file.copy(file.path(dir_photo,photoname)
                           , file.path(dir_path,"Photos",photoname))
-                msg <- paste0(photoname, " copied.")
-                message(msg)
-                # print(msg)
-                # flush.console()
+                print(paste0(photoname, " copied."))
+                flush.console()
                 have.photos <- TRUE
             }
         }
     } else { 
+        have.photos <- FALSE
+        # print("Photo directory does not exist.")
+        # flush.console()
         msg <- "Photo directory does not exist."
         message(msg)
-        # print(msg)
-        # flush.console()
     }
     
     if (!have.photos) {
-        msg <- paste0("No site photos are available for ", TargetSiteID)
-        message(msg)
-        # print(msg)
-        # flush.console()
+        
+        print(paste0("No site photos are available for ", TargetSiteID))
+        flush.console()
         
         gap.photos <- cbind.data.frame("getSiteInfo", "quality", 0
                                     , "Site photos are not available.")
         colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
 
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
         write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
     }
-    
-    msg <- "Completed transferring any available site files."
-    message(msg)
-    # print(msg)
-    # flush.console()
+
+    print("Completed transferring any available site files.")
+    flush.console()
     
     # Get background data from fn_bkgdata; use COMID to select single row
     data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
@@ -594,7 +584,7 @@ getSiteInfo <- function(TargetSiteID
                                  , gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")    
     } else {  # Background data exists
@@ -607,9 +597,9 @@ getSiteInfo <- function(TargetSiteID
                     , sep = "\t", col.names = TRUE, row.names = FALSE)
         
         # Get metadata from fn_bkginfo
-        df.bkg2plot <- dplyr::left_join(data_bkginfo, data_bkgdata2)
+        df.bkg2plot <- dplyr::left_join(df_bkginfo, data_bkgdata2)
         
-        rm(data_bkgdata, data_bkgdata2, data_bkginfo)
+        rm(data_bkgdata, data_bkgdata2, df_bkginfo)
         
         # Determine appropriate graphics
         # Bar charts, faceted with catchment on left, watershed on right
@@ -629,12 +619,10 @@ getSiteInfo <- function(TargetSiteID
             p.subtitle <- "Potential anthropogenic alterations"
             numcols <- length(unique(df.temp$Scale))/2
             
-            msg <- xlab
-            message(msg)
-            # print(msg)
-            # flush.console()
-            # QC 20200413 ####
-            if (is.na(sort(df.temp[, "StudyYear", TRUE], na.last = TRUE)[1])) {  # No study year
+            print(xlab)
+            flush.console()
+            
+            if (is.na(df.temp$StudyYear)) {  # No study year
                 p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
                                                                , y = signif(val, digits = 2))) +
                     ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +

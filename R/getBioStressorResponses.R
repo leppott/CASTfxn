@@ -1291,40 +1291,43 @@ getBioStressorResponses <- function(TargetSiteID
   if (boo_corr==TRUE) {
       fn_corr <- paste0(TargetSiteID,"_", biocomm, "_SRLin_Corrs.tab")
       fp_corr <- file.path(dir_path, fn_corr)
-      df_corr <- utils::read.delim(fp_corr)
       
-      # QC, 20190313
-      # QC, Corr table ####
-      ## Special case where the function doesn't save the header row
-      ### Unable to track down cause so implement QC check here.
-      #cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
-      cn_cor_x    <- colnames(df_corr)
-      cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
-      if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
-          df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
-          utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
-      }##IF~length~END
-      
-      ## transpose 
-      # 20190305; shouldn't need mean or unique but just in case, should be complete dups
-      df_corr <- unique(df_corr)
-      df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
-                                   , fun.aggregate=mean
-                                   , value.var="estimate"
-                                   , na.rm=TRUE)
-      df_corrplot <- t(df_corr_r[,-1])
-      colnames(df_corrplot) <- df_corr_r[,1]
-      ## jpg
-      fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                              , "_SRLin_CorrPlot.png"))
-      grDevices::png(filename = fn_png_cp
-                     , width = 4 * ppi
-                     , height = 3 * ppi)
-      corrplot::corrplot(df_corrplot, method="circle")
-      grDevices::dev.off()
-      
-      msg.corr <- "Printing correlation plot."
-      message(msg.corr)
+      if (exists(fp_corr)==TRUE) {
+          df_corr <- utils::read.delim(fp_corr)
+          
+          # QC, 20190313
+          # QC, Corr table ####
+          ## Special case where the function doesn't save the header row
+          ### Unable to track down cause so implement QC check here.
+          #cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "respName", "n", "statistic", "p.value", "estimate", "r2")
+          cn_cor_x    <- colnames(df_corr)
+          cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
+          if(cn_cor_match!=length(cn_cor_pref)){##IF~length~START
+              df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
+              utils::write.table(df_corr, fp_corr, sep="\t", quote=FALSE, row.names=FALSE )
+          }##IF~length~END
+          
+          ## transpose 
+          # 20190305; shouldn't need mean or unique but just in case, should be complete dups
+          df_corr <- unique(df_corr)
+          df_corr_r <- reshape2::dcast(df_corr, stressName ~ respName
+                                       , fun.aggregate=mean
+                                       , value.var="estimate"
+                                       , na.rm=TRUE)
+          df_corrplot <- t(df_corr_r[,-1])
+          colnames(df_corrplot) <- df_corr_r[,1]
+          ## jpg
+          fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                                  , "_SRLin_CorrPlot.png"))
+          grDevices::png(filename = fn_png_cp
+                         , width = 4 * ppi
+                         , height = 3 * ppi)
+          corrplot::corrplot(df_corrplot, method="circle")
+          grDevices::dev.off()
+          
+          msg.corr <- "Printing correlation plot."
+          message(msg.corr)
+      }
   }
   #
 }##FUNCTION.END

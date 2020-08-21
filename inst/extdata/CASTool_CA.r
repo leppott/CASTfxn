@@ -43,6 +43,9 @@ startprep.time <- Sys.time()
 wd <- getwd()
 dir_data <- file.path(wd, "Data")
 dir_results <- file.path(wd, "Results")
+
+printClusterInfo <- FALSE
+
 removeOutliers <- TRUE
 useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
 probsHigh=0.75
@@ -77,8 +80,9 @@ fn.cluster <- file.path(dir_data, "SMCClusterData.tab")
 fn.clusterinfo <- file.path(dir_data,"SMCClusterInfo.tab")
 fn.bkgdata <- file.path(dir_data, "SMCSiteBkgdData.tab")
 fn.bkginfo <- file.path(dir_data, "SMCSiteBkgdInfo.tab")
-outline <- rgdal::readOGR(dsn = "Data/SMCBoundary", layer = "SMCBoundary_aea")
-flowline <- rgdal::readOGR(dsn = "Data/SMCReaches", layer = "SMCReaches_aea")
+
+outline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCBoundary"), layer = "SMCBoundary_aea")
+flowline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCReaches"), layer = "SMCReaches_aea")
 
 # Specify user-defined variables
 # Stressors
@@ -367,7 +371,9 @@ data_algCoOccur <- getCoOccurDataset(dataDir = dir_data
                                      , removeOutliers = removeOutliers)
 # returns df_coOccur as data_algCoOccur
 algParamsKEEP <- setdiff(colnames(data_algCoOccur), algParamsDEL)
-data_algCoOccur <- dplyr::select(data_algCoOccur, algParamsKEEP)
+
+data_algCoOccur <- dplyr::select(data_algCoOccur, all_of(algParamsKEEP))
+
 # write.table(data_algCoOccur, file.path(getwd(),"Results","algCoOccur.tab")
 #             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
 
@@ -412,11 +418,15 @@ df_runstats <- as.data.frame(cbind("TargetSiteID", "Biocomm", "NumStressors"
 write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
             , col.names = FALSE, row.names = FALSE, sep = "\t")
 
+
+### Evaluate each target site
+
 # TargetSiteID = "905S015201"
 # site = 1
 # TargetSiteID = "902S01097"
 # site = 1
 # for (site in 1:length(TargetSiteID)) {
+
 for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
     TargetSiteID <- df_targets$TargetSiteID[site]
@@ -498,16 +508,20 @@ for (site in 1:nrow(df_targets)) {
     flush.console()
     
     # Get Cluster Info
-    getClusterInfo(TargetSiteID
-                   , siteCOMID=list.SiteSummary$COMID
-                   , siteCluster=list.SiteSummary$ClustID
-                   , refSiteCOMIDs=list.SiteSummary$refCOMIDs
-                   , data_cluster = data_cluster
-                   , data_clusterInfo = data_clusterInfo
-                   , dir_results=dir_results
-                   , dir_sub="ClusterInfo")
-    print("getClusterInfo is complete.")
-    flush.console()
+
+    if (printClusterInfo==TRUE) {
+        getClusterInfo(TargetSiteID
+                       , siteCOMID=list.SiteSummary$COMID
+                       , siteCluster=list.SiteSummary$ClustID
+                       , refSiteCOMIDs=list.SiteSummary$refCOMIDs
+                       , data_cluster = data_cluster
+                       , data_clusterInfo = data_clusterInfo
+                       , dir_results=dir_results
+                       , dir_sub="ClusterInfo")
+        print("getClusterInfo is complete.")
+        flush.console()
+    }
+
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Prepare flags for types of stressor and response data to use
@@ -610,6 +624,9 @@ for (site in 1:nrow(df_targets)) {
         noStressors <- FALSE
         noResponses <- FALSE
 
+        NE_true <- FALSE
+
+
         if ((useMeasStress==FALSE) & (useModStress==FALSE)) {
             # No stressor data available
             gap.stress <- cbind.data.frame("general", "Stressors", 0
@@ -707,7 +724,21 @@ for (site in 1:nrow(df_targets)) {
         }
         
         # If no paired stressor-response samples for target site, no eval possible
-        if (!(TargetSiteID %in% data_bioCoOccur$StationID_Master)) {
+#<<<<<<< 201909_ARL
+        if (!(TargetSiteID %in% data_bioCoOccur$StationID_Master)) { # Not in data_bioCoOccur
+            noStressors = TRUE
+        } else {
+            dfTarget <- dplyr::filter(data_bioCoOccur, StationID_Master==TargetSiteID)
+            if (all(is.na(dfTarget[,11:ncol(dfTarget)]))) { # In data_bioCoOccur but all values NA
+                noStressors = TRUE
+            } else {
+            noStressors = FALSE
+            }
+        }
+        if (noStressors==TRUE) {
+#=======
+#        if (!(TargetSiteID %in% data_bioCoOccur$StationID_Master)) {
+#>>>>>>> master
             print(paste0("No paired stressor-response samples for", TargetSiteID
                          , " for the ", bioComm, " community."))
             flush.console()
@@ -718,7 +749,9 @@ for (site in 1:nrow(df_targets)) {
                                  , "with the stressor sample being obtained prior "
                                  , "to the response sample.")
             gaps <- cbind.data.frame("getCoOccurDataset", paste0("Paired stressor-"
-                                     , bioComm, " data"), 0, gapcomment)
+
+                                                                 , bioComm, " data"), 0, gapcomment)
+
             # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
             fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
@@ -742,10 +775,11 @@ for (site in 1:nrow(df_targets)) {
             write.table(df_temp, file.path(wd,"Results",fn_runstats)
                         , append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
+
+            rm(dfTarget)
             next()
         } ### End no stressors statement
-        
-        
+
         # Run analyses
         # Identify "quality" sites using different definitions
         list.BioQualSites <- getQualSites(TargetSiteID
@@ -830,9 +864,21 @@ for (site in 1:nrow(df_targets)) {
                 dplyr::filter(!is.na(ResultValue)) %>%
                 dplyr::filter(Outlier != "Outlier") %>%
                 tidyr::spread(key=StdParamName, value=ResultValue) %>%
-                dplyr::select_if(not_all_na) %>%
+#<<<<<<< 201909_ARL
                 dplyr::rename(StressSampID = ChemSampleID
                               , StressSampDate = SampleDate)
+            if (ncol(siteStressAll)>7) {
+                siteStressAllCore <- siteStressAll[1:6]
+                siteStressAllParms <- siteStressAll[,7:ncol(siteStressAll)] %>%
+                    dplyr::select_if(not_all_na)
+                siteStressAll <- cbind(siteStressAllCore, siteStressAllParms)
+                rm(siteStressAllCore, siteStressAllParms)
+            }
+#=======
+#                dplyr::select_if(not_all_na) %>%
+#                dplyr::rename(StressSampID = ChemSampleID
+#                              , StressSampDate = SampleDate)
+#>>>>>>> master
             siteDetectsAll <- as.vector(colnames(siteStressAll[,4:ncol(siteStressAll)]))
             compStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master %in% comp_sites) %>%
@@ -850,10 +896,19 @@ for (site in 1:nrow(df_targets)) {
             siteStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master==TargetSiteID) %>%
                 dplyr::filter(!is.na(ResultValue)) %>%
+#<<<<<<< 201909_ARL
+                dplyr::filter(Outlier != "Outlier") %>%
                 tidyr::spread(key=StdParamName, value=ResultValue) %>%
-                dplyr::select_if(not_all_na) %>%
                 dplyr::rename(StressSampID = ChemSampleID
                               , StressSampDate = SampleDate)
+            siteStressAll <- dplyr::select_if(siteStressAll
+                                              , not_all_na(siteStressAll[7:ncol(siteStressAll)]))
+#=======
+#                tidyr::spread(key=StdParamName, value=ResultValue) %>%
+#                dplyr::select_if(not_all_na) %>%
+#                dplyr::rename(StressSampID = ChemSampleID
+#                              , StressSampDate = SampleDate)
+#>>>>>>> master
             siteDetectsAll <- as.vector(colnames(siteStressAll[,4:ncol(siteStressAll)]))
             compStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master %in% comp_sites) %>%
@@ -1059,46 +1114,52 @@ for (site in 1:nrow(df_targets)) {
                                                    , "_CandCauses_StressorsEvaluated.tab"))
             write.table(stressorsUsed, fn.stressorsUsed, append = FALSE
                         , col.names = TRUE, row.names = FALSE, sep = "\t")
-        }
+
+        } # End paired stressors statement
+
         
         # Either all are paired or some are
         stressors_logtransf <- data_stressInfo$LogTransf[data_stressInfo$StdParamName 
                                                          %in% stressorsWPairedResponses]
         
+#<<<<<<< 201909_ARL
+
+#=======
         # Adjust siteStressAll to reflect only stressors used
         # siteStressAllData <- cbind(siteStressAll[,1:6]
         #                            , siteStressAll[[stressors]])
         # siteStressPaired <- cbind(siteStressAll[,1:6]
         #                           , siteStressAll[[stressorsWPairedResponses]])
-
-        # Create time sequence graphics
-        # Uses all site stressor and response data, but not paired
-        getTimeSeq(TargetSiteID
-                   , biocomm = bioComm
-                   , BioResp = bioMetricNames
-                   , df_stress = siteStressAll
-                   , df_resp = siteRespAll
-                   , stressors = stressorsWPairedResponses
-                   , df_stressinfo = data_stressInfo
-                   , df_respinfo = bioMetricInfo
-                   , dir_results = dir_results
-                   , dir_sub = "TimeSequence")
-        print(paste0("getTimeSeq for ", bioComm, " is complete."))
-        flush.console()
-        
-        # NOT WORKING
-        dirTS <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                           , "TimeSequence")
-        if (dir.exists(dirTS)==TRUE) {
-            if (length(list.files(dirTS)) > 0) {
-                numLoE = numLoE + 1
-                df_LoE$Completed[df_LoE$LoE == "TS"] <- 1
-                df_LoE$ResultsDir[df_LoE$LoE == "TS"] <- dirTS
-                
-            }
-        }
-        
-        
+#
+#        # Create time sequence graphics
+#        # Uses all site stressor and response data, but not paired
+#        getTimeSeq(TargetSiteID
+#                   , biocomm = bioComm
+#                   , BioResp = bioMetricNames
+#                   , df_stress = siteStressAll
+#                   , df_resp = siteRespAll
+#                   , stressors = stressorsWPairedResponses
+#                   , df_stressinfo = data_stressInfo
+#                   , df_respinfo = bioMetricInfo
+#                   , dir_results = dir_results
+#                   , dir_sub = "TimeSequence")
+#        print(paste0("getTimeSeq for ", bioComm, " is complete."))
+#        flush.console()
+#        
+#        # NOT WORKING
+#        dirTS <- file.path(dir_results, TargetSiteID, toupper(bioComm)
+#                           , "TimeSequence")
+#        if (dir.exists(dirTS)==TRUE) {
+#            if (length(list.files(dirTS)) > 0) {
+#                numLoE = numLoE + 1
+#                df_LoE$Completed[df_LoE$LoE == "TS"] <- 1
+#                df_LoE$ResultsDir[df_LoE$LoE == "TS"] <- dirTS
+#                
+#            }
+#        }
+#        
+#        
+#>>>>>>> master
         if (NE_true) { # No paired stressor response data available. Move to next biocomm or site.
             # Write run-time stats to file
             endsite.time <- Sys.time()
@@ -1117,180 +1178,212 @@ for (site in 1:nrow(df_targets)) {
             write.table(df_temp, file.path(wd,"Results",fn_runstats)
                         , append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
-            next()
-        }
-        
-        # Get Response-based co-occurrence
-        if (TargetSiteID %in% unique(data_bioCoOccur$StationID_Master)) {
-            print("Starting Co-occurrence")
-            flush.console()
-            getCoOccur(df_data = data_bioCoOccur
-                       , TargetSiteID = TargetSiteID
-                       , col_ID = "StationID_Master"
-                       , colStressSamp = "StressSampID"
-                       , colRespSamp = "RespSampID"
-                       , colGroup = "clust"
-                       , colBio = colBio
-                       , colStressors = stressorsWPairedResponses
-                       , df_stressinfo = data_stressInfo
-                       , BioNarBrk = BioNarBrk
-                       , BioNarLab = BioNarLab
-                       , BioDegBrk = BioDegBrk
-                       , BioDegLab = c("Yes", "No")
+
+
+        } else {
+            
+            # Create time sequence graphics
+            # Uses all site stressor and response data, but not paired
+            getTimeSeq(TargetSiteID
                        , biocomm = bioComm
-                       , dir_plots = dir_results
-                       , dir_sub = "CoOccurrence"
-                       , col_StressInvScore = col_StressInvScore)
-        } else {
-            # gapcomment <- "Stressor detected but paired response not available"
-            # gaps <- cbind.data.frame("getStressorList", stressorsNOpairing[s], 0
-            #                          , gapcomment)
-            # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-            # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            # fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
-            # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-            #             , row.names = FALSE, sep = "\t")
-        } ### End getCoOccur
-        print(paste0("getCoOccur for ", bioComm, " is complete."))
-        flush.console()
-        
-        dirCO <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                           , "CoOccurrence")
-        if (dir.exists(dirCO)==TRUE) {
-            if ((length(list.files(dirCO)) > 0)==TRUE) {
-                numLoE = numLoE + 1
-                df_LoE$Completed[df_LoE$LoE == "CO"] <- 1
-                df_LoE$ResultsDir[df_LoE$LoE == "CO"] <- dirCO
-            }
-        }
-
-        # Refine all.b.str, cl.b.str, and site.b.str for just identified stressors
-        core.cols <- c("StationID_Master", "StressSampDate", "RespSampDate"
-                       , "StressSampID", "RespSampID")
-
-        all.b.str <- listPairedStressResp$allBioStress %>%
-            select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
-            select(StressSampID, RespSampID, StationID_Master
-                   , eval(stressorsWPairedResponses))
-        cl.b.str <- listPairedStressResp$compBioStress %>%
-            select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
-            select(StressSampID, RespSampID, StationID_Master
-                   , eval(stressorsWPairedResponses))
-        site.b.str <- listPairedStressResp$siteBioStress %>%
-            select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
-            select(StressSampID, RespSampID, StationID_Master
-                   , eval(stressorsWPairedResponses))
-        
-        all.b.rsp <- listPairedStressResp$allBioResp %>%
-            select(RespSampID, StressSampID, StationID_Master, RespSampDate
-                   , Quality, eval(bioMetricNames))
-        cl.b.rsp <- listPairedStressResp$compBioResp %>%
-            select(RespSampID, StressSampID, StationID_Master, RespSampDate
-                   , Quality, eval(bioMetricNames))
-        site.b.rsp <- listPairedStressResp$siteBioResp %>%
-            select(RespSampID, StressSampID, StationID_Master, RespSampDate
-                   , Quality, eval(bioMetricNames))
-        
-        siteStressInfo <- listPairedStressResp$siteStressInfo
-
-        list_MatchBioData <- list("all.b.str" = all.b.str
-                                  , "cl.b.str" = cl.b.str
-                                  , "site.b.str" = site.b.str
-                                  , "all.b.rsp" = all.b.rsp
-                                  , "cl.b.rsp" = cl.b.rsp
-                                  , "site.b.rsp" = site.b.rsp)
-
-        # Get Stressor Responses
-        getBioStressorResponses(TargetSiteID
-                                , stressors = stressorsWPairedResponses
-                                , stressorInfo = siteStressInfo
-                                , BioResp = bioMetricNames
-                                , list.MatchBioData = list_MatchBioData
-                                , ref.sites = allBioRefStressSamps
-                                , siteQual2Plot = siteQual2Plot
-                                , biocomm = bioComm
-                                , dir_results = dir_results
-                                , dir_sub = "StressorResponse")
-        print(paste0("getBioStressorResponses for ", bioComm, " is complete."))
-        flush.console()
-        
-        dirSR <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                           , "StressorResponse")
-        if (dir.exists(dirSR)==TRUE) {
-            if (length(list.files(dirSR)) > 0) {
-                numLoE = numLoE + 1
-                df_LoE$Completed[df_LoE$LoE == "SR"] <- 1
-                df_LoE$ResultsDir[df_LoE$LoE == "SR"] <- dirSR
-            }
-        }
-
-        # Get Stressor-specific regressions
-        if (any(SSTVparms %in% stressorsWPairedResponses)) {
-            getVerifiedPredictions(TargetSiteID
-                                   , SSTVanalytes = as.character(SSTVparms)
-                                   , colBioSample = colBioSample
-                                   , stressors = stressorsWPairedResponses
-                                   , stressorInfo <- siteStressInfo
-                                   , dataBioTaxa = bioTaxaData
-                                   , dataMasterTaxa = bioMasterTaxa
-                                   , matchedData = list_MatchBioData
-                                   , BioIndex_Val = bioIndex
-                                   , BioIndex_Nar = "Quality"
-                                   , BioIndex_Nar_Deg = "Degraded"
-                                   , dir_results=dir_results
-                                   , dir_sub="VerifiedPredictions"
-                                   , biocomm=bioComm)
-        } else {
-            print("No possible stressors have stressor-specific tolerance values.")
+                       , BioResp = bioMetricNames
+                       , df_stress = siteStressAll
+                       , df_resp = siteRespAll
+                       , stressors = stressorsWPairedResponses
+                       , df_stressinfo = data_stressInfo
+                       , df_respinfo = bioMetricInfo
+                       , dir_results = dir_results
+                       , dir_sub = "TimeSequence")
+            print(paste0("getTimeSeq for ", bioComm, " is complete."))
             flush.console()
-            gapcomment <- paste0("Stressors having stressor-specific tolerance "
-                                 , "values are not identified at this site.")
-            gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0
-                                     , gapcomment)
-            colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-            fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
-            write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                        , row.names = FALSE, sep = "\t")
-        } ### End getVP evaluation
-        
-        print(paste0("getVerifiedPredictions for ", bioComm, " is complete."))
-        flush.console()
-        
-        dirVP <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                           , "VerifiedPredictions")
-        if (dir.exists(dirVP)==TRUE) {
-            if (length(list.files(dirVP)) > 0) {
-                numLoE = numLoE + 1
-                df_LoE$Completed[df_LoE$LoE == "VP"] <- 1
-                df_LoE$ResultsDir[df_LoE$LoE == "VP"] <- dirVP
+            
+            # NOT WORKING
+            dirTS <- file.path(dir_results, TargetSiteID, toupper(bioComm)
+                               , "TimeSequence")
+            if (dir.exists(dirTS)==TRUE) {
+                if (length(list.files(dirTS)) > 0) {
+                    numLoE = numLoE + 1
+                    df_LoE$Completed[df_LoE$LoE == "TS"] <- 1
+                    df_LoE$ResultsDir[df_LoE$LoE == "TS"] <- dirTS
+                    
+                }
             }
+            
+            # Get Response-based co-occurrence
+            if (TargetSiteID %in% unique(data_bioCoOccur$StationID_Master)) {
+                print("Starting Co-occurrence")
+                flush.console()
+                getCoOccur(df_data = data_bioCoOccur
+                           , TargetSiteID = TargetSiteID
+                           , col_ID = "StationID_Master"
+                           , colStressSamp = "StressSampID"
+                           , colRespSamp = "RespSampID"
+                           , colGroup = "clust"
+                           , colBio = colBio
+                           , colStressors = stressorsWPairedResponses
+                           , df_stressinfo = data_stressInfo
+                           , BioNarBrk = BioNarBrk
+                           , BioNarLab = BioNarLab
+                           , BioDegBrk = BioDegBrk
+                           , BioDegLab = c("Yes", "No")
+                           , biocomm = bioComm
+                           , dir_plots = dir_results
+                           , dir_sub = "CoOccurrence"
+                           , col_StressInvScore = col_StressInvScore)
+            } else {
+                # gapcomment <- "Stressor detected but paired response not available"
+                # gaps <- cbind.data.frame("getStressorList", stressorsNOpairing[s], 0
+                #                          , gapcomment)
+                # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                # fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                #             , row.names = FALSE, sep = "\t")
+            } ### End getCoOccur
+            print(paste0("getCoOccur for ", bioComm, " is complete."))
+            flush.console()
+            
+            dirCO <- file.path(dir_results, TargetSiteID, toupper(bioComm)
+                               , "CoOccurrence")
+            if (dir.exists(dirCO)==TRUE) {
+                if ((length(list.files(dirCO)) > 0)==TRUE) {
+                    numLoE = numLoE + 1
+                    df_LoE$Completed[df_LoE$LoE == "CO"] <- 1
+                    df_LoE$ResultsDir[df_LoE$LoE == "CO"] <- dirCO
+                }
+            }
+            
+            # Refine all.b.str, cl.b.str, and site.b.str for just identified stressors
+            core.cols <- c("StationID_Master", "StressSampDate", "RespSampDate"
+                           , "StressSampID", "RespSampID")
+            
+            all.b.str <- listPairedStressResp$allBioStress %>%
+                select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
+                select(StressSampID, RespSampID, StationID_Master
+                       , eval(stressorsWPairedResponses))
+            cl.b.str <- listPairedStressResp$compBioStress %>%
+                select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
+                select(StressSampID, RespSampID, StationID_Master
+                       , eval(stressorsWPairedResponses))
+            site.b.str <- listPairedStressResp$siteBioStress %>%
+                select(eval(core.cols), eval(stressorsWPairedResponses)) %>%
+                select(StressSampID, RespSampID, StationID_Master
+                       , eval(stressorsWPairedResponses))
+            
+            all.b.rsp <- listPairedStressResp$allBioResp %>%
+                select(RespSampID, StressSampID, StationID_Master, RespSampDate
+                       , Quality, eval(bioMetricNames))
+            cl.b.rsp <- listPairedStressResp$compBioResp %>%
+                select(RespSampID, StressSampID, StationID_Master, RespSampDate
+                       , Quality, eval(bioMetricNames))
+            site.b.rsp <- listPairedStressResp$siteBioResp %>%
+                select(RespSampID, StressSampID, StationID_Master, RespSampDate
+                       , Quality, eval(bioMetricNames))
+            
+            siteStressInfo <- listPairedStressResp$siteStressInfo
+            
+            list_MatchBioData <- list("all.b.str" = all.b.str
+                                      , "cl.b.str" = cl.b.str
+                                      , "site.b.str" = site.b.str
+                                      , "all.b.rsp" = all.b.rsp
+                                      , "cl.b.rsp" = cl.b.rsp
+                                      , "site.b.rsp" = site.b.rsp)
+            
+            # Get Stressor Responses
+            getBioStressorResponses(TargetSiteID
+                                    , stressors = stressorsWPairedResponses
+                                    , stressorInfo = siteStressInfo
+                                    , BioResp = bioMetricNames
+                                    , BioInfo = bioMetricInfo
+                                    , list.MatchBioData = list_MatchBioData
+                                    , ref.sites = allBioRefStressSamps
+                                    , siteQual2Plot = siteQual2Plot
+                                    , biocomm = bioComm
+                                    , dir_results = dir_results
+                                    , dir_sub = "StressorResponse")
+            print(paste0("getBioStressorResponses for ", bioComm, " is complete."))
+            flush.console()
+            
+            dirSR <- file.path(dir_results, TargetSiteID, toupper(bioComm)
+                               , "StressorResponse")
+            if (dir.exists(dirSR)==TRUE) {
+                if (length(list.files(dirSR)) > 0) {
+                    numLoE = numLoE + 1
+                    df_LoE$Completed[df_LoE$LoE == "SR"] <- 1
+                    df_LoE$ResultsDir[df_LoE$LoE == "SR"] <- dirSR
+                }
+            }
+            
+            # Get Stressor-specific regressions
+            if (any(SSTVparms %in% stressorsWPairedResponses)) {
+                getVerifiedPredictions(TargetSiteID
+                                       , SSTVanalytes = as.character(SSTVparms)
+                                       , colBioSample = colBioSample
+                                       , stressors = stressorsWPairedResponses
+                                       , stressorInfo <- siteStressInfo
+                                       , dataBioTaxa = bioTaxaData
+                                       , dataMasterTaxa = bioMasterTaxa
+                                       , matchedData = list_MatchBioData
+                                       , BioIndex_Val = bioIndex
+                                       , BioIndex_Nar = "Quality"
+                                       , BioIndex_Nar_Deg = "Degraded"
+                                       , dir_results=dir_results
+                                       , dir_sub="VerifiedPredictions"
+                                       , biocomm=bioComm)
+            } else {
+                print("No possible stressors have stressor-specific tolerance values.")
+                flush.console()
+                gapcomment <- paste0("Stressors having stressor-specific tolerance "
+                                     , "values are not identified at this site.")
+                gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0
+                                         , gapcomment)
+                colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+                fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                            , row.names = FALSE, sep = "\t")
+            } ### End getVP evaluation
+            
+            print(paste0("getVerifiedPredictions for ", bioComm, " is complete."))
+            flush.console()
+            
+            dirVP <- file.path(dir_results, TargetSiteID, toupper(bioComm)
+                               , "VerifiedPredictions")
+            if (dir.exists(dirVP)==TRUE) {
+                if (length(list.files(dirVP)) > 0) {
+                    numLoE = numLoE + 1
+                    df_LoE$Completed[df_LoE$LoE == "VP"] <- 1
+                    df_LoE$ResultsDir[df_LoE$LoE == "VP"] <- dirVP
+                }
+            }
+            
+            # # Not enabled yet
+            # # getSSDs
+            # # getSSDplot(Data, ResponseType, Taxa, Exposure)
+            # # myDF <- data_SSD_generator
+            # # myRT   <- "ResponseType"
+            # # myTaxa <- "Taxa"
+            # # myExp  <- "Exposure"
+            # # Run function
+            # # p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
+            
+            getWoE(TargetSiteID
+                   , biocomm = bioComm
+                   , index = bioIndex
+                   , dir_results = dir_results
+                   , dfLoE = df_LoE
+                   , dfQual = list.BioQualSites$dfQuality
+                   , dfStr = list_MatchBioData$site.b.str
+                   , dfRank = list.stressors$site.stressor.pctrank
+                   , dfStressInfo = siteStressInfo
+                   , df_coOccur = data_bioCoOccur
+                   , BioResp = bioMetricNames)
+            print(paste0("getWoE for ", bioComm, " is complete."))
+            flush.console()
+            
         }
 
-        # # Not enabled yet
-        # # getSSDs
-        # # getSSDplot(Data, ResponseType, Taxa, Exposure)
-        # # myDF <- data_SSD_generator
-        # # myRT   <- "ResponseType"
-        # # myTaxa <- "Taxa"
-        # # myExp  <- "Exposure"
-        # # Run function
-        # # p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
-        
-        getWoE(TargetSiteID
-               , biocomm = bioComm
-               , index = bioIndex
-               , dir_results = dir_results
-               , dfLoE = df_LoE
-               , dfQual = list.BioQualSites$dfQuality
-               , dfStr = list_MatchBioData$site.b.str
-               , dfRank = list.stressors$site.stressor.pctrank
-               , dfStressInfo = siteStressInfo
-               , df_coOccur = data_bioCoOccur
-               , BioResp = bioMetricNames)
-        print(paste0("getWoE for ", bioComm, " is complete."))
-        flush.console()
-        
+
         # Write run-time stats to file
         endsite.time <- Sys.time()
         elapsedsite.time <- endsite.time - startsite.time
@@ -1300,15 +1393,27 @@ for (site in 1:nrow(df_targets)) {
                                        , "NumStressors" = length(stressors)
                                        , "NumLoE" = numLoE
                                        , "ElapsedTime" = elapsedsite.time))        
-        # if (site == 1) {
-        #     df_runstats <- df_temp
-        # } else {
-        #     df_runstats <- rbind(df_runstats, df_temp)
-        # } ### End gather run stats
+#<<<<<<< 201909_ARL
+        if (site == 1) {
+            df_runstats <- df_temp
+        } else {
+            df_runstats <- rbind(df_runstats, df_temp)
+        } ### End gather run stats
         write.table(df_temp, file.path(wd,"Results",fn_runstats)
-                               , append = TRUE, col.names = FALSE
-                               , row.names = FALSE, sep = "\t")
-
+                    , append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
+        
+#=======
+ #       # if (site == 1) {
+ #       #     df_runstats <- df_temp
+ #       # } else {
+ #       #     df_runstats <- rbind(df_runstats, df_temp)
+#        # } ### End gather run stats
+#        write.table(df_temp, file.path(wd,"Results",fn_runstats)
+#                               , append = TRUE, col.names = FALSE
+#                               , row.names = FALSE, sep = "\t")
+#
+#>>>>>>> master
     } ### End biocomm loop
     
     # Get final report (Executive Summary style)
@@ -1317,12 +1422,26 @@ for (site in 1:nrow(df_targets)) {
               , probsLow=probsLow
               , useBMI=useBMI
               , useAlg=useAlg
+#<<<<<<< 201909_ARL
+              , useBC=TRUE
               , removeOutliers=removeOutliers
-              , dir_results=file.path(getwd(), "Results")
+              , lagdays=lagdays
+              , bmiIndex=bmiIndex
+              , algIndex=algIndex
+              , dir_data=dir_data
+              , dir_results=dir_results
               , report_type="summary"
               , report_format="html"
-               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
-             # , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
+               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+              #, dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
+#=======
+#              , removeOutliers=removeOutliers
+#              , dir_results=file.path(getwd(), "Results")
+#              , report_type="summary"
+#              , report_format="html"
+#               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
+#             # , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
+#>>>>>>> master
 
     # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
     #    , chem.info, stressors, stressors_logtransf, data.SSTV.totabund)
@@ -1344,8 +1463,11 @@ rm(site)
 getSummaryAllSites(biocommlist = c("bmi", "algae")
                    , bmiIndex = "CSCI"
                    , algIndex = "MMIhybrid"
-                   , dir_data = file.path(getwd(),"Data")
-                   , dir_results = file.path(getwd(), "Results")
+
+                   , dir_data = dir_data
+                   , dir_results = dir_results
                    , dir_sub = "WoE"
                    , df_sites = NULL)
+
+rm(list=ls())
 
