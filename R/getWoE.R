@@ -145,7 +145,8 @@ getWoE <- function(TargetSiteID
             #                 , by.x = "RespSampID", by.y = "RespSampID")
             # dfTemp <- dplyr::rename(dfTemp, ResponseValue = index)
             # dfTemp <- dfTemp[!is.na(dfTemp$StressorValue),]
-
+            
+            # TS ####
             if (chrLoE == "TS") {
                 dfTemp <- dfTemp %>%
                     dplyr::mutate(Response = index
@@ -162,6 +163,7 @@ getWoE <- function(TargetSiteID
                                   , StressorValue, n, nType, Score, LoEtrim
                                   , LoE, Analysis, InOut, biocomm)
             }
+            # CO ####
             if (chrLoE == "CO") {   # Come back to this one
                 dfTemp1 <- dfTemp %>%
                     dplyr::mutate(Response = index
@@ -194,6 +196,7 @@ getWoE <- function(TargetSiteID
 
                 dfTemp <- rbind(dfTemp1, dfTemp2)
             }
+            # SR ####
             if (chrLoE == "SR") {   # Come back to this one
                 dfTemp1 <- dfTemp %>%
                     dplyr::mutate(Response = index
@@ -226,6 +229,7 @@ getWoE <- function(TargetSiteID
 
                 dfTemp <- rbind(dfTemp1, dfTemp2)
             }
+            # VP ####
             if (chrLoE == "VP") {
                 dfTemp1 <- dfTemp %>%
                     dplyr::mutate(Response = "Sensitive Taxa"
@@ -262,6 +266,7 @@ getWoE <- function(TargetSiteID
 
                 dfTemp <- rbind(dfTemp1, dfTemp2)
             }
+            # SSD ####
             if (chrLoE == "SSD") {
                 dfTemp <- dfTemp %>%
                     dplyr::mutate(Response = "Number expected taxa not observed"
@@ -290,7 +295,7 @@ getWoE <- function(TargetSiteID
                         , row.names = FALSE, sep = "\t")
         } else { # booUse==1; If an LoE wasn't evaluated, skip to the next LoE
         
-            # Get Time Sequence data
+            # Get Time Sequence data ####
             if (chrLoE == "TS") {
                 if (file.exists(file.path(dirLoE,fnTSScores))) {
                     # Pull data into temp data structure
@@ -331,7 +336,7 @@ getWoE <- function(TargetSiteID
                 }
             } # End TS LoE
     
-            # Get CoOccurrence data
+            # Get CoOccurrence data ####
             if (chrLoE == "CO") {
                 if (file.exists(file.path(dirLoE,fnCOScores))) {
                     dfCO <- read.table(file.path(dirLoE,fnCOScores)
@@ -413,7 +418,7 @@ getWoE <- function(TargetSiteID
                 }
             } # End CO LoE (plus SR logistic regressions)
             
-            # Get Stressor-Response data
+            # Get Stressor-Response data ####
             if (chrLoE == "SR") {
                 if (file.exists(file.path(dirLoE,fnSRScores))) {
                     dfSR <- read.table(file.path(dirLoE, fnSRScores)
@@ -499,7 +504,7 @@ getWoE <- function(TargetSiteID
                 }
             } # End SR LoE (linear regressions)
             
-            # Get Verified Prediction data
+            # Get Verified Prediction data ####
             if (chrLoE == "VP") {
                 if (file.exists(file.path(dirLoE,fnVPScores))) {
                     dfVP <- read.table(file.path(dirLoE,fnVPScores)
@@ -572,7 +577,7 @@ getWoE <- function(TargetSiteID
                 }
             } # End VP LoE
             
-            # Get Species Sensitivity Distribution data
+            # Get Species Sensitivity Distribution data ####
             if (chrLoE == "SSD") {
                 if (file.exists(file.path(dirLoE,fnSSDScores))) {
                     # Not yet implemented

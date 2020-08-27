@@ -65,14 +65,14 @@ function(){
                                       ,p("In addition to any text below there is a progress bar in the lower right.")
                                       , textOutput("text_console_ALL")
                            )##tabPanel~Console~END
-                     , tabPanel("Plot Key", value = "pan_legends"
-                                , h3("Legend Key")
-                                #, p("Screening tool...and key for plots.")
-                                #, uiOutput("Disclaimer_html")
-       #                         , includeHTML(file.path(".", "www", "Legend_Key.html"))
-                                #, htmlOutput("LegKey_html")
-                                , fluidRow(htmlOutput("LegKey_html"))
-                     )##tabPanel~Disclaimer~END
+       #               , tabPanel("Plot Key", value = "pan_legends"
+       #                          , h3("Legend Key")
+       #                          #, p("Screening tool...and key for plots.")
+       #                          #, uiOutput("Disclaimer_html")
+       # #                         , includeHTML(file.path(".", "www", "Legend_Key.html"))
+       #                          #, htmlOutput("LegKey_html")
+       #                          , fluidRow(htmlOutput("LegKey_html"))
+       #               )##tabPanel~Disclaimer~END
                      # # 0.5
 
                            # # 2

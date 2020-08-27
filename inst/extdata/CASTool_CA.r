@@ -1414,7 +1414,7 @@ for (site in 1:nrow(df_targets)) {
 #                               , row.names = FALSE, sep = "\t")
 #
 #>>>>>>> master
-    } ### End biocomm loop
+    } ### End biocomm loop 
     
     # Get final report (Executive Summary style)
     getReport(TargetSiteID
@@ -1422,7 +1422,6 @@ for (site in 1:nrow(df_targets)) {
               , probsLow=probsLow
               , useBMI=useBMI
               , useAlg=useAlg
-#<<<<<<< 201909_ARL
               , useBC=TRUE
               , removeOutliers=removeOutliers
               , lagdays=lagdays
@@ -1432,7 +1431,7 @@ for (site in 1:nrow(df_targets)) {
               , dir_results=dir_results
               , report_type="summary"
               , report_format="html"
-               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
               #, dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
 #=======
 #              , removeOutliers=removeOutliers
@@ -1456,7 +1455,7 @@ for (site in 1:nrow(df_targets)) {
                 , append = FALSE, col.names = TRUE, row.names = FALSE
                 , sep = "\t")
 
-} ### End TargetSite loop
+} ### End TargetSite loop # not used in Shiny #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 rm(site)
 

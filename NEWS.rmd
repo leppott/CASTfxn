@@ -38,6 +38,21 @@ cat(paste0("Last Update: ",Sys.time()))
 # Version History
 
 
+## Changes in Version 0.1.0.9262 (2020-08-27)
+
+* Post merge update.
+* getSiteInfo.R
+    + wd/"Results" to dir_results
+    + Parameter AlgIndexGpGp to AlgIndexGp
+    + df_bkginfo to data_bkginfo
+* CAST_SMC Shiny
+    + server.R (CAST_SMC)
+        - Update Run_ALL to Run_ALL2 with skeleton code.
+        - Compared code chunks via https://text-compare.com/
+    + Update Help section.
+* getWoE.R
+    + Outlining.
+
 ## Changes in Pull Request #88.9001 (2020-08-21).
 
 * CASTool_CA.r 

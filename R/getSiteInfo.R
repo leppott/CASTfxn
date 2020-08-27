@@ -128,7 +128,7 @@ getSiteInfo <- function(TargetSiteID
                         , data_bmiMetrics=NULL
                         , bmiIndexGp = "IBI"
                         , data_algMetrics=NULL
-                        , algIndexGpGp = "IBI"
+                        , algIndexGp = "IBI"
                         , comp_sites=NULL
                         , data_cluster
                         , data_mods
@@ -236,7 +236,7 @@ getSiteInfo <- function(TargetSiteID
         rm(gap.good, gap.bad)
         
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
         
@@ -518,8 +518,8 @@ getSiteInfo <- function(TargetSiteID
     strFile_out_ext <- paste0(".", report_format)
     strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
     dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
-    # rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-    rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
+    rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+    #rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
                 , output_format=paste0(report_format,"_document")
                 , output_file=strFile_out
                 , output_dir=dir_map
@@ -562,7 +562,7 @@ getSiteInfo <- function(TargetSiteID
         colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
 
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
     }
@@ -584,7 +584,7 @@ getSiteInfo <- function(TargetSiteID
                                  , gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")    
     } else {  # Background data exists
@@ -597,9 +597,9 @@ getSiteInfo <- function(TargetSiteID
                     , sep = "\t", col.names = TRUE, row.names = FALSE)
         
         # Get metadata from fn_bkginfo
-        df.bkg2plot <- dplyr::left_join(df_bkginfo, data_bkgdata2)
+        df.bkg2plot <- dplyr::left_join(data_bkginfo, data_bkgdata2)
         
-        rm(data_bkgdata, data_bkgdata2, df_bkginfo)
+        rm(data_bkgdata, data_bkgdata2, data_bkginfo)
         
         # Determine appropriate graphics
         # Bar charts, faceted with catchment on left, watershed on right
