@@ -283,8 +283,8 @@ getVerifiedPredictions <- function(TargetSiteID
   }
   
   if (exists("keepMTcol")==TRUE) { # Some stressors have SSTV vals in master taxa file
+      
       keepMTcol <- as.character(keepMTcol)
-
       df_SSTVtaxa <- dataMasterTaxa %>%
       dplyr::select(FinalID, eval(keepMTcol))
 
@@ -448,11 +448,10 @@ getVerifiedPredictions <- function(TargetSiteID
                   # need to use max (default of 1) in case of duplicates
                   chem.info_LogTransf <- stressorInfo %>% 
                       dplyr::group_by(StdParamName) %>% 
-                      dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
-                  LogTransf <- chem.info_LogTransf[chem.info_LogTransf[,"StdParamName", TRUE]==SSTV.analyte
-                                                   , "max_LogTransf", TRUE]
-                  LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
-                  log.yn <- LogTransf
+                      dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE), .groups="drop_last")
+                  LogTransf <- chem.info_LogTransf$max_LogTransf[chem.info_LogTransf[,"StdParamName"]==SSTV.analyte]
+                  # LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
+                  log.yn <- as.logical(LogTransf)
                   
                   # get all the matched sample data for this stressor
                   # 20180620, match names
