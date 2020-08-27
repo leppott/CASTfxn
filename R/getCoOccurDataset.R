@@ -56,9 +56,9 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
         df_sites = data_Sites
         df_model = data_modelRaw
         df_meas = data_chemRaw
-        biocomm = "Alg"
-        df_resp = data_AlgMetrics
-        index = algIndex
+        biocomm = "BMI"
+        df_resp = data_bmiMetrics
+        index = bmiIndex
         lagdays = lagdays
         removeOutliers = TRUE
     }
@@ -115,7 +115,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
     # Clean up measured data and convert to wide format
     df_meas <- df_meas[!is.na(df_meas$ResultValue),]
     if (removeOutliers == TRUE) {
-        df_meas <- df_meas[df_meas$Outlier != "Outlier",]
+        df_meas <- dplyr::filter(df_meas, Outlier != "Outlier")
     }
     df_meas <- as.data.frame(df_meas)
     df_meas <- dplyr::select(df_meas, -SampDate)
@@ -124,7 +124,7 @@ getCoOccurDataset <- function(dataDir = file.path(getwd(),"Data")
                       , StdParamName, ResultValue) %>%
         dplyr::group_by(StationID_Master, ChemSampleID, SampleDate
                         , StdParamName) %>%
-        dplyr::summarise(meanResult = mean(ResultValue)) %>%
+        dplyr::summarise(meanResult = mean(ResultValue), .groups="drop_last") %>%
         dplyr::rename(ResultValue = meanResult) %>%
         tidyr::spread(key = StdParamName, value = ResultValue) %>%
         dplyr::rename(StressSampDate = SampleDate)
