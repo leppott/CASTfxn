@@ -124,14 +124,14 @@ getSiteInfo <- function(TargetSiteID
                         , data_bkgdata
                         , data_bkginfo
                         , data_SampSummary
-                        , data_303d
+                        , data_303d=NULL
                         , data_bmiMetrics=NULL
                         , bmiIndexGp = "IBI"
                         , data_algMetrics=NULL
                         , algIndexGp = "IBI"
                         , comp_sites=NULL
                         , data_cluster
-                        , data_mods
+                        , data_mods=NULL
                         , map_proj=NULL
                         , map_outline=NULL
                         , map_flowline=NULL
@@ -142,27 +142,27 @@ getSiteInfo <- function(TargetSiteID
     #
    
     # DEBUG 
-    boo_DEBUG <- FALSE
+    boo_DEBUG <- TRUE
     if (boo_DEBUG == TRUE) {
         TargetSiteID = TargetSiteID
         data_Sites = data_Sites
         data_bkgdata = df_bkgdata
         data_bkginfo = df_bkginfo
         data_SampSummary = data_SampSummary
-        data_303d = data_303d
+        data_303d = NULL
         data_bmiMetrics = data_bmiMetrics
         bmiIndexGp = bmiIndexGp
         data_algMetrics = data_AlgMetrics
         algIndexGp = algIndexGp
         comp_sites = comp_sites
         data_cluster = data_cluster
-        data_mods = data_mods
+        data_mods = NULL
         map_proj = my.aea
         map_outline = outline
         map_flowline = flowline
         map_flowline2 = NULL
-        dir_photo = file.path(getwd(),"Data","Photos")
-        dir_results = file.path(getwd(), "Results")
+        dir_photo = file.path(dir_data,"Photos")
+        dir_results = dir_results
         dir_sub = "SiteInfo"
     }
 
@@ -342,16 +342,18 @@ getSiteInfo <- function(TargetSiteID
     myWBName <- mySiteInfo$WaterbodyName
     myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
     
-    myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
-                       ,c("ReachModStatus", "ModReason")]
-    
-    my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
-    my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
-    myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
-    myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
-                                "FINAL.LISTING.DECISION")]
-    
-    
+    if (exists("data_mods")) {
+        myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
+                                 ,c("ReachModStatus", "ModReason")]
+    }
+    if (exists("data_303d")) {
+        my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
+        my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
+        myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
+        myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
+                                          "FINAL.LISTING.DECISION")]
+    }
+
     all.map.sites <- merge(data_Sites, data_cluster
                      , by.x = c("COMID","clust")
                      , by.y = c("COMID","clust"))
@@ -517,13 +519,22 @@ getSiteInfo <- function(TargetSiteID
     #strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
     strFile_out_ext <- paste0(".", report_format)
     strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
-    dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
-    rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-    #rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
-                , output_format=paste0(report_format,"_document")
-                , output_file=strFile_out
-                , output_dir=dir_map
-                , quiet=TRUE)
+    # dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
+    
+    ### CHANGE THIS BEFORE PUBLISHING...
+    if (boo_DEBUG) {
+        rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
+                          , output_format=paste0(report_format,"_document")
+                          , output_file=strFile_out
+                          , output_dir=dir_path
+                          , quiet=TRUE)
+    } else {
+        rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+                          , output_format=paste0(report_format,"_document")
+                          , output_file=strFile_out
+                          , output_dir=dir_path
+                          , quiet=TRUE)
+    }
     # place after static map so can insert
     
     
