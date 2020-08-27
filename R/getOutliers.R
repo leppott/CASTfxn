@@ -29,8 +29,8 @@ getOutliers <- function(df_data, df_meta) {
     # Debug
     boo_DEBUG <- FALSE
     if (boo_DEBUG==TRUE) {
-        df_data = data_modelRaw
-        df_meta = data_modelInfo
+        df_data = data_chemRaw
+        df_meta = data_chemInfo
     }
 
     # Define pipe
@@ -41,7 +41,7 @@ getOutliers <- function(df_data, df_meta) {
     df_meta <- df_meta %>%
         dplyr::select(StdParamName, LogTransf) %>%
         dplyr::group_by(StdParamName) %>%
-        dplyr::summarise(LogTransf = max(LogTransf))
+        dplyr::summarise(LogTransf = max(LogTransf), .groups="drop_last")
     # LogTransform data that need to be transformed
     df_data <- merge(df_data, df_meta[,c("StdParamName","LogTransf")]
                      , by.x = "StdParamName", by.y = "StdParamName"
