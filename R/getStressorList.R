@@ -307,7 +307,7 @@ getStressorList <- function(TargetSiteID
         df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN="-")
         df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN="/")
         refchemcolnames <- colnames(df_plot_ref_wide_mod)
-        if (gpcoolvar %in% refchemcolnames) {
+        if (any(gpcoolvar %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
             df_plot_long_ref <- reshape2::melt(df_plot_ref_wide_mod, measure.vars=gpcoolvar
                                                , variable.name = "GrpNm")
             # df_plot_long_ref <- df_plot_long_ref[!is.na(df_plot_long_ref$value), ] 
@@ -599,7 +599,7 @@ getStressorList <- function(TargetSiteID
   # need to use max (default of 1) in case of duplicates
   chemInfo_LogTransf <- chemInfo %>% 
       dplyr::group_by(StdParamName) %>%
-      dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE))
+      dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE), .groups="drop_last")
   stressorlist4merge <- data.frame(StdParamName=stressorlist, Sort=1:length(stressorlist))
   # merge
   LogTransf_merge <- merge(stressorlist4merge, chemInfo_LogTransf, all.x=TRUE)
