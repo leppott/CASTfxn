@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-27 11:02:01
+    #> Last Update: 2020-08-28 08:42:04
 
 # Planned Updates
 
@@ -24,6 +24,68 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9272 (2020-08-28)
+
+  - Update NEWS with yesterday’s changes.
+
+## Changes in Version 0.1.0.9271 (2020-08-27)
+
+  - v0.1.0.9003 …
+  - Updated to reflect changes in dplyr::arrange()
+  - Commented out CASTfxn Package version until I can install it
+
+## Changes in Version 0.1.0.9270 (2020-08-27)
+
+  - v0.1.0.9263 …
+  - Updates to address changes to dplyr::summarise() and
+    dplyr::mutate();
+      - changes to allow missing modified streams and 303d-list files;
+      - changes to use dir\_results instead of wd, “Results” so there’s
+        only one location to specify the results directory and it
+        doesn’t have to be the working directory.
+
+## Changes in Version 0.1.0.9269 (2020-08-27)
+
+  - v0.1.0.9261 …
+  - Changes to standardize debugging results directory;
+      - updates to account for changes in the new version of dplyr
+
+## Changes in Version 0.1.0.9268 (2020-08-27)
+
+  - v0.1.0.9263 …
+  - Updated code to reflect changes in new dplyr version regarding
+    summarise() and mutate()
+
+## Changes in Version 0.1.0.9267 (2020-08-27)
+
+  - v0.1.0.9256 …
+  - Adjusted dplyr::summarise() to reflect new version of dplyr package;
+      - rewrote lines to identify whether or not the parameter should be
+        log10 transformed
+
+## Changes in Version 0.1.0.9266 (2020-08-27)
+
+  - v0.1.0.9247 …
+  - added any to vector comparison and adjusted dplyr::summarise() to
+    reflect updates to the dplyr package
+
+## Changes in Version 0.1.0.9265 (2020-08-27)
+
+  - v0.1.0.9263 …
+  - Revised to allow NULL for data\_mods and data\_303d;
+      - adjusted directories to reflect the directory variables as
+        stated in the skeleton code ONLY in the debugging statement.
+
+## Changes in Version 0.1.0.9264 (2020-08-27)
+
+  - v0.1.0.9246 …
+  - Updated dplyr::summarise()
+
+## Changes in Version 0.1.0.9263 (2020-08-27)
+
+  - v0.1.0.9244 …
+  - updated dplyr::summarise()
 
 ## Changes in Version 0.1.0.9262 (2020-08-27)
 
