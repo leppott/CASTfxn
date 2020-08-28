@@ -142,7 +142,8 @@ getSiteInfo <- function(TargetSiteID
     #
    
     # DEBUG 
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
+    #
     if (boo_DEBUG == TRUE) {
         TargetSiteID = TargetSiteID
         data_Sites = data_Sites

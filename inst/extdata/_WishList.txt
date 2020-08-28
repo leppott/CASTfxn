@@ -1,3 +1,0 @@
-1. Convert all plots to ggplot.  20181205
-
-2. 

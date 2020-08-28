@@ -10,14 +10,25 @@
 #rm(list=ls())
 
 boo.debug <- TRUE
+debug.person <- "Erik"
 
-if (boo.debug) {
+if (boo.debug==TRUE & debug.person == "Ann") {
     gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     dir_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd"
     localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
     dir_data <- file.path(localdir, "Data")
     dir_results <- file.path(localdir, "Results")
     printClusterInfo <- FALSE
+} else if (boo.debug == TRUE & debug.person == "Erik") {
+    #gitpath <- file.path(system.file(package = "CASTfxn"), "R")
+    dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
+    wd <- "C://Users//Erik.Leppo//OneDrive - Tetra Tech, Inc//MyDocs_OneDrive//GitHub//CASTfxn//inst//shiny-examples//CAST_SMC"
+    dir_data <- file.path(wd, "Data")
+    dir_results <- file.path(wd, "Results")
+    printClusterInfo <- TRUE
+    site <- "SMC04134"
+    TargetSiteID <- site
+    b <- 1
 } else {
     gitpath <- file.path(system.file(package = "CASTfxn"), "R")
     dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
@@ -33,21 +44,23 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 library(stringr)
-source(file.path(gitpath, "getCoOccurDataset.R"))
-source(file.path(gitpath, "getTimeSeq.R"))
-source(file.path(gitpath, "getDataSets.R"))
-source(file.path(gitpath, "getComparators.R"))
-source(file.path(gitpath, "getSiteInfo.R"))
-source(file.path(gitpath, "getClusterInfo.R"))
-source(file.path(gitpath, "getStressorList.R"))
-source(file.path(gitpath, "getCoOccur.R"))
-source(file.path(gitpath, "getBioStressorResponses.R"))
-source(file.path(gitpath, "getVerifiedPredictions.R"))
-source(file.path(gitpath, "getOutliers.R"))
-source(file.path(gitpath, "getWoE.R"))
-source(file.path(gitpath, "getQualSites.R"))
-source(file.path(gitpath, "getSummaryAllSites.R"))
-source(file.path(gitpath, "getReport.R"))
+if (boo.debug==TRUE & debug.person == "Ann") {
+    source(file.path(gitpath, "getCoOccurDataset.R"))
+    source(file.path(gitpath, "getTimeSeq.R"))
+    source(file.path(gitpath, "getDataSets.R"))
+    source(file.path(gitpath, "getComparators.R"))
+    source(file.path(gitpath, "getSiteInfo.R"))
+    source(file.path(gitpath, "getClusterInfo.R"))
+    source(file.path(gitpath, "getStressorList.R"))
+    source(file.path(gitpath, "getCoOccur.R"))
+    source(file.path(gitpath, "getBioStressorResponses.R"))
+    source(file.path(gitpath, "getVerifiedPredictions.R"))
+    source(file.path(gitpath, "getOutliers.R"))
+    source(file.path(gitpath, "getWoE.R"))
+    source(file.path(gitpath, "getQualSites.R"))
+    source(file.path(gitpath, "getSummaryAllSites.R"))
+    source(file.path(gitpath, "getReport.R"))
+}
 
 not_all_na <- function(x) {!all(is.na(x))}
 
@@ -626,7 +639,8 @@ for (site in 1:nrow(df_targets)) {
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     
     for (b in 1:length(biocommlist)) {
-        
+    #for (b in 1:1) { # 1 = bmi, 2 = alg #if (boo.debug == TRUE & debug.person == "Erik")
+    
         noStressors <- FALSE
         noResponses <- FALSE
 
@@ -1384,5 +1398,5 @@ getSummaryAllSites(biocommlist = c("bmi", "algae")
                    , dir_sub = "WoE"
                    , df_sites = NULL)
 
-rm(list=ls())
+# rm(list=ls())
 

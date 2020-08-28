@@ -425,7 +425,7 @@ getStressorList <- function(TargetSiteID
                                                   , ggplot2::aes(x=stringr::str_wrap(Label, wrap_length)
                                                                  , y=value, color="cl_ref"
                                                                  , shape="cl_ref", fill="cl_ref")
-                                                  , size=1)
+                                                  , size=1, na.rm = TRUE)
           } else {
               p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="cl_ref"
                                                               , shape="cl_ref"
@@ -440,7 +440,7 @@ getStressorList <- function(TargetSiteID
                                                                  , color="targ"
                                                                  , shape="targ"
                                                                  , fill="targ")
-                                                  , size=1.5)
+                                                  , size=1.5, na.rm = TRUE)
           } else {
               p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color="targ"
                                                               , shape="targ"

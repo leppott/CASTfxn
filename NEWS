@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-28 08:42:04
+    #> Last Update: 2020-08-28 11:01:28
 
 # Planned Updates
 
@@ -24,6 +24,16 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9273 (2020-08-28)
+
+  - getSiteInfo.R
+      - Set boo\_DEBUG \<- FALSE
+  - getStressorList.R
+      - Add na.rm=TRUE to geom\_jitter to avoid warning about missing
+        points.
+  - CASTool\_CA.R
+      - Modify skeleton code for debugging.
 
 ## Changes in Version 0.1.0.9272 (2020-08-28)
 
