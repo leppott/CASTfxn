@@ -51,7 +51,7 @@ getTimeSeq <- function(TargetSiteID
         stressors = stressorsWPairedResponses
         df_stressinfo = data_stressInfo
         df_respinfo = data_bmiMetricsInfo
-        dir_results = file.path(getwd(),"Results")
+        dir_results = dir_results
         dir_sub = "TimeSequence"
     }
 
@@ -122,14 +122,16 @@ getTimeSeq <- function(TargetSiteID
     # Prep response data
     df_resp <- df_resp %>%
         dplyr::select_if(not_all_na) %>%
-        dplyr::select(-StationID_Master
-               , -Quality) %>%
+        dplyr::select(-StationID_Master, -Quality) %>%
         tidyr::gather(key = Biometric, value = ResultValue
                , -RespSampID, -RespSampDate) %>%
         dplyr::filter(!is.na(ResultValue)
-               , Biometric %in% BioResp) %>%
+               , Biometric %in% BioResp)
+    df_resp$ResultValue <- as.numeric(df_resp$ResultValue)
+    df_resp <- df_resp %>%
         dplyr::group_by(RespSampDate, Biometric) %>%
-        dplyr::summarize(meanval = signif(mean(ResultValue),digits=3), .groups = "drop_last") %>%
+        dplyr::summarize(meanval = signif(mean(ResultValue,na.rm=TRUE),digits=3)
+                         , .groups = "drop_last") %>%
         dplyr::rename(SampDate = RespSampDate, variable = Biometric)
     df_respinfo <- unique(df_respinfo[,c("MetricName","MetricLabel")])
     df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")
