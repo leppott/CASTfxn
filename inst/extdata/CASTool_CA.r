@@ -9,11 +9,26 @@
 
 #rm(list=ls())
 
-#gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
-gitpath <- file.path(system.file(package = "CASTfxn"), "R")
+boo.debug <- TRUE
+
+if (boo.debug) {
+    gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
+    dir_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd"
+    localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+    dir_data <- file.path(localdir, "Data")
+    dir_results <- file.path(localdir, "Results")
+    printClusterInfo <- FALSE
+} else {
+    gitpath <- file.path(system.file(package = "CASTfxn"), "R")
+    dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
+    wd <- getwd()
+    dir_data <- file.path(wd, "Data")
+    dir_results <- file.path(wd, "Results")
+    printClusterInfo <- TRUE
+}
 
 # Set up required functions ### DO NOT CHANGE! #
-library(CASTfxn)
+# library(CASTfxn)
 library(readxl)
 library(dplyr)
 library(tidyr)
@@ -40,11 +55,10 @@ startprep.time <- Sys.time()
 
 # Required user-designated options
 #wd <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
-wd <- getwd()
-dir_data <- file.path(wd, "Data")
-dir_results <- file.path(wd, "Results")
-
-printClusterInfo <- FALSE
+# wd <- getwd()
+# localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
+# dir_data <- file.path(localdir, "Data")
+# dir_results <- file.path(localdir, "Results")
 
 removeOutliers <- TRUE
 useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
@@ -124,10 +138,10 @@ my.aea = socal.aea
 data_Sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
 rm(fn.Sites.Info)
 
-# Get sample summary data
+# Get sample summary data (No ReachMod file or 303d file available 20200827)
 data_SampSummary <- read.delim(fn.SampSummary, header = TRUE, sep = "\t")
-data_mods        <- data_ReachMod   # Check this
-data_303d        <- data_303d       # Check this
+# data_mods        <- data_ReachMod   # Check this
+# data_303d        <- data_303d       # Check this
 rm(fn.SampSummary)
 
 # CAST, Chem & other measured data ####
@@ -166,7 +180,7 @@ data_chemRaw <- data_chemRaw %>%
            , ResultValue, SampleDate) %>%
     group_by(StationID_Master, ChemSampleID, SampDate, StdParamName
              , SampleDate) %>%
-    summarize(MeanResultValue = mean(ResultValue)) %>%
+    summarize(MeanResultValue = mean(ResultValue), .groups="drop_last") %>%
     rename(ResultValue = MeanResultValue)
 data_chemRaw <- unique(data_chemRaw)
 data_outliers <- getOutliers(df_data = data_chemRaw
@@ -224,6 +238,8 @@ data_meastrim <- as.data.frame(data_chemRaw) %>%
     dplyr::select(StationID_Master, ChemSampleID, StdParamName, SampleDate
                   , ResultValue, IQRmethod, SDmethod, Outlier)
 data_Stress <- rbind(data_meastrim, data_modeltrim)
+
+# Write stressor data and metadata for use in RPPTool
 fn.stress4RPP <- file.path(dir_data,"SMC_AllStressData.tab")
 fn.stressmeta4RPP <- file.path(dir_data,"SMC_AllStressInfo.tab")
 write.table(data_Stress, fn.stress4RPP, append = FALSE, col.names = TRUE
@@ -237,7 +253,7 @@ col_StressInvScore <- c(colMeasInvScore, colModelInvScore)
 # CAST, BMI taxonomic data ####
 data_BMIcounts <- read.table(fn.bmi.raw, header = TRUE, sep = "\t")
 
-data_MTbmi <- read.table(fn.MT.bmi, header = TRUE, sep = "\t",
+data_BMIMasterTaxa <- read.table(fn.MT.bmi, header = TRUE, sep = "\t",
                          stringsAsFactors = FALSE)
 # data_bmiTaxaRaw <- mutate(data_bmiTaxaRaw, BMI.Metrics.SampID = BMISampID)
 rm(fn.bmi.raw, fn.MT.bmi)
@@ -332,9 +348,7 @@ data_bmiCoOccur <- getCoOccurDataset(dataDir = dir_data
                                      , removeOutliers = removeOutliers)
 # returns df_coOccur as data_bmiCoOccur
 bmiParamsKEEP <- setdiff(colnames(data_bmiCoOccur), bmiModelParamsDEL)
-data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, bmiParamsKEEP)
-# write.table(data_bmiCoOccur, file.path(getwd(),"Results","bmiCoOccur.tab")
-#             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
+data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, all_of(bmiParamsKEEP))
 
 # CAST, Alg, metrics metadata ####
 data_AlgMetricsInfo <- read.delim(fn.alg.metrics.info, header = TRUE, sep = "\t",
@@ -349,7 +363,7 @@ data_AlgMetrics <- read.table(fn.alg.metrics, header = TRUE, sep = "\t",
 data_AlgMetrics <- data_AlgMetrics %>%
     mutate(AlgSampDate = lubridate::mdy(AlgSampDate)) %>%
     mutate(AlgSampFlag = NA)
-data_AlgMetrics <- dplyr::select(data_AlgMetrics, -algMetricsDiscard)
+data_AlgMetrics <- dplyr::select(data_AlgMetrics, -all_of(algMetricsDiscard))
 rm(fn.alg.metrics)
 
 # CAST, Alg taxonomic data ####
@@ -373,9 +387,6 @@ data_algCoOccur <- getCoOccurDataset(dataDir = dir_data
 algParamsKEEP <- setdiff(colnames(data_algCoOccur), algParamsDEL)
 
 data_algCoOccur <- dplyr::select(data_algCoOccur, all_of(algParamsKEEP))
-
-# write.table(data_algCoOccur, file.path(getwd(),"Results","algCoOccur.tab")
-#             ,append=FALSE,col.names = TRUE, row.names = FALSE, sep = "\t")
 
 # Get cluster data
 data_cluster <- read.delim(fn.cluster, header = TRUE, sep = "\t")
@@ -420,13 +431,10 @@ write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
 
 
 ### Evaluate each target site
-
-# TargetSiteID = "905S015201"
-# site = 1
-# TargetSiteID = "902S01097"
-# site = 1
-# for (site in 1:length(TargetSiteID)) {
-
+## Use this for debugging, and don't run the loop
+    # TargetSiteID = "SMC04134"
+    # site = 1
+    # for (site in 1:length(TargetSiteID)) {
 for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
     TargetSiteID <- df_targets$TargetSiteID[site]
@@ -480,19 +488,19 @@ for (site in 1:nrow(df_targets)) {
                                     , data_bkgdata = df_bkgdata
                                     , data_bkginfo = df_bkginfo
                                     , data_SampSummary = data_SampSummary
-                                    , data_303d = data_303d
+                                    , data_303d = NULL
                                     , data_bmiMetrics = data_bmiMetrics
                                     , bmiIndexGp = bmiIndexGp
                                     , data_algMetrics = data_AlgMetrics
                                     , algIndexGp = algIndexGp
                                     , comp_sites = comp_sites
                                     , data_cluster = data_cluster
-                                    , data_mods = data_mods
+                                    , data_mods = NULL
                                     , map_proj = my.aea
                                     , map_outline = outline
                                     , map_flowline = flowline
                                     , map_flowline2 = NULL
-                                    , dir_photo = file.path(getwd(),"Data","Photos")
+                                    , dir_photo = file.path(dir_data,"Photos")
                                     , dir_results = dir_results
                                     , dir_sub = "SiteInfo")
     # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo, 
@@ -508,7 +516,6 @@ for (site in 1:nrow(df_targets)) {
     flush.console()
     
     # Get Cluster Info
-
     if (printClusterInfo==TRUE) {
         getClusterInfo(TargetSiteID
                        , siteCOMID=list.SiteSummary$COMID
@@ -606,7 +613,7 @@ for (site in 1:nrow(df_targets)) {
     gaps <- rbind.data.frame(gap.chem.stress, gap.phab.stress, gap.mod.stress
                              , gap.bmi.rsp, gap.alg.rsp)
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+    fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
     
@@ -616,7 +623,6 @@ for (site in 1:nrow(df_targets)) {
     #     gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0, "No chemistry stressors available.")
     #     colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
     # }
-    
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     
     for (b in 1:length(biocommlist)) {
@@ -724,7 +730,6 @@ for (site in 1:nrow(df_targets)) {
         }
         
         # If no paired stressor-response samples for target site, no eval possible
-#<<<<<<< 201909_ARL
         if (!(TargetSiteID %in% data_bioCoOccur$StationID_Master)) { # Not in data_bioCoOccur
             noStressors = TRUE
         } else {
@@ -735,10 +740,9 @@ for (site in 1:nrow(df_targets)) {
             noStressors = FALSE
             }
         }
+        
+        # If no paired stressors, write to data gaps file
         if (noStressors==TRUE) {
-#=======
-#        if (!(TargetSiteID %in% data_bioCoOccur$StationID_Master)) {
-#>>>>>>> master
             print(paste0("No paired stressor-response samples for", TargetSiteID
                          , " for the ", bioComm, " community."))
             flush.console()
@@ -767,12 +771,7 @@ for (site in 1:nrow(df_targets)) {
                                            , "NumStressors" = NA
                                            , "NumLoE" = numLoE
                                            , "ElapsedTime" = elapsedsite.time))        
-            # if (site == 1) {
-            #     df_runstats <- df_temp
-            # } else {
-            #     df_runstats <- rbind(df_runstats, df_temp)
-            # } ### End gather run stats
-            write.table(df_temp, file.path(wd,"Results",fn_runstats)
+            write.table(df_temp, file.path(dir_results,fn_runstats)
                         , append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
 
@@ -864,7 +863,6 @@ for (site in 1:nrow(df_targets)) {
                 dplyr::filter(!is.na(ResultValue)) %>%
                 dplyr::filter(Outlier != "Outlier") %>%
                 tidyr::spread(key=StdParamName, value=ResultValue) %>%
-#<<<<<<< 201909_ARL
                 dplyr::rename(StressSampID = ChemSampleID
                               , StressSampDate = SampleDate)
             if (ncol(siteStressAll)>7) {
@@ -874,11 +872,7 @@ for (site in 1:nrow(df_targets)) {
                 siteStressAll <- cbind(siteStressAllCore, siteStressAllParms)
                 rm(siteStressAllCore, siteStressAllParms)
             }
-#=======
-#                dplyr::select_if(not_all_na) %>%
-#                dplyr::rename(StressSampID = ChemSampleID
-#                              , StressSampDate = SampleDate)
-#>>>>>>> master
+
             siteDetectsAll <- as.vector(colnames(siteStressAll[,4:ncol(siteStressAll)]))
             compStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master %in% comp_sites) %>%
@@ -896,19 +890,12 @@ for (site in 1:nrow(df_targets)) {
             siteStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master==TargetSiteID) %>%
                 dplyr::filter(!is.na(ResultValue)) %>%
-#<<<<<<< 201909_ARL
                 dplyr::filter(Outlier != "Outlier") %>%
                 tidyr::spread(key=StdParamName, value=ResultValue) %>%
                 dplyr::rename(StressSampID = ChemSampleID
                               , StressSampDate = SampleDate)
             siteStressAll <- dplyr::select_if(siteStressAll
                                               , not_all_na(siteStressAll[7:ncol(siteStressAll)]))
-#=======
-#                tidyr::spread(key=StdParamName, value=ResultValue) %>%
-#                dplyr::select_if(not_all_na) %>%
-#                dplyr::rename(StressSampID = ChemSampleID
-#                              , StressSampDate = SampleDate)
-#>>>>>>> master
             siteDetectsAll <- as.vector(colnames(siteStressAll[,4:ncol(siteStressAll)]))
             compStressAll <- data_Stress %>%
                 dplyr::filter(StationID_Master %in% comp_sites) %>%
@@ -952,7 +939,7 @@ for (site in 1:nrow(df_targets)) {
                                          , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                 write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                             , row.names = FALSE, sep = "\t")
             }
@@ -972,7 +959,7 @@ for (site in 1:nrow(df_targets)) {
                                              , gapcomment)
                     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                    fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                                 , row.names = FALSE, sep = "\t")
                 }
@@ -993,7 +980,7 @@ for (site in 1:nrow(df_targets)) {
                                              , gapcomment)
                     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                    fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                    fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                                 , row.names = FALSE, sep = "\t")
                 }
@@ -1030,8 +1017,6 @@ for (site in 1:nrow(df_targets)) {
         stressorsNOpairing <- setdiff(stressors, sitePairedStressors)
         stressorsWPairedResponses <- intersect(stressors, sitePairedStressors)
         
-        ### MODIFY siteStressAll to keep all core cols and only stressor cols
-
         # If no stressors are identified, no analyses can be performed. Error msg.
         if (length(stressors) == 0) {
             print(paste("No stressors identified for", TargetSiteID))
@@ -1057,7 +1042,7 @@ for (site in 1:nrow(df_targets)) {
                                            , "NumStressors" = length(stressors)
                                            , "NumLoE" = numLoE
                                            , "ElapsedTime" = elapsedsite.time))        
-            write.table(df_temp, file.path(wd,"Results",fn_runstats)
+            write.table(df_temp, file.path(dir_results,fn_runstats)
                         , append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
             next()
@@ -1117,49 +1102,11 @@ for (site in 1:nrow(df_targets)) {
 
         } # End paired stressors statement
 
-        
         # Either all are paired or some are
         stressors_logtransf <- data_stressInfo$LogTransf[data_stressInfo$StdParamName 
                                                          %in% stressorsWPairedResponses]
         
-#<<<<<<< 201909_ARL
-
-#=======
-        # Adjust siteStressAll to reflect only stressors used
-        # siteStressAllData <- cbind(siteStressAll[,1:6]
-        #                            , siteStressAll[[stressors]])
-        # siteStressPaired <- cbind(siteStressAll[,1:6]
-        #                           , siteStressAll[[stressorsWPairedResponses]])
-#
-#        # Create time sequence graphics
-#        # Uses all site stressor and response data, but not paired
-#        getTimeSeq(TargetSiteID
-#                   , biocomm = bioComm
-#                   , BioResp = bioMetricNames
-#                   , df_stress = siteStressAll
-#                   , df_resp = siteRespAll
-#                   , stressors = stressorsWPairedResponses
-#                   , df_stressinfo = data_stressInfo
-#                   , df_respinfo = bioMetricInfo
-#                   , dir_results = dir_results
-#                   , dir_sub = "TimeSequence")
-#        print(paste0("getTimeSeq for ", bioComm, " is complete."))
-#        flush.console()
-#        
-#        # NOT WORKING
-#        dirTS <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-#                           , "TimeSequence")
-#        if (dir.exists(dirTS)==TRUE) {
-#            if (length(list.files(dirTS)) > 0) {
-#                numLoE = numLoE + 1
-#                df_LoE$Completed[df_LoE$LoE == "TS"] <- 1
-#                df_LoE$ResultsDir[df_LoE$LoE == "TS"] <- dirTS
-#                
-#            }
-#        }
-#        
-#        
-#>>>>>>> master
+        # Continue evaluation if data are available
         if (NE_true) { # No paired stressor response data available. Move to next biocomm or site.
             # Write run-time stats to file
             endsite.time <- Sys.time()
@@ -1170,12 +1117,7 @@ for (site in 1:nrow(df_targets)) {
                                            , "NumStressors" = length(stressors)
                                            , "NumLoE" = numLoE
                                            , "ElapsedTime" = elapsedsite.time))        
-            # if (site == 1) {
-            #     df_runstats <- df_temp
-            # } else {
-            #     df_runstats <- rbind(df_runstats, df_temp)
-            # } ### End gather run stats
-            write.table(df_temp, file.path(wd,"Results",fn_runstats)
+            write.table(df_temp, file.path(dir_results,fn_runstats)
                         , append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
 
@@ -1197,7 +1139,6 @@ for (site in 1:nrow(df_targets)) {
             print(paste0("getTimeSeq for ", bioComm, " is complete."))
             flush.console()
             
-            # NOT WORKING
             dirTS <- file.path(dir_results, TargetSiteID, toupper(bioComm)
                                , "TimeSequence")
             if (dir.exists(dirTS)==TRUE) {
@@ -1383,7 +1324,6 @@ for (site in 1:nrow(df_targets)) {
             
         }
 
-
         # Write run-time stats to file
         endsite.time <- Sys.time()
         elapsedsite.time <- endsite.time - startsite.time
@@ -1393,27 +1333,11 @@ for (site in 1:nrow(df_targets)) {
                                        , "NumStressors" = length(stressors)
                                        , "NumLoE" = numLoE
                                        , "ElapsedTime" = elapsedsite.time))        
-#<<<<<<< 201909_ARL
-        if (site == 1) {
-            df_runstats <- df_temp
-        } else {
-            df_runstats <- rbind(df_runstats, df_temp)
-        } ### End gather run stats
-        write.table(df_temp, file.path(wd,"Results",fn_runstats)
+
+        write.table(df_temp, file.path(dir_results,fn_runstats)
                     , append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
-        
-#=======
- #       # if (site == 1) {
- #       #     df_runstats <- df_temp
- #       # } else {
- #       #     df_runstats <- rbind(df_runstats, df_temp)
-#        # } ### End gather run stats
-#        write.table(df_temp, file.path(wd,"Results",fn_runstats)
-#                               , append = TRUE, col.names = FALSE
-#                               , row.names = FALSE, sep = "\t")
-#
-#>>>>>>> master
+
     } ### End biocomm loop 
     
     # Get final report (Executive Summary style)
@@ -1431,16 +1355,8 @@ for (site in 1:nrow(df_targets)) {
               , dir_results=dir_results
               , report_type="summary"
               , report_format="html"
-               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
-              #, dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
-#=======
-#              , removeOutliers=removeOutliers
-#              , dir_results=file.path(getwd(), "Results")
-#              , report_type="summary"
-#              , report_format="html"
-#               , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
-#             # , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
-#>>>>>>> master
+               # , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd"))
+              , dir_rmd="C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd")
 
     # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
     #    , chem.info, stressors, stressors_logtransf, data.SSTV.totabund)
