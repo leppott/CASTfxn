@@ -10,7 +10,7 @@
 #rm(list=ls())
 
 boo.debug <- TRUE
-debug.person <- "Erik"
+debug.person <- "Ann"
 
 if (boo.debug==TRUE & debug.person == "Ann") {
     gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
@@ -654,7 +654,7 @@ for (site in 1:nrow(df_targets)) {
             colnames(gap.stress) <- c("fxnname", "condition", "result"
                                            , "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
             write.table(gap.stress, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
             noStressors <- TRUE
@@ -666,7 +666,7 @@ for (site in 1:nrow(df_targets)) {
             colnames(gap.resp) <- c("fxnname", "condition", "result"
                                            , "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
             write.table(gap.resp, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
             noResponses <- TRUE
@@ -772,7 +772,7 @@ for (site in 1:nrow(df_targets)) {
 
             # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
             write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
             
@@ -1043,7 +1043,7 @@ for (site in 1:nrow(df_targets)) {
                                                , gapcomment)
             colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
             write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
             
@@ -1075,7 +1075,7 @@ for (site in 1:nrow(df_targets)) {
                                                    , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                 write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                             , row.names = FALSE, sep = "\t")
             }
@@ -1092,7 +1092,7 @@ for (site in 1:nrow(df_targets)) {
                                      , 0, gapcomment)
             colnames(gaps) <- c("fxnname", "condition", "result", "comment")
             fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-            fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+            fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
             write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                         , row.names = FALSE, sep = "\t")
         } else {
@@ -1191,7 +1191,7 @@ for (site in 1:nrow(df_targets)) {
                 #                          , gapcomment)
                 # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                # fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                # fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                 # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 #             , row.names = FALSE, sep = "\t")
             } ### End getCoOccur
@@ -1294,7 +1294,7 @@ for (site in 1:nrow(df_targets)) {
                                          , gapcomment)
                 colnames(gaps) <- c("fxnname", "condition", "result", "comment")
                 fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-                fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+                fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
                 write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                             , row.names = FALSE, sep = "\t")
             } ### End getVP evaluation
