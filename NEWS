@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-28 11:01:28
+    #> Last Update: 2020-08-28 14:55:55
 
 # Planned Updates
 
@@ -24,6 +24,20 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9275 (2020-08-28)
+
+  - Shiny CAST\_SMC, server.R
+      - Enable map zoom on station select.
+  - Update README.
+
+## Changes in Version 0.1.0.9274 (2020-08-28)
+
+  - Shiny CAST\_SMC
+      - Revised data.
+      - Small tweaks
+          - CASTool\_CA.R
+          - server.R
 
 ## Changes in Version 0.1.0.9273 (2020-08-28)
 

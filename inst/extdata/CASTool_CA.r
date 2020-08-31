@@ -20,6 +20,8 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     dir_results <- file.path(localdir, "Results")
     printClusterInfo <- FALSE
 } else if (boo.debug == TRUE & debug.person == "Erik") {
+    message("Leppo")
+    library(CASTfxn)
     #gitpath <- file.path(system.file(package = "CASTfxn"), "R")
     dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
     wd <- "C://Users//Erik.Leppo//OneDrive - Tetra Tech, Inc//MyDocs_OneDrive//GitHub//CASTfxn//inst//shiny-examples//CAST_SMC"
@@ -448,6 +450,7 @@ write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
     # TargetSiteID = "SMC04134"
     # site = 1
     # for (site in 1:length(TargetSiteID)) {
+# FOR ~ site ####
 for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
     TargetSiteID <- df_targets$TargetSiteID[site]
@@ -638,8 +641,9 @@ for (site in 1:nrow(df_targets)) {
     # }
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
     
+    # FOR ~ b ####
     for (b in 1:length(biocommlist)) {
-    #for (b in 1:1) { # 1 = bmi, 2 = alg #if (boo.debug == TRUE & debug.person == "Erik")
+    #for (b in 2:2) { # 1 = bmi, 2 = alg #if (boo.debug == TRUE & debug.person == "Erik")
     
         noStressors <- FALSE
         noResponses <- FALSE

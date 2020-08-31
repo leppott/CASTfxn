@@ -97,7 +97,7 @@ function(){
                   )
                   , tabPanel(title = "Input, CAST files", value = "pan_input_CAST"
                              , h3("User input files from CAST")
-                             , p("If want to use CAST files as inputs in the RPP tool then check the box above.")
+                             , p("If want to use CAST files as inputs in the RPP tool then check the box on the previous tab ('Input, User Criteria').")
                              , p("With the buttons below select file locations on C: for CAST 'data' and 'results'.")
                              , p("Then click the 'upload' button.")
                              , hr()
@@ -150,9 +150,13 @@ function(){
 
                   )
 
-                  , tabPanel(title = "Metadata", value = "tab_metadata"
-                             , h3("RPP Tool Metadata")
-                             , p("list out terms"))
+                  # , tabPanel(title = "Metadata", value = "tab_metadata"
+                  #            , h3("RPP Tool Metadata")
+                  #            , p("list out terms"))
+                  # 
+                  , tabPanel(title = "Results", value = "tab_results"
+                             , h3("RPP Tool Results")
+                             , p("Not active until calculation has finished."))
 
 
                  # , tabPanel("Plot Key", value = "pan_legends"

@@ -201,7 +201,7 @@ shinyServer(function(input, output, session) {
     view.cent <- c(mean(df_filtered$FinalLongitude), mean(df_filtered$FinalLatitude))
     #
     # modify map
-    leafletProxy("map") %>%
+    leafletProxy("map_station") %>%
       #clearShapes() %>%  # removes all layers
       removeShape("layer_site_selected") %>%
       #addPolylines(data=filteredData()
@@ -2759,20 +2759,18 @@ shinyServer(function(input, output, session) {
                                        , "NumLoE" = numLoE
                                        , "ElapsedTime" = elapsedsite.time))
         #<<<<<<< 201909_ARL
-        if (site == 1) {
-          df_runstats <- df_temp
-        } else {
-          df_runstats <- rbind(df_runstats, df_temp)
-        } ### End gather run stats
+        # if (site == 1) {
+        #   df_runstats <- df_temp
+        # } else {
+        #   df_runstats <- rbind(df_runstats, df_temp)
+        # } ### End gather run stats
+        # Shiny mod (always 1)
+        df_runstats <- df_temp
         write.table(df_temp, file.path(wd,"Results",fn_runstats)
                     , append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
         
       } ### End biocomm loop
-      
-      
-      #***Fails*HERE***####
-      # RMD doesn't have all the parts needed.
       
       # getReport ####
       prog_cnt <- prog_cnt + 1

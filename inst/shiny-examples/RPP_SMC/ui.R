@@ -19,7 +19,7 @@ shinyjs::useShinyjs()
 # Define UI for application that draws a histogram
 shinyUI(
   # fluidPage(
-	  navbarPage("Restoration and Protection Potential (RPP), SMC v0.1.0.9253"
+	  navbarPage("Restoration and Protection Potential (RPP), SMC v0.1.0.9275"
 				 , theme = "bootstrap.css"
 				 , inverse = TRUE
 				 , tab_Disclaimer()
