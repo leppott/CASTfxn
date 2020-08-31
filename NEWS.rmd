@@ -37,17 +37,25 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-## Changes in Version 0.1.0.9275 (2020-08-28)
-* Shiny CAST_SMC, server.R
-    + Enable map zoom on station select.
-* Update README.
+## Changes in Version 0.1.0.9276 (2020-08-31)
+* Update version numbers in NEWS, DESCRIPTION
+    + In Shiny apps use date.
 
-## Changes in Version 0.1.0.9274 (2020-08-28)
+## Changes in Version 0.1.0.9275 (2020-08-31)
+* Multiple changes in RPP Shiny app.
+   + Added as pull request from 20200831 branch.
 * Shiny CAST_SMC
     + Revised data.
     + Small tweaks
         - CASTool_CA.R
         - server.R
+* Shiny CAST_SMC, server.R
+    + Enable map zoom on station select.
+* Update README.
+
+## Changes in Version 0.1.0.9274 (2020-08-31)
+* CASTool_CA.R
+    + Change from file.path(wd, "Results"... to file.path(dir_results...
 
 ## Changes in Version 0.1.0.9273 (2020-08-28)
 * getSiteInfo.R
