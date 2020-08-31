@@ -13,7 +13,7 @@ shinyServer(function(input, output, session) {
   # Output ####
 
   volumes=c(C = 'c:/')
-
+  
   shinyDirChoose(input
                  , 'dir_CAST_Data'
                  , roots=volumes)
@@ -124,7 +124,7 @@ shinyServer(function(input, output, session) {
     txt_wt_desc <- c("Exclude", "Default", "Double Count")
     data.frame("Weights" = c("0", "1", "2")
                , "Description" = txt_wt_desc
-               , "Count" = c(cnt_0, cnt_1, cnt_2)
+               , "Count" = as.character(c(cnt_0, cnt_1, cnt_2))
                , row.names = NULL)
 
   })##count_wt_1
@@ -190,12 +190,12 @@ shinyServer(function(input, output, session) {
 
   # Observe ####
 
-  observeEvent({
-    c(input$Station, input$b_RunAll)
-  } , {
-   fn_zip_toggle <- paste0(input$Station, ".zip")
-   toggleState(id="b_downloadData", condition = file.exists(file.path(".", "Results", fn_zip_toggle)) == TRUE)
-  })##~toggleState~END
+  # observeEvent({
+  #   c(input$Station, input$b_RunAll)
+  # } , {
+  #  fn_zip_toggle <- paste0(input$Station, ".zip")
+  #  toggleState(id="b_downloadData", condition = file.exists(file.path(".", "Results", fn_zip_toggle)) == TRUE)
+  # })##~toggleState~END
 
   observeEvent({
     input$Station
@@ -236,15 +236,39 @@ shinyServer(function(input, output, session) {
   # })
 
   observeEvent(input$b_Wts_Reset, {
-    #
-    # Reset all Weights to '1'.
-
-
+    # Reset all Weights to '1' (n=25).
+    updateSliderInput(session, "wt_hab_evenflow", value = 1)
+    updateSliderInput(session, "wt_hab_phi", value = 1)
+    updateSliderInput(session, "wt_hab_ripcov", value = 1)
+    updateSliderInput(session, "wt_modflow_wetmax", value = 1)
+    updateSliderInput(session, "wt_modflow_avg99", value = 1)
+    updateSliderInput(session, "wt_modflow_rbi", value = 1)
+    updateSliderInput(session, "wt_nutr_chla", value = 1)
+    updateSliderInput(session, "wt_nutr_no2", value = 1)
+    updateSliderInput(session, "wt_nutr_p", value = 1)
+    updateSliderInput(session, "wt_nutr_n", value = 1)
+    updateSliderInput(session, "wt_wq_alk", value = 1)
+    updateSliderInput(session, "wt_wq_do", value = 1)
+    updateSliderInput(session, "wt_wq_cond", value = 1)
+    updateSliderInput(session, "wt_wq_tds", value = 1)
+    updateSliderInput(session, "wt_wq_wtemp", value = 1)
+    updateSliderInput(session, "wt_Pot_BCG", value = 1)
+    updateSliderInput(session, "wt_Pot_CxnBCG", value = 1)
+    updateSliderInput(session, "wt_Pot_Stress", value = 1)
+    updateSliderInput(session, "wt_Pot_CxnStress", value = 1)
+    updateSliderInput(session, "wt_Threat_Fire", value = 1)
+    updateSliderInput(session, "wt_Threat_LU", value = 1)
+    updateSliderInput(session, "wt_Opp_ParksNow", value = 1)
+    updateSliderInput(session, "wt_Opp_MSCPs", value = 1)
+    updateSliderInput(session, "wt_Opp_NASVIBCG", value = 1)
+    updateSliderInput(session, "wt_Opp_UserDefined", value = 1)
   })##observeEvent~input$b_Wts_Reset~ENDs
 
   observeEvent(input$b_Wts_Import, {
     #
-    # Reset all Weights to '1'.
+    # Reset all Weights user input file.
+    #
+    # if file exists
 
 
   })##observeEvent~input$b_Wts_Import~ENDs
@@ -1032,6 +1056,7 @@ shinyServer(function(input, output, session) {
     )##withProgress~END
   }##Run_VP~END
 
+  # Run_ALL ####
   Run_ALL <- function(){
     #
    shiny::withProgress({
@@ -1072,8 +1097,10 @@ shinyServer(function(input, output, session) {
       useBCGbonus   <- input$useBCGbonus #0 # FALSE (default)
       useDownstream <- input$useDownstream #0 # FALSE (default)
 
+      year_max <- input$year_max # 2020
+      year_min <- input$year_min # 2008
 
-
+      # use 
 
 
       # put in global

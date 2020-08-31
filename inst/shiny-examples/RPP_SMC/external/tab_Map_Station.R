@@ -5,7 +5,7 @@ function(){
   tabPanel("Map, Stations" 
     , sidebarLayout(
       sidebarPanel(
-        helpText("The map can take up to 10 seconds to load.  Please be patient.")
+        helpText("The map can take up to 15 seconds to load.  Please be patient.")
         #, actionButton("map.streams.add", "Add Streams to Map")
         , br()
         , helpText("Use the button (or the map) to select a Station ID.")

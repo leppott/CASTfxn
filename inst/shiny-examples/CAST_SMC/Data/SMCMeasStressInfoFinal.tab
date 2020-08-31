@@ -48,11 +48,11 @@ Total	Alkalinity as CaCO3	mg/L	Alkalinity_CaCO3_uf_mg_L	17	Water quality	1	0	0	N
 Dissolved	Aluminum	ug/L	Aluminum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved aluminum (µg/L)		1	200
 Total	Aluminum	mg/kg dw	Aluminum_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total aluminum (mg/kg dry weight)			
 Total	Aluminum	ug/L	Aluminum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total aluminum (µg/L)		1	200
-Total	Acid Neutralizing Capacity	ueq/L	ANC_ueq_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Acid neutralizing capacity (µeq/L)			
+Total	Acid Neutralizing Capacity	ueq/L	ANC_ueq_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total acid neutralizing capacity (µeq/L)			
 Dissolved	Antimony	ug/L	Antimony_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved antimony (µg/L)		0.006	
 Total	Antimony	ug/L	Antimony_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total antimony (µg/L)		0.006	
 Dissolved	Arsenic	ug/L	Arsenic_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved arsenic (µg/L)		0.05	
-Total	Arsenic	mg/kg dw	Arsenic_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Acid neutralizing capacity (mg/kg dry weight)			
+Total	Arsenic	mg/kg dw	Arsenic_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total arsenic (mg/kg dry weight)			
 Total	Arsenic	ug/L	Arsenic_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total arsenic (µg/L)		0.05	
 Dissolved	Barium	ug/L	Barium_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved barium (µg/L)		1	
 Total	Barium	ug/L	Barium_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total barium (µg/L)		1	
@@ -103,7 +103,7 @@ Total	"Esfenvalerate/Fenvalerate, Total"	ng/g dw	EsfenvalerateFenvalerate_tot_ng
 Total	Fenpropathrin	ng/g dw	Fenpropathrin_tot_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total fenpropathrin (ng/g dry weight)			
 Total	Fenpropathrin	ug/L	Fenpropathrin_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total fenpropathrin (µg/L)			
 Not Recorded	Fluoride	mg/L	Fluoride_mg_L	5	Ions	1	0	0	NA	NA	NA	NA	1	Inc		Fluoride (mg/L)	1	2	
-Field_None	Glide/Pool Channel Alteration	none	GlidePoolChannelAlt_fld	17	Water quality	0	0	0	NA	NA	NA	NA	0			Acid neutralizing capacity (µeq/none)			
+Field_None	Glide/Pool Channel Alteration	none	GlidePoolChannelAlt_fld	17	Water quality	0	0	0	NA	NA	NA	NA	0			Field-measured glide/pool channel alteration			
 Dissolved	Hardness as CaCO3	mg/L	Hardness_CaCO3_f_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved hardness as calcium carbonate (mg/L)			
 Total	Hardness as CaCO3	mg/L	Hardness_CaCO3_uf_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total hardness as calcium carbonate (mg/L)			
 Dissolved	Iron	ug/L	Iron_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved iron (µg/L)	0.3		300
@@ -121,7 +121,7 @@ Dissolved	Manganese	ug/L	Manganese_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	
 Total	Manganese	mg/kg dw	Manganese_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total manganese (mg/kg dry weight)			
 Total	Manganese	ug/L	Manganese_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total manganese (µg/L)	0.05		50
 Dissolved	Mercury	ng/L	Mercury_f_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved mercury (µg/L)		0.002	
-Total	Mercury	ng/L	Mercury_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total mercury (µg/L)		0.002	
+Total	Mercury	ng/L	Mercury_ng_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total mercury (ng/L)		0.002	
 Total	Mercury	mg/kg dw	Mercury_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total mercury (mg/kg dry weight)			
 Dissolved	Molybdenum	ug/L	Molybdenum_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved molybdenum (µg/L)			
 Total	Molybdenum	ug/L	Molybdenum_uf_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total molybdenum (µg/L)			
@@ -130,10 +130,10 @@ Total	Ammonia as N	mg/L	NH3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total
 Dissolved	Nickel	ug/L	Nickel_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved nickel (µg/L)		0.1	
 Total	Nickel	mg/kg dw	Nickel_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total nickel (mg/kg dry weight)			
 Total	Nickel	ug/L	Nickel_uf_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total nickel (µg/L)		0.1	
-Dissolved	Nitrite as N	mg/L	NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrite as N (µg/L)		1	
-Not Recorded	Nitrite as N	mg/L	NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrite as N (µg/L)		1	
-Dissolved	Nitrate as N	mg/L	NO3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate as N (µg/L)		10	
-Not Recorded	Nitrate as N	mg/L	NO3_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrate as N (µg/L)		10	
+Dissolved	Nitrite as N	mg/L	NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrite as N (mg/L)		1	
+Not Recorded	Nitrite as N	mg/L	NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrite as N (mg/L)		1	
+Dissolved	Nitrate as N	mg/L	NO3_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate as N (mg/L)		10	
+Not Recorded	Nitrate as N	mg/L	NO3_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrate as N (mg/L)		10	
 Total	Biphenyl	ug/L	Biphenyl_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Biphenyl (µg/L)			
 Total	Toluene	ug/L	Toluene_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		Toluene (µg/L)		150	
 Total	"Trimethylbenzene, 1,2,4-"	ug/L	Trimethylbenzene_124_ug_L	3	Organic	1	0	0	NA	NA	NA	NA	1	Inc		"1,2,4-Trimethylbenzene (µg/L)"			
@@ -206,8 +206,8 @@ Total	"Dichlorobenzene, 1,4-"	ug/L	Dichlorobenzene_14_ug_L	9	Organohalide	1	0	0	
 Total	"Dichloroethane, 1,1-"	ug/L	Dichloroethane_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1-Dichloroethane (µg/L)"		5	
 Total	"Dichloroethane, 1,2-"	ug/L	Dichloroethane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dichloroethane (µg/L)"		0.5	
 Total	"Dichloroethylene, 1,1-"	ug/L	Dichloroethylene_11_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,1-Dichloroethylene (µg/L)"		6	
-Total	"Dichloroethylene, cis 1,2-"	ug/L	Dichloroethylene_cis_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"cis-1,2--Dichloroethylene (µg/L)"		6	
-Total	"Dichloroethylene, trans 1,2-"	ug/L	Dichloroethylene_trans_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"trans 1,2--Dichloroethylene (µg/L)"		10	
+Total	"Dichloroethylene, cis 1,2-"	ug/L	Dichloroethylene_cis_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"cis-1,2-Dichloroethylene (µg/L)"		6	
+Total	"Dichloroethylene, trans 1,2-"	ug/L	Dichloroethylene_trans_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"trans 1,2-Dichloroethylene (µg/L)"		10	
 Total	"Dichloropropane, 1,2-"	ug/L	Dichloropropane_12_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,2-Dichloropropane (µg/L)"		5	
 Total	"Dichloropropane, 1,3-"	ug/L	Dichloropropane_13_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"1,3-Dichloropropane (µg/L)"			
 Total	"Dichloropropane, 2,2-"	ug/L	Dichloropropane_22_ug_L	9	Organohalide	1	0	0	NA	NA	NA	NA	1	Inc		"2,2-Dichloropropane (µg/L)"			
@@ -275,7 +275,7 @@ Total	Acenaphthene	ug/L	Acenaphthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	N
 Total	Acenaphthylene	ug/L	Acenaphthylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Acenaphthylene (µg/L)			
 Total	Anthracene	ug/L	Anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Anthracene (µg/L)			
 Total	Benz(a)anthracene	ug/L	Benz_a_anthracene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benz(a)anthracene (µg/L)			
-Total	Benzo(a)pyrene	ug/L	Benzo_a_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(a)pyrene *ug/L)		2	
+Total	Benzo(a)pyrene	ug/L	Benzo_a_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(a)pyrene (µg/L)		2	
 Total	Benzo(b)fluoranthene	ug/L	Benzo_b_fluoranthene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(b)fluoranthene (µg/L)			
 Total	Benzo(e)pyrene	ug/L	Benzo_e_pyrene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		Benzo(e)pyrene (µg/L)			
 Total	"Benzo(g,h,i)perylene"	ug/L	Benzo_ghi_perylene_ug_L	11	PAHs & Phthalataes	1	0	0	NA	NA	NA	NA	1	Inc		"Benzo(g,h,i)perylene (µg/L)"			
@@ -397,12 +397,12 @@ Total	PCB 206	ng/g dw	PCB206_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 206 (n
 Total	PCB 206	ug/L	PCB206_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 206 (µg/L)			
 Total	PCB 209	ng/g dw	PCB209_ng_g_dw	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 209 (ng/g dry weight)			
 Total	PCB 209	ug/L	PCB209_ug_L	12	PCBs	1	0	0	NA	NA	NA	NA	1	Inc		PCB 209 (µg/L)			
-Total	Nitrate as N	mg/L	NO3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate as N (µg/L)		10	
-Dissolved	Nitrate + Nitrite as N	mg/L	NO3NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate and nitrite as N (µg/L)		10	
-Not Recorded	Nitrate + Nitrite as N	mg/L	NO3NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Not Recorded nitrate and nitrite as N (µg/L)		10	
-Total	Nitrate + Nitrite as N	mg/L	NO3NO2_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate and nitrite as N (µg/L)		10	
-Field_None	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Acid neutralizing capacity (µeq/%)			
-Field_Total	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Acid neutralizing capacity (µeq/%)			
+Total	Nitrate as N	mg/L	NO3_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate as N (mg/L)		10	
+Dissolved	Nitrate + Nitrite as N	mg/L	NO3NO2_N_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved nitrate and nitrite as N (mg/L)		10	
+Not Recorded	Nitrate + Nitrite as N	mg/L	NO3NO2_N_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Nitrate and nitrite as N (mg/L)		10	
+Total	Nitrate + Nitrite as N	mg/L	NO3NO2_N_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrate and nitrite as N (mg/L)		10	
+Field_None	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Field-measured oxygen saturation (%)			
+Field_Total	"Oxygen, Saturation"	%	O2sat_fld_pct	17	Water quality	0	0	0	NA	NA	NA	NA	0	Dec		Field-measured oxygen saturation (%)			
 Total	Phosphorus as P	mg/L	P_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total phosphorus as P (mg/L)	0.05		
 Total	"Permethrin, cis-"	ng/g dw	Permethrin_cis_ng_g_dw	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cis-permethrin (ng/g dry weight)			
 Total	"Permethrin, cis-"	ug/L	Permethrin_cis_ug_L	13	Pyrethroids	1	0	0	NA	NA	NA	NA	1	Inc		Total cis-permethrin (µg/L)			
@@ -423,9 +423,9 @@ Field_None	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	In
 Field_Total	Salinity	ppt	Salinity_fld_ppt	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured salinity (ppt)			
 Dissolved	Selenium	ug/L	Selenium_f_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Dissolved selenium (µg/L)		0.05	
 Total	Selenium	ug/L	Selenium_ug_L	6	Metals_metalloids	1	1	0	NA	NA	NA	NA	1	Inc		Total selenium (µg/L)		0.05	
-Field_Total	Silica	mg/L	Silica_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Acid neutralizing capacity (µeq/L)			
+Field_Total	Silica	mg/L	Silica_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Field-measured total silica (mg/L)			
 Dissolved	Silica as SiO2	mg/L	Silica_SiO2_f_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved silica as SiO2 (mg/L)			
-Field_Total	Silica as SiO2	mg/L	Silica_SiO2_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Acid neutralizing capacity (µeq/L)			
+Field_Total	Silica as SiO2	mg/L	Silica_SiO2_fld_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	0	Inc		Field-measured total silica as SiO2 (mg/L)			
 Total	Silica as SiO2	mg/L	Silica_SiO2_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total silica as SiO2 (mg/L)			
 Dissolved	Silver	ug/L	Silver_f_ug_L	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Dissolved silver (µg/L)			100
 Total	Silver	mg/kg dw	Silver_tot_mg_kg_dw	6	Metals_metalloids	1	0	0	NA	NA	NA	NA	1	Inc		Total silver (mg/kg dry weight)			
@@ -478,7 +478,7 @@ Not Recorded	"Nitrogen, Total"	mg/L	TN_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc	
 Total	"Nitrogen, Total"	mg/L	TN_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total nitrogen (mg/L)			
 Total	Total Organic Carbon	% dw	TOC_pct_dw	7	Nutrients	0	0	0	NA	NA	NA	NA	1	Inc		Total organic carbon (percent dry weight)			
 Total	Total Organic Carbon	mg/L	TOC_uf_mg_L	7	Nutrients	1	0	0	NA	NA	NA	NA	1	Inc		Total organic carbon (mg/L)			
-Field_None	TransectsSampled	count	Transects_count	17	Water quality	0	0	0	NA	NA	NA	NA	0			Acid neutralizing capacity (µeq/count)			
+Field_None	TransectsSampled	count	Transects_count	17	Water quality	0	0	0	NA	NA	NA	NA	0			Number of transects sampled (count)			
 Particulate	Total Suspended Solids	mg/L	TSS_particulate_mg_L	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Total suspended solids (mg/L)			
 Field_None	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured turbidity (NTU)	20		5
 Field_Total	Turbidity	NTU	Turbidity_fld_NTU	17	Water quality	1	0	0	NA	NA	NA	NA	1	Inc		Field-measured turbidity (NTU)	20		5

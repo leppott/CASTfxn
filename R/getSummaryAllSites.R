@@ -167,7 +167,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         
         # Merge with site data to get latitude and longitude
         if (is.null(df_sites)==TRUE) {
-            fn.sites <- fn.Sites.Info <- file.path(dir_data,"SMCSitesFinal.tab")
+            fn.Sites.Info <- file.path(dir_data,"SMCSitesFinal.tab")
+            fn.sites <- fn.Sites.Info
+            # fn.sites <- fn.Sites.Info <- file.path(dir_data,"SMCSitesFinal.tab")
             df_sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
         }
         

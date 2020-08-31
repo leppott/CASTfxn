@@ -3,10 +3,10 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2019-05-16 14:58:48
+    #> Last Update: 2020-08-28 14:54:40
 
-Suite of functions for the Causal Assessment Screening Tool
-(CAST).
+Suite of functions for the Causal Assessment Screening Tool (CAST).
+Includes Shiny app.
 
 ## Badges
 
@@ -28,14 +28,18 @@ releases](https://img.shields.io/github/downloads/leppott/CASTfxn/total.svg)](ht
 Requires the use of devtools (or another package) to install from
 GitHub.
 
-If using devtools need to add an extra line of code (see below).
+If using devtools need to add an extra line of code for R v3.6.
 <https://github.com/r-lib/devtools/issues/1939>
-
-Vignettes are also not installed by default. The additional parameters
-in install\_github are used to install the vignettes.
 
 ``` r
 Sys.setenv("TAR" = "internal")
+```
+
+Vignettes are also not installed by default. The additional parameters
+in install\_github are used to ensuer the install happens if there is an
+existing install and to install the vignettes.
+
+``` r
 devtools::install_github("leppott/CASTfxn", force=TRUE, build_vignettes=TRUE)
 ```
 
@@ -50,7 +54,7 @@ In development.
 
 ## Usage
 
-By those using the CAST.
+By those using the CAST and familiar with causal assessment.
 
 ## Documentation
 
@@ -58,9 +62,9 @@ Vignette and install guide are planned for the future.
 
 ## Help
 
-Every function has a help file with a working example. There is also a
-vignette with descriptions and examples of all functions in the
-`CASTfxn` library.
+Functions in the package have a help file with extra documentation.
+There is also a vignette with descriptions and examples of all functions
+in the `CASTfxn` library.
 
 ``` r
 # To get help on a function
