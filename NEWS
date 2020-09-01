@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-31 15:17:44
+    #> Last Update: 2020-09-01 08:39:37
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9277 (working)
+
+  - Replace data file SMCSitesFinal.tab.
+  - Shiny RPP, server.R
+      - TargetSiteID to TargetCOMID
 
 ## Changes in Version 0.1.0.9276 (2020-08-31)
 
@@ -47,7 +53,6 @@ NEWS
 
   - CASTool\_CA.R
       - Change from file.path(wd, “Results”… to file.path(dir\_results…
-        \>\>\>\>\>\>\> Stashed changes
 
 ## Changes in Version 0.1.0.9273 (2020-08-28)
 

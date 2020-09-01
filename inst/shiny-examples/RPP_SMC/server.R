@@ -1078,8 +1078,8 @@ shinyServer(function(input, output, session) {
       #   file.remove(fn_zip_results)
       # }##IF~length(fn_zip_results)~END
       # Remove only the current station's zip file
-      TargetSiteID <- input$Station
-      fn_zip <- file.path(".", "Results", paste0(TargetSiteID, ".zip"))
+      TargetCOMID <- input$COMID_RPP
+      fn_zip <- file.path(".", "Results", paste0(TargetCOMID, ".zip"))
       if (file.exists(fn_zip)==TRUE){
         file.remove(fn_zip)
       }##IF~file.exists~END
@@ -1123,7 +1123,7 @@ shinyServer(function(input, output, session) {
       incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       # Copy from Results to www/Results
-      CopyResults(TargetSiteID)
+      CopyResults(TargetCOMID)
 
 
 
