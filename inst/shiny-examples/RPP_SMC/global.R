@@ -20,6 +20,7 @@ library(rgdal)
 library(leaflet)
 # not sure
 library(shinyBS)
+library(DT)
 
 # old
 # library(cluster)

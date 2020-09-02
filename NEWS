@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-01 08:39:37
+    #> Last Update: 2020-09-02 12:07:29
 
 # Planned Updates
 
@@ -25,11 +25,12 @@ NEWS
 
 # Version History
 
-## Changes in Version 0.1.0.9277 (working)
+## Changes in Version 0.1.0.9277 (2020-09-02)
 
   - Replace data file SMCSitesFinal.tab.
   - Shiny RPP, server.R
-      - TargetSiteID to TargetCOMID
+      - TargetSiteID to TargetCOMID.
+      - Split up user inputs.
 
 ## Changes in Version 0.1.0.9276 (2020-08-31)
 

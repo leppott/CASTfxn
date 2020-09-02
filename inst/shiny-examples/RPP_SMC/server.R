@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
     df.sites.map[df.sites.map[, "StationID_Master"] == input$siteid.select, "COMID_NHD2"]
   })
 
-  output$table_wt_count <- renderTable({
+  output$table_wt_stress_count <- renderTable({
     cnt_0 <- ifelse(input$wt_hab_evenflow == 0, 1, 0) +
       ifelse(input$wt_hab_phi == 0, 1, 0) +
       ifelse(input$wt_hab_ripcov == 0, 1, 0) +
@@ -59,17 +59,17 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_wq_do == 0, 1, 0) +
       ifelse(input$wt_wq_cond == 0, 1, 0) +
       ifelse(input$wt_wq_tds == 0, 1, 0) +
-      ifelse(input$wt_wq_wtemp == 0, 1, 0) +
-      ifelse(input$wt_Pot_BCG == 0, 1, 0) +
-      ifelse(input$wt_Pot_CxnBCG == 0, 1, 0) +
-      ifelse(input$wt_Pot_Stress == 0, 1, 0) +
-      ifelse(input$wt_Pot_CxnStress == 0, 1, 0) +
-      ifelse(input$wt_Threat_Fire == 0, 1, 0) +
-      ifelse(input$wt_Threat_LU == 0, 1, 0) +
-      ifelse(input$wt_Opp_ParksNow == 0, 1, 0) +
-      ifelse(input$wt_Opp_MSCPs == 0, 1, 0) +
-      ifelse(input$wt_Opp_NASVIBCG == 0, 1, 0) +
-      ifelse(input$wt_Opp_UserDefined == 0, 1, 0)
+      ifelse(input$wt_wq_wtemp == 0, 1, 0) 
+      # ifelse(input$wt_Pot_BCG == 0, 1, 0) +
+      # ifelse(input$wt_Pot_CxnBCG == 0, 1, 0) +
+      # ifelse(input$wt_Pot_Stress == 0, 1, 0) +
+      # ifelse(input$wt_Pot_CxnStress == 0, 1, 0) +
+      # ifelse(input$wt_Threat_Fire == 0, 1, 0) +
+      # ifelse(input$wt_Threat_LU == 0, 1, 0) +
+      # ifelse(input$wt_Opp_ParksNow == 0, 1, 0) +
+      # ifelse(input$wt_Opp_MSCPs == 0, 1, 0) +
+      # ifelse(input$wt_Opp_NASVIBCG == 0, 1, 0) +
+      # ifelse(input$wt_Opp_UserDefined == 0, 1, 0)
     cnt_1 <- ifelse(input$wt_hab_evenflow == 1, 1, 0) +
       ifelse(input$wt_hab_phi == 1, 1, 0) +
       ifelse(input$wt_hab_ripcov == 1, 1, 0) +
@@ -84,17 +84,17 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_wq_do == 1, 1, 0) +
       ifelse(input$wt_wq_cond == 1, 1, 0) +
       ifelse(input$wt_wq_tds == 1, 1, 0) +
-      ifelse(input$wt_wq_wtemp == 1, 1, 0) +
-      ifelse(input$wt_Pot_BCG == 1, 1, 0) +
-      ifelse(input$wt_Pot_CxnBCG == 1, 1, 0) +
-      ifelse(input$wt_Pot_Stress == 1, 1, 0) +
-      ifelse(input$wt_Pot_CxnStress == 1, 1, 0) +
-      ifelse(input$wt_Threat_Fire == 1, 1, 0) +
-      ifelse(input$wt_Threat_LU == 1, 1, 0) +
-      ifelse(input$wt_Opp_ParksNow == 1, 1, 0) +
-      ifelse(input$wt_Opp_MSCPs == 1, 1, 0) +
-      ifelse(input$wt_Opp_NASVIBCG == 1, 1, 0) +
-      ifelse(input$wt_Opp_UserDefined == 1, 1, 0)
+      ifelse(input$wt_wq_wtemp == 1, 1, 0) 
+      # ifelse(input$wt_Pot_BCG == 1, 1, 0) +
+      # ifelse(input$wt_Pot_CxnBCG == 1, 1, 0) +
+      # ifelse(input$wt_Pot_Stress == 1, 1, 0) +
+      # ifelse(input$wt_Pot_CxnStress == 1, 1, 0) +
+      # ifelse(input$wt_Threat_Fire == 1, 1, 0) +
+      # ifelse(input$wt_Threat_LU == 1, 1, 0) +
+      # ifelse(input$wt_Opp_ParksNow == 1, 1, 0) +
+      # ifelse(input$wt_Opp_MSCPs == 1, 1, 0) +
+      # ifelse(input$wt_Opp_NASVIBCG == 1, 1, 0) +
+      # ifelse(input$wt_Opp_UserDefined == 1, 1, 0)
     cnt_2 <- ifelse(input$wt_hab_evenflow == 2, 1, 0) +
       ifelse(input$wt_hab_phi == 2, 1, 0) +
       ifelse(input$wt_hab_ripcov == 2, 1, 0) +
@@ -109,8 +109,93 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_wq_do == 2, 1, 0) +
       ifelse(input$wt_wq_cond == 2, 1, 0) +
       ifelse(input$wt_wq_tds == 2, 1, 0) +
-      ifelse(input$wt_wq_wtemp == 2, 1, 0) +
-      ifelse(input$wt_Pot_BCG == 2, 1, 0) +
+      ifelse(input$wt_wq_wtemp == 2, 1, 0) 
+      # ifelse(input$wt_Pot_BCG == 2, 1, 0) +
+      # ifelse(input$wt_Pot_CxnBCG == 2, 1, 0) +
+      # ifelse(input$wt_Pot_Stress == 2, 1, 0) +
+      # ifelse(input$wt_Pot_CxnStress == 2, 1, 0) +
+      # ifelse(input$wt_Threat_Fire == 2, 1, 0) +
+      # ifelse(input$wt_Threat_LU == 2, 1, 0) +
+      # ifelse(input$wt_Opp_ParksNow == 2, 1, 0) +
+      # ifelse(input$wt_Opp_MSCPs == 2, 1, 0) +
+      # ifelse(input$wt_Opp_NASVIBCG == 2, 1, 0) +
+      # ifelse(input$wt_Opp_UserDefined == 2, 1, 0)
+
+    txt_wt_desc <- c("Exclude", "Default", "Double Count")
+    data.frame("Weights" = c("0", "1", "2")
+               , "Description" = txt_wt_desc
+               , "Count" = as.character(c(cnt_0, cnt_1, cnt_2))
+               , row.names = NULL)
+
+  })##table_wt_stress_count
+  
+  output$table_wt_indicator_count <- renderTable({
+    #cnt_0 <- #ifelse(input$wt_hab_evenflow == 0, 1, 0) +
+    #   ifelse(input$wt_hab_phi == 0, 1, 0) +
+    #   ifelse(input$wt_hab_ripcov == 0, 1, 0) +
+    #   ifelse(input$wt_modflow_wetmax == 0, 1, 0) +
+    #   ifelse(input$wt_modflow_avg99 == 0, 1, 0) +
+    #   ifelse(input$wt_modflow_rbi == 0, 1, 0) +
+    #   ifelse(input$wt_nutr_chla == 0, 1, 0) +
+    #   ifelse(input$wt_nutr_no2 == 0, 1, 0) +
+    #   ifelse(input$wt_nutr_p == 0, 1, 0) +
+    #   ifelse(input$wt_nutr_n == 0, 1, 0) +
+    #   ifelse(input$wt_wq_alk == 0, 1, 0) +
+    #   ifelse(input$wt_wq_do == 0, 1, 0) +
+    #   ifelse(input$wt_wq_cond == 0, 1, 0) +
+    #   ifelse(input$wt_wq_tds == 0, 1, 0) +
+    #   ifelse(input$wt_wq_wtemp == 0, 1, 0) +
+    cnt_0 <- ifelse(input$wt_Pot_BCG == 0, 1, 0) +
+      ifelse(input$wt_Pot_CxnBCG == 0, 1, 0) +
+      ifelse(input$wt_Pot_Stress == 0, 1, 0) +
+      ifelse(input$wt_Pot_CxnStress == 0, 1, 0) +
+      ifelse(input$wt_Threat_Fire == 0, 1, 0) +
+      ifelse(input$wt_Threat_LU == 0, 1, 0) +
+      ifelse(input$wt_Opp_ParksNow == 0, 1, 0) +
+      ifelse(input$wt_Opp_MSCPs == 0, 1, 0) +
+      ifelse(input$wt_Opp_NASVIBCG == 0, 1, 0) +
+      ifelse(input$wt_Opp_UserDefined == 0, 1, 0)
+    # cnt_1 <- #ifelse(input$wt_hab_evenflow == 1, 1, 0) +
+      # ifelse(input$wt_hab_phi == 1, 1, 0) +
+      # ifelse(input$wt_hab_ripcov == 1, 1, 0) +
+      # ifelse(input$wt_modflow_wetmax == 1, 1, 0) +
+      # ifelse(input$wt_modflow_avg99 == 1, 1, 0) +
+      # ifelse(input$wt_modflow_rbi == 1, 1, 0) +
+      # ifelse(input$wt_nutr_chla == 1, 1, 0) +
+      # ifelse(input$wt_nutr_no2 == 1, 1, 0) +
+      # ifelse(input$wt_nutr_p == 1, 1, 0) +
+      # ifelse(input$wt_nutr_n == 1, 1, 0) +
+      # ifelse(input$wt_wq_alk == 1, 1, 0) +
+      # ifelse(input$wt_wq_do == 1, 1, 0) +
+      # ifelse(input$wt_wq_cond == 1, 1, 0) +
+      # ifelse(input$wt_wq_tds == 1, 1, 0) +
+      # ifelse(input$wt_wq_wtemp == 1, 1, 0) +
+    cnt_1 <- ifelse(input$wt_Pot_BCG == 1, 1, 0) +
+      ifelse(input$wt_Pot_CxnBCG == 1, 1, 0) +
+      ifelse(input$wt_Pot_Stress == 1, 1, 0) +
+      ifelse(input$wt_Pot_CxnStress == 1, 1, 0) +
+      ifelse(input$wt_Threat_Fire == 1, 1, 0) +
+      ifelse(input$wt_Threat_LU == 1, 1, 0) +
+      ifelse(input$wt_Opp_ParksNow == 1, 1, 0) +
+      ifelse(input$wt_Opp_MSCPs == 1, 1, 0) +
+      ifelse(input$wt_Opp_NASVIBCG == 1, 1, 0) +
+      ifelse(input$wt_Opp_UserDefined == 1, 1, 0)
+    # cnt_2 <- #ifelse(input$wt_hab_evenflow == 2, 1, 0) +
+      # ifelse(input$wt_hab_phi == 2, 1, 0) +
+      # ifelse(input$wt_hab_ripcov == 2, 1, 0) +
+      # ifelse(input$wt_modflow_wetmax == 2, 1, 0) +
+      # ifelse(input$wt_modflow_avg99 == 2, 1, 0) +
+      # ifelse(input$wt_modflow_rbi == 2, 1, 0) +
+      # ifelse(input$wt_nutr_chla == 2, 1, 0) +
+      # ifelse(input$wt_nutr_no2 == 2, 1, 0) +
+      # ifelse(input$wt_nutr_p == 2, 1, 0) +
+      # ifelse(input$wt_nutr_n == 2, 1, 0) +
+      # ifelse(input$wt_wq_alk == 2, 1, 0) +
+      # ifelse(input$wt_wq_do == 2, 1, 0) +
+      # ifelse(input$wt_wq_cond == 2, 1, 0) +
+      # ifelse(input$wt_wq_tds == 2, 1, 0) +
+      # ifelse(input$wt_wq_wtemp == 2, 1, 0) +
+    cnt_2 <-ifelse(input$wt_Pot_BCG == 2, 1, 0) +
       ifelse(input$wt_Pot_CxnBCG == 2, 1, 0) +
       ifelse(input$wt_Pot_Stress == 2, 1, 0) +
       ifelse(input$wt_Pot_CxnStress == 2, 1, 0) +
@@ -120,14 +205,34 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_Opp_MSCPs == 2, 1, 0) +
       ifelse(input$wt_Opp_NASVIBCG == 2, 1, 0) +
       ifelse(input$wt_Opp_UserDefined == 2, 1, 0)
-
+    
     txt_wt_desc <- c("Exclude", "Default", "Double Count")
     data.frame("Weights" = c("0", "1", "2")
                , "Description" = txt_wt_desc
                , "Count" = as.character(c(cnt_0, cnt_1, cnt_2))
                , row.names = NULL)
-
-  })##count_wt_1
+    
+  })##table_wt_indicator_count
+  
+  output$table_wt_subindex_count <- renderTable({
+    cnt_0 <- ifelse(input$wt_SubIndex_Pot == 0, 1, 0) +
+      ifelse(input$wt_SubIndex_Threat == 0, 1, 0) +
+      ifelse(input$wt_SubIndex_Opp == 0, 1, 0) +
+      ifelse(input$wt_modflow_wetmax == 0, 1, 0)
+    cnt_1 <- ifelse(input$wt_SubIndex_Pot == 1, 1, 0) +
+      ifelse(input$wt_SubIndex_Threat == 1, 1, 0) +
+      ifelse(input$wt_SubIndex_Opp == 1, 1, 0) 
+    cnt_2 <- ifelse(input$wt_SubIndex_Pot == 2, 1, 0) +
+      ifelse(input$wt_SubIndex_Threat == 2, 1, 0) +
+      ifelse(input$wt_SubIndex_Opp == 2, 1, 0)
+    
+    txt_wt_desc <- c("Exclude", "Default", "Double Count")
+    data.frame("Weights" = c("0", "1", "2")
+               , "Description" = txt_wt_desc
+               , "Count" = as.character(c(cnt_0, cnt_1, cnt_2))
+               , row.names = NULL)
+    
+  })##table_wt_subindex_count
 
   output$table_fn_CAST <- renderTable({
     fn_data <- c("SMC_AllStressData.tab"
@@ -235,7 +340,7 @@ shinyServer(function(input, output, session) {
   #   print(input$directory)
   # })
 
-  observeEvent(input$b_Wts_Reset, {
+  observeEvent(input$b_Wts_Str_Reset, {
     # Reset all Weights to '1' (n=25).
     updateSliderInput(session, "wt_hab_evenflow", value = 1)
     updateSliderInput(session, "wt_hab_phi", value = 1)
@@ -252,6 +357,35 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "wt_wq_cond", value = 1)
     updateSliderInput(session, "wt_wq_tds", value = 1)
     updateSliderInput(session, "wt_wq_wtemp", value = 1)
+    # updateSliderInput(session, "wt_Pot_BCG", value = 1)
+    # updateSliderInput(session, "wt_Pot_CxnBCG", value = 1)
+    # updateSliderInput(session, "wt_Pot_Stress", value = 1)
+    # updateSliderInput(session, "wt_Pot_CxnStress", value = 1)
+    # updateSliderInput(session, "wt_Threat_Fire", value = 1)
+    # updateSliderInput(session, "wt_Threat_LU", value = 1)
+    # updateSliderInput(session, "wt_Opp_ParksNow", value = 1)
+    # updateSliderInput(session, "wt_Opp_MSCPs", value = 1)
+    # updateSliderInput(session, "wt_Opp_NASVIBCG", value = 1)
+    # updateSliderInput(session, "wt_Opp_UserDefined", value = 1)
+  })##observeEvent~input$b_Wts_Str_Reset~ENDs
+  
+  observeEvent(input$b_Wts_Ind_Reset, {
+    # Reset all Weights to '1' (n=25).
+    # updateSliderInput(session, "wt_hab_evenflow", value = 1)
+    # updateSliderInput(session, "wt_hab_phi", value = 1)
+    # updateSliderInput(session, "wt_hab_ripcov", value = 1)
+    # updateSliderInput(session, "wt_modflow_wetmax", value = 1)
+    # updateSliderInput(session, "wt_modflow_avg99", value = 1)
+    # updateSliderInput(session, "wt_modflow_rbi", value = 1)
+    # updateSliderInput(session, "wt_nutr_chla", value = 1)
+    # updateSliderInput(session, "wt_nutr_no2", value = 1)
+    # updateSliderInput(session, "wt_nutr_p", value = 1)
+    # updateSliderInput(session, "wt_nutr_n", value = 1)
+    # updateSliderInput(session, "wt_wq_alk", value = 1)
+    # updateSliderInput(session, "wt_wq_do", value = 1)
+    # updateSliderInput(session, "wt_wq_cond", value = 1)
+    # updateSliderInput(session, "wt_wq_tds", value = 1)
+    # updateSliderInput(session, "wt_wq_wtemp", value = 1)
     updateSliderInput(session, "wt_Pot_BCG", value = 1)
     updateSliderInput(session, "wt_Pot_CxnBCG", value = 1)
     updateSliderInput(session, "wt_Pot_Stress", value = 1)
@@ -262,14 +396,25 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session, "wt_Opp_MSCPs", value = 1)
     updateSliderInput(session, "wt_Opp_NASVIBCG", value = 1)
     updateSliderInput(session, "wt_Opp_UserDefined", value = 1)
-  })##observeEvent~input$b_Wts_Reset~ENDs
+  })##observeEvent ~ input$b_Wts_Ind_Reset ~ ENDs
 
+  observeEvent(input$b_Wts_Subindex_Reset, {
+    # Reset all Weights to '1' (n=25).
+    updateSliderInput(session, "wt_SubIndex_Pot", value = 1)
+    updateSliderInput(session, "wt_SubIndex_Threat", value = 1)
+    updateSliderInput(session, "wt_SubIndex_Opp", value = 1)
+  })##observeEvent ~ input$b_Wts_SubIndex_Reset ~ ENDs
+  
+  
+  
+  
+  
+  
   observeEvent(input$b_Wts_Import, {
     #
     # Reset all Weights user input file.
     #
     # if file exists
-
 
   })##observeEvent~input$b_Wts_Import~ENDs
 
@@ -1378,6 +1523,44 @@ shinyServer(function(input, output, session) {
   })
 
   # 07Results ####
+  
+  # watch_results <- reactive({
+  #   # trigger for df_results()
+  #   paste(input$b_RunAll, )
+  # })## watch_results ~ END
+  # 
+  # df_results <- "x"
+  
+  
+  output$df_results_DT <- DT::renderDT({
+    # should be blank initially and once have data it will appear correctly
+    #df_r <- df_results()
+    df_r <- read.delim(file.path(".", "Results", "AllScores.tab")
+                       , stringsAsFactors = FALSE)
+    colnames(df_r) <- gsub("\\.", "<br>", colnames(df_r))
+    return(df_r)
+  }##expression~END
+  , filter="top"
+  , caption = "Results summary."
+  , options=list(scrollX=TRUE
+                 , lengthMenu = c(5, 10, 25, 50, 100, 1000)
+                 , autoWidth = TRUE
+                 )
+  , escape = FALSE
+  )## output$df_results_DT ~ END
+  
+  output$img_report <- renderImage({
+    if(file.exists(file.path(".", "Results", "img_report")) == FALSE){
+      return(NULL)
+    } else {
+      return(list(
+        src = "Results/img_report.png",
+        contentType = "image/png",
+        alt = "report images"
+      ))
+    }## IF ~ END
+  }, deleteFile = FALSE
+  )## output$report_img ~ END
 
   # output$downloadData <- downloadHandler(
   #   filename <- function() {
