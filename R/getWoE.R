@@ -53,7 +53,7 @@ getWoE <- function(TargetSiteID
                    , BioResp = bioMetricNames) {
     
     # QC data
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     
     if (boo_DEBUG == TRUE) {
         TargetSiteID = TargetSiteID
