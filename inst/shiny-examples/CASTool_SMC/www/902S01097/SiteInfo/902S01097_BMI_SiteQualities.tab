@@ -1,0 +1,7 @@
+"BioComm"	"Group"	"Quality"	"ComparatorSamples"	"ClusterSamples"	"AllSamples"
+"bmi"	"All"	"All qualities"	51	113	1141
+"bmi"	"All"	"Degraded"	30	51	550
+"bmi"	"All"	"Not degraded"	21	62	591
+"bmi"	"Better than"	"All qualities"	2	12	197
+"bmi"	"Better than"	"Degraded"	0	0	0
+"bmi"	"Better than"	"Not degraded"	2	12	197

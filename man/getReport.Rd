@@ -15,23 +15,42 @@ getReport(
   lagdays = 10,
   bmiIndex = "CSCI",
   algIndex = "MMIhybrid",
-  dir_data = file.path(".", "Data"),
-  dir_results = dir_results,
+  dir_data = normalizePath(file.path(".", "Data")),
+  dir_results = normalizePath(file.path(".", "Results")),
   report_type = "summary",
   report_format = "html",
-  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+  siteQual2Plot = NULL
 )
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
-\item{dir_results}{Directory with subfolders named by SiteID.  Default = Results folder in working directory.}
+\item{probsHigh}{Default = 0.75}
+
+\item{probsLow}{Default = 0.25}
+
+\item{useBC}{Default = TRUE}
+
+\item{removeOutliers}{Default = TRUE}
+
+\item{lagdays}{Default = 10}
+
+\item{bmiIndex}{Default = "CSCI".}
+
+\item{algIndex}{Default = "MMIhybrid"}
+
+\item{dir_data}{Absolute path to data.  Default = /Data}
+
+\item{dir_results}{Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.}
 
 \item{report_type}{Requested report type (all or summary).  Default = summary}
 
-\item{report_format}{Requested report output format (html or word).  Default = HTML}
+\item{report_format}{Requested report output format (html or word).  Default = html}
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
+
+\item{siteQual2Plot}{Site quality to print.}
 }
 \value{
 A report for the provided SiteID in the provided format (html or word) 
@@ -45,7 +64,13 @@ Generates a report based on a Target SiteID in a given directory.
 The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
 Report format can be "html" (recommended default) or "word" (docx). 
 
-Only the "summary" report is active.
+Only the "summary" report is active. 
+
+dir_data and dir_results should be absolute and not relative paths.  
+This is because these directories are passed to an RMD file.
+Within the RMD each code chunk assumes a relative path based on the RMD location 
+and not the working directory of the calling function.
+The function `normalizePath` can be used to convert from relative to absolute path.
 }
 \examples{
 TargetSiteID <- "SRCKN001.61"

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-02 12:07:29
+    #> Last Update: 2020-09-08 13:00:22
 
 # Planned Updates
 
@@ -23,7 +23,19 @@ NEWS
     
       - Add stressor response plot from getCoOccur
 
+  - Create logos.
+
 # Version History
+
+## Changes in Version 0.1.0.9278 (2020-09-08)
+
+  - getReport.R
+      - Add SiteQual2Print as parameter.
+      - Change dir\_results default.
+  - CAST server.R
+      - Add siteQual2Print as input for getReport.
+  - Rename CAST to CASTool
+  - Rename RPP to RPPTool
 
 ## Changes in Version 0.1.0.9277 (2020-09-02)
 

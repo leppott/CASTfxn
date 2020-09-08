@@ -8,11 +8,28 @@
 #' 
 #' Only the "summary" report is active. 
 #' 
+#' dir_data and dir_results should be absolute and not relative paths.  
+#' This is because these directories are passed to an RMD file.
+#' Within the RMD each code chunk assumes a relative path based on the RMD location 
+#' and not the working directory of the calling function.
+#' The function `normalizePath` can be used to convert from relative to absolute path.
+#' 
 #' @param TargetSiteID SiteID
-#' @param dir_results Directory with subfolders named by SiteID.  Default = Results folder in working directory.
+#' @param probsHigh Default = 0.75
+#' @param probsLow Default = 0.25
+#' @param useBMI
+#' @param useAlg
+#' @param useBC Default = TRUE
+#' @param removeOutliers Default = TRUE
+#' @param lagdays Default = 10
+#' @param bmiIndex Default = "CSCI".
+#' @param algIndex Default = "MMIhybrid"
+#' @param dir_data Absolute path to data.  Default = /Data
+#' @param dir_results Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
-#' @param report_format Requested report output format (html or word).  Default = HTML
+#' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
+#' @param siteQual2Plot Site quality to print.
 #' 
 #' @return A report for the provided SiteID in the provided format (html or word) 
 #' in the results directory.
@@ -39,11 +56,12 @@ getReport <- function(TargetSiteID
                       , lagdays = 10
                       , bmiIndex = "CSCI"
                       , algIndex = "MMIhybrid"
-                      , dir_data = file.path(".", "Data")
-                      , dir_results = dir_results
+                      , dir_data = normalizePath(file.path(".", "Data"))
+                      , dir_results = normalizePath(file.path(".", "Results"))
                       , report_type="summary"
                       , report_format="html"
-                      , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")){##FUNCTION.START
+                      , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                      , siteQual2Plot = NULL){##FUNCTION.START
   #
   # Date and Time for output
   myDate <- format(Sys.Date(),"%Y%m%d")
@@ -70,9 +88,11 @@ getReport <- function(TargetSiteID
   # Test if RMD file exists
   if (file.exists(strFile_RMD)){##IF.file.exists.START
     #suppressWarnings(
-    rmarkdown::render(strFile_RMD, output_format=paste0(report_format,"_document")
+    rmarkdown::render(strFile_RMD
+                      , output_format=paste0(report_format,"_document")
                       , output_file=strFile_out
-                      , output_dir=file.path(dir_results, TargetSiteID), quiet=TRUE)
+                      , output_dir=file.path(dir_results, TargetSiteID)
+                      , quiet=TRUE)
     #)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"

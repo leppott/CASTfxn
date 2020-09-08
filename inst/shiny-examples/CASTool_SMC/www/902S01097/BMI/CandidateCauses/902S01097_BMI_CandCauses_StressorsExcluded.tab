@@ -1,0 +1,6 @@
+"Stressor"	"BioComm"	"Label"
+"HighDur_Dry"	"BMI"	"Dry-season median longest # days flow > high-flow threshold (days/event)"
+"MaxMonthQ_Dry"	"BMI"	"Dry-season maximum mean monthly streamflow (m3/s)"
+"NoDisturb_Dry"	"BMI"	"Dry-season median longest # days between the low- and high-flow threshold (days)"
+"pH_fld_SU"	"BMI"	"Field-measured pH (SU)"
+"Qmax_Dry"	"BMI"	"Dry-season median annual maximum daily streamflow (m3/s)"

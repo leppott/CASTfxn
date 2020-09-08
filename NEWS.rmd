@@ -34,8 +34,19 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * getBioStressorResponses
     + Add stressor response plot from getCoOccur
+    
+* Create logos.
 
 # Version History
+
+## Changes in Version 0.1.0.9278 (2020-09-08)
+* getReport.R
+    + Add SiteQual2Print as parameter.
+    + Change dir_results default.
+* CAST server.R
+    + Add siteQual2Print as input for getReport.
+* Rename CAST to CASTool
+* Rename RPP to RPPTool
 
 ## Changes in Version 0.1.0.9277 (2020-09-02)
 * Replace data file SMCSitesFinal.tab.

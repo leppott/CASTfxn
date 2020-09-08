@@ -15,17 +15,17 @@
 #'     + Updated Shiny App with AZ data.
 #' 
 #' @param appname Name of the Shiny app to run.  Valid values are 
-#' "CAST_AZ", "CAST_SMC".  Default = "CAST_SMC".
+#' "CAST_AZ", "CASTool_SMC", "RPPTool_SMC".  Default = "CASTool_SMC".
 
 #'
 #' @examples
 #' \dontrun{
 #' # SMC
-#' runShinyExample("CAST_SMC")
+#' runShinyExample("CASTool_SMC")
 #' }
 #
 #' @export
-runShinyExample <- function(appname="CAST_SMC"){##FUNCTION.START
+runShinyExample <- function(appname="CASTool_SMC"){##FUNCTION.START
   #
   #appDir <- system.file("shiny-examples", appname, package = "CASTfxn")
   #if (appDir == "") {

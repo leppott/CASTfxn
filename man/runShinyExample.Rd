@@ -4,11 +4,11 @@
 \alias{runShinyExample}
 \title{run Shiny Example}
 \usage{
-runShinyExample(appname = "CAST_SMC")
+runShinyExample(appname = "CASTool_SMC")
 }
 \arguments{
 \item{appname}{Name of the Shiny app to run.  Valid values are 
-"CAST_AZ", "CAST_SMC".  Default = "CAST_SMC".}
+"CAST_AZ", "CASTool_SMC", "RPPTool_SMC".  Default = "CASTool_SMC".}
 }
 \description{
 Launches Shiny app.
@@ -29,6 +29,6 @@ There are multiple apps stored in the package:
 \examples{
 \dontrun{
 # SMC
-runShinyExample("CAST_SMC")
+runShinyExample("CASTool_SMC")
 }
 }

@@ -1,0 +1,3 @@
+"StationID_Master"	"RespSampID"	"CSCI"	"Quality"	"StressSampID"	"Label"	"Stressor"	"StressorValue"	"Response"	"ResponseValue"	"qLoValue_Cutoff"	"qHiValue_Cutoff"	"Score"	"biocomm"	"n_BetterBio"	"n_BetterBioDegNo"
+"902S01097"	"902S01097_5/11/2009_BMI_RWB_1"	1.050760498	"Good"	"902S01097_2009-05-11"	"Field-measured specific conductivity (µS/cm)"	"SpecificConductivity_fld_uS_cm"	1234	"Sensitive Taxa"	0.080204779	0.09371940675	0.1676035455	1	"BMI"	108	108
+"902S01097"	"902S01097_5/11/2009_BMI_RWB_1"	1.050760498	"Good"	"902S01097_2009-05-11"	"Field-measured specific conductivity (µS/cm)"	"SpecificConductivity_fld_uS_cm"	1234	"Tolerant Taxa"	0.06996587	0.073006775	0.1366796725	-1	"BMI"	108	108

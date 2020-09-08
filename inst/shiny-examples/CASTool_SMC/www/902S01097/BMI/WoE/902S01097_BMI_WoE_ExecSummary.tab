@@ -1,0 +1,7 @@
+"StationID_Master"	"BioComm"	"BioDeg"	"StressorType"	"NumRespSamples"	"minIndex"	"meanIndex"	"maxIndex"	"NumStressSamples"	"NumStressors"	"WtTot_WoE"	"WtTotTS_barplot"	"WtTotCO_boxplot"	"WtTotSR_OutCase_LinRegr"	"WtTotSR_InCase_LinRegr"	"WtTotSR_InCase_LogRegr"	"WtTotVP_boxplot"
+"902S01097"	"BMI"	"No"	"Habitat"	1	1.050760498	1.050760498	1.050760498	1	2	1	0	1	1	0.5	0.5	NA
+"902S01097"	"BMI"	"No"	"Ions"	1	1.050760498	1.050760498	1.050760498	1	1	1	0	1	1	0	0	NA
+"902S01097"	"BMI"	"No"	"Metals_metalloids"	1	1.050760498	1.050760498	1.050760498	1	7	0.714	0	0.714	0.714	0	0.286	NA
+"902S01097"	"BMI"	"No"	"Nutrients"	1	1.050760498	1.050760498	1.050760498	1	3	0.333	0	1	0.333	0	-0.333	NA
+"902S01097"	"BMI"	"No"	"Water quality"	1	1.050760498	1.050760498	1.050760498	1	3	0.667	0	0.333	0.667	0	0.667	0
+"902S01097"	"BMI"	"No"	"Modeled flow metrics"	1	1.050760498	1.050760498	1.050760498	1	1	1	0	1	1	0	0	NA

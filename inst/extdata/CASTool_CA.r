@@ -10,7 +10,7 @@
 #rm(list=ls())
 
 boo.debug <- TRUE
-debug.person <- "Ann"
+debug.person <- "Erik"
 
 if (boo.debug==TRUE & debug.person == "Ann") {
     gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
@@ -20,7 +20,6 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     dir_results <- file.path(localdir, "Results")
     printClusterInfo <- FALSE
 } else if (boo.debug == TRUE & debug.person == "Erik") {
-    message("Leppo")
     library(CASTfxn)
     #gitpath <- file.path(system.file(package = "CASTfxn"), "R")
     dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
@@ -39,6 +38,11 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     dir_results <- file.path(wd, "Results")
     printClusterInfo <- TRUE
 }
+
+msg <- paste0("debug = ", boo.debug, ifelse(boo.debug==FALSE, "", paste0(", person = ", debug.person)))
+message(msg)
+
+
 
 # Set up required functions ### DO NOT CHANGE! #
 # library(CASTfxn)

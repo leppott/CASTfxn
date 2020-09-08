@@ -1,0 +1,181 @@
+StationID_Master	biocomm	stressName	stressLabel	respName	respLabel	n	statistic	p.value	estimate	r2
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	CSCI	CSCI	18	-1	0.33	-0.23	0.055
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	MMI	MMI	18	-0.88	0.39	-0.21	0.044
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	OoverE	O/E	18	-0.82	0.42	-0.2	0.038
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	Taxonomic_Richness	Taxonomic richness	18	-0.02	0.98	-0.0048	0.000
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	Intolerant_Percent	Percent intolerant individuals	18	0.23	0.82	0.057	0.003
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	Shredder_Taxa	Number of shredder taxa	18	-0.36	0.72	-0.088	0.008
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	Clinger_PercentTaxa	Percent of clinger taxa	18	0.61	0.55	0.15	0.022
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	18	0.21	0.84	0.051	0.003
+902S01097	BMI	AFDM_algae_particulate_g_m2	Ash-free dry mass from algae (g/m2)	EPT_PercentTaxa	Percent of EPT taxa	18	-1.1	0.28	-0.26	0.069
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	CSCI	CSCI	27	-0.00068	1	-0.00013	0.000
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	CSCI	CSCI	27	-0.00068	1	-0.00013	0.000
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	MMI	MMI	27	-1.3	0.19	-0.26	0.065
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	MMI	MMI	27	-1.3	0.19	-0.26	0.065
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	OoverE	O/E	27	0.58	0.57	0.11	0.013
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	OoverE	O/E	27	0.58	0.57	0.11	0.013
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Taxonomic_Richness	Taxonomic richness	27	0.5	0.62	0.098	0.010
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Taxonomic_Richness	Taxonomic richness	27	0.5	0.62	0.098	0.010
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Intolerant_Percent	Percent intolerant individuals	27	-0.65	0.52	-0.13	0.016
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Intolerant_Percent	Percent intolerant individuals	27	-0.65	0.52	-0.13	0.016
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Shredder_Taxa	Number of shredder taxa	27	-0.63	0.53	-0.12	0.015
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Shredder_Taxa	Number of shredder taxa	27	-0.63	0.53	-0.12	0.015
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Clinger_PercentTaxa	Percent of clinger taxa	27	0.67	0.51	0.13	0.017
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Clinger_PercentTaxa	Percent of clinger taxa	27	0.67	0.51	0.13	0.017
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	27	-3	0.0057	-0.51	0.259
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	27	-3	0.0057	-0.51	0.259
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	EPT_PercentTaxa	Percent of EPT taxa	27	-0.52	0.61	-0.1	0.010
+902S01097	BMI	Alkalinity_CaCO3_fld_mg_L	Field-measured alkalinity as calcium carbonate (mg/L)	EPT_PercentTaxa	Percent of EPT taxa	27	-0.52	0.61	-0.1	0.010
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	CSCI	CSCI	8	0.19	0.86	0.071	0.005
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	MMI	MMI	8	-0.48	0.65	-0.18	0.031
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	OoverE	O/E	8	0.55	0.6	0.2	0.042
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	Taxonomic_Richness	Taxonomic richness	8	1.1	0.32	0.37	0.140
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	Intolerant_Percent	Percent intolerant individuals	8	1.3	0.24	0.43	0.188
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	Shredder_Taxa	Number of shredder taxa	8	0.22	0.83	0.083	0.007
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	-1.4	0.22	-0.46	0.209
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	1.2	0.27	0.41	0.171
+902S01097	BMI	Arsenic_f_ug_L	Dissolved arsenic (µg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	-0.79	0.45	-0.29	0.083
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	CSCI	CSCI	8	0.051	0.96	0.019	0.000
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	MMI	MMI	8	-0.51	0.62	-0.19	0.036
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	OoverE	O/E	8	0.37	0.72	0.14	0.019
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	Taxonomic_Richness	Taxonomic richness	8	1	0.34	0.36	0.133
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	Intolerant_Percent	Percent intolerant individuals	8	1.2	0.26	0.42	0.175
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	Shredder_Taxa	Number of shredder taxa	8	0.44	0.68	0.16	0.027
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	-1.8	0.11	-0.57	0.323
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	1.8	0.11	0.56	0.317
+902S01097	BMI	Arsenic_uf_ug_L	Total arsenic (µg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	-1.3	0.23	-0.44	0.196
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	CSCI	CSCI	8	0.56	0.59	0.21	0.043
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	MMI	MMI	8	0.84	0.43	0.3	0.092
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	OoverE	O/E	8	0.33	0.75	0.12	0.015
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	Taxonomic_Richness	Taxonomic richness	8	0.45	0.67	0.17	0.028
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	Intolerant_Percent	Percent intolerant individuals	8	1.5	0.19	0.48	0.232
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	Shredder_Taxa	Number of shredder taxa	8	0.77	0.47	0.28	0.078
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	2.2	0.066	0.64	0.403
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	-0.83	0.43	-0.3	0.090
+902S01097	BMI	Calcium_uf_mg_L	Total calcium (mg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	1.2	0.29	0.4	0.159
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	CSCI	CSCI	17	0.059	0.95	0.015	0.000
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	MMI	MMI	17	0.77	0.45	0.19	0.036
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	OoverE	O/E	17	-0.41	0.69	-0.1	0.010
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	Taxonomic_Richness	Taxonomic richness	17	-0.11	0.91	-0.028	0.001
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	Intolerant_Percent	Percent intolerant individuals	17	0.28	0.79	0.069	0.005
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	Shredder_Taxa	Number of shredder taxa	17	-0.16	0.87	-0.04	0.002
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	Clinger_PercentTaxa	Percent of clinger taxa	17	2.3	0.035	0.5	0.250
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	17	-0.86	0.4	-0.21	0.044
+902S01097	BMI	Chlor_a_particulate_mg_m2	Particulate chlorophyll a (mg/m2)	EPT_PercentTaxa	Percent of EPT taxa	17	1.2	0.25	0.29	0.082
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	CSCI	CSCI	6	1.2	0.28	0.48	0.231
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	MMI	MMI	6	0.92	0.4	0.38	0.145
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	OoverE	O/E	6	1.3	0.25	0.5	0.253
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	Taxonomic_Richness	Taxonomic richness	6	1.7	0.15	0.6	0.361
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	Intolerant_Percent	Percent intolerant individuals	6	2.7	0.043	0.77	0.593
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	Shredder_Taxa	Number of shredder taxa	6	5	0.0042	0.91	0.832
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	Clinger_PercentTaxa	Percent of clinger taxa	6	0.14	0.89	0.063	0.004
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	6	1.5	0.19	0.56	0.318
+902S01097	BMI	Chromium_tot_mg_kg_dw	Total chromium (mg/kg dry weight)	EPT_PercentTaxa	Percent of EPT taxa	6	-0.11	0.92	-0.048	0.002
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	CSCI	CSCI	25	0.019	0.98	0.0039	0.000
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	MMI	MMI	25	-0.26	0.79	-0.054	0.003
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	OoverE	O/E	25	0.18	0.86	0.038	0.001
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	Taxonomic_Richness	Taxonomic richness	25	-0.31	0.76	-0.062	0.004
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	Intolerant_Percent	Percent intolerant individuals	25	-0.41	0.69	-0.083	0.007
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	Shredder_Taxa	Number of shredder taxa	25	-0.26	0.8	-0.052	0.003
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	Clinger_PercentTaxa	Percent of clinger taxa	25	1.7	0.094	0.34	0.112
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	Coleoptera_PercentTaxa	Percent of coleoptera taxa	25	-1.5	0.15	-0.29	0.083
+902S01097	BMI	Ev_FlowHab_score	Evenness of flow habitat types	EPT_PercentTaxa	Percent of EPT taxa	25	0.57	0.58	0.12	0.013
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	CSCI	CSCI	25	1.7	0.096	0.33	0.111
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	MMI	MMI	25	1.8	0.084	0.34	0.119
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	OoverE	O/E	25	1.3	0.2	0.26	0.068
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	Taxonomic_Richness	Taxonomic richness	25	2	0.056	0.38	0.144
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	Intolerant_Percent	Percent intolerant individuals	25	0.82	0.42	0.16	0.027
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	Shredder_Taxa	Number of shredder taxa	25	0.76	0.45	0.15	0.024
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	Clinger_PercentTaxa	Percent of clinger taxa	25	1.9	0.076	0.35	0.125
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	Coleoptera_PercentTaxa	Percent of coleoptera taxa	25	0.38	0.71	0.077	0.006
+902S01097	BMI	H_SubNat_score	Shannon diversity of natural substrate types	EPT_PercentTaxa	Percent of EPT taxa	25	0.066	0.95	0.013	0.000
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	CSCI	CSCI	7	0.21	0.84	0.084	0.007
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	MMI	MMI	7	0.4	0.7	0.16	0.026
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	OoverE	O/E	7	0.069	0.95	0.028	0.001
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	Taxonomic_Richness	Taxonomic richness	7	0.12	0.91	0.05	0.002
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	Intolerant_Percent	Percent intolerant individuals	7	0.76	0.48	0.3	0.088
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	Shredder_Taxa	Number of shredder taxa	7	0.18	0.86	0.075	0.006
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	Clinger_PercentTaxa	Percent of clinger taxa	7	2.2	0.068	0.67	0.451
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	7	-2.3	0.058	-0.69	0.476
+902S01097	BMI	Hardness_CaCO3_f_mg_L	Dissolved hardness as calcium carbonate (mg/L)	EPT_PercentTaxa	Percent of EPT taxa	7	1.5	0.19	0.51	0.264
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	CSCI	CSCI	8	-0.39	0.71	-0.14	0.021
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	MMI	MMI	8	-0.069	0.95	-0.026	0.001
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	OoverE	O/E	8	-0.52	0.62	-0.19	0.037
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	Taxonomic_Richness	Taxonomic richness	8	0.17	0.87	0.063	0.004
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	Intolerant_Percent	Percent intolerant individuals	8	1.2	0.27	0.42	0.172
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	Shredder_Taxa	Number of shredder taxa	8	0.38	0.72	0.14	0.020
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	0.23	0.83	0.085	0.007
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	-0.26	0.8	-0.097	0.009
+902S01097	BMI	Nickel_f_ug_L	Dissolved nickel (µg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	0.091	0.93	0.034	0.001
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	CSCI	CSCI	6	1.7	0.14	0.61	0.376
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	MMI	MMI	6	1.5	0.18	0.57	0.322
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	OoverE	O/E	6	1.7	0.16	0.6	0.356
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	Taxonomic_Richness	Taxonomic richness	6	1.7	0.14	0.61	0.378
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	Intolerant_Percent	Percent intolerant individuals	6	3.1	0.027	0.81	0.659
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	Shredder_Taxa	Number of shredder taxa	6	3.4	0.02	0.83	0.692
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	Clinger_PercentTaxa	Percent of clinger taxa	6	1.3	0.24	0.52	0.266
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	6	0.36	0.73	0.16	0.025
+902S01097	BMI	Nickel_tot_mg_kg_dw	Total nickel (mg/kg dry weight)	EPT_PercentTaxa	Percent of EPT taxa	6	0.8	0.46	0.34	0.113
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	CSCI	CSCI	8	-0.39	0.71	-0.14	0.021
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	MMI	MMI	8	0.0073	0.99	0.0028	0.000
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	OoverE	O/E	8	-0.57	0.59	-0.21	0.044
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	Taxonomic_Richness	Taxonomic richness	8	0.18	0.86	0.069	0.005
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	Intolerant_Percent	Percent intolerant individuals	8	1.2	0.28	0.4	0.163
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	Shredder_Taxa	Number of shredder taxa	8	0.41	0.7	0.15	0.023
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	0.22	0.83	0.082	0.007
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	-0.3	0.77	-0.11	0.013
+902S01097	BMI	Nickel_uf_ug_L	Total nickel (µg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	0.15	0.89	0.055	0.003
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	CSCI	CSCI	8	-0.73	0.49	-0.26	0.070
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	MMI	MMI	8	-0.42	0.69	-0.15	0.024
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	OoverE	O/E	8	-0.8	0.45	-0.29	0.084
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	Taxonomic_Richness	Taxonomic richness	8	-0.55	0.6	-0.2	0.041
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	Intolerant_Percent	Percent intolerant individuals	8	0.21	0.84	0.078	0.006
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	Shredder_Taxa	Number of shredder taxa	8	0.037	0.97	0.014	0.000
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	Clinger_PercentTaxa	Percent of clinger taxa	8	0.77	0.47	0.28	0.078
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	8	-1.6	0.15	-0.52	0.276
+902S01097	BMI	Selenium_f_ug_L	Dissolved selenium (µg/L)	EPT_PercentTaxa	Percent of EPT taxa	8	0.4	0.7	0.15	0.022
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	CSCI	CSCI	13	1.6	0.15	0.41	0.168
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	MMI	MMI	13	1.3	0.23	0.35	0.120
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	OoverE	O/E	13	1.3	0.22	0.35	0.125
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	Taxonomic_Richness	Taxonomic richness	13	2.1	0.06	0.51	0.265
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	Intolerant_Percent	Percent intolerant individuals	13	0.83	0.42	0.23	0.054
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	Shredder_Taxa	Number of shredder taxa	13	2.5	0.026	0.59	0.349
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	Clinger_PercentTaxa	Percent of clinger taxa	13	-2.5	0.029	-0.58	0.339
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	13	3.3	0.0065	0.69	0.474
+902S01097	BMI	Silica_SiO2_f_mg_L	Dissolved silica as SiO2 (mg/L)	EPT_PercentTaxa	Percent of EPT taxa	13	-0.98	0.35	-0.27	0.074
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	CSCI	CSCI	28	0.89	0.38	0.17	0.028
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	CSCI	CSCI	28	0.89	0.38	0.17	0.028
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	CSCI	CSCI	28	0.89	0.38	0.17	0.028
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	MMI	MMI	28	-0.071	0.94	-0.014	0.000
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	MMI	MMI	28	-0.071	0.94	-0.014	0.000
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	MMI	MMI	28	-0.071	0.94	-0.014	0.000
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	OoverE	O/E	28	1.2	0.22	0.23	0.054
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	OoverE	O/E	28	1.2	0.22	0.23	0.054
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	OoverE	O/E	28	1.2	0.22	0.23	0.054
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Taxonomic_Richness	Taxonomic richness	28	0.7	0.49	0.13	0.018
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Taxonomic_Richness	Taxonomic richness	28	0.7	0.49	0.13	0.018
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Taxonomic_Richness	Taxonomic richness	28	0.7	0.49	0.13	0.018
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Intolerant_Percent	Percent intolerant individuals	28	0.93	0.36	0.18	0.031
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Intolerant_Percent	Percent intolerant individuals	28	0.93	0.36	0.18	0.031
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Intolerant_Percent	Percent intolerant individuals	28	0.93	0.36	0.18	0.031
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Shredder_Taxa	Number of shredder taxa	28	1.5	0.15	0.27	0.075
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Shredder_Taxa	Number of shredder taxa	28	1.5	0.15	0.27	0.075
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Shredder_Taxa	Number of shredder taxa	28	1.5	0.15	0.27	0.075
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Clinger_PercentTaxa	Percent of clinger taxa	28	0.61	0.55	0.12	0.013
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Clinger_PercentTaxa	Percent of clinger taxa	28	0.61	0.55	0.12	0.013
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Clinger_PercentTaxa	Percent of clinger taxa	28	0.61	0.55	0.12	0.013
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	28	-4.9	4.3e-05	-0.68	0.468
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	28	-4.9	4.3e-05	-0.68	0.468
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	28	-4.9	4.3e-05	-0.68	0.468
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	EPT_PercentTaxa	Percent of EPT taxa	28	2.2	0.035	0.39	0.154
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	EPT_PercentTaxa	Percent of EPT taxa	28	2.2	0.035	0.39	0.154
+902S01097	BMI	SpecificConductivity_fld_uS_cm	Field-measured specific conductivity (µS/cm)	EPT_PercentTaxa	Percent of EPT taxa	28	2.2	0.035	0.39	0.154
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	CSCI	CSCI	7	0.88	0.41	0.34	0.114
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	MMI	MMI	7	0.67	0.53	0.26	0.069
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	OoverE	O/E	7	0.87	0.42	0.34	0.112
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	Taxonomic_Richness	Taxonomic richness	7	1.6	0.17	0.54	0.289
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	Intolerant_Percent	Percent intolerant individuals	7	0.43	0.68	0.17	0.030
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	Shredder_Taxa	Number of shredder taxa	7	0.12	0.91	0.048	0.002
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	Clinger_PercentTaxa	Percent of clinger taxa	7	0.95	0.38	0.36	0.131
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	Coleoptera_PercentTaxa	Percent of coleoptera taxa	7	0.034	0.97	0.014	0.000
+902S01097	BMI	NoDisturb_Average	Avg median annual longest # days between the low- and high-flow threshold (days)	EPT_PercentTaxa	Percent of EPT taxa	7	0.86	0.42	0.33	0.109
