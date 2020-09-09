@@ -32,7 +32,8 @@ library(tidyr)
 # Global Variables ####
 
 # data directory
-dir_data <- file.path(".", "Data")
+#dir_data <- file.path(".", "Data")
+dir_data <- file.path("Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.
 dir_wd <- file.path(".")
 ## Stations - PickList
@@ -50,7 +51,8 @@ targ_SiteID <- c("SMC04134", "905S15201", "907S05514", "SMC12246", "907SDSDR8"
 
 # Clean up ####
 # Remove www\Results (and sub dirs) at start up (and recreate)
-dir_www_Results <- file.path(".", "www", "Results")
+#dir_www_Results <- file.path(".", "www", "Results")
+dir_www_Results <- file.path("www", "Results")
 ifelse(dir.exists(dir_www_Results)==TRUE, unlink(dir_www_Results, recursive = TRUE), NA)
 ifelse(dir.exists(dir_www_Results)==FALSE, dir.create(dir_www_Results), NA)
 
@@ -101,8 +103,10 @@ not_all_na <- function(x) {!all(is.na(x))}
 # TargetSiteID_Results <- "403S01784" # "801RB8197" # "403S01784"
 CopyResults <- function(TargetSiteID_Results){
   #
-  dn_Results <- file.path(".", "Results", TargetSiteID_Results)
-  dn_www <- file.path(".", "www", "Results", TargetSiteID_Results)
+  # dn_Results <- file.path(".", "Results", TargetSiteID_Results)
+  # dn_www <- file.path(".", "www", "Results", TargetSiteID_Results)
+  dn_Results <- file.path("Results", TargetSiteID_Results)
+  dn_www <- file.path("www", "Results", TargetSiteID_Results)
   #
   # Create SiteID folder
   ifelse(dir.exists(dn_www)==FALSE, dir.create(file.path(dn_www)), NA)

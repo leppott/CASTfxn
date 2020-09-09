@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9280 (2020-09-09)
+* CASTool
+    + global.R
+        - Modify file.path to not use "."
+
 ## Changes in Version 0.1.0.9279 (2020-09-09)
 * Logos
     + Add hi-res logos to each Shiny app in www folder
