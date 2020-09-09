@@ -1543,12 +1543,15 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       # skeleton 316
+      message("a")
       data_bmiMetricsInfo <- read.delim(fn.bmi.metrics.info, header = TRUE, sep = "\t",
                                         na.strings = "NA", stringsAsFactors = FALSE)
+      message("b")
       data_bmiMetricsInfo <- data_bmiMetricsInfo[,c("MetricName",	"MetricLabel", "IndexYN")]
       bmiMetrics <- as.vector(data_bmiMetricsInfo$MetricName)
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN=="Yes"])
 
+      message("C")
       # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_bmiCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
@@ -1560,7 +1563,9 @@ shinyServer(function(input, output, session) {
                                            , lagdays = lagdays
                                            , removeOutliers = removeOutliers)
       # returns df_coOccur as data_bmiCoOccur
+      message("d")
       bmiParamsKEEP   <- setdiff(colnames(data_bmiCoOccur), bmiModelParamsDEL)
+      message("e")
       data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, all_of(bmiParamsKEEP))
       # 2020-04-10, add "all_of" to excise tidyverse message.
       # write.table(data_bmiCoOccur, file.path(getwd(),"Results","bmiCoOccur.tab")

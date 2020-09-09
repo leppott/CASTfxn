@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-09 14:41:30
+    #> Last Update: 2020-09-09 15:38:45
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9282 (2020-09-09)
+
+  - CASTool
+      - server.R
+          - Add message output for testing on shinyapps.io.
 
 ## Changes in Version 0.1.0.9281 (2020-09-09)
 
