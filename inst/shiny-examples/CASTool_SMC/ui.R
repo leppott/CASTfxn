@@ -23,8 +23,9 @@ shinyUI(fluidPage(
   
   # Need for console messages to Shiny
   shinyjs::useShinyjs()
-  , navbarPage("Causal Assessment Screening Tool (CAST), SMC 2020-09-01"
-  #, navbarPage(paste0("Causal Assessment Screening Tool (CAST), SMC v0.1.0.9251, Test run time = ", Sys.time())
+  , navbarPage(title = div(img(src="CASTool.png", height = 35), "Causal Assessment Screening Tool (CAST), SMC")
+  #, navbarPage(title = "Causal Assessment Screening Tool (CASTool), SMC 2020-09-01"
+  #, navbarPage(paste0("Causal Assessment Screening Tool (CASTool), SMC v0.1.0.9251, Test run time = ", Sys.time())
              , theme = "bootstrap.css"
              , inverse = TRUE
              , tab_Disclaimer()
@@ -35,8 +36,8 @@ shinyUI(fluidPage(
   
  #  # titlePanel ####
  #  # Application title
- #  , titlePanel(HTML("Causal Assessment Screening Tool (CAST) <br/> version: SMC 2020-06-02")
- #             ,windowTitle = "Causal Assessment Screening Tool (CAST)")
+ #  , titlePanel(HTML("Causal Assessment Screening Tool (CASTool) <br/> version: SMC 2020-06-02")
+ #             ,windowTitle = "Causal Assessment Screening Tool (CASTool)")
  #  
  #  # sidebarLayout ####
  #  # Sidebar with a slider input for number of bins 

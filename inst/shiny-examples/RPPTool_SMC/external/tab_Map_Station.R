@@ -17,7 +17,7 @@ function(){
         
         , br()
         #, actionButton("zoom.comid", "Zoom to Selected ComID")
-        , p("After choosing a Station ID above note the Reach ID (COMID) for use with the RPP-Calc tab analysis.
+        , p("After choosing a Station ID above note the Reach ID (COMID) for use with the RPPTool-Calc tab analysis.
              The COMID will be displayed below and can also be obtained by clicking the stream reach in the map.")
         #, p(paste0("COMID = ", textOutput("Selected_COMID4SiteID")))
         , p(textOutput("Selected_COMID4SiteID"))

@@ -34,10 +34,21 @@ cat(paste0("Last Update: ",Sys.time()))
 
 * getBioStressorResponses
     + Add stressor response plot from getCoOccur
-    
-* Create logos.
 
 # Version History
+
+## Changes in Version 0.1.0.9279 (2020-09-09)
+* Logos
+    + Add hi-res logos to each Shiny app in www folder
+    + Test logo in Shiny apps in ui.R
+    + Remove raw-data hexSticker code and old logos.
+* CASTool
+    + server.R, run_ALL2
+        - Load RDA rather than SHP files for mapping.  Saves ~ 25 seconds.
+* getSiteInfo
+    + Add extra condition for photo directory but no photo files.
+* getReport
+    + Fill in description for 2 parameters.
 
 ## Changes in Version 0.1.0.9278 (2020-09-08)
 * getReport.R

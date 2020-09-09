@@ -30,6 +30,10 @@ getReport(
 
 \item{probsLow}{Default = 0.25}
 
+\item{useBMI}{boolean to use Benthic Macroinvertebrates.}
+
+\item{useAlg}{boolean to use Algae.}
+
 \item{useBC}{Default = TRUE}
 
 \item{removeOutliers}{Default = TRUE}

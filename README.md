@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-08-28 14:54:40
+    #> Last Update: 2020-09-09 09:56:24
 
 Suite of functions for the Causal Assessment Screening Tool (CAST).
 Includes Shiny app.
@@ -36,7 +36,7 @@ Sys.setenv("TAR" = "internal")
 ```
 
 Vignettes are also not installed by default. The additional parameters
-in install\_github are used to ensuer the install happens if there is an
+in install\_github are used to ensure the install happens if there is an
 existing install and to install the vignettes.
 
 ``` r

@@ -1,7 +1,0 @@
-"BioComm"	"Group"	"Quality"	"ComparatorSamples"	"ClusterSamples"	"AllSamples"
-"algae"	"All"	"All qualities"	39	85	710
-"algae"	"All"	"Degraded"	30	53	389
-"algae"	"All"	"Not degraded"	9	32	321
-"algae"	"Better than"	"All qualities"	8	31	316
-"algae"	"Better than"	"Degraded"	0	0	0
-"algae"	"Better than"	"Not degraded"	8	31	316

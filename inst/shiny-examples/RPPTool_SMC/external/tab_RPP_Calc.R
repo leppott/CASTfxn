@@ -1,5 +1,5 @@
 function(){
-  tabPanel("RPP-Calc"
+  tabPanel("RPPTool-Calc"
            
             # sidebarLayout ####
             # Sidebar with a slider input for number of bins
@@ -50,7 +50,7 @@ function(){
                   , p("Click the button below to generate outputs.")
                   , p("Make any modifications to inputs and settings on the tabs to the right before starting the analysis.")
                   , p("After clicking the button results will appear to the right in tabs by output type.")
-                  , actionButton("b_RunAll", "Run RPP")
+                  , actionButton("b_RunAll", "Calculate Results")
 
                   , hr()
 

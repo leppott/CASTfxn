@@ -540,7 +540,7 @@ getSiteInfo <- function(TargetSiteID
     
     
     # Check for presence of Photos in data directory. If not present, skip.
-    if (dir.exists(dir_photo)==TRUE) {
+    if (dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0) {
         photofiles <- list.files(dir_photo)
         have.photos <- FALSE
         for (l in 1:length(photofiles)) {
@@ -555,14 +555,14 @@ getSiteInfo <- function(TargetSiteID
                 flush.console()
                 have.photos <- TRUE
             }
-        }
+        }## FOR ~ l ~ END
     } else { 
         have.photos <- FALSE
         # print("Photo directory does not exist.")
         # flush.console()
         msg <- "Photo directory does not exist."
         message(msg)
-    }
+    }## IF ~ dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0 ~ END
     
     if (!have.photos) {
         
@@ -577,7 +577,7 @@ getSiteInfo <- function(TargetSiteID
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE
                     , row.names = FALSE, sep = "\t")
-    }
+    }## IF ~ !have.photos ~ END
 
     print("Completed transferring any available site files.")
     flush.console()

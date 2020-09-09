@@ -1,5 +1,5 @@
 function(){
-  tabPanel("CAST-Calc"
+  tabPanel("CASTool-Calc"
            
            # sidebarLayout ####
            # Sidebar with a slider input for number of bins 
@@ -38,7 +38,7 @@ function(){
                #               , selected = "bmi")
                , p("Click the button below to generate outputs.")
                , p("After clicking the button results will appear to the right in tabs by output type.")
-               , actionButton("b_RunAll", "Run CAST")
+               , actionButton("b_RunAll", "Calculate Results")
                
                , hr()
                

@@ -17,8 +17,8 @@
 #' @param TargetSiteID SiteID
 #' @param probsHigh Default = 0.75
 #' @param probsLow Default = 0.25
-#' @param useBMI
-#' @param useAlg
+#' @param useBMI boolean to use Benthic Macroinvertebrates.
+#' @param useAlg boolean to use Algae.
 #' @param useBC Default = TRUE
 #' @param removeOutliers Default = TRUE
 #' @param lagdays Default = 10
