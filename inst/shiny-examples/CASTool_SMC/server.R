@@ -1150,7 +1150,7 @@ shinyServer(function(input, output, session) {
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
-      prog_n <- 26 + 7 + 1
+      prog_n <- 26 + 7 + 1 + 2
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
@@ -1543,15 +1543,20 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       # skeleton 316
-      message("a")
+      message("Read fn.bmi.metrics.info")
       data_bmiMetricsInfo <- read.delim(fn.bmi.metrics.info, header = TRUE, sep = "\t",
                                         na.strings = "NA", stringsAsFactors = FALSE)
-      message("b")
+      message("Select data")
       data_bmiMetricsInfo <- data_bmiMetricsInfo[,c("MetricName",	"MetricLabel", "IndexYN")]
       bmiMetrics <- as.vector(data_bmiMetricsInfo$MetricName)
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN=="Yes"])
 
-      message("C")
+      # CAST, BMI, Co-Occurence ####
+      prog_cnt <- prog_cnt + 1
+      prog_msg <- paste0("Step ", prog_cnt)
+      prog_det <- "Data, BMI, Co-Occurrence"
+      incProgress(prog_inc, message = prog_msg, detail = prog_det)
+      Sys.sleep(mySleepTime)
       # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_bmiCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
@@ -1563,9 +1568,9 @@ shinyServer(function(input, output, session) {
                                            , lagdays = lagdays
                                            , removeOutliers = removeOutliers)
       # returns df_coOccur as data_bmiCoOccur
-      message("d")
+      message("BMI, Params Keep")
       bmiParamsKEEP   <- setdiff(colnames(data_bmiCoOccur), bmiModelParamsDEL)
-      message("e")
+      message("BMI, Select Params Keep")
       data_bmiCoOccur <- dplyr::select(data_bmiCoOccur, all_of(bmiParamsKEEP))
       # 2020-04-10, add "all_of" to excise tidyverse message.
       # write.table(data_bmiCoOccur, file.path(getwd(),"Results","bmiCoOccur.tab")
@@ -1614,12 +1619,18 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       # skeleton 356
+      message("Read fn.alg.raw")
       data_AlgCounts <- read.table(fn.alg.raw, header = TRUE, sep = "\t")
+      message("Read fn.MT.alg")
       data_AlgMasterTaxa <- read.table(fn.MT.alg, header = TRUE, sep = "\t",
                                        stringsAsFactors = FALSE)
       rm(fn.alg.raw, fn.MT.alg)
       #
 
+      # CAST, Alg, Co-Occurence ####
+      prog_cnt <- prog_cnt + 1
+      prog_msg <- paste0("Step ", prog_cnt)
+      prog_det <- "Data, Alg, Co-Occurrence"
       # # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_algCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
