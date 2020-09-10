@@ -65,7 +65,7 @@ dir_data <- file.path(".", "Data")
 #dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.
 dir_wd <- file.path(".")
 ## Stations - PickList
-data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab", sep="")
+data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab")
                             , stringsAsFactors = FALSE)
 LU.Stations <- data.Stations[,"StationID_Master"]
 
