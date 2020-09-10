@@ -138,7 +138,7 @@ CopyResults <- function(TargetSiteID_Results){
 
 # Map, Stations and Reach ####
 # data directory
-myDir <- file.path(getwd(), "data")
+myDir <- file.path(".", "data")
 
 # Sites ###
 # df.sites.map

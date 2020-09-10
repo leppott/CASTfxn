@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9285 (2020-09-10)
+* RPPTool
+   + global.R
+       - Change read statement for df.sites.map.rda.
+
 ## Changes in Version 0.1.0.9284 (2020-09-10)
 * RPPTool
    + global.R
