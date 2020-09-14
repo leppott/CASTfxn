@@ -37,10 +37,36 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9287 (2020-09-14)
+* RPPTool
+    + Update server.R with skeleton code revisions.
+    + Update other function files.
+    + Keep all inputs on single tab.
+    + Turn off stressor weights.
+    + Ensure all functions in /external are sourced in global.R
+    + Add data/BCG_ProportionalOdds_20200113.xlsx
+    + external directory, Copy RMD from inst/rmd
+        - Map_Leaflet.rmd
+* CASTool
+    + Data/SMCClusterInfo.tab, updated version.
+    + external directory, Copy RMD from inst/rmd
+        - Report_Results_overall.rmd
+        - Report_Results_summary.rmd
+
+## Changes in Version 0.1.0.9286 (2020-09-10)
+* RPPTool
+    + RPPTool_CA.R, Add Shiny code.
+    + Add sourced scripts.
+    + server.R
+        - Add in skeleton code.
+* DESCRIPTION
+    + Add lubridate
+* Add Data/NHDPlusNetwork.xlsx
+
 ## Changes in Version 0.1.0.9285 (2020-09-10)
 * RPPTool
    + global.R
-       - Change read statement for df.sites.map.rda.
+       - Change read statement directory for rda files
 
 ## Changes in Version 0.1.0.9284 (2020-09-10)
 * RPPTool

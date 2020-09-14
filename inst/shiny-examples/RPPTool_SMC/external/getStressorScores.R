@@ -14,7 +14,7 @@
 # Modeled data include one stressor per site, even if more than one site is on 
 # the target COMID.
 
-getStressorScores <- function(dfSites, dfAllStressVals, fnWeights) { # FUNCTION.START
+getStressorScores <- function(dfSites, dfAllStressVals, fnWeights, maxYear, minYear) { # FUNCTION.START
     
     boo_DEBUG <- FALSE
     `%>%` <- dplyr::`%>%`
@@ -23,6 +23,8 @@ getStressorScores <- function(dfSites, dfAllStressVals, fnWeights) { # FUNCTION.
         dfSites <- dfSites
         dfAllStressVals <- listScaledStr01All$df_allSMCStressVals
         fnWeights <- fn_stresswtsIN
+        maxYear <- lubridate::year(Sys.Date()) # Obtained from user (NOTE: this is inclusive)
+        minYear <- maxYear - 12 # Inclusive (defaults to 2008 to present on 4/17/2020)
     }
     
     dfSites <- dfSites[, c("StationID_Master", "COMID")]
@@ -67,9 +69,9 @@ getStressorScores <- function(dfSites, dfAllStressVals, fnWeights) { # FUNCTION.
         dplyr::select(COMID, Weight, WtAdjVal) %>%
         dplyr::filter(!is.na(WtAdjVal)) %>%
         dplyr::group_by(COMID) %>%
-        dplyr::summarize(sumWeights = sum(Weight)
-                         , StressorScore = 1-sum(WtAdjVal)/(sumWeights)
-                         , .groups = "drop_last")
+        dplyr::summarize(sumStressWts = sum(Weight, na.rm = TRUE)
+                         , pot_StressorInd = 1-sum(WtAdjVal)/(sumStressWts)
+                         , .groups="drop_last")
     
     myStressorScores <- list(dfStrScores = dfStrScores, dfWeights = dfWeights
                              , dfWtNormStressRecent = dfStrValRecentWts)

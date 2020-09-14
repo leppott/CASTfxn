@@ -53,7 +53,8 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
 
         # Get sum of weights for all stressors id'd at the target reach
         sumWeights <- dfUseStressors %>%
-            dplyr::summarise(sumWeights = sum(Weight, na.rm = TRUE))
+            dplyr::summarise(sumWeights = sum(Weight, na.rm = TRUE)
+                             , .groups="drop_last")
         sumWeights <- as.numeric(sumWeights)
         
         # Combine dfCxns with stressor data, then subset to target reach stressors
@@ -63,7 +64,8 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
         dfCxnStressors <- dfCxnStressors %>%
             dplyr::select(COMID,WtAdjVal) %>%
             dplyr::group_by(COMID) %>%
-            dplyr::summarise(SumWtAdjVal = sum(WtAdjVal, na.rm = TRUE)) %>%
+            dplyr::summarise(SumWtAdjVal = sum(WtAdjVal, na.rm = TRUE)
+                             , .groups="drop_last") %>%
             dplyr::mutate(sumWeights = eval(sumWeights))
         
         dfCxnStressors <- merge(dfCxnData, dfCxnStressors, all.x = TRUE)
@@ -80,7 +82,8 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
         # Get total StressCxnScore for TargetCOMID
         StressCxnScore <- dfCxnStressors %>%
             dplyr::select(ReachWtdStressor) %>%
-            dplyr::summarise(TotalScore = 1-sum(ReachWtdStressor, na.rm = TRUE))
+            dplyr::summarise(TotalScore = 1-sum(ReachWtdStressor, na.rm = TRUE)
+                             , .groups="drop_last")
         
         StressCxnScore <- as.numeric(StressCxnScore)
         
@@ -99,41 +102,41 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
     } # No stressor data
     
     # Identify BCG score for upstream and downstream (if useDS == TRUE)
-    dfCxnBCG <- merge(dfCxnData, dfBCGData[,c("COMID", "BMISampleDate", "CSCI"
-                                              , "BCGLevel", "BCGqt50")],
+    dfCxnBCG <- merge(dfCxnData, dfBCGData[,c("COMID", "BMISampleDate", "CSCIobs"
+                                              , "BCGobs", "BCGpred_qt50")],
                        by.x = "COMID", by.y = "COMID", all.x = TRUE)
 
-    TargetBCGobs <- as.numeric(dfCxnBCG$BCGLevel[dfCxnBCG$COMID==TargetCOMID])
-    TargetBCGpred <- as.numeric(dfCxnBCG$BCGqt50[dfCxnBCG$COMID==TargetCOMID])
-    deltaBCG <- max(dfBCGData$BCGLevel, na.rm=TRUE) - min(dfBCGData$BCGLevel
+    TargetBCGobs <- as.numeric(dfCxnBCG$BCGobs[dfCxnBCG$COMID==TargetCOMID])
+    TargetBCGpred <- as.numeric(dfCxnBCG$BCGpred_qt50[dfCxnBCG$COMID==TargetCOMID])
+    deltaBCG <- max(dfBCGData$BCGobs, na.rm=TRUE) - min(dfBCGData$BCGobs
                                                           , na.rm=TRUE)
     dfCxnBCG <- dfCxnBCG %>% dplyr::filter(UpDown!="Origin")
     if (!is.na(TargetBCGobs)) { # Target reach has observed BCG
         dfCxnBCG <- dfCxnBCG %>%
-            dplyr::mutate(BCGobsPLUS = ifelse(!is.na(BCGLevel) # Obs reach BCG
-                                              , ifelse(BCGLevel>TargetBCGobs
-                                                       , BCGLevel - TargetBCGobs
+            dplyr::mutate(BCGobsPLUS = ifelse(!is.na(BCGobs) # Connected reach BCG is NA
+                                              , ifelse(BCGobs<TargetBCGobs # Connected reach is better than target
+                                                       , TargetBCGobs - BCGobs
                                                        , 0)
-                                              , ifelse(!is.na(BCGqt50) # Predicted reach BCG
-                                                       , ifelse(BCGqt50>TargetBCGobs
-                                                                , BCGqt50 - TargetBCGobs
-                                                                , 0)
-                                                       , NA)))
+                                              , ifelse(is.na(BCGpred_qt50) # Predicted reach BCG is NA
+                                                       , NA
+                                                       , ifelse(BCGpred_qt50>TargetBCGobs
+                                                                , BCGpred_qt50 - TargetBCGobs
+                                                                , 0))))
     } else { # Target reach only has predicted BCG
         dfCxnBCG$BCGobsPLUS = NA
     }
     
     if (!is.na(TargetBCGpred)) { # TargetBCG is predicted
         dfCxnBCG <- dfCxnBCG %>%
-            dplyr::mutate(BCGpredPLUS = ifelse(!is.na(BCGLevel) # Observed reach BCG
-                                               , ifelse(BCGLevel>TargetBCGpred
-                                                        , BCGLevel - TargetBCGpred
+            dplyr::mutate(BCGpredPLUS = ifelse(!is.na(BCGobs) # Observed reach BCG is NA
+                                               , ifelse(BCGobs<TargetBCGpred
+                                                        , TargetBCGpred - BCGobs 
                                                         , 0)
-                                               , ifelse(!is.na(BCGqt50) # Predicted reach BCG
-                                                        , ifelse(BCGqt50>TargetBCGpred
-                                                                 , BCGqt50 - TargetBCGpred
-                                                                 , 0)
-                                                        , NA)))
+                                               , ifelse(is.na(BCGpred_qt50) # Predicted reach BCG is NA
+                                                        , NA
+                                                        , ifelse(BCGpred_qt50>TargetBCGpred
+                                                                 , BCGpred_qt50 - TargetBCGpred
+                                                                 , 0))))
     } else {
         dfCxnBCG$BCGpredPLUS = NA
     }
@@ -150,8 +153,8 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
                       , TargetBCGpred = TargetBCGpred) %>%
         dplyr::select(TargetCOMID, COMID, FTYPE, FromNode, ToNode, LENGTHKM
                       , StartFlag, AggLengthKM, UpDown, TotalLength, FractionLength
-                      , BMISampleDate, BCGLevel, TargetBCGobs, BCGobsPLUS
-                      , BCGqt50, TargetBCGpred, BCGpredPLUS, ReachBCGScore
+                      , BMISampleDate, BCGobs, TargetBCGobs, BCGobsPLUS
+                      , BCGpred_qt50, TargetBCGpred, BCGpredPLUS, ReachBCGScore
                       , ReachWtBCGScore)
     
     # Get total BCGCxnScore for TargetCOMID
@@ -160,20 +163,22 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
             dplyr::select(UpDown, ReachWtBCGScore) %>%
             dplyr::filter(UpDown=="Up") %>%
             dplyr::filter(UpDown!="Origin") %>%
-            dplyr::summarise(TotalScore=sum(ReachWtBCGScore,na.rm=TRUE)/deltaBCG)
+            dplyr::summarise(TotalScore=sum(ReachWtBCGScore,na.rm=TRUE)/deltaBCG
+                             , .groups="drop_last")
         BCGCxnScore <- as.numeric(BCGCxnScore)
     } else {
         BCGCxnScore <- dfCxnBCG %>%
             dplyr::select(UpDown, ReachWtBCGScore) %>%
             dplyr::filter(UpDown!="Origin") %>%
-            dplyr::summarise(TotalScore=sum(ReachWtBCGScore,na.rm=TRUE)/deltaBCG)
+            dplyr::summarise(TotalScore=sum(ReachWtBCGScore,na.rm=TRUE)/deltaBCG
+                             , .groups="drop_last")
         BCGCxnScore <- as.numeric(BCGCxnScore)
     }
 
     dfScores <- as.data.frame(cbind(TargetCOMID, BCGCxnScore, StressCxnScore))
-    colnames(dfScores) <- c("COMID", "BCGCxnScore", "StressCxnScore")
+    colnames(dfScores) <- c("COMID", "pot_BioCxnInd", "pot_StressorCxnInd")
     write.table(dfCxnBCG
-                ,file.path(comid_dir,paste0(TargetCOMID,"_CxnBCGScores.tab"))
+                ,file.path(comid_dir,paste0(TargetCOMID,"_CxnBioScores.tab"))
                 , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
     write.table(dfCxnStressors
                 ,file.path(comid_dir,paste0(TargetCOMID,"_CxnStressorScores.tab"))

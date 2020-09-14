@@ -37,7 +37,7 @@ getScaledStressors <- function(fn_allstress
     }
     
     # Get recent CAST results files ####
-    # (WoE details and stressor values)
+    # (WoE details)
     fnlistFULL <- list.files(dir_CASTresults, pattern = "OverallWoEDetails"
                              , full.names = TRUE)
     if (length(fnlistFULL)>0) {
@@ -48,7 +48,7 @@ getScaledStressors <- function(fn_allstress
         fnmodtimes <- fnmodtimes %>%
             dplyr::select(CASTfile, mtime) %>%
             dplyr::group_by(CASTfile) %>%
-            dplyr::summarise(MostRecent = max(mtime))
+            dplyr::summarise(MostRecent = max(mtime), .groups="drop_last")
         fnWoE=as.character(fnmodtimes$CASTfile)
         dfWoE <- read.delim(file.path(dir_CASTresults,fnWoE)
                             , header = TRUE, stringsAsFactors = FALSE
@@ -138,7 +138,9 @@ getScaledStressors <- function(fn_allstress
 
     myScaledStressors <- list(stressorsFound=stressorsFound
                               , df_allSMCStressInfo=dfStressInfo
-                              , df_allSMCStressVals=dfStressVal)
+                              , df_allSMCStressVals=dfStressVal
+                              , dfWoE=dfWoE)
     
     return(myScaledStressors)
+    
 }

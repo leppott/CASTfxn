@@ -16,17 +16,18 @@ drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol
     `%>%` <- dplyr::`%>%`
     
     if(boo_DEBUG==TRUE) {
-        df.data = dfBCGscorePlot
-        fn.plotpath = fn_BCGhistograms
+        df.data = dfAllScores2Plot
+        fn.plotpath = fn_scoreplots
+        numReaches = length(unique(as.vector(dfAllScores2Plot$COMID)))
         plotType = "histogram"
-        groupCol="Type"
+        groupCol="ScoreType"
         valCol="Score"
         plot_W=4
         plot_H=4
         ppi=300
-        str_title = "Histogram of BCG scores for protection or restoration"
+        str_title = "Histogram of subindex scores"
         str_subtitle = "SMC Region"
-        str_xlab = "Normalized BCG Score"
+        str_xlab = "Normalized Score"
         str_ylab = paste0("Number of reaches (total scored: "
                             , numReaches, ")")
         str_caption = NULL
@@ -45,12 +46,12 @@ drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol
             dfplot <- data %>%
                 dplyr::select(Year,eval(valCol)) %>%
                 dplyr::group_by(Year) %>%
-                dplyr::summarise(NumSamps = dplyr::n())
+                dplyr::summarise(NumSamps = dplyr::n(), .groups="drop_last")
             
             NAcount <- dfplot$NumSamps[is.na(dfplot$Year)]
             
             dfplot <- data[!is.na(data$Year),]
-            dfplot <- dfplot[dfplot$Year>=2000,] # 2000 should be start of entire dataset
+            dfplot <- dfplot[dfplot$Year>=1990,] # 2000 should be start of entire dataset
             
             p <- ggplot2::ggplot(dfplot, ggplot2::aes(x=Year)) +
                 ggplot2::geom_bar() +
@@ -70,12 +71,11 @@ drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol
             dfplot <- data %>%
                 dplyr::select(eval(groupCol),eval(valCol)) #%>%
                 dplyr::group_by(groupCol) %>%
-                dplyr::summarise(NumSamps = dplyr::n())
+                dplyr::summarise(NumSamps = dplyr::n(), .groups="drop_last")
             
             
             p <- ggplot2::ggplot(dfplot, ggplot2::aes(x=valCol, group_by(groupCol))) +
                 ggplot2::geom_bar() +
-                # ggplot2::facet_grid(groupCol ~ .) +
                 ggplot2::labs(title = str_title, subtitle=str_subtitle
                               , y=str_ylab, x=str_xlab, caption=str_caption) +
                 ggplot2::theme_bw() + 
@@ -93,10 +93,11 @@ drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol
         dfplot <- data[!is.na(data[,valCol]),]
         dfplot[,groupCol] <- as.factor(dfplot[,groupCol])
         
+        # valCol and groupCol are hard-coded. Need to change.
         p <- ggplot2::ggplot(data=dfplot, ggplot2::aes(x=Score)) +
-            ggplot2::geom_histogram(position="identity", binwidth=0.02) +
-            ggplot2::facet_grid(Type ~.) +
-            # ggplot2::geom_text(aes(label=..count..), vjust=-1, size=3) +
+            ggplot2::geom_histogram(position="identity", binwidth=0.015) +
+            ggplot2::facet_grid(ScoreType ~.) +
+            ggplot2::xlim(0,1) +
             ggplot2::labs(title = str_title, subtitle=str_subtitle
                           , y=str_ylab, x=str_xlab, caption=str_caption) +
             ggplot2::theme_bw() +

@@ -31,7 +31,7 @@
 getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
                          , HWBonus, BCGBonus, minYear, maxYear) { # FUNCTION.START
     
-    boo_DEBUG <- TRUE
+    boo_DEBUG <- FALSE
     `%>%` <- dplyr::`%>%`
     
     if (boo_DEBUG==TRUE) {
@@ -56,8 +56,8 @@ getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
         dplyr::filter(Year>=minYear, Year<=maxYear) %>%
         dplyr::select(COMID, BMISampleDate, CSCI, BCGLevel)
     
-    dfCriticalQTs <- dfreachBCGpred[,c("COMID","qt05","qt35","qt65","qt95"
-                                       ,"BCGqt05","BCGqt50","BCGqt95")]
+    dfCriticalQTs <- dfreachBCGpred[,c("COMID","qt05","qt35","qt50","qt65"
+                                       ,"qt95","BCGqt05","BCGqt50","BCGqt95")]
     dfCriticalQTs <- merge(dfCriticalQTs, dfreachBCGobs, by.x = "COMID"
                            , by.y = "COMID", all.x = TRUE)
     dfCriticalQTs <- merge(dfCriticalQTs, dfHWflag, by.x = "COMID"
@@ -68,13 +68,15 @@ getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
         dplyr::mutate(HWBonus = ifelse(StartFlag==1,HWBonus,0)
                       , rscore_BCGbonus = ifelse(is.na(BCGLevel), 0
                                                  , ifelse(BCGqt05>BCGLevel, 0
-                                                          , ifelse(BCGLevel>5, 1
+                                                          , ifelse(4>=BCGqt05, 1
                                                                    , 0)))
                       , pscore_BCGbonus = ifelse(is.na(BCGLevel), 0
                                                  , ifelse(BCGqt95<BCGLevel, 0
-                                                          , ifelse(BCGLevel>3, 1
+                                                          , ifelse(2<=BCGqt95, 1
                                                                    , 0)))) %>%
-        dplyr::mutate(rscore_pred = BCGqt50 - BCGqt95
+        dplyr::mutate(rscore_BCGbonus = ifelse(BCGBonus==0, 0, rscore_BCGbonus)
+                      , pscore_BCGbonus = ifelse(BCGBonus==0, 0, pscore_BCGbonus)
+                      , rscore_pred = BCGqt50 - BCGqt95
                       , pscore_pred = BCGqt05 - BCGqt50
                       , rscore_obsBCG = ifelse(BCGLevel==BCGqt95, 0
                                                , BCGLevel - BCGqt95)
@@ -90,7 +92,7 @@ getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
                       , pscore_obsBOTH = ifelse(is.na(BCGLevel), NA
                                                 , ifelse(pscore_obsBCG+pscore_obsCSCI<0
                                                          , 0, pscore_obsBCG + pscore_obsCSCI))
-                      , rscore_final = ifelse(is.na(rscore_obsBOTH)==TRUE
+                      , rscore_final = ifelse(is.na(rscore_obsBOTH)
                             , (rscore_pred+HWBonus+rscore_BCGbonus)/(maxBCG+max(HWBonus,na.rm=TRUE)+max(rscore_BCGbonus,na.rm=TRUE))
                             , (rscore_obsBOTH+HWBonus+rscore_BCGbonus)/(maxBCG+max(HWBonus,na.rm=TRUE)+max(rscore_BCGbonus,na.rm=TRUE)))
                       , pscore_final = ifelse(is.na(pscore_obsBOTH)
@@ -98,13 +100,27 @@ getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
                             , (pscore_obsBOTH + HWBonus + pscore_BCGbonus)/(maxBCG+max(HWBonus,na.rm=TRUE)+max(pscore_BCGbonus,na.rm=TRUE))))
     
     dfCriticalQTs <- dfCriticalQTs %>%
-        dplyr::select(COMID, qt05, qt35, qt65, qt95, BCGqt05, BCGqt50, BCGqt95
-                      , BMISampleDate, CSCI, BCGLevel, HWBonus, rscore_BCGbonus
-                      , pscore_BCGbonus, rscore_final, pscore_final) %>%
-        dplyr::rename(BCGbonusRestore = rscore_BCGbonus
+        dplyr::select(COMID, qt05, qt35, qt50, qt65, qt95, BCGqt05, BCGqt50, BCGqt95
+                      , BMISampleDate, CSCI, BCGLevel, rscore_obsCSCI, pscore_obsCSCI
+                      , rscore_obsBCG, pscore_obsBCG, rscore_obsBOTH, pscore_obsBOTH
+                      , HWBonus, rscore_BCGbonus, pscore_BCGbonus, rscore_final
+                      , pscore_final) %>%
+        dplyr::rename(CSCIpred_qt05 = qt05
+                      , CSCIpred_qt35 = qt35
+                      , CSCIpred_qt50 = qt50
+                      , CSCIpred_qt65 = qt65
+                      , CSCIpred_qt95 = qt95
+                      , BCGpred_qt05 = BCGqt05
+                      , BCGpred_qt50 = BCGqt50
+                      , BCGpred_qt95 = BCGqt95
+                      , CSCIobs = CSCI
+                      , BCGobs = BCGLevel
+                      , pot_BioCondInd_rest = rscore_final
+                      , pot_BioCondInd_prot = pscore_final
+                      , BCGbonusRestore = rscore_BCGbonus
                       , BCGbonusProtect = pscore_BCGbonus
-                      , BioScoreRestore = rscore_final
-                      , BioScoreProtect = pscore_final)
+                      , pot_BioCondInd_rest = rscore_final
+                      , pot_BioCondInd_prot = pscore_final)
     
     return(dfBCGscores = dfCriticalQTs)
     

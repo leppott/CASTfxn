@@ -33,14 +33,18 @@ library(DT)
 # library(rpart)
 
 # Source ####
-source(file.path(".", "external","getScaledStressors.R"))
-source(file.path(".", "external","getStressorScores.R"))
-source(file.path(".", "external","getBCGtiers.R"))
-source(file.path(".", "external","getBCGScores.R"))
+source(file.path(".", "external","drawAllScoresPlot.R"))
 source(file.path(".", "external","drawBarPlot.R"))
+source(file.path(".", "external","getBCGScores.R"))
+source(file.path(".", "external","getBCGtiers.R"))
 source(file.path(".", "external","getConnectivity.R"))
 source(file.path(".", "external","getConnectivityScores.R"))
+source(file.path(".", "external","getOpportunityScores.R"))
 source(file.path(".", "external","getReachMap.R"))
+source(file.path(".", "external","getScaledStressors.R"))
+source(file.path(".", "external","getStressorScores.R"))
+source(file.path(".", "external","getThreatScores.R"))
+source(file.path(".", "external","updateAllScoresTable.R"))
 
 # Global Variables ####
 url_map <- a("Shiny Reach Selection Map", href="https://leppott.shinyapps.io/CAST_Map_COMID")
@@ -55,9 +59,9 @@ options(shiny.maxRequestSize = 300*1024^2)
 
 # Targeted Locations
 ## Add to selection boxes to easy to pick out.
-targ_SiteID <- c("SMC04134", "905S15201", "907S05514", "SMC12246", "907SDSDR8"
+targ_SiteID <- c( "907S05514", "SMC04134", "905S15201", "SMC12246", "907SDSDR8"
                 , "907SDSDR9", "SMC04134", "905SDYSA7", "906S02246", "SMC01606")
-targ_COMID <- c("20331398", "20324447", "20331434", "20330890", "20329782"
+targ_COMID <- c("20331434", "20331398", "20324447", "20330890", "20329782"
                 , "20331170", "20331408")
 
 # data directory
@@ -72,6 +76,42 @@ LU.Stations <- data.Stations[,"StationID_Master"]
 
 zip_name <- "NULL"
 
+# www Results ####
+
+# Remove www\Results (and sub dirs) at start up (and recreate)
+dir_www_Results <- file.path(".", "www", "Results")
+ifelse(dir.exists(dir_www_Results)==TRUE, unlink(dir_www_Results, recursive = TRUE), NA)
+ifelse(dir.exists(dir_www_Results)==FALSE, dir.create(dir_www_Results), NA)
+
+
+# Map, Stations and Reach ####
+# data directory
+myDir <- file.path(".", "data")
+
+# Sites ###
+# df.sites.map
+fn.sites <- "df.sites.map.rda"
+load(file.path(dir_data, fn.sites))
+
+# SMC watersheds ####
+# poly.smc.proj
+fn.SMC <- "poly.smc.proj.rda"
+load(file.path(dir_data, fn.SMC))
+
+# Flowlines ###
+# lines.flowline.proj
+fn.Flowline.SMC <- "lines.flowline.proj.rda"
+load(file.path(dir_data, fn.Flowline.SMC))
+
+# SiteIDs ###
+mySites <- as.character(sort(unique(df.sites.map[, "StationID_Master"])))
+
+# COMIDs ###
+myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
+
+# Map height fix
+#https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height
+
 # Functions ####
 getHTML <- function(fn_html){
   #fn_disclaimer_html <- file.path(".", "data", "Disclaimer_Key.html")
@@ -84,14 +124,6 @@ getHTML <- function(fn_html){
 }##getHTML~END
 
 not_all_na <- function(x) {!all(is.na(x))}
-
-# www Results ####
-
-# Remove www\Results (and sub dirs) at start up (and recreate)
-dir_www_Results <- file.path(".", "www", "Results")
-ifelse(dir.exists(dir_www_Results)==TRUE, unlink(dir_www_Results, recursive = TRUE), NA)
-ifelse(dir.exists(dir_www_Results)==FALSE, dir.create(dir_www_Results), NA)
-
 
 # Copy over Results for Display
 # TargetSiteID_Results <- "403S01784" # "801RB8197" # "403S01784"
@@ -134,35 +166,4 @@ CopyResults <- function(TargetSiteID_Results){
   }##FOR~i~END
   #
 }##CopyResults~END
-
-
-# Map, Stations and Reach ####
-# data directory
-myDir <- file.path(".", "data")
-
-# Sites ###
-# df.sites.map
-fn.sites <- "df.sites.map.rda"
-load(file.path(myDir, fn.sites))
-
-# SMC watersheds ####
-# poly.smc.proj
-fn.SMC <- "poly.smc.proj.rda"
-load(file.path(myDir, fn.SMC))
-
-# Flowlines ###
-# lines.flowline.proj
-fn.Flowline.SMC <- "lines.flowline.proj.rda"
-load(file.path(myDir, fn.Flowline.SMC))
-
-# SiteIDs ###
-mySites <- as.character(sort(unique(df.sites.map[, "StationID_Master"])))
-
-# COMIDs ###
-myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
-
-# Map height fix
-#https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height
-
-
 

@@ -37,8 +37,8 @@ Na2OWs	Mean % of lithological sodium oxide (Na2O) content in surface or near sur
 P2O5Ws	Mean % of lithological phosphorous oxide (P2O5) content in surface or near surface geology within watershed	Lithology		Watershed	Surface P2O5 content	%
 SWs	Mean % of lithological sulfur (S) content in surface or near surface geology within watershed	Lithology		Watershed	Surface S content	%
 SiO2Ws	Mean % of lithological silicon dioxide (SiO2) content in surface or near surface geology within watershed	Lithology		Watershed	Surface SiO2 content	%
-NCat	Mean % of lithological nitrogen (N) content in surface or near surface geology within catchment	Lithology		Watershed	Surface Al2O3 content	%
-NWs	Mean % of lithological nitrogen (N) content in surface or near surface geology within watershed	Lithology		Watershed	Surface Al2O3 content	%
+NCat	Mean % of lithological nitrogen (N) content in surface or near surface geology within catchment	Lithology		Watershed	Surface N content	%
+NWs	Mean % of lithological nitrogen (N) content in surface or near surface geology within watershed	Lithology		Watershed	Surface N content	%
 HydrlCondCat	Mean lithological hydraulic conductivity (micrometers per second) content in surface or near surface geology within catchment	Lithology		Catchment	Hydraulic conductivity	um/sec
 HydrlCondWs	Mean lithological hydraulic conductivity (micrometers per second) content in surface or near surface geology within watershed	Lithology		Watershed	Hydraulic conductivity	um/sec
 CompStrgthCat	Mean lithological uniaxial compressive strength (megaPascals) content in surface or near surface geology within catchment	Lithology		Catchment	Compressive strength	megaPascals

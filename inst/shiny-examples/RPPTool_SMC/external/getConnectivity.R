@@ -204,13 +204,13 @@ getConnectivity <- function(TargetCOMID
     totalUp <- dfCxns %>%
         dplyr::select(UpDown, AggLengthKM) %>%
         dplyr::filter(UpDown=="Up") %>%
-        dplyr::summarize(TotalLength = sum(AggLengthKM), .groups = "drop_last")
+        dplyr::summarize(TotalLength = sum(AggLengthKM), .groups="drop_last")
     totalUp <- as.numeric(totalUp)
     
     totalDown <- dfCxns %>%
         dplyr::select(UpDown, AggLengthKM) %>%
         dplyr::filter(UpDown!="Up") %>%
-        dplyr::summarize(TotalLength = sum(AggLengthKM), .groups = "drop_last")
+        dplyr::summarize(TotalLength = sum(AggLengthKM), .groups="drop_last")
     totalDown <- as.numeric(totalDown)
     
     dfCxns <- dplyr::mutate(dfCxns

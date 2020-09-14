@@ -1150,12 +1150,13 @@ shinyServer(function(input, output, session) {
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
-      prog_n <- 26 + 7 + 1 + 2
+      prog_n <- 29
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
       #
       # Remove Zip ####
+      # Progress, 01
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Remove Zip"
@@ -1219,6 +1220,7 @@ shinyServer(function(input, output, session) {
 
       # Specify Base Filenames # These are the files used to run the analyses
       # Data Files ####
+      # Progress, 02
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Load Data Files"
@@ -1336,6 +1338,7 @@ shinyServer(function(input, output, session) {
       rm(fn.SampSummary)
 
       # CAST, Chem & other measured data ####
+      # Progress, 03
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, Chem"
@@ -1446,6 +1449,7 @@ shinyServer(function(input, output, session) {
       col_StressInvScore <- c(colMeasInvScore, colModelInvScore)
 
       # CAST, BMI, taxonomic data ####
+      # Progress, 04
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, BMI, Taxonomic"
@@ -1460,6 +1464,7 @@ shinyServer(function(input, output, session) {
       rm(fn.bmi.raw, fn.MT.bmi)
 
       # CAST, BMI, metrics ####
+      # Progress, 05
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, BMI, Metrics"
@@ -1537,6 +1542,7 @@ shinyServer(function(input, output, session) {
                                              , BMISampFlag)))
 
       # CAST, BMI, metrics metadata ####
+      # Progress, 06
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, BMI, Metrics, Metadata"
@@ -1552,6 +1558,7 @@ shinyServer(function(input, output, session) {
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN=="Yes"])
 
       # CAST, BMI, Co-Occurence ####
+      # Progress, 07
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, BMI, Co-Occurrence"
@@ -1581,6 +1588,7 @@ shinyServer(function(input, output, session) {
 
 
       # CAST, Alg, metrics metadata ####
+      # Progress, 08
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, Alg, Metrics, Metadata"
@@ -1596,6 +1604,7 @@ shinyServer(function(input, output, session) {
 
 
       # CAST, Alg, metrics ####
+      # Progress, 09
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, Alg, Metrics"
@@ -1628,6 +1637,7 @@ shinyServer(function(input, output, session) {
       #
 
       # CAST, Alg, Co-Occurence ####
+      # Progress, 10
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Data, Alg, Co-Occurrence"
@@ -1673,6 +1683,7 @@ shinyServer(function(input, output, session) {
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # RUN CASTool
       # Site Selection ####
+      # Progress, 11
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Site Selection"
@@ -1701,6 +1712,7 @@ shinyServer(function(input, output, session) {
                   , col.names = FALSE, row.names = FALSE, sep = "\t")
 
       # Main Code ####
+      # Progress, 12
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Main Code Start"
@@ -1737,6 +1749,7 @@ shinyServer(function(input, output, session) {
                   , row.names = FALSE, sep = "\t")
 
       # getComparators ####
+      # Progress, 13
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getComparators"
@@ -1766,6 +1779,7 @@ shinyServer(function(input, output, session) {
       # flush.console()
 
       # getSiteInfo ####
+      # Progress, 14
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getSiteInfo"
@@ -1809,6 +1823,7 @@ shinyServer(function(input, output, session) {
 
       # getClusterInfo ####
       # skeleton 510
+      # Progress, 15
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getClusterInfo"
@@ -1829,6 +1844,7 @@ shinyServer(function(input, output, session) {
       # flush.console()
 
       # Munge str/resp ####
+      # Progress, 16
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Munge, Str/Resp"
@@ -2100,6 +2116,7 @@ shinyServer(function(input, output, session) {
         } ### End no stressors statement
 
         # getQualSites ####
+        # Progress, 17
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
         prog_det <- paste0(bioComm, "; getQualSites")
@@ -2157,6 +2174,7 @@ shinyServer(function(input, output, session) {
         # flush.console()
 
         # getDataSets ####
+        # Progress, 18
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
         prog_det <- paste0(bioComm, "; getDataSets")
@@ -2340,6 +2358,7 @@ shinyServer(function(input, output, session) {
         }## IF ~ allOutliers ~ END
 
         # getStressorList ####
+        # Progress, 19
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
         prog_det <- paste0(bioComm, "; getStressorList")
@@ -2537,6 +2556,7 @@ shinyServer(function(input, output, session) {
         } else {
 
           # getTimeSeq ####
+          # Progress, 20
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getTimeSeq"
@@ -2569,6 +2589,7 @@ shinyServer(function(input, output, session) {
           }
 
           # getCoOccurr ####
+          # Progress, 21
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getCoOccurr"
@@ -2655,6 +2676,7 @@ shinyServer(function(input, output, session) {
                                     , "site.b.rsp" = site.b.rsp)
 
           # getBioStressorResponses ####
+          # Progress, 22
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getBioStressorResponses"
@@ -2686,6 +2708,7 @@ shinyServer(function(input, output, session) {
           }
 
           # getVerifiedPredictions ####
+          # Progress, 23
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getVerifiedPredictions"
@@ -2745,6 +2768,7 @@ shinyServer(function(input, output, session) {
           # # p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 
           # getWOE ####
+          # Progress, 24
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getWOE"
@@ -2792,6 +2816,7 @@ shinyServer(function(input, output, session) {
 
 
       # getReport ####
+      # Progress, 25
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getReport"
@@ -2826,7 +2851,8 @@ shinyServer(function(input, output, session) {
                 , dir_results=dir_results_abs
                 , report_type="summary"
                 , report_format="html"
-                , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                #, dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                , dir_rmd=file.path(gitpath, "rmd")
                 , siteQual2Plot = siteQual2Plot)
 
       # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
@@ -2848,6 +2874,7 @@ shinyServer(function(input, output, session) {
       #~~~~~~~~~~~~~~~~~~~~~~~~
 
       # getSummaryAllSites ####
+      # Progress, 26
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getSummaryAllSites"
@@ -2884,6 +2911,7 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
 
       # CopyResults ####
+      # Progress, 27
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Copy Results"
@@ -2898,6 +2926,7 @@ shinyServer(function(input, output, session) {
       CopyResults(TargetSiteID)
       
       # Create zip ####
+      # Progress, 28
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Create Zip Download"
@@ -2910,6 +2939,7 @@ shinyServer(function(input, output, session) {
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
+      # Progress, 29
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Complete"

@@ -28,7 +28,8 @@ getBCGtiers <- function(fn_Index2BCG, fn_predIndexByReach, fn_obsIndexBySite
     breakpoints <- dfCSCI2BCG %>%
         dplyr::group_by(BCGLevel) %>%
         dplyr::summarize(minCSCI = min(CSCI, na.rm = TRUE)
-                         , maxCSCI = max(CSCI, na.rm = TRUE), .groups = "drop_last") %>%
+                         , maxCSCI = max(CSCI, na.rm = TRUE)
+                         , .groups="drop_last") %>%
         dplyr::mutate(cutoff=0)
     
     for (i in 1:max(breakpoints$BCGLevel)) {
@@ -73,7 +74,7 @@ getBCGtiers <- function(fn_Index2BCG, fn_predIndexByReach, fn_obsIndexBySite
         dplyr::mutate(BMISampleDate = lubridate::mdy(BMISampDate)) %>%
         dplyr::select(-BMISampDate) %>%
         dplyr::group_by(StationID_Master, BMISampleDate) %>%
-        dplyr::summarise(avgCSCI = round(mean(CSCI),2)) %>%
+        dplyr::summarise(avgCSCI = round(mean(CSCI),2), .groups="drop_last") %>%
         dplyr::rename(CSCI = avgCSCI)
     dfObsCSCI <- as.data.frame(dfObsCSCI)
     
@@ -94,7 +95,7 @@ getBCGtiers <- function(fn_Index2BCG, fn_predIndexByReach, fn_obsIndexBySite
         dplyr::filter(BMISampleDate==max(BMISampleDate))
     dfObsCSCI_BCG_COMID <- dfObsCSCI_BCG_COMID %>%
         dplyr::group_by(COMID, BMISampleDate) %>%
-        dplyr::summarise(avgCSCI = round(mean(CSCI),2)) %>%
+        dplyr::summarise(avgCSCI = round(mean(CSCI),2), .groups="drop_last") %>%
         dplyr::rename(CSCI = avgCSCI)
     dfObsCSCI_BCG_COMID <- as.data.frame(dfObsCSCI_BCG_COMID)
     dfObsCSCI_BCG_COMID <- merge(dfObsCSCI_BCG_COMID, dfCSCI2BCG)
