@@ -1152,7 +1152,7 @@ shinyServer(function(input, output, session) {
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
-      prog_n <- 29
+      prog_n <- 30
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
@@ -1164,6 +1164,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Remove Zip"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # fn_zip_results <- list.files(file.path(".", "Results"), ".zip", full.names = TRUE)
       # if(length(fn_zip_results)>0){
       #   file.remove(fn_zip_results)
@@ -1228,6 +1229,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Load Data Files"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       fn.targets          <- file.path(dir_data,"SMCTestSites.xlsx")
       fn.Sites.Info       <- file.path(dir_data, "SMCSitesFinal.tab")
       fn.SampSummary      <- file.path(dir_data, "SMCSiteSummary.tab")
@@ -1346,6 +1348,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, Chem"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       ## Get metadata for all measured stressors
       data_chemInfo   <- read.delim(fn.cheminfo, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
       data_chemInfo   <- mutate(data_chemInfo, Analyte = StdParamName)
@@ -1457,6 +1460,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, BMI, Taxonomic"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       #
       data_BMIcounts <- read.table(fn.bmi.raw, header = TRUE, sep = "\t")
 
@@ -1472,6 +1476,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, BMI, Metrics"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       #
       data_bmiMetrics <- read.delim(fn.bmi.metrics, header = TRUE, sep = "\t",
                                     na.strings = "NA", stringsAsFactors = FALSE)
@@ -1550,6 +1555,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, BMI, Metrics, Metadata"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # skeleton 316
       message("Read fn.bmi.metrics.info")
       data_bmiMetricsInfo <- read.delim(fn.bmi.metrics.info, header = TRUE, sep = "\t",
@@ -1566,6 +1572,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, BMI, Co-Occurrence"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # Generate co-occurrence data set (same day samples; modeled data match any day)
       data_bmiCoOccur <- getCoOccurDataset(dataDir = dir_data
                                            , df_sites = data_Sites
@@ -1596,6 +1603,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, Alg, Metrics, Metadata"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       #
       data_AlgMetricsInfo <- read.delim(fn.alg.metrics.info, header = TRUE, sep = "\t",
                                         na.strings = "NA", stringsAsFactors = FALSE)
@@ -1612,6 +1620,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, Alg, Metrics"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # skeleton 339
       data_AlgMetrics <- read.table(fn.alg.metrics, header = TRUE, sep = "\t",
                                     stringsAsFactors = FALSE)
@@ -1629,6 +1638,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Data, Alg, Taxonomic"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # skeleton 356
       message("Read fn.alg.raw")
       data_AlgCounts <- read.table(fn.alg.raw, header = TRUE, sep = "\t")
@@ -1691,6 +1701,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Site Selection"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       #
       #df_targets <- read_excel(fn.targets, col_names = TRUE, trim_ws = TRUE, skip = 0)
       # running single site so don't need df_targets and a loop.
@@ -1720,6 +1731,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Main Code Start"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # TargetSiteID = "403S02363"
       # for (site in 1:length(TargetSiteID)) {
       #  for (site in 1:nrow(df_targets)) {
@@ -1757,6 +1769,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "getComparators"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # Identify comparator sites
       # This is predicated on the fact that BC distance is calculated based on
       # expected benthic macroinvertebrate taxa. If there are ever different
@@ -1787,6 +1800,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "getSiteInfo"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # Get site information for general use (map, sample summary, etc)
       if(boo_Shiny==TRUE){
         dir_map_rmd <- file.path(".", "external")
@@ -1837,6 +1851,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "getClusterInfo"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # Get Cluster Info
       getClusterInfo(TargetSiteID
                      , siteCOMID=list.SiteSummary$COMID
@@ -1858,6 +1873,7 @@ shinyServer(function(input, output, session) {
       prog_det <- "Munge, Str/Resp"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Prepare flags for types of stressor and response data to use
       avail.data <- data_SampSummary[data_SampSummary$StationID_Master == TargetSiteID,]
@@ -2130,6 +2146,7 @@ shinyServer(function(input, output, session) {
         prog_det <- paste0(bioComm, "; getQualSites")
         incProgress(prog_inc, message = prog_msg, detail = prog_det)
         Sys.sleep(mySleepTime)
+        message(paste(prog_msg, prog_det, sep = "; "))
         # Run analyses
         # Identify "quality" sites using different definitions
         list.BioQualSites <- getQualSites(TargetSiteID
@@ -2188,6 +2205,7 @@ shinyServer(function(input, output, session) {
         prog_det <- paste0(bioComm, "; getDataSets")
         incProgress(prog_inc, message = prog_msg, detail = prog_det)
         Sys.sleep(mySleepTime)
+        message(paste(prog_msg, prog_det, sep = "; "))
         # skeleton 832
         # Get data sets for stressors paired with response data, if available
         listPairedStressResp <- getDataSets(TargetSiteID
@@ -2218,6 +2236,7 @@ shinyServer(function(input, output, session) {
         sitePairedSR <- listPairedStressResp$siteBioStress %>%
           select(-StressSampDate, -RespSampDate, -RespSampID)
         sitePairedStressors <- as.vector(colnames(sitePairedSR[,3:ncol(sitePairedSR)]))
+        message("paired")
 
 
         # Prepare data sets of all stressors ever detected at the target site
@@ -2286,6 +2305,7 @@ shinyServer(function(input, output, session) {
             dplyr::rename(RespSampID = eval(colBioSample)
                           , RespSampDate = eval(colBioSampDate))
         }## IF ~ removeOutliers ~ END
+        message("remove Outliers")
 
         # Log removed outliers as data gaps
         # skeleton
@@ -2302,6 +2322,7 @@ shinyServer(function(input, output, session) {
         allOutliers <- data_StressLabeled %>%
           dplyr::filter(!is.na(ResultValue)) %>%
           dplyr::filter(Outlier == "Outlier")
+        message("Log removed outliers as data gaps.")
 
         if (nrow(siteOutliers)>0) {
           for (r in 1:nrow(siteOutliers)) {
@@ -2322,8 +2343,13 @@ shinyServer(function(input, output, session) {
                         , row.names = FALSE, sep = "\t")
           }
         }## IF ~ siteOutliers ~ END
+        message("site outliers")
+        
+        message(paste0("comp outliers, n = ", nrow(compOutliers)))
         if (nrow(compOutliers)>0) {
+          message("comp outliers > 0")
           for (r in 1:nrow(compOutliers)) {
+            message(paste0("comp outliers, r (", r, "/", nrow(compOutliers), ")"))
             stressor <- compOutliers$StdParamName[r]
             strLabel <- compOutliers$Label[r]
             result <- compOutliers$ResultValue[r]
@@ -2343,6 +2369,8 @@ shinyServer(function(input, output, session) {
             }
           }
         }## IF ~ compOutliers ~ END
+        message("comp outliers")
+        
         if (nrow(allOutliers)>0) {
           for (r in 1:nrow(allOutliers)) {
             stressor <- allOutliers$StdParamName[r]
@@ -2364,14 +2392,52 @@ shinyServer(function(input, output, session) {
             }
           }
         }## IF ~ allOutliers ~ END
+        message("all outliers")
 
         # getStressorList ####
-        # Progress, 19
+        # Progress, 20
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
         prog_det <- paste0(bioComm, "; getStressorList")
         incProgress(prog_inc, message = prog_msg, detail = prog_det)
         Sys.sleep(mySleepTime)
+        message(paste(prog_msg, prog_det, sep = "; "))
+        #
+        # debug
+        message(paste0("TargetSiteID = ", TargetSiteID))
+        message(paste0("siteCluster = ", list.SiteSummary$ClustID))
+        message(paste0("chemInfo = ", "data_stressInfo, ok"))
+        message(paste0("clusterChem = ", "compStressAll, ok"))
+        message(paste0("siteQual2Plot = ", siteQual2Plot))
+        message(paste0("refSamps = ", paste(allBioRefStressSamps, collapse = ", ")))
+        message(paste0("refSites = ", paste(allBioRefSites, collapse = ", ")))
+        message(paste0("siteChem = ", paste(siteStressAll, collapse = ",")))
+        message(paste0("probsHigh = ", probsHigh))
+        message(paste0("probsLow = ", probsLow))
+        message(paste0("DOlim = ", DOlim))
+        message(paste0("pHlimLow = ", pHlimLow))
+        message(paste0("pHlimHigh = ", pHlimHigh))
+        message(paste0("biocomm = ", bioComm))
+        message(paste0("bioParmsDEL = ", paste(bioParmsDEL, collapse = ",")))
+        message(paste0("dir_results = ", dir_results))
+        message(paste0("dir_sub = ", "CandidateCauses"))
+        
+        message(paste0("dir_results basename = ", basename(dir_results)))
+        message(paste0("dir_results dirname = ", dirname(dir_results)))
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         # skeleton 1003
         # Get Stressor List using all stressors ever detected at the target site
         list.stressors <- getStressorList(TargetSiteID
@@ -2564,11 +2630,12 @@ shinyServer(function(input, output, session) {
         } else {
 
           # getTimeSeq ####
-          # Progress, 20
+          # Progress, 21
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getTimeSeq"
           incProgress(prog_inc, message = prog_msg, detail = prog_det)
+          message(paste(prog_msg, prog_det, sep = "; "))
           # Create time sequence graphics
           # Uses all site stressor and response data, but not paired
           getTimeSeq(TargetSiteID
@@ -2597,12 +2664,13 @@ shinyServer(function(input, output, session) {
           }
 
           # getCoOccurr ####
-          # Progress, 21
+          # Progress, 22
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getCoOccurr"
           incProgress(prog_inc, message = prog_msg, detail = prog_det)
           Sys.sleep(mySleepTime)
+          message(paste(prog_msg, prog_det, sep = "; "))
           # Get Response-based co-occurrence
           if (TargetSiteID %in% unique(data_bioCoOccur$StationID_Master)) {
             msg <- ("Starting Co-occurrence")
@@ -2684,12 +2752,13 @@ shinyServer(function(input, output, session) {
                                     , "site.b.rsp" = site.b.rsp)
 
           # getBioStressorResponses ####
-          # Progress, 22
+          # Progress, 23
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getBioStressorResponses"
           incProgress(prog_inc, message = prog_msg, detail = prog_det)
           Sys.sleep(mySleepTime)
+          message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor Responses
           getBioStressorResponses(TargetSiteID
                                   , stressors = stressorsWPairedResponses
@@ -2716,12 +2785,13 @@ shinyServer(function(input, output, session) {
           }
 
           # getVerifiedPredictions ####
-          # Progress, 23
+          # Progress, 24
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getVerifiedPredictions"
           incProgress(prog_inc, message = prog_msg, detail = prog_det)
           Sys.sleep(mySleepTime)
+          message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor-specific regressions
           if (any(SSTVparms %in% stressorsWPairedResponses)) {
             getVerifiedPredictions(TargetSiteID
@@ -2776,12 +2846,13 @@ shinyServer(function(input, output, session) {
           # # p3 <- getSSDplot(myDF, myRT, myTaxa, myExp)
 
           # getWOE ####
-          # Progress, 24
+          # Progress, 25
           prog_cnt <- prog_cnt + 1
           prog_msg <- paste0("Step ", prog_cnt)
           prog_det <- "getWOE"
           incProgress(prog_inc, message = prog_msg, detail = prog_det)
           Sys.sleep(mySleepTime)
+          message(paste(prog_msg, prog_det, sep = "; "))
           getWoE(TargetSiteID
                  , biocomm = bioComm
                  , index = bioIndex
@@ -2824,12 +2895,13 @@ shinyServer(function(input, output, session) {
 
 
       # getReport ####
-      # Progress, 25
+      # Progress, 26
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getReport"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       # Get final report (Executive Summary style)
       dir_data_abs <- normalizePath(dir_data)
       dir_results_abs <- normalizePath(dir_results)
@@ -2882,12 +2954,13 @@ shinyServer(function(input, output, session) {
       #~~~~~~~~~~~~~~~~~~~~~~~~
 
       # getSummaryAllSites ####
-      # Progress, 26
+      # Progress, 27
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "getSummaryAllSites"
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
       getSummaryAllSites(biocommlist = c("bmi", "algae")
                          , bmiIndex = "CSCI"
                          , algIndex = "MMIhybrid"
@@ -2919,7 +2992,7 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
 
       # CopyResults ####
-      # Progress, 27
+      # Progress, 28
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Copy Results"
@@ -2934,7 +3007,7 @@ shinyServer(function(input, output, session) {
       CopyResults(TargetSiteID)
       
       # Create zip ####
-      # Progress, 28
+      # Progress, 29
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Create Zip Download"
@@ -2947,7 +3020,7 @@ shinyServer(function(input, output, session) {
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # Complete ####
-      # Progress, 29
+      # Progress, 30
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Complete"

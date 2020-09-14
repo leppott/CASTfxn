@@ -27,13 +27,27 @@ getStressorList(
 \arguments{
 \item{TargetSiteID}{Site ID}
 
+\item{siteQual2Plot}{Site quality to plot.}
+
+\item{refSamps}{reference samples}
+
+\item{refSites}{reference sites}
+
 \item{siteChem}{Chem sites}
 
 \item{probsHigh}{probabilities, high}
 
 \item{probsLow}{probabilities, low}
 
+\item{DOlim}{Dissolved Oxygen limit, default = 7}
+
+\item{pHlimLow}{pH limit, low, default = 6.5}
+
+\item{pHlimHigh}{pH limit, high, default = 9}
+
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+
+\item{bioParmsDEL}{bio parameters delete.}
 
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
@@ -46,8 +60,6 @@ getStressorList(
 \item{cluster.chem}{chem data cluster.}
 
 \item{cluster.samps}{sample cluster.}
-
-\item{ref.sites}{reference sites}
 }
 \value{
 A jpeg in the "Results" subdirectory of the working directory with box plots.

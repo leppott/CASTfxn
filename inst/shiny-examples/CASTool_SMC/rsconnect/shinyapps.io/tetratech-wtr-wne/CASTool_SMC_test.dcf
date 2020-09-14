@@ -1,0 +1,12 @@
+name: CASTool_SMC_test
+title: CASTool_SMC_test
+username:
+account: tetratech-wtr-wne
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2805363
+bundleId: 3628262
+url: https://tetratech-wtr-wne.shinyapps.io/CASTool_SMC_test/
+when: 1600106215.77344
+asMultiple: FALSE
+asStatic: FALSE

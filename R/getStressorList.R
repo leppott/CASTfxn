@@ -13,11 +13,17 @@
 #' @param chem.info chem information
 #' @param cluster.chem chem data cluster.
 #' @param cluster.samps sample cluster.
-#' @param ref.sites reference sites
+#' @param siteQual2Plot Site quality to plot.
+#' @param refSamps reference samples
+#' @param refSites reference sites
 #' @param siteChem Chem sites
 #' @param probsHigh probabilities, high
 #' @param probsLow probabilities, low
+#' @param DOlim Dissolved Oxygen limit, default = 7
+#' @param pHlimLow  pH limit, low, default = 6.5
+#' @param pHlimHigh pH limit, high, default = 9
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
+#' @param bioParmsDEL bio parameters delete.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
 #' 
@@ -170,7 +176,26 @@ getStressorList <- function(TargetSiteID
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
   # dir.sub <- "Results"
-  wd <- dirname(dir_results)
+  # Works with R locally
+  # wd <- dirname(dir_results)
+  # dir.sub <- basename(dir_results)
+  # dir.sub2 <- TargetSiteID
+  # dir.sub3 <- biocomm
+  # dir.sub4 <- dir_sub
+  # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+  #        , dir.create(file.path(wd, dir.sub, dir.sub2))
+  #        , FALSE)
+  # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+  #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
+  #        , FALSE)
+  # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+  #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+  #        , FALSE)
+  # 
+  # dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  
+  # Works with Shiny server
+  wd <- "."
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   dir.sub3 <- biocomm
@@ -186,6 +211,8 @@ getStressorList <- function(TargetSiteID
          , FALSE)
   
   dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  
+  
   
   # First 2 columns are ChemSampID and StationID_Master
   clusterChemData <- clusterChem[4:ncol(clusterChem)]
