@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9288 (2020-09-14)
+* getSiteInfo.R
+    + Add dir_map_rmd as input parameter.
+
 ## Changes in Version 0.1.0.9287 (2020-09-14)
 * RPPTool
     + Update server.R with skeleton code revisions.

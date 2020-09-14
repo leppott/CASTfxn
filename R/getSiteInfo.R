@@ -41,6 +41,7 @@
 #' @param map_flowline Typically NHD+ flowline.
 #' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
+#' @param dir_map_rmd Directory with Map_Leaflet.RMD.  Default = package RMD.
 #' 
 #' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
 #' in the user supplied dir_results folder (default is "Results" folder in the 
@@ -138,7 +139,9 @@ getSiteInfo <- function(TargetSiteID
                         , map_flowline2=NULL
                         , dir_photo = file.path(dir_data,"Photos")
                         , dir_results = dir_results
-                        , dir_sub = "SiteInfo") {
+                        , dir_sub = "SiteInfo"
+                        , dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+                        ){
     #
    
     # DEBUG 
@@ -165,6 +168,7 @@ getSiteInfo <- function(TargetSiteID
         dir_photo = file.path(dir_data,"Photos")
         dir_results = dir_results
         dir_sub = "SiteInfo"
+        dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
     }
 
     not_all_na <- function(x) {!all(is.na(x))}
@@ -522,20 +526,12 @@ getSiteInfo <- function(TargetSiteID
     strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
     # dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
     
-    ### CHANGE THIS BEFORE PUBLISHING...
-    if (boo_DEBUG) {
-        rmarkdown::render("C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/Map_Leaflet.rmd"
-                          , output_format=paste0(report_format,"_document")
-                          , output_file=strFile_out
-                          , output_dir=dir_path
-                          , quiet=TRUE)
-    } else {
-        rmarkdown::render(file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-                          , output_format=paste0(report_format,"_document")
-                          , output_file=strFile_out
-                          , output_dir=dir_path
-                          , quiet=TRUE)
-    }
+    rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet.rmd")
+                      , output_format=paste0(report_format,"_document")
+                      , output_file=strFile_out
+                      , output_dir=dir_path
+                      , quiet=TRUE)
+
     # place after static map so can insert
     
     

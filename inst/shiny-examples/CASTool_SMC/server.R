@@ -1146,6 +1146,8 @@ shinyServer(function(input, output, session) {
   Run_ALL2 <- function(){
     # Updates from Ann's "skeleton" code, 2020-08-25
     #
+    boo_Shiny <- TRUE
+    #
     shiny::withProgress({
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
@@ -1786,6 +1788,11 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       # Get site information for general use (map, sample summary, etc)
+      if(boo_Shiny==TRUE){
+        dir_map_rmd <- file.path(".", "external")
+      } else {
+        dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+      }## IF ~ boo_Shiny ~ END
       # Map plots only ref sites, and that's probably for the best
       list.SiteSummary <- getSiteInfo(TargetSiteID = TargetSiteID
                                       , data_Sites = data_Sites
@@ -1806,7 +1813,8 @@ shinyServer(function(input, output, session) {
                                       , map_flowline2 = NULL
                                       , dir_photo = file.path(getwd(),"Data","Photos")
                                       , dir_results = dir_results
-                                      , dir_sub = "SiteInfo")
+                                      , dir_sub = "SiteInfo"
+                                      , dir_map_rmd = dir_map_rmd)
       # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo,
       #                                Samps = mySamps,
       #                                BMImetrics = myBMImetrics,
