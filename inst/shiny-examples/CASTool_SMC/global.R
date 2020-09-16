@@ -31,6 +31,8 @@ library(tidyr)
 
 # Global Variables ####
 
+`%>%` <- dplyr::`%>%`
+
 # data directory
 dir_data <- file.path(".", "Data")
 dir_results <- file.path(".", "Results") # Assumed as subdir of working directory.

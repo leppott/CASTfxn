@@ -1,0 +1,12 @@
+name: RPPTool_SMC_test
+title: RPPTool_SMC_test
+username:
+account: tetratech-wtr-wne
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2812023
+bundleId: 3635652
+url: https://tetratech-wtr-wne.shinyapps.io/RPPTool_SMC_test/
+when: 1600268371.67023
+asMultiple: FALSE
+asStatic: FALSE

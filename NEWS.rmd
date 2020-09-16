@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9290 (2020-09-16)
+* RPPTool
+    + mods for shiny.
+
 ## Changes in Version 0.1.0.9289 (2020-09-14)
 * CASTool
     + Add more console messages showing status.

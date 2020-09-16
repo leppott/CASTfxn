@@ -72,7 +72,7 @@ updateAllScoresTable <- function(dfAllScores, listWeights, fn_allscores
                                             , NA
                                             , signif((wt_pot_BioCondInd*pot_BioCondInd_prot),3))
                       , wtd_pot_BioCxnInd = ifelse(is.na(pot_BioCxnInd), NA
-                                            , signif((wt_pot_BioCondInd*pot_BioCxnInd),3))
+                                            , signif((as.numeric(wt_pot_BioCondInd)*as.numeric(pot_BioCxnInd)),3))
                       , wtd_pot_StressorInd = ifelse(is.na(pot_StressorInd), NA
                                             , signif((wt_pot_BioCondInd*pot_StressorInd),3))
                       , wtd_pot_StressorCxnInd = ifelse(is.na(pot_StressorCxnInd)

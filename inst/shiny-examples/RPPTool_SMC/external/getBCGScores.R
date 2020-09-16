@@ -45,7 +45,7 @@ getBCGScores <- function(dfBCGcutoffs, dfreachBCGobs, dfreachBCGpred, dfHWflag
         maxYear <- 2020
     }
     
-    BCGlevels <- as.vector(listBCGdata$BCGcutoffs[,"BCGLevel"])
+    BCGlevels <- as.vector(dfBCGcutoffs[,"BCGLevel"])
     maxBCG <- max(BCGlevels)
 
     # Get most recent BCG tier

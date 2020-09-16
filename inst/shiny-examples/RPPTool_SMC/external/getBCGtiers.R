@@ -108,6 +108,5 @@ getBCGtiers <- function(fn_Index2BCG, fn_predIndexByReach, fn_obsIndexBySite
                        , predReachBCG=dfpredCSCI_BCG
                        , obsSiteBCGxy=dfObsCSCI_BCG_xy
                        , obsReachBCG=dfObsCSCI_BCG_COMID)
-    
-    
+
 }

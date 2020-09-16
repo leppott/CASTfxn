@@ -41,13 +41,11 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
            , FALSE)
     comid_dir <-file.path(results_dir, TargetCOMID)
     
-    dfWtNormStressRecent=listStressData$dfWtNormStressRecent
-    dfWeights=listStressData$dfWeights
     
     # Identify stressor score for stressors upstream
     if (useStressor==TRUE) {
         # Idenfity stressors on Target Reach & get these stressors for all reaches
-        dfUseStressors <- listStressScores$dfWtNormStressRecent %>%
+        dfUseStressors <- listStressData$dfWtNormStressRecent %>%
             dplyr::filter(COMID == TargetCOMID) %>%
             dplyr::select(COMID, Stressor, Weight, WtAdjVal)
 
@@ -58,7 +56,7 @@ getConnectivityScores <- function(TargetCOMID, useStressor=FALSE
         sumWeights <- as.numeric(sumWeights)
         
         # Combine dfCxns with stressor data, then subset to target reach stressors
-        dfCxnStressors <- listStressScores$dfWtNormStressRecent %>%
+        dfCxnStressors <- listStressData$dfWtNormStressRecent %>%
             dplyr::filter(COMID %in% dfCxnData$COMID) %>%
             dplyr::filter(Stressor %in% dfUseStressors$Stressor)
         dfCxnStressors <- dfCxnStressors %>%

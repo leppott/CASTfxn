@@ -13,17 +13,15 @@ drawAllScoresPlot <- function(TargetReach
     `%>%` <- dplyr::`%>%`
     
     if (boo_DEBUG==TRUE) {
-        TargetReach <- 17562512
+        TargetReach <- TargetReach
         allScores <- dfAllScoresSummary
-        dfSiteInfo <- dfSites
-        dfStressors <- listScaledStr01All$dfWoE
+        dfSiteInfo <- dfAllSites
+        dfStressors <- dfWoE
         dfStressorInfo <- dfStressInfo
         results_dir <- results_dir
     }
     
     drawPlot <- FALSE
-    boo_Sites <- FALSE
-    boo_Stressors <- FALSE
     colorpal <- viridis::viridis(8)
     colorpal2 <- viridis::plasma(8)
 
@@ -42,9 +40,27 @@ drawAllScoresPlot <- function(TargetReach
     myTime <- stringr::str_replace_all(stringr::str_extract(myTime,"\\d{2}:\\d{2}:\\d{2}")
                                        , ":", "")
     fn_TargetScoreGraph <- file.path(results_dir, TargetReach
-                                     ,paste0("AllScores_", myDate,"_",myTime,".png"))
+                                     ,paste0(TargetReach,"_AllScores_", myDate
+                                             ,"_",myTime,".png"))
     rm(myDate, myTime)
     
+    if (is.null(dfStressors)) {
+        dfReachInfo <- dfSiteInfo %>%
+            dplyr::filter(COMID==TargetReach) %>%
+            dplyr::select(COMID, StationID_Master, FinalLatitude, FinalLongitude) %>%
+            dplyr::mutate(Stressor = "None", Label = "None")
+    } else {
+        # Get stressor and site info for target reach
+        dfStressors <- merge(dfStressors, dfSiteInfo
+                             , by.x=c("StationID_Master", "FinalLatitude", "FinalLongitude")
+                             , by.y=c("StationID_Master", "FinalLatitude", "FinalLongitude")
+                             , all.y=TRUE)
+        dfStressors <- merge(dfStressors, dfStressorInfo[,c("Stressor", "Label")]
+                             , by.x="Stressor", by.y="Stressor", all.x=TRUE)
+        dfReachInfo <- dplyr::select(dfStressors, COMID, StationID_Master, FinalLatitude
+                                     , FinalLongitude, Stressor, Label) %>%
+            dplyr::filter(COMID==TargetReach)
+    }
     
     # Get scores for specified COMID
     dfReachScores <- allScores[allScores$COMID==TargetReach,]
@@ -56,26 +72,12 @@ drawAllScoresPlot <- function(TargetReach
         drawPlot <- TRUE
     }
     
-    # Get stressor and site info for target reach
-    dfStressors <- merge(dfStressors, dfSiteInfo
-                         , by.x=c("StationID_Master", "FinalLatitude", "FinalLongitude")
-                         , by.y=c("StationID_Master", "FinalLatitude", "FinalLongitude")
-                         , all.y=TRUE)
-    dfStressors <- merge(dfStressors, dfStressorInfo[,c("Stressor", "Label")]
-                         , by.x="Stressor", by.y="Stressor", all.x=TRUE)
-    dfReachInfo <- dplyr::select(dfStressors, COMID, StationID_Master, FinalLatitude
-                                 , FinalLongitude, Stressor, Label) %>%
-        dplyr::filter(COMID==TargetReach)
-    
     # Get bioassessment site info from Sites file
     dfReachSites <- unique(dplyr::select(dfReachInfo, COMID, StationID_Master
                                          , FinalLatitude, FinalLongitude))
     if (nrow(dfReachSites)==0) {
-        # print(paste0("No bioassessment sites are observed on ", TargetReach, "."))
-        # flush.console()
         siteList <- "No bioassessment sites"
     } else { 
-        boo_Sites = TRUE
         dfReachSites <- dfReachSites %>%
             dplyr::mutate(SiteInfo = paste0(StationID_Master, " ("
                                            , format(FinalLatitude,digits=5,nsmall=5)
@@ -87,18 +89,15 @@ drawAllScoresPlot <- function(TargetReach
     
     # Get any observed stressors
     dfReachStressors <- unique(dplyr::select(dfReachInfo, Label))
-    if (nrow(dfReachStressors)==0) {
-        # print(paste0("Either there are no stressors or the CASTool results "
-        #            , "are not available for ", TargetReach, "."))
-        # flush.console()
+    if (all(dfReachStressors$Label=="None") | (nrow(dfReachStressors)==0)) {
         strlist <- "No stressors available"
     } else { 
-        boo_Stressors = TRUE
         strlist <- as.character(dfReachStressors$Label[!is.na(dfReachStressors$Label)])
     }
     
     if (drawPlot) { # Draw the scores plot with whatever data are available
         
+        rank <- unique(as.character(dfReachScores$RankByIndexType))
         indexType <- unique(as.character(dfReachScores$IndexType))
         indexTypeLabel <- ifelse(indexType == "Protect"
                                  , "Protection Index"
@@ -290,6 +289,8 @@ drawAllScoresPlot <- function(TargetReach
                                             , stringr::str_wrap(stringr::str_c(strlist
                                             , collapse="; "), width = 35),"\n")
                                        , x=0.05, just="left", gp=grid::gpar(fontsize=8))
+        rankGrob <- grid::textGrob(paste("Rank:", rank), x=0.05, just="left"
+                                   , gp=grid::gpar(fontsize=10, fontface="bold"))
         captionGrob <- grid::textGrob(paste("Green bars represent direct relationships (more is better)."
                                             , "Red bars represent inverse relationships (less is better)."
                                             , sep= " "), x=0.01, just="left"
@@ -300,7 +301,7 @@ drawAllScoresPlot <- function(TargetReach
             ggplot2::theme_void()
         
         p_text <- gridExtra::grid.arrange(reachGrob, siteGrob, stressorGrob
-                                          , ncol=1, nrow=3)
+                                          , rankGrob, ncol=1, nrow=4)
         
         p_final <- gridExtra::grid.arrange(p_text, p_RPPIndex, p_subindex
                                            , p_potInds, p_thrInds, p_oppInds
