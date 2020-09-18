@@ -1,3 +1,8 @@
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#
 #' @title Get CoOccurrence Data
 #' 
 #' @description Prepare matched stressor/response data as a single dataframe
