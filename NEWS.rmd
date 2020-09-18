@@ -37,6 +37,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9291 (2020-09-18)
+
+* getSummaryAllSites.R
+    + list.dirs instead of list.files.
+* CASTool
+    + Minor edits.  
+    + Shiny app complete.
+* RPPTool
+    + Minor edits.  
+    + Shiny app still work to be done.
+
 ## Changes in Version 0.1.0.9290 (2020-09-16)
 * RPPTool
     + mods for shiny.

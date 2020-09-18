@@ -1961,10 +1961,14 @@ shinyServer(function(input, output, session) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
-      #
-      fn_zip <- file.path(".", "Results", paste0(TargetCOMID, ".zip"))
+      # Add directory
+      fn_zip <- file.path(results_dir, paste0(TargetCOMID, ".zip"))
       zip(fn_zip, file.path(results_dir, TargetCOMID))
-      
+      # add single file
+      fn_summary <- list.files(path = results_dir, pattern = "^RPPTool_AllScoresSummary")
+      fn_add <- file.path(results_dir, fn_summary[length(fn_summary)]) # get last one
+      zip(fn_zip, fn_add)
+
       # Total time
       elapsed.time2 <- Sys.time() - start.time
       message(paste0("Results read for download.  Total time = ", format.difftime(elapsed.time2)))
@@ -2212,12 +2216,17 @@ shinyServer(function(input, output, session) {
   # 
   # df_results <- "x"
   
-  
+  # Results ####
   output$df_results_DT <- DT::renderDT({
+    #
     # should be blank initially and once have data it will appear correctly
     #df_r <- df_results()
-    df_r <- read.delim(file.path(".", "Results", "AllScores.tab")
-                       , stringsAsFactors = FALSE)
+    # Need most current file
+    fn_sum <- list.files(path = file.path(".", "Results")
+                         , pattern = "^RPPTool_AllScoresSummary")
+    fn_sum_latest <- file.path(".", "Results", fn_sum[length(fn_sum)]) # get last one
+    #
+    df_r <- read.delim(fn_sum_latest, stringsAsFactors = FALSE)
     colnames(df_r) <- gsub("\\.", "<br>", colnames(df_r))
     return(df_r)
   }##expression~END
@@ -2230,18 +2239,45 @@ shinyServer(function(input, output, session) {
   , escape = FALSE
   )## output$df_results_DT ~ END
   
-  output$img_report <- renderImage({
-    if(file.exists(file.path(".", "Results", "img_report")) == FALSE){
-      return(NULL)
-    } else {
-      return(list(
-        src = "Results/img_report.png",
-        contentType = "image/png",
-        alt = "report images"
-      ))
-    }## IF ~ END
-  }, deleteFile = FALSE
-  )## output$report_img ~ END
+  # output$img_scores <- renderImage({
+  #   TargetCOMIDx <- "20331434"
+  #   fn_png_scores <- list.files(path = file.path(".", "Results", TargetCOMIDx)
+  #                                                , pattern = "AllScores")
+  #   fn_png_scores_latest <- fn_png_scores[length(fn_png_scores)]
+  #   # if(exists("TargetCOMID")==FALSE){
+  #   #   return(NULL)
+  #   # } else if (file.exists(file.path(".", "Results", TargetCOMID, fn_png_scores_latest)) == FALSE) {
+  #   #   return(NULL)
+  #   # } else {  
+  #     return(list(
+  #       width = 600, 
+  #       src = paste("Results", TargetCOMIDx, fn_png_scores_latest, sep = "/"),
+  #       contentType = "image/png",
+  #       alt = "results all scores"
+  #     ))
+  #   # }## IF ~ END
+  # }, deleteFile = FALSE
+  # )## output$report_img ~ END
+  
+  
+  # output$img_map <- renderImage({
+  #   fn_png_map <- list.files(path = file.path(".", "Results", TargetCOMID)
+  #                               , pattern = "RPPIndex")
+  #   fn_png_map_latest <- fn_png_map[length(fn_png_map)]
+  #   if(file.exists(file.path(".", "Results", TargetCOMID, fn_png_map_latest)) == FALSE){
+  #     return(NULL)
+  #   } else {
+  #     return(list(
+  #       src = paste("Results", TargetCOMID, fn_png_map_latest, sep = "/"),
+  #       contentType = "image/png",
+  #       alt = "map RPP Index"
+  #     ))
+  #   }## IF ~ END
+  # }, deleteFile = FALSE
+  # )## output$report_img ~ END
+  
+  
+  
 
   # output$downloadData <- downloadHandler(
   #   filename <- function() {

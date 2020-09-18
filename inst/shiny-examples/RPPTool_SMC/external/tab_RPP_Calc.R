@@ -69,6 +69,7 @@ function(){
               # Show a plot of the generated distribution
               , mainPanel(
                 # tabsetPanel ####
+                  # Main ####
                 tabsetPanel(id = "tsp_Main"
                   # 0.0
                   , tabPanel(title = "Console", value = "pan_console"
@@ -78,7 +79,7 @@ function(){
                              ,p("In addition to any text below there is a progress bar in the lower right.")
                              , textOutput("text_console_ALL")
                   )##tabPanel~Console~END
-
+                  # Input, User Crit ####
                   , tabPanel(title = "Input, User Criteria", value = "pan_input_user"
                              , h3("User-Defined Input Criteria")
                              , p("Default criteria are specified below.")
@@ -169,7 +170,7 @@ function(){
                   #           # , sliderInput("wt_Opp_UserDefined", label = "wt_Opp_UserDefined",  value = 1, min = 0, max = 2)
                   # 
                   # )
-                  
+                  # Input, Wts, Ind ####
                   , tabPanel(title = "Input, Weights, Indicators", value = "pan_input_stressors"
                              , h3("Weights for Indicators")
                              , tableOutput("table_wt_indicator_count")
@@ -191,7 +192,7 @@ function(){
                              , sliderInput("wt_Opp_UserDefined", label = "Opportunity, User Defined",  value = 1, min = 0, max = 2)
                              
                   )
-                  
+                  # Input, Wts, SubInd ####
                   , tabPanel(title = "Input, Weights, Subindices", value = "pan_input_subindices"
                              , h3("Weights for Subindices")
                              , tableOutput("table_wt_subindex_count")
@@ -209,13 +210,15 @@ function(){
                   # , tabPanel(title = "Metadata", value = "tab_metadata"
                   #            , h3("RPP Tool Metadata")
                   #            , p("list out terms"))
-                  # 
+                  # Results #### 
                   , tabPanel(title = "Results", value = "tab_results"
                              , h3("RPP Tool Results")
                              , p("Use the button in the left side bar to save the Results as a single zip file.")
                              #, p("Not active until calculation has finished.")
                              , p("After calculations are finished the results summary will appear below.")
-                            # , imageOutput("img_report")
+                             # , fluidRow(column(6, imageOutput("img_scores"))
+                             #           # , column(6, imageOutput("img_scores"))
+                             #            )
                              , DT::dataTableOutput("df_results_DT")
                              )
 

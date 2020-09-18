@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-16 11:05:12
+    #> Last Update: 2020-09-18 14:08:16
 
 # Planned Updates
 
@@ -24,6 +24,17 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9291 (2020-09-18)
+
+  - getSummaryAllSites.R
+      - list.dirs instead of list.files.
+  - CASTool
+      - Minor edits.  
+      - Shiny app complete.
+  - RPPTool
+      - Minor edits.  
+      - Shiny app still work to be done.
 
 ## Changes in Version 0.1.0.9290 (2020-09-16)
 

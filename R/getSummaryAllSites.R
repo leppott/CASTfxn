@@ -56,13 +56,14 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     if (!dir.exists(file.path(dir_results))==TRUE) { # Check for results dir
         message("Results directory not found.")
     } else { # Results dir exists
-        site_dirs <- list.files(dir_results)
-        rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
-        site_dirs <- site_dirs[!site_dirs %in% rmfile]
-        
-        #rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
-        rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)] # zip or 7z
-        site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
+        #site_dirs <- list.files(dir_results)
+        # rmfile <- site_dirs[grep("^RunStats_\\d{8}\\.tab$", site_dirs)]
+        # site_dirs <- site_dirs[!site_dirs %in% rmfile]
+        # 
+        # #rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
+        # rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)] # zip or 7z
+        # site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
+        site_dirs <- list.dirs(dir_results, full.names = FALSE, recursive = FALSE)
 #=======
 # Pull Request, 20200817   
 #    if (!dir.exists(file.path(dir_results))==TRUE) {
@@ -82,8 +83,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         for (site in (1:length(site_dirs))) { # Loop over each site
                 # Get Target Site ID
             TargetSiteID <- site_dirs[site]
-            print(paste0("Evaluating ", TargetSiteID))
-            flush.console()
+            message(paste0("Evaluating ", TargetSiteID))
+            #flush.console()
             for (b in (1:length(biocommlist))) { # For each biological community
                 biocomm = biocommlist[b]
                 if (biocomm=="BMI") { 
@@ -102,7 +103,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                     message(paste0("No WoE detailed scores available for "
                                  , TargetSiteID, " for ", biocomm, "."))
 #<<<<<<< 201909_ARL
-                    flush.console()
+                    #flush.console()
                     next()
 #=======
                     #flush.console()
