@@ -1,3 +1,8 @@
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#
 #' @title Weight-of-Evidence summary
 #' 
 #' @description Summarize weight of evidence using scores from other functions.
