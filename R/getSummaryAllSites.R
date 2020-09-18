@@ -1,3 +1,8 @@
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#
 #' @title Get summary of all sites in results directory
 #' 
 #' @description Pull relevant information from the final Weight of Evidence
