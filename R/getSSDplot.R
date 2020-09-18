@@ -1,3 +1,8 @@
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#
 # SSD- generates plots of the proportion of species affected at different exposure levels in laboratory toxicity tests.
 #Data= species data set name
 #TaxaName= "column containing taxa names"
