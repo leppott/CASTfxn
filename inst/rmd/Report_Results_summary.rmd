@@ -13,6 +13,11 @@ output:
   pdf_document:
     toc: true
 ---
+
+<!-- #  Copyright 2020 TetraTech. All rights reserved. -->
+<!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
+<!-- #  is expressly prohibited without prior written permission of TetraTech. -->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Debugging
