@@ -1,3 +1,8 @@
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#
 # CASTfxn (Specific for SMC)
 # Erik.Leppo@tetratech.com, 20180710
 # Ann.Lincoln@tetratech.com, 20190630
@@ -10,7 +15,7 @@
 #rm(list=ls())
 
 boo.debug <- TRUE
-debug.person <- "Erik"
+debug.person <- "Ann"
 
 if (boo.debug==TRUE & debug.person == "Ann") {
     gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
@@ -18,7 +23,7 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
     dir_data <- file.path(localdir, "Data")
     dir_results <- file.path(localdir, "Results")
-    printClusterInfo <- FALSE
+    printClusterInfo <- TRUE
 } else if (boo.debug == TRUE & debug.person == "Erik") {
     library(CASTfxn)
     #gitpath <- file.path(system.file(package = "CASTfxn"), "R")
