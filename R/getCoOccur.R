@@ -9,7 +9,7 @@
 #
 #' @title Co-Occurrence Plots
 #' 
-#' @description Generates a box plots and stressor response plots (individually as jpg 
+#' @description Generates a box plots and stressor response plots (individually as png 
 #' and together as a PDF) as well as scores for co-occurence.
 #' 
 #' @details \strong{Derive evidence fo spatial/temporal co-occurrence.}
@@ -100,7 +100,7 @@
 #' Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
 #' , "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")
 #'
-#' @return Saves a single PDF of all plots, individual plots as JPGs, and a 
+#' @return Saves a single PDF of all plots, individual plots as pngs, and a 
 #' scores files (tab separated text file) to a user defined 'Results' directory 
 #' in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results' 
 #' for each SiteID in TargetSiteID.
@@ -352,7 +352,7 @@ getCoOccur <- function(df_data
     #   grDevices::pdf(file=file.path(wd, dir.sub, dir_sub2, fn.pdf), width=6, height=8)
     # }##IF.boo_DEBUG.END
     plots_pdf <- vector(1, mode="list")
-    plots_jpg <- vector(2, mode="list")
+    plot_png <- vector(2, mode="list")
     # #
     # Save scores file (append to later)
     # fn.scores <- file.path(wd, dir.sub, dir_sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
@@ -498,8 +498,8 @@ getCoOccur <- function(df_data
          # fn_title <- gsub("\\s","",fn_title)
          # fn_title <- gsub("\\.","",fn_title)
          
-         fn_jpg_p1 <- paste0(i_TargetSiteID, "_", biocomm, "_CoOccur_", make.names(j), ".jpg")
-         fn_jpg_p2 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_", make.names(j), ".jpg")
+         fn_png_p1 <- paste0(i_TargetSiteID, "_", biocomm, "_CoOccur_", make.names(j), ".png")
+         fn_png_p2 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_", make.names(j), ".png")
          ppi       <- 300
          
          # Create (ggplot)
@@ -573,13 +573,13 @@ getCoOccur <- function(df_data
              ggplot2::labs(y=jlabel, x=lab_comp) + 
              ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black"
                                  , lty=2, na.rm = TRUE)
-           # Capture plot (jpg)
+           # Capture plot (png)
            # Capture most recent plot to a list
            # print(p1)
            # plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # p1
-           # plots_jpg[[1]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_path, fn_jpg_p1)
+           # plot_png[[1]] <- grDevices::recordPlot()
+           ggplot2::ggsave(filename=file.path(dir_path, fn_png_p1)
                            , plot=p1
                            , dpi=ppi, width=8, height=6, units="in")
          #}##IF~non-empty~END
@@ -675,8 +675,8 @@ getCoOccur <- function(df_data
                             , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
              ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
            # p2
-           # plots_jpg[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_path, fn_jpg_p2)
+           # plot_png[[2]] <- grDevices::recordPlot()
+           ggplot2::ggsave(filename=file.path(dir_path, fn_png_p2)
                            , plot=p2
                            , dpi=ppi, width=8, height=6, units="in")
 
@@ -697,16 +697,16 @@ getCoOccur <- function(df_data
            ## Size modifier - 4:3 isn't big enough for all of text on ggplots
            #size_mod <- 1.5
            #
-           # # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_jpg_p1)
+           # # png, p1
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_png_p1)
            #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
            #                 , pointsize = 8
            #                 , res = ppi)
            #    grDevices::replayPlot(1)
            # grDevices::dev.off()
            #
-           # JPG, p2
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_jpg_p2)
+           # png, p2
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_png_p2)
            #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
            #                 , pointsize=8
            #                 , res = ppi)
@@ -734,8 +734,8 @@ getCoOccur <- function(df_data
            ## Size modifier - 4:3 isn't big enough for all of text on ggplots
            #size_mod <- 1.5
            #
-           # JPG, p1
-           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_jpg_p1)
+           # png, p1
+           # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_png_p1)
            #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
            #                 , pointsize=8
            #                 , res = ppi)

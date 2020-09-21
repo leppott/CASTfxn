@@ -70,13 +70,13 @@ Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
 , "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")}
 }
 \value{
-Saves a single PDF of all plots, individual plots as JPGs, and a 
+Saves a single PDF of all plots, individual plots as pngs, and a 
 scores files (tab separated text file) to a user defined 'Results' directory 
 in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results' 
 for each SiteID in TargetSiteID.
 }
 \description{
-Generates a box plots and stressor response plots (individually as jpg 
+Generates a box plots and stressor response plots (individually as png 
 and together as a PDF) as well as scores for co-occurence.
 }
 \details{

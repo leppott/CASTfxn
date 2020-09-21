@@ -2563,17 +2563,22 @@ shinyServer(function(input, output, session) {
         # Capture each plot in a list for the PDF
         ## https://stackoverflow.com/questions/13273611/how-to-append-a-plot-to-an-existing-pdf-file
         ## https://www.andrewheiss.com/blog/2016/12/08/save-base-graphics-as-pseudo-objects-in-r/
+        message("getStressorList, F, Plots, 1, setup")
+        message(paste0("numgps = ", numgps))
+        #
         plots.g <- vector(numgps, mode="list")
+        #
         # Generate 1 box plot for each group, ref sites in blue, target site in red
         for (g in 1:numgps) {##FOR.g.START
+          message("getStressorList, F, Plots, 2, g loop")
           gpchems <- subset(chemInfo, GroupName == groupnames[g,]
                             , select = c("Analyte", "Label"))
           gpcoolvar <- subset(coolvar, coolvar %in% gpchems$Analyte)
           n <- length(gpcoolvar)
           #
-          if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
+          #if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
             message(paste0("Item (", g, "/", numgps, ")"))
-          }##IF~boo.DEBUG~START
+          #}##IF~boo.DEBUG~START
           #
           if(n>0) { ##FOR.n.START
             
