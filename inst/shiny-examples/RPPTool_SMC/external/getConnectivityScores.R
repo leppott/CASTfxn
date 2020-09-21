@@ -1,8 +1,25 @@
-# getConnectivityScores (Specific for SMC)
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#  You can contact the author at:
+#  - RPPTool R package source repository : https://github.com/ALincolnTt/RPPTool
+
+
 # Ann.RoseberryLincoln@tetratech.com
-# R v3.5.1
+# Erik.Leppo@tetratech.com
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R v4.0.2
 # 
-# NOTE: This scores BCG potential for improvement based on higher BCG tiers 
+# library(devtools)
+# install_github("ALincolnTt/RPPTool")
+#
+# Add Shiny code for use in Shiny App
+# 2020-09-10, Erik
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# 
+# NOTE: This functionscores BCG potential for improvement based on higher BCG tiers 
 # upstream and (optionally) downstream. It also evaluates presence of similar 
 # stressors upstream (if desired). If stressor data are used for the reach 
 # itself (stressor indicator), then stressors are used in the connectivity 

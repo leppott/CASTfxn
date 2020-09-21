@@ -1,7 +1,23 @@
-# updateAllScoresTable (Specific for SMC)
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#  You can contact the author at:
+#  - RPPTool R package source repository : https://github.com/ALincolnTt/RPPTool
+
+
 # Ann.RoseberryLincoln@tetratech.com
-# R v3.5.1
+# Erik.Leppo@tetratech.com
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R v4.0.2
 # 
+# library(devtools)
+# install_github("ALincolnTt/RPPTool")
+#
+# Add Shiny code for use in Shiny App
+# 2020-09-10, Erik
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 drawAllScoresPlot <- function(TargetReach
                               , allScores
                               , dfSiteInfo

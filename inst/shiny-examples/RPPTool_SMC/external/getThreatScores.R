@@ -1,11 +1,22 @@
-# getThreatScores (Specific for SMC)
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#  You can contact the author at:
+#  - RPPTool R package source repository : https://github.com/ALincolnTt/RPPTool
+
+
 # Ann.RoseberryLincoln@tetratech.com
+# Erik.Leppo@tetratech.com
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R v3.5.1
+# R v4.0.2
 # 
-# Threat indicators include:
-#       increased developed land area in catchment;
-#       fire hazard
+# library(devtools)
+# install_github("ALincolnTt/RPPTool")
+#
+# Add Shiny code for use in Shiny App
+# 2020-09-10, Erik
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 getThreatScores <- function(fn_fireHazard, fn_plannedLU, fn_currentLU
                             , useModerateFireHazard) {

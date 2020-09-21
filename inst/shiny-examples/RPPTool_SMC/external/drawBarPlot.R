@@ -1,9 +1,22 @@
-# drawBarPlot (Specific for SMC)
-# Ann.RoseberryLincoln@tetratech.com
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R v3.5.1
-# 
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#  You can contact the author at:
+#  - RPPTool R package source repository : https://github.com/ALincolnTt/RPPTool
 
+
+# Ann.RoseberryLincoln@tetratech.com
+# Erik.Leppo@tetratech.com
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R v4.0.2
+# 
+# library(devtools)
+# install_github("ALincolnTt/RPPTool")
+#
+# Add Shiny code for use in Shiny App
+# 2020-09-10, Erik
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Create individual box plots using one grouping column and an option x-axis title
 drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol

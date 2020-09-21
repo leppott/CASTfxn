@@ -1,7 +1,23 @@
-# getBCGScores (Specific for SMC)
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
+#  is expressly prohibited without prior written permission of TetraTech.
+#
+#  You can contact the author at:
+#  - RPPTool R package source repository : https://github.com/ALincolnTt/RPPTool
+
+
 # Ann.RoseberryLincoln@tetratech.com
+# Erik.Leppo@tetratech.com
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R v3.5.1
+# R v4.0.2
+# 
+# library(devtools)
+# install_github("ALincolnTt/RPPTool")
+#
+# Add Shiny code for use in Shiny App
+# 2020-09-10, Erik
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # 
 # NOTE: This takes ONLY the most recent CSCI score/BCG tier for the target reach.
 # If there is more than one site on the reach, only the most recent data are used.
