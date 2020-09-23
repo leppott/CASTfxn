@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-23 12:37:45
+    #> Last Update: 2020-09-23 13:51:00
 
 # Planned Updates
 
@@ -24,6 +24,14 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9318 (2020-09-23)
+
+  - CASTool
+      - server.R
+          - Clean up unused code.
+      - global.R
+          - targ\_SiteID to NA
 
 ## Changes in Version 0.1.0.9317 (2020-09-23)
 
