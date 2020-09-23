@@ -236,8 +236,7 @@ getConnectivity <- function(TargetCOMID
     
     end.time <- Sys.time()
     elapsed.time <- end.time - start.time
-    print(paste0("Elapsed time = ", format.difftime(elapsed.time)))
-    flush.console()
+    message(paste0("Elapsed time = ", format.difftime(elapsed.time)))
     
     return(dfCxns)
 

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-23 13:51:00
+    #> Last Update: 2020-09-23 15:52:17
 
 # Planned Updates
 
@@ -24,6 +24,18 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9319 (2020-09-23)
+
+  - RPPTool
+      - server.R
+          - Typo
+      - print to message
+          - getThreatScores
+          - getScaledStressors
+          - getOpportunityScores
+          - getConnectivity
+          - drawBarPlot
 
 ## Changes in Version 0.1.0.9318 (2020-09-23)
 

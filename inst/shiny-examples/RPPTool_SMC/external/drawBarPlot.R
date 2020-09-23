@@ -121,8 +121,7 @@ drawBarPlot <- function(df.data, fn.plotpath, plotType = "bar", groupCol, valCol
                            , axis.text.y = ggplot2::element_text(size=axistexty_size))
         
     } else {
-        print("Plot type not recognized.")
-        flush.console()
+        message("Plot type not recognized.")
     }
 
     ggplot2::ggsave(fn.plotpath, p, width=plot_W, height=plot_H, units="in")

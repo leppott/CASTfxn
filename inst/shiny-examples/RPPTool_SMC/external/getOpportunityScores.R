@@ -24,8 +24,7 @@ getOpportunityScores <- function(fn_currentLU, fn_MSCP, fn_NASVI) {
     `%>%` <- dplyr::`%>%`
     
     if (boo_DEBUG==TRUE) {
-        print("Why are we here?")
-        flush.console()
+        message("DEBUG==TRUE")
         fn_currentLU=fn_currentLU
         fn_MSCP=fn_MSCP
         fn_NASVI=fn_NASVI
