@@ -199,12 +199,19 @@ getStressorList <- function(TargetSiteID
   # 
   # dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
   
+  
   # Works with Shiny server
+  if (Sys.getenv('SHINY_PORT')!=""){ # Running on Shiny server
+      is_local <- FALSE
+  } else {
+      is_local <- TRUE
+  }
   wd <- "."
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   dir.sub3 <- biocomm
   dir.sub4 <- dir_sub
+  
   ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
@@ -216,9 +223,7 @@ getStressorList <- function(TargetSiteID
          , FALSE)
   
   dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
-  
-  
-  
+
   # First 2 columns are ChemSampID and StationID_Master
   clusterChemData <- clusterChem[4:ncol(clusterChem)]
   clusterChemData <- dplyr::select_if(clusterChemData, not_all_na)
@@ -489,7 +494,7 @@ getStressorList <- function(TargetSiteID
           
           
           #
-          message(p_SL)
+          if(!is_local){message(p_SL)}
           plots.g[[g]] <- grDevices::recordPlot()
           #
           # fn_title <- make.names(groupnames[g,])
