@@ -73,11 +73,11 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         # #rmfile <- site_dirs[grep("\\.7z$", site_dirs)]
         # rmfile <- site_dirs[grep("(\\.7z$)|(\\.zip$)", site_dirs)] # zip or 7z
         # site_dirs <- site_dirs[!site_dirs %in% rmfile] # List of sites in results
-        site_dirs <- list.dirs(dir_results, full.names = FALSE, recursive = FALSE)
+        site_dirs <- list.dirs(normalizePath(dir_results), full.names = FALSE, recursive = FALSE)
         
         message("getSummaryAllSites, 02, for ~ site")
         for (site in (1:length(site_dirs))) { # Loop over each site
-                # Get Target Site ID
+            # Get Target Site ID
             TargetSiteID <- site_dirs[site]
             message(paste0("Evaluating ", TargetSiteID))
             
@@ -93,15 +93,19 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 message(paste0("bioIndex = ", bioIndex))
                 
                 # Get WoE path & file lists (under TargetSiteID)
-                woe_path <- file.path(dir_results, TargetSiteID, biocomm, "WoE")
+                woe_path <- normalizePath(file.path(dir_results, TargetSiteID, biocomm, "WoE"))
                 woe_detailfiles <- list.files(woe_path, pattern = "WoE_ScoresTable")
                 woe_stressfiles <- list.files(woe_path, pattern = "WoE_ExecSummary")
+                
+                message(paste0("woe_path = ", woe_path))
+                message(paste0("woe_detailfiles = ", woe_detailfiles))
+                message(paste0("woe_stressfiles = ", woe_stressfiles))
                 
                 # If there are no files matching criteria, move on
                 # If there are one or more (for each biocomm), read them
                 if (length(woe_detailfiles)==0) {
                     message(paste0("No WoE detailed scores available for "
-                                 , TargetSiteID, " for ", biocomm, "."))
+                                   , TargetSiteID, " for ", biocomm, "."))
                     next()
                 } else {
                     for (dfile in (1:length(woe_detailfiles))) {
@@ -113,6 +117,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                                                  , stringsAsFactors = FALSE)
                         colnames(df_details)[6] <- "IndexScore"
                         if (dfile==1) {
+                            #if(!exists("df_detBiocomm")){
                             df_detBiocomm <- df_details
                         } else {
                             df_detBiocomm <- rbind(df_detBiocomm, df_details)
@@ -120,9 +125,10 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                     }## FOR ~ dfile ~ END
                 }## IF ~ length(woe_detailfiles)==0 ~ END
                 
+                
                 if (length(woe_stressfiles)==0) {
                     message(paste0("No WoE executive summary found for "
-                                 , TargetSiteID, " for ", biocomm, "."))
+                                   , TargetSiteID, " for ", biocomm, "."))
                 } else {
                     for (dfile in (1:length(woe_stressfiles))) {
                         # Read file
@@ -132,6 +138,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                                                 , na.strings = c("", NA)
                                                 , stringsAsFactors = FALSE)
                         if (dfile==1) {
+                            #if(!exists("df_strBiocomm")){
                             df_strBiocomm <- df_stress
                         } else {
                             df_strBiocomm <- rbind(sd_strBiocomm, df_stress)
@@ -139,13 +146,31 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                     }## FOR ~ dfile ~ END
                 }## IF ~ length(woe_stressfiles)==0 ~ END
                 
-                if (b==1) {
+                
+                # # Rework as b could be skipped
+                # if (b==1) {
+                #   df_detSite <- df_detBiocomm
+                #   df_strSite <- df_strBiocomm
+                # } else {
+                #   df_detSite <- rbind(df_detSite, df_detBiocomm)
+                #   df_strSite <- rbind(df_strSite, df_strBiocomm)
+                # }## IF ~ b ~ END
+                message(paste0("exists('df_detSite' = ", exists("df_detSite")))
+                message(paste0("exists('df_strSite' = ", exists("df_strSite")))
+                
+                if(!exists("df_detSite")){
                     df_detSite <- df_detBiocomm
-                    df_strSite <- df_strBiocomm
                 } else {
                     df_detSite <- rbind(df_detSite, df_detBiocomm)
+                }## IF ~ exists("df_detSite) ~ END
+                #
+                if(!exists("df_strSite")){
+                    df_strSite <- df_strBiocomm
+                } else {
                     df_strSite <- rbind(df_strSite, df_strBiocomm)
-                }## IF ~ b ~ END
+                }## IF ~ exists("df_strSite) ~ END
+                
+                
                 
             }## FOR ~ b ~ END # Process individual biocomm for an individual site
             
@@ -159,6 +184,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
             }## IF ~ site==1 ~ END
             
         }## FOR ~ site ~ END # Finish iterate through sites in results folder
+        
         
         # Merge with site data to get latitude and longitude
         message("getSummaryAllSites, xx, merge lat-long data")
@@ -180,27 +206,27 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         
         df_WoEDetails <- df_WoEDetails %>%
             dplyr::select(StationID_Master
-                   , FinalLatitude
-                   , FinalLongitude
-                   , Cluster
-                   , BioComm
-                   , BioDeg
-                   , IndexScore
-                   , RespSampID
-                   , StressorType
-                   , StressSampID
-                   , Stressor
-                   , StressorValue
-                   , StressorPctRank
-                   , WoE
-                   , TS_barplot
-                   , CO_boxplot
-                   , SR_InCase_LogRegr
-                   , SR_InCase_LinRegr
-                   , SR_OutCase_LinRegr
-                   , VP_boxplot_senstaxa
-                   , VP_boxplot_toltaxa
-                   , SSD_ToxicityCurve)
+                          , FinalLatitude
+                          , FinalLongitude
+                          , Cluster
+                          , BioComm
+                          , BioDeg
+                          , IndexScore
+                          , RespSampID
+                          , StressorType
+                          , StressSampID
+                          , Stressor
+                          , StressorValue
+                          , StressorPctRank
+                          , WoE
+                          , TS_barplot
+                          , CO_boxplot
+                          , SR_InCase_LogRegr
+                          , SR_InCase_LinRegr
+                          , SR_OutCase_LinRegr
+                          , VP_boxplot_senstaxa
+                          , VP_boxplot_toltaxa
+                          , SSD_ToxicityCurve)
         
         
         df_WoESummary <- merge(df_SitesLatLong, df_strAllSites
@@ -209,30 +235,30 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         
         df_WoESummary <- df_WoESummary %>%
             dplyr::select(StationID_Master
-                   , FinalLatitude
-                   , FinalLongitude
-                   , clust
-                   , BioComm
-                   , BioDeg
-                   , NumRespSamples
-                   , minIndex
-                   , meanIndex
-                   , maxIndex
-                   , StressorType
-                   , NumStressSamples
-                   , NumStressors
-                   , WtTot_WoE
-                   , WtTotTS_barplot
-                   , WtTotCO_boxplot
-                   , WtTotSR_InCase_LogRegr
-                   , WtTotSR_InCase_LinRegr
-                   , WtTotSR_OutCase_LinRegr
-                   , WtTotVP_boxplot) %>%
+                          , FinalLatitude
+                          , FinalLongitude
+                          , clust
+                          , BioComm
+                          , BioDeg
+                          , NumRespSamples
+                          , minIndex
+                          , meanIndex
+                          , maxIndex
+                          , StressorType
+                          , NumStressSamples
+                          , NumStressors
+                          , WtTot_WoE
+                          , WtTotTS_barplot
+                          , WtTotCO_boxplot
+                          , WtTotSR_InCase_LogRegr
+                          , WtTotSR_InCase_LinRegr
+                          , WtTotSR_OutCase_LinRegr
+                          , WtTotVP_boxplot) %>%
             dplyr::rename(Cluster = clust
                           , Overall_WoE = WtTot_WoE) %>%
             dplyr::arrange(StationID_Master, desc(BioComm)
                            , desc(BioDeg), StressorType)
-
+        
     }## FOR ~ !dir.exists(file.path(dir_results))==TRUE ~ END
     # Finish iterate through site directories loop
     
@@ -241,11 +267,11 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     myDate <- lubridate::ymd(lubridate::today())
     myDate <- stringr::str_replace_all(myDate, "-", "")
     fnES <- file.path(dir_results, paste0("OverallWoESummary_"
-                                                ,myDate,".tab"))
+                                          ,myDate,".tab"))
     write.table(df_WoESummary, fnES, append = FALSE, col.names = TRUE
                 , row.names = FALSE, sep = "\t")
     fnDetails <- file.path(dir_results, paste0("OverallWoEDetails_"
-                                          ,myDate,".tab"))
+                                               ,myDate,".tab"))
     write.table(df_WoEDetails, fnDetails, append = FALSE, col.names = TRUE
                 , row.names = FALSE, sep = "\t")
     
