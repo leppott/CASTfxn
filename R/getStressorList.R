@@ -303,8 +303,7 @@ getStressorList <- function(TargetSiteID
     n <- length(gpcoolvar)
     #
     if(boo.DEBUG==TRUE){##IF~boo.DEBUG~START
-      print(paste0("Item (", g, "/", numgps, ")"))
-      utils::flush.console()
+      message(paste0("Item (", g, "/", numgps, ")"))
     }##IF~boo.DEBUG~START
     #
     if(n>0) { ##FOR.n.START
@@ -490,7 +489,7 @@ getStressorList <- function(TargetSiteID
           
           
           #
-          print(p_SL)
+          message(p_SL)
           plots.g[[g]] <- grDevices::recordPlot()
           #
           # fn_title <- make.names(groupnames[g,])
@@ -567,8 +566,7 @@ getStressorList <- function(TargetSiteID
         } else {
             if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
             else { tmpParmDEL <- c(tmpParmDEL, chemname) }
-            print("pH is not a stressor.")
-            flush.console()
+            message("pH is not a stressor.")
         }
         next()
     }
@@ -576,14 +574,12 @@ getStressorList <- function(TargetSiteID
       if (grepl("^DO_", chemname, perl=TRUE, ignore.case=FALSE)==TRUE) {
 
           if ((minSiteVal < DOlim) & (minSiteRank <= probsLow)) {
-              print("DO is a stressor.")
-              flush.console()
+              message("DO is a stressor.")
               stressor <- c(stressor, chemname)
           } else {
               if (!exists("tmpParmDEL")){ tmpParmDEL <- chemname } 
               else { tmpParmDEL <- c(tmpParmDEL, chemname) }
-              print("DO is not a stressor.")
-              flush.console()
+              message("DO is not a stressor.")
           }
           
       } else if (minSiteRank <= probsLow) {

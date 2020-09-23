@@ -52,8 +52,8 @@
 #
 #' @export
 getReport <- function(TargetSiteID
-                      , probsHigh=0.75
-                      , probsLow=0.25
+                      , probsHigh = 0.75
+                      , probsLow = 0.25
                       , useBMI
                       , useAlg
                       , useBC = TRUE
@@ -63,9 +63,9 @@ getReport <- function(TargetSiteID
                       , algIndex = "MMIhybrid"
                       , dir_data = normalizePath(file.path(".", "Data"))
                       , dir_results = normalizePath(file.path(".", "Results"))
-                      , report_type="summary"
-                      , report_format="html"
-                      , dir_rmd=file.path(system.file(package = "CASTfxn"), "rmd")
+                      , report_type = "summary"
+                      , report_format = "html"
+                      , dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                       , siteQual2Plot = NULL){##FUNCTION.START
   #
   # Date and Time for output
@@ -103,20 +103,21 @@ getReport <- function(TargetSiteID
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
     Msg.Line1 <- "Provided report template file directory does not include the necessary RMD file to generate the report.  So no report will be generated."
     #Msg.Line2 <- "The default report directory can be modified in config.R (ContData.env$myReport.Dir) and used as input to the function (fun.myConfig)."
-    Msg.Line3 <- paste0("file = ", paste0("Report_Results_", report_type, ".rmd"))
+    Msg.Line3 <- paste0("file = ", basename(strFile_RMD))
     Msg.Line4 <- paste0("directory = ", dir_rmd)
     Msg <- paste(Msg.Line0, Msg.Line1
                  #, Msg.Line2
                  , Msg.Line3, Msg.Line4, Msg.Line0, sep="\n\n")
-    cat(Msg)
-    utils::flush.console()
+    message(Msg)
+    # cat(Msg)
+    # utils::flush.console()
   }##IF.file.exists.END
   # 
   # User Feedback
-  print("Task COMPLETE.  Report generated.")
-  print(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
+  message("Task COMPLETE.  Report generated.")
+  message(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
                , report_type, "), Report Format (", report_format, ")."))
-  utils::flush.console()
+  #utils::flush.console()
   #
 }##FUNCTION.END
 

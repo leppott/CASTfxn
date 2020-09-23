@@ -37,6 +37,22 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9316 (2020-09-23)
+* getSummaryAllSites.R
+    + Additional message output.
+* getStressorList
+    + Replace print with message.
+* getReport
+    + Replace print with message.
+* getSiteInfo
+    + Replace print with message.
+    
+## Changes in Version 0.1.0.9315 (2020-09-22)
+* CASTool shiny
+    + SMCMeasStressInfoFinal.tab
+        - Convert micro symbol to "u".
+        - Had a mix of symbol and u and the symbol was causing issues with deployment on shinyapps.io.
+
 ## Changes in Version 0.1.0.9314 (2020-09-21)
 * RPPTool shiny
     + Update functions in external directory with license terms.

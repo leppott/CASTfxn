@@ -15,18 +15,22 @@ getSummaryAllSites(
 )
 }
 \arguments{
+\item{bmiIndex}{BMI index name; Default = "CSCI"}
+
+\item{algIndex}{Algae index name; Default = "MMIhybrid"}
+
 \item{dir_data}{Directory containing original data. 
 Default = "file.path(getwd(),"Data")"}
 
 \item{dir_results}{Directory containing all results. 
 Default = "file.path(getwd(),"Results")"}
 
-\item{dir_sub}{Subdirectory for WoE outputs used by this function. 
+\item{dir_sub}{Subdirectory for weight of evidence (WoE) outputs used by this function. 
 Default = "WoE"}
 
-\item{TargetSiteID}{Site ID}
+\item{df_sites}{Data frame of sites.  Default = NULL}
 
-\item{TargetCOMID}{NHDPlus version 2 COMID for the reach on which the site lies.}
+\item{biocomlist}{biological community; bmi or algae.  Default = c("bmi", "algae")}
 }
 \value{
 Tab-delimited text summary data file containing site id, latitude,

@@ -552,23 +552,19 @@ getSiteInfo <- function(TargetSiteID
             if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
                 file.copy(file.path(dir_photo,photoname)
                           , file.path(dir_path,"Photos",photoname))
-                print(paste0(photoname, " copied."))
-                flush.console()
+                message(paste0(photoname, " copied."))
                 have.photos <- TRUE
             }
         }## FOR ~ l ~ END
     } else { 
         have.photos <- FALSE
-        # print("Photo directory does not exist.")
-        # flush.console()
         msg <- "Photo directory does not exist."
         message(msg)
     }## IF ~ dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0 ~ END
     
     if (!have.photos) {
         
-        print(paste0("No site photos are available for ", TargetSiteID))
-        flush.console()
+        message(paste0("No site photos are available for ", TargetSiteID))
         
         gap.photos <- cbind.data.frame("getSiteInfo", "quality", 0
                                     , "Site photos are not available.")
@@ -580,8 +576,7 @@ getSiteInfo <- function(TargetSiteID
                     , row.names = FALSE, sep = "\t")
     }## IF ~ !have.photos ~ END
 
-    print("Completed transferring any available site files.")
-    flush.console()
+    message("Completed transferring any available site files.")
     
     # Get background data from fn_bkgdata; use COMID to select single row
     data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
@@ -632,8 +627,7 @@ getSiteInfo <- function(TargetSiteID
             p.subtitle <- "Potential anthropogenic alterations"
             numcols <- length(unique(df.temp$Scale))/2
             
-            print(xlab)
-            flush.console()
+            message(xlab)
             
             if (is.na(df.temp$StudyYear)) {  # No study year
                 p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
