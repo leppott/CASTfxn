@@ -125,8 +125,7 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
     if (nrow(sp_cxns)==0) {
         sp_bbox <-sp::bbox(sf::as_Spatial(sp_flowline))
         ggmap_bbox <- setNames(sf::st_bbox(sp_flowline),c("left","bottom","right","top"))
-        basemap_toner <- ggmap::get_map(source="stamen", maptype="toner-lite"
-                                        , location=ggmap_bbox, messaging=FALSE)
+        
         caption2 <- "No connected reaches identified"
         maptype <- "SMCRegionReaches"
         maptype2 <- "SMCRegionSites"
@@ -147,13 +146,15 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
         sp_bbox[1,2] <- sp_bbox[1,2] + GIS_offset*(diffLong)
         sp_bbox[2,2] <- sp_bbox[2,2] + GIS_offset*(diffLat)
         
-        basemap_toner <- ggmap::get_map(source="stamen", maptype="toner-lite"
-                                        , location=ggmap_bbox, messaging=FALSE)
+        # basemap_toner <- ggmap::get_map(source="stamen", maptype="toner-lite"
+        #                                 , location=ggmap_bbox, messaging=FALSE)
         caption2 <- ""
         maptype <- "ConnectedReaches"
         maptype2 <- "ConnectedSites"
         plotScoreMaps <- TRUE
     }
+    basemap_toner <- ggmap::get_map(source="stamen", maptype="toner-lite"
+                                    , location=ggmap_bbox, messaging=FALSE)
     toner_map <- ggmap::ggmap(basemap_toner)
     loc_map <- toner_map + 
         ggplot2::geom_sf(data=sp_flowline, inherit.aes=FALSE, color="deepskyblue"
@@ -226,8 +227,7 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
             sp_cxnsTargPlot <- sp_cxnsTarg[,c("COMID",val,"lon","lat","geometry")]
             sp_cxnsTargPlot$value <- NA
             
-            print(paste0("Mapping ", val))
-            flush.console()
+            message(paste0("Mapping ", val))
             
             if (all(is.na(sp_cxnsTarg[[val]]))) {
                 next()
@@ -391,6 +391,8 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
                                       , group="TonerLite (default)") %>%
             leaflet::addProviderTiles(leaflet::providers$Stamen.Terrain
                                       , group = "Terrain") %>%
+            # leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron
+            #                           , group = "Carto Light") %>%
             # Groups, Overlay
             leaflet::addPolygons(data = sp_outline, color="black" # Boundary
                                  , group = "SMC Region") %>%
@@ -437,6 +439,7 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
             # Add Layer Control
             leaflet::addLayersControl(
                 baseGroups = c("TonerLite (default)", "Terrain")
+                # baseGroups = c("Carto Light")
                 , overlayGroups = c("All sites","Rank","RPP Index"
                                     ,"Target stream","All streams")
                 , options = leaflet::layersControlOptions(collapsed = TRUE

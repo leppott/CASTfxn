@@ -143,14 +143,12 @@ getScaledStressors <- function(fn_allstress
         dfStressInfo <- NA
         dfStressVal <- NA
         stressorsFound <- FALSE
-        print("CASTool Weight of Evidence results are not available.")
-        flush.console()
+        message("CASTool Weight of Evidence results are not available.")
     }
     
     end.time <- Sys.time()
     elapsed.time <- end.time - start.time
-    print(paste0("Elapsed time = ", format.difftime(elapsed.time)))
-    flush.console()
+    message(paste0("Elapsed time = ", format.difftime(elapsed.time)))
 
     myScaledStressors <- list(stressorsFound=stressorsFound
                               , df_allSMCStressInfo=dfStressInfo

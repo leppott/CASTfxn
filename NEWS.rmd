@@ -37,6 +37,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9319 (2020-09-23)
+* RPPTool
+    + server.R
+        - Typo
+    + print to message
+        - getThreatScores
+        - getScaledStressors
+        - getOpportunityScores
+        - getConnectivity
+        - drawBarPlot
+
 ## Changes in Version 0.1.0.9318 (2020-09-23)
 * CASTool
     + server.R

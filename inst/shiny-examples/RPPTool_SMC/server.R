@@ -1971,7 +1971,7 @@ shinyServer(function(input, output, session) {
 
       # Total time
       elapsed.time2 <- Sys.time() - start.time
-      message(paste0("Results read for download.  Total time = ", format.difftime(elapsed.time2)))
+      message(paste0("Results ready for download.  Total time = ", format.difftime(elapsed.time2)))
       
       # Enable download button.
       shinyjs::enable("b_downloadData")

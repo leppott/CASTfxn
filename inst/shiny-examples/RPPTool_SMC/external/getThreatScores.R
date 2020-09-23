@@ -25,8 +25,7 @@ getThreatScores <- function(fn_fireHazard, fn_plannedLU, fn_currentLU
     `%>%` <- dplyr::`%>%`
     
     if (boo_DEBUG==TRUE) {
-        print("Why are we here?")
-        flush.console()
+        message("DEBUG = TRUE")
         fn_plannedLU <- file.path(data_dir, "SMCCatchment_PlannedLU_Percents.xlsx")
         fn_currentLU <- file.path(data_dir, "SMCCatchment_CurrentLU_Percents.xlsx")
         dfLUthreat <- listLUdata$LUthreat
