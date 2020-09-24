@@ -37,6 +37,17 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9320 (2020-09-24)
+* RPPTool
+    + server.R
+        - Remove rm(fn_plannedLU).  Step 10, line 1707
+        
+    + RPPTool_CA.R (skeleton)
+        - Remove rm(fn_plannedLU).  Step 10, line 483
+* CASTool
+    + server.R
+        - Modifications to add CASTool files into a folder for use with RPPTool shiny.
+        
 ## Changes in Version 0.1.0.9319 (2020-09-23)
 * RPPTool
     + server.R

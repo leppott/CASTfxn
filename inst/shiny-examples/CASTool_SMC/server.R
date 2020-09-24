@@ -344,7 +344,7 @@ shinyServer(function(input, output, session) {
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
-      prog_n <- 30 + 8 # 30 for single biocom add 8 for 2nd biocomm
+      prog_n <- 30 + 8 + 1 # 30 for single biocom add 8 for 2nd biocomm
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
@@ -2169,8 +2169,43 @@ shinyServer(function(input, output, session) {
       # Copy from Results to www/Results
       CopyResults(TargetSiteID)
       
-      # 29, Create zip ####
+      # 29, CopyInputs ####
       # Progress, 29
+      prog_cnt <- prog_cnt + 1
+      prog_msg <- paste0("Step ", prog_cnt)
+      prog_det <- "Copy Results"
+      incProgress(prog_inc, message = prog_msg, detail = prog_det)
+      Sys.sleep(mySleepTime)
+      # Increment the progress bar, and update the detail text.
+      msgDetail_A <- "Results"
+      msgDetail_B <- "Prepare for display"
+      incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
+      Sys.sleep(mySleepTime)
+      # Copy over CASTool and RPPTool inputs
+      ## results_CAST (first so don't recopy data input files)
+      dir_results_CAST <- file.path(dir_results, TargetSiteID, "_results_CASTool")
+      if(!dir.exists(dir_results_CAST)){
+        dir.create(dir_results_CAST)
+      }## IF ~ !dir.exists(dir_results_CAST) ~ END
+      fn_results_from <- list.files(file.path(dir_results, TargetSiteID), "\\.tab$", recursive = TRUE, full.names = TRUE)
+      file.copy(from = fn_results_from
+                , to = file.path(dir_results_CAST, basename(fn_results_from)))
+      ## data_CAST (2nd so don't get caught in above)
+      dir_data_CAST <- file.path(dir_results, TargetSiteID, "_data_CASTool")
+      if(!dir.exists(dir_data_CAST)){
+        dir.create(dir_data_CAST)
+      }## IF ~ !dir.exists(dir_data_CAST) ~ END
+      fn_input_CASTool <- c("SMC_AllStressData.tab"
+                            , "SMC_AllStressInfo.tab"
+                            , "SMCBenthicMetricsFinal.tab"
+                            , "SMCSitesFinal.tab")
+      file.copy(from = file.path(dir_data, fn_input_CASTool)
+                , to = file.path(dir_data_CAST, fn_input_CASTool))
+      
+     
+      
+      # 30, Create zip ####
+      # Progress, 30
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Create Zip Download"
@@ -2180,8 +2215,8 @@ shinyServer(function(input, output, session) {
       fn_zip <- file.path(".", "Results", paste0(TargetSiteID, ".zip"))
       zip(fn_zip, file.path(dir_results, TargetSiteID))
 
-      # 30, Complete ####
-      # Progress, 30
+      # 31, Complete ####
+      # Progress, 31
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Complete"

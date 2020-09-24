@@ -1237,10 +1237,10 @@ shinyServer(function(input, output, session) {
         file.remove(fn_zip)
       }##IF~file.exists~END
 
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       # Skeleton, Start ####
       # external/RPPTool_CA.R
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       
       boo_Shiny <- TRUE
       boo_DEBUG <- FALSE
@@ -1704,7 +1704,7 @@ shinyServer(function(input, output, session) {
                            , all.x=TRUE)
       
       if(boo_DEBUG!=TRUE) {
-        rm(fn_currentLU, fn_MSCP, fn_NASVI, fn_plannedLU, dfOpportunityScores)
+        rm(fn_currentLU, fn_MSCP, fn_NASVI, dfOpportunityScores)
       }
       
       # Initialize columns needed in AllScores
@@ -1729,7 +1729,7 @@ shinyServer(function(input, output, session) {
                                              , skip = 0)
         colnames(dfTargetCOMIDs)[1] <- "TargetCOMID"
       }## IF ~ boo_Shiny ~ END
-
+      
       if(boo_DEBUG==TRUE) {
         dfTargetCOMIDs <- dfTargetCOMIDs[dfTargetCOMIDs$TargetCOMID %in% TargetCOMIDs,]
         # dfTargetCOMIDs <- dfTargetCOMIDs[dfTargetCOMIDs$TargetCOMID==20331434,]
@@ -1858,7 +1858,7 @@ shinyServer(function(input, output, session) {
         rm(dfConnScores, dfConnScoresDetail, dfCxns, dfCxnsALLdetail, dfBCGscores
            , fn_cxnsALL, fn_cxnscoredetail, fn_TargetCOMIDs, r, reach, useDownstream
            , useStressorTF, userDefOpp)
-          #, useStressorTF, userDefOpp, useCASTresults, reachesWStressorScores)
+        #, useStressorTF, userDefOpp, useCASTresults, reachesWStressorScores)
       }
       
       # 15, Make updateable All Scores table ####
@@ -1948,10 +1948,10 @@ shinyServer(function(input, output, session) {
       message(paste0("Complete; elapsed time = ", format.difftime(elapsed.time)))
       
       
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       # Skeleton, END ####
       # external/RPPTool_CA.R
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       
       # 18, Create zip ####
       # Progress, 18

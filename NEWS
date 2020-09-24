@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-23 15:52:17
+    #> Last Update: 2020-09-24 10:19:04
 
 # Planned Updates
 
@@ -24,6 +24,18 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9320 (2020-09-24)
+
+  - RPPTool
+      - server.R
+          - Remove rm(fn\_plannedLU). Step 10, line 1707
+      - RPPTool\_CA.R (skeleton)
+          - Remove rm(fn\_plannedLU). Step 10, line 483
+  - CASTool
+      - server.R
+          - Modifications to add CASTool files into a folder for use
+            with RPPTool shiny.
 
 ## Changes in Version 0.1.0.9319 (2020-09-23)
 

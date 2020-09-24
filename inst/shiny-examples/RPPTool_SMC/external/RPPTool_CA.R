@@ -480,7 +480,7 @@ boo_DEBUG <- FALSE
                            , all.x=TRUE)
       
       if(boo_DEBUG!=TRUE) {
-        rm(fn_currentLU, fn_MSCP, fn_NASVI, fn_plannedLU, dfOpportunityScores)
+        rm(fn_currentLU, fn_MSCP, fn_NASVI, dfOpportunityScores)
       }
       
       # Initialize columns needed in AllScores
