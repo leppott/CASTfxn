@@ -41,13 +41,13 @@ getThreatScores <- function(fn_fireHazard, fn_plannedLU, fn_currentLU
                                         , "numeric", "numeric"), skip = 1)
     
     if (useModerateFireHazard == 1) {
-        dfFH <- dfFH[,c("COMID", "P_TotalFire")]
-        dplyr::mutate(dfFH, P_TotalFire = ifelse(is.na(P_TotalFire),0,P_TotalFire/100)) %>%
-        dplyr::rename(dfFH, thr_FireHazardInd = P_TotalFire)
+        dfFH <- dfFH[,c("COMID", "P_TotalFire")] %>%
+            dplyr::mutate(P_TotalFire = ifelse(is.na(P_TotalFire), 0, P_TotalFire/100)) %>%
+            dplyr::rename(thr_FireHazardInd = P_TotalFire) 
         
     } else {
         useCols <- c("P_VeryHigh","P_High")
-        dfFH <- dfFH %>%
+        dfFH <- dfFH %>% 
             dplyr::mutate(P_TotalFire = rowSums(dfFH[,useCols], na.rm = TRUE)/100) %>%
             dplyr::mutate(P_TotalFire = signif(P_TotalFire,3)) %>%
             dplyr::select(COMID, P_TotalFire) %>%

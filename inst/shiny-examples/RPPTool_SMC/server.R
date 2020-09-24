@@ -1384,7 +1384,7 @@ shinyServer(function(input, output, session) {
         useDownstream     <- input$useDownstream #0 # FALSE (default)
         useModerateFireHazard <- input$useModFireHazard # FALSE (default)
         # Indicator weights
-        wtPot_BCG         <- input$wt_Pot_BCG 
+        wtPot_BCG         <- input$wt_Pot_BCG
         wtPot_CxnBCG      <- input$wt_Pot_CxnBCG
         wtPot_Stress      <- input$wt_Pot_Stress
         wtPot_CxnStress   <- input$wt_Pot_CxnStress
