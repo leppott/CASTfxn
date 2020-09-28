@@ -179,33 +179,41 @@ function(){
                              #, actionButton("b_Wts_Import", "Use weights from user import.")
                              #, p("Button to use imported file.")
                              , hr()
-                             , h4("Weights, Indicators")
-                             , sliderInput("wt_Pot_BCG", label = "Potential, BCG", value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Pot_CxnBCG", label = "Poential, CxnBCG",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Pot_Stress", label = "Potential, Stress",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Pot_CxnStress", label = "Potential, CxnStress",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Threat_Fire", label = "Threat, Fire",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Threat_LU", label = "Threat, Land Use",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Opp_ParksNow", label = "Opportunity, Parks Now",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Opp_MSCPs", label = "Opportunity, MSCPs",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Opp_NASVIBCG", label = "Opportunity, NASVIBCG",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_Opp_UserDefined", label = "Opportunity, User Defined",  value = 1, min = 0, max = 2)
-                             
-                  )
+                             , fluidRow(column(width = 4
+                                               , h4("Potential")
+                                               , sliderInput("wt_Pot_BCG", label = "Potential, BCG", value = 1, min = 0, max = 2)
+                                               , sliderInput("wt_Pot_CxnBCG", label = "Poential, CxnBCG",  value = 1, min = 0, max = 2)
+                                               , sliderInput("wt_Pot_Stress", label = "Potential, Stress",  value = 1, min = 0, max = 2)
+                                               , sliderInput("wt_Pot_CxnStress", label = "Potential, CxnStress",  value = 1, min = 0, max = 2)
+                                              )## column ~ END
+                                        , column(width = 4
+                                                 , h4("Threat")
+                                                 , sliderInput("wt_Threat_Fire", label = "Threat, Fire",  value = 1, min = 0, max = 2)
+                                                 , sliderInput("wt_Threat_LU", label = "Threat, Land Use",  value = 1, min = 0, max = 2))## column ~ END
+                                        , column(width = 4
+                                                 , h4("Opportunity")
+                                                 , sliderInput("wt_Opp_ParksNow", label = "Opportunity, Parks Now",  value = 1, min = 0, max = 2)
+                                                 , sliderInput("wt_Opp_MSCPs", label = "Opportunity, MSCPs",  value = 1, min = 0, max = 2)
+                                                 , sliderInput("wt_Opp_NASVIBCG", label = "Opportunity, NASVIBCG",  value = 1, min = 0, max = 2)
+                                                 , sliderInput("wt_Opp_UserDefined", label = "Opportunity, User Defined",  value = 1, min = 0, max = 2)
+                                                )## column ~ END
+                                        )## fluidRow ~ END
+                            
+                  )## tabPanel ~ Indicator Wts ~ END
                   # Input, Wts, SubInd ####
-                  , tabPanel(title = "Input, Weights, Subindices", value = "pan_input_subindices"
-                             , h3("Weights for Subindices")
-                             , tableOutput("table_wt_subindex_count")
-                             , actionButton("b_Wts_Subindex_Reset", "Reset subindex weights to '1'")
-                             , br(), br()
-                             #, actionButton("b_Wts_Import", "Use weights from user import.")
-                             #, p("Button to use imported file.")
-                             , hr()
-                             , h4("Weights, Subindices")
-                             , sliderInput("wt_SubIndex_Pot", label = "Potential Subindex", value = 1, min = 0, max = 2)
-                             , sliderInput("wt_SubIndex_Threat", label = "Threat Subindex",  value = 1, min = 0, max = 2)
-                             , sliderInput("wt_SubIndex_Opp", label = "Opportunity Subindex",  value = 1, min = 0, max = 2)
-                  )## tabPanel ~ weights, Sub-Indices ~ END
+                  # , tabPanel(title = "Input, Weights, Subindices", value = "pan_input_subindices"
+                  #            , h3("Weights for Subindices")
+                  #            , tableOutput("table_wt_subindex_count")
+                  #            , actionButton("b_Wts_Subindex_Reset", "Reset subindex weights to '1'")
+                  #            , br(), br()
+                  #            #, actionButton("b_Wts_Import", "Use weights from user import.")
+                  #            #, p("Button to use imported file.")
+                  #            , hr()
+                  #            , h4("Weights, Subindices")
+                  #            , sliderInput("wt_SubIndex_Pot", label = "Potential Subindex", value = 1, min = 0, max = 2)
+                  #            , sliderInput("wt_SubIndex_Threat", label = "Threat Subindex",  value = 1, min = 0, max = 2)
+                  #            , sliderInput("wt_SubIndex_Opp", label = "Opportunity Subindex",  value = 1, min = 0, max = 2)
+                  #)## tabPanel ~ weights, Sub-Indices ~ END
 
                   # , tabPanel(title = "Metadata", value = "tab_metadata"
                   #            , h3("RPP Tool Metadata")

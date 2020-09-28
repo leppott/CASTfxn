@@ -130,21 +130,6 @@ shinyServer(function(input, output, session) {
   # })##table_wt_stress_count
   
   output$table_wt_indicator_count <- renderTable({
-    #cnt_0 <- #ifelse(input$wt_hab_evenflow == 0, 1, 0) +
-    #   ifelse(input$wt_hab_phi == 0, 1, 0) +
-    #   ifelse(input$wt_hab_ripcov == 0, 1, 0) +
-    #   ifelse(input$wt_modflow_wetmax == 0, 1, 0) +
-    #   ifelse(input$wt_modflow_avg99 == 0, 1, 0) +
-    #   ifelse(input$wt_modflow_rbi == 0, 1, 0) +
-    #   ifelse(input$wt_nutr_chla == 0, 1, 0) +
-    #   ifelse(input$wt_nutr_no2 == 0, 1, 0) +
-    #   ifelse(input$wt_nutr_p == 0, 1, 0) +
-    #   ifelse(input$wt_nutr_n == 0, 1, 0) +
-    #   ifelse(input$wt_wq_alk == 0, 1, 0) +
-    #   ifelse(input$wt_wq_do == 0, 1, 0) +
-    #   ifelse(input$wt_wq_cond == 0, 1, 0) +
-    #   ifelse(input$wt_wq_tds == 0, 1, 0) +
-    #   ifelse(input$wt_wq_wtemp == 0, 1, 0) +
     cnt_0 <- ifelse(input$wt_Pot_BCG == 0, 1, 0) +
       ifelse(input$wt_Pot_CxnBCG == 0, 1, 0) +
       ifelse(input$wt_Pot_Stress == 0, 1, 0) +
@@ -155,21 +140,6 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_Opp_MSCPs == 0, 1, 0) +
       ifelse(input$wt_Opp_NASVIBCG == 0, 1, 0) +
       ifelse(input$wt_Opp_UserDefined == 0, 1, 0)
-    # cnt_1 <- #ifelse(input$wt_hab_evenflow == 1, 1, 0) +
-      # ifelse(input$wt_hab_phi == 1, 1, 0) +
-      # ifelse(input$wt_hab_ripcov == 1, 1, 0) +
-      # ifelse(input$wt_modflow_wetmax == 1, 1, 0) +
-      # ifelse(input$wt_modflow_avg99 == 1, 1, 0) +
-      # ifelse(input$wt_modflow_rbi == 1, 1, 0) +
-      # ifelse(input$wt_nutr_chla == 1, 1, 0) +
-      # ifelse(input$wt_nutr_no2 == 1, 1, 0) +
-      # ifelse(input$wt_nutr_p == 1, 1, 0) +
-      # ifelse(input$wt_nutr_n == 1, 1, 0) +
-      # ifelse(input$wt_wq_alk == 1, 1, 0) +
-      # ifelse(input$wt_wq_do == 1, 1, 0) +
-      # ifelse(input$wt_wq_cond == 1, 1, 0) +
-      # ifelse(input$wt_wq_tds == 1, 1, 0) +
-      # ifelse(input$wt_wq_wtemp == 1, 1, 0) +
     cnt_1 <- ifelse(input$wt_Pot_BCG == 1, 1, 0) +
       ifelse(input$wt_Pot_CxnBCG == 1, 1, 0) +
       ifelse(input$wt_Pot_Stress == 1, 1, 0) +
@@ -180,21 +150,6 @@ shinyServer(function(input, output, session) {
       ifelse(input$wt_Opp_MSCPs == 1, 1, 0) +
       ifelse(input$wt_Opp_NASVIBCG == 1, 1, 0) +
       ifelse(input$wt_Opp_UserDefined == 1, 1, 0)
-    # cnt_2 <- #ifelse(input$wt_hab_evenflow == 2, 1, 0) +
-      # ifelse(input$wt_hab_phi == 2, 1, 0) +
-      # ifelse(input$wt_hab_ripcov == 2, 1, 0) +
-      # ifelse(input$wt_modflow_wetmax == 2, 1, 0) +
-      # ifelse(input$wt_modflow_avg99 == 2, 1, 0) +
-      # ifelse(input$wt_modflow_rbi == 2, 1, 0) +
-      # ifelse(input$wt_nutr_chla == 2, 1, 0) +
-      # ifelse(input$wt_nutr_no2 == 2, 1, 0) +
-      # ifelse(input$wt_nutr_p == 2, 1, 0) +
-      # ifelse(input$wt_nutr_n == 2, 1, 0) +
-      # ifelse(input$wt_wq_alk == 2, 1, 0) +
-      # ifelse(input$wt_wq_do == 2, 1, 0) +
-      # ifelse(input$wt_wq_cond == 2, 1, 0) +
-      # ifelse(input$wt_wq_tds == 2, 1, 0) +
-      # ifelse(input$wt_wq_wtemp == 2, 1, 0) +
     cnt_2 <-ifelse(input$wt_Pot_BCG == 2, 1, 0) +
       ifelse(input$wt_Pot_CxnBCG == 2, 1, 0) +
       ifelse(input$wt_Pot_Stress == 2, 1, 0) +

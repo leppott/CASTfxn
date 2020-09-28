@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-28 12:43:51
+    #> Last Update: 2020-09-28 13:50:16
 
 # Planned Updates
 
@@ -24,6 +24,17 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9326 (2020-09-28)
+
+CASTool + global.R - Remove targeted site from pull down list.
+
+## Changes in Version 0.1.0.9325 (2020-09-28)
+
+  - RPPTool
+      - server.R
+          - Remove SubIndex weights.
+          - Indicator weights, move into columns
 
 ## Changes in Version 0.1.0.9324 (2020-09-28)
 
