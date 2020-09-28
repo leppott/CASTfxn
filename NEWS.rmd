@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9322 (2020-09-28)
+* RPPTool
+    + server.R
+
+## Changes in Version 0.1.0.9321 (2020-09-24)
+* RPPTool
+    + server.R
+        - Run UpdateAllScores if any "weights" change from default of 1.
+        - Prior to running the skeleton code.
+
 ## Changes in Version 0.1.0.9321 (2020-09-24)
 * RPPTool
     + getThreatScores.R

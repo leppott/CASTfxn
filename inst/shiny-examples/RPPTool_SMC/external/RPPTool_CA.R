@@ -37,7 +37,7 @@ boo_DEBUG <- FALSE
         
         gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/RPPTool" 
         
-        # Source required functions ####
+        # Source required functions #
         wd <- getwd()
         source(file.path(gitpath,"drawAllScoresPlot.R"))
         source(file.path(gitpath,"drawBarPlot.R"))
@@ -67,7 +67,7 @@ boo_DEBUG <- FALSE
       myDate <- stringr::str_replace_all(myDate, "-", "")
       start.time <- Sys.time()
       
-      # 02, Set RPPTool directories ####
+      # 03, Set RPPTool directories ####
       # Progress, 02
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -85,7 +85,7 @@ boo_DEBUG <- FALSE
       data_dir <- file.path(sep_rpp_dir,"Data")
       results_dir <- file.path(sep_rpp_dir,"Results")
       
-      # 03, Set output file names ####
+      # 04, Set output file names ####
       # Progress, 03
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -113,7 +113,7 @@ boo_DEBUG <- FALSE
                                               ,myDate,".tab"))
       fn_allscores   <- file.path(results_dir,paste0("RPPTool_AllScores"))
       
-      # 04, User-defined variables ####
+      # 05, User-defined variables ####
       # Progress, 04
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -210,7 +210,7 @@ boo_DEBUG <- FALSE
          , wtThreat_LU, wtOpp_ParksNow, wtOpp_MSCPs, wtOpp_NASVI, wtOpp_UserDefined
          , wtOpp_subidx, wtPot_subidx, wtThreat_subidx)
       
-      # 05, Set input file names ####
+      # 06, Set input file names ####
       # Progress, 05
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -260,7 +260,7 @@ boo_DEBUG <- FALSE
       dfNetworkNoData <- dfNetwork[is.na(dfNetwork$FromNode),]
       rm(fn_network)
       
-      # 06, Get stressor data from CASTool ####
+      # 07, Get stressor data from CASTool ####
       # Progress, 06
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -284,7 +284,7 @@ boo_DEBUG <- FALSE
             
             dfStressInfo <- as.data.frame(listScaledStr01All$df_allSMCStressInfo)
             
-            # Check for existing stressor weight file ####
+            # Check for existing stressor weight file #
             if (usePrevStressWts==TRUE) {
               if (file.exists("fn_stresswtsOUT")) {
                 # Display existing file to user; ask if it should be used
@@ -327,20 +327,20 @@ boo_DEBUG <- FALSE
                                             , caption_size=8)
             
           } else { # No candidate causes found
-            msg(paste0("No candidate causes found. "
+            msg <- paste0("No candidate causes found. "
                        , "No stressor or stressor connectivity scores "
-                       , "will be calculated."))
+                       , "will be calculated.")
             message(msg)
           }
           
         } else { # Cannot find CAST directories 
-          msg("Unable to locate either the CASTool data or results.")
+          msg <- "Unable to locate either the CASTool data or results."
           message(msg)
         }
         
       }## useCASTresults ~ END
       
-      # USER INPUT REQUIRED HERE ####
+      # USER INPUT REQUIRED HERE #
       # Shiny to display p_barplot; ask user to ID min/max years (inclusive)
       # Shiny to display table of stressors (labels, weights) and ask user
       # to alter weights (allowed values = 0, 1, 2)
@@ -351,7 +351,7 @@ boo_DEBUG <- FALSE
       # invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
-      # 07, Get stressor scores ####
+      # 08, Get stressor scores ####
       # Progress, 07
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -390,7 +390,7 @@ boo_DEBUG <- FALSE
       
       
       # Get predicted BCG data for reaches, observed BCG data for sites
-      # 08, Get BCG scores ####
+      # 09, Get BCG scores ####
       # Progress, 08
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -442,7 +442,7 @@ boo_DEBUG <- FALSE
            , maxYear, minYear, dfSites)
       }
       
-      # 09, Get Threat Indicators, Subindex scores ####
+      # 10, Get Threat Indicators, Subindex scores ####
       # Progress, 09
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -463,7 +463,7 @@ boo_DEBUG <- FALSE
         rm(fn_fireHazard, fn_plannedLU, useModerateFireHazard, dfThreatScores)
       }
       
-      # 10, Get Opportunity Indicators, Subindex scores ####
+      # 11, Get Opportunity Indicators, Subindex scores ####
       # Progress, 10
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -487,7 +487,7 @@ boo_DEBUG <- FALSE
       dfAllScores$pot_BioCxnInd = NA
       dfAllScores$pot_StressorCxnInd = NA
       
-      # 11, ITERATE OVER TARGET REACHES ####
+      # 12, ITERATE OVER TARGET REACHES ####
       # Progress, 11
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -526,7 +526,7 @@ boo_DEBUG <- FALSE
           message(paste0("Evaluating connectivity for reach ", reach))
         }
         
-        # 12, Get connected reaches ####
+        # 13, Get connected reaches ####
         # Progress, 12
         if(boo_Shiny == TRUE){
           prog_cnt <- prog_cnt + 1
@@ -542,7 +542,7 @@ boo_DEBUG <- FALSE
                                   , results_dir = results_dir)
         message(paste0("Connections identified."))
         
-        # 13, Get connectivity scores ####
+        # 14, Get connectivity scores ####
         # Progress, 13
         if(boo_Shiny == TRUE){
           prog_cnt <- prog_cnt + 1
@@ -598,6 +598,10 @@ boo_DEBUG <- FALSE
           dfCxnsALLdetail <- rbind(dfCxnsALLdetail, dfConnScoresDetail)
         }
         
+        if(!exists("WtdStressScore")){
+          WtdStressScore <- NA
+        }
+        
         dfAllScores <- dfAllScores %>%
           dplyr::mutate(pot_BioCxnInd = ifelse(COMID==dfConnScores$COMID
                                                , dfConnScores$pot_BioCxnInd
@@ -613,7 +617,7 @@ boo_DEBUG <- FALSE
         
       }## FOR ~ r ~ END # Finish looping over target reaches
       
-      # 14, Clean up connections ####
+      # 15, Clean up connections ####
       # 14, Clean up connections data table, write connections and connections details
       # Progress, 14
       if(boo_Shiny == TRUE){
@@ -637,7 +641,7 @@ boo_DEBUG <- FALSE
           #, useStressorTF, userDefOpp, useCASTresults, reachesWStressorScores)
       }
       
-      # 15, Make updateable All Scores table ####
+      # 16, Make updateable All Scores table ####
       # Progress, 15
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -652,8 +656,8 @@ boo_DEBUG <- FALSE
                                             , BioDegBrk=c(-2, 0.799, 2)
                                             , BioDegLab=c("Degraded", "Not degraded"))
       
-      # ITERATE OVER TARGET REACHES NOW WITH SCORES ####
-      # 16, Create Target Reach-specific score graphics and maps ####
+      # ITERATE OVER TARGET REACHES NOW WITH SCORES #
+      # 17, Create Target Reach-specific score graphics and maps ####
       # Progress, 16
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -688,7 +692,7 @@ boo_DEBUG <- FALSE
         message(paste0("Generating score graphics for ", TargetReach))
         # TargetReach = 20331434
         
-        # Draw score graphics ####
+        # Draw score graphics #
         drawAllScoresPlot(TargetReach = TargetReach
                           , allScores = dfAllScoresSummary
                           , dfSiteInfo = dfAllSites
@@ -697,7 +701,7 @@ boo_DEBUG <- FALSE
                           , results_dir = results_dir)    
         
         message(paste0("Generating maps for ", TargetReach))
-        # Draw maps ####
+        # Draw maps #
         leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
                                , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
                                , allSites = dfAllSites
@@ -709,7 +713,7 @@ boo_DEBUG <- FALSE
         
       }## FOR ~ r ~ END
       
-      # 17, Calc, Run time ####
+      # 18, Calc, Run time ####
       # Progress, 17
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1

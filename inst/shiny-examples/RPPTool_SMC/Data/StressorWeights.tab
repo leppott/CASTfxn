@@ -1,0 +1,72 @@
+"StressorGroup"	"Stressor"	"Label"	"Weight"
+"Habitat"	"Ev_FlowHab_score"	"Evenness of flow habitat types"	1
+"Habitat"	"H_AqHab_score"	"Shannon diversity of natural in-channel cover types"	1
+"Habitat"	"H_SubNat_score"	"Shannon diversity of natural substrate types"	1
+"Habitat"	"IPI"	"Index of physical habitat integrity"	1
+"Habitat"	"PCT_SAFN_score"	"Percent sand and fine substrate"	1
+"Habitat"	"XCMG_score"	"Riparian cover (sum of three layers)"	1
+"Ions"	"Calcium_f_mg_L"	"Dissolved calcium (mg/L)"	1
+"Ions"	"Calcium_uf_mg_L"	"Total calcium (mg/L)"	1
+"Ions"	"Chloride_f_mg_L"	"Dissolved chloride (mg/L)"	1
+"Ions"	"Potassium_f_mg_L"	"Dissolved potassium (mg/L)"	1
+"Ions"	"Sodium_f_mg_L"	"Dissolved sodium (mg/L)"	1
+"Ions"	"Sulfate_f_mg_L"	"Dissolved sulfate (mg/L)"	1
+"Metals_metalloids"	"Aluminum_f_ug_L"	"Dissolved aluminum (µg/L)"	1
+"Metals_metalloids"	"Aluminum_uf_ug_L"	"Total aluminum (µg/L)"	1
+"Metals_metalloids"	"Arsenic_f_ug_L"	"Dissolved arsenic (µg/L)"	1
+"Metals_metalloids"	"Arsenic_uf_ug_L"	"Total arsenic (µg/L)"	1
+"Metals_metalloids"	"Cadmium_f_ug_L"	"Dissolved cadmium (µg/L)"	1
+"Metals_metalloids"	"Cadmium_tot_mg_kg_dw"	"Total cadmium (mg/kg dry weight)"	1
+"Metals_metalloids"	"Cadmium_uf_ug_L"	"Total cadmium (µg/L)"	1
+"Metals_metalloids"	"Chromium_f_ug_L"	"Dissolved chromium (µg/L)"	1
+"Metals_metalloids"	"Copper_f_ug_L"	"Dissolved copper (µg/L)"	1
+"Metals_metalloids"	"Copper_uf_ug_L"	"Total copper (µg/L)"	1
+"Metals_metalloids"	"Iron_f_ug_L"	"Dissolved iron (µg/L)"	1
+"Metals_metalloids"	"Lead_tot_mg_kg_dw"	"Total lead (mg/kg dry weight)"	1
+"Metals_metalloids"	"Lead_uf_ug_L"	"Total lead (µg/L)"	1
+"Metals_metalloids"	"Manganese_f_ug_L"	"Dissolved manganese (µg/L)"	1
+"Metals_metalloids"	"Manganese_uf_ug_L"	"Total manganese (µg/L)"	1
+"Metals_metalloids"	"Nickel_f_ug_L"	"Dissolved nickel (µg/L)"	1
+"Metals_metalloids"	"Nickel_uf_ug_L"	"Total nickel (µg/L)"	1
+"Metals_metalloids"	"Selenium_f_ug_L"	"Dissolved selenium (µg/L)"	1
+"Metals_metalloids"	"Selenium_ug_L"	"Total selenium (µg/L)"	1
+"Metals_metalloids"	"Silver_tot_mg_kg_dw"	"Total silver (mg/kg dry weight)"	1
+"Metals_metalloids"	"Silver_uf_ug_L"	"Total silver (µg/L)"	1
+"Metals_metalloids"	"Zinc_f_ug_L"	"Dissolved zinc (µg/L)"	1
+"Metals_metalloids"	"Zinc_uf_ug_L"	"Total zinc (µg/L)"	1
+"Modeled flow metrics"	"HighDur_Wet"	"Wet-season median longest # days flow > high-flow threshold (days/event)"	1
+"Modeled flow metrics"	"HighNum_Dry"	"Dry-season median # continuous events flow > high-flow threshold (events/yr)"	1
+"Modeled flow metrics"	"MaxMonthQ_Wet"	"Wet-season maximum mean monthly streamflow (m3/s)"	1
+"Modeled flow metrics"	"NoDisturb_Average"	"Avg median annual longest # days between the low- and high-flow threshold (days)"	1
+"Modeled flow metrics"	"Q99_Average"	"Average 99th percentile of daily streamflow (m3/s)"	1
+"Modeled flow metrics"	"QmaxIDR_All"	"Overall difference between 90th and 10th percentiles of annual maxima (m3/s)"	1
+"Modeled flow metrics"	"RBI_Dry"	"Dry-season Richards-Baker Index (flashiness)"	1
+"Nutrients"	"AFDM_algae_particulate_g_m2"	"Ash-free dry mass from algae (g/m2)"	1
+"Nutrients"	"Chlor_a_particulate_mg_m2"	"Particulate chlorophyll a (mg/m2)"	1
+"Nutrients"	"DIC_f_mg_L"	"Dissolved inorganic carbon (mg/L)"	1
+"Nutrients"	"DOC_f_mg_L"	"Dissolved organic carbon (mg/L)"	1
+"Nutrients"	"NH3_N_f_mg_L"	"Dissolved ammonia as N (mg/L)"	1
+"Nutrients"	"NH3_N_uf_mg_L"	"Total ammonia as N (mg/L)"	1
+"Nutrients"	"NO2_N_f_mg_L"	"Dissolved nitrite as N (mg/L)"	1
+"Nutrients"	"NO3_N_f_mg_L"	"Dissolved nitrate as N (mg/L)"	1
+"Nutrients"	"P_uf_mg_L"	"Total phosphorus as P (mg/L)"	1
+"Nutrients"	"PO4_P_f_mg_L"	"Dissolved orthophosphate as P (mg/L)"	1
+"Nutrients"	"Silica_SiO2_f_mg_L"	"Dissolved silica as SiO2 (mg/L)"	1
+"Nutrients"	"TKN_uf_mg_L"	"Total Kjeldahl nitrogen (mg/L)"	1
+"Nutrients"	"TN_uf_mg_L"	"Total nitrogen (mg/L)"	1
+"Nutrients"	"TOC_pct_dw"	"Total organic carbon (percent dry weight)"	1
+"Sediment general"	"Clay_LT0_0039mm_pct"	"Clay, less than 0.0039 mm (%)"	1
+"Sediment general"	"Silt_0_0039_LT0_0625mm_pct"	"Silt, 0.0039 to less than 0.0625 mm (%)"	1
+"Water quality"	"Alkalinity_CaCO3_f_mg_L"	"Dissolved alkalinity as calcium carbonate (mg/L)"	1
+"Water quality"	"Alkalinity_CaCO3_fld_mg_L"	"Field-measured alkalinity as calcium carbonate (mg/L)"	1
+"Water quality"	"ANC_ueq_L"	"Total acid neutralizing capacity (µeq/L)"	1
+"Water quality"	"DO_fld_mg_L"	"Field-measured dissolved oxygen (mg/L)"	1
+"Water quality"	"Hardness_CaCO3_f_mg_L"	"Dissolved hardness as calcium carbonate (mg/L)"	1
+"Water quality"	"Hardness_CaCO3_uf_mg_L"	"Total hardness as calcium carbonate (mg/L)"	1
+"Water quality"	"Salinity_fld_ppt"	"Field-measured salinity (ppt)"	1
+"Water quality"	"SpecificConductivity_fld_uS_cm"	"Field-measured specific conductivity (µS/cm)"	1
+"Water quality"	"TDS_f_mg_L"	"Total dissolved solids (mg/L)"	1
+"Water quality"	"TSS_particulate_mg_L"	"Total suspended solids (mg/L)"	1
+"Water quality"	"Turbidity_fld_NTU"	"Field-measured turbidity (NTU)"	1
+"Water quality"	"Velocity_fld_ft_s"	"Field-measured velocity (ft/s)"	1
+"Water quality"	"WaterTemp_fld_degC"	"Field-measured water temperature (degrees C)"	1

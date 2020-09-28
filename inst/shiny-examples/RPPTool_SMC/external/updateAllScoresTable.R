@@ -59,6 +59,17 @@ updateAllScoresTable <- function(dfAllScores, listWeights, fn_allscores
                      , "wt_opp_UserDefInd")
     wts_subs <- c("wt_PotentialSubIdx", "wt_ThreatSubIdx", "wt_OppSubIdx")
     
+    # Add missing columns (after running at start in Shiny)
+    col_req <- c("pot_BioCondInd_rest", "pot_BioCxnInd", "pot_StressorInd"
+                  , "pot_StressorCxnInd", "thr_FireHazardInd"
+                  , "thr_PlannedDevelopInd", "opp_RecrInd", "opp_MSCPInd"
+                  , "opp_NASVIInd", "opp_UserDefInd", "pot_BioCondInd_prot"
+                  ,  "wt_opp_UserDefInd")
+    col_req_add <- col_req[!(col_req %in% names(dfAllScores))]
+    if (length(col_req_add)>0){
+        dfAllScores[, col_req_add] <- 1
+    }
+    
     # Rename columns so that update works (names are consistent)
     dfAllScores <- dfAllScores %>%
         dplyr::mutate(wt_pot_BioCondInd = ifelse(is.na(pot_BioCondInd_rest)

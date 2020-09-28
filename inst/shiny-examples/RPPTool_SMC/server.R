@@ -1213,7 +1213,7 @@ shinyServer(function(input, output, session) {
    shiny::withProgress({
       #
       # Number of increments
-      prog_n <- 17 # confirmed 20200910
+      prog_n <- 19 # 20200924
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
@@ -1236,6 +1236,174 @@ shinyServer(function(input, output, session) {
       if (file.exists(fn_zip)==TRUE){
         file.remove(fn_zip)
       }##IF~file.exists~END
+      
+      # #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      # # 02, UpdateAllScores ####
+      # # Run UpdateAllScores to account for Shiny user input weights
+      # #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      # boo_Shiny <- TRUE
+      # # dir_CASTdata <- file.path(dir_data, "CASTool_data")
+      # # dir_CASTresults <- file.path(dir_data, "CASTool_results")
+      # 
+      # # Progress, 02
+      # prog_cnt <- prog_cnt + 1
+      # prog_msg <- paste0("Step ", prog_cnt)
+      # prog_det <- "Run UpdateAllScores for Shiny user input"
+      # incProgress(prog_inc, message = prog_msg, detail = prog_det)
+      # Sys.sleep(mySleepTime)
+      # message(paste(prog_msg, prog_det, sep = "; "))
+      # # if any "weights" are not "1" then re-run "UpdateAllScores"
+      # 
+      # # 02, Set RPPTool directories #
+      # if(boo_Shiny == TRUE){
+      #   sep_rpp_dir <- file.path(".")
+      # }## IF ~ boo_Shiny ~ END
+      # data_dir <- file.path(sep_rpp_dir,"Data")
+      # results_dir <- file.path(sep_rpp_dir,"Results")
+      # 
+      # # 02.03, Set output file names #
+      # fn_allscores   <- file.path(results_dir,paste0("RPPTool_AllScores"))
+      # fn_stresswtsOUT   <- file.path(data_dir,"StressorWeights.tab")
+      # 
+      # # 02.04, User-defined variables #
+      # if(boo_Shiny == TRUE){
+      #   # Added for this part of of the script
+      #   useCASTresults   <- input$useCASTresults
+      #   maxYear <- input$year_max
+      #   minYear <- input$year_min
+      #   # Connectivity variables
+      #   cxndist_km        <- input$cxndist_km #5
+      #   useHWbonus        <- input$useHWbonus #0 # FALSE (default)
+      #   useBCGbonus       <- input$useBCGbonus #0 # FALSE (default)
+      #   useDownstream     <- input$useDownstream #0 # FALSE (default)
+      #   useModerateFireHazard <- input$useModFireHazard # FALSE (default)
+      #   # Indicator weights
+      #   wtPot_BCG         <- input$wt_Pot_BCG
+      #   wtPot_CxnBCG      <- input$wt_Pot_CxnBCG
+      #   wtPot_Stress      <- input$wt_Pot_Stress
+      #   wtPot_CxnStress   <- input$wt_Pot_CxnStress
+      #   wtThreat_Fire     <- input$wt_Threat_Fire
+      #   wtThreat_LU       <- input$wt_Threat_LU # Probably need to separate out categories
+      #   wtOpp_ParksNow    <- input$wt_Opp_ParksNow
+      #   wtOpp_MSCPs       <- input$wt_Opp_MSCPs
+      #   wtOpp_NASVI       <- input$wt_Opp_NASVIBCG
+      #   wtOpp_UserDefined <- input$wt_Opp_UserDefined
+      #   wtPot_subidx      <- input$wt_SubIndex_Pot
+      #   wtThreat_subidx   <- input$wt_SubIndex_Threat
+      #   wtOpp_subidx      <- input$wt_SubIndex_Opp
+      # # only relevant for Shiny, removed "else".
+      # }## IF ~ boo_Shiny ~ END
+      # usePrevStressWts <- FALSE
+      # if (usePrevStressWts) { # User must supply stress weighting file to use
+      #   # fn_stresswtsIN <- ""
+      # } else {
+      #   fn_stresswtsIN <- fn_stresswtsOUT # Change only if a copy of the weights file is prepared
+      # }## IF ~ usePrevStressWts ~ END
+      # fn_allstress     <- "SMC_AllStressData.tab" # Change only if file name differs
+      # fn_allstressmeta <- "SMC_AllStressInfo.tab" # Change only if file name differs
+      # 
+      # listWeights <- list(wtPot_Bio=wtPot_BCG, wtPot_CxnBio=wtPot_CxnBCG
+      #                     , wtPot_Stress=wtPot_Stress, wtPot_CxnStress=wtPot_CxnStress
+      #                     , wtThreat_Fire=wtThreat_Fire, wtThreat_LUdev=wtThreat_LU
+      #                     , wtOpp_Recr=wtOpp_ParksNow, wtOpp_MSCPs=wtOpp_MSCPs
+      #                     , wtOpp_NASVI=wtOpp_NASVI, wtOpp_UserDefined=wtOpp_UserDefined
+      #                     , wt_subPot=wtPot_subidx, wt_subThreat=wtThreat_subidx
+      #                     , wt_subOpp=wtOpp_subidx)
+      # 
+      # 
+      # # 02.05, Set input file names #
+      # fn_sites <- file.path(data_dir, "SMCSitesFinal.tab")
+      # dfSites  <- read.delim(fn_sites, header=TRUE, stringsAsFactors=FALSE, sep="\t")
+      # 
+      # # 02.06, Get stressor data from CASTool #
+      # # 6 (all)
+      # # Change useCASTresults to boo_Shiny to force action
+      # # modify to use existing data
+      # if (boo_Shiny==TRUE) {
+      # 
+      #     listScaledStr01All <- getScaledStressors(fn_allstress=file.path(dir_data, fn_allstress)
+      #                                              , fn_allstressinfo=file.path(dir_data, fn_allstressmeta)
+      #                                              , dir_CASTresults=dir_data)
+      # 
+      #     if (listScaledStr01All$stressorsFound==TRUE) { # Found candidate causes
+      # 
+      #       dfStressInfo <- as.data.frame(listScaledStr01All$df_allSMCStressInfo)
+      # 
+      #       # Check for existing stressor weight file #
+      #       if (usePrevStressWts==TRUE) {
+      #         if (file.exists("fn_stresswtsOUT")) {
+      #           # Display existing file to user; ask if it should be used
+      #           fn_stresswtsIN = fn_stresswtsOUT
+      #         } else {
+      #           msg <- "No existing stressor weight in data directory."
+      #           message(msg)
+      #           write.table(listScaledStr01All$df_allSMCStressInfo
+      #                       , fn_stresswtsOUT
+      #                       , append=FALSE
+      #                       , col.names=TRUE, row.names=FALSE, sep="\t")
+      #         } # end No weight file
+      # 
+      #       } else { # Do not use existing file
+      # 
+      #         write.table(listScaledStr01All$df_allSMCStressInfo
+      #                     , fn_stresswtsOUT
+      #                     , append=FALSE
+      #                     , col.names=TRUE, row.names=FALSE, sep="\t")
+      #       } # End check use existing file
+      # 
+      #       # Plot number of samples by year, and ask user to select min and max year
+      #       dfStressPlot <- listScaledStr01All$df_allSMCStressVals[,c("StationID_Master"
+      #                                                                 , "StressSampID"
+      #                                                                 , "StressSampleDate")]
+      # 
+      #     # remove some stuff
+      # 
+      # 
+      #     } else { # No candidate causes found
+      #       msg <- paste0("No candidate causes found. "
+      #                  , "No stressor or stressor connectivity scores "
+      #                  , "will be calculated.")
+      #       message(msg)
+      #     }## IF ~ listScaledStr01All$stressorsFound==TRUE ~ END
+      # 
+      # 
+      # 
+      # }## useCASTresults ~ END
+      # 
+      # # 02.07, Get stressor scores #
+      # # change useCASTresults to boo_Shiny as trying to force calculation of updateAllScoresTable
+      # if ((boo_Shiny==TRUE) && (listScaledStr01All$stressorsFound==TRUE)) { # User wants to use CAST results
+      # 
+      #   listStressScores <- getStressorScores(dfSites = dfSites
+      #                                         , dfAllStressVals = listScaledStr01All$df_allSMCStressVals
+      #                                         , fnWeights = fn_stresswtsIN
+      #                                         , maxYear = maxYear
+      #                                         , minYear = minYear)
+      #   dfAllScores = listStressScores$dfStrScores
+      # } else {
+      #   listStressScores <- NULL
+      # }## IF ~ useCASTResults & listScaledStr01All$stressorsFound  ~ END
+      # 
+      # 
+      # # New
+      # 
+      # # Default is all "1".
+      # # Values are 0, 1, 2
+      # # If multiply all values only get 1 if all 1.
+      # listWeights_prod <- Reduce("*", listWeights)
+      # message(paste0("listWeights_prod = ", listWeights_prod))
+      # # listWeights_prod <- do.call(prod, listWeights) # also works
+      # 
+      # if(boo_Shiny == TRUE & listWeights_prod != 1){
+      #   # 15, Make updateable All Scores table #
+      #   # Run UpdateAllScores
+      #   listAllScores <- updateAllScoresTable(dfAllScores
+      #                                         , listWeights
+      #                                         , fn_allscores
+      #                                         , BioDegBrk=c(-2, 0.799, 2)
+      #                                         , BioDegLab=c("Degraded", "Not degraded"))
+      # }## IF ~ listWeights_prod!=1 ~ END
+
 
       #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       # Skeleton, Start ####
@@ -1261,7 +1429,7 @@ shinyServer(function(input, output, session) {
         
         gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/RPPTool" 
         
-        # Source required functions ####
+        # Source required functions #
         wd <- getwd()
         source(file.path(gitpath,"drawAllScoresPlot.R"))
         source(file.path(gitpath,"drawBarPlot.R"))
@@ -1291,7 +1459,7 @@ shinyServer(function(input, output, session) {
       myDate <- stringr::str_replace_all(myDate, "-", "")
       start.time <- Sys.time()
       
-      # 02, Set RPPTool directories ####
+      # 03, Set RPPTool directories ####
       # Progress, 02
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1309,7 +1477,7 @@ shinyServer(function(input, output, session) {
       data_dir <- file.path(sep_rpp_dir,"Data")
       results_dir <- file.path(sep_rpp_dir,"Results")
       
-      # 03, Set output file names ####
+      # 04, Set output file names ####
       # Progress, 03
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1337,7 +1505,7 @@ shinyServer(function(input, output, session) {
                                               ,myDate,".tab"))
       fn_allscores   <- file.path(results_dir,paste0("RPPTool_AllScores"))
       
-      # 04, User-defined variables ####
+      # 05, User-defined variables ####
       # Progress, 04
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1434,7 +1602,7 @@ shinyServer(function(input, output, session) {
          , wtThreat_LU, wtOpp_ParksNow, wtOpp_MSCPs, wtOpp_NASVI, wtOpp_UserDefined
          , wtOpp_subidx, wtPot_subidx, wtThreat_subidx)
       
-      # 05, Set input file names ####
+      # 06, Set input file names ####
       # Progress, 05
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1484,7 +1652,7 @@ shinyServer(function(input, output, session) {
       dfNetworkNoData <- dfNetwork[is.na(dfNetwork$FromNode),]
       rm(fn_network)
       
-      # 06, Get stressor data from CASTool ####
+      # 07, Get stressor data from CASTool ####
       # Progress, 06
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1508,7 +1676,7 @@ shinyServer(function(input, output, session) {
             
             dfStressInfo <- as.data.frame(listScaledStr01All$df_allSMCStressInfo)
             
-            # Check for existing stressor weight file ####
+            # Check for existing stressor weight file #
             if (usePrevStressWts==TRUE) {
               if (file.exists("fn_stresswtsOUT")) {
                 # Display existing file to user; ask if it should be used
@@ -1551,20 +1719,20 @@ shinyServer(function(input, output, session) {
                                             , caption_size=8)
             
           } else { # No candidate causes found
-            msg(paste0("No candidate causes found. "
+            msg <- paste0("No candidate causes found. "
                        , "No stressor or stressor connectivity scores "
-                       , "will be calculated."))
+                       , "will be calculated.")
             message(msg)
           }
           
         } else { # Cannot find CAST directories 
-          msg("Unable to locate either the CASTool data or results.")
+          msg <- "Unable to locate either the CASTool data or results."
           message(msg)
         }
         
       }## useCASTresults ~ END
       
-      # USER INPUT REQUIRED HERE ####
+      # USER INPUT REQUIRED HERE #
       # Shiny to display p_barplot; ask user to ID min/max years (inclusive)
       # Shiny to display table of stressors (labels, weights) and ask user
       # to alter weights (allowed values = 0, 1, 2)
@@ -1575,7 +1743,7 @@ shinyServer(function(input, output, session) {
       # invisible(scan("stdin", character(), nlines = 1, quiet = TRUE))
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
-      # 07, Get stressor scores ####
+      # 08, Get stressor scores ####
       # Progress, 07
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1614,7 +1782,7 @@ shinyServer(function(input, output, session) {
       
       
       # Get predicted BCG data for reaches, observed BCG data for sites
-      # 08, Get BCG scores ####
+      # 09, Get BCG scores ####
       # Progress, 08
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1666,7 +1834,7 @@ shinyServer(function(input, output, session) {
            , maxYear, minYear, dfSites)
       }
       
-      # 09, Get Threat Indicators, Subindex scores ####
+      # 10, Get Threat Indicators, Subindex scores ####
       # Progress, 09
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1687,7 +1855,7 @@ shinyServer(function(input, output, session) {
         rm(fn_fireHazard, fn_plannedLU, useModerateFireHazard, dfThreatScores)
       }
       
-      # 10, Get Opportunity Indicators, Subindex scores ####
+      # 11, Get Opportunity Indicators, Subindex scores ####
       # Progress, 10
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1711,7 +1879,7 @@ shinyServer(function(input, output, session) {
       dfAllScores$pot_BioCxnInd = NA
       dfAllScores$pot_StressorCxnInd = NA
       
-      # 11, ITERATE OVER TARGET REACHES ####
+      # 12, ITERATE OVER TARGET REACHES ####
       # Progress, 11
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1750,7 +1918,7 @@ shinyServer(function(input, output, session) {
           message(paste0("Evaluating connectivity for reach ", reach))
         }
         
-        # 12, Get connected reaches ####
+        # 13, Get connected reaches ####
         # Progress, 12
         if(boo_Shiny == TRUE){
           prog_cnt <- prog_cnt + 1
@@ -1766,7 +1934,7 @@ shinyServer(function(input, output, session) {
                                   , results_dir = results_dir)
         message(paste0("Connections identified."))
         
-        # 13, Get connectivity scores ####
+        # 14, Get connectivity scores ####
         # Progress, 13
         if(boo_Shiny == TRUE){
           prog_cnt <- prog_cnt + 1
@@ -1822,6 +1990,10 @@ shinyServer(function(input, output, session) {
           dfCxnsALLdetail <- rbind(dfCxnsALLdetail, dfConnScoresDetail)
         }
         
+        if(!exists("WtdStressScore")){
+          WtdStressScore <- NA
+        }
+        
         dfAllScores <- dfAllScores %>%
           dplyr::mutate(pot_BioCxnInd = ifelse(COMID==dfConnScores$COMID
                                                , dfConnScores$pot_BioCxnInd
@@ -1837,7 +2009,7 @@ shinyServer(function(input, output, session) {
         
       }## FOR ~ r ~ END # Finish looping over target reaches
       
-      # 14, Clean up connections ####
+      # 15, Clean up connections ####
       # 14, Clean up connections data table, write connections and connections details
       # Progress, 14
       if(boo_Shiny == TRUE){
@@ -1861,7 +2033,7 @@ shinyServer(function(input, output, session) {
         #, useStressorTF, userDefOpp, useCASTresults, reachesWStressorScores)
       }
       
-      # 15, Make updateable All Scores table ####
+      # 16, Make updateable All Scores table ####
       # Progress, 15
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1876,8 +2048,8 @@ shinyServer(function(input, output, session) {
                                             , BioDegBrk=c(-2, 0.799, 2)
                                             , BioDegLab=c("Degraded", "Not degraded"))
       
-      # ITERATE OVER TARGET REACHES NOW WITH SCORES ####
-      # 16, Create Target Reach-specific score graphics and maps ####
+      # ITERATE OVER TARGET REACHES NOW WITH SCORES #
+      # 17, Create Target Reach-specific score graphics and maps ####
       # Progress, 16
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1912,7 +2084,7 @@ shinyServer(function(input, output, session) {
         message(paste0("Generating score graphics for ", TargetReach))
         # TargetReach = 20331434
         
-        # Draw score graphics ####
+        # Draw score graphics #
         drawAllScoresPlot(TargetReach = TargetReach
                           , allScores = dfAllScoresSummary
                           , dfSiteInfo = dfAllSites
@@ -1921,7 +2093,7 @@ shinyServer(function(input, output, session) {
                           , results_dir = results_dir)    
         
         message(paste0("Generating maps for ", TargetReach))
-        # Draw maps ####
+        # Draw maps #
         leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
                                , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
                                , allSites = dfAllSites
@@ -1933,7 +2105,7 @@ shinyServer(function(input, output, session) {
         
       }## FOR ~ r ~ END
       
-      # 17, Calc, Run time ####
+      # 18, Calc, Run time ####
       # Progress, 17
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
@@ -1953,7 +2125,7 @@ shinyServer(function(input, output, session) {
       # external/RPPTool_CA.R
       #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       
-      # 18, Create zip ####
+      # 19, Create zip ####
       # Progress, 18
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
