@@ -296,8 +296,6 @@ shinyServer(function(input, output, session) {
   #   print(input$directory)
   # })
 
-
-
   ## print to browser
 
 
@@ -369,6 +367,14 @@ shinyServer(function(input, output, session) {
       }##IF~file.exists~END
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # reduce Shiny calc time by omitting plots
+      if(boo_Shiny){
+        boo_plot_user <- input$usePlots
+      } else {
+        boo_plot_user <- FALSE
+      }## IF ~ boo_Shiny ~ END
+      message(paste0("usePlots = ", boo_plot_user))
+      
       # Load Ann's files and such
       gitpath <- file.path(".", "external") # might need something different
       # source(file.path(gitpath, "getCoOccurDataset.R"))
@@ -1001,11 +1007,6 @@ shinyServer(function(input, output, session) {
         dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
       }## IF ~ boo_Shiny ~ END
       # Map plots only ref sites, and that's probably for the best
-      #
-      # reduce Shiny calc time by omitting plots
-      boo_plot_user <- !boo_Shiny
-      #boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-      #
       list.SiteSummary <- getSiteInfo(TargetSiteID = TargetSiteID
                                       , data_Sites = data_Sites
                                       , data_bkgdata = df_bkgdata
@@ -1052,9 +1053,6 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
       # Get Cluster Info
-      #
-      boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-      #
       getClusterInfo(TargetSiteID
                      , siteCOMID=list.SiteSummary$COMID
                      , siteCluster=list.SiteSummary$ClustID
@@ -1608,9 +1606,6 @@ shinyServer(function(input, output, session) {
         #
         # skeleton 1003
         # Get Stressor List using all stressors ever detected at the target site
-        #
-        boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-        #
         list.stressors <- getStressorList(TargetSiteID
                                           , siteCluster=list.SiteSummary$ClustID
                                           , chemInfo=data_stressInfo
@@ -1810,9 +1805,6 @@ shinyServer(function(input, output, session) {
           message(paste(prog_msg, prog_det, sep = "; "))
           # Create time sequence graphics
           # Uses all site stressor and response data, but not paired
-          #
-          boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-          #
           getTimeSeq(TargetSiteID
                      , biocomm = bioComm
                      , BioResp = bioMetricNames
@@ -1851,9 +1843,6 @@ shinyServer(function(input, output, session) {
           if (TargetSiteID %in% unique(data_bioCoOccur$StationID_Master)) {
             msg <- ("Starting Co-occurrence")
             message(msg)
-            #
-            boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-            #
             getCoOccur(df_data = data_bioCoOccur
                        , TargetSiteID = TargetSiteID
                        , col_ID = "StationID_Master"
@@ -1940,9 +1929,6 @@ shinyServer(function(input, output, session) {
           Sys.sleep(mySleepTime)
           message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor Responses
-          #
-          boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-          #
           getBioStressorResponses(TargetSiteID
                                   , stressors = stressorsWPairedResponses
                                   , stressorInfo = siteStressInfo
@@ -1978,9 +1964,6 @@ shinyServer(function(input, output, session) {
           message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor-specific regressions
           if (any(SSTVparms %in% stressorsWPairedResponses)) {
-            #
-            boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
-            #
             getVerifiedPredictions(TargetSiteID
                                    , SSTVanalytes = as.character(SSTVparms)
                                    , colBioSample = colBioSample

@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9324 (2020-09-28)
+* CASTool
+    + server.R
+        - usePlots check box.
+    
 ## Changes in Version 0.1.0.9323 (2020-09-28)
 * CASTool
     + server.R
