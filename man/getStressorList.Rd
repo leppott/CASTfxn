@@ -21,7 +21,8 @@ getStressorList(
   biocomm = "bmi",
   bioParmsDEL,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "CandidateCauses"
+  dir_sub = "CandidateCauses",
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ getStressorList(
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 
 \item{site.Cluster}{Clusters}
 

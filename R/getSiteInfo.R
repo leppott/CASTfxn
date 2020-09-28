@@ -47,6 +47,7 @@
 #' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
 #' @param dir_map_rmd Directory with Map_Leaflet.RMD.  Default = package RMD.
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #' 
 #' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
 #' in the user supplied dir_results folder (default is "Results" folder in the 
@@ -146,6 +147,7 @@ getSiteInfo <- function(TargetSiteID
                         , dir_results = dir_results
                         , dir_sub = "SiteInfo"
                         , dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+                        , boo_plot = TRUE
                         ){
     #
    
@@ -174,6 +176,7 @@ getSiteInfo <- function(TargetSiteID
         dir_results = dir_results
         dir_sub = "SiteInfo"
         dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+        boo_plot = TRUE
     }
 
     not_all_na <- function(x) {!all(is.na(x))}
@@ -287,7 +290,9 @@ getSiteInfo <- function(TargetSiteID
                          , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
           ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                          , axis.ticks.y=ggplot2::element_blank())
-        ggplot2::ggsave(fn_bmiscores, pBMI, width=plot_W, height=plot_H, units="in")
+        if(boo_plot){
+          ggplot2::ggsave(fn_bmiscores, pBMI, width=plot_W, height=plot_H, units="in")
+        }## IF ~ boo_plot ~ END
 
     }
     if (!is.null("data_algMetrics")) {
@@ -343,7 +348,9 @@ getSiteInfo <- function(TargetSiteID
                            , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
             ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                            , axis.ticks.y=ggplot2::element_blank())
-        ggplot2::ggsave(fn_algscores, pAlg, width=plot_W, height=plot_H, units="in")
+        if(boo_plot){
+          ggplot2::ggsave(fn_algscores, pAlg, width=plot_W, height=plot_H, units="in")
+        }## IF ~ boo_plot ~ END
         
     }
     
@@ -651,7 +658,9 @@ getSiteInfo <- function(TargetSiteID
                                    , axis.title.y = ggplot2::element_text(size=9, face="bold")
                                    , plot.title = ggplot2::element_text(size=12, face="bold")
                                    , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
-                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+                if(boo_plot){
+                  ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+                }## IF ~ boo_plot ~ END
                 
             } else {  # Separate study year to consider in faceting
                 
@@ -678,7 +687,9 @@ getSiteInfo <- function(TargetSiteID
                                    , axis.title.y = ggplot2::element_text(size=9, face="bold")
                                    , plot.title = ggplot2::element_text(size=12, face="bold")
                                    , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
-                ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+                if(boo_plot){
+                  ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+                }## IF ~ boo_plot ~ END
                 
             }  # End creating background plot
             

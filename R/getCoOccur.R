@@ -99,6 +99,7 @@
 #' @param col.Stressor.InvSc Stressors as columns of df_data that have inverse scoring for box plots.  
 #' Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
 #' , "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #'
 #' @return Saves a single PDF of all plots, individual plots as pngs, and a 
 #' scores files (tab separated text file) to a user defined 'Results' directory 
@@ -199,6 +200,7 @@ getCoOccur <- function(df_data
                                                , "DO_uf_mg_L"
                                                , "pH"
                                                , "pH_SU")
+                       , boo_plot = TRUE
                        ) {##FUNCTION.START
   #
     
@@ -225,6 +227,7 @@ getCoOccur <- function(df_data
         col_StressInvScore = col_StressInvScore
         pHlimLow = 6.5
         pHlimHigh = 9
+        boo_plot = TRUE
     }
 
   # define pipe
@@ -579,9 +582,11 @@ getCoOccur <- function(df_data
            # plots_pdf[[ij.num]] <- grDevices::recordPlot()
            # p1
            # plot_png[[1]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_path, fn_png_p1)
+           if(boo_plot){
+             ggplot2::ggsave(filename=file.path(dir_path, fn_png_p1)
                            , plot=p1
                            , dpi=ppi, width=8, height=6, units="in")
+           }## IF ~ boo_plot ~ END
          #}##IF~non-empty~END
 
          ## Logistic Regression (all comparator sites)
@@ -676,10 +681,12 @@ getCoOccur <- function(df_data
              ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
            # p2
            # plot_png[[2]] <- grDevices::recordPlot()
-           ggplot2::ggsave(filename=file.path(dir_path, fn_png_p2)
+           if(boo_plot){
+             ggplot2::ggsave(filename=file.path(dir_path, fn_png_p2)
                            , plot=p2
                            , dpi=ppi, width=8, height=6, units="in")
-
+           }## IF ~ boo_plot ~ END
+           
            # same colors
            #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
 

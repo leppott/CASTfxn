@@ -12,7 +12,8 @@ getClusterInfo(
   data_cluster,
   data_clusterInfo,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "ClusterInfo"
+  dir_sub = "ClusterInfo",
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ getClusterInfo(
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "ClusterInfo"}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.

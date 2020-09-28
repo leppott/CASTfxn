@@ -14,7 +14,8 @@ getTimeSeq(
   df_stressinfo,
   df_respinfo,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "TimeSequence"
+  dir_sub = "TimeSequence",
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ getTimeSeq(
 \item{dir_results}{Directory containing all results. Default = "file.path(getwd(),"Results")"}
 
 \item{dir_sub}{Subdirectory for outputs from this function. Default = "TimeSequence"}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the

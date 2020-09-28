@@ -31,6 +31,7 @@
 #' @param bioParmsDEL bio parameters delete.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #' 
 #' @return A jpeg in the "Results" subdirectory of the working directory with box plots.
 #' Also returns a list of stressors; stressors and site.stressor.pctrank.
@@ -142,7 +143,8 @@ getStressorList <- function(TargetSiteID
                             , biocomm="bmi"
                             , bioParmsDEL
                             , dir_results=file.path(getwd(), "Results")
-                            , dir_sub="CandidateCauses") {##FUNCTION.START
+                            , dir_sub="CandidateCauses"
+                            , boo_plot = TRUE) {##FUNCTION.START
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
@@ -165,6 +167,7 @@ getStressorList <- function(TargetSiteID
     bioParmsDEL=bioParmsDEL
     dir_results=dir_results
     dir_sub="CandidateCauses"
+    boo_plot = TRUE
     # all other function inputs defined in example.
   }##IF.boo.DEBUG.END
   #
@@ -504,7 +507,9 @@ getStressorList <- function(TargetSiteID
                                                 , "_CandCauses_", fn_title, plot_ext))
           # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
           #                                       , make.names(groupnames[g,]), plot_ext))
-          ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
+          if(boo_plot){
+            ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
+          }## IF ~ boo_plot ~ END
       }##IF.boo_plot==TRUE
     }##IF.n.END
   }##FOR.g.END

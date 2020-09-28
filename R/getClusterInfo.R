@@ -25,6 +25,7 @@
 #' @param data_clusterInfo data file for cluster info.
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "ClusterInfo"
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #' 
 #' @return A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.
 #' 
@@ -117,6 +118,7 @@ getClusterInfo <- function(TargetSiteID
                            , data_clusterInfo
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
+                           , boo_plot = TRUE
                            ) {##FUNCTION.START
   #
   boo_DEBUG <- FALSE
@@ -124,6 +126,7 @@ getClusterInfo <- function(TargetSiteID
   if(boo_DEBUG==TRUE){
     refSiteCOMIDs <- ref.reaches
     i <- 2
+    boo_plot = TRUE
   }##IF~boo_DEBUG~END
   #
   
@@ -316,8 +319,9 @@ getClusterInfo <- function(TargetSiteID
     # Save to JPG
     fn_png <- file.path(wd,dir.sub,dir.sub2,dir.sub3,paste0(TargetSiteID
                             ,"_Cluster_",make.names(varYlab),".png"))
-    ggplot2::ggsave(fn_png, p_cl, width=plot_W, height=plot_H, units="in")
-    
+    if(boo_plot){
+      ggplot2::ggsave(fn_png, p_cl, width=plot_W, height=plot_H, units="in")
+    }## IF ~ boo_plot ~ END
     #
   }##FOR.i.END
   #

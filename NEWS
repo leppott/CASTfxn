@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-28 07:13:25
+    #> Last Update: 2020-09-28 09:46:48
 
 # Planned Updates
 
@@ -24,6 +24,20 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9323 (2020-09-28)
+
+  - CASTool
+      - server.R
+          - Modify so plots don’t save.
+  - Modify functions to allow for save/no-save of plots
+      - getBioStressorResponses
+      - getClusterInfo
+      - getCoOccur
+      - getSiteInfo
+      - getStressorList
+      - getTimeSeq
+      - getVerifiedPredictions
 
 ## Changes in Version 0.1.0.9322 (2020-09-28)
 

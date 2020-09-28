@@ -21,6 +21,7 @@
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 # @param LogTransf Value for if stressor variables should be log10 transformed; 1=TRUE, 0=FALSE.
 #' 
 #' @return A jpg in SiteID subfolder of the "Results" folder of working directory.  
@@ -258,6 +259,7 @@ getBioStressorResponses <- function(TargetSiteID
                                     , dir_results=file.path(getwd(), "Results")
                                     , dir_sub="StressorResponse"
                                     , boo_pred_warn = TRUE
+                                    , boo_plot = TRUE
                                     ) {##FUNCTION.START
   # DEBUG
   boo.DEBUG <- FALSE
@@ -276,6 +278,7 @@ getBioStressorResponses <- function(TargetSiteID
       dir_results=dir_results
       dir_sub="StressorResponse"
       boo_pred_warn = TRUE
+      boo_plot = TRUE
   }
 
   # # list output
@@ -1241,7 +1244,9 @@ getBioStressorResponses <- function(TargetSiteID
         #
         fn_png <- paste0(varFileOut, make.names(stressName), "_"
                          , make.names(respName), ".png")
-        ggplot2::ggsave(fn_png, p_SR, width=plot_W, height=plot_H, units="in")
+        if(boo_plot){
+          ggplot2::ggsave(fn_png, p_SR, width=plot_W, height=plot_H, units="in") 
+        }## IF ~ boo_plot ~ END
         #
       }##IF.boo.Plot.END
 

@@ -18,7 +18,7 @@
 #' Uses the library dplyr.
 #' 
 #' @param TargetSiteID Site ID
-#'  @param df_sites Sites table containing site ids and reference flags. 
+#' @param df_sites Sites table containing site ids and reference flags. 
 #' Default = "data_Sites".
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param df_qual Biological index and metrics data for the specified biocomm. 

@@ -1001,6 +1001,11 @@ shinyServer(function(input, output, session) {
         dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
       }## IF ~ boo_Shiny ~ END
       # Map plots only ref sites, and that's probably for the best
+      #
+      # reduce Shiny calc time by omitting plots
+      boo_plot_user <- !boo_Shiny
+      #boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+      #
       list.SiteSummary <- getSiteInfo(TargetSiteID = TargetSiteID
                                       , data_Sites = data_Sites
                                       , data_bkgdata = df_bkgdata
@@ -1021,7 +1026,8 @@ shinyServer(function(input, output, session) {
                                       , dir_photo = file.path(getwd(),"Data","Photos")
                                       , dir_results = dir_results
                                       , dir_sub = "SiteInfo"
-                                      , dir_map_rmd = dir_map_rmd)
+                                      , dir_map_rmd = dir_map_rmd
+                                      , boo_plot = boo_plot_user)
       # Returns: mySiteSummary <- list(SiteInfo = mySiteInfo,
       #                                Samps = mySamps,
       #                                BMImetrics = myBMImetrics,
@@ -1046,6 +1052,9 @@ shinyServer(function(input, output, session) {
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
       # Get Cluster Info
+      #
+      boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+      #
       getClusterInfo(TargetSiteID
                      , siteCOMID=list.SiteSummary$COMID
                      , siteCluster=list.SiteSummary$ClustID
@@ -1053,7 +1062,8 @@ shinyServer(function(input, output, session) {
                      , data_cluster = data_cluster
                      , data_clusterInfo = data_clusterInfo
                      , dir_results=dir_results
-                     , dir_sub="ClusterInfo")
+                     , dir_sub="ClusterInfo"
+                     , boo_plot = boo_plot_user)
       msg <- "getClusterInfo is complete."
       message(msg)
       # print(msg)
@@ -1596,8 +1606,11 @@ shinyServer(function(input, output, session) {
         Sys.sleep(mySleepTime)
         message(paste(prog_msg, prog_det, sep = "; "))
         #
-               # skeleton 1003
+        # skeleton 1003
         # Get Stressor List using all stressors ever detected at the target site
+        #
+        boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+        #
         list.stressors <- getStressorList(TargetSiteID
                                           , siteCluster=list.SiteSummary$ClustID
                                           , chemInfo=data_stressInfo
@@ -1614,7 +1627,8 @@ shinyServer(function(input, output, session) {
                                           , biocomm=bioComm
                                           , bioParmsDEL=bioParmsDEL
                                           , dir_results=dir_results
-                                          , dir_sub="CandidateCauses")
+                                          , dir_sub="CandidateCauses"
+                                          , boo_plot = boo_plot_user)
         # Returns: myStressors <- list(stressors = stressorlist
         #                     , site.stressor.pctrank = site.pctrank
         #                     , stressors_LogTransf
@@ -1796,6 +1810,9 @@ shinyServer(function(input, output, session) {
           message(paste(prog_msg, prog_det, sep = "; "))
           # Create time sequence graphics
           # Uses all site stressor and response data, but not paired
+          #
+          boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+          #
           getTimeSeq(TargetSiteID
                      , biocomm = bioComm
                      , BioResp = bioMetricNames
@@ -1805,7 +1822,8 @@ shinyServer(function(input, output, session) {
                      , df_stressinfo = data_stressInfo
                      , df_respinfo = bioMetricInfo
                      , dir_results = dir_results
-                     , dir_sub = "TimeSequence")
+                     , dir_sub = "TimeSequence"
+                     , boo_plot = boo_plot_user)
           msg <- paste0("getTimeSeq for ", bioComm, " is complete.")
           message(msg)
 
@@ -1833,6 +1851,9 @@ shinyServer(function(input, output, session) {
           if (TargetSiteID %in% unique(data_bioCoOccur$StationID_Master)) {
             msg <- ("Starting Co-occurrence")
             message(msg)
+            #
+            boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+            #
             getCoOccur(df_data = data_bioCoOccur
                        , TargetSiteID = TargetSiteID
                        , col_ID = "StationID_Master"
@@ -1849,7 +1870,8 @@ shinyServer(function(input, output, session) {
                        , biocomm = bioComm
                        , dir_plots = dir_results
                        , dir_sub = "CoOccurrence"
-                       , col_StressInvScore = col_StressInvScore)
+                       , col_StressInvScore = col_StressInvScore
+                       , boo_plot = boo_plot_user)
           } else {
             # gapcomment <- "Stressor detected but paired response not available"
             # gaps <- cbind.data.frame("getStressorList", stressorsNOpairing[s], 0
@@ -1918,6 +1940,9 @@ shinyServer(function(input, output, session) {
           Sys.sleep(mySleepTime)
           message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor Responses
+          #
+          boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+          #
           getBioStressorResponses(TargetSiteID
                                   , stressors = stressorsWPairedResponses
                                   , stressorInfo = siteStressInfo
@@ -1928,7 +1953,8 @@ shinyServer(function(input, output, session) {
                                   , siteQual2Plot = siteQual2Plot
                                   , biocomm = bioComm
                                   , dir_results = dir_results
-                                  , dir_sub = "StressorResponse")
+                                  , dir_sub = "StressorResponse"
+                                  , boo_plot = boo_plot_user)
           msg <- paste0("getBioStressorResponses for ", bioComm, " is complete.")
           message(msg)
 
@@ -1952,6 +1978,9 @@ shinyServer(function(input, output, session) {
           message(paste(prog_msg, prog_det, sep = "; "))
           # Get Stressor-specific regressions
           if (any(SSTVparms %in% stressorsWPairedResponses)) {
+            #
+            boo_plot_user <- !boo_Shiny # reduce Shiny calc time by omitting plots
+            #
             getVerifiedPredictions(TargetSiteID
                                    , SSTVanalytes = as.character(SSTVparms)
                                    , colBioSample = colBioSample
@@ -1965,7 +1994,8 @@ shinyServer(function(input, output, session) {
                                    , BioIndex_Nar_Deg = "Degraded"
                                    , dir_results=dir_results
                                    , dir_sub="VerifiedPredictions"
-                                   , biocomm=bioComm)
+                                   , biocomm=bioComm
+                                   , boo_plot = boo_plot_user)
           } else {
             print("No possible stressors have stressor-specific tolerance values.")
             flush.console()

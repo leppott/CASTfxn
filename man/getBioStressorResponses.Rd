@@ -16,7 +16,8 @@ getBioStressorResponses(
   biocomm = "bmi",
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "StressorResponse",
-  boo_pred_warn = TRUE
+  boo_pred_warn = TRUE,
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ getBioStressorResponses(
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "StressorResponse"}
 
 \item{boo_pred_warn}{Should warnings for prediction be suppressed.  Default = TRUE.}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 A jpg in SiteID subfolder of the "Results" folder of working directory.  

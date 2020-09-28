@@ -23,8 +23,9 @@ getQualSites(
 )
 }
 \arguments{
-\item{TargetSiteID}{Site ID
- @param df_sites Sites table containing site ids and reference flags. 
+\item{TargetSiteID}{Site ID}
+
+\item{df_sites}{Sites table containing site ids and reference flags. 
 Default = "data_Sites".}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}

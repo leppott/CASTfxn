@@ -23,6 +23,7 @@
 #' @param df_respinfo data frame, response info
 #' @param dir_results Directory containing all results. Default = "file.path(getwd(),"Results")"
 #' @param dir_sub Subdirectory for outputs from this function. Default = "TimeSequence"
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 # @param stressors stressors
 
 # @param colname.SampID Name of the column for the response sample identifier.
@@ -42,7 +43,8 @@ getTimeSeq <- function(TargetSiteID
                        , df_stressinfo
                        , df_respinfo
                        , dir_results = file.path(getwd(),"Results")
-                       , dir_sub = "TimeSequence") {
+                       , dir_sub = "TimeSequence"
+                       , boo_plot = TRUE) {
 
     # Debug
     boo_DEBUG <- FALSE
@@ -210,8 +212,10 @@ getTimeSeq <- function(TargetSiteID
                 p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID
                                        ,"Stressor/Response Time Series")
                          , x = "Sample Date", y = "Value")
-                p_ts <- p_ts + ggplot2::ggsave(filename=fpath, dpi = ppi, width=8
-                                    , height=6, units="in")
+                if(boo_plot){
+                  p_ts <- p_ts + ggplot2::ggsave(filename=fpath, dpi = ppi, width=8
+                                    , height=6, units="in")  
+                }## IF ~ boo_plot ~ END
                 count = count + 1
             } # End loop over responses
 

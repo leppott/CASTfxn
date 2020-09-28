@@ -36,6 +36,7 @@
 #' @param dir_results Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
+#' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #' 
 #' @return Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
 #' in working directory of box plots and a single PDF of all plots.
@@ -183,6 +184,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , dir_results=file.path(getwd(), "Results")
                                    , dir_sub="VerifiedPredictions"
                                    , biocomm="bmi"
+                                   , boo_plot = TRUE
                                    ) {##FUNCTION.START
     
     
@@ -206,6 +208,7 @@ getVerifiedPredictions <- function(TargetSiteID
       dir_sub="VerifiedPredictions"          # Used
       biocomm=bioComm                        # Used
       tv <- 1
+      boo_plot = TRUE
   }##IF.boo.DEBUG.END
   
   wd <- getwd() #2020-02-05
@@ -852,7 +855,9 @@ getVerifiedPredictions <- function(TargetSiteID
                   plots.tv[[tv]] <- grDevices::recordPlot()
                   #
                   fn_png <- paste0(TargetSiteID, "_", biocomm, "_VP_", make.names(SSTV.analyte), ".png")
-                  ggplot2::ggsave(file.path(dir_path, fn_png), p_SSTV, width=plot_W, height=plot_H, units="in")
+                  if(boo_plot){
+                    ggplot2::ggsave(file.path(dir_path, fn_png), p_SSTV, width=plot_W, height=plot_H, units="in")
+                  }## IF ~ boo_plot ~ END
                   
                   
                   #~~~~~~~~~~old code~~~~~~~~~~~~~~~~~

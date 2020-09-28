@@ -25,7 +25,8 @@ getSiteInfo(
   dir_photo = file.path(dir_data, "Photos"),
   dir_results = dir_results,
   dir_sub = "SiteInfo",
-  dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+  dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -58,6 +59,8 @@ getSiteInfo(
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
 
 \item{dir_map_rmd}{Directory with Map_Leaflet.RMD.  Default = package RMD.}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 

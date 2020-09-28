@@ -23,7 +23,8 @@ getCoOccur(
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "CoOccurrence",
   col_StressInvScore = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk",
-    "DO_uf_mg_L", "pH", "pH_SU")
+    "DO_uf_mg_L", "pH", "pH_SU"),
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ Default = c("Yes", "No").}
 \item{dir_plots}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 
 \item{col.Stressor.InvSc}{Stressors as columns of df_data that have inverse scoring for box plots.
 Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."

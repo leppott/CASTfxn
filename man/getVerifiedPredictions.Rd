@@ -18,7 +18,8 @@ getVerifiedPredictions(
   BioIndex_Nar_Deg = "Violates",
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "VerifiedPredictions",
-  biocomm = "bmi"
+  biocomm = "bmi",
+  boo_plot = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ getVerifiedPredictions(
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "VerifiedPredictions"}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 
 \item{data.SampSummary}{x}
 
