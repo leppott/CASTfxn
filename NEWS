@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-29 10:53:44
+    #> Last Update: 2020-09-29 13:42:04
 
 # Planned Updates
 
@@ -25,10 +25,22 @@ NEWS
 
 # Version History
 
+## Changes in Version 0.1.0.9328 (2020-09-29)
+
+  - RPPTool repo updates.
+      - getConnectivity.R
+      - Map\_Leaflet.RMD
+      - RPPTool\_CA.R
+      - udpateAllScoresTable.R
+      - server.R
+
 ## Changes in Version 0.1.0.9327 (2020-09-29)
 
   - updateAllScoresTable.R
       - Normalize (0:1) indicator wtds by wt.
+      - Formatting.
+  - drawAllScoresPlot.R
+      - Formatting.
 
 ## Changes in Version 0.1.0.9326 (2020-09-28)
 

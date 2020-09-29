@@ -1568,7 +1568,7 @@ shinyServer(function(input, output, session) {
         message(paste(prog_msg, prog_det, sep = "; "))
       }## IF ~ boo_Shiny ~ END
       # Required files (after getting user defined stuff)
-      fn_TargetCOMIDs     <- file.path(data_dir, "SMC_TestCOMIDs_20200821.xlsx")
+      fn_TargetCOMIDs     <- file.path(data_dir, "SMC_TestCOMIDs.xlsx")
       # Potential/Restoration Subindex Data
       fn_sites            <- file.path(data_dir, "SMCSitesFinal.tab")
       fn_network          <- file.path(data_dir,"NHDPlusNetwork.xlsx")
@@ -1861,6 +1861,8 @@ shinyServer(function(input, output, session) {
       for (r in 1:nrow(dfTargetCOMIDs)) {
         reach <- dfTargetCOMIDs$TargetCOMID[r]
         userDefOpp <- dfTargetCOMIDs$UserDefinedOpp[r]
+        # reach = 17562596
+        # userDefOpp <- 1
         
         if (reach %in% dfNetworkNoData$COMID) {
           message(paste0("Reach ", reach, " has no data in the NHDPlus network. "
@@ -1883,11 +1885,16 @@ shinyServer(function(input, output, session) {
           Sys.sleep(mySleepTime)
           message(paste(prog_msg, prog_det, sep = "; "))
         }## IF ~ boo_Shiny ~ END
+        
+        # if (!(reach %in% dfNetwork$COMID)) {
+        #     message(paste0(TargetCOMID, " is not in the NHD Network for the study region."))
+        # } else {
         dfCxns <- getConnectivity(TargetCOMID = reach
                                   , cxndist_km = cxndist_km
                                   , dfNetwork = dfNetwork
                                   , results_dir = results_dir)
         message(paste0("Connections identified."))
+        # }
         
         # 14, Get connectivity scores ####
         # Progress, 13
@@ -1912,6 +1919,12 @@ shinyServer(function(input, output, session) {
         } else { # User doesn't want to use CAST results 
           useStressorTF=FALSE
         }## IF ~ useCASTresults ~ END
+        
+        if (nrow(dfCxns)==1) {
+          message("No connected reaches.")
+          next
+        }
+        
         
         listCxnScores <- getConnectivityScores(TargetCOMID = reach
                                                , useStressor = useStressorTF
@@ -2026,7 +2039,7 @@ shinyServer(function(input, output, session) {
       }
       
       # Remove objects no longer needed
-      if(boo_DEBUG==FALSE){
+      if(!boo_DEBUG){
         # rm(listAllScores, listBCGdata, listCxnScores, listScaledStr01All
         rm(listAllScores, listBCGdata, listCxnScores
            , listStressScores, listWeights, dfAllScores, dfNetwork
@@ -2037,7 +2050,7 @@ shinyServer(function(input, output, session) {
         
         TargetReach <- dfTargetCOMIDs$TargetCOMID[r]
         message(paste0("Generating score graphics for ", TargetReach))
-        # TargetReach = 20331434
+        # TargetReach = 20331434 # 17562596
         
         # Draw score graphics #
         drawAllScoresPlot(TargetReach = TargetReach
@@ -2048,6 +2061,7 @@ shinyServer(function(input, output, session) {
                           , results_dir = results_dir)    
         
         message(paste0("Generating maps for ", TargetReach))
+        
         # Draw maps #
         leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
                                , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline

@@ -145,6 +145,9 @@ updateAllScoresTable <- function(dfAllScores, listWeights, fn_allscores
                       , wtd_thr_PlannedDevelopInd = ifelse(is.na(thr_PlannedDevelopInd)
                                                            , NA
                                                            , signif((wt_thr_PlannedDevelopInd*thr_PlannedDevelopInd),3))
+                      , wtd_thr_PlannedDevelopInd = ifelse(wtd_thr_PlannedDevelopInd < 0
+                                                           , 0
+                                                           , wtd_thr_PlannedDevelopInd)
                       , wtd_opp_RecrInd = ifelse(is.na(opp_RecrInd)
                                                  , NA
                                                  , signif((wt_opp_RecrInd*opp_RecrInd),3))

@@ -37,9 +37,20 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9328 (2020-09-29)
+* RPPTool repo updates.
+   + getConnectivity.R
+   + Map_Leaflet.RMD
+   + RPPTool_CA.R
+   + udpateAllScoresTable.R
+   + server.R
+
 ## Changes in Version 0.1.0.9327 (2020-09-29)
 * updateAllScoresTable.R
     + Normalize (0:1) indicator wtds by wt.
+    + Formatting.
+* drawAllScoresPlot.R
+    + Formatting.
 
 ## Changes in Version 0.1.0.9326 (2020-09-28)
 CASTool

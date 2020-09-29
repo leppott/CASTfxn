@@ -28,8 +28,9 @@ getConnectivity <- function(TargetCOMID
     start.time <- Sys.time()
     #
     if(boo_DEBUG==TRUE){
-        TargetCOMID <- TargetCOMID
+        TargetCOMID <- reach
         cxndist_km <- 10
+        dfNetwork <- dfNetwork
         # fn_network <- file.path(getwd(),"Data","ConnectivityData.xlsx")
         # dfNetwork <- readxl::read_excel(fn_network, sheet=1, na="NA"
         #                                 , trim_ws = TRUE)
