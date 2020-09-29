@@ -245,7 +245,8 @@ drawAllScoresPlot <- function(TargetReach
             ggplot2::annotate(geom="text", x=1.5, y=0.05, label="Stressor Connectivity"
                               , size=3, hjust=0) +
             ggplot2::coord_flip() +
-            ggplot2::ylim(-0.15,1) + ggplot2::theme_minimal() +
+            ggplot2::ylim(-0.15,1) + 
+            ggplot2::theme_minimal() +
             ggplot2::theme(axis.text.x=ggplot2::element_blank()
                            , axis.text.y=ggplot2::element_blank()
                            , axis.title=ggplot2::element_blank())
@@ -266,7 +267,8 @@ drawAllScoresPlot <- function(TargetReach
             ggplot2::annotate(geom="text", x=1.5, y=0.05, label="Planned Dev"
                               , size=3, hjust=0) +
             ggplot2::coord_flip() +
-            ggplot2::ylim(-0.15,1) + ggplot2::theme_minimal() +
+            ggplot2::ylim(-0.15,1) + 
+            ggplot2::theme_minimal() +
             ggplot2::theme(axis.text.x=ggplot2::element_blank()
                            , axis.text.y=ggplot2::element_blank()
                            , axis.title=ggplot2::element_blank())
@@ -291,7 +293,8 @@ drawAllScoresPlot <- function(TargetReach
             ggplot2::annotate(geom="text", x=1.5, y=0.05, label="User-applied"
                               , size=3, hjust=0) +
             ggplot2::coord_flip() +
-            ggplot2::ylim(-0.15,1) + ggplot2::theme_minimal() +
+            ggplot2::ylim(-0.15,1) + 
+            ggplot2::theme_minimal() +
             ggplot2::theme(axis.text.x=ggplot2::element_text(size=8)
                            , axis.text.y=ggplot2::element_blank()
                            , axis.title=ggplot2::element_blank())

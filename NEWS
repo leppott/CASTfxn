@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-28 13:50:16
+    #> Last Update: 2020-09-29 10:53:44
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9327 (2020-09-29)
+
+  - updateAllScoresTable.R
+      - Normalize (0:1) indicator wtds by wt.
 
 ## Changes in Version 0.1.0.9326 (2020-09-28)
 

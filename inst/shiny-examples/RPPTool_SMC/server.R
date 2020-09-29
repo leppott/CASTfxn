@@ -1517,9 +1517,9 @@ shinyServer(function(input, output, session) {
         wtOpp_MSCPs       <- input$wt_Opp_MSCPs
         wtOpp_NASVI       <- input$wt_Opp_NASVIBCG
         wtOpp_UserDefined <- input$wt_Opp_UserDefined
-        wtPot_subidx      <- input$wt_SubIndex_Pot
-        wtThreat_subidx   <- input$wt_SubIndex_Threat
-        wtOpp_subidx      <- input$wt_SubIndex_Opp
+        wtPot_subidx      <- 1 #input$wt_SubIndex_Pot
+        wtThreat_subidx   <- 1 #input$wt_SubIndex_Threat
+        wtOpp_subidx      <- 1 #input$wt_SubIndex_Opp
       } else {
         # Connectivity variables
         cxndist_km      <- 5
@@ -1965,8 +1965,8 @@ shinyServer(function(input, output, session) {
       }## FOR ~ r ~ END # Finish looping over target reaches
       
       # 15, Clean up connections ####
-      # 14, Clean up connections data table, write connections and connections details
-      # Progress, 14
+      # 15, Clean up connections data table, write connections and connections details
+      # Progress, 15
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
@@ -1989,7 +1989,7 @@ shinyServer(function(input, output, session) {
       }
       
       # 16, Make updateable All Scores table ####
-      # Progress, 15
+      # Progress, 16
       if(boo_Shiny == TRUE){
         prog_cnt <- prog_cnt + 1
         prog_msg <- paste0("Step ", prog_cnt)
