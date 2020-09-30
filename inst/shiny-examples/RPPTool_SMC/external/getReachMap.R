@@ -153,6 +153,9 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
         maptype2 <- "ConnectedSites"
         plotScoreMaps <- TRUE
     }
+    
+    # Plot, loc_map ####
+    message("Plot, loc_map")
     basemap_toner <- ggmap::get_map(source="stamen", maptype="toner-lite"
                                     , location=ggmap_bbox, messaging=FALSE)
     toner_map <- ggmap::ggmap(basemap_toner)
@@ -184,7 +187,9 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
     ggplot2::ggsave(fn_locmap, loc_map, width=7, height=7, units="in", dpi=bestdpi)
     rm(fn_locmap, loc_map)
     
+    # Plot, sites_map ####
     # Plot locator map with sites, not COMIDs
+    message("Plot, sites_map")
     sites_map <- toner_map + 
         ggplot2::geom_sf(data=sp_flowline, inherit.aes=FALSE, color="deepskyblue", lwd=0.5) +
         ggplot2::geom_sf(data=sp_cxns, inherit.aes=FALSE, color="darkblue", lwd=1.5) +
@@ -208,6 +213,8 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
     ggplot2::ggsave(fn_sitesmap, sites_map, width=7, height=7, units="in", dpi=bestdpi)
     rm(fn_sitesmap, sites_map)
     
+    # Plot, score_map ####
+    message("Plot, score_map")
     if (plotScoreMaps) {
         # Iterate over all scores and other mappable columns
         # Plot RankByIndexType only for IndexType == TargetReach IndexType
@@ -223,11 +230,12 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
         
         for (m in 1:length(mapCols)) {
             
+            m_len <- length(mapCols)
             val = mapCols[m]
             sp_cxnsTargPlot <- sp_cxnsTarg[,c("COMID",val,"lon","lat","geometry")]
             sp_cxnsTargPlot$value <- NA
             
-            message(paste0("Mapping ", val))
+            message(paste0("Mapping ", m, "/", m_len, "; ", val))
             
             if (all(is.na(sp_cxnsTarg[[val]]))) {
                 next()
@@ -312,7 +320,9 @@ getReachMap <- function(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline
                        , "User-applied =", sp_flowline$UserAppliedInd
                        , sep=" ")
     
+    # Plot, lmap ####
     # Draw leaflet map
+    message("Plot, lmap")
     if (nrow(sp_cxns)==0) { # No TargetCOMID (Just base version)
         
         lmap <- leaflet::leaflet(data = sp_outline) %>%

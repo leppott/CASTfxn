@@ -2063,14 +2063,16 @@ shinyServer(function(input, output, session) {
         message(paste0("Generating maps for ", TargetReach))
         
         # Draw maps #
-        leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
-                               , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
+        leafMap <- getReachMap(dsn_outline = dsn_outline
+                               , lyr_outline = lyr_outline
+                               , dsn_flowline = dsn_flowline
+                               , lyr_flowline = lyr_flowline
                                , allSites = dfAllSites
                                , allCxns = dfCxnsALL
                                , allScores = dfAllScoresSummary
                                , cxndist_km = cxndist_km
-                               , TargetCOMID=TargetReach
-                               , results_dir=results_dir)
+                               , TargetCOMID = TargetReach
+                               , results_dir = results_dir)
         
       }## FOR ~ r ~ END
       
@@ -2380,42 +2382,57 @@ shinyServer(function(input, output, session) {
   , escape = FALSE
   )## output$df_results_DT ~ END
   
-  # output$img_scores <- renderImage({
-  #   TargetCOMIDx <- "20331434"
-  #   fn_png_scores <- list.files(path = file.path(".", "Results", TargetCOMIDx)
-  #                                                , pattern = "AllScores")
-  #   fn_png_scores_latest <- fn_png_scores[length(fn_png_scores)]
-  #   # if(exists("TargetCOMID")==FALSE){
-  #   #   return(NULL)
-  #   # } else if (file.exists(file.path(".", "Results", TargetCOMID, fn_png_scores_latest)) == FALSE) {
-  #   #   return(NULL)
-  #   # } else {  
-  #     return(list(
-  #       width = 600, 
-  #       src = paste("Results", TargetCOMIDx, fn_png_scores_latest, sep = "/"),
-  #       contentType = "image/png",
-  #       alt = "results all scores"
-  #     ))
-  #   # }## IF ~ END
-  # }, deleteFile = FALSE
-  # )## output$report_img ~ END
+  img_width <- 600
   
+  img_scores_pn <- reactive({
+    TargetCOMID <- input$COMID_RPP
+    #TargetCOMID <- "20331434"
+    fn_png <- list.files(path = file.path(".", "Results", TargetCOMID)
+                             , pattern = "AllScores")
+    fn_png_latest <- fn_png[length(fn_png)]
+    pn_png <- normalizePath(file.path(".", "Results", TargetCOMID, fn_png_latest))
+    #
+  })## img_scores_pn
   
-  # output$img_map <- renderImage({
-  #   fn_png_map <- list.files(path = file.path(".", "Results", TargetCOMID)
-  #                               , pattern = "RPPIndex")
-  #   fn_png_map_latest <- fn_png_map[length(fn_png_map)]
-  #   if(file.exists(file.path(".", "Results", TargetCOMID, fn_png_map_latest)) == FALSE){
-  #     return(NULL)
-  #   } else {
-  #     return(list(
-  #       src = paste("Results", TargetCOMID, fn_png_map_latest, sep = "/"),
-  #       contentType = "image/png",
-  #       alt = "map RPP Index"
-  #     ))
-  #   }## IF ~ END
-  # }, deleteFile = FALSE
-  # )## output$report_img ~ END
+  output$img_scores <- renderImage({
+    #
+    if(file.exists(img_scores_pn())){
+      return(list(
+        src = img_scores_pn()
+        , contentType = "image/png"
+        , width = img_width
+        , alt = "results all scores"
+      ))#return~END
+    } else {
+      return(NULL)
+    }## IF ~ END
+  }, deleteFile = FALSE
+  )## output$report_img ~ END
+  
+  img_map_pn <- reactive({
+    TargetCOMID <- input$COMID_RPP
+    #TargetCOMID <- "20331434"
+    fn_png <- list.files(path = file.path(".", "Results", TargetCOMID)
+                         , pattern = "RPPIndex")
+    fn_png_latest <- fn_png[length(fn_png)]
+    pn_png <- normalizePath(file.path(".", "Results", TargetCOMID, fn_png_latest))
+    #
+  })## img_map_pn
+  
+  output$img_map <- renderImage({
+    #
+    if(file.exists(img_map_pn())){
+      return(list(
+        src = img_map_pn()
+        , contentType = "image/png"
+        , width = img_width
+        , alt = "map RPP Index"
+      ))#return~END
+    } else {
+      return(NULL)
+    }## IF ~ END
+  }, deleteFile = FALSE
+  )## output$report_img ~ END
   
   
   

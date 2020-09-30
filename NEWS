@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-29 13:42:04
+    #> Last Update: 2020-09-30 10:48:45
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9329 (2020-09-30)
+
+  - RPPTool
+      - server.R
+          - Results, reactive map and score images and table.
 
 ## Changes in Version 0.1.0.9328 (2020-09-29)
 
