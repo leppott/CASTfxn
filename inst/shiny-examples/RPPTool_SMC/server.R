@@ -1192,6 +1192,36 @@ shinyServer(function(input, output, session) {
         file.remove(fn_zip)
       }##IF~file.exists~END
       
+      # 02, Copy CAST inputs ####
+      # Progress, 01
+      prog_cnt <- prog_cnt + 1
+      prog_msg <- paste0("Step ", prog_cnt)
+      prog_det <- "Copy CAST input files"
+      incProgress(prog_inc, message = prog_msg, detail = prog_det)
+      Sys.sleep(mySleepTime)
+      message(paste(prog_msg, prog_det, sep = "; "))
+      # Copy uploaded CAST files
+      if(input$useCASTresults == TRUE){
+        # CAST Data
+        inFile <- input$upload_CAST_Data
+        message("Uploaded files; CASTool Data")
+        message(paste(inFile$name, collapse = "\n"))
+        file.copy(inFile$datapath
+                  , file.path(".", "Data", "CASTool_data", inFile$name)
+                  , overwrite = TRUE)
+        # CAST Results
+        inFile <- input$upload_CAST_Results
+        message("Uploaded files; CASTool Results")
+        message(paste(inFile$name, collapse = "\n"))
+        file.copy(inFile$datapath
+                  , file.path(".", "Data", "CASTool_results", inFile$name)
+                  , overwrite = TRUE)
+      }## IF ~ input$useCASTresults ~ END
+      
+      
+      # if useCASTfiles copy
+      
+      
       # #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       # # 02, UpdateAllScores ####
       # # Run UpdateAllScores to account for Shiny user input weights
@@ -1483,8 +1513,8 @@ shinyServer(function(input, output, session) {
       }## IF ~ boo_Shiny ~ END 
       if (useCASTresults==TRUE) {
         if(boo_Shiny == TRUE){
-          dir_CASTdata    <- file.path(".", "")
-          dir_CASTresults <- file.path(".")
+          dir_CASTdata    <- file.path(".", "Data", "CASTool_data")
+          dir_CASTresults <- file.path(".", "Data", "CASTool_results")
         } else {
           dir_CASTdata <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data" # Obtained from user
           dir_CASTresults <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results" # Obtained from user
