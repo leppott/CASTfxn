@@ -12,6 +12,7 @@ function(){
                        , tabPanel("Scoring", value = "pan_legends"
                                   , h3("Scoring")
                                   #, fluidRow(htmlOutput("LegKey_html"))
+                                  , p("Scoring included in decriptions of plots.")
                        )##tabPanel~Plot Key~END
            )##tabsetPanel
   )##tabPanel~END

@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
     paste0("Map file exists = ", file.exists(file.path(".", "Results", input$Station, "SiteInfo", paste0(input$Station, "_map_leaflet.html"))))
   })##fe_Map~END
 
-  # Help ####
+  # HTML Output ####
   output$help_html <- renderUI({
     fn_html <- file.path(".", "www", "ShinyHelp.html")
     fe_html <- file.exists(fn_html)
@@ -243,8 +243,20 @@ shinyServer(function(input, output, session) {
     # }
   })##Map_html~END
 
+  output$Results_html <- renderUI({
+    TargetSiteID <- input$Station
+    fn_html <- list.files(file.path(".", "Results", TargetSiteID)
+                          , pattern = "Results_Summary"
+                          , full.names = TRUE)
+    fe_html <- ifelse(length(fn_html)==0, FALSE, file.exists(fn_html))
+    if(fe_html==TRUE){
+      return(includeHTML(fn_html))
+    } else {
+      return(NULL)
+    }##IF ~ fe_html ~ END
+  })##Results_html ~ END
 
-
+  # Zip ####
   # Test if zip file exists
   output$boo_zip <- function() {
     fn_zip_boo <- paste0(input$Station, ".zip")
@@ -342,7 +354,7 @@ shinyServer(function(input, output, session) {
       #
       start.time <- Sys.time() # Added 2020-08-17 to match with line 2744 (after getSummaryAllSites)
       # Number of increments
-      prog_n <- 30 + 8 + 1 # 30 for single biocom add 8 for 2nd biocomm
+      prog_n <- 32 + 8 # 32 for single biocom add 8 for 2nd biocomm
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
@@ -2227,9 +2239,22 @@ shinyServer(function(input, output, session) {
       #
       fn_zip <- file.path(".", "Results", paste0(TargetSiteID, ".zip"))
       zip(fn_zip, file.path(dir_results, TargetSiteID))
+      
+      # 31, Display Results ####
+      # Progress, 32
+      prog_cnt <- prog_cnt + 1
+      prog_msg <- paste0("Step ", prog_cnt)
+      prog_det <- "Display Results"
+      incProgress(prog_inc, message = prog_msg, detail = prog_det)
+      Sys.sleep(mySleepTime)
+      # triggers HTML output for Results file
+      # Switch out and then back.
+      updateSelectInput(session, inputId = "Station", selected = "NA")
+      updateSelectInput(session, inputId = "Station", selected = input$Station)
+      
 
-      # 31, Complete ####
-      # Progress, 31
+      # 32, Complete ####
+      # Progress, 32
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_det <- "Complete"

@@ -78,16 +78,14 @@ function(){
        #               )##tabPanel~Disclaimer~END
                      # # 0.5
 
-                           # # 2
-                           # , tabPanel("Results"
-                           #            , h3("Results Download")
-                           #            , p("Use the button in the left side bar to save the Results as a single zip file.")
-                           #            # , actionButton("CreateZip", "Create single zip file")
-                           #            # , p("Use the button below to download Results as a zip file.")
-                           #            # , downloadButton("downloadData", label = "Download")
-                           #            # , downloadButton("downloadData_Test", label = "Download Test")
-                           #            , htmlOutput("Results_html")
-                           #            )##tabPanel~Results~END
+                           # 2
+                           , tabPanel("Results"
+                                      , h3("Results Download")
+                                      , p("Use the button in the left side bar to save the Results as a single zip file.")
+                                     # , fluidRow(htmlOutput("LegKey_html"))
+                                     # , fluidRow(htmlOutput("help_html"))
+                                     , fluidRow(htmlOutput("Results_html"))
+                                      )##tabPanel~Results~END
                            #  # 3.1, SiteInfo
                            #  , tabPanel("Site Info"
                            #           , h3("Map")
