@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9332 (2020-10-01)
+* RPPTool
+    + server.R
+        - Update skeleton code revised to account for reaches not in network, 
+          isolated reaches, and coastline reaches. 
+
 ## Changes in Version 0.1.0.9331 (2020-10-01)
 * CASTool
     + server.R

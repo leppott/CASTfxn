@@ -24,17 +24,14 @@ boo_DEBUG <- FALSE
     if(boo_Shiny == TRUE){
       wd <- file.path(".")
     } else {
-      rm(list=ls())
+      # rm(list=ls())
       boo_Shiny <- FALSE
       
       library(readxl)
       library(dplyr)
       library(tidyr)
       library(ggplot2)
-      # library(viridis)
-      # library(maptools)
-      # library(leaflet)
-      
+
       gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/RPPTool" 
       
       # Source required functions #
@@ -60,8 +57,8 @@ boo_DEBUG <- FALSE
     
     if (boo_DEBUG==TRUE) {
       TargetCOMIDs=c(17569571, 20325195, 20329746, 20331170, 20331434, 20333052
-                     , 22549067)
-      # TargetCOMIDs = 20331434
+                     , 22549067, 17562522, 17563304)
+      # TargetCOMIDs = 20325195
     }
     myDate <- lubridate::ymd(lubridate::today())
     myDate <- stringr::str_replace_all(myDate, "-", "")
@@ -130,7 +127,7 @@ boo_DEBUG <- FALSE
       maxYear <- input$year_max
       minYear <- input$year_min
     } else {
-      useCASTresults <- FALSE
+      useCASTresults <- TRUE
       maxYear <- lubridate::year(Sys.Date()) # Obtained from user (NOTE: this is inclusive)
       minYear <- maxYear - 12 # Inclusive (defaults to 2008 to present on 4/17/2020)
     }## IF ~ boo_Shiny ~ END 
@@ -190,7 +187,7 @@ boo_DEBUG <- FALSE
       wtOpp_ParksNow  <- 1
       wtOpp_MSCPs     <- 1
       wtOpp_NASVI     <- 1
-      wtOpp_UserDefined <- 0 # Allowed values = c(0,1,2)
+      wtOpp_UserDefined <- 1 # Allowed values = c(0,1,2)
       wtPot_subidx    <- 1
       wtThreat_subidx <- 1
       wtOpp_subidx    <- 1
@@ -432,8 +429,9 @@ boo_DEBUG <- FALSE
                            , all.x=TRUE)
     } else {
       dfAllScores <- dfBCGscores
-      dfAllScores$StressorScore <- NA
-      dfAllScores$WtdStressScore <- NA
+      dfAllScores$sumStressWts <- NA
+      dfAllScores$pot_StressorInd <- NA
+      # dfAllScores$WtdStressScore <- NA
     }
     
     if(boo_DEBUG==FALSE) {
@@ -512,21 +510,11 @@ boo_DEBUG <- FALSE
     }
     
     for (r in 1:nrow(dfTargetCOMIDs)) {
+        
       reach <- dfTargetCOMIDs$TargetCOMID[r]
       userDefOpp <- dfTargetCOMIDs$UserDefinedOpp[r]
-      # reach = 17562596
-      # userDefOpp <- 1
-      
-      if (reach %in% dfNetworkNoData$COMID) {
-        message(paste0("Reach ", reach, " has no data in the NHDPlus network. "
-                       , "Connectivity cannot be determined."))
-        
-        # Add reach to dfCxns and to dfCxns and dfConnScoresDetail
-        
-        next
-      } else {
-        message(paste0("Evaluating connectivity for reach ", reach))
-      }
+
+      message(paste0("Evaluating connectivity for reach ", reach))
       
       # 13, Get connected reaches ####
       # Progress, 12
@@ -539,94 +527,102 @@ boo_DEBUG <- FALSE
         message(paste(prog_msg, prog_det, sep = "; "))
       }## IF ~ boo_Shiny ~ END
       
-      # if (!(reach %in% dfNetwork$COMID)) {
-      #     message(paste0(TargetCOMID, " is not in the NHD Network for the study region."))
-      # } else {
-      dfCxns <- getConnectivity(TargetCOMID = reach
-                                , cxndist_km = cxndist_km
-                                , dfNetwork = dfNetwork
-                                , results_dir = results_dir)
-      message(paste0("Connections identified."))
-      # }
-      
-      # 14, Get connectivity scores ####
-      # Progress, 13
-      if(boo_Shiny == TRUE){
-        prog_cnt <- prog_cnt + 1
-        prog_msg <- paste0("Step ", prog_cnt)
-        prog_det <- paste0("Calc", "; Connectivity Scores")
-        incProgress(prog_inc, message = prog_msg, detail = prog_det)
-        Sys.sleep(mySleepTime)
-        message(paste(prog_msg, prog_det, sep = "; "))
-      }## IF ~ boo_Shiny ~ END
-      if (useCASTresults==TRUE) { # User wants to use CAST results
-        if (listScaledStr01All$stressorsFound==TRUE) { # Candidate causes found
-          if (reach %in% reachesWStressorScores$COMID) { # Target reach has candidate causes
-            useStressorTF=TRUE
-          } else { # Target reach has no candidate causes
-            useStressorTF=FALSE
-          }
-        } else { # No candidate causes found in CAST results
-          useStressorTF=FALSE
-        }
-      } else { # User doesn't want to use CAST results 
-        useStressorTF=FALSE
-      }## IF ~ useCASTresults ~ END
-      
-      if (nrow(dfCxns)==1) {
-        message("No connected reaches.")
-        next
-      }
-      
-      
-      listCxnScores <- getConnectivityScores(TargetCOMID = reach
-                                             , useStressor = useStressorTF
-                                             , useDownStream = TRUE
-                                             , dfCxnData = dfCxns
-                                             , dfBCGData = dfBCGscores
-                                             , listStressData = listStressScores
-                                             , results_dir = results_dir)
-      message(paste0("Connection scores calculated."))
-      
-      dfConnScores <- listCxnScores$dfConnectivityScores
-      dfCxnsBCG <- listCxnScores$dfCxnBCG %>%
-        dplyr::select(-c(FTYPE, FromNode, ToNode, StartFlag, AggLengthKM
-                         , UpDown, TotalLength, FractionLength))
-      dfCxnsStressors <- listCxnScores$dfCxnStressors
-      dfConnScoresDetail <- merge(dfCxnsBCG
-                                  , dfCxnsStressors
-                                  , by.x=c("TargetCOMID", "COMID")
-                                  , by.y=c("TargetCOMID", "COMID")
-                                  , all=TRUE)
-      dfCxns$TargetCOMID <- reach
-      write.table(dfCxns, file.path(results_dir,reach,paste0(reach,"_Cxns.tab"))
-                  , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
-      rm(dfCxnsBCG, dfCxnsStressors)
-      
-      if (r==1) {
-        dfCxnsALL <- dfCxns
-        dfCxnsALLdetail <- dfConnScoresDetail
+      if (!(reach %in% dfNetwork$COMID)) {
+          message(paste0(reach," is not in the NHD Network for the study region."))
+      } else if (dfNetwork$FTYPE[dfNetwork$COMID==reach]=="Coastline") {
+          message(paste0(reach," is coastline and will not be evaluated."))
       } else {
-        dfCxnsALL <- rbind(dfCxnsALL, dfCxns)
-        dfCxnsALLdetail <- rbind(dfCxnsALLdetail, dfConnScoresDetail)
-      }
-      
-      if(!exists("WtdStressScore")){
-        WtdStressScore <- NA
-      }
-      
-      dfAllScores <- dfAllScores %>%
-        dplyr::mutate(pot_BioCxnInd = ifelse(COMID==dfConnScores$COMID
-                                             , dfConnScores$pot_BioCxnInd
-                                             , pot_BioCxnInd)
-                      , pot_StressorCxnInd = ifelse(COMID==dfConnScores$COMID
-                                                    , dfConnScores$pot_StressorCxnInd
-                                                    , pot_StressorCxnInd)
-                      , pot_StressorInd = WtdStressScore)
-      # Add User-defined opportunity (BPJ)
-      dfAllScores$opp_UserDefInd <- ifelse(dfAllScores$COMID==reach
-                                           , ifelse(is.null(userDefOpp), NA, userDefOpp)
-                                           , dfAllScores$opp_UserDefInd)
+          dfCxns <- getConnectivity(TargetCOMID = reach
+                                    , cxndist_km = cxndist_km
+                                    , dfNetwork = dfNetwork
+                                    , results_dir = results_dir)
+          message(paste0("Connections identified."))
+
+          # 14, Get connectivity scores ####
+          # Progress, 13
+          if(boo_Shiny == TRUE){
+            prog_cnt <- prog_cnt + 1
+            prog_msg <- paste0("Step ", prog_cnt)
+            prog_det <- paste0("Calc", "; Connectivity Scores")
+            incProgress(prog_inc, message = prog_msg, detail = prog_det)
+            Sys.sleep(mySleepTime)
+            message(paste(prog_msg, prog_det, sep = "; "))
+          }## IF ~ boo_Shiny ~ END
+    
+          if (useCASTresults==TRUE) { # User wants to use CAST results
+            if (listScaledStr01All$stressorsFound==TRUE) { # Candidate causes found
+              if (reach %in% reachesWStressorScores$COMID) { # Target reach has candidate causes
+                useStressorTF=TRUE
+              } else { # Target reach has no candidate causes
+                useStressorTF=FALSE
+              }
+            } else { # No candidate causes found in CAST results
+              useStressorTF=FALSE
+            }
+          } else { # User doesn't want to use CAST results 
+            useStressorTF=FALSE
+          }## IF ~ useCASTresults ~ END
+          
+        
+          if (nrow(dfCxns)==1) { # Isolated reach in NHDPlus
+              message("No connected reaches.")
+          } else if ((dfCxns$FTYPE[dfCxns$COMID==reach])=="Coastline") {
+              message("Coastline reach.")
+          } else {
+              listCxnScores <- getConnectivityScores(TargetCOMID = reach
+                                                     , useStressor = useStressorTF
+                                                     , useDownStream = TRUE
+                                                     , dfCxnData = dfCxns
+                                                     , dfBCGData = dfBCGscores
+                                                     , listStressData = listStressScores
+                                                     , results_dir = results_dir)
+              message(paste0("Connection scores calculated."))
+              
+              dfConnScores <- listCxnScores$dfConnectivityScores
+              dfCxnsBCG <- listCxnScores$dfCxnBCG %>%
+                  dplyr::select(-c(FTYPE, FromNode, ToNode, StartFlag, AggLengthKM
+                                   , UpDown, TotalLength, FractionLength))
+              dfCxnsStressors <- listCxnScores$dfCxnStressors
+              dfConnScoresDetail <- merge(dfCxnsBCG
+                                          , dfCxnsStressors
+                                          , by.x=c("TargetCOMID", "COMID")
+                                          , by.y=c("TargetCOMID", "COMID")
+                                          , all=TRUE)
+              rm(dfCxnsBCG, dfCxnsStressors)
+              
+              dfCxns$TargetCOMID <- reach
+              write.table(dfCxns, file.path(results_dir,reach,paste0(reach,"_Cxns.tab"))
+                          , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
+              
+              if (!exists("dfCxnsAll")) {
+                  dfCxnsALL <- dfCxns
+                  dfCxnsALLdetail <- dfConnScoresDetail
+              } else {
+                  dfCxnsALL <- rbind(dfCxnsALL, dfCxns)
+                  dfCxnsALLdetail <- rbind(dfCxnsALLdetail, dfConnScoresDetail)
+                  
+              }
+          }
+          
+          if(exists("dfConnScores")){
+              dfAllScores <- dfAllScores %>%
+                  dplyr::mutate(pot_BioCxnInd = ifelse(COMID==dfConnScores$COMID
+                                                       , dfConnScores$pot_BioCxnInd
+                                                       , pot_BioCxnInd)
+                                , pot_StressorCxnInd = ifelse(COMID==dfConnScores$COMID
+                                                              , dfConnScores$pot_StressorCxnInd
+                                                              , pot_StressorCxnInd))
+          } else {
+              dfAllScores$pot_BioCxnInd[dfAllScores$COMID==reach] <- NA
+              dfAllScores$pot_StressorCxnInd[dfAllScores$COMID==reach] <- NA
+          }
+          
+          # Add User-defined opportunity (BPJ)
+          dfAllScores$opp_UserDefInd[dfAllScores$COMID==reach] <- ifelse(is.null(userDefOpp), NA, userDefOpp)
+          # dfAllScores$opp_UserDefInd <- ifelse(dfAllScores$COMID==reach
+          #                   , ifelse(is.null(userDefOpp), NA, userDefOpp)
+          #                   , dfTargetCOMIDs$UserDefinedOpp[dfTargetCOMIDs$COMID==reach])
+      } # reach in NHD network; evaluate
       
     }## FOR ~ r ~ END # Finish looping over target reaches
     
@@ -641,11 +637,13 @@ boo_DEBUG <- FALSE
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
-    dfCxnsALL <- dplyr::filter(dfCxnsALL, UpDown!="Origin")
-    write.table(dfCxnsALL, fn_cxnsALL, append = FALSE, col.names = TRUE
-                , row.names = FALSE, sep = "\t")
-    write.table(dfCxnsALLdetail, fn_cxnscoredetail, append = FALSE, col.names = TRUE
-                , row.names = FALSE, sep = "\t")
+    if (nrow(dfCxnsALL)>1) {
+        dfCxnsALL <- dplyr::filter(dfCxnsALL, UpDown!="Origin")
+        write.table(dfCxnsALL, fn_cxnsALL, append = FALSE, col.names = TRUE
+                    , row.names = FALSE, sep = "\t")
+        write.table(dfCxnsALLdetail, fn_cxnscoredetail, append = FALSE, col.names = TRUE
+                    , row.names = FALSE, sep = "\t")
+    }
     
     if(!boo_DEBUG){
       rm(dfConnScores, dfConnScoresDetail, dfCxns, dfCxnsALLdetail, dfBCGscores
@@ -671,7 +669,7 @@ boo_DEBUG <- FALSE
     
     # ITERATE OVER TARGET REACHES NOW WITH SCORES #
     # 17, Create Target Reach-specific score graphics and maps ####
-    # Progress, 16
+    # Progress, 17
     if(boo_Shiny == TRUE){
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -705,30 +703,35 @@ boo_DEBUG <- FALSE
       message(paste0("Generating score graphics for ", TargetReach))
       # TargetReach = 20331434 # 17562596
       
-      # Draw score graphics #
-      drawAllScoresPlot(TargetReach = TargetReach
-                        , allScores = dfAllScoresSummary
-                        , dfSiteInfo = dfAllSites
-                        , dfStressors = dfWoE
-                        , dfStressorInfo = dfStressInfo
-                        , results_dir = results_dir)    
-      
-      message(paste0("Generating maps for ", TargetReach))
-      
-      # Draw maps #
-      leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
-                             , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
-                             , allSites = dfAllSites
-                             , allCxns = dfCxnsALL
-                             , allScores = dfAllScoresSummary
-                             , cxndist_km = cxndist_km
-                             , TargetCOMID=TargetReach
-                             , results_dir=results_dir)
+      if (is.na(dfAllScoresSummary$RPPIndex[dfAllScoresSummary$COMID==TargetReach])) {
+          message(paste0("No scores are available for ", TargetReach))
+          next
+      } else {
+          # Draw score graphics #
+          drawAllScoresPlot(TargetReach = TargetReach
+                            , allScores = dfAllScoresSummary
+                            , dfSiteInfo = dfAllSites
+                            , dfStressors = dfWoE
+                            , dfStressorInfo = dfStressInfo
+                            , results_dir = results_dir)    
+          
+          message(paste0("Generating maps for ", TargetReach))
+          
+          # Draw maps #
+          leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
+                                 , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
+                                 , allSites = dfAllSites
+                                 , allCxns = dfCxnsALL
+                                 , allScores = dfAllScoresSummary
+                                 , cxndist_km = cxndist_km
+                                 , TargetCOMID=TargetReach
+                                 , results_dir=results_dir)
+      }
       
     }## FOR ~ r ~ END
     
     # 18, Calc, Run time ####
-    # Progress, 17
+    # Progress, 18
     if(boo_Shiny == TRUE){
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)

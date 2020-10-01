@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-01 11:51:40
+    #> Last Update: 2020-10-01 15:29:47
 
 # Planned Updates
 
@@ -24,6 +24,13 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9332 (2020-10-01)
+
+  - RPPTool
+      - server.R
+          - Update skeleton code revised to account for reaches not in
+            network, isolated reaches, and coastline reaches.
 
 ## Changes in Version 0.1.0.9331 (2020-10-01)
 
