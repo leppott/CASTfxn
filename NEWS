@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-01 15:29:47
+    #> Last Update: 2020-10-12 15:45:27
 
 # Planned Updates
 
@@ -24,6 +24,14 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9333 (2020-10-10)
+
+  - CASTool
+      - server.R
+          - Modify static map; flow lines used the polygon layer.
+  - Map\_Leaflet.rmd
+      - Change jpg to png for static map.
 
 ## Changes in Version 0.1.0.9332 (2020-10-01)
 

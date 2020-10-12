@@ -13,6 +13,11 @@ output:
   pdf_document:
     toc: true
 ---
+
+<!-- #  Copyright 2020 TetraTech. All rights reserved. -->
+<!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
+<!-- #  is expressly prohibited without prior written permission of TetraTech. -->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 #TargetSiteID <- "SRCKN001.61"
@@ -27,7 +32,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Static Map
 ```{r map_jpg, echo=FALSE, eval=TRUE}
 dir.sub3 <- "SiteInfo"
-fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.jpg"))
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.png"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {

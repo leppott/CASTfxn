@@ -68,6 +68,27 @@ getReport <- function(TargetSiteID
                       , dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                       , siteQual2Plot = NULL){##FUNCTION.START
   #
+  boo_DEBUG <- FALSE
+  if(boo_DEBUG){
+    # setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CASTool_SMC")
+    TargetSiteID <- "SMC04134"
+    probsHigh = 0.75
+    probsLow = 0.25
+    useBMI <- TRUE
+    useAlg <- TRUE
+    useBC = TRUE
+    removeOutliers = TRUE
+    lagdays = 10
+    bmiIndex = "CSCI"
+    algIndex = "MMIhybrid"
+    dir_data = normalizePath(file.path(".", "Data"))
+    dir_results = normalizePath(file.path(".", "Results"))
+    report_type = "summary"
+    report_format = "html"
+    dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+    siteQual2Plot = NULL
+  }## IF ~ boo_DEBUG ~ END
+  
   # Date and Time for output
   myDate <- format(Sys.Date(),"%Y%m%d")
   myTime <- format(Sys.time(),"%H%M%S")

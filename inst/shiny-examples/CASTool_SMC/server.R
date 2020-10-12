@@ -473,7 +473,7 @@ shinyServer(function(input, output, session) {
       # warning z-dimension discarded.  "pointDropZ = TRUE" does not remove the warning
       # 2020-09-09, use RDA saved version
       outline <- poly.smc.proj
-      flowline <- poly.smc.proj
+      flowline <- lines.flowline.proj
 
       # Specify user-defined variables
       # Stressors

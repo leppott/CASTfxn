@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9333 (2020-10-10)
+* CASTool
+    + server.R
+        - Modify static map; flow lines used the polygon layer.
+* Map_Leaflet.rmd
+    + Change jpg to png for static map.
+
 ## Changes in Version 0.1.0.9332 (2020-10-01)
 * RPPTool
     + server.R
