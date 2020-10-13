@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-12 15:45:27
+Last Update: 2020-10-13 09:33:32
 
 # Planned Updates
 
@@ -24,6 +24,14 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9334 (2020-10-13)
+
+  - CASTool
+      - server.R
+          - Move Map\_Leaflet.rmd to ‘rmd’ subfolder.
+      - Map\_Leaflet.rmd
+          - Static map, update filename.
 
 ## Changes in Version 0.1.0.9333 (2020-10-10)
 

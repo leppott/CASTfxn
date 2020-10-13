@@ -1014,7 +1014,7 @@ shinyServer(function(input, output, session) {
       message(paste(prog_msg, prog_det, sep = "; "))
       # Get site information for general use (map, sample summary, etc)
       if(boo_Shiny==TRUE){
-        dir_map_rmd <- file.path(".", "external")
+        dir_map_rmd <- file.path(".", "external", "rmd")
       } else {
         dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
       }## IF ~ boo_Shiny ~ END

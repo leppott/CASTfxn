@@ -32,7 +32,7 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Static Map
 ```{r map_jpg, echo=FALSE, eval=TRUE}
 dir.sub3 <- "SiteInfo"
-fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.png"))
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_MAP.png"))
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
