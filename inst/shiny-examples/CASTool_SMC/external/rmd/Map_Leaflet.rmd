@@ -36,9 +36,8 @@ fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_M
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
 } else {
-  print("No static map exists.")
+  cat("No static map exists.")
 }
-
 ```
 
 

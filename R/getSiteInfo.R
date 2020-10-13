@@ -485,14 +485,23 @@ getSiteInfo <- function(TargetSiteID
     sp::plot(map_flowline2, add = TRUE, col=col_flowline, lwd=lwd_flowline)
     }##IF.null.flowline2.END
     # points
-    graphics::points(proj.allSites[,1], proj.allSites[,2]
+    # Not plotting, use unprojected data, 2020-10-13
+    # graphics::points(proj.allSites[,1], proj.allSites[,2]
+    #                  , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
+    # graphics::points(proj.plot.cl[,1], proj.plot.cl[,2]
+    #                  , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
+    # graphics::points(proj.refSites[,1], proj.refSites[,2]
+    #                  , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
+    # graphics::points(proj.mySite[,1], proj.mySite[,2], col=col_sites_targ
+    #                  , pch=pch_sites_targ, cex=cex_sites_targ)
+    graphics::points(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
                      , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
-    graphics::points(proj.plot.cl[,1], proj.plot.cl[,2]
+    graphics::points(df.plot.cl[,"FinalLongitude"], df.plot.cl[,"FinalLatitude"]
                      , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
-    graphics::points(proj.refSites[,1], proj.refSites[,2]
+    graphics::points(data_refSites[,"FinalLongitude"], data_refSites[,"FinalLatitude"]
                      , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
-    graphics::points(proj.mySite[,1], proj.mySite[,2], col=col_sites_targ
-                     , pch=pch_sites_targ, cex=cex_sites_targ)
+    graphics::points(df.plotSite[,"FinalLongitude"], df.plotSite[,"FinalLatitude"]
+                     , col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
     # legend; items not the same size but ok.
     graphics::legend("bottomleft", legend = c("State", "flowline"
                                               , "all sites", "cluster sites"
