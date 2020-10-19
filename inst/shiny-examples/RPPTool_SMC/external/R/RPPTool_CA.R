@@ -18,7 +18,7 @@
 # 2020-09-10, Erik
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-boo_Shiny <- TRUE
+boo_Shiny <- FALSE
 boo_DEBUG <- FALSE
 
     if(boo_Shiny == TRUE){
@@ -53,12 +53,40 @@ boo_DEBUG <- FALSE
     
     # define pipe
     `%>%` <- dplyr::`%>%`
+    # define function for user interaction
+    useStrWtsFile <- function() {
+        msg <- paste("Select stressor weight file to use: "
+                     , paste0("1: Use existing file: ", fn_stresswtsOUT)
+                     , "2: Use another file. "
+                     , "3: Write new file for editing."
+                     , ""
+                     , "If #3, edit the file "
+                     , file.path(data_dir, fn_stresswtsOUT)
+                     , "and run this program again."
+                     , sep = "\n")
+        answer <- readline(prompt=msg)
+        answer <- as.integer(answer)
+        if (answer == 1 | is.null(answer)) {
+            fn_stresswtsIN <- file.path(data_dir,fn_stresswtsOUT)
+        } else if (answer == 2) {
+            response <- readline(prompt="Enter full filename and path: ")
+            fn_stresswtsIN <- response
+            message(paste0("Using ", fn_stresswtsIN))
+        } else {
+            fn_stresswtsIN <- "STOP"
+            write.table(listScaledStr01All$df_allSMCStressInfo
+                        , file.path(data_dir,fn_stresswtsOUT)
+                        , append=FALSE
+                        , col.names=TRUE, row.names=FALSE, sep="\t")
+        }
+        return(fn_stresswtsIN)
+    }
     # not_all_na <- function(x) {!all(is.na(x))}
     
     if (boo_DEBUG==TRUE) {
       TargetCOMIDs=c(17569571, 20325195, 20329746, 20331170, 20331434, 20333052
                      , 22549067, 17562522, 17563304)
-      # TargetCOMIDs = 20325195
+      # TargetCOMIDs = 20331170
     }
     myDate <- lubridate::ymd(lubridate::today())
     myDate <- stringr::str_replace_all(myDate, "-", "")
@@ -95,7 +123,7 @@ boo_DEBUG <- FALSE
     # These are not expected to be user-modified
     fn_numsampsyear   <- file.path(results_dir,"NumStressSamplesByYear.png")
     fn_numbmiyear     <- file.path(results_dir,"NumBioSampsByYear.png")
-    fn_stresswtsOUT   <- file.path(data_dir,"StressorWeights.tab")
+    fn_stresswtsOUT   <- "StressorWeights.tab"
     fn_BCGscores      <- file.path(results_dir,paste0("RPPTool_BCGScores_",myDate
                                                       ,".tab"))
     fn_StressorScores <- file.path(results_dir
@@ -145,7 +173,7 @@ boo_DEBUG <- FALSE
       if (usePrevStressWts) { # User must supply stress weighting file to use
         # fn_stresswtsIN <- ""
       } else {
-        fn_stresswtsIN <- fn_stresswtsOUT # Change only if a copy of the weights file is prepared
+        fn_stresswtsIN <- file.path(data_dir,fn_stresswtsOUT) # Change only if a copy of the weights file is prepared
       }## IF ~ usePrevStressWts ~ END
     }## IF useCASTresults ~ END
     
@@ -282,12 +310,19 @@ boo_DEBUG <- FALSE
           dfStressInfo <- as.data.frame(listScaledStr01All$df_allSMCStressInfo)
           
           # Check for existing stressor weight file #
-          if (usePrevStressWts==TRUE) {
-            if (file.exists("fn_stresswtsOUT")) {
+          # if (usePrevStressWts==TRUE) {
+          dataFiles <- list.files(data_dir)
+            if (fn_stresswtsOUT %in% dataFiles) {
               # Display existing file to user; ask if it should be used
-              fn_stresswtsIN = fn_stresswtsOUT
+                
+                # USER INPUT REQUIRED HERE #
+              fn_stresswtsIN <- useStrWtsFile()
+              if (fn_stresswtsIN=="STOP") {
+                  stop()
+              }
+              
             } else {
-              msg <- "No existing stressor weight in data directory."
+              msg <- "No existing stressor weight file in data directory."
               message(msg)
               write.table(listScaledStr01All$df_allSMCStressInfo
                           , fn_stresswtsOUT
@@ -295,13 +330,12 @@ boo_DEBUG <- FALSE
                           , col.names=TRUE, row.names=FALSE, sep="\t")
             } # end No weight file
             
-          } else { # Do not use existing file
-            
-            write.table(listScaledStr01All$df_allSMCStressInfo
-                        , fn_stresswtsOUT
-                        , append=FALSE
-                        , col.names=TRUE, row.names=FALSE, sep="\t")        
-          } # End check use existing file
+          # } else { # Do not use existing file
+          #   write.table(listScaledStr01All$df_allSMCStressInfo
+          #               , fn_stresswtsOUT
+          #               , append=FALSE
+          #               , col.names=TRUE, row.names=FALSE, sep="\t")        
+          # } # End check use existing file
           
           # Plot number of samples by year, and ask user to select min and max year
           dfStressPlot <- listScaledStr01All$df_allSMCStressVals[,c("StationID_Master"
@@ -337,7 +371,6 @@ boo_DEBUG <- FALSE
       
     }## useCASTresults ~ END
     
-    # USER INPUT REQUIRED HERE #
     # Shiny to display p_barplot; ask user to ID min/max years (inclusive)
     # Shiny to display table of stressors (labels, weights) and ask user
     # to alter weights (allowed values = 0, 1, 2)
@@ -514,8 +547,6 @@ boo_DEBUG <- FALSE
       reach <- dfTargetCOMIDs$TargetCOMID[r]
       userDefOpp <- dfTargetCOMIDs$UserDefinedOpp[r]
 
-      message(paste0("Evaluating connectivity for reach ", reach))
-      
       # 13, Get connected reaches ####
       # Progress, 12
       if(boo_Shiny == TRUE){
@@ -532,6 +563,8 @@ boo_DEBUG <- FALSE
       } else if (dfNetwork$FTYPE[dfNetwork$COMID==reach]=="Coastline") {
           message(paste0(reach," is coastline and will not be evaluated."))
       } else {
+          message(paste0("Evaluating connectivity for reach ", reach))
+          
           dfCxns <- getConnectivity(TargetCOMID = reach
                                     , cxndist_km = cxndist_km
                                     , dfNetwork = dfNetwork
@@ -565,9 +598,7 @@ boo_DEBUG <- FALSE
           
         
           if (nrow(dfCxns)==1) { # Isolated reach in NHDPlus
-              message("No connected reaches.")
-          } else if ((dfCxns$FTYPE[dfCxns$COMID==reach])=="Coastline") {
-              message("Coastline reach.")
+              message(paste0(reach, " has no connected reaches."))
           } else {
               listCxnScores <- getConnectivityScores(TargetCOMID = reach
                                                      , useStressor = useStressorTF
@@ -594,7 +625,7 @@ boo_DEBUG <- FALSE
               write.table(dfCxns, file.path(results_dir,reach,paste0(reach,"_Cxns.tab"))
                           , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
               
-              if (!exists("dfCxnsAll")) {
+              if (!exists("dfCxnsALL")) {
                   dfCxnsALL <- dfCxns
                   dfCxnsALLdetail <- dfConnScoresDetail
               } else {
@@ -697,35 +728,47 @@ boo_DEBUG <- FALSE
          , dfNetworkNoData, myDate, sitecols)
     }
     
+   
     for (r in 1:nrow(dfTargetCOMIDs)) {
       
       TargetReach <- dfTargetCOMIDs$TargetCOMID[r]
-      message(paste0("Generating score graphics for ", TargetReach))
-      # TargetReach = 20331434 # 17562596
-      
-      if (is.na(dfAllScoresSummary$RPPIndex[dfAllScoresSummary$COMID==TargetReach])) {
+
+      if (!(TargetReach %in% dfAllScoresSummary$COMID)) {
           message(paste0("No scores are available for ", TargetReach))
-          next
       } else {
-          # Draw score graphics #
-          drawAllScoresPlot(TargetReach = TargetReach
+        # Draw score graphics
+        message(paste0("Generating score graphics for ", TargetReach))
+        drawAllScoresPlot(TargetReach = TargetReach
                             , allScores = dfAllScoresSummary
                             , dfSiteInfo = dfAllSites
                             , dfStressors = dfWoE
                             , dfStressorInfo = dfStressInfo
-                            , results_dir = results_dir)    
-          
-          message(paste0("Generating maps for ", TargetReach))
-          
-          # Draw maps #
-          leafMap <- getReachMap(dsn_outline = dsn_outline, lyr_outline = lyr_outline
-                                 , dsn_flowline = dsn_flowline, lyr_flowline = lyr_flowline
-                                 , allSites = dfAllSites
-                                 , allCxns = dfCxnsALL
-                                 , allScores = dfAllScoresSummary
-                                 , cxndist_km = cxndist_km
-                                 , TargetCOMID=TargetReach
-                                 , results_dir=results_dir)
+                            , results_dir = results_dir)
+
+        # Draw maps
+        message(paste0("Generating maps for ", TargetReach))
+        leafMap <- getReachMap(dsn_outline = dsn_outline
+                               , lyr_outline = lyr_outline
+                               , dsn_flowline = dsn_flowline
+                               , lyr_flowline = lyr_flowline
+                               , allSites = dfAllSites
+                               , allCxns = dfCxnsALL
+                               , allScores = dfAllScoresSummary
+                               , cxndist_km = cxndist_km
+                               , TargetCOMID=TargetReach
+                               , results_dir=results_dir
+                               , plotLMAP=FALSE)
+        
+        # Write connected reaches score summary table
+        cxnScoresSummary <- dfAllScoresSummary[dfAllScoresSummary$COMID %in% dfCxnsALL$COMID,]
+        targetScoresSummary <- dfAllScoresSummary[dfAllScoresSummary$COMID==TargetReach,]
+        cxnScoresSummary <- rbind(targetScoresSummary, cxnScoresSummary)
+        fn_cxnScoresSummary <- file.path(results_dir,TargetReach
+                                         ,paste0(TargetReach,"_CxnScoresSummary.tab"))
+        write.table(cxnScoresSummary, fn_cxnScoresSummary, append=FALSE
+                    , col.names=TRUE, row.names=FALSE, sep="\t")
+        rm(cxnScoresSummary, targetScoresSummary, fn_cxnScoresSummary)
+        
       }
       
     }## FOR ~ r ~ END

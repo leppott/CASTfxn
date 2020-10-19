@@ -60,22 +60,27 @@ drawAllScoresPlot <- function(TargetReach
                                              ,"_",myTime,".png"))
     rm(myDate, myTime)
     
-    if (is.null(dfStressors)) {
+    if (is.null(dfStressors)){
+        dfReachInfo <- dfSiteInfo %>%
+            dplyr::filter(COMID==TargetReach) %>%
+            dplyr::select(COMID, StationID_Master, FinalLatitude, FinalLongitude) %>%
+            dplyr::mutate(Stressor = "None", Label = "None")
+    } else if (nrow(dfStressors[dfStressors$COMID==TargetReach,])<1) {
         dfReachInfo <- dfSiteInfo %>%
             dplyr::filter(COMID==TargetReach) %>%
             dplyr::select(COMID, StationID_Master, FinalLatitude, FinalLongitude) %>%
             dplyr::mutate(Stressor = "None", Label = "None")
     } else {
         # Get stressor and site info for target reach
-        dfStressors <- merge(dfStressors, dfSiteInfo
+        dfStressors <- merge(dfStressors, dfSiteInfo[dfSiteInfo$COMID==TargetReach,]
                              , by.x=c("StationID_Master", "FinalLatitude", "FinalLongitude")
                              , by.y=c("StationID_Master", "FinalLatitude", "FinalLongitude")
                              , all.y=TRUE)
         dfStressors <- merge(dfStressors, dfStressorInfo[,c("Stressor", "Label")]
                              , by.x="Stressor", by.y="Stressor", all.x=TRUE)
-        dfReachInfo <- dplyr::select(dfStressors, COMID, StationID_Master, FinalLatitude
-                                     , FinalLongitude, Stressor, Label) %>%
-            dplyr::filter(COMID==TargetReach)
+        dfReachInfo <- dplyr::filter(dfStressors, COMID==TargetReach) %>%
+            dplyr::select(COMID, StationID_Master, FinalLatitude
+                                     , FinalLongitude, Stressor, Label)
     }
     
     # Get scores for specified COMID
@@ -307,8 +312,8 @@ drawAllScoresPlot <- function(TargetReach
                                    , gp=grid::gpar(fontsize=8))
         stressorGrob <- grid::textGrob(paste("Stressor(s):"
                                             , stringr::str_wrap(stringr::str_c(strlist
-                                            , collapse="; "), width = 35),"\n")
-                                       , x=0.05, just="left", gp=grid::gpar(fontsize=8))
+                                            , collapse="; "), width = 60),sep="\n")
+                                       , x=0.05, just="left", gp=grid::gpar(fontsize=7))
         rankGrob <- grid::textGrob(paste("Rank:", rank), x=0.05, just="left"
                                    , gp=grid::gpar(fontsize=10, fontface="bold"))
         captionGrob <- grid::textGrob(paste("Green bars represent direct relationships (more is better)."
@@ -321,7 +326,8 @@ drawAllScoresPlot <- function(TargetReach
             ggplot2::theme_void()
         
         p_text <- gridExtra::grid.arrange(reachGrob, siteGrob, stressorGrob
-                                          , rankGrob, ncol=1, nrow=4)
+                                          , rankGrob, ncol=1, nrow=4
+                                          , heights = c(0.2, 0.8, 3.8, 0.2))
         
         p_final <- gridExtra::grid.arrange(p_text, p_RPPIndex, p_subindex
                                            , p_potInds, p_thrInds, p_oppInds

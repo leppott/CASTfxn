@@ -37,6 +37,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9336 (2020-10-19)
+* RPPTool
+    + Update functions.
+    + Move functions from \external to \external\R
+    + server.R
+        - Update skeleton code.
+    + global.R
+        - Update location of sourced functions.
+        - Add source for addMunicipality.R
+    + drawAllScoresPlot.R
+        - Update for if dfWoE is null when not using CAST results.
+
 ## Changes in Version 0.1.0.9335 (2020-10-13)
 * getSiteInfo.R
     + Static map.  Revise "points" references.

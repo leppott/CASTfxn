@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-13 11:05:57
+    #> Last Update: 2020-10-19 14:00:23
 
 # Planned Updates
 
@@ -24,6 +24,19 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9336 (2020-10-19)
+
+  - RPPTool
+      - Update functions.
+      - Move functions from to 
+      - server.R
+          - Update skeleton code.
+      - global.R
+          - Update location of sourced functions.
+          - Add source for addMunicipality.R
+      - drawAllScoresPlot.R
+          - Update for if dfWoE is null when not using CAST results.
 
 ## Changes in Version 0.1.0.9335 (2020-10-13)
 
