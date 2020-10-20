@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-19 14:00:23
+    #> Last Update: 2020-10-20 15:54:37
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9337 (2020-10-20)
+
+  - RPPTool
+      - Modified Calc page to show selected COMID from Stations Map and
+        Reach Map.
 
 ## Changes in Version 0.1.0.9336 (2020-10-19)
 

@@ -41,7 +41,17 @@ shinyServer(function(input, output, session) {
   })##fe_Map~END
   
   output$Selected_COMID4SiteID <- renderText({
-    df.sites.map[df.sites.map[, "StationID_Master"] == input$siteid.select, "COMID_NHD2"]
+    paste0("COMID from Map, Stations: "
+           , df.sites.map[df.sites.map[, "StationID_Master"] == input$siteid.select, "COMID_NHD2"])
+  })
+  
+  output$Selected_COMIDfromMapStations <- renderText({
+    paste0("COMID from Map, Stations: "
+           , df.sites.map[df.sites.map[, "StationID_Master"] == input$siteid.select, "COMID_NHD2"])
+  })
+  
+  output$Selected_COMIDfromMapReach <- renderText({
+    paste0("COMID from Map, Reach = ", input$comid.select)
   })
 
   # output$table_wt_stress_count <- renderTable({

@@ -34,7 +34,9 @@ function(){
                   #, a("Shiny Station ID Selection Map", href="https://leppott.shinyapps.io/CAST_Map_StationID")
                   #, hr()
                   #, a("https://leppott.shinyapps.io/CAST_Map_COMID", href="https://leppott.shinyapps.io/CAST_Map_COMID")
-
+                  , p("COMID selections from maps appear below.")
+                  , p(textOutput("Selected_COMIDfromMapStations"))
+                  , p(textOutput("Selected_COMIDfromMapReach"))
                   , hr()
 
 
@@ -224,6 +226,8 @@ function(){
                              , p("Use the button in the left side bar to save the Results as a single zip file.")
                              #, p("Not active until calculation has finished.")
                              , p("After calculations are finished the results summary will appear below.")
+                             , br()
+                             , p("To zoom in to plots use 'Ctrl' and '+' (on Windows) or browser controls.")
                              , hr()
                              # , fluidRow(column(6, imageOutput("imp_map"))
                              #            , column(6, imageOutput("img_scores"))
