@@ -21,10 +21,10 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     dir_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd"
     localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
-    wd <- setwd(localdir)
-    dir_data <- file.path(wd, "Data")
-    dir_results <- file.path(wd, "Results")
-    printClusterInfo <- TRUE
+    wd <- localdir
+    dir_data <- file.path(localdir, "Data")
+    dir_results <- file.path(localdir, "Results")
+    printClusterInfo <- FALSE
 } else if (boo.debug == TRUE & debug.person == "Erik") {
     library(CASTfxn)
     #gitpath <- file.path(system.file(package = "CASTfxn"), "R")
@@ -1403,10 +1403,10 @@ for (site in 1:nrow(df_targets)) {
 
 rm(site)
 
+# getSummaryAllSites ####
 getSummaryAllSites(biocommlist = c("bmi", "algae")
                    , bmiIndex = "CSCI"
                    , algIndex = "MMIhybrid"
-
                    , dir_data = dir_data
                    , dir_results = dir_results
                    , dir_sub = "WoE"
