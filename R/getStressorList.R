@@ -146,7 +146,7 @@ getStressorList <- function(TargetSiteID
                             , dir_sub="CandidateCauses"
                             , boo_plot = TRUE) {##FUNCTION.START
   # DEBUGGING ####
-  boo.DEBUG <- FALSE
+  boo.DEBUG <- TRUE
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     g <- 1
@@ -206,26 +206,41 @@ getStressorList <- function(TargetSiteID
   # Works with Shiny server
   if (Sys.getenv('SHINY_PORT')!=""){ # Running on Shiny server
       is_local <- FALSE
+      wd <- "."
+      dir.sub <- basename(dir_results)
   } else {
       is_local <- TRUE
+      dir.sub <- dir_results
   }
-  wd <- "."
-  dir.sub <- basename(dir_results)
+  # wd <- "."
+  # dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   dir.sub3 <- biocomm
   dir.sub4 <- dir_sub
   
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2))
-         , FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
-         , FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
-         , FALSE)
-  
-  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  if (!is_local) { # Is shiny
+      ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+             , dir.create(file.path(wd, dir.sub, dir.sub2))
+             , FALSE)
+      ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+             , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
+             , FALSE)
+      ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+             , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+             , FALSE)
+      dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  } else {
+      ifelse(!dir.exists(file.path(dir.sub, dir.sub2))==TRUE
+             , dir.create(file.path(dir.sub, dir.sub2))
+             , FALSE)
+      ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3))==TRUE
+             , dir.create(file.path(dir.sub, dir.sub2, dir.sub3))
+             , FALSE)
+      ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+             , dir.create(file.path(dir.sub, dir.sub2, dir.sub3, dir.sub4))
+             , FALSE)
+      dir_path <- file.path(dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  }
 
   # First 2 columns are ChemSampID and StationID_Master
   clusterChemData <- clusterChem[4:ncol(clusterChem)]
