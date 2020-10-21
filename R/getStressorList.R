@@ -498,34 +498,35 @@ getStressorList <- function(TargetSiteID
           
           #
           if(!is_local){message(p_SL)}
-          plots.g[[g]] <- grDevices::recordPlot()
+          # ENABLE THIS LATER
+          # plots.g[[g]] <- grDevices::recordPlot()
           #
           # fn_title <- make.names(groupnames[g,])
           fn_title <- stringr::str_to_title(str_Group)
           fn_title <- gsub("\\s","",fn_title)
           fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
                                                 , "_CandCauses_", fn_title, plot_ext))
-          # fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_PossStressors_"
-          #                                       , make.names(groupnames[g,]), plot_ext))
-          if(boo_plot){
-            ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
-          }## IF ~ boo_plot ~ END
+          # if(boo_plot){
+          #   ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
+          # }## IF ~ boo_plot ~ END
+          ggplot2::ggsave(fn_plot, p_SL, width=plot_W, height=plot_H, units="in")
       }##IF.boo_plot==TRUE
     }##IF.n.END
   }##FOR.g.END
   
   # PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
-                                       ,"CandCauses_ALL.pdf"))
-  grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
-    for (i in plots.g){##FOR.gp.START
-      #grDevices::replayPlot(g.plot)
-      if(is.null(i)==TRUE) {next}
-      grDevices::replayPlot(i)
-    }##FOR.gp.END
-  grDevices::dev.off()
-  rm(plots.g)
+  # ENABLE THIS LATER
+  # fn_pdf <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
+  #                                      ,"CandCauses_ALL.pdf"))
+  # grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
+  #   for (i in plots.g){##FOR.gp.START
+  #     #grDevices::replayPlot(g.plot)
+  #     if(is.null(i)==TRUE) {next}
+  #     grDevices::replayPlot(i)
+  #   }##FOR.gp.END
+  # grDevices::dev.off()
+  # rm(plots.g)
 
   # Percentile Data File ####
   if (nrow(clusterChem)>1) { # more than one sample from target site exists for cluster
