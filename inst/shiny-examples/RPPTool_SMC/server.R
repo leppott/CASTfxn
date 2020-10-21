@@ -51,7 +51,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$Selected_COMIDfromMapReach <- renderText({
-    paste0("COMID from Map, Reach = ", input$comid.select)
+    paste0("COMID from Map, Reach: ", input$comid.select)
   })
 
   # output$table_wt_stress_count <- renderTable({
@@ -2536,9 +2536,32 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }## IF ~ END
   }, deleteFile = FALSE
-  )## output$report_img ~ END
+  )## output$img_map ~ END
   
+  img_map_ConnReach <- reactive({
+    TargetCOMID <- input$COMID_RPP
+    #TargetCOMID <- "20331434"
+    fn_png <- list.files(path = file.path(".", "Results", TargetCOMID)
+                         , pattern = "ConnectedReaches")
+    fn_png_latest <- fn_png[length(fn_png)]
+    pn_png <- normalizePath(file.path(".", "Results", TargetCOMID, fn_png_latest))
+    #
+  })## img_map_ConnReach
   
+  output$img_map_cxns <- renderImage({
+    #
+    if(file.exists(img_map_ConnReach())){
+      return(list(
+        src = img_map_ConnReach()
+        , contentType = "image/png"
+        , width = img_width
+        , alt = "map connected reaches"
+      ))#return~END
+    } else {
+      return(NULL)
+    }## IF ~ END
+  }, deleteFile = FALSE
+  )## output$img_map_cxns ~ END
   
 
   # output$downloadData <- downloadHandler(

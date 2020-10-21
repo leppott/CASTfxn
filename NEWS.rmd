@@ -37,9 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9338 (2020-10-21)
+* RPPTool
+    + Add Connections map to results.  It has background and labels for each reach.
+    + Tweak calc tab text for Reach Map COMID.
+    + Results tab; add extra lines after images to avoid overlap.
+
 ## Changes in Version 0.1.0.9337 (2020-10-20)
 * RPPTool
-    + Modified Calc page to show selected COMID from Stations Map and Reach Map.
+    + Modified Calc tab to show selected COMID from Stations Map and Reach Map.
 
 ## Changes in Version 0.1.0.9336 (2020-10-19)
 * RPPTool
