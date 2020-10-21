@@ -51,7 +51,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
     
     if(boo_DEBUG==TRUE) {
         message("DEBUG = TRUE")
-        wd = dir_data #"C:/Users/ann.lincoln/Documents/SEP_CAST"
+        wd = localdir #"C:/Users/ann.lincoln/Documents/SEP_CAST"
         biocommlist = toupper(c("bmi", "algae"))
         bmiIndex = "CSCI"
         algIndex = "MMIhybrid"
@@ -89,7 +89,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 } else { 
                     bioIndex = algIndex
                 }## FOR ~ biocomm ~ END
-                message(paste0("b = ", b))
+                # message(paste0("b = ", b))
                 message(paste0("bioIndex = ", bioIndex))
                 
                 # Get WoE path & file lists (under TargetSiteID)
@@ -97,9 +97,9 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 woe_detailfiles <- list.files(woe_path, pattern = "WoE_ScoresTable")
                 woe_stressfiles <- list.files(woe_path, pattern = "WoE_ExecSummary")
                 
-                message(paste0("woe_path = ", woe_path))
-                message(paste0("woe_detailfiles = ", woe_detailfiles))
-                message(paste0("woe_stressfiles = ", woe_stressfiles))
+                # message(paste0("woe_path = ", woe_path))
+                # message(paste0("woe_detailfiles = ", woe_detailfiles))
+                # message(paste0("woe_stressfiles = ", woe_stressfiles))
                 
                 # If there are no files matching criteria, move on
                 # If there are one or more (for each biocomm), read them
@@ -141,7 +141,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                             #if(!exists("df_strBiocomm")){
                             df_strBiocomm <- df_stress
                         } else {
-                            df_strBiocomm <- rbind(sd_strBiocomm, df_stress)
+                            df_strBiocomm <- rbind(df_strBiocomm, df_stress)
                         }
                     }## FOR ~ dfile ~ END
                 }## IF ~ length(woe_stressfiles)==0 ~ END
@@ -155,8 +155,8 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 #   df_detSite <- rbind(df_detSite, df_detBiocomm)
                 #   df_strSite <- rbind(df_strSite, df_strBiocomm)
                 # }## IF ~ b ~ END
-                message(paste0("exists('df_detSite' = ", exists("df_detSite")))
-                message(paste0("exists('df_strSite' = ", exists("df_strSite")))
+                # message(paste0("exists('df_detSite' = ", exists("df_detSite")))
+                # message(paste0("exists('df_strSite' = ", exists("df_strSite")))
                 
                 if(!exists("df_detSite")){
                     df_detSite <- df_detBiocomm
@@ -170,24 +170,22 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                     df_strSite <- rbind(df_strSite, df_strBiocomm)
                 }## IF ~ exists("df_strSite) ~ END
                 
-                
-                
             }## FOR ~ b ~ END # Process individual biocomm for an individual site
             
             # Combine results for each site into one dataframe
-            if (site==1) {
-                df_detAllSites <- df_detSite
-                df_strAllSites <- df_strSite
-            } else {
-                df_detAllSites <- rbind(df_detAllSites, df_detSite)
-                df_strAllSites <- rbind(df_strAllSites, df_strSite)
-            }## IF ~ site==1 ~ END
-            
+            # if (site==1) {
+            #     df_detAllSites <- df_detSite
+            #     df_strAllSites <- df_strSite
+            # } else {
+            #     df_detAllSites <- rbind(df_detAllSites, df_detSite)
+            #     df_strAllSites <- rbind(df_strAllSites, df_strSite)
+            # }## IF ~ site==1 ~ END
+
         }## FOR ~ site ~ END # Finish iterate through sites in results folder
         
         
         # Merge with site data to get latitude and longitude
-        message("getSummaryAllSites, xx, merge lat-long data")
+        # message("getSummaryAllSites, xx, merge lat-long data")
         if (is.null(df_sites)==TRUE) {
             fn.Sites.Info <- file.path(dir_data,"SMCSitesFinal.tab")
             fn.sites <- fn.Sites.Info
@@ -196,11 +194,11 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         }## IF ~ is.null(df_sites)==TRUE) ~ END
         
         # WoE Summary ####
-        message("getSummaryAllSites, xx, WoE Summary")
+        message("getSummaryAllSites, 03, WoE Summary")
         df_SitesLatLong <- df_sites[,c("StationID_Master", "FinalLatitude"
                                        , "FinalLongitude", "clust")]
         
-        df_WoEDetails <- merge(df_detAllSites, df_SitesLatLong
+        df_WoEDetails <- merge(df_detSite, df_SitesLatLong
                                , by.x = c("StationID_Master", "Cluster")
                                , by.y = c("StationID_Master", "clust"))
         
@@ -227,9 +225,10 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                           , VP_boxplot_senstaxa
                           , VP_boxplot_toltaxa
                           , SSD_ToxicityCurve)
+        df_WoEDetails <- unique(df_WoEDetails)
         
         
-        df_WoESummary <- merge(df_SitesLatLong, df_strAllSites
+        df_WoESummary <- merge(df_SitesLatLong, df_strSite
                                , by.x = "StationID_Master"
                                , by.y = "StationID_Master")
         
@@ -258,12 +257,13 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                           , Overall_WoE = WtTot_WoE) %>%
             dplyr::arrange(StationID_Master, desc(BioComm)
                            , desc(BioDeg), StressorType)
+        df_WoESummary <- unique(df_WoESummary)
         
     }## FOR ~ !dir.exists(file.path(dir_results))==TRUE ~ END
     # Finish iterate through site directories loop
     
     # Clean Up ####
-    message("getSummaryAllSites, xx, clean up")
+    # message("getSummaryAllSites, xx, clean up")
     myDate <- lubridate::ymd(lubridate::today())
     myDate <- stringr::str_replace_all(myDate, "-", "")
     fnES <- file.path(dir_results, paste0("OverallWoESummary_"
