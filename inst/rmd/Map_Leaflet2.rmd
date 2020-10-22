@@ -1,0 +1,119 @@
+---
+title: "Map, Leaflet"
+subtitle: "CAST"
+author: "`r Sys.getenv('USERNAME')`"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: true
+---
+
+<!-- #  Copyright 2020 TetraTech. All rights reserved. -->
+<!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
+<!-- #  is expressly prohibited without prior written permission of TetraTech. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+#TargetSiteID <- "SRCKN001.61"
+# dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
+#~~~~~~~~~~~~~~~~~
+# from getSiteInfo()
+# data_Sites
+# data_cluster       <- data_Cluster_Hi
+# all.map.sites <- merge(data_Sites, data_cluster, by.x = "COMID_NHD2", by.y = "COMID")
+```
+
+# Static Map
+```{r map_jpg, echo=FALSE, eval=TRUE}
+dir.sub3 <- "SiteInfo"
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.png"))
+if(file.exists(fn_img)==TRUE){
+  knitr::include_graphics(fn_img)
+} else {
+  print("No static map exists.")
+}
+
+```
+
+
+# Interactive Map
+
+```{r map_leaflet, echo=FALSE, eval=TRUE}
+
+'%>%' <- dplyr::'%>%'
+
+# Leaflet
+
+# Data
+
+    lmap <- leaflet::leaflet(data = sp_outline) %>%
+        leaflet::addProviderTiles(leaflet::providers$Stamen.Terrain) %>%
+        # Groups, Overlay
+        leaflet::addPolygons(data = sp_outline, color="black", fill = "transparent") %>%
+        leaflet::addPolylines(data = sp_flowline # All reaches
+                              , color = "#2687D1"
+                              # , group = "All streams"
+                              , opacity = 0.8
+                              , weight = 1.5) %>%
+        leaflet::addCircleMarkers(data=sp_sites # All Sites
+                                  , group = "All sites"
+                                  , color = "#3B3846"
+                                  , fillColor = "#3B3846"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8
+                                  , opacity = 0.6
+                                  , popup = ~StationID_Master) %>%
+        leaflet::addCircleMarkers(data=sp_clustsites # Cluster Sites
+                                  , group = "Cluster sites"
+                                  , color = "#00CDCD"
+                                  , fillColor = "#00CDCD"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8
+                                  , opacity = 0.6
+                                  , popup = ~StationID_Master) %>%
+        leaflet::addCircleMarkers(data=sp_refsites # Reference Sites
+                                  , group = "Reference sites"
+                                  , color = "#0000CC"
+                                  , fillColor = "transparent"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 2
+                                  # , fillOpacity = 0.8
+                                  , opacity = 0.6
+                                  , popup = ~StationID_Master) %>%
+        leaflet::addCircleMarkers(data=sp_targetsite # Target Site
+                                  , group = "Target site"
+                                  , color = "#FF0000"
+                                  , fillColor = "#FF0000"
+                                  , radius = 6
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8
+                                  , opacity = 1) %>%
+
+       # Add Layer Control
+        leaflet::addLayersControl(
+            baseGroups = "Terrain"
+            , overlayGroups = c("All sites","Cluster sites","Reference sites"
+                                , "Target site")
+            , options = leaflet::layersControlOptions(collapsed = TRUE
+                                                      , autoZIndex = TRUE)) %>%
+        leaflet::addMiniMap("bottomleft")
+    
+    lmap
+    
+# # save widget              
+# library(htmlwidgets)
+# fn_map_leaflet <- file.path(getwd(), "Results", TargetSiteID, paste0(TargetSiteID,".map.leaflet.html"))
+# htmlwidgets::saveWidget(m1, fn_map_leaflet)
+```
