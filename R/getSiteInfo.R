@@ -139,14 +139,14 @@ getSiteInfo <- function(TargetSiteID
                         , comp_sites=NULL
                         , data_cluster
                         , data_mods=NULL
-                        , map_proj=NULL
-                        , map_outline=NULL
-                        , map_flowline=NULL
-                        , map_flowline2=NULL
+                        # , map_proj=NULL
+                        # , map_outline=NULL
+                        # , map_flowline=NULL
+                        # , map_flowline2=NULL
                         , dir_photo = file.path(dir_data,"Photos")
                         , dir_results = dir_results
                         , dir_sub = "SiteInfo"
-                        , dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+                        # , dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                         , boo_plot = TRUE
                         ){
     #
@@ -169,8 +169,8 @@ getSiteInfo <- function(TargetSiteID
         data_cluster = data_cluster
         data_mods = NULL
         map_proj = my.aea
-        map_outline = outline
-        map_flowline = flowline
+        map_outline = sp_outline
+        map_flowline = sp_flowline
         map_flowline2 = NULL
         dir_photo = file.path(dir_data,"Photos")
         dir_results = dir_results
@@ -206,6 +206,7 @@ getSiteInfo <- function(TargetSiteID
     ## Plot, Variables, Output Size (inches)
     plot_H <- 4
     plot_W <- 6
+    ppi <- 300
     
     #
     mySiteInfo <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID
@@ -371,11 +372,12 @@ getSiteInfo <- function(TargetSiteID
                                           "FINAL.LISTING.DECISION")]
     }
 
-    all.map.sites <- merge(data_Sites, data_cluster
-                     , by.x = c("COMID","clust")
-                     , by.y = c("COMID","clust"))
-    df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
-                            , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
+# ++++++++++++   START OLD CODE   +++++++++++++++++++++++++    
+    # all.map.sites <- merge(data_Sites, data_cluster
+    #                  , by.x = c("COMID","clust")
+    #                  , by.y = c("COMID","clust"))
+    # df.plot.cl <- all.map.sites[all.map.sites[,"clust"]==myClustID
+    #                         , c("FinalLatitude", "FinalLongitude", "CARefSite_2017")]
     
     # Read spatial layers for background
     
@@ -398,163 +400,133 @@ getSiteInfo <- function(TargetSiteID
     # map_proj <- my.aea
     
     
-    df.plotSite <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID,]
-    
-    proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"],
-                            df.plotSite[,"FinalLatitude"]), map_proj)
-    proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"],
-                            df.plot.cl[,"FinalLatitude"]), map_proj)
-    proj.refSites <- rgdal::project(cbind(data_refSites[,"FinalLongitude"],
-                            data_refSites[,"FinalLatitude"]), map_proj)
-    proj.allSites <- rgdal::project(cbind(data_Sites[,"FinalLongitude"],
-                            data_Sites[,"FinalLatitude"]), map_proj)
+    # df.plotSite <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID,]
+    # 
+    # proj.mySite <- rgdal::project(cbind(df.plotSite[,"FinalLongitude"],
+    #                         df.plotSite[,"FinalLatitude"]), map_proj)
+    # proj.plot.cl <- rgdal::project(cbind(df.plot.cl[,"FinalLongitude"],
+    #                         df.plot.cl[,"FinalLatitude"]), map_proj)
+    # proj.refSites <- rgdal::project(cbind(data_refSites[,"FinalLongitude"],
+    #                         data_refSites[,"FinalLatitude"]), map_proj)
+    # proj.allSites <- rgdal::project(cbind(data_Sites[,"FinalLongitude"],
+    #                         data_Sites[,"FinalLatitude"]), map_proj)
     # Unprojected data
     
     
     # plot map
-    ppi <- 300
-    
-    col_outline <- "black"
-    col_flowline <- "light blue"
-    col_sites_all <- "dark gray"
-    col_sites_cl  <- "cyan3"
-    col_sites_ref <- "blue"
-    col_sites_targ <- "red"
-    
-    pch_sites_all  <- 19
-    pch_sites_cl   <- 19
-    pch_sites_ref  <- 21
-    pch_sites_targ <- 17
-    
-    cex_sites_all  <- 0.3
-    cex_sites_ref  <- 0.9
-    cex_sites_cl   <- 1
-    cex_sites_targ <- 1.2
-    
-    lwd_outline  <- 1.5
-    lwd_flowline <- 0.5
-    
-    #fn_jpg <- paste0("Results/",TargetSiteID, "/", TargetSiteID, ".map.jpg")
-    fn_map <- file.path(dir_path, paste0(TargetSiteID, "_MAP.png"))
-    
-    grDevices::png(filename = fn_map, width = 4*ppi, height = 4*ppi, pointsize = 6,
-              bg="white", res=ppi)
-    if(is.null(map_proj)==TRUE){##IF.map_proj.START
-    # map with no projection
-    graphics::plot(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
-       , main=TargetSiteID, xlab="Longitude", ylab="Latitude"
-       , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all
-       )
-    # points
-    graphics::points(df.plot.cl[,"FinalLongitude"]
-                     , df.plot.cl[,"FinalLatitude"]
-                     , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_cl)
-    graphics::points(data.refSites[,"FinalLongitude"]
-                     , data.refSites[,"FinalLatitude"]
-                     , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_ref)
-    graphics::points(df.plotSite[,"FinalLongitude"]
-                     , df.plotSite[,"FinalLatitude"]
-                     , col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
-    # Legend (no flow line)
-    graphics::legend("bottomleft", legend = c("State", "all sites"
-                                              , "cluster sites", "ref sites"
-                                              , "target site")
-                   , col = c(col_outline, col_sites_all, col_sites_cl
-                             , col_sites_ref, col_sites_targ)
-                   , lty = c(1, rep(NA, 4))
-                   , pch = c(NA, pch_sites_all, pch_sites_cl, pch_sites_ref
-                             , pch_sites_targ)
-                   , title = "Legend")
-    #
-    # ggplot alternative (draft)
-    # m0 <- ggplot2::ggplot(data_Sites, ggplot2::aes(FinalLongitude, FinalLatitude)) +
-    #         ggplot2::geom_point(data=data_Sites, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
-    #         ggplot2::geom_point(data=df.plot.cl, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_cl, color=col_sites_cl) +
-    #         ggplot2::geom_point(data=data.refSites, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_ref, color=col_sites_ref) +
-    #         ggplot2::geom_point(data=df.plotSite, aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_targ, color=col_sites_targ) +
-    #         ggplot2::labs(title=TargetSiteID, x="Longitude", y="Latitude") +
-    #         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
-    #
-    } else {
-    # Map with Projection
-    # lines
-    sp::plot(map_outline, col="white", border=col_outline, lwd=lwd_outline
-             , main=TargetSiteID)
-    sp::plot(map_flowline, add = TRUE, col=col_flowline, lwd=lwd_flowline)
-    if(!is.null(map_flowline2)==TRUE){##IF.null.flowline2.START
-    sp::plot(map_flowline2, add = TRUE, col=col_flowline, lwd=lwd_flowline)
-    }##IF.null.flowline2.END
-    # points
-    # Not plotting, use unprojected data, 2020-10-13
-    # graphics::points(proj.allSites[,1], proj.allSites[,2]
-    #                  , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
-    # graphics::points(proj.plot.cl[,1], proj.plot.cl[,2]
-    #                  , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
-    # graphics::points(proj.refSites[,1], proj.refSites[,2]
-    #                  , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
-    # graphics::points(proj.mySite[,1], proj.mySite[,2], col=col_sites_targ
-    #                  , pch=pch_sites_targ, cex=cex_sites_targ)
-    graphics::points(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
-                     , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
-    graphics::points(df.plot.cl[,"FinalLongitude"], df.plot.cl[,"FinalLatitude"]
-                     , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
-    graphics::points(data_refSites[,"FinalLongitude"], data_refSites[,"FinalLatitude"]
-                     , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
-    graphics::points(df.plotSite[,"FinalLongitude"], df.plotSite[,"FinalLatitude"]
-                     , col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
-    # legend; items not the same size but ok.
-    graphics::legend("bottomleft", legend = c("State", "flowline"
-                                              , "all sites", "cluster sites"
-                                              , "ref sites", "target site")
-                           , col = c(col_outline, col_flowline, col_sites_all
-                                     , col_sites_cl, col_sites_ref, col_sites_targ)
-                           , lty = c(1, 1,  rep(NA, 4))
-                           , pch = c(NA, NA, pch_sites_all, pch_sites_cl
-                                     , pch_sites_ref, pch_sites_targ)
-                           , title = "Legend")
-    # ggplot help with projections
-    # http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/
-    #
-    # m1 <- ggplot2::ggplot() + 
-    #         ggplot2::geom_polygon(data=map_outline, ggplot2::aes(x=long, y=lat), fill="white", color=col_outline) +
-    #         ggplot2::labs(title=TargetSiteID, x="", y="") +
-    #         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
-    #                        , axis.ticks.x = element_blank(), axis.text.x = element_blank()
-    #                        , axis.ticks.y = element_blank(), axis.text.y = element_blank()
-    #                        , panel.grid.major = element_blank(), panel.grid.minor = element_blank()
-    #                        , panel.background = element_blank()) +
-    #         ggplot2::geom_line(data=map_flowline, ggplot2::aes(x=long, y=lat, group=group), col=col_flowline) + 
-    #         ggplot2::geom_line(data=map_flowline2, ggplot2::aes(x=long, y=lat, group=group), col=col_flowline) + 
-    #         coord_equal(ratio=1) +  #square plot to avoid distortion
-    #   
-    #   # Good to here
-    #         ggplot2::geom_point(data=proj.allSites, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_all, color=col_sites_all ) +
-    #         ggplot2::geom_point(data=proj.plot.cl, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_cl, color=col_sites_cl) +
-    #         ggplot2::geom_point(data=proj.refSites, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_ref, color=col_sites_ref) +
-    #         ggplot2::geom_point(data=proj.mySite, ggplot2::aes(x=FinalLongitude, y=FinalLatitude), size=cex_sites_targ, color=col_sites_targ)
-    # # will need to use ggsave()
-    #
-    }##IF.map_proj.END
-    grDevices::dev.off()
-    
-    #
-    # Leaflet Map in Notebook
-    report_format <- "html"
-    #dir_rmd <- file.path(system.file(package = "CASTfxn"), "rmd")
-    #strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
-    #strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
-    strFile_out_ext <- paste0(".", report_format)
-    strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
-    # dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
-    
-    rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet.rmd")
-                      , output_format=paste0(report_format,"_document")
-                      , output_file=strFile_out
-                      , output_dir=dir_path
-                      , quiet=TRUE)
+#     ppi <- 300
+#     
+#     col_outline <- "black"
+#     col_flowline <- "light blue"
+#     col_sites_all <- "dark gray"
+#     col_sites_cl  <- "cyan3"
+#     col_sites_ref <- "blue"
+#     col_sites_targ <- "red"
+#     
+#     pch_sites_all  <- 19
+#     pch_sites_cl   <- 19
+#     pch_sites_ref  <- 21
+#     pch_sites_targ <- 17
+#     
+#     cex_sites_all  <- 0.3
+#     cex_sites_ref  <- 0.9
+#     cex_sites_cl   <- 1
+#     cex_sites_targ <- 1.2
+#     
+#     lwd_outline  <- 1.5
+#     lwd_flowline <- 0.5
+#     
+#     #fn_jpg <- paste0("Results/",TargetSiteID, "/", TargetSiteID, ".map.jpg")
+#     fn_map <- file.path(dir_path, paste0(TargetSiteID, "_MAP.png"))
+#     
+#     grDevices::png(filename = fn_map, width = 4*ppi, height = 4*ppi, pointsize = 6,
+#               bg="white", res=ppi)
+#     if(is.null(map_proj)==TRUE){##IF.map_proj.START
+#     # map with no projection
+#     graphics::plot(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
+#        , main=TargetSiteID, xlab="Longitude", ylab="Latitude"
+#        , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all
+#        )
+#     # points
+#     graphics::points(df.plot.cl[,"FinalLongitude"]
+#                      , df.plot.cl[,"FinalLatitude"]
+#                      , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_cl)
+#     graphics::points(data.refSites[,"FinalLongitude"]
+#                      , data.refSites[,"FinalLatitude"]
+#                      , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_ref)
+#     graphics::points(df.plotSite[,"FinalLongitude"]
+#                      , df.plotSite[,"FinalLatitude"]
+#                      , col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
+#     # Legend (no flow line)
+#     graphics::legend("bottomleft", legend = c("State", "all sites"
+#                                               , "cluster sites", "ref sites"
+#                                               , "target site")
+#                    , col = c(col_outline, col_sites_all, col_sites_cl
+#                              , col_sites_ref, col_sites_targ)
+#                    , lty = c(1, rep(NA, 4))
+#                    , pch = c(NA, pch_sites_all, pch_sites_cl, pch_sites_ref
+#                              , pch_sites_targ)
+#                    , title = "Legend")
+#     #
+#     } else {
+#     # Map with Projection
+#     # lines
+#     sp::plot(map_outline, col="white", border=col_outline, lwd=lwd_outline
+#              , main=TargetSiteID)
+#     sp::plot(map_flowline, add = TRUE, col=col_flowline, lwd=lwd_flowline)
+#     if(!is.null(map_flowline2)==TRUE){##IF.null.flowline2.START
+#     sp::plot(map_flowline2, add = TRUE, col=col_flowline, lwd=lwd_flowline)
+#     }##IF.null.flowline2.END
+#     # points
+#     # Not plotting, use unprojected data, 2020-10-13
+#     # graphics::points(proj.allSites[,1], proj.allSites[,2]
+#     #                  , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
+#     # graphics::points(proj.plot.cl[,1], proj.plot.cl[,2]
+#     #                  , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
+#     # graphics::points(proj.refSites[,1], proj.refSites[,2]
+#     #                  , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
+#     # graphics::points(proj.mySite[,1], proj.mySite[,2], col=col_sites_targ
+#     #                  , pch=pch_sites_targ, cex=cex_sites_targ)
+#     graphics::points(data_Sites[,"FinalLongitude"], data_Sites[,"FinalLatitude"]
+#                      , col=col_sites_all, pch=pch_sites_all, cex=cex_sites_all)
+#     graphics::points(df.plot.cl[,"FinalLongitude"], df.plot.cl[,"FinalLatitude"]
+#                      , col=col_sites_cl, pch=pch_sites_cl, cex=cex_sites_ref)
+#     graphics::points(data_refSites[,"FinalLongitude"], data_refSites[,"FinalLatitude"]
+#                      , col=col_sites_ref, pch=pch_sites_ref, cex=cex_sites_cl)
+#     graphics::points(df.plotSite[,"FinalLongitude"], df.plotSite[,"FinalLatitude"]
+#                      , col=col_sites_targ, pch=pch_sites_targ, cex=cex_sites_targ)
+#     # legend; items not the same size but ok.
+#     graphics::legend("bottomleft", legend = c("State", "flowline"
+#                                               , "all sites", "cluster sites"
+#                                               , "ref sites", "target site")
+#                            , col = c(col_outline, col_flowline, col_sites_all
+#                                      , col_sites_cl, col_sites_ref, col_sites_targ)
+#                            , lty = c(1, 1,  rep(NA, 4))
+#                            , pch = c(NA, NA, pch_sites_all, pch_sites_cl
+#                                      , pch_sites_ref, pch_sites_targ)
+#                            , title = "Legend")
+#     #
+#     }##IF.map_proj.END
+#     grDevices::dev.off()
+#     #
+#     # Leaflet Map in Notebook
+#     report_format <- "html"
+#     #dir_rmd <- file.path(system.file(package = "CASTfxn"), "rmd")
+#     #strFile_RMD <- file.path(dir_rmd, "Map_Leaflet.rmd")
+#     #strFile_RMD <- file.path(file.path(system.file(package = "CASTfxn"), "rmd"), "Map_Leaflet.rmd")
+#     strFile_out_ext <- paste0(".", report_format)
+#     strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
+#     # dir_map <- file.path(dir_results, TargetSiteID, dir_sub3)
+#     
+#     rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet.rmd")
+#                       , output_format=paste0(report_format,"_document")
+#                       , output_file=strFile_out
+#                       , output_dir=dir_path
+#                       , quiet=TRUE)
 
     # place after static map so can insert
-    
+#     
+# # ++++++++++++   END OLD CODE   +++++++++++++++++++++++++    
     
     # Check for presence of Photos in data directory. If not present, skip.
     if (dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0) {
