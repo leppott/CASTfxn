@@ -95,10 +95,10 @@ if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
   cat(paste("**Site ID:** ",TargetSiteID,"\n\n",sep=""))
 ```
 
-```{r map, out.width="70%"}
+```{r map, out.width="80%"}
 dir.sub3 <- "SiteInfo"
 #TargetSiteID <- "SRCKN001.61"
-myMAP <- paste0(TargetSiteID,"_MAP.png")
+myMAP <- paste0(TargetSiteID,"_map.png")
 fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, myMAP)
 if(file.exists(fn_img)==TRUE){
   knitr::include_graphics(fn_img)
@@ -615,7 +615,7 @@ if(useBMI==TRUE){
     }
 
 } else {
-    cat(paste0("No benthic macroinvertebrate dataare available for ", TargetSiteID,".\n"))
+    cat(paste0("No benthic macroinvertebrate data are available for ", TargetSiteID,".\n"))
 }
 
 ```
@@ -641,7 +641,7 @@ if(useBMI==TRUE){
         dfbcdist <- dfbcdist %>%
             dplyr::select(StationID_Master, Comment) %>%
             dplyr::group_by(Comment) %>%
-            dplyr::summarise(NumSites = n())
+            dplyr::summarise(NumSites = n(), .groups="drop_last")
         
         numLTEQ <- dfbcdist %>%
             dplyr::filter(grepl("LTEQ",Comment)) %>%
@@ -701,7 +701,7 @@ if(useBMI==TRUE){
             dplyr::mutate(RespSampFlag = ifelse(is.na(RespSampFlag)
                                                 , "No flags", RespSampFlag)) %>%
             dplyr::group_by(RespSampFlag, Quality) %>%
-            dplyr::summarise(NumSamps = n()) %>%
+            dplyr::summarise(NumSamps = n(), .groups="drop_last") %>%
             tidyr::spread(key = Quality, value = NumSamps) %>%
             dplyr::rename(BMISampFlag = RespSampFlag)
         
