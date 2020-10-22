@@ -62,6 +62,7 @@ if (boo.debug==TRUE & debug.person == "Ann") {
     source(file.path(gitpath, "getDataSets.R"))
     source(file.path(gitpath, "getComparators.R"))
     source(file.path(gitpath, "getSiteInfo.R"))
+    source(file.path(gitpath, "getSiteMap.R"))
     source(file.path(gitpath, "getClusterInfo.R"))
     source(file.path(gitpath, "getStressorList.R"))
     source(file.path(gitpath, "getCoOccur.R"))
@@ -120,8 +121,23 @@ fn.clusterinfo <- file.path(dir_data,"SMCClusterInfo.tab")
 fn.bkgdata <- file.path(dir_data, "SMCSiteBkgdData.tab")
 fn.bkginfo <- file.path(dir_data, "SMCSiteBkgdInfo.tab")
 
-outline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCBoundary"), layer = "SMCBoundary_aea")
-flowline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCReaches"), layer = "SMCReaches_aea")
+# outline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCBoundary"), layer = "SMCBoundary_aea")
+# flowline <- rgdal::readOGR(dsn = file.path(dir_data,"SMCReaches"), layer = "SMCReaches_aea")
+dsn_outline         <- file.path(dir_data,"SMCBoundary")
+lyr_outline         <- "SMCBoundary"
+dsn_flowline        <- file.path(dir_data,"SMCReaches")
+lyr_flowline        <- "SMCReaches"
+
+# Get boundary file for desired region ####
+sp_outline <- sf::read_sf(dsn = file.path(dsn_outline)
+                          , layer = lyr_outline) %>%
+    sf::st_transform(crs=4326) # EPSG identifier for WGS84
+
+# Get all flowlines ####
+sp_flowline <- sf::read_sf(dsn=file.path(dsn_flowline)
+                           , layer=lyr_flowline) %>%
+    sf::st_transform(crs=4326) %>%
+    sf::st_zm(drop=TRUE, what="ZM")
 
 # Specify user-defined variables
 # Stressors
@@ -457,9 +473,10 @@ write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
 
 ### Evaluate each target site
 ## Use this for debugging, and don't run the loop
-    # TargetSiteID = "SMC04134"
-    # site = 1
-    # for (site in 1:length(TargetSiteID)) {
+if (boo.debug==TRUE & debug.person=="Ann") {
+    df_targets <- df_targets[df_targets$TargetSiteID=="SMC04134",]
+}
+
 # FOR ~ site ####
 for (site in 1:nrow(df_targets)) {
     startsite.time <- Sys.time()
@@ -522,10 +539,10 @@ for (site in 1:nrow(df_targets)) {
                                     , comp_sites = comp_sites
                                     , data_cluster = data_cluster
                                     , data_mods = NULL
-                                    , map_proj = my.aea
-                                    , map_outline = outline
-                                    , map_flowline = flowline
-                                    , map_flowline2 = NULL
+                                    # , map_proj = my.aea
+                                    # , map_outline = sp_outline
+                                    # , map_flowline = sp_flowline
+                                    # , map_flowline2 = NULL
                                     , dir_photo = file.path(dir_data,"Photos")
                                     , dir_results = dir_results
                                     , dir_sub = "SiteInfo")
@@ -538,6 +555,11 @@ for (site in 1:nrow(df_targets)) {
     #                                impair = myImpairments,
     #                                mods = myReachMods
     #                                refCOMIDs = myRefCOMIDs)
+    getSiteMap(sp_outline = sp_outline, sp_flowline=sp_flowline
+               , allSites = data_Sites, TargetSite = TargetSiteID
+               , dir_results = dir_results, dir_sub = "SiteInfo"
+               , dir_map_rmd = dir_rmd)
+    # Prints static and leaflet maps (.png and .html)
     print("getSiteInfo is complete.")
     flush.console()
     
