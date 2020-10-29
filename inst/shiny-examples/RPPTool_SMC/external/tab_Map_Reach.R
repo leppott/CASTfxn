@@ -13,9 +13,9 @@ function(){
          , br()
          , helpText("Use the button (or the map) to view a COMID on the map.")
          , selectInput("comid.select", "Select COMID:"
-                       , choices=c(NA, targ_COMID, myComID)
+                       , choices = c(NA, targ_COMID, myComID)
                        #, selected="20333074")
-                       , selected="20331944") # diversion but long and easy to spot on map
+                       , selected = targ_COMID[1]) # diversion but long and easy to spot on map
          
          , br()
          #, actionButton("zoom.comid", "Zoom to Selected ComID")

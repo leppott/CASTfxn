@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-29 10:44:18
+    #> Last Update: 2020-10-29 11:05:15
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9350 (2020-10-29)
+
+  - RPPTool and CASTool
+      - Set pull down “selected” to targeted\[1\] for maps (site and
+        reach) and calc tabs.
 
 ## Changes in Version 0.1.0.9349 (2020-10-29)
 

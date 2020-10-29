@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9350 (2020-10-29)
+* RPPTool and CASTool
+   + Set pull down "selected" to targeted[1] for maps (site and reach) and calc tabs.
+
 ## Changes in Version 0.1.0.9349 (2020-10-29)
 * RPPTool
     + server.R

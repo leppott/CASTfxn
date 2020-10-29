@@ -25,7 +25,7 @@ function(){
               , selectInput("Station"
                             , label = "Choose a Station ID below for which to generate outputs."
                             , choices = c(targ_SiteID, mySites)
-                            , selected = mySites[2]
+                            , selected = targ_SiteID[1]
               )
 
                , p("If Station ID is not known then click the map tab above to find your desired Station ID.")
