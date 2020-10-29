@@ -23,24 +23,21 @@ function(){
                   #, hr()
 
                    h4("Selection, COMID")
+                   , p("If COMID is not known then click the 'Map, Reach' or 'Map, Station' tab above to 
+                      use the mapping feature to find your desired COMID.")
+                   #, a("Shiny Station ID Selection Map", href="https://leppott.shinyapps.io/CAST_Map_StationID")
+                   #, hr()
+                   #, a("https://leppott.shinyapps.io/CAST_Map_COMID", href="https://leppott.shinyapps.io/CAST_Map_COMID")
+                   , p("COMID selections from maps appear below.")
+                   , p(textOutput("Selected_COMIDfromMapStations"))
+                   , p(textOutput("Selected_COMIDfromMapReach"))
+
                   , selectInput("COMID_RPP"
                               , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
                               , choices = c(NA, targ_COMID, myComID)
                               , selected = targ_COMID[1]
                   )
-
-                  , p("If COMID is not known then click the 'Map, Reach' or 'Map, Station' tab above to 
-                      use the mapping feature to find your desired COMID.")
-                  #, a("Shiny Station ID Selection Map", href="https://leppott.shinyapps.io/CAST_Map_StationID")
-                  #, hr()
-                  #, a("https://leppott.shinyapps.io/CAST_Map_COMID", href="https://leppott.shinyapps.io/CAST_Map_COMID")
-                  , p("COMID selections from maps appear below.")
-                  , p(textOutput("Selected_COMIDfromMapStations"))
-                  , p(textOutput("Selected_COMIDfromMapReach"))
                   , hr()
-
-
-
                   # , p("RPP 'data' and 'results' directories are by default part of the Shiny application.")
                   # , hr()
 

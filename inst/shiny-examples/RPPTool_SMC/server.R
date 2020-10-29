@@ -2200,6 +2200,27 @@ shinyServer(function(input, output, session) {
       # external/RPPTool_CA.R
       #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       
+      # QC, plots ####
+      # QC, comid with no data
+      # Check for plots to display
+      # base plot
+      p_nodata <- ggplot() +
+        theme_void() + 
+        labs(title = paste0("Reach: ", TargetReach)
+             , subtitle = "No data for this COMID.") 
+      # Create plots if they don't exist
+      plot_types <- c("AllScores", "RPPIndex", "ConnectedReaches")
+      for (i in plot_types){
+        fn_check <- list.files(path = file.path(".", "Results", TargetReach)
+                                       , pattern = i, full.names = TRUE)
+        if(length(fn_check) == 0){
+          p_nodata_i <- p_nodata + 
+            labs(caption = i)
+          ggsave(file.path(".", "Results", TargetReach, paste0(TargetReach, "_", i, "_NoData.png"))
+                 , p_nodata_i)
+        }## IF ~ length(fn_check) ~ END
+      }## FOR ~ i ~ END
+      
       # 19, Create zip ####
       # Progress, 18
       prog_cnt <- prog_cnt + 1
@@ -2510,6 +2531,7 @@ shinyServer(function(input, output, session) {
         , alt = "results all scores"
       ))#return~END
     } else {
+      #validate(need(file.exists(img_scores_pn()), message = "Results not ready or no scores available."))
       return(NULL)
     }## IF ~ END
   }, deleteFile = FALSE
@@ -2535,6 +2557,7 @@ shinyServer(function(input, output, session) {
         , alt = "map RPP Index"
       ))#return~END
     } else {
+      #validate(need(file.exists(img_map_pn()), message = "Results not ready or no scores available."))
       return(NULL)
     }## IF ~ END
   }, deleteFile = FALSE
@@ -2560,6 +2583,7 @@ shinyServer(function(input, output, session) {
         , alt = "map connected reaches"
       ))#return~END
     } else {
+      #validate(need(file.exists(img_map_ConnReach()), message = "Results not ready or no scores available."))
       return(NULL)
     }## IF ~ END
   }, deleteFile = FALSE

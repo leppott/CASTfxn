@@ -37,6 +37,18 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9351 (2020-10-29)
+* RPPTool
+    + tab_RPP_Calc.R
+        - Move map siteID and COMID above calc pull down.
+        - When below is hidden when typing into the box.
+    + Add SMC_TestCOMIDs.xlsx
+        - Limit pull down lists to only COMID with data.  
+        - Avoids trying to calc sites with no data.
+    + server.R
+        - Add extra step after skeleton code (and before zip).
+        - Check for "no data" and create plots.
+
 ## Changes in Version 0.1.0.9350 (2020-10-29)
 * RPPTool and CASTool
    + Set pull down "selected" to targeted[1] for maps (site and reach) and calc tabs.

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-29 11:05:15
+    #> Last Update: 2020-10-29 15:58:06
 
 # Planned Updates
 
@@ -24,6 +24,19 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9351 (2020-10-29)
+
+  - RPPTool
+      - tab\_RPP\_Calc.R
+          - Move map siteID and COMID above calc pull down.
+          - When below is hidden when typing into the box.
+      - Add SMC\_TestCOMIDs.xlsx
+          - Limit pull down lists to only COMID with data.  
+          - Avoids trying to calc sites with no data.
+      - server.R
+          - Add extra step after skeleton code (and before zip).
+          - Check for “no data” and create plots.
 
 ## Changes in Version 0.1.0.9350 (2020-10-29)
 

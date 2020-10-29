@@ -110,7 +110,9 @@ load(file.path(dir_data, fn.Flowline.SMC))
 mySites <- as.character(sort(unique(df.sites.map[, "StationID_Master"])))
 
 # COMIDs ###
-myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
+#myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
+df_COMID_data <- as.data.frame(read_excel(file.path(".", "Data", "SMC_TestCOMIDs.xlsx"), sheet = "SMC_TestReaches"))
+myComID <- as.character(sort(unique(df_COMID_data[, "COMID"])))
 
 # Map height fix
 #https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height
