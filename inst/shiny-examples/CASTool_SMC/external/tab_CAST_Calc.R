@@ -24,8 +24,8 @@ function(){
                 h4("User Selection:")
               , selectInput("Station"
                             , label = "Choose a Station ID below for which to generate outputs."
-                            , choices = c(targ_SiteID, LU.Stations)
-                            , selected = LU.Stations[1]
+                            , choices = c(targ_SiteID, mySites)
+                            , selected = mySites[2]
               )
 
                , p("If Station ID is not known then click the map tab above to find your desired Station ID.")

@@ -60,10 +60,12 @@ options(shiny.maxRequestSize = 300*1024^2)
 
 # Targeted Locations
 ## Add to selection boxes to easy to pick out.
-targ_SiteID <- c( "907S05514", "SMC04134", "905S15201", "SMC12246", "907SDSDR8"
-                , "907SDSDR9", "905SDYSA7", "906S02246", "SMC01606")
-targ_COMID <- c("20331434", "20331398", "20324447", "20330890", "20329782"
-                , "20331170", "20331408")
+# targ_SiteID <- c( "907S05514", "SMC04134", "905S15201", "SMC12246", "907SDSDR8"
+#                 , "907SDSDR9", "905SDYSA7", "906S02246", "SMC01606")
+# targ_COMID <- c("20331434", "20331398", "20324447", "20330890", "20329782"
+#                 , "20331170", "20331408")
+targ_SiteID <- NA
+targ_COMID <- NA
 
 # data directory
 dir_data <- file.path(".", "Data")
@@ -72,7 +74,7 @@ dir_wd <- file.path(".")
 ## Stations - PickList
 data.Stations <- read.delim(file.path(dir_data, "SMCSitesFinal.tab")
                             , stringsAsFactors = FALSE)
-LU.Stations <- data.Stations[,"StationID_Master"]
+LU.Stations <- data.Stations[, "StationID_Master"]
 
 
 zip_name <- "NULL"

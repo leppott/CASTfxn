@@ -2470,7 +2470,9 @@ shinyServer(function(input, output, session) {
     #df_r <- df_results()
     # Need most current file
     fn_sum <- list.files(path = file.path(".", "Results")
-                         , pattern = "^RPPTool_AllScoresSummary")
+                         # , pattern = "^RPPTool_AllScoresSummary"
+                         , pattern = "^RPPTool_AllConnectedReaches"
+                         )
     fn_sum_latest <- file.path(".", "Results", fn_sum[length(fn_sum)]) # get last one
     #
     df_r <- read.delim(fn_sum_latest, stringsAsFactors = FALSE)
@@ -2478,7 +2480,7 @@ shinyServer(function(input, output, session) {
     return(df_r)
   }##expression~END
   , filter="top"
-  , caption = "Results summary."
+  , caption = "Results summary, connected reaches"
   , options=list(scrollX=TRUE
                  , lengthMenu = c(5, 10, 25, 50, 100, 1000)
                  , autoWidth = TRUE

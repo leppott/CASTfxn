@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-10-21 11:24:59
+    #> Last Update: 2020-10-29 10:44:18
 
 # Planned Updates
 
@@ -24,6 +24,92 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9349 (2020-10-29)
+
+  - RPPTool
+      - server.R
+          - Change results table from “RPPTool\_AllScoresSummary” to
+            “RPPTool\_AllConnectedReaches”.
+          - Want only results related to the target reach not all the
+            results.
+      - tab\_Disclaimer
+          - “City” to “City of San Diego”
+      - Site and Reach pull downs remove target sites at top of list.
+  - CASTool
+      - tab\_Disclaimer
+          - “City” to “City of San Diego”
+      - tab\_CAST\_Calc.
+          - SiteID pull down change to mySites (so have a sorted list).
+      - Site pull downs remove target sites at top of list.
+          - Calc tab change to sorted list (same as map).
+
+## Changes in Version 0.1.0.9348 (2020-10-22)
+
+  - v0.1.0.9282
+  - Converted from rgdal to simple features for map data, added
+    getSiteMap, clarified debugging statement prior to iterating over
+    test sites, removed map-related arguments from getSiteInfo.
+  - inst/extdata/CASTool\_CA.r
+
+## Changes in Version 0.1.0.9347 (2020-10-22)
+
+  - v0.1.0.9001
+  - Replacement for Map\_Leaflet.rmd that uses the simple features
+    spatial data.
+  - inst/rmd/Map\_Leaflet2.rmd
+
+## Changes in Version 0.1.0.9346 (2020-10-22)
+
+  - v0.1.0.9280
+  - Fixed warning for dplyr::summarize() by adding .groups=“drop\_last”
+    argument.
+  - inst/rmd/Report\_Results\_summary.rmd
+
+## Changes in Version 0.1.0.9345 (2020-10-22)
+
+  - v0.1.0.9336
+  - Commented out mapping procedure (prior to eliminating it entirely).
+    May fold in getSiteMap, if desired.
+  - R/getSiteInfo.R
+
+## Changes in Version 0.1.0.9344 (2020-10-22)
+
+  - v0.1.0.9001
+  - Fully revised and streamlined map generation. Uses simple features
+    package and ggplot2.
+  - R/getSiteMap.R
+
+## Changes in Version 0.1.0.9343 (2020-10-21)
+
+  - v0.1.0.9326
+  - Reset debug flag
+  - R/getStressorList.R
+
+## Changes in Version 0.1.0.9342 (2020-10-21)
+
+  - v0.1.0.9325
+  - Updated directory structure based on local vs. remote (shiny)
+    execution
+  - R/getStressorList.R
+
+## Changes in Version 0.1.0.9341 (2020-10-21)
+
+  - v0.1.0.9324
+  - Merged changes
+  - R/getStressorList.R
+
+## Changes in Version 0.1.0.9340 (2020-10-21)
+
+  - v0.1.0.9318
+  - Eliminated duplication of output rows.
+  - R/getSummaryAllSites.R
+
+## Changes in Version 0.1.0.9339 (2020-10-21)
+
+  - v0.1.0.9281
+  - Minor changes for quick navigation and debugging.
+  - inst/extdata/CASTool\_CA.r
 
 ## Changes in Version 0.1.0.9338 (2020-10-21)
 
