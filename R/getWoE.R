@@ -221,7 +221,7 @@ getWoE <- function(TargetSiteID
                                   , Score = NA
                                   # , Score = "NE"
                                   , LoEtrim = "SR_OutCase_LinRegr"
-                                  , LoE = "Stressor-response in the case"
+                                  , LoE = "Stressor-response outside the case"
                                   , Analysis = "Linear regression"
                                   , InOut = "Outside the case"
                                   , biocomm = biocomm) %>%
