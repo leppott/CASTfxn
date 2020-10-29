@@ -18,14 +18,9 @@ getSiteInfo(
   comp_sites = NULL,
   data_cluster,
   data_mods = NULL,
-  map_proj = NULL,
-  map_outline = NULL,
-  map_flowline = NULL,
-  map_flowline2 = NULL,
   dir_photo = file.path(dir_data, "Photos"),
   dir_results = dir_results,
   dir_sub = "SiteInfo",
-  dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
   boo_plot = TRUE
 )
 }
@@ -46,6 +41,12 @@ getSiteInfo(
 
 \item{data_mods}{data_mods}
 
+\item{dir_results}{Directory for results.  Default = "Results".}
+
+\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+
+\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+
 \item{map_proj}{Map projection.  If no projection is provided an unprojected map is created without flowlines.}
 
 \item{map_outline}{Outline for map, typically State border.}
@@ -54,13 +55,7 @@ getSiteInfo(
 
 \item{map_flowline2}{Typically NHD+ flowline.  Can be more than one but plotted the same.}
 
-\item{dir_results}{Directory for results.  Default = "Results".}
-
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
-
 \item{dir_map_rmd}{Directory with Map_Leaflet.RMD.  Default = package RMD.}
-
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 

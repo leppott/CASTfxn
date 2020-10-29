@@ -37,6 +37,76 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9350 (2020-10-29)
+* RPPTool and CASTool
+   + Set pull down "selected" to targeted[1] for maps (site and reach) and calc tabs.
+
+## Changes in Version 0.1.0.9349 (2020-10-29)
+* RPPTool
+    + server.R
+        - Change results table from "RPPTool_AllScoresSummary" to "RPPTool_AllConnectedReaches".
+        - Want only results related to the target reach not all the results.
+    + tab_Disclaimer
+        - "City" to "City of San Diego"
+    + Site and Reach pull downs remove target sites at top of list.
+* CASTool
+    + tab_Disclaimer
+        - "City" to "City of San Diego"
+    + tab_CAST_Calc.
+        - SiteID pull down change to mySites (so have a sorted list).
+    + Site pull downs remove target sites at top of list.
+        - Calc tab change to sorted list (same as map). 
+
+## Changes in Version 0.1.0.9348 (2020-10-22)
+* v0.1.0.9282
+* Converted from rgdal to simple features for map data, added getSiteMap, clarified debugging statement prior to iterating over test sites, removed map-related arguments from getSiteInfo.
+* inst/extdata/CASTool_CA.r
+
+## Changes in Version 0.1.0.9347 (2020-10-22)
+* v0.1.0.9001
+* Replacement for Map_Leaflet.rmd that uses the simple features spatial data.
+* inst/rmd/Map_Leaflet2.rmd
+
+## Changes in Version 0.1.0.9346 (2020-10-22)
+* v0.1.0.9280
+* Fixed warning for dplyr::summarize() by adding .groups="drop_last" argument.
+* inst/rmd/Report_Results_summary.rmd
+
+## Changes in Version 0.1.0.9345 (2020-10-22)
+* v0.1.0.9336
+* Commented out mapping procedure (prior to eliminating it entirely). May fold in getSiteMap, if desired.
+* R/getSiteInfo.R
+
+## Changes in Version 0.1.0.9344 (2020-10-22) 
+* v0.1.0.9001
+* Fully revised and streamlined map generation. Uses simple features package and ggplot2.
+* R/getSiteMap.R
+
+## Changes in Version 0.1.0.9343 (2020-10-21)
+* v0.1.0.9326
+* Reset debug flag
+* R/getStressorList.R
+
+## Changes in Version 0.1.0.9342 (2020-10-21)
+* v0.1.0.9325
+* Updated directory structure based on local vs. remote (shiny) execution
+* R/getStressorList.R
+
+## Changes in Version 0.1.0.9341 (2020-10-21)
+* v0.1.0.9324 
+* Merged changes
+* R/getStressorList.R
+
+## Changes in Version 0.1.0.9340 (2020-10-21)
+* v0.1.0.9318
+* Eliminated duplication of output rows.
+* R/getSummaryAllSites.R
+
+## Changes in Version 0.1.0.9339 (2020-10-21)
+* v0.1.0.9281
+* Minor changes for quick navigation and debugging.
+* inst/extdata/CASTool_CA.r
+
 ## Changes in Version 0.1.0.9338 (2020-10-21)
 * RPPTool
     + Add Connections map to results.  It has background and labels for each reach.

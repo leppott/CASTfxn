@@ -14,7 +14,7 @@ library(rmarkdown)
 # 1. Convert to HTML (render) #####
 # 2. Save to Shiny App www directory ####
 fn_rmd <- file.path(".", "data-raw", "Shiny_CAST_Help.RMD")
-dn_output <- file.path(".", "inst", "shiny-examples", "CAST_SMC", "www")
+dn_output <- file.path(".", "inst", "shiny-examples", "CASTool_SMC", "www")
 rmarkdown::render(fn_rmd, output_file = "ShinyHelp.html", output_dir = dn_output)
 
 

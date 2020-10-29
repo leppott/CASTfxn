@@ -26,7 +26,7 @@ function(){
                   , selectInput("COMID_RPP"
                               , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
                               , choices = c(NA, targ_COMID, myComID)
-                              , selected = myComID[1]
+                              , selected = targ_COMID[1]
                   )
 
                   , p("If COMID is not known then click the 'Map, Reach' or 'Map, Station' tab above to 

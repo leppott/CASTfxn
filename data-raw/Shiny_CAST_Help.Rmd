@@ -12,11 +12,11 @@ output:
 knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 ```
 
-To use the CAST Tool a station ID code is required.
+To use the CASTool a station ID code is required.
 
 To aid in the selection of a station use the "Map, Stations" tab.
 
-The map functions much list Google Earth (zoom in/out, pan, selection of elements, turn on/off layers, etc)
+The map functions much like Google Earth (zoom in/out, pan, selection of elements, turn on/off layers, etc.).
 
 Tool results will be compiled into a zip file for download.
 
