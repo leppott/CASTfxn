@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9352 (2020-10-30)
+* CASTool
+    + Modified the CASTool_CA.R (skeleton code) for use with Shiny.
+        - Same mods did for RPPTool.
+        - Use latest code version of skeleton from \external\R
+        - Update both versions in the package:
+        - inst\shiny-examples\CASTool\external\R
+        - inst\extdata
+
 ## Changes in Version 0.1.0.9351 (2020-10-29)
 * RPPTool
     + tab_RPP_Calc.R

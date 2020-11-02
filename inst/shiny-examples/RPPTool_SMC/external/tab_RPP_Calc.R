@@ -257,6 +257,13 @@ function(){
                              , br()
                              , br()
                              , br()
+                             , br()
+                             , br()
+                             , br()
+                             , br()
+                             , br()
+                             , br()
+                             , br()
                              , hr()
                              , DT::dataTableOutput("df_results_DT")
                              )##tabPanel ~ Results ~ END

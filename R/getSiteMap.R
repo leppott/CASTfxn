@@ -17,14 +17,33 @@
 # Add Shiny code for use in Shiny App
 # 2020-09-10, Erik
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# 
-# Plots a map of the region, indicating the target site in red, cluster sites
-# in teal, reference sites in dark blue, cluster reference sites in teal outlined
-# in blue, and the rest of the sites (not same cluster as target & not reference)
-# in grey.
-
-getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSite
+#
+#' @title Site Map
+#' 
+#' @description Plot site map of provided TargetSite.
+#' 
+#' @details Plots a map of the region, indicating the target site in red, cluster sites
+#' in teal, reference sites in dark blue, cluster reference sites in teal outlined
+#' in blue, and the rest of the sites (not same cluster as target & not reference)
+#' in grey.
+#' 
+#' @param sp_outline Outline for map, typically State border.
+#' @param sp_flowline ypically NHD+ flowline.
+#' @param allSites allSites
+#' @param TargetSiteID SiteID
+#' @param dir_results Directory for results.  Default = "Results".
+#' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
+#' @param dir_map_rmd Directory with Map_Leaflet.RMD.  Default = package RMD.
+#' 
+#' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
+#' in the user supplied dir_results folder (default is "Results" folder in the 
+#' working directory).  Also produced is a summary list; SiteInfo, Samps, 
+#' BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+#
+# no examples
+#
+#' @export
+getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
                        , dir_results, dir_sub, dir_map_rmd) {
     
     boo_DEBUG <- FALSE
@@ -33,7 +52,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSite
         sp_outline <- sp_outline
         sp_flowline <- sp_flowline
         allSites = data_Sites
-        TargetSite = TargetSiteID
+        TargetSiteID = TargetSiteID
         dir_results = dir_results
         dir_sub = "SiteInfo"
         dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
@@ -59,7 +78,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSite
     dir_path <- file.path(dir_results, dir_sub2, dir_sub3)
     
     # Get filename for saving
-    fn_Map <- file.path(dir_path, paste0(TargetSite,"_map.png"))
+    fn_Map <- file.path(dir_path, paste0(TargetSiteID,"_map.png"))
 
     # Get sites (NAD27 coordinates in dataset, transform to WGS84)
     # Subset ref sites, cluster sites, target site
@@ -75,7 +94,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSite
     
     sp_refsites <- dplyr::filter(sp_sites, CARefSite_2017==1)
     
-    sp_targetsite <- dplyr::filter(sp_sites, StationID_Master==TargetSite)
+    sp_targetsite <- dplyr::filter(sp_sites, StationID_Master==TargetSiteID)
     
     targetCluster <- as.numeric(sp_targetsite$clust)
     
@@ -139,7 +158,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSite
         ggplot2::coord_sf(datum=4326, xlim = c(ggmap_bbox["left"],ggmap_bbox["right"])
                           , ylim = c(ggmap_bbox["bottom"], ggmap_bbox["top"])) +
         ggplot2::theme_minimal() +
-        ggplot2::labs(x="Longitude", y="Latitude", title=TargetSite, subtitle=maptype2) +
+        ggplot2::labs(x="Longitude", y="Latitude", title=TargetSiteID, subtitle=maptype2) +
         ggplot2::theme(plot.title=ggplot2::element_text(size=12, face="bold", hjust=0)
                        , plot.subtitle=ggplot2::element_text(size=10, hjust=0)
                        , axis.text=ggplot2::element_text(size=8)
