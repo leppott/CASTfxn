@@ -37,7 +37,24 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
-## Changes in Version 0.1.0.9352 (2020-10-30)
+## Changes in Version 0.1.0.9354 (2020-11-03)
+* CASTool_CA.r
+    + Keep only 1 copy in the shiny app.  Remove from /inst/extdata.
+* CASTool
+    + Update skeleton (both copies) and server.R
+        - Use boo_plot_user in getTimeSeq()
+        - Step 27, dir_rmd (drop git_path use dir_rmd only).
+
+## Changes in Version 0.1.0.9353 (2020-11-02)
+* CASTool_CA.r
+    + Copy from shiny to main package directory.
+* CASTool
+    + global.r
+        - Remove target site from top of pull down list.
+    + Update skeleton (both copies) and server.R
+        - Use boo_plot_user in functions.
+
+## Changes in Version 0.1.0.9352 (2020-11-02)
 * CASTool
     + Modified the CASTool_CA.R (skeleton code) for use with Shiny.
         - Same mods did for RPPTool.

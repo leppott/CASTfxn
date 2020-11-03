@@ -768,7 +768,8 @@ for (site in 1:nrow(df_targets)) {
                        , data_cluster = data_cluster
                        , data_clusterInfo = data_clusterInfo
                        , dir_results=dir_results
-                       , dir_sub="ClusterInfo")
+                       , dir_sub="ClusterInfo"
+                       , boo_plot <- boo_plot_user)
         msg <- "getClusterInfo is complete."
         message(msg)
     }## IF ~ printClusterInfo ~ END
@@ -1308,7 +1309,8 @@ for (site in 1:nrow(df_targets)) {
                                           , biocomm=bioComm
                                           , bioParmsDEL=bioParmsDEL
                                           , dir_results=dir_results
-                                          , dir_sub="CandidateCauses")
+                                          , dir_sub="CandidateCauses"
+                                          , boo_plot <- boo_plot_user)
         # Returns: myStressors <- list(stressors = stressorlist
         #                     , site.stressor.pctrank = site.pctrank
         #                     , stressors_LogTransf
@@ -1450,7 +1452,8 @@ for (site in 1:nrow(df_targets)) {
                        , df_stressinfo = data_stressInfo
                        , df_respinfo = bioMetricInfo
                        , dir_results = dir_results
-                       , dir_sub = "TimeSequence")
+                       , dir_sub = "TimeSequence"
+                       , boo_plot = boo_plot_user)
             msg <- paste0("getTimeSeq for ", bioComm, " is complete.")
             message(msg)
             
@@ -1495,7 +1498,8 @@ for (site in 1:nrow(df_targets)) {
                            , biocomm = bioComm
                            , dir_plots = dir_results
                            , dir_sub = "CoOccurrence"
-                           , col_StressInvScore = col_StressInvScore)
+                           , col_StressInvScore = col_StressInvScore
+                           , boo_plot <- boo_plot_user)
             } else {
                 # gapcomment <- "Stressor detected but paired response not available"
                 # gaps <- cbind.data.frame("getStressorList", stressorsNOpairing[s], 0
@@ -1577,7 +1581,8 @@ for (site in 1:nrow(df_targets)) {
                                     , siteQual2Plot = siteQual2Plot
                                     , biocomm = bioComm
                                     , dir_results = dir_results
-                                    , dir_sub = "StressorResponse")
+                                    , dir_sub = "StressorResponse"
+                                    , boo_plot <- boo_plot_user)
             msg <- paste0("getBioStressorResponses for ", bioComm, " is complete.")
             message(msg)
             
@@ -1617,7 +1622,8 @@ for (site in 1:nrow(df_targets)) {
                                        , BioIndex_Nar_Deg = "Degraded"
                                        , dir_results=dir_results
                                        , dir_sub="VerifiedPredictions"
-                                       , biocomm=bioComm)
+                                       , biocomm=bioComm
+                                       , boo_plot <- boo_plot_user)
             } else {
                 msg <- "No possible stressors have stressor-specific tolerance values."
                 message(msg)
@@ -1720,7 +1726,7 @@ for (site in 1:nrow(df_targets)) {
     # Shiny add ons
     dir_data_abs    <- normalizePath(dir_data)
     dir_results_abs <- normalizePath(dir_results)
-    dir_rmd         <- normalizePath(file.path(gitpath, "rmd"))
+    dir_rmd         <- normalizePath(dir_rmd)
     report_type     <- "summary"
     strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
     message(paste0("file = ", strFile_RMD))
