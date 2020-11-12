@@ -2487,10 +2487,11 @@ shinyServer(function(input, output, session) {
   # Results ####
   output$df_results_DT <- DT::renderDT({
     #
+    TargetCOMID <- input$COMID_RPP
     # should be blank initially and once have data it will appear correctly
     #df_r <- df_results()
     # Need most current file
-    fn_sum <- list.files(path = file.path(".", "Results", TargetSiteID)
+    fn_sum <- list.files(path = file.path(".", "Results", TargetCOMID)
                          # , pattern = "^RPPTool_AllScoresSummary"
                          #, pattern = "^RPPTool_AllConnectedReaches"
                          , pattern = "_CxnScoresSummary"
