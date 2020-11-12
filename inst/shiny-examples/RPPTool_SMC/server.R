@@ -2490,11 +2490,14 @@ shinyServer(function(input, output, session) {
     # should be blank initially and once have data it will appear correctly
     #df_r <- df_results()
     # Need most current file
-    fn_sum <- list.files(path = file.path(".", "Results")
+    fn_sum <- list.files(path = file.path(".", "Results", TargetSiteID)
                          # , pattern = "^RPPTool_AllScoresSummary"
-                         , pattern = "^RPPTool_AllConnectedReaches"
+                         #, pattern = "^RPPTool_AllConnectedReaches"
+                         , pattern = "_CxnScoresSummary"
+                         , full.names = TRUE
                          )
-    fn_sum_latest <- file.path(".", "Results", fn_sum[length(fn_sum)]) # get last one
+    # get last one
+    fn_sum_latest <- fn_sum[length(fn_sum)]
     #
     df_r <- read.delim(fn_sum_latest, stringsAsFactors = FALSE)
     colnames(df_r) <- gsub("\\.", "<br>", colnames(df_r))
