@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-11-12 14:28:22
+    #> Last Update: 2020-11-16 10:42:50
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9357 (2020-11-16)
+
+  - getSummaryAllSites.R
+      - Modify biocomm in normalize path to toupper(biocomm).
+          - Issue with running on shinyapps.io (i.e., Linux).
 
 ## Changes in Version 0.1.0.9356 (2020-11-12)
 

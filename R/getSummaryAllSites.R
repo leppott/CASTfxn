@@ -93,7 +93,7 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 message(paste0("bioIndex = ", bioIndex))
                 
                 # Get WoE path & file lists (under TargetSiteID)
-                woe_path <- normalizePath(file.path(dir_results, TargetSiteID, biocomm, "WoE"))
+                woe_path <- normalizePath(file.path(dir_results, TargetSiteID, toupper(biocomm), "WoE"))
                 woe_detailfiles <- list.files(woe_path, pattern = "WoE_ScoresTable")
                 woe_stressfiles <- list.files(woe_path, pattern = "WoE_ExecSummary")
                 
@@ -160,9 +160,12 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
                 
                 if(!exists("df_detSite")){
                     df_detSite <- df_detBiocomm
+                    msg <- "df_detSite = df_detBiocomm"
                 } else {
                     df_detSite <- rbind(df_detSite, df_detBiocomm)
+                    msg <- "df_detSite = rbind(df_detSite, df_detBiocomm)"
                 }## IF ~ exists("df_detSite) ~ END
+                message(msg)
                 #
                 if(!exists("df_strSite")){
                     df_strSite <- df_strBiocomm
@@ -198,6 +201,11 @@ getSummaryAllSites <- function(biocommlist = c("bmi", "algae")
         df_SitesLatLong <- df_sites[,c("StationID_Master", "FinalLatitude"
                                        , "FinalLongitude", "clust")]
         
+        
+        message("names(df_detSite)")
+        message(paste(names(df_detSite), collapse = ", "))
+        message("names(df_SitesLatLong)")
+        message(paste(names(df_SitesLatLong), collapse = ", "))
         df_WoEDetails <- merge(df_detSite, df_SitesLatLong
                                , by.x = c("StationID_Master", "Cluster")
                                , by.y = c("StationID_Master", "clust"))
