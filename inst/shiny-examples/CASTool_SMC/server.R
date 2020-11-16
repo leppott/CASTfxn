@@ -390,7 +390,6 @@ shinyServer(function(input, output, session) {
       }## IF ~ boo_Shiny ~ END
       message(paste0("usePlots = ", boo_plot_user))
       
-      
       #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       # **Skeleton**, Start ####
       # external/CASTool_CA.R
@@ -407,8 +406,8 @@ shinyServer(function(input, output, session) {
         message(paste(prog_msg, prog_det, sep = "; "))
       }## IF ~ boo_Shiny ~ END
       #
-      boo.debug <- TRUE
-      debug.person <- "Ann"
+      boo.debug <- FALSE
+      debug.person <- "Erik"
       if(boo_Shiny == TRUE){
         gitpath <- file.path(".", "external", "R")  # used in RPPTool but not CASTool until getReport
         dir_rmd <- file.path(".", "external", "rmd")
@@ -991,8 +990,11 @@ shinyServer(function(input, output, session) {
       
       ### Evaluate each target site
       ## Use this for debugging, and don't run the loop
-      if (boo.debug==TRUE & debug.person=="Ann") {
-        df_targets <- df_targets[df_targets$TargetSiteID=="SMC04134",]
+      if (boo_Shiny == TRUE){
+        df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
+        names(df_targets)[2] <- "Chosen by"
+      } else if (boo.debug==TRUE & debug.person=="Ann") {
+        df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
       }
       
       # 14, Main Code ####

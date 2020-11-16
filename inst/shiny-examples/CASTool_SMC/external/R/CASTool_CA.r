@@ -620,8 +620,11 @@ write.table(df_runstats, file.path(dir_results,fn_runstats), append = FALSE
 
 ### Evaluate each target site
 ## Use this for debugging, and don't run the loop
-if (boo.debug==TRUE & debug.person=="Ann") {
-    df_targets <- df_targets[df_targets$TargetSiteID=="SMC04134",]
+if (boo_Shiny == TRUE){
+    df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
+    names(df_targets)[2] <- "Chosen by"
+} else if (boo.debug==TRUE & debug.person=="Ann") {
+    df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
 }
 
 # 14, Main Code ####
