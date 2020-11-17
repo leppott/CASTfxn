@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-11-17 08:59:10
+    #> Last Update: 2020-11-17 17:15:24
 
 # Planned Updates
 
@@ -24,6 +24,19 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9360 (2020-11-17)
+
+  - CASTool
+      - server.R
+          - Removed old/unused code.
+          - output$Results\_html, modified to capture last file if more
+            than one.
+          - Message for getCoOccur, remove 2nd “r”, step 23.
+      - tab\_CAST\_calc.R
+          - Add results text about avoiding app errors.
+          - Added SiteID from map selection below pull down for SiteID
+            for calculation.
 
 ## Changes in Version 0.1.0.9359 (2020-11-17)
 

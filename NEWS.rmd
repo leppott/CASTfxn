@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9360 (2020-11-17)
+* CASTool
+    + server.R
+        - Removed old/unused code.
+        - output$Results_html, modified to capture last file if more than one.
+        - Message for getCoOccur, remove 2nd "r", step 23.
+    + tab_CAST_calc.R
+        - Add results text about avoiding app errors.
+        - Added SiteID from map selection below pull down for SiteID for calculation.
+
 ## Changes in Version 0.1.0.9359 (2020-11-17)
 * getStressorList.R
     + Replace "wd, Results" with dir_results in one instance.
