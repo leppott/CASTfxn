@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9359 (2020-11-17)
+* getStressorList.R
+    + Replace "wd, Results" with dir_results in one instance.
+
 ## Changes in Version 0.1.0.9358 (2020-11-16)
 * CASTool
     + Server.R
