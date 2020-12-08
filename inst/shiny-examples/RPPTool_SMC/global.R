@@ -1,5 +1,5 @@
 # Shiny, Global
-# RPP - SMC
+# RPPTool_SMC
 
 # Packages ####
 library(shiny)
@@ -98,8 +98,12 @@ load(file.path(dir_data, fn.sites))
 
 # SMC watersheds ####
 # poly.smc.proj
-fn.SMC <- "poly.smc.proj.rda"
+# fn.SMC <- "poly.smc.proj.rda"
+# load(file.path(dir_data, fn.SMC))
+# 2020-12-08, use simple version
+fn.SMC <- "poly.smc.proj.simple05.rda"
 load(file.path(dir_data, fn.SMC))
+poly.smc.proj <- poly.smc.proj.simple05
 
 # Flowlines ###
 # lines.flowline.proj
@@ -108,11 +112,13 @@ load(file.path(dir_data, fn.Flowline.SMC))
 
 # SiteIDs ###
 mySites <- as.character(sort(unique(df.sites.map[, "StationID_Master"])))
+len_sel_SiteID <- length(targ_SiteID) + length(mySites)
 
 # COMIDs ###
 #myComID <- as.character(sort(unique(lines.flowline.proj@data[, "COMID"])))
 df_COMID_data <- as.data.frame(read_excel(file.path(".", "Data", "SMC_TestCOMIDs.xlsx"), sheet = "SMC_TestReaches"))
 myComID <- as.character(sort(unique(df_COMID_data[, "COMID"])))
+len_sel_COMID <- length(targ_COMID) + length(myComID)
 
 # Map height fix
 #https://stackoverflow.com/questions/36469631/how-to-get-leaflet-for-r-use-100-of-shiny-dashboard-height

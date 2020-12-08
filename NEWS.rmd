@@ -37,6 +37,22 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in Version 0.1.0.9362 (2020-12-08)
+
+* Simplify SMC watersheds (keep 5%).
+* Use in both Shiny Apps (global.R).
+
+## Changes in Version 0.1.0.9361 (2020-11-18)
+* selectInput to selectizeInput for COMID and StationID pull downs.
+    + RPPTool
+        - Define variable in global.R
+        - tab_RPP_Calc.R
+        - tab_Map_Reach.R
+        - tab_Map_Station.R
+    + CASTool
+        - Define variable in global.R
+        - tab_RPP_Calc.R
+
 ## Changes in Version 0.1.0.9360 (2020-11-17)
 * CASTool
     + server.R

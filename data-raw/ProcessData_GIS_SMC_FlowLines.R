@@ -2,21 +2,22 @@
 # GIS - SMC Reaches (flowline)
 # Erik.Leppo@tetratech.com
 # 2020-08-12
+# 2020-12-08, point to RPPTool shiny folder
 #
 # Already saved SHP as RDA in Shiny App.
 # No "ProcessData" script.  Recreate it here using parts from global.R.
 # test simplify
 
-# 0. Prep####
+# 0. Prep ----
 # Packages
 library(rgdal)
 library(rgeos)
 library(usethis)
 
-# 1. Get data and process#####
+# 1. Get data and process ----
 # 1.1. Import Data
 # Prepare SMC flowlines
-sp_flowline <- rgdal::readOGR(dsn = "inst/extdata/SMCReaches", layer = "SMCReaches_aea")
+sp_flowline <- rgdal::readOGR(dsn = "inst/shiny-examples/RPPTool_SMC/Data/SMCReaches", layer = "SMCReaches_aea")
 sp_flowline_wgs <- spTransform(sp_flowline, CRS("+proj=longlat +datum=WGS84 +no_def"))
 flowlines <- list(flowline_aea = sp_flowline, flowline_wgs = sp_flowline_wgs)
 
@@ -37,7 +38,16 @@ flowlines <- list(flowline_aea = sp_flowline, flowline_wgs = sp_flowline_wgs)
 # * DOESN'T WORK ***
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2. Save as RDA for use in package####
+# 2. Save as RDA for use in package ----
 #
 lines.flowline.proj <- flowlines
 usethis::use_data(lines.flowlines.proj, overwrite = TRUE)
+
+
+# # Simplify
+# library(rmapshaper)
+# lines.flowline.proj.simple05 <- rmapshaper::ms_simplify(lines.flowline.proj, keep = 0.05)
+# # save(lines.flowline.proj.simple05, file = "lines.flowline.proj.simple05.rda")
+# usethis::use_data(lines.flowline.proj.simple05, overwrite = TRUE)
+# 
+# Errors out

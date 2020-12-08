@@ -31,12 +31,17 @@ function(){
                    , p("COMID selections from maps appear below.")
                    , p(textOutput("Selected_COMIDfromMapStations"))
                    , p(textOutput("Selected_COMIDfromMapReach"))
-
-                  , selectInput("COMID_RPP"
-                              , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
-                              , choices = c(NA, targ_COMID, myComID)
-                              , selected = targ_COMID[1]
-                  )
+                   , selectizeInput("COMID_RPP"
+                                    , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
+                                    , choices = c(targ_COMID, myComID)
+                                    , selected = targ_COMID
+                                    , multiple = FALSE
+                                    , options = list(maxOptions = len_sel_COMID))
+                  # , selectInput("COMID_RPP"
+                  #             , label = "Choose a COMID (stream reach ID) below for which to generate outputs."
+                  #             , choices = c(NA, targ_COMID, myComID)
+                  #             , selected = targ_COMID[1]
+                  # )
                   , hr()
                   # , p("RPP 'data' and 'results' directories are by default part of the Shiny application.")
                   # , hr()

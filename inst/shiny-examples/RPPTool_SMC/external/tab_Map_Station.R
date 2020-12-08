@@ -9,12 +9,17 @@ function(){
         #, actionButton("map.streams.add", "Add Streams to Map")
         , br()
         , helpText("Use the button (or the map) to select a Station ID.")
+        # , selectizeInput("siteid.select" 
+        #                  , label = "Select Station ID:"
+        #                  , choices = c(targ_SiteID, mySites)
+        #                  , selected = targ_SiteID[1]
+        #                  , multiple = FALSE
+        #                  , option = list(maxOptions = len_sel_SiteID))
         , selectInput("siteid.select", "Select Station ID:"
                       , choices = c(targ_SiteID, mySites)
                       , selected = targ_SiteID[1]
                       #, selected="20331944"# diversion but long and easy to spot on map
-        )##selectInput~END
-        
+                      )##selectInput~END
         , br()
         #, actionButton("zoom.comid", "Zoom to Selected ComID")
         , p("After choosing a Station ID above note the Reach ID (COMID) for use with the RPPTool-Calc tab analysis.

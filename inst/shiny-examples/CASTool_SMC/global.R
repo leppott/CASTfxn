@@ -1,4 +1,5 @@
 # Global Shiny Stuff
+# CASTool_SMC
 
 # Packages ####
 library(shiny)   # for Shiny app
@@ -65,8 +66,12 @@ load(file.path(dir_data, fn.sites))
 
 # SMC watersheds ####
 # poly.smc.proj
-fn.SMC <- "poly.smc.proj.rda"
+# fn.SMC <- "poly.smc.proj.rda"
+# load(file.path(dir_data, fn.SMC))
+# 2020-12-08, use simple version
+fn.SMC <- "poly.smc.proj.simple05.rda"
 load(file.path(dir_data, fn.SMC))
+poly.smc.proj <- poly.smc.proj.simple05
 
 # Flowlines ###
 # lines.flowline.proj

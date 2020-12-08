@@ -12,11 +12,17 @@ function(){
          #, actionButton("map.streams.add", "Add Streams to Map")
          , br()
          , helpText("Use the button (or the map) to view a COMID on the map.")
-         , selectInput("comid.select", "Select COMID:"
-                       , choices = c(NA, targ_COMID, myComID)
-                       #, selected="20333074")
-                       , selected = targ_COMID[1]) # diversion but long and easy to spot on map
-         
+         , selectizeInput("comid.select" 
+                          , label = "Select COMID:"
+                          , choices = c(targ_COMID, myComID)
+                          , selected = targ_COMID[1]
+                          , multiple = FALSE
+                          #, option = list(maxOptions = len_sel_COMID)
+                          )
+         # , selectInput("comid.select", "Select COMID:"
+         #               , choices = c(NA, targ_COMID, myComID)
+         #               #, selected="20333074")
+         #               , selected = targ_COMID[1]) # diversion but long and easy to spot on map
          , br()
          #, actionButton("zoom.comid", "Zoom to Selected ComID")
          

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-11-17 17:15:24
+    #> Last Update: 2020-12-08 10:13:20
 
 # Planned Updates
 
@@ -24,6 +24,23 @@ NEWS
       - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in Version 0.1.0.9362 (2020-12-08)
+
+  - Simplify SMC watersheds (keep 5%).
+  - Use in both Shiny Apps (global.R).
+
+## Changes in Version 0.1.0.9361 (2020-11-18)
+
+  - selectInput to selectizeInput for COMID and StationID pull downs.
+      - RPPTool
+          - Define variable in global.R
+          - tab\_RPP\_Calc.R
+          - tab\_Map\_Reach.R
+          - tab\_Map\_Station.R
+      - CASTool
+          - Define variable in global.R
+          - tab\_RPP\_Calc.R
 
 ## Changes in Version 0.1.0.9360 (2020-11-17)
 
