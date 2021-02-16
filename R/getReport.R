@@ -52,15 +52,18 @@
 #
 #' @export
 getReport <- function(TargetSiteID
-                      , probsHigh = 0.75
-                      , probsLow = 0.25
+                      , probsHigh
+                      , probsLow
                       , useBMI
                       , useAlg
-                      , useBC = TRUE
-                      , removeOutliers = TRUE
-                      , lagdays = 10
-                      , bmiIndex = "CSCI"
-                      , algIndex = "MMIhybrid"
+                      , useBC
+                      , removeOutliers
+                      , DOlim
+                      , pHlimLow
+                      , pHlimHigh
+                      , lagdays
+                      , bmiIndex
+                      , algIndex
                       , dir_data = normalizePath(file.path(".", "Data"))
                       , dir_results = normalizePath(file.path(".", "Results"))
                       , report_type = "summary"
@@ -69,23 +72,34 @@ getReport <- function(TargetSiteID
                       , siteQual2Plot = NULL){##FUNCTION.START
   #
   boo_DEBUG <- FALSE
-  if(boo_DEBUG){
+  DEBUG_person <- "Ann"
+  if (boo_DEBUG) {
     # setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CASTool_SMC")
-    TargetSiteID <- "SMC04134"
+    TargetSiteID = "SMC04134"
     probsHigh = 0.75
     probsLow = 0.25
-    useBMI <- TRUE
-    useAlg <- TRUE
+    useBMI = TRUE
+    useAlg = TRUE
     useBC = TRUE
     removeOutliers = TRUE
     lagdays = 10
+    DOlim = 7
+    pHlimLow = 6.5
+    pHlimHigh = 9
     bmiIndex = "CSCI"
     algIndex = "MMIhybrid"
-    dir_data = normalizePath(file.path(".", "Data"))
-    dir_results = normalizePath(file.path(".", "Results"))
+    if (DEBUG_person == "Ann") {
+      dir_data = dir_data_abs
+      dir_results = dir_results_abs
+      dir_rmd = file.path("C:", "Users", "ann.lincoln", "Documents", "GitHub"
+                          , "CASTfxn", "inst", "rmd")
+    } else {
+      dir_data = normalizePath(file.path(".", "Data"))
+      dir_results = normalizePath(file.path(".", "Results"))
+      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+    }
     report_type = "summary"
     report_format = "html"
-    dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
     siteQual2Plot = NULL
   }## IF ~ boo_DEBUG ~ END
   
@@ -99,26 +113,26 @@ getReport <- function(TargetSiteID
   #
   # 20181205
   report_type_valid <- c("summary", "overall")
-  if(!(tolower(report_type) %in% report_type_valid)){
+  if (!(tolower(report_type) %in% report_type_valid)) {
     Msg <- "Only the 'summary' report_type is active."
     stop(Msg)
   }
   #
   # Report parts
   strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
-  strFile_out_ext <- paste0(".", ifelse(report_format=="word", "docx", report_format)) #".docx" # ".html"
+  strFile_out_ext <- paste0(".", ifelse(report_format == "word", "docx", report_format)) #".docx" # ".html"
   strFile_out <- paste0(paste(TargetSiteID, "Results", stringr::str_to_sentence(report_type)
-                              , myDate, myTime, sep="_"), strFile_out_ext)
+                              , myDate, myTime, sep = "_"), strFile_out_ext)
   #
     # Generate Report
   # Test if RMD file exists
-  if (file.exists(strFile_RMD)){##IF.file.exists.START
+  if (file.exists(strFile_RMD)) {##IF.file.exists.START
     #suppressWarnings(
     rmarkdown::render(strFile_RMD
-                      , output_format=paste0(report_format,"_document")
-                      , output_file=strFile_out
-                      , output_dir=file.path(dir_results, TargetSiteID)
-                      , quiet=TRUE)
+                      , output_format = paste0(report_format,"_document")
+                      , output_file = strFile_out
+                      , output_dir = file.path(dir_results, TargetSiteID)
+                      , quiet = TRUE)
     #)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
@@ -128,7 +142,7 @@ getReport <- function(TargetSiteID
     Msg.Line4 <- paste0("directory = ", dir_rmd)
     Msg <- paste(Msg.Line0, Msg.Line1
                  #, Msg.Line2
-                 , Msg.Line3, Msg.Line4, Msg.Line0, sep="\n\n")
+                 , Msg.Line3, Msg.Line4, Msg.Line0, sep = "\n\n")
     message(Msg)
     # cat(Msg)
     # utils::flush.console()
