@@ -91,9 +91,11 @@ if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
 
 The CASTool is a screening tool. It is intended to assist the City of San Diego and its agents to rapidly screen and assist with identifying causes of biological impairment. Due the tool's reliance on currently available and sometimes incomplete data, however, it is not intended to be a final arbiter on assessment analyses, nor does it represent any commitments by the City to perform any specific projects, studies, or other actions.
 
-The most reliable results correspond with analytes for which many recent results are available in the comparator site dataset and for which all lines of evidence supported by this tool are capable of being evaluated and show similar results. It is imperative that the analyst consider additional lines of evidence before drawing conclusions, in particular: 1) a pathway from the stressor to the receptor, and 2) a biological mechanism that supports the stressor as a cause of biological impairment.
+The most reliable results correspond with stressors for which many recent results are available and for which all lines of evidence used in this tool demonstrate similar results. If this screening-level analysis shows supporting evidence for a stressor as a cause of impairment, additional evaluation is warranted.
 
-Analytes for which fewer data points exist may be identified as potential stressors simply due to lack of sufficient sample information. Insufficient data may also sway the weight of evidence in either direction. Moreover, analytical results obtained early in the assessment chronology are less likely to reflect current conditions. 
+Stressors for which little data exists may or may not be identified as potential stressors by the CASTool and should be treated with caution. Moreover, care should be taken when using results based on data collected several years ago; those data (and therefore the results of the CASTool) may not reflect current conditions. 
+
+Additional information on causal assessment is available in EPA's Stressor Identification Guidance Document. (U.S. Environmental Protection Agency. (2000). Stressor Identification Guidance Document. (EPA/822/B-00/025). Cincinnati, OH: U.S. Environmental Protection Agency, Office of Water, Office of Research and Development, National Exposure Research Laboratory) 
 
 # **SITE INFORMATION**
 
