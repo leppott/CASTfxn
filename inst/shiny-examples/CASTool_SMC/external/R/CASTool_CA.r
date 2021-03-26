@@ -65,6 +65,7 @@ if (boo_Shiny == TRUE) {
         dir_results <- file.path(localdir, "Results")
         printClusterInfo <- FALSE
         boo_plot_user <- TRUE
+        # NOTE: to run all sites, comment out line 639
         #if (boo.debug == TRUE & debug.person == "Ann") {
             source(file.path(gitpath, "getCoOccurDataset.R"))
             source(file.path(gitpath, "getTimeSeq.R"))
@@ -635,7 +636,9 @@ if (boo_Shiny == TRUE) {
     df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
     names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-    df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
+    # df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
+    msg <- paste0("Number of target sites = ", nrow(df_targets))
+    message(msg)
 }
 
 # 14, Main Code ####
