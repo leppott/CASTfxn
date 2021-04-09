@@ -116,15 +116,16 @@ fnSamps <- file.path(dir_data,"SMCSiteSummary.tab")
 dfSamps <- read.delim(fnSamps, header = TRUE, sep = "\t")
 dfSamps <- dfSamps[dfSamps$StationID_Master == TargetSiteID,]
 row.names(dfSamps) <- NULL
-dfSamps <- dplyr::select(dfSamps, -SampYear) %>%
-    dplyr::rename(Cluster = clust, SampleDate = SampDate) %>%
-    dplyr::mutate(SampleDate = lubridate::mdy(SampleDate))
-sampColNames <- colnames(dfSamps)
-coreColNames <- c("StationID_Master", "COMID", "Cluster", "SampleDate")
-sampColNames <- setdiff(sampColNames, coreColNames)
 
 # Get sample data
 if (nrow(dfSamps) > 0) {# Samples exist for target site
+  
+  dfSamps <- dplyr::select(dfSamps, -SampYear) %>%
+      dplyr::rename(Cluster = clust, SampleDate = SampDate) %>%
+      dplyr::mutate(SampleDate = lubridate::mdy(SampleDate))
+  sampColNames <- colnames(dfSamps)
+  coreColNames <- c("StationID_Master", "COMID", "Cluster", "SampleDate")
+  sampColNames <- setdiff(sampColNames, coreColNames)
   
   # Check for BMI samples
   if (not_all_na(dfSamps$BMISampID)) {
@@ -295,6 +296,8 @@ if (nrow(df_WoE_ES) > 0) {# TargetSite exists in overall WoE
 } else {# TargetSite does not exist in overall WoE
   
   txt_NoData <- "No stressors were identified."
+  boo_BMI <- FALSE
+  boo_ALG <- FALSE
 
 }
 
@@ -339,7 +342,7 @@ if (boo_BMI == TRUE) {
 
 } else {
   
-  cat(paste0("No benthic macroinvertebrate data are available for ", TargetSiteID, ".\n"))
+  cat(paste0("No paired stressor/benthic macroinvertebrate data are available for ", TargetSiteID, ".\n"))
   
 }
 
@@ -439,6 +442,10 @@ if (boo_BMI == TRUE) {
     kableExtra::column_spec(1, bold = TRUE) %>%
     kableExtra::collapse_rows(columns = 1:8, valign = "top")
   
+} else {
+  
+  cat(paste0("No paired stressor/benthic macroinvertebrate data are available for ", TargetSiteID, ".\n"))
+  
 }
 
 ```
@@ -489,7 +496,7 @@ if (boo_ALG == TRUE) {
 
 } else {
   
-  cat(paste0("No algal data are available for ", TargetSiteID, ".\n"))
+  cat(paste0("No paired stressor/algal data are available for ", TargetSiteID, ".\n"))
   
 }
 
@@ -584,6 +591,10 @@ if (boo_ALG == TRUE) {
     kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
     kableExtra::collapse_rows(columns = 1:8, valign = "top")
+  
+} else {
+  
+  cat(paste0("No paired stressor/algal data are available for ", TargetSiteID, ".\n"))
   
 }
 
