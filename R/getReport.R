@@ -66,7 +66,7 @@ getReport <- function(TargetSiteID
                       , algIndex
                       , dir_data = normalizePath(file.path(".", "Data"))
                       , dir_results = normalizePath(file.path(".", "Results"))
-                      , report_type = "summary"
+                      , report_type = "preliminary"
                       , report_format = "html"
                       , dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                       , siteQual2Plot = NULL){##FUNCTION.START
@@ -112,7 +112,7 @@ getReport <- function(TargetSiteID
   report_format <- tolower(report_format)
   #
   # 20181205
-  report_type_valid <- c("summary", "overall")
+  report_type_valid <- c("summary", "overall", "preliminary")
   if (!(tolower(report_type) %in% report_type_valid)) {
     Msg <- "Only the 'summary' report_type is active."
     stop(Msg)
