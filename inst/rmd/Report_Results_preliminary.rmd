@@ -18,10 +18,13 @@ output:
 <!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
 <!-- #  is expressly prohibited without prior written permission of TetraTech. -->
 
+<!-- # Embed logo -->
+<img src="CASTool.svg" style="position:absolute; top:0px; right:0px; padding:10px;" />
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
 # Debugging
-boo.DEBUG <- TRUE
+boo.DEBUG <- FALSE
 DEBUG.CaseNumber <- 1
 #
 # Define pipe and not_all_na
