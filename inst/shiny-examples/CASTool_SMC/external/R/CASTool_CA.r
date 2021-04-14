@@ -636,7 +636,7 @@ if (boo_Shiny == TRUE) {
     df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
     names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-    # df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
+    df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
     msg <- paste0("Number of target sites = ", nrow(df_targets))
     message(msg)
 }
@@ -1736,10 +1736,14 @@ for (site in 1:nrow(df_targets)) {
     }## IF ~ boo_Shiny ~ END
     #  
     # Shiny add ons
+    if (boo_Shiny == TRUE) {
+        report_type     <- "preliminary"
+    } else {
+        report_type     <- "summary"
+    }
     dir_data_abs    <- normalizePath(dir_data)
     dir_results_abs <- normalizePath(dir_results)
     dir_rmd         <- normalizePath(dir_rmd)
-    report_type     <- "summary"
     strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
     message(paste0("file = ", strFile_RMD))
     message(paste0("exists = ", file.exists(strFile_RMD)))
@@ -1772,7 +1776,7 @@ for (site in 1:nrow(df_targets)) {
               , algIndex = algIndex
               , dir_data = dir_data_abs
               , dir_results = dir_results_abs
-              , report_type = "summary"
+              , report_type = report_type
               , report_format = "html"
               , dir_rmd = dir_rmd
               )
