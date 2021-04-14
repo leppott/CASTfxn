@@ -1,6 +1,6 @@
 ---
-title: "Report, Summary"
-subtitle: "CAST"
+title: "Summary Report"
+subtitle: "CASTool"
 author: "`r Sys.getenv('USERNAME')`"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:
@@ -17,6 +17,9 @@ output:
 <!-- #  Copyright 2020 TetraTech. All rights reserved. -->
 <!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
 <!-- #  is expressly prohibited without prior written permission of TetraTech. -->
+
+<!-- # Embed logo -->
+<img src="CASTool.svg" style="position:absolute; top:0px; right:0px; padding:10px;" />
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
