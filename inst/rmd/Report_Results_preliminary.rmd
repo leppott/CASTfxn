@@ -1,6 +1,6 @@
 ---
-title: "Report, Summary"
-subtitle: "CAST"
+title: "Preliminary Report"
+subtitle: "CASTool"
 author: "`r Sys.getenv('USERNAME')`"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:
@@ -21,10 +21,19 @@ output:
 <!-- # Embed logo -->
 <img src="CASTool.svg" style="position:absolute; top:0px; right:0px; padding:10px;" />
 
+<!-- # Add css for vertical alignment of table header cells -->
+<head>
+  <style type="text/css">
+    .dt-top {vertical-align: top;}
+    .dt-middle {vertical-align: middle;}
+    .dt-bottom {vertical-align: bottom;}
+  </style>
+</head>
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
 # Debugging
-boo.DEBUG <- FALSE
+boo.DEBUG <- TRUE
 DEBUG.CaseNumber <- 1
 #
 # Define pipe and not_all_na
@@ -42,6 +51,7 @@ fn_stresslabs <- "SMC_AllStressInfo.tab"
 # Identify all parameters used in the bulk run conducted by TT in March 2021 
 bmiIndex <- "CSCI"
 algIndex <- "MMIhybrid"
+algIndexTxt <- "MMI Hybrid"
 probsHigh <- 0.75
 probsLow <- 0.25
 report_format = "html"
@@ -61,6 +71,8 @@ if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
   }##IF.DEBUG.CaseNumber.END
 }##IF.boo.DEBUG.END
+
+
 
 ```
 
@@ -111,6 +123,8 @@ Additional information on causal assessment is available in EPA's Stressor Ident
 ```
 
 ## *Site Sample Summary*
+
+The table below lists any samples collected from `r TargetSiteID` over time. Red index scores indicate degraded biological quality for benthic macroinvertebrates (`r bmiIndex`) or algae (`r algIndexTxt`).
 
 ```{r sampsummary}
 
@@ -202,52 +216,67 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
                   , all_of(algIndex), all_of(sampColNames)) %>%
   dplyr::arrange(SampleDate)
 
-  compscaption <- paste0("Samples collected from ", TargetSiteID, " over time."
-                         , " Red index scores indicate degraded biological quality.")
+  tblColNames <- c("Site", "Reach", "Cluster", "Sample Date", "CSCI"
+                   , "MMI Hybrid", "Lab Chemistry Sample ID", "Habitat Sample ID"
+                   , "Field Chemistry Sample ID", "Modeled Flow ID"
+                   , "BMI Sample ID", "Algae Sample ID", "Epiphyte Sample ID"
+                   , "Integrated Algae Sample ID", "Macroalgae Sample ID"
+                   , "Microalgae Sample ID")
   
   if (report_format == "html") {
+    
+    if (nrow(dfSamps) <= 10) {
+      DT::datatable(dfSamps
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'ti'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-center'
+                                                             , targets = '_all')
+                                                         , list(className = 'dt-bottom'
+                                                             , targets = '_all')))
+                    , colnames = tblColNames
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(dfSamps), fontSize = '85%') %>%
+        DT::formatStyle('CSCI', color = DT::styleInterval(0.79, c('red', 'black'))
+                        , fontWeight = DT::styleInterval(0.79, c('bold', 'normal'))) %>%
+        DT::formatStyle('MMIhybrid', color = DT::styleInterval(0.82, c('red', 'black'))
+                        , fontWeight = DT::styleInterval(0.82, c('bold', 'normal'))) %>%
+        DT::formatStyle(c("ChemSampleID","PhabSampID", "FldChemSampID", "FlowSampID"
+                          , "BMISampID", "AlgSampID", "EpiphyteSampID", "IntegAlgSampID"
+                          , "MacroalgSampID", "MicroalgSampID"), "white-space" = "nowrap")
+
+    } else {
+      DT::datatable(dfSamps
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'lftip'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-center'
+                                                             , targets = '_all')
+                                                         , list(className = 'dt-bottom'
+                                                             , targets = '_all')))
+                    , colnames = tblColNames
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(dfSamps), fontSize = '85%') %>%
+        DT::formatStyle('CSCI', color = DT::styleInterval(0.79, c('red', 'black'))
+                        , fontWeight = DT::styleInterval(0.79, c('bold', 'normal'))) %>%
+        DT::formatStyle('MMIhybrid', color = DT::styleInterval(0.82, c('red', 'black'))
+                        , fontWeight = DT::styleInterval(0.82, c('bold', 'normal')))
+    }
   
-      # if (nrow(dfSamps)>0) {
-    dfSamps <- dfSamps %>%
-        dplyr::mutate(CSCI = kableExtra::cell_spec(CSCI, "html"
-                            , color = ifelse(is.na(CSCI) == TRUE
-                                         , "black"
-                                         , ifelse((CSCI < 0.79) == TRUE
-                                                  , "red"
-                                                  , "black"))
-                            , bold = ifelse(is.na(CSCI) == TRUE
-                                            , FALSE
-                                            , ifelse((CSCI < 0.79) == TRUE
-                                                     , TRUE
-                                                     , FALSE)))
-                      , MMIhybrid = kableExtra::cell_spec(MMIhybrid, "html"
-                            , color = ifelse(is.na(MMIhybrid) == TRUE
-                                             , "black"
-                                             , ifelse((MMIhybrid < 0.82) == TRUE
-                                                      , "red"
-                                                      , "black"))
-                            , bold = ifelse(is.na(MMIhybrid) == TRUE
-                                            , FALSE
-                                            , ifelse((MMIhybrid < 0.82) == TRUE
-                                                     , TRUE
-                                                     , FALSE))))
-        knitr::kable(dfSamps, escape = FALSE, format = report_format
-                , colnames = colnames(dfSamps), caption = compscaption) %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                , font_size = 12, full_width = FALSE, position = "left") %>%
-            kableExtra::column_spec(1, bold = TRUE) %>%
-            kableExtra::collapse_rows(columns = 1:4, valign = "top")
-        
   } else {
     
-    knitr::kable(dfSamps, format = report_format
-                 , colnames = colnames(dfSamps)
-                 , caption = compscaption) %>%
-        kableExtra::kable_styling(bootstrap_options = "condensed"
-                                  , font_size = 12, full_width = FALSE
-                                  , position = "left") %>%
-        kableExtra::column_spec(1, bold = TRUE) %>%
-        kableExtra::collapse_rows(columns = 1:4, valign = "top")
+    msg <- "Not displayed in non-html format."
+    cat(msg)
     
   }
 
@@ -264,6 +293,23 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
 ## *Benthic Macroinvertebrate Results*
 
 ### Overall Weight of Evidence
+
+The table below displays the scores for each line of evidence and overall weight of evidence, weighted by number of stressors in each group. Overall weight of evidence scores include:
+
+* 1 indicates that all evaluated lines of evidence for all observed stressors in the group support the group as a cause of impairment
+* -1 indicates that all evaluated lines of evidence for all observed stressors in the group refute the group as a cause of impairment
+* 0 indicates that the evaluated lines of evidence for the observed stressors in the group are indeterminate regarding cause of impairment
+* NE indicates that the stressor group was not evaluated
+
+```{r in_out_msg}
+
+msg1 <- "site samples and comparator samples, whereas data from outside the case include the site samples and cluster samples."
+  
+msg2 <- "site samples and cluster samples, whereas data from outside the case include the site samples and all other samples in the dataset."
+  
+```
+
+Inside refers to evidence from data inside the case, and outside refers to evidence from data outside the case. Data from inside the case includes `r ifelse(useBC == TRUE, msg1, msg2)` Taxon sensitivity curves rely on laboratory toxicity tests and therefore represent data from outside the case.
 
 ```{r WoESummaryBMI}
 
@@ -311,37 +357,120 @@ if (boo_BMI == TRUE) {
                              , NumStressors, Overall_WoE, WtTotTS_barplot, WtTotCO_boxplot
                              , WtTotSR_InCase_LogRegr, WtTotSR_InCase_LinRegr
                              , WtTotSR_OutCase_LinRegr, WtTotVP_boxplot)
-        df_BMI_ES <- dplyr::rename(df_BMI_ES, SiteID = StationID_Master
-                               , Degraded = BioDeg
-                               , Group = StressorType
-                               , Stressor_Samples = NumStressSamples
-                               , Stressors = NumStressors
-                               # , Overall_WoE = WtTot_WoE
-                               , TS_Inside = WtTotTS_barplot
-                               , CO_boxplot = WtTotCO_boxplot
-                               , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
-                               , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
-                               , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
-                               , VP_Boxplot = WtTotVP_boxplot)
-        df_BMI_ES <- dplyr::select(df_BMI_ES, SiteID, Degraded, Group, Stressor_Samples
-                               , Stressors, Overall_WoE, TS_Inside, CO_boxplot
-                               , SR_Inside_LogRegr, SR_Inside_LinRegr
-                               , SR_Outside_LinRegr, VP_Boxplot)
-        EScaption <- paste0("Scores for each line of evidence and overall weight "
-                        , "of evidence, weighted by number of stressors in each "
-                        , "group. An overall weight of evidence score of 1 "
-                        , "indicates that all evaluated lines of evidence "
-                        , "for all observed stressors in the group support the group "
-                        , "as a cause of impairment. An overall weight of evidence "
-                        , "score of -1 indicates that all evaluated lines of "
-                        , "evidence for all observed stressors in the group "
-                        , "refute the group as a cause of impairment.")
-        knitr::kable(df_BMI_ES, format = report_format
-                     , colnames = colnames(df_BMI_ES)
-                     , caption = EScaption, align = 'lllccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12) %>%
-            kableExtra::collapse_rows(columns = 1:2, valign = "top")
+  df_BMI_ES$Blank1 <- NA
+  df_BMI_ES <- dplyr::rename(df_BMI_ES, SiteID = StationID_Master
+                         , Degraded = BioDeg
+                         , Group = StressorType
+                         , Stressor_Samples = NumStressSamples
+                         , Stressors = NumStressors
+                         , TS_Inside = WtTotTS_barplot
+                         , CO_boxplot = WtTotCO_boxplot
+                         , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
+                         , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
+                         , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
+                         , VP_Boxplot = WtTotVP_boxplot)
+  df_BMI_ES <- dplyr::select(df_BMI_ES
+                             , SiteID
+                             , Degraded
+                             , Group
+                             , Stressor_Samples
+                             , Stressors
+                             , Overall_WoE
+                             , TS_Inside
+                             , CO_boxplot
+                             , SR_Inside_LogRegr
+                             , SR_Inside_LinRegr
+                             , VP_Boxplot
+                             , Blank1
+                             , SR_Outside_LinRegr)
+
+  # tblColNames <- c("Site"
+  #                  , "Degraded"
+  #                  , "Stressor Group"
+  #                  , "Number of Stressor Samples"
+  #                  , "Number of Stressors"
+  #                  , "Overall Weight of Evidence"
+  #                  , "Time Sequence (inside)"
+  #                  , "Co-occurrence (inside)"
+  #                  , "Stressor-Response (inside)"
+  #                  , "Biological Gradient (inside)"
+  #                  , "Verified Prediction (inside)"
+  #                  , "Blank1"
+  #                  , "Biological Gradient (outside)")
+  
+  if (report_format == "html") {
+    
+    sketch <- htmltools::withTags(table(
+      class = 'display'
+      , thead(
+        tr(
+          th(rowspan = 2, 'Site')
+          , th(rowspan = 2, 'Degraded')
+          , th(rowspan = 2, 'Stressor Group')
+          , th(rowspan = 2, 'Num. Stressor Samples')
+          , th(rowspan = 2, 'Num. Stressors')
+          , th(rowspan = 2, 'Overall Weight of Evidence')
+          , th(colspan = 5, 'Inside the Case')
+          , th(rowspan = 2, '')
+          , th(colspan = 1, 'Outside the Case')
+        )
+        , tr(
+            lapply(c('Time Sequence', 'Co-occurrence', 'Stressor-response'
+                     , 'Biological gradient', 'Verified prediction'
+                     , 'Biological gradient'), th)
+        )
+      )
+    ))
+    
+    if (nrow(df_BMI_ES) <= 10) {
+      DT::datatable(df_BMI_ES
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'ti'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                              , targets = 2)
+                                                         , list(className = 'dt-center'
+                                                              , targets = c(0:1,3:12))
+                                                         , list(className = 'dt-bottom'
+                                                              , targets = '_all')))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_BMI_ES), fontSize = '85%')
+    } else {
+      DT::datatable(df_BMI_ES
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'lftip'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , lengthMenu = ifelse(nrow(df_BMI_ES) > 10
+                                                           , c(10, 25, 50, 100)
+                                                           , 10)
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                              , targets = 2)
+                                                         , list(className = 'dt-center'
+                                                              , targets = c(0:1,3:12))
+                                                         , list(className = 'dt-bottom'
+                                                              , targets = '_all')))
+                    , class = ' striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_BMI_ES), fontSize = '85%')
+    }
+  
+  } else {
+    
+    msg <- "Not displayed in non-html format."
+    cat(msg)
+    
+  }
 
 } else {
   
@@ -353,6 +482,13 @@ if (boo_BMI == TRUE) {
 
 ### Stressor-Specific Results
 
+The table below shows scores for each stressor identified in one or more samples obtained from the bioassessment site `r TargetSiteID`, along with each line of evidence Scores for each line of evidence include:
+
+* 1 for evidence supporting the stressor as a cause of impairment
+* -1 for evidence refuting the stressor as a cause of impairment
+* 0 for indeterminate evidence
+* NE for not evaluated
+
 ```{r WoEscores_bmi}
 
 if (boo_BMI == TRUE) {
@@ -363,7 +499,7 @@ if (boo_BMI == TRUE) {
   df_WoE_Det <- read.delim(fn_WoE_Det, header = TRUE, sep = "\t")
   df_WoE_Det <- df_WoE_Det %>%
     dplyr::filter(StationID_Master == TargetSiteID) %>%
-    dplyr::select(-Cluster, -StationID_Master, -FinalLatitude, -FinalLongitude)
+    dplyr::select(-Cluster, -FinalLatitude, -FinalLongitude)
   
   df_BMI_Det <- dplyr::filter(df_WoE_Det, BioComm == "BMI")
   
@@ -412,7 +548,7 @@ if (boo_BMI == TRUE) {
   
   df_BMI_Det <- df_BMI_Det %>%
     dplyr::select(-Stressor) %>%
-    dplyr::rename(Stressor = Label)
+    dplyr::rename(Stressor = Label, SiteID = StationID_Master)
   
   LoEcols = c("TS_Inside", "CO_boxplot", "SR_Inside_LogRegr", "SR_Inside_LinRegr"
               , "SR_Outside_LinRegr", "VP_SensitiveTaxa", "VP_TolerantTaxa"
@@ -421,30 +557,149 @@ if (boo_BMI == TRUE) {
   df_BMI_Det$TotRefute <- rowSums(df_BMI_Det[, LoEcols] == -1)
   df_BMI_Det$TotIndet <- rowSums(df_BMI_Det[, LoEcols] == 0)
   df_BMI_Det$TotNotEval <- rowSums(df_BMI_Det[, LoEcols] == "NE")
+  df_BMI_Det$Blank1 <- NA
+  df_BMI_Det$Blank2 <- NA
 
   
-  df_BMI_Det <- dplyr::select(df_BMI_Det, Degraded, Narrative, CSCI, ResponseSampleDate
-                              , ResponseSampleID, StressorSampleDate
+  df_BMI_Det <- dplyr::select(df_BMI_Det, SiteID, Degraded, Narrative, CSCI
+                              , ResponseSampleDate, ResponseSampleID, StressorSampleDate
                               , StressorSampleID, Group, Stressor, StressorValue
                               , PercentRank, WoE, TS_Inside, CO_boxplot
                               , SR_Inside_LogRegr, SR_Inside_LinRegr
-                              , SR_Outside_LinRegr, VP_SensitiveTaxa
-                              , VP_TolerantTaxa, SSD_ToxicityCurve, TotSupport
-                              , TotRefute, TotIndet, TotNotEval)
+                              , VP_SensitiveTaxa, VP_TolerantTaxa, Blank1
+                              , SR_Outside_LinRegr, SSD_ToxicityCurve, Blank2
+                              , TotSupport, TotRefute, TotIndet, TotNotEval)
   
   df_BMI_Det <- dplyr::arrange(df_BMI_Det, desc(Degraded), desc(CSCI), StressorSampleDate
                                , ResponseSampleID, StressorSampleID, Group
                                , Stressor, StressorValue)
+  
+  # tblColNames <- c("Site"
+  #                  , "Degraded"
+  #                  , "Condition Narrative"
+  #                  , "CSCI"
+  #                  , "BMI Sample Date"
+  #                  , "BMI Sample ID"
+  #                  , "Stressor Sample Date"
+  #                  , "Stressor Sample ID"
+  #                  , "Stressor Group"
+  #                  , "Stressor"
+  #                  , "Stressor Value"
+  #                  , "Stressor Percent Rank"
+  #                  , "Overall Weight of Evidence"
+  #                  , "Time Sequence (inside)"
+  #                  , "Co-occurrence (inside)"
+  #                  , "Stressor-Response (inside)"
+  #                  , "Biological Gradient (inside)"
+  #                  , "Verified Prediction/ Sensitive Taxa (inside)"
+  #                  , "Verified Prediction/ Tolerant Taxa (inside)"
+  #                  , "Blank1"
+  #                  , "Biological Gradient (outside)"
+  #                  , "Taxon Sensitivity Distribution (outside)"
+  #                  , "Blank2"
+  #                  , "Total Supporting", "Total Refuting", "Total Indeterminate"
+  #                  , "Total Not Evaluated")
+  
+  if (report_format == "html") {
     
-  Detcaption <- paste0("Scores for each line of evidence equal 1 (supports), "
-                       , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
+    sketch <- htmltools::withTags(table(
+      class = 'display'
+      , thead(
+        tr(
+          th(rowspan = 3, 'Site')
+          , th(rowspan = 3, 'Degraded')
+          , th(rowspan = 3, 'Condition Narrative')
+          , th(rowspan = 3, 'CSCI')
+          , th(rowspan = 3, 'BMI Sample Date')
+          , th(rowspan = 3, 'BMI Sample ID')
+          , th(colspan = 6, 'Stressor')
+          , th(rowspan = 3, 'Overall Weight of Evidence')
+          , th(colspan = 6, 'Inside the Case')
+          , th(rowspan = 3, '')
+          , th(colspan = 2, 'Outside the Case')
+          , th(rowspan = 3, '')
+          , th(colspan = 4, "Total Lines of Evidence")
+        )
+        , tr(
+          th(rowspan = 2, 'Sample Date')
+          , th(rowspan = 2, 'Sample ID')
+          , th(rowspan = 2, 'Group')
+          , th(rowspan = 2, 'Name')
+          , th(rowspan = 2, 'Value')
+          , th(rowspan = 2, 'Percent Rank')
+          , th(rowspan = 2, 'Time Sequence')
+          , th(rowspan = 2, 'Co-occurrence')
+          , th(rowspan = 2, 'Stressor-response')
+          , th(rowspan = 2, 'Biological Gradient')
+          , th(colspan = 2, 'Verified Prediction')
+          , th(rowspan = 2, 'Biological Gradient')
+          , th(rowspan = 2, 'Taxon Sensitivity Distribution')
+          , th(rowspan = 2, 'Supporting')
+          , th(rowspan = 2, 'Refuting')
+          , th(rowspan = 2, 'Indeterminate')
+          , th(rowspan = 2, 'Not evaluated')
+        )
+        , tr(
+            lapply(c('Sensitive Taxa', 'Tolerant Taxa'), th)
+        )
+      )
+    ))
+    
+    
+    if (nrow(df_BMI_Det) <= 10) {
+      DT::datatable(df_BMI_Det
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'ti'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                             , targets = c(8,9))
+                                                         , list(className = 'dt-center'
+                                                             , targets = c(1:7,10:26))
+                                                         , list(className = 'dt-bottom'
+                                                                , targets = "_all")))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_BMI_Det), fontSize = '85%') %>%
+        DT::formatStyle("Stressor", "white-space" = "nowrap") %>%
+        DT::formatStyle("StressorSampleID", "white-space" = "nowrap")
+    } else {
+      DT::datatable(df_BMI_Det
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'lftip'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , lengthMenu = ifelse(nrow(df_BMI_Det) > 10
+                                                           , c(10, 25, 50, 100)
+                                                           , 10)
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                             , targets = c(8,9))
+                                                         , list(className = 'dt-center'
+                                                             , targets = c(1:7,10:26))
+                                                         , list(className = 'dt-bottom'
+                                                                , targets = "_all")))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_BMI_Det), fontSize = '85%') %>%
+        DT::formatStyle("Stressor", "white-space" = "nowrap") %>%
+        DT::formatStyle("StressorSampleID", "white-space" = "nowrap")
+    }
   
-  knitr::kable(df_BMI_Det, format = report_format, colnames = colnames(df_BMI_Det)
-               , caption = Detcaption, align = 'llcclclllrrlcccccccccccc') %>%
-    kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
-    kableExtra::collapse_rows(columns = 1:8, valign = "top")
-  
+  } else {
+    
+    msg <- "Not displayed in non-html format."
+    cat(msg)
+    
+  }
+
 } else {
   
   cat(paste0("No paired stressor/benthic macroinvertebrate data are available for ", TargetSiteID, ".\n"))
@@ -457,6 +712,15 @@ if (boo_BMI == TRUE) {
 
 ### Overall Weight of Evidence
 
+The table below displays the scores for each line of evidence and overall weight of evidence, weighted by number of stressors in each group. Overall weight of evidence scores include:
+
+* 1 indicates that all evaluated lines of evidence for all observed stressors in the group support the group as a cause of impairment
+* -1 indicates that all evaluated lines of evidence for all observed stressors in the group refute the group as a cause of impairment
+* 0 indicates that the evaluated lines of evidence for the observed stressors in the group are indeterminate regarding cause of impairment
+* NE indicates that the stressor group was not evaluated
+
+Inside refers to evidence from data inside the case, and outside refers to evidence from data outside the case. Data from inside the case includes `r ifelse(useBC == TRUE, msg1, msg2)` Taxon sensitivity curves rely on laboratory toxicity tests and therefore represent data from outside the case.
+
 ```{r WoESummaryALG}
 
 if (boo_ALG == TRUE) {
@@ -465,37 +729,120 @@ if (boo_ALG == TRUE) {
                              , NumStressors, Overall_WoE, WtTotTS_barplot, WtTotCO_boxplot
                              , WtTotSR_InCase_LogRegr, WtTotSR_InCase_LinRegr
                              , WtTotSR_OutCase_LinRegr, WtTotVP_boxplot)
-        df_ALG_ES <- dplyr::rename(df_ALG_ES, SiteID = StationID_Master
-                               , Degraded = BioDeg
-                               , Group = StressorType
-                               , Stressor_Samples = NumStressSamples
-                               , Stressors = NumStressors
-                               # , Overall_WoE = WtTot_WoE
-                               , TS_Inside = WtTotTS_barplot
-                               , CO_boxplot = WtTotCO_boxplot
-                               , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
-                               , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
-                               , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
-                               , VP_Boxplot = WtTotVP_boxplot)
-        df_ALG_ES <- dplyr::select(df_ALG_ES, SiteID, Degraded, Group, Stressor_Samples
-                               , Stressors, Overall_WoE, TS_Inside, CO_boxplot
-                               , SR_Inside_LogRegr, SR_Inside_LinRegr
-                               , SR_Outside_LinRegr, VP_Boxplot)
-        EScaption <- paste0("Scores for each line of evidence and overall weight "
-                        , "of evidence, weighted by number of stressors in each "
-                        , "group. An overall weight of evidence score of 1 "
-                        , "indicates that all evaluated lines of evidence "
-                        , "for all observed stressors in the group support the group "
-                        , "as a cause of impairment. An overall weight of evidence "
-                        , "score of -1 indicates that all evaluated lines of "
-                        , "evidence for all observed stressors in the group "
-                        , "refute the group as a cause of impairment.")
-        knitr::kable(df_ALG_ES, format = report_format
-                     , colnames = colnames(df_ALG_ES)
-                     , caption = EScaption, align = 'lllccccccccc') %>%
-            kableExtra::kable_styling(bootstrap_options = "condensed"
-                                      , font_size = 12) %>%
-            kableExtra::collapse_rows(columns = 1:2, valign = "top")
+  df_ALG_ES$Blank1 <- NA
+  df_ALG_ES <- dplyr::rename(df_ALG_ES, SiteID = StationID_Master
+                         , Degraded = BioDeg
+                         , Group = StressorType
+                         , Stressor_Samples = NumStressSamples
+                         , Stressors = NumStressors
+                         , TS_Inside = WtTotTS_barplot
+                         , CO_boxplot = WtTotCO_boxplot
+                         , SR_Inside_LogRegr = WtTotSR_InCase_LogRegr
+                         , SR_Inside_LinRegr = WtTotSR_InCase_LinRegr
+                         , SR_Outside_LinRegr = WtTotSR_OutCase_LinRegr
+                         , VP_Boxplot = WtTotVP_boxplot)
+  df_ALG_ES <- dplyr::select(df_ALG_ES
+                             , SiteID
+                             , Degraded
+                             , Group
+                             , Stressor_Samples
+                             , Stressors
+                             , Overall_WoE
+                             , TS_Inside
+                             , CO_boxplot
+                             , SR_Inside_LogRegr
+                             , SR_Inside_LinRegr
+                             , VP_Boxplot
+                             , Blank1
+                             , SR_Outside_LinRegr)
+
+  # tblColNames <- c("Site"
+  #                  , "Degraded"
+  #                  , "Stressor Group"
+  #                  , "Number of Stressor Samples"
+  #                  , "Number of Stressors"
+  #                  , "Overall Weight of Evidence"
+  #                  , "Time Sequence (inside)"
+  #                  , "Co-occurrence (inside)"
+  #                  , "Stressor-Response (inside)"
+  #                  , "Biological Gradient (inside)"
+  #                  , "Verified Prediction (inside)"
+  #                  , "Blank1"
+  #                  , "Biological Gradient (outside)")
+  
+  if (report_format == "html") {
+    
+    sketch <- htmltools::withTags(table(
+      class = 'display'
+      , thead(
+        tr(
+          th(rowspan = 2, 'Site')
+          , th(rowspan = 2, 'Degraded')
+          , th(rowspan = 2, 'Stressor Group')
+          , th(rowspan = 2, 'Num. Stressor Samples')
+          , th(rowspan = 2, 'Num. Stressors')
+          , th(rowspan = 2, 'Overall Weight of Evidence')
+          , th(colspan = 5, 'Inside the Case')
+          , th(rowspan = 2, '')
+          , th(colspan = 1, 'Outside the Case')
+        )
+        , tr(
+            lapply(c('Time Sequence', 'Co-occurrence', 'Stressor-response'
+                     , 'Biological gradient', 'Verified prediction'
+                     , 'Biological gradient'), th)
+        )
+      )
+    ))
+    
+    if (nrow(df_ALG_ES) <= 10) {
+      DT::datatable(df_ALG_ES
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'ti'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                              , targets = 2)
+                                                         , list(className = 'dt-center'
+                                                              , targets = c(0:1,3:12))
+                                                         , list(className = 'dt-bottom'
+                                                              , targets = '_all')))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_ALG_ES), fontSize = '85%')
+    } else {
+      DT::datatable(df_ALG_ES
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'lftip'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , lengthMenu = ifelse(nrow(df_ALG_ES) > 10
+                                                           , c(10, 25, 50, 100)
+                                                           , 10)
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                              , targets = 2)
+                                                         , list(className = 'dt-center'
+                                                              , targets = c(0:1,3:12))
+                                                         , list(className = 'dt-bottom'
+                                                              , targets = '_all')))
+                    , class = ' striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_ALG_ES), fontSize = '85%')
+    }
+  
+  } else {
+    
+    msg <- "Not displayed in non-html format."
+    cat(msg)
+    
+  }
 
 } else {
   
@@ -506,6 +853,13 @@ if (boo_ALG == TRUE) {
 ```
 
 ### Stressor-Specific Results
+
+The table below shows scores for each stressor identified in one or more samples obtained from the bioassessment site `r TargetSiteID`, along with each line of evidence Scores for each line of evidence include:
+
+* 1 for evidence supporting the stressor as a cause of impairment
+* -1 for evidence refuting the stressor as a cause of impairment
+* 0 for indeterminate evidence
+* NE for not evaluated
 
 ```{r WoEscores_ALG}
 
@@ -561,7 +915,7 @@ if (boo_ALG == TRUE) {
   
   df_ALG_Det <- df_ALG_Det %>%
     dplyr::select(-Stressor) %>%
-    dplyr::rename(Stressor = Label)
+    dplyr::rename(Stressor = Label, SiteID = StationID_Master)
   
   LoEcols = c("TS_Inside", "CO_boxplot", "SR_Inside_LogRegr", "SR_Inside_LinRegr"
               , "SR_Outside_LinRegr", "VP_SensitiveTaxa", "VP_TolerantTaxa"
@@ -570,30 +924,148 @@ if (boo_ALG == TRUE) {
   df_ALG_Det$TotRefute <- rowSums(df_ALG_Det[, LoEcols] == -1)
   df_ALG_Det$TotIndet <- rowSums(df_ALG_Det[, LoEcols] == 0)
   df_ALG_Det$TotNotEval <- rowSums(df_ALG_Det[, LoEcols] == "NE")
-
+  df_ALG_Det$Blank1 <- NA
+  df_ALG_Det$Blank2 <- NA
   
-  df_ALG_Det <- dplyr::select(df_ALG_Det, Degraded, Narrative, MMI_Hybrid
+  df_ALG_Det <- dplyr::select(df_ALG_Det, SiteID, Degraded, Narrative, MMI_Hybrid
                               , ResponseSampleDate, ResponseSampleID
                               , StressorSampleDate, StressorSampleID, Group
                               , Stressor, StressorValue, PercentRank, WoE
                               , TS_Inside, CO_boxplot, SR_Inside_LogRegr
-                              , SR_Inside_LinRegr, SR_Outside_LinRegr
-                              , VP_SensitiveTaxa, VP_TolerantTaxa
-                              , SSD_ToxicityCurve, TotSupport, TotRefute
-                              , TotIndet, TotNotEval)
+                              , SR_Inside_LinRegr, VP_SensitiveTaxa
+                              , VP_TolerantTaxa, Blank1, SR_Outside_LinRegr
+                              , SSD_ToxicityCurve, Blank2, TotSupport
+                              , TotRefute, TotIndet, TotNotEval)
   
   df_ALG_Det <- dplyr::arrange(df_ALG_Det, desc(Degraded), desc(MMI_Hybrid)
                                , StressorSampleDate, ResponseSampleID
                                , StressorSampleID, Group, Stressor, StressorValue)
-    
-  Detcaption <- paste0("Scores for each line of evidence equal 1 (supports), "
-                       , "-1 (refutes), 0 (indeterminate), or NE (not evaluated).")
   
-  knitr::kable(df_ALG_Det, format = report_format, colnames = colnames(df_ALG_Det)
-               , caption = Detcaption, align = 'llcclclllrrlcccccccccccc') %>%
-    kableExtra::kable_styling(bootstrap_options = "condensed", font_size = 12) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
-    kableExtra::collapse_rows(columns = 1:8, valign = "top")
+  # tblColNames <- c("Site"
+  #                  , "Degraded"
+  #                  , "Condition Narrative"
+  #                  , "MMI Hybrid"
+  #                  , "BMI Sample Date"
+  #                  , "BMI Sample ID"
+  #                  , "Stressor Sample Date"
+  #                  , "Stressor Sample ID"
+  #                  , "Stressor Group"
+  #                  , "Stressor"
+  #                  , "Stressor Value"
+  #                  , "Stressor Percent Rank"
+  #                  , "Overall Weight of Evidence"
+  #                  , "Time Sequence (inside)"
+  #                  , "Co-occurrence (inside)"
+  #                  , "Stressor-Response (inside)"
+  #                  , "Biological Gradient (inside)"
+  #                  , "Verified Prediction/ Sensitive Taxa (inside)"
+  #                  , "Verified Prediction/ Tolerant Taxa (inside)"
+  #                  , "Blank1"
+  #                  , "Biological Gradient (outside)"
+  #                  , "Taxon Sensitivity Distribution (outside)"
+  #                  , "Blank2"
+  #                  , "Total Supporting", "Total Refuting", "Total Indeterminate"
+  #                  , "Total Not Evaluated")
+  
+  if (report_format == "html") {
+    
+    sketch <- htmltools::withTags(table(
+      class = 'display'
+      , thead(
+        tr(
+          th(rowspan = 3, 'Site')
+          , th(rowspan = 3, 'Degraded')
+          , th(rowspan = 3, 'Condition Narrative')
+          , th(rowspan = 3, 'MMI Hybrid')
+          , th(rowspan = 3, 'Algae Sample Date')
+          , th(rowspan = 3, 'Algae Sample ID')
+          , th(colspan = 6, 'Stressor')
+          , th(rowspan = 3, 'Overall Weight of Evidence')
+          , th(colspan = 6, 'Inside the Case')
+          , th(rowspan = 3, '')
+          , th(colspan = 2, 'Outside the Case')
+          , th(rowspan = 3, '')
+          , th(colspan = 4, "Total Lines of Evidence")
+        )
+        , tr(
+          th(rowspan = 2, 'Sample Date')
+          , th(rowspan = 2, 'Sample ID')
+          , th(rowspan = 2, 'Group')
+          , th(rowspan = 2, 'Name')
+          , th(rowspan = 2, 'Value')
+          , th(rowspan = 2, 'Percent Rank')
+          , th(rowspan = 2, 'Time Sequence')
+          , th(rowspan = 2, 'Co-occurrence')
+          , th(rowspan = 2, 'Stressor-response')
+          , th(rowspan = 2, 'Biological Gradient')
+          , th(colspan = 2, 'Verified Prediction')
+          , th(rowspan = 2, 'Biological Gradient')
+          , th(rowspan = 2, 'Taxon Sensitivity Distribution')
+          , th(rowspan = 2, 'Supporting')
+          , th(rowspan = 2, 'Refuting')
+          , th(rowspan = 2, 'Indeterminate')
+          , th(rowspan = 2, 'Not evaluated')
+        )
+        , tr(
+            lapply(c('Sensitive Taxa', 'Tolerant Taxa'), th)
+        )
+      )
+    ))
+    
+    
+    if (nrow(df_ALG_Det) <= 10) {
+      DT::datatable(df_ALG_Det
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'ti'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                             , targets = c(8,9))
+                                                         , list(className = 'dt-center'
+                                                             , targets = c(1:7,10:26))
+                                                         , list(className = 'dt-bottom'
+                                                                , targets = "_all")))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_ALG_Det), fontSize = '85%') %>%
+        DT::formatStyle("Stressor", "white-space" = "nowrap") %>%
+        DT::formatStyle("StressorSampleID", "white-space" = "nowrap")
+    } else {
+      DT::datatable(df_ALG_Det
+                    , container = sketch
+                    , extensions = 'FixedColumns'
+                    , options = list(dom = 'lftip'
+                                     , pageLength = 10
+                                     , bSort = FALSE
+                                     , scrollX = TRUE
+                                     , fixedColumns = TRUE
+                                     , lengthMenu = ifelse(nrow(df_ALG_Det) > 10
+                                                           , c(10, 25, 50, 100)
+                                                           , 10)
+                                     , columnDefs = list(list(className = 'dt-left'
+                                                             , targets = c(8,9))
+                                                         , list(className = 'dt-center'
+                                                             , targets = c(1:7,10:26))
+                                                         , list(className = 'dt-bottom'
+                                                                , targets = "_all")))
+                    , class = 'striped hover row-border'
+                    , filter = 'none'
+                    , rownames = FALSE) %>%
+        DT::formatStyle(columns = colnames(df_ALG_Det), fontSize = '85%') %>%
+        DT::formatStyle("Stressor", "white-space" = "nowrap") %>%
+        DT::formatStyle("StressorSampleID", "white-space" = "nowrap")
+    }
+  
+  } else {
+    
+    msg <- "Not displayed in non-html format."
+    cat(msg)
+    
+  }
   
 } else {
   
