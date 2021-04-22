@@ -49,19 +49,22 @@ BioNarLab <- c("very likely altered", "likely altered", "possibly altered "
 fn_stresslabs <- "SMC_AllStressInfo.tab"
 
 # Identify all parameters used in the bulk run conducted by TT in March 2021 
-bmiIndex <- "CSCI"
-algIndex <- "MMIhybrid"
-algIndexTxt <- "MMI Hybrid"
 probsHigh <- 0.75
 probsLow <- 0.25
-report_format = "html"
-removeOutliers <- TRUE
+# useBMI <- TRUE # Determined from results data
+# useAlg <- TRUE # Determined from results data
 useBC <- TRUE # Use Bray-Curtis biological dissimilarity distance matrix
-lagdays = 10
+removeOutliers <- TRUE
 DOlim     <- 7
 pHlimLow  <- 6.5
 pHlimHigh <- 9
-siteQual2Plot = stringr::str_to_sentence("not degraded") # options:"reference","better than", "not degraded"
+lagdays <- 10
+bmiIndex <- "CSCI"
+algIndex <- "MMIhybrid"
+algIndexTxt <- "MMI Hybrid"
+# report_type <- "preliminary"
+report_format <- "html"
+siteQual2Plot <- stringr::str_to_sentence("not degraded") # options:"reference","better than", "not degraded"
 
 #
 if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
