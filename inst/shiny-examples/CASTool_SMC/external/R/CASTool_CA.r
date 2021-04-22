@@ -1748,18 +1748,6 @@ for (site in 1:nrow(df_targets)) {
     message(paste0("file = ", strFile_RMD))
     message(paste0("exists = ", file.exists(strFile_RMD)))
     #
-    # test
-    # probsHigh      <- 0.75
-    # probsLow       <- 0.25
-    # useBMI         <- TRUE
-    # useAlg         <- TRUE
-    # useBC          <- TRUE
-    # removeOutliers <- TRUE
-    # lagdays        <- 10
-    # bmiIndex       <- "CSCI"
-    # algIndex       <- "MMIhybrid"
-    # siteQual2Plot  <- "not degraded"
-    
     # Get final report (Executive Summary style)
     getReport(TargetSiteID
               , probsHigh = probsHigh
@@ -1778,8 +1766,7 @@ for (site in 1:nrow(df_targets)) {
               , dir_results = dir_results_abs
               , report_type = report_type
               , report_format = "html"
-              , dir_rmd = dir_rmd
-              )
+              , dir_rmd = dir_rmd)
     
     # rm(list.SiteSummary, list.data, list.stressors, list.ChemBMIData
     #    , chem.info, stressors, stressors_logtransf, data.SSTV.totabund)
