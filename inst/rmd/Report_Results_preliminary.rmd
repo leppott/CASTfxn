@@ -216,16 +216,21 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
                   , all_of(algIndex), all_of(sampColNames)) %>%
   dplyr::arrange(SampleDate)
 
-  tblColNames <- c("Site", "Reach", "Cluster", "Sample Date", "CSCI"
+  if (report_format == "html") {
+    
+      tblColNames <- c("Site", "Reach", "Cluster", "Sample Date", "CSCI"
                    , "MMI Hybrid", "Lab Chemistry Sample ID", "Habitat Sample ID"
                    , "Field Chemistry Sample ID", "Modeled Flow ID"
                    , "BMI Sample ID", "Algae Sample ID", "Epiphyte Sample ID"
                    , "Integrated Algae Sample ID", "Macroalgae Sample ID"
                    , "Microalgae Sample ID")
-  
-  if (report_format == "html") {
+      
+      tblCaption <- paste0("<h5><em>Samples collected from ", TargetSiteID,".</em></h5>")
     
+      cat(tblCaption)
+
     if (nrow(dfSamps) <= 10) {
+      
       DT::datatable(dfSamps
                     , extensions = 'FixedColumns'
                     , options = list(dom = 'ti'
@@ -251,6 +256,7 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
                           , "MacroalgSampID", "MicroalgSampID"), "white-space" = "nowrap")
 
     } else {
+      
       DT::datatable(dfSamps
                     , extensions = 'FixedColumns'
                     , options = list(dom = 'lftip'
@@ -422,6 +428,7 @@ if (boo_BMI == TRUE) {
       )
     ))
     
+
     if (nrow(df_BMI_ES) <= 10) {
       DT::datatable(df_BMI_ES
                     , container = sketch
