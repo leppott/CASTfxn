@@ -33,7 +33,7 @@ output:
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
 # Debugging
-boo.DEBUG <- TRUE
+boo.DEBUG <- FALSE
 DEBUG.CaseNumber <- 1
 #
 # Define pipe and not_all_na
@@ -431,7 +431,6 @@ if (boo_BMI == TRUE) {
       )
     ))
     
-
     if (nrow(df_BMI_ES) <= 10) {
       DT::datatable(df_BMI_ES
                     , container = sketch
@@ -654,7 +653,6 @@ if (boo_BMI == TRUE) {
         )
       )
     ))
-    
     
     if (nrow(df_BMI_Det) <= 10) {
       DT::datatable(df_BMI_Det
@@ -1022,7 +1020,6 @@ if (boo_ALG == TRUE) {
       )
     ))
     
-    
     if (nrow(df_ALG_Det) <= 10) {
       DT::datatable(df_ALG_Det
                     , container = sketch
@@ -1053,9 +1050,7 @@ if (boo_ALG == TRUE) {
                                      , bSort = FALSE
                                      , scrollX = TRUE
                                      , fixedColumns = TRUE
-                                     , lengthMenu = ifelse(nrow(df_ALG_Det) > 10
-                                                           , c(10, 25, 50, 100)
-                                                           , 10)
+                                     , lengthMenu = c(10, 25, 50, 100)
                                      , columnDefs = list(list(className = 'dt-left'
                                                              , targets = c(8,9))
                                                          , list(className = 'dt-center'
