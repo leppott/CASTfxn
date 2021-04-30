@@ -51,17 +51,15 @@ function(){
                , hr()
                
                #, textOutput("boo_zip")
-              , p("Click the button below to open a new window with the Results Summary Report.")
-              , p("It will not be active until results are ready.")
+              , p("Click the buttons below to download the Results Summary Report or zip file of all result outputs.")
+              , p("The buttons will not be active until results are ready.")
+              , br()
               , useShinyjs() # doesn't work unless in include this line (even though it is in UI.R)
-              , shinyjs::disabled(actionButton("b_OpenSummary", "View Results Summary Report"))
-              #, actionButton("b_OpenSummary", "View Results Summary Report") # for testing
+              , shinyjs::disabled(downloadButton("b_downloadSummary", "Downlad Results, Summary Report"))
               , br()
               , br()
-              , p("Click the button below to download a zip file of all result outputs.")
-               , p("It will not be active until results are ready.")
               # , useShinyjs() # doesn't work unless in include this line (even though it is in UI.R)
-               , shinyjs::disabled(downloadButton("b_downloadData", "Download Results"))
+               , shinyjs::disabled(downloadButton("b_downloadData", "Download Results, All (zip)"))
                
                # set size of sidebar (out of 12)
                #, width=3 # can invoke "ERROR: [uv_write] broken pipe"

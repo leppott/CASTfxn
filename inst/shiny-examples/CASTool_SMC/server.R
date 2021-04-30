@@ -285,7 +285,7 @@ shinyServer(function(input, output, session) {
 
   # BUTTONS ####
   # b_download ####
-  # Downloadable csv of selected dataset
+  # Downloadable zip of selected dataset
   output$b_downloadData <- downloadHandler(
     # use index and date time as file name
     #myDateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")
@@ -300,33 +300,47 @@ shinyServer(function(input, output, session) {
       #
     }##content~END
     #, contentType = "application/zip"
-  )##downloadData~END
+  )##downloadData ~ Results, ALL ~ END
   
   
   # Results summary report
-  #output$b_OpenSummary <- browseURL
-  observeEvent(input$b_OpenSummary, {
-    TargetSiteID <- input$Station
-    fn_html <- list.files(file.path(".", "Results", TargetSiteID)
-                          , pattern = "Results_Summary"
-                          , full.names = TRUE)
-    fn_html_len <- length(fn_html)
-    # get last file
-    fe_html <- ifelse(fn_html_len == 0, FALSE, file.exists(fn_html[fn_html_len]))
-    if(fe_html == TRUE){
-      #return(includeHTML(fn_html[fn_html_len]))  # in case of multiples
-      #message(fn_html)
-      browseURL(fn_html[fn_html_len])
-    } else {
-      #return(NULL)
-      #URL_NoResult <- "https://www.r-project.org"
-      URL_NoResult <- file.path(".", "www", "ShinyNoResult.html")
-      browseURL(URL_NoResult)
-    }##IF ~ fe_html ~ END
+  output$b_downloadSummary <- downloadHandler(
+    
+    filename = function() {
+      #
+      TargetSiteID <- input$Station
+      fn_html <- list.files(file.path(".", "Results", TargetSiteID)
+                            , pattern = "Results_Summary"
+                            , full.names = TRUE)
+      fn_html_len <- length(fn_html)
+      # get last file
+      fe_html <- ifelse(fn_html_len == 0, FALSE, file.exists(fn_html[fn_html_len]))
+      #
+      if(fe_html == TRUE){
+        basename(fn_html[fn_html_len])
+      }## IF ~ fe_html ~ END
+      
+    }## filename ~ END
+    , content = function(fname) {
+      TargetSiteID <- input$Station
+      fn_html <- list.files(file.path(".", "Results", TargetSiteID)
+                            , pattern = "Results_Summary"
+                            , full.names = TRUE)
+      fn_html_len <- length(fn_html)
+      # get last file
+      fe_html <- ifelse(fn_html_len == 0, FALSE, file.exists(fn_html[fn_html_len]))
+      if(fe_html == TRUE){
+        file.copy(fn_html[fn_html_len], fname)
+      }## IF ~ fe_html ~ END
+
+      
+    }##content~END
+      # URL_NoResult <- file.path(".", "www", "ShinyNoResult.html")
+      # browseURL(URL_NoResult)
+  )##downloadData ~ Results, Report ~ END
     
     
     
-  })##  observeEvent(input$b_OpenSummary ~ END
   
   
 
@@ -413,8 +427,8 @@ shinyServer(function(input, output, session) {
       
       # 00, Disable Result buttons ----
       # Not a numbered step but numbered for outline
+      shinyjs::disable("b_downloadSummary")
       shinyjs::disable("b_downloadData")
-      shinyjs::disable("b_OpenSummary")
       #
       # 01, Remove Zip ####
       # Progress, 01
@@ -2349,8 +2363,8 @@ shinyServer(function(input, output, session) {
 
     # 34, enable download button ####
     # Not a numbered step but numbered for outline
+    shinyjs::enable("b_downloadSummary")
     shinyjs::enable("b_downloadData")
-    shinyjs::enable("b_OpenSummary")
     
   }##Run_ALL2~END
   

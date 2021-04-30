@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-04-30 14:25:41
+    #> Last Update: 2021-04-30 15:51:22
 
 # Planned Updates
 
@@ -25,9 +25,14 @@ NEWS
 
 # Version History
 
+## Changes in version 0.1.1.9003 (2021-04-30)
+
+-   refactor: Shiny CASTool
+    -   Change browseURL (does not work on server) to download button
+
 ## Changes in version 0.1.1.9002 (2021-04-30)
 
--   refactor: Shiny CASTool,
+-   refactor: Shiny CASTool
     -   Move map selection choice on calculation tab to above pull down
     -   Move results summary report to new window triggered via button
     -   Remove results tab panel
