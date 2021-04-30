@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.1.1.9002 (2021-04-30)
+
+* refactor: Shiny CASTool, 
+    + Move map selection choice on calculation tab to above pull down
+    + Move results summary report to new window triggered via button
+    + Remove results tab panel
+    + Add results error page in case results diplayed before finished calculating
+    + Disable results buttons (report and download) when click calculate
+    + Add elapsed time to console after calculation
+
 ## Changes in version 0.1.1.9001 (2021-04-30)
 * docs: Revise version number to 0.1.1 to incorporate host of changes.
 * docs: Hex stickers for CAST and RPP

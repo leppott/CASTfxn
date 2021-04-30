@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-04-30 11:16:47
+    #> Last Update: 2021-04-30 14:25:41
 
 # Planned Updates
 
@@ -24,6 +24,18 @@ NEWS
     -   Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.1.1.9002 (2021-04-30)
+
+-   refactor: Shiny CASTool,
+    -   Move map selection choice on calculation tab to above pull down
+    -   Move results summary report to new window triggered via button
+    -   Remove results tab panel
+    -   Add results error page in case results diplayed before finished
+        calculating
+    -   Disable results buttons (report and download) when click
+        calculate
+    -   Add elapsed time to console after calculation
 
 ## Changes in version 0.1.1.9001 (2021-04-30)
 

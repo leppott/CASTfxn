@@ -301,6 +301,34 @@ shinyServer(function(input, output, session) {
     }##content~END
     #, contentType = "application/zip"
   )##downloadData~END
+  
+  
+  # Results summary report
+  #output$b_OpenSummary <- browseURL
+  observeEvent(input$b_OpenSummary, {
+    TargetSiteID <- input$Station
+    fn_html <- list.files(file.path(".", "Results", TargetSiteID)
+                          , pattern = "Results_Summary"
+                          , full.names = TRUE)
+    fn_html_len <- length(fn_html)
+    # get last file
+    fe_html <- ifelse(fn_html_len == 0, FALSE, file.exists(fn_html[fn_html_len]))
+    if(fe_html == TRUE){
+      #return(includeHTML(fn_html[fn_html_len]))  # in case of multiples
+      #message(fn_html)
+      browseURL(fn_html[fn_html_len])
+    } else {
+      #return(NULL)
+      #URL_NoResult <- "https://www.r-project.org"
+      URL_NoResult <- file.path(".", "www", "ShinyNoResult.html")
+      browseURL(URL_NoResult)
+    }##IF ~ fe_html ~ END
+    
+    
+    
+  })##  observeEvent(input$b_OpenSummary ~ END
+  
+  
 
   # b_dir_user_*
   # Shiny directory buttons
@@ -381,6 +409,12 @@ shinyServer(function(input, output, session) {
       prog_inc <- 1/prog_n
       prog_cnt <- 0
       mySleepTime <- 0.5
+      
+      
+      # 00, Disable Result buttons ----
+      # Not a numbered step but numbered for outline
+      shinyjs::disable("b_downloadData")
+      shinyjs::disable("b_OpenSummary")
       #
       # 01, Remove Zip ####
       # Progress, 01
@@ -2207,6 +2241,9 @@ shinyServer(function(input, output, session) {
       # external/RPPTool_CA.R
       #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       
+      
+      
+      
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2301,6 +2338,11 @@ shinyServer(function(input, output, session) {
       incProgress(1/prog_n, detail = paste0(msgDetail_A, "; ", msgDetail_B))
       Sys.sleep(mySleepTime)
       #
+      
+      # 33.5, elapsed time
+      end.time <- Sys.time()
+      elapsed.time <- end.time - start.time
+      message(paste0("Complete; elapsed time = ", format.difftime(elapsed.time)))
 
       #
     }, message = "Run ALL")##withProgress ~ END
@@ -2308,6 +2350,7 @@ shinyServer(function(input, output, session) {
     # 34, enable download button ####
     # Not a numbered step but numbered for outline
     shinyjs::enable("b_downloadData")
+    shinyjs::enable("b_OpenSummary")
     
   }##Run_ALL2~END
   

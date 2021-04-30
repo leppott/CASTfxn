@@ -1,0 +1,17 @@
+---
+title: "Report, Summary"
+subtitle: "CAST"
+#author: "`r Sys.getenv('USERNAME')`"
+#date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+output:
+  html_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+```
+
+No results have been generated for the selected site.
+
+Select a site from the pull down and click the calculate button.
