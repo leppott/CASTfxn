@@ -37,6 +37,23 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.1.1.9001 (2021-04-30)
+* docs: Revise version number to 0.1.1 to incorporate host of changes.
+* docs: Hex stickers for CAST and RPP
+* data: New Process files in data-raw
+
+## interim changes
+not tracked well.
+
+## Changes in Version 0.1.0.9363 (2021-04-07)
+
+* feature: Add second version of CASTool Shiny
+    + HTML results preloaded
+    + Calculate only if want rest of results
+* docs: README
+    + Add logos, CAST and RPP
+    + Add/update badges
+
 ## Changes in Version 0.1.0.9362 (2020-12-08)
 
 * Simplify SMC watersheds (keep 5%).

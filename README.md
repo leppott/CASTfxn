@@ -3,7 +3,12 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2020-09-09 09:56:24
+    #> Last Update: 2021-04-07 14:36:04
+
+<img src="man/figures/hex_CAST.png" align="left" height="139" />
+<img src="man/figures/hex_RPP.png" align="center" height="139" />
+
+## CASTfxn
 
 Suite of functions for the Causal Assessment Screening Tool (CAST).
 Includes Shiny app.
@@ -11,10 +16,15 @@ Includes Shiny app.
 ## Badges
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/leppott/CASTfxn/graphs/commit-activity)
+[![](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![GitHub
 license](https://img.shields.io/github/license/leppott/CASTfxn.svg)](https://github.com/leppott/CASTfxn/blob/master/LICENSE)
-[![Travis-CI Build
-Status](https://travis-ci.org/leppott/CASTfxn.svg?branch=master)](https://travis-ci.org/leppott/CASTfxn)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/leppott/CASTfxn/badge)](https://www.codefactor.io/repository/github/leppott/CASTfxn)
+[![](https://codecov.io/gh/leppott/CASTfxn/branch/master/graph/badge.svg)](https://codecov.io/gh/leppott/CASTfxn)
+[![R build
+status](https://github.com/leppott/CASTfxn/workflows/R-CMD-check/badge.svg)](https://github.com/leppott/CASTfxn/actions)
+
 [![GitHub
 issues](https://img.shields.io/github/issues/leppott/CASTfxn.svg)](https://GitHub.com/leppott/CASTfxn/issues/)
 
