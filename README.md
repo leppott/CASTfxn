@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-04-07 14:36:04
+    #> Last Update: 2021-05-28 13:08:13
 
 <img src="man/figures/hex_CAST.png" align="left" height="139" />
 <img src="man/figures/hex_RPP.png" align="center" height="139" />
@@ -35,22 +35,23 @@ releases](https://img.shields.io/github/downloads/leppott/CASTfxn/total.svg)](ht
 
 ## Installation
 
-Requires the use of devtools (or another package) to install from
+Requires the use of `remotes` (or another package) to install from
 GitHub.
-
-If using devtools need to add an extra line of code for R v3.6.
-<https://github.com/r-lib/devtools/issues/1939>
-
-``` r
-Sys.setenv("TAR" = "internal")
-```
 
 Vignettes are also not installed by default. The additional parameters
 in install\_github are used to ensure the install happens if there is an
 existing install and to install the vignettes.
 
 ``` r
-devtools::install_github("leppott/CASTfxn", force=TRUE, build_vignettes=TRUE)
+if(!require(remotes)){install.packages("remotes")}  #install if needed
+install_github("leppott/CASTfxn", force=TRUE, build_vignettes = TRUE)
+```
+
+If using R v3.6 then need an extra line to allow devtools to work
+properly. <https://github.com/r-lib/devtools/issues/1939>
+
+``` r
+Sys.setenv("TAR" = "internal")
 ```
 
 ## Purpose

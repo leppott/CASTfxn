@@ -39,7 +39,7 @@
 "data_SSD"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # data_CoOccur_CA ####
-#' @title Co-Occurence example data (CA)
+#' @title Co-Occurrence example data (CA)
 #' 
 #' @description A dataset from California with example biological, chemical, habitat, and geo-physical parameters.
 #' 
@@ -789,7 +789,7 @@
 "data_CoOccur_CA"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # data_CoOccur_AZ_Hi ####
-#' @title Co-Occurence example data (AZ hi)
+#' @title Co-Occurrence example data (AZ hi)
 #' 
 #' @description A dataset from California with example biological, chemical, habitat, and geo-physical parameters.
 #' 
@@ -1085,7 +1085,7 @@
 "data_CoOccur_AZ_Hi"           
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 # data_CoOccur_AZ_Lo ####
-#' @title Co-Occurence example data (AZ lo)
+#' @title Co-Occurrence example data (AZ lo)
 #' 
 #' @description A dataset from California with example biological, chemical, habitat, and geo-physical parameters.
 #' 

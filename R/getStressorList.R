@@ -559,7 +559,7 @@ getStressorList <- function(TargetSiteID
   utils::write.table(data.chem.pctrank, fn.pctrank, sep="\t", col.names=TRUE
                      , row.names = FALSE, append=FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID_Master==TargetSiteID)
-  stressor <- c("none")
+  stressor <- "none"
   # 
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
     c <- 7

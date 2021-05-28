@@ -3,7 +3,7 @@
 \docType{data}
 \name{data_CoOccur_CA}
 \alias{data_CoOccur_CA}
-\title{Co-Occurence example data (CA)}
+\title{Co-Occurrence example data (CA)}
 \format{
 A data frame with 2,769 rows and 739 variables:
 \describe{

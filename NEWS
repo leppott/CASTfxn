@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-04-30 15:51:22
+    #> Last Update: 2021-05-28 13:39:05
 
 # Planned Updates
 
@@ -24,6 +24,15 @@ NEWS
     -   Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.1.1.9004 (2021-05-28)
+
+-   docs: Minor spelling fixes, devtools::spell\_check()
+-   docs: Updates to README
+    -   devtools::install\_github() to remotes::install\_github()
+-   ci: Add codecov.yml to allow for access to repo by codecov
+-   style: Fix some of the items from codefactor.
+-   ci: Remove .travis.yml
 
 ## Changes in version 0.1.1.9003 (2021-04-30)
 

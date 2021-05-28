@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.1.1.9004 (2021-05-28)
+
+* docs: Minor spelling fixes, devtools::spell_check()
+* docs: Updates to README
+    + devtools::install_github() to remotes::install_github()
+* ci: Add codecov.yml to allow for access to repo by codecov
+* style: Fix some of the items from codefactor.
+* ci: Remove .travis.yml
+
 ## Changes in version 0.1.1.9003 (2021-04-30)
 
 * refactor: Shiny CASTool

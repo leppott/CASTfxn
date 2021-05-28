@@ -210,7 +210,7 @@ shinyServer(function(input, output, session) {
   })##tbl_fn_CAST_data
 
   output$table_fn_CAST_results <- renderTable({
-    fn_results <- c("list out")
+    fn_results <- "list out"
     txt_folder <- c(rep("Results", length(fn_results)))
     data.frame("Folder" = txt_folder
                , "FileName" = c(fn_results)
