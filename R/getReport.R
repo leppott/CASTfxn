@@ -75,19 +75,19 @@ getReport <- function(TargetSiteID
   DEBUG_person <- "Ann"
   if (boo_DEBUG) {
     # setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CASTool_SMC")
-    TargetSiteID = "SMC04134"
-    probsHigh = 0.75
-    probsLow = 0.25
-    useBMI = TRUE
-    useAlg = TRUE
-    useBC = TRUE
-    removeOutliers = TRUE
-    lagdays = 10
-    DOlim = 7
-    pHlimLow = 6.5
-    pHlimHigh = 9
-    bmiIndex = "CSCI"
-    algIndex = "MMIhybrid"
+    TargetSiteID = TargetSiteID
+    probsHigh = probsHigh
+    probsLow = probsLow
+    useBMI = useBMI
+    useAlg = useAlg
+    useBC = useBC
+    removeOutliers = removeOutliers
+    lagdays = lagdays
+    DOlim = DOlim
+    pHlimLow = pHlimLow
+    pHlimHigh = pHlimHigh
+    bmiIndex = bmiIndex
+    algIndex = algIndex
     if (DEBUG_person == "Ann") {
       dir_data = dir_data_abs
       dir_results = dir_results_abs
