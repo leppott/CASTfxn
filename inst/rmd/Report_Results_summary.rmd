@@ -46,12 +46,12 @@ if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID <- "403S01272"
     dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
   } else if (DEBUG.CaseNumber == 4) {
-    TargetSiteID <- "905S15201"
+    TargetSiteID <- "SMC00710"
     dir_data <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Data"
     dir_results <- "C:/Users/ann.lincoln/Documents/SEP_CAST/Results"
     probsHigh <- 0.75
     probsLow <- 0.25
-    useAlg <- FALSE
+    useAlg <- TRUE
     useBMI <- TRUE
     report_format = "html"
     removeOutliers <- TRUE
@@ -293,16 +293,16 @@ dfSamps <- dfSamps %>%
                   , all_of(algIndex), all_of(sampColNames))
 
 
-dfSamps <- dplyr::arrange(dfSamps, "SampleDate", all_of(bmiIndex), all_of(algIndex))
+dfSamps <- dplyr::arrange(dfSamps, SampleDate, all_of(bmiIndex), all_of(algIndex))
 
   if (report_format == "html") {
     
-    tblColNames <- c("Site", "Reach", "Cluster", "Sample Date", "CSCI"
+    tblColNames <- c("Site", "Reach", "Cluster", "Sample Date", "CSCI", "BMI Sample Flag"
                  , "MMI Hybrid", "Lab Chemistry Sample ID", "Habitat Sample ID"
-                 , "Field Chemistry Sample ID", "Modeled Flow ID"
-                 , "BMI Sample ID", "Algae Sample ID", "Epiphyte Sample ID"
-                 , "Integrated Algae Sample ID", "Macroalgae Sample ID"
-                 , "Microalgae Sample ID")
+                 , "Field Chemistry Sample ID", "Modeled Flow ID (benthos)"
+                 , "Modeled Flow ID (algae)", "BMI Sample ID", "Algae Sample ID"
+                 , "Epiphyte Sample ID", "Integrated Algae Sample ID"
+                 , "Macroalgae Sample ID", "Microalgae Sample ID")
     
     tblCaption <- paste0("<h5><em>Samples collected from ", TargetSiteID,".</em></h5>")
     
@@ -334,9 +334,10 @@ dfSamps <- dplyr::arrange(dfSamps, "SampleDate", all_of(bmiIndex), all_of(algInd
                         , fontWeight = DT::styleInterval(0.79, c('bold', 'normal'))) %>%
         DT::formatStyle('MMIhybrid', color = DT::styleInterval(0.82, c('red', 'black'))
                         , fontWeight = DT::styleInterval(0.82, c('bold', 'normal'))) %>%
-        DT::formatStyle(c("ChemSampleID","PhabSampID", "FldChemSampID", "FlowSampID"
-                          , "BMISampID", "AlgSampID", "EpiphyteSampID", "IntegAlgSampID"
-                          , "MacroalgSampID", "MicroalgSampID"), "white-space" = "nowrap")
+        DT::formatStyle(c("ChemSampleID","PhabSampID", "FldChemSampID", "FlowBMISampID"
+                          , "FlowAlgSampID", "BMISampID", "AlgSampID", "EpiphyteSampID"
+                          , "IntegAlgSampID", "MacroalgSampID", "MicroalgSampID")
+                        , "white-space" = "nowrap")
 
     } else {
       
@@ -725,7 +726,8 @@ if (useBMI == TRUE) {
         dfcompsamps <- read.delim(fncompsamps, header = TRUE, sep = "\t"
                                   , stringsAsFactors = FALSE)
         dfcompsamps <- dfcompsamps %>%
-            filter(StationID_Master != TargetSiteID)
+            filter(StationID_Master != TargetSiteID) %>%
+            filter(!is.na(CSCI))
 
         dfcompflags <- dfcompsamps %>% 
             dplyr::select(RespSampID, Quality, RespSampFlag) %>%
@@ -902,8 +904,11 @@ if (useBMI == TRUE) {
                                            , pageLength = 10
                                            , bSort = FALSE
                                            , scrollX = TRUE
-                                           , fixedColumns = TRUE
-                                           , columnDefs = list(list(className = 'dt-left'
+                                           , fixedColumns = list(leftColumns = 1)
+                                           , autoWidth = TRUE
+                                           , columnDefs = list(list(width = '140px'
+                                                                      , targets = 1)
+                                                               , list(className = 'dt-left'
                                                                     , targets = 2)
                                                                , list(className = 'dt-center'
                                                                     , targets = c(0:1,3:12))
@@ -921,11 +926,14 @@ if (useBMI == TRUE) {
                                            , pageLength = 10
                                            , bSort = FALSE
                                            , scrollX = TRUE
-                                           , fixedColumns = TRUE
+                                           , fixedColumns = list(leftColumns = 1)
+                                           , autoWidth = TRUE
                                            , lengthMenu = ifelse(nrow(df_ES) > 10
                                                                  , c(10, 25, 50, 100)
                                                                  , 10)
-                                           , columnDefs = list(list(className = 'dt-left'
+                                           , columnDefs = list(list(width = '140px'
+                                                                      , targets = 1)
+                                                               , list(className = 'dt-left'
                                                                     , targets = 2)
                                                                , list(className = 'dt-center'
                                                                     , targets = c(0:1,3:12))
@@ -1097,7 +1105,8 @@ if (useBMI == TRUE) {
                                          , pageLength = 10
                                          , bSort = FALSE
                                          , scrollX = TRUE
-                                         , fixedColumns = TRUE
+                                         , fixedColumns = list(leftColumns = 1)
+                                         , autoWidth = TRUE
                                          , columnDefs = list(list(className = 'dt-left'
                                                                  , targets = c(8,9))
                                                              , list(className = 'dt-center'
@@ -1118,7 +1127,8 @@ if (useBMI == TRUE) {
                                          , pageLength = 10
                                          , bSort = FALSE
                                          , scrollX = TRUE
-                                         , fixedColumns = TRUE
+                                         , fixedColumns = list(leftColumns = 1)
+                                         , autoWidth = TRUE
                                          , lengthMenu = ifelse(nrow(df_det) > 10
                                                                , c(10, 25, 50, 100)
                                                                , 10)
@@ -1331,13 +1341,16 @@ if (useAlg == TRUE) {
                                          , pageLength = 10
                                          , bSort = FALSE
                                          , scrollX = TRUE
-                                         , fixedColumns = TRUE
-                                         , columnDefs = list(list(className = 'dt-left'
-                                                                  , targets = 2)
+                                         , fixedColumns = list(leftColumns = 1)
+                                         , autoWidth = TRUE
+                                         , columnDefs = list(list(width = '140px'
+                                                                  , targets = 1)
+                                                             , list(className = 'dt-left'
+                                                                    , targets = 2)
                                                              , list(className = 'dt-center'
-                                                                  , targets = c(0:1,3:12))
+                                                                    , targets = c(0:1,3:12))
                                                              , list(className = 'dt-bottom'
-                                                                  , targets = '_all')))
+                                                                    , targets = '_all')))
                         , class = 'striped hover row-border'
                         , filter = 'none'
                         , rownames = FALSE) %>%
@@ -1352,16 +1365,19 @@ if (useAlg == TRUE) {
                                          , pageLength = 10
                                          , bSort = FALSE
                                          , scrollX = TRUE
-                                         , fixedColumns = TRUE
+                                         , fixedColumns = list(leftColumns = 1)
+                                         , autoWidth = TRUE
                                          , lengthMenu = ifelse(nrow(df_ES) > 10
                                                                , c(10, 25, 50, 100)
                                                                , 10)
-                                         , columnDefs = list(list(className = 'dt-left'
-                                                                  , targets = 2)
+                                         , columnDefs = list(list(width = '140px'
+                                                                  , targets = 1)
+                                                             , list(className = 'dt-left'
+                                                                    , targets = 2)
                                                              , list(className = 'dt-center'
-                                                                  , targets = c(0:1,3:12))
+                                                                    , targets = c(0:1,3:12))
                                                              , list(className = 'dt-bottom'
-                                                                  , targets = '_all')))
+                                                                    , targets = '_all')))
                         , class = ' striped hover row-border'
                         , filter = 'none'
                         , rownames = FALSE) %>%
@@ -1520,7 +1536,8 @@ if (useAlg == TRUE) {
                                        , pageLength = 10
                                        , bSort = FALSE
                                        , scrollX = TRUE
-                                       , fixedColumns = TRUE
+                                       , fixedColumns = list(leftColumns = 1)
+                                       , autoWidth = TRUE
                                        , columnDefs = list(list(className = 'dt-left'
                                                                , targets = c(8,9))
                                                            , list(className = 'dt-center'
@@ -1541,7 +1558,8 @@ if (useAlg == TRUE) {
                                        , pageLength = 10
                                        , bSort = FALSE
                                        , scrollX = TRUE
-                                       , fixedColumns = TRUE
+                                       , fixedColumns = list(leftColumns = 1)
+                                       , autoWidth = TRUE
                                        , lengthMenu = ifelse(nrow(df_det) > 10
                                                              , c(10, 25, 50, 100)
                                                              , 10)
