@@ -692,7 +692,7 @@ getWoE <- function(TargetSiteID
                 , col.names = TRUE, row.names = FALSE, sep = "\t")
     rm(dfEvidDetail)
     
-    if (file.exists(file.path(metricsDir,fnSRScores))) {
+    if (df_LoE$Completed[df_LoE$LoE=="SR"]==1) {
         # Merge in Quality info and Stressor Types for Metrics
         dfMetricsLong <- merge(dfStrGpRankQual, dfMetrics
                                 , by.x = c("StationID_Master", "StressSampID"
