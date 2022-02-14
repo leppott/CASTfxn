@@ -58,8 +58,9 @@ if (boo_Shiny == TRUE) {
     library(stringr)
     #
     if (boo.debug == TRUE & debug.person == "Ann") {
-        gitpath <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
-        dir_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd"
+        wd <- getwd()
+        gitpath <- file.path(wd, "R")
+        dir_rmd <- file.path(wd, "inst", "rmd")
         localdir <- "C:/Users/ann.lincoln/Documents/SEP_CAST"
         dir_data <- file.path(localdir, "Data")
         dir_results <- file.path(localdir, "Results")
@@ -636,7 +637,7 @@ if (boo_Shiny == TRUE) {
     df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
     names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-    df_targets <- df_targets[df_targets$TargetSiteID == "SMC04134", ]
+    # df_targets <- df_targets[df_targets$TargetSiteID == "SMC00710", ]
     msg <- paste0("Number of target sites = ", nrow(df_targets))
     message(msg)
 }
@@ -1207,8 +1208,10 @@ for (site in 1:nrow(df_targets)) {
         message("remove Outliers")
         
         # Log removed outliers as data gaps
+        # CHECK THIS ----
+        # data_stressInfo <- listPairedStressResp$siteStressInfo
         data_StressLabeled <- merge(data_Stress
-                                    , data_stressInfo[,c("Analyte","Label")]
+                                    , listPairedStressResp$siteStressInfo[,c("Analyte","Label")]
                                     , by.x = "StdParamName"
                                     , by.y = "Analyte"
                                     , all.x =  TRUE)
@@ -1605,6 +1608,11 @@ for (site in 1:nrow(df_targets)) {
                     numLoE = numLoE + 1
                     df_LoE$Completed[df_LoE$LoE == "SR"] <- 1
                     df_LoE$ResultsDir[df_LoE$LoE == "SR"] <- dirSR
+                } else {
+                    numLoE = numLoE + 1
+                    df_LoE$Completed[df_LoE$LoE == "SR"] <- 0
+                    df_LoE$ResultsDir[df_LoE$LoE == "SR"] <- NA
+                    unlink(dirSR, recursive = TRUE)
                 }
             }
             
@@ -1741,9 +1749,9 @@ for (site in 1:nrow(df_targets)) {
     } else {
         report_type     <- "summary"
     }
-    dir_data_abs    <- normalizePath(dir_data)
-    dir_results_abs <- normalizePath(dir_results)
-    dir_rmd         <- normalizePath(dir_rmd)
+    # dir_data_abs    <- normalizePath(dir_data)
+    # dir_results_abs <- normalizePath(dir_results)
+    # dir_rmd         <- normalizePath(dir_rmd)
     strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
     message(paste0("file = ", strFile_RMD))
     message(paste0("exists = ", file.exists(strFile_RMD)))
@@ -1762,8 +1770,8 @@ for (site in 1:nrow(df_targets)) {
               , lagdays = lagdays
               , bmiIndex = bmiIndex
               , algIndex = algIndex
-              , dir_data = dir_data_abs
-              , dir_results = dir_results_abs
+              , dir_data = dir_data
+              , dir_results = dir_results
               , report_type = report_type
               , report_format = "html"
               , dir_rmd = dir_rmd)
