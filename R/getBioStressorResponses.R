@@ -320,6 +320,8 @@ getBioStressorResponses <- function(TargetSiteID
     stressors_missing <- stressors[!(stressors %in% names(list.MatchBioData$all.b.str))]
     stressors <- stressors[stressors %in% names(list.MatchBioData$all.b.str)]
     #
+    # Count number of graphs (only write graph if n >=20)
+    ngraph <- 0
   
   # QC, site rsp ####
   #qc_row_site_rsp <-  nrow(list.MatchBioData$site.a.rsp)
@@ -522,11 +524,21 @@ getBioStressorResponses <- function(TargetSiteID
       colnames(df_plot_all)[colnames(df_plot_all)==respName]   <- "Response"
       # QC
       if (nrow(df_plot_all) < min_cases) { 
-        txt.score <- "< 20 cases"
+        txt.score <- paste0("< ", min_cases, " cases")
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName
                              , " (", p, "/", p.len, "), ", respName, " (", q
                              , "/", q.len, "); score = ", txt.score)
         message(msg.status)
+        gapcomment <- txt.score
+        gaps <- cbind.data.frame("getBioStressorResponse"
+                                 , "Number of complete cases (outside case)"
+                                 , nrow(df_plot_all)
+                                 , gapcomment)
+        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
         next 
       }
       if(sum(is.na(df_plot_all$Stress))==nrow(df_plot_all)) {
@@ -535,6 +547,16 @@ getBioStressorResponses <- function(TargetSiteID
                              , " (", p, "/", p.len, "), ", respName, " (", q
                              , "/", q.len, "); score = ", txt.score)
         message(msg.status)
+        gapcomment <- txt.score
+        gaps <- cbind.data.frame("getBioStressorResponse"
+                                 , "No stressor data (outside case)"
+                                 , nrow(df_plot_all)
+                                 , gapcomment)
+        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        fn.gaps <- file.path(wd,"Results",TargetSiteID,fn.gaps)
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
         next 
       }
       
@@ -1246,6 +1268,7 @@ getBioStressorResponses <- function(TargetSiteID
                          , make.names(respName), ".png")
         if(boo_plot){
           ggplot2::ggsave(fn_png, p_SR, width=plot_W, height=plot_H, units="in") 
+          ngraph = ngraph + 1
         }## IF ~ boo_plot ~ END
         #
       }##IF.boo.Plot.END
@@ -1279,14 +1302,19 @@ getBioStressorResponses <- function(TargetSiteID
   # END ####
   ## PDF ####
   # Create PDF from list
-  fn_pdf <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,"_SRLin_ALL.pdf"))
-  grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
+  if (ngraph > 0) {
+    fn_pdf <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,"_SRLin_ALL.pdf"))
+    grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
     for (pq in plots.pq){##FOR.gp.START
-      #grDevices::replayPlot(g.plot)
-      if(is.null(pq)==TRUE) {next}
-      grDevices::replayPlot(pq)
+        #grDevices::replayPlot(g.plot)
+        if(is.null(pq)==TRUE) {next}
+        grDevices::replayPlot(pq)
     }##FOR.gp.END
-  grDevices::dev.off()
+    grDevices::dev.off()
+  } else {
+      msg <- "No graphs to plot to PDF"
+      message(msg)
+  }
  # rm(plots.pq)
   #
   # utils::write.table(df.CorrTable
