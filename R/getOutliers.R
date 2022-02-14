@@ -33,7 +33,7 @@ getOutliers <- function(df_data, df_meta) {
     
     # Debug
     boo_DEBUG <- FALSE
-    if (boo_DEBUG==TRUE) {
+    if (boo_DEBUG == TRUE) {
         df_data = data_chemRaw
         df_meta = data_chemInfo
     }
@@ -46,17 +46,25 @@ getOutliers <- function(df_data, df_meta) {
     df_meta <- df_meta %>%
         dplyr::select(StdParamName, LogTransf) %>%
         dplyr::group_by(StdParamName) %>%
-        dplyr::summarise(LogTransf = max(LogTransf), .groups="drop_last")
+        dplyr::summarise(LogTransf = max(LogTransf), .groups = "drop_last")
+
     # LogTransform data that need to be transformed
     df_data <- merge(df_data, df_meta[,c("StdParamName","LogTransf")]
                      , by.x = "StdParamName", by.y = "StdParamName"
                      , all.x = TRUE)
-    df_data <- df_data %>%
-        dplyr::mutate(ResultValue = ifelse(LogTransf == 1 & ResultValue <= 0, NA, ResultValue)) %>% 
+
+    df_data2Transf <- df_data %>%
+        dplyr::filter(LogTransf == 1) %>%
+        dplyr::mutate(ResultValue = ifelse(ResultValue <= 0, NA, ResultValue)) %>% 
         dplyr::filter(!is.na(ResultValue)) %>%
-        dplyr::mutate(TransfResult = ifelse(LogTransf==1
-                                            , log10(ResultValue)
-                                            , ResultValue))
+        dplyr::mutate(TransfResult = log10(ResultValue))
+    
+    df_dataNoTransf <- df_data %>%
+        dplyr::filter(LogTransf == 0) %>%
+        dplyr::mutate(TransfResult = ResultValue)
+    
+    df_data <- rbind(df_data2Transf, df_dataNoTransf)
+
     params <- unique(as.character(df_data$StdParamName))
     
     for (p in 1:length(params)) { # Iterate over parameters
