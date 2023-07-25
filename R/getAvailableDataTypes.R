@@ -11,31 +11,42 @@
 #' Uses the library dplyr
 #'
 #' @param TargetSiteID Site ID for the site being evaluated
-#' @param df_SampSummary dataframe containing sample IDs for samples collected at the target site, organized by sample date (rows) and type (columns)
-#' @param measStressSamps vector of all measured stressor sample types, each must end in "SampID" Default = NULL.
-#' @param modStressSamps vector of all modeled stressor sample types, each must end in "SampID" Default = NULL.
-#' @param chemStressSamps vector of all field or lab chemistry sample types, each must end in "SampID" Default = NULL.
-#' @param habStressSamps vector of all habitat sample types, each must end in "SampID" Default = NULL.
-#' @param bmiRespSamps vector of all BMI response sample types, each must end in "SampID" Default = NULL.
-#' @param algRespSamps vector of all Algae response sample types, each must end in "SampID" Default = NULL.
-#' @param fishRespSamps vector of all Fish response sample types, each must end in "SampID" Default = NULL.
-#' @param dir_results Directory containing all results. Default = "file.path(getwd(),"Results")"
+#' @param df_SampSummary dataframe containing sample IDs for samples collected
+#'                       at the target site, organized by sample date (rows) and
+#'                       type (columns)
+#' @param measStressSamps vector of all measured stressor sample types, each must
+#'                        end in "SampID".
+#' @param modStressSamps vector of all modeled stressor sample types, each must
+#'                       end in "SampID". Default = NULL.
+#' @param chemStressSamps vector of all field or lab chemistry sample types, each
+#'                        must end in "SampID".
+#' @param habStressSamps vector of all habitat sample types, each must end in
+#'                       "SampID". Default = NULL.
+#' @param bmiRespSamps vector of all BMI response sample types, each must end
+#'                     in "SampID".
+#' @param algRespSamps vector of all Algae response sample types, each must end
+#'                     in "SampID". Default = NULL.
+#' @param fishRespSamps vector of all Fish response sample types, each must end
+#'                      in "SampID". Default = NULL.
+#' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results")
 #'
-#' @return A list containing five boolean values 1) useBMI, 2) useAlg, 3) useFish, 4) noStressors, and 5) noResponses.
+#' @return A list containing five boolean values 1) useBMI, 2) useAlg, 3) useFish,
+#'         4) noStressors, and 5) noResponses.
 #'
 #' @keywords internal
 #'
 #' @export
 getAvailableDataTypes <- function(TargetSiteID
                                   , df_SampSummary
-                                  , measStressSamps = NULL
+                                  , measStressSamps
                                   , modStressSamps = NULL
-                                  , chemStressSamps = NULL
+                                  , chemStressSamps
                                   , habStressSamps = NULL
-                                  , bmiRespSamps = NULL
+                                  , bmiRespSamps
                                   , algRespSamps = NULL
                                   , fishRespSamps = NULL
-                                  , dir_results = file.path(getwd(), "Results")) {
+                                  , dir_results = file.path(getwd(), "Results")
+                                  ) {##FUNCTION.START
 
   boo.DEBUG <- FALSE
 
@@ -131,7 +142,7 @@ getAvailableDataTypes <- function(TargetSiteID
     } ### End If statement for modeled stressors
   }
 
-  if (!is.null("bmiRespSamps")) {
+  if (!is.null(bmiRespSamps)) {
     if (any(samptypes == bmiRespSamps)) {
       useBMI <- TRUE
       gap.bmi.rsp <- cbind.data.frame("general", "useBMI", 1, "BMI responses available.")
@@ -143,7 +154,7 @@ getAvailableDataTypes <- function(TargetSiteID
     colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
   } ### End If statement for benthic macroinvertebrate responses
 
-  if (!is.null("algRespSamps")) {
+  if (!is.null(algRespSamps)) {
     if (any(samptypes == algRespSamps)) {
       useAlg <- TRUE
       gap.alg.rsp <- cbind.data.frame("general", "useALG", 1, "Algae responses available.")
@@ -155,7 +166,7 @@ getAvailableDataTypes <- function(TargetSiteID
     colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
   } ### End If statement for measured stressorsalgal responses
 
-  if (!is.null("fishRespSamps")) {
+  if (!is.null(fishRespSamps)) {
     if (any(samptypes == fishRespSamps)) {
       useFish <- TRUE
       gap.fish.rsp <- cbind.data.frame("general", "useFISH", 1, "Fish responses available.")
