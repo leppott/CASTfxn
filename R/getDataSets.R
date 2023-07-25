@@ -1,57 +1,69 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2023 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
 #
 #' @title Get Data Sets
 #'
-#' @description Get Data Sets identifies stressor-response paired samples with
-#' a lag time that is provided as a passed parameter.
+#' @description Subsets a dataframe of matched stressor-response data for
+#'              a single target site (with one or more matched samples),
+#'              comparator samples (inside the case), and all samples (outside
+#'              the case)
 #'
-#' @details This function applies fuzzyjoin using a lag time in days, where the
-#' stressor sample must have been collected between lag time days before or
-#' on the same day as the response sample.
+#' @details Subsets the data frame output by the function getCoOccurDataset
+#'          first for stressors detected at the target site (in any sample),
+#'          then produces multiple subsets: two for the target site samples,
+#'          two for comparator site samples, and two for all site samples.
 #'
 #' Uses the libraries dplyr, tidyr, and fuzzyjoin.
 #'
-#' @param TargetSiteID Site ID
-#' @param compSites Vector of stressors.
-#' @param stresstype Type of stressor (measured or modeled). Default = "meas".
-#' Valid options are "meas" for measured data or "mod" for modeled data.
-#' @param df_stress Stressor values.
-#' @param df_stressinfo Metadata about the stressors.
-#' @param biocomm Biological community; algae or BMI. Default = "BMI".
-#' @param df_biometrics Response metrics values for the specified biocomm.
+#' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
+#' @param compSites vector containing comparator site IDs
+#' @param allSites vector containing all "outside the case" site IDs
+#' @param df_coOccur dataframe of matched stressor response samples for the
+#' desired biological community
+#' @param siteStressors Vector containing stressors identified as candidate causes
+#' for the target site
+#' @param bioParamsDEL vector of modeled parameters to delete based on lack of
+#' applicability to the biological response community
+#' @param colBioSample column name for the column containing the response sample ID
+#' @param colBioSampDate column name for the column containing the response sample date
+#' @param df_stressInfo dataframe containing stressor metadata, specifically "Label".
+#' @param df_biometrics dataframe containing the biological response samples'
+#' index and metric values
 #'
-#' @return One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the
-#'        "Results" folder of working directory. No scores are currently generated.
+#' @return List containing six dataframes: 1) stressor data from all samples
+#'         (outside the case), 2) stressor data from comparator samples (inside
+#'         the case), 3) stressor data from only the target samples, 4) response
+#'         data from all samples (outside the case), 5) response data from
+#'         comparator samples (inside the case), and 6) response data from only
+#'         the target samples.
 #'
 #' @keywords internal
 #'
 #' @export
 getDataSets <- function(TargetSiteID
-                        , compSites
-                        , df_coOccur = data_bmiCoOccur
-                        , measParams = measParams
-                        , modelParams = modelParams
-                        , biocomm = "bmi"
-                        , bioIndex = "CSCI"
-                        , colBioSample = "BMISampID"
-                        , colBioSampDate = "BMISampDate"
-                        , df_biometrics = data_bmiMetrics
-                        , df_stressinfo = data_stressInfo) {
+                        , compSites # inside the case
+                        , allSites  # outside the case
+                        , df_coOccur
+                        , siteStressors
+                        , bioParmsDEL = NULL
+                        , colBioSample
+                        , colBioSampDate
+                        , df_biometrics
+                        , df_stressinfo
+                        ) {##FUNCTION.START
 
   # For QC purposes
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
-    TargetSiteID
+    TargetSiteID = TargetSiteID
     compSites = comp_sites
+    allSites = all_sites
     df_coOccur = data_bioCoOccur
-    measParams = measParams
-    modelParams = modelParams
-    biocomm = bioComm
-    bioIndex = colBio
+    siteStressors = stressors
+    bioParmsDEL = bioParmsDEL
     colBioSample = colBioSample
     colBioSampDate = colBioSampDate
     df_biometrics = bioMetricData
@@ -62,38 +74,34 @@ getDataSets <- function(TargetSiteID
   `%>%` <- dplyr::`%>%`
   not_all_na <- function(x) {!all(is.na(x))}
 
-  biocomm <- tolower(biocomm)
+  # biocomm <- tolower(biocomm)
 
   # Get dataframe of parameters detected at target site (meas & mod)
   df_detects <- df_coOccur %>% dplyr::select_if(not_all_na)
-  useCols <- intersect(c("StationID_Master", "StressSampID", "StressSampDate"
-                         , "RespSampID", "RespSampDate", modelParams, measParams),
-                       colnames(df_detects))
+  useParams <- setdiff(stressors, bioParmsDEL)
+  coreCols <- c("StationID_Master", "StressSampID", "StressSampDate"
+                , "RespSampID", "RespSampDate")
+  useCols <- c(coreCols, useParams)
 
   # Subset big dataset to only detected stressors at target site
-  siteBioStressData <- df_detects[,useCols] %>%
-    dplyr::filter(StationID_Master == TargetSiteID) %>%
-    dplyr::select_if(not_all_na)
-  useColsDetects <- colnames(siteBioStressData)
-  allBioStressData <- df_detects[,useColsDetects]
-  compBioStressData <- df_detects[,useColsDetects] %>%
+  # Create stressor data sets for target, inside the case, and outside the case
+  siteBioStressData <- df_detects[, useCols] %>%
+    dplyr::filter(StationID_Master == TargetSiteID)
+  allBioStressData <- df_detects[, useCols] %>%
+    dplyr::filter(StationID_Master %in% allSites)
+  compBioStressData <- df_detects[, useCols] %>%
     dplyr::filter(StationID_Master %in% compSites)
 
-  df_core <- dplyr::select(df_detects, StationID_Master, StressSampID
-                           , StressSampDate, RespSampID, RespSampDate)
-  useParams <- colnames(dplyr::select(df_detects, -StationID_Master
-                                      , -StressSampID, -StressSampDate
-                                      , -RespSampID, -RespSampDate, -clust
-                                      , -BioComm, -Quality))
-  useParams <- useParams[useParams != bioIndex]
-
+  # Create response data sets for target, inside the case, and outside the case
+  df_core <- dplyr::select(df_detects, all_of(coreCols))
   allBioRespData <- merge(df_core, df_biometrics
                           , by.x = c("StationID_Master", "RespSampID"
                                      , "RespSampDate")
                           , by.y = c("StationID_Master", colBioSample
                                      , colBioSampDate))
-  compBioRespData <- allBioRespData[allBioRespData$StationID_Master %in% compSites,]
-  siteBioRespData <- allBioRespData[allBioRespData$StationID_Master==TargetSiteID,]
+  allBioRespData  <- dplyr::filter(allBioRespData, StationID_Master %in% allSites)
+  compBioRespData <- dplyr::filter(allBioRespData, StationID_Master %in% compSites)
+  siteBioRespData <- dplyr::filter(allBioRespData, StationID_Master == TargetSiteID)
 
   # Identify "no match" data
   # Do this when generating coOccurrence dataset

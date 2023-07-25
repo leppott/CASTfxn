@@ -1,21 +1,20 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2023 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
-#
-# library(dplyr)
-# library(ggplot2)
-# library(gridExtra)
-#
-#' @title Co-Occurrence Plots
+#' @title Co-Occurrence and Sufficiency Lines of Evidence
 #'
-#' @description Generates a box plots and stressor response plots (individually as png
-#' and together as a PDF) as well as scores for co-occurence.
+#' @description Generates box plots and and logistic regressions to answer the
+#'              questions: 1) are the observed stressor levels consistent with
+#'              impairment where and when it occurs? and 2) are stressor levels
+#'              sufficient to explain the observed impairment? Also writes a
+#'              tab-delimited text file containing scores for these two lines of
+#'              evidence.
 #'
 #' @details \strong{Derive evidence fo spatial/temporal co-occurrence.}
 #'
-#' Are higher levels of the stressor observed where and when the biological
-#' effect occurs?
+#' Stressor-response from field observational studies: Are higher levels of the
+#' stressor observed where and when the biological effect occurs?
 #'
 #' Box plots are used to show the distribution of the stressor levels at compartor
 #' sites with better biological condition.  If a site has multiple biological
@@ -34,12 +33,12 @@
 #' sites are between the 50th and 75th percentile of comparator sites having
 #' higher biological quality.
 #'
-#' \strong{Derive Evidence for Stressor-Response Relationships from Field Observational
-#' Studies.}
+#' \strong{Derive Evidence for Stressor-Response Relationships from Field
+#' Observational Studies.}
 #'
-#' Stressor-response from field observational studies:  Is the level of the
-#' stressor sufficient to explain the level of biological effect observed at the
-#'  site?
+#' Stressor-response from field observational studies: Is the level of the
+#' stressor sufficient to explain the level of biological effect observed at
+#' the site?
 #'
 #' Using all comparator sites, fit logistical regression curve of the probability
 #' of poor condition (i.e., poor California index score) as a function of
@@ -66,8 +65,8 @@
 #' The BioDegLab has to remain as the default values of Yes and No.
 #' Other values will break the code.
 #'
-#' Only a single biological measurement is used.  But multiple stressors can be
-#'  used.
+#' Only a single biological measurement is used. But multiple stressors can be
+#' used.
 #'
 #' Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 #'
@@ -75,10 +74,14 @@
 #' @param TargetSiteID ID of station/sample to plot; can be single or multiple.
 #' Default is first entry in df_data[, col_ID]
 #' @param col_ID df_data column with unique Station/Sample identifier.
-#' @param colGroup df_data column with grouping variable.
+#' @param colStressSamp df_data column with stressor sample identifier
+#' @param colRespSamp df_data column with response sample identifier
+#' @param colGroup df_data column containing "outside the case" sites, from
+#'                 which comparator samples are selected
 #' @param colBio df_data column with biological numeric value.
 #' @param colStressors df_data column(s) with stressor variable(s); can be
 #' single or multiple.
+#' @param df_stressinfo dataframe containing stressor metadata (UseYN, LogTransf, Label)
 #' @param BioNarBrk Biological assessment narrative, cut function breaks.
 #' Should be in order from bad (low) to good (high).
 #' Default = c(-2, 0.62, 0.799, 0.919, 2)
@@ -101,12 +104,12 @@
 #' , "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")
 #' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #'
-#' @return Saves a single PDF of all plots, individual plots as pngs, and a
-#' scores files (tab separated text file) to a user defined 'Results' directory
-#' in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results'
-#' for each SiteID in TargetSiteID.
+#' @return Writes individual plots as pngs, and a tab-delimited text file with
+#'         scores for each line of evidence (co-occurrence & sufficiency) to a
+#'         "Results/TargetSiteID/BioComm/CoOccurrence" directory.
 #'
 #' @examples
+#' \dontrun{
 #' # Example #1, CA data (multiple sites)
 #' #
 #' #Load Data
@@ -172,11 +175,10 @@
 #'         , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
 #'         , biocomm, dir_plots, dir_sub, col_StressInvScore
 #'         )
-#'
-#~~~~~~~~~~~~~
+#'}
 #' @export
-getCoOccur <- function(df_data
-                       , TargetSiteID=NULL
+getCoOccur <- function(TargetSiteID
+                       , df_data
                        , col_ID
                        , colStressSamp
                        , colRespSamp
@@ -184,36 +186,29 @@ getCoOccur <- function(df_data
                        , colBio
                        , colStressors
                        , df_stressinfo
-                       , BioNarBrk=c(-2, 0.62, 0.799, 0.919, 2)
-                       , BioNarLab=c("very likely altered", "likely altered"
+                       , BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2)
+                       , BioNarLab = c("very likely altered", "likely altered"
                                        , "possibly altered ", "likely intact")
-                       , BioDegBrk=c(-2, 0.799, 2)
-                       , BioDegLab=c("Yes", "No")
-                       , biocomm="bmi"
-                       , dir_plots=file.path(getwd(), "Results")
-                       , dir_sub="CoOccurrence"
-                       , col_StressInvScore=c("DO_f_."
-                                               , "DO_f_mg_L"
-                                               , "DO_f_unk"
-                                               , "DOSat_f_."
-                                               , "DOSat_f_unk"
-                                               , "DO_uf_mg_L"
-                                               , "pH"
-                                               , "pH_SU")
+                       , BioDegBrk = c(-2, 0.799, 2)
+                       , BioDegLab = c("Yes", "No")
+                       , biocomm = "BMI"
+                       , dir_plots = file.path(getwd(), "Results")
+                       , dir_sub = "CoOccurrence"
+                       , col_StressInvScore
                        , boo_plot = TRUE
                        ) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
-    df_data = data_bioCoOccur
     TargetSiteID = TargetSiteID
+    df_data = data_bioCoOccur
     col_ID = "StationID_Master"
     colStressSamp = "StressSampID"
     colRespSamp = "RespSampID"
-    colGroup = "clust"
+    colGroup = outcaseColName
     colBio = colBio
-    colStressors = c(stressorsWPairedResponses)
+    colStressors = stressors
     df_stressinfo = data_stressInfo
     BioNarBrk = BioNarBrk
     BioNarLab = BioNarLab
@@ -286,8 +281,8 @@ getCoOccur <- function(df_data
   df.scores[, "q50"]         <- as.character(NA)
   df.scores[, "q75"]         <- as.character(NA)
   df.scores[, "Sc_Box"]      <- as.character(NA)
-  df.scores[, "SR_pred_Deg"] <- as.character(NA)
-  df.scores[, "Sc_SR"]       <- as.character(NA)
+  # df.scores[, "SR_pred_Deg"] <- as.character(NA)
+  # df.scores[, "Sc_SR"]       <- as.character(NA)
   df.scores[, "biocomm"]     <- as.character(NA)
   df.scores[, "Label"]       <- as.character(NA)
 
@@ -448,7 +443,7 @@ getCoOccur <- function(df_data
       df.i.n <- df.i[!is.na(df.i[, j]), ]
       df.i.n <- df.i.n[order(df.i.n[, j]), ]
 
-      if (nrow(df.i.n)!=0){##IF.nrow.START
+      if (nrow(df.i.n) != 0) {##IF.nrow.START
         # Save to Score/Results file
         df.i.n[, "Param_Name"]  <- j
         df.i.n[, "Param_Value"] <- df.i.n[, j]
@@ -476,17 +471,19 @@ getCoOccur <- function(df_data
         # fn_title <- gsub("\\.","",fn_title)
 
         fn_png_p1 <- paste0(i_TargetSiteID, "_", biocomm, "_CoOccur_", make.names(j), ".png")
-        fn_png_p2 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_", make.names(j), ".png")
+        # fn_png_p2 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_", make.names(j), ".png")
+        # fn_png_p3 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_Log1p_", make.names(j), ".png")
         ppi       <- 300
 
         # Create (ggplot)
-        lab.sub <- paste0("Comparator samples with higher ", colBio, " scores and paired "
-                          , j, " data (", lab.N, ").\n ", lab.Score,".")
-
+        # lab.sub <- paste0("Comparator samples with higher ", colBio, " scores and paired "
+        #                   , j, " data (", lab.N, ").\n ", lab.Score,".")
+        lab.sub <- paste0("Comparator samples with higher ", colBio
+                          , " scores (", lab.N, ").\n", lab.Score, ".")
         bio_col <- c("dark gray", "blue")
         bio_shp <- c(21, 25) # circle and down triangle
         bio_size <- c(3, 2)
-        lab_comp <- paste0("Comparator samples selected from cluster = ",i.Group)
+        lab_comp <- paste0("Comparator samples selected from cluster = ", i.Group)
 
         # scoring lines
         if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
@@ -505,16 +502,16 @@ getCoOccur <- function(df_data
         targ_line_lwd <- 1
 
         # Get wordy label for the y-axis
-        jlabel <- df_stressinfo$Label[df_stressinfo$Analyte==j]
-        jlog <- df_stressinfo$LogTransf[df_stressinfo$Analyte==j]
+        jlabel <- df_stressinfo$Label[df_stressinfo$StdParamName==j]
+        jlog <- df_stressinfo$LogTransf[df_stressinfo$StdParamName==j]
         legendtitle <- "Degraded samples"
         maintitleCO <- paste0(i, ": Co-occurrence line of evidence")
         subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
         subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
-        maintitleSR <- paste0(i, ": Stressor-response (logistic regression) line of evidence")
-        subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
-        subtitleSR <- stringr::str_wrap(subtitleSR, 100)
+        # maintitleSR <- paste0(i, ": Stressor-response (logistic regression) line of evidence")
+        # subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
+        # subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
         # if non-empty
         #if(sum(is.na(df.comp.bio.better[,j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
@@ -547,7 +544,8 @@ getCoOccur <- function(df_data
           ggplot2::theme_bw() +
           ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
                          , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-          ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
+          ggplot2::theme(axis.text.y=ggplot2::element_blank()
+          # ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                          , axis.ticks.y=ggplot2::element_blank()) +
           ggplot2::labs(y=jlabel, x=lab_comp) +
           ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color="black"
@@ -565,96 +563,92 @@ getCoOccur <- function(df_data
         }## IF ~ boo_plot ~ END
         #}##IF~non-empty~END
 
-        ## Logistic Regression (all comparator sites)
-
-        # #~~~~~~~~~~~~~~~~~~~
-        # (plot with all sites in cluster (comparators) not just by condition group)
-        col.glm <- c(colBio, col.Bio.Deg, j)
-        #df.comp.glm <- df.comp[complete.cases(df.comp[,col.glm]), col.glm]
-
-        df.comp.glm <- df.comp[stats::complete.cases(df.comp[, col.glm]), col.glm]
-
-        # create data frame with known column names
-        df.plot <- df.comp.glm
-        names(df.plot) <- c("y","Bio.Deg","x")
-        # Confirm Levels (factors) as 1=No and 2=Yes
-        df.plot$Bio.Deg <- factor(df.plot$Bio.Deg, c("No", "Yes"))
-        # fix so so 0=No and 1=Yes
-        df.plot$y.name <- as.numeric(df.plot$Bio.Deg)-1
-
-        n_cc_df_plot <- sum(stats::complete.cases(df.plot[,c("x","y")]))
-        #lab.sub <- paste0("All comparator sites with both ", colBio, " and ", j, " (n=", n_cc_df_plot, ")")
-
-        # 20190416, comment out p2 and p3, moving to getBSR
-        #  Stressor Response Curve
-        if(sum(stats::complete.cases(df.plot))>0){##IF.complete.cases.START
-          #
-          fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
-          # create data for curve
-          newdat <- data.frame(x=seq(min(df.plot$x, na.rm=TRUE)
-                                     , max(df.plot$x, na.rm=TRUE), len=100))
-          newdat$y.name <- stats::predict(fit, newdata=newdat
-                                          , type="response") #se.fit=TRUE
-          # type=response is for probabilities.
-
-          # Scoring
-          # j_values <- data.frame(x=df.i[,j])
-          j_values <- data.frame(x= df.scores.i.n[, "Param_Value"])
-          # sort values, 2019-05-20
-          j_SR_predict <- stats::predict(fit, newdata=j_values, type="response")
-          j_SR_score <- cut(j_SR_predict
-                            , breaks=c(0, 0.2, 0.5, 1)
-                            , labels=c(-1, 0, 1))
-
-          # # Add scores df so can save
-          df.scores.i.n[, "SR_pred_Deg"] <- j_SR_predict
-          df.scores.i.n[, "Sc_SR"] <- j_SR_score
-
-          #
-          lab.sub <- paste0("All comparator samples with ", colBio, " and paired "
-                            , j, " data (n=", n_cc_df_plot, ").\n Score = "
-                            , paste(j_SR_score, collapse=", "),".")
-
-          # plot2, ggplot ####
-          p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
-            ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg, fill=Bio.Deg)
-                                , alpha=0.5
-                                , size=2
-                                , na.rm = TRUE) +
-            ggplot2::scale_fill_manual(name=legendtitle
-                                       , breaks=c("Yes", "No")
-                                       , values=bio_col, drop=FALSE) +
-            ggplot2::scale_color_manual(name=legendtitle
-                                        , breaks=c("Yes", "No")
-                                        , values=bio_col, drop=FALSE) +
-            ggplot2::scale_shape_manual(name=legendtitle
-                                        , breaks=c("Yes", "No")
-                                        , values=bio_shp, drop=FALSE) +
-            ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col
-                                , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) +
-            ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black"
-                                , lty=2, na.rm = TRUE) +
-            ggplot2::labs(title=i, y="Relative probability of degraded condition"
-                          , x=jlabel) +
-            ggplot2::geom_line(ggplot2::aes(y=y.name, x=x)
-                               , data=newdat
-                               , color="blue"
-                               , lwd=1
-                               , na.rm = TRUE) +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
-                           , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-            ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
-          # p2
-          # plot_png[[2]] <- grDevices::recordPlot()
-          if(boo_plot){
-            ggplot2::ggsave(filename=file.path(dir_path, fn_png_p2)
-                            , plot=p2
-                            , dpi=ppi, width=8, height=6, units="in")
-          }## IF ~ boo_plot ~ END
-
-          # same colors
-          #ggplot2::scale_fill_brewer(palette = "Set2", name=NULL, breaks=NULL, labels=NULL)
+        # ## Logistic Regression (all comparator sites)
+        #
+        # # #~~~~~~~~~~~~~~~~~~~
+        # # (plot with all sites in cluster (comparators) not just by condition group)
+        # col.glm <- c(colBio, col.Bio.Deg, j)
+        # #df.comp.glm <- df.comp[complete.cases(df.comp[,col.glm]), col.glm]
+        #
+        # df.comp.glm <- df.comp[stats::complete.cases(df.comp[, col.glm]), col.glm]
+        #
+        # # create data frame with known column names
+        # df.plot <- df.comp.glm
+        # names(df.plot) <- c("y","Bio.Deg","x")
+        # # Confirm Levels (factors) as 1=No and 2=Yes
+        # df.plot$Bio.Deg <- factor(df.plot$Bio.Deg, c("No", "Yes"))
+        # # fix so so 0=No and 1=Yes
+        # df.plot$y.name <- as.numeric(df.plot$Bio.Deg) - 1
+        #
+        # n_cc_df_plot <- sum(stats::complete.cases(df.plot[,c("x","y")]))
+        #
+        # # 20190416, comment out p2 and p3, moving to getBSR
+        # #  Stressor Response Curve
+        # if(sum(stats::complete.cases(df.plot))>0){##IF.complete.cases.START
+        #   #
+        #   fit <- stats::glm(y.name ~ x, data=df.plot, family=stats::binomial)
+        #   # create data for curve
+        #   newdat <- data.frame(x = seq(min(df.plot$x, na.rm = TRUE)
+        #                              , max(df.plot$x, na.rm = TRUE)
+        #                              , len = 100))
+        #   newdat$y.name <- stats::predict(fit, newdata = newdat
+        #                                   , type = "response") #se.fit=TRUE
+        #   # type=response is for probabilities.
+        #
+        #   # Scoring
+        #   # j_values <- data.frame(x=df.i[,j])
+        #   j_values <- data.frame(x = df.scores.i.n[, "Param_Value"])
+        #   # sort values, 2019-05-20
+        #   j_SR_predict <- stats::predict(fit, newdata = j_values, type = "response")
+        #   j_SR_score <- cut(j_SR_predict
+        #                     , breaks=c(0, 0.2, 0.5, 1)
+        #                     , labels=c(-1, 0, 1))
+        #
+        #   # # Add scores df so can save
+        #   df.scores.i.n[, "SR_pred_Deg"] <- j_SR_predict
+        #   df.scores.i.n[, "Sc_SR"] <- j_SR_score
+        #
+        #   #
+        #   # lab.sub <- paste0("All comparator samples with ", colBio, " and paired "
+        #   #                   , j, " data (n=", n_cc_df_plot, ").\n Score = "
+        #   #                   , paste(j_SR_score, collapse=", "),".")
+        #   lab.sub <- paste0("All comparator samples (n=", n_cc_df_plot
+        #                     , ").\n Score = ", paste(j_SR_score, collapse=", ")
+        #                     , ".")
+        #
+        #   # plot2, ggplot ####
+        #   p2 <- ggplot2::ggplot(df.plot, ggplot2::aes(x=x, y=y.name)) +
+        #     ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg
+        #                                      , fill=Bio.Deg)
+        #                         , alpha=0.5, size=2, na.rm = TRUE) +
+        #     ggplot2::scale_fill_manual(name=legendtitle
+        #                                , breaks=c("Yes", "No")
+        #                                , values=bio_col, drop=FALSE) +
+        #     ggplot2::scale_color_manual(name=legendtitle
+        #                                 , breaks=c("Yes", "No")
+        #                                 , values=bio_col, drop=FALSE) +
+        #     ggplot2::scale_shape_manual(name=legendtitle
+        #                                 , breaks=c("Yes", "No")
+        #                                 , values=bio_shp, drop=FALSE) +
+        #     ggplot2::geom_vline(xintercept = df.i[,j], color=targ_line_col
+        #                         , lty=targ_line_lty, lwd=targ_line_lwd, na.rm = TRUE) +
+        #     ggplot2::geom_hline(yintercept = c(0.2, 0.5), color="black"
+        #                         , lty=2, na.rm = TRUE) +
+        #     ggplot2::labs(title=i, y="Relative probability of degraded condition"
+        #                   , x=jlabel) +
+        #     ggplot2::geom_line(ggplot2::aes(y=y.name, x=x), data=newdat
+        #                        , color="blue", lwd=1, na.rm = TRUE) +
+        #     ggplot2::theme_bw() +
+        #     ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
+        #                    , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
+        #     ggplot2::labs(title=maintitleSR, subtitle=subtitleSR, caption=lab.sub)
+        #   # p2
+        #   # plot_png[[2]] <- grDevices::recordPlot()
+        #   if(boo_plot){
+        #     ggplot2::ggsave(filename=file.path(dir_path, fn_png_p2)
+        #                     , plot=p2
+        #                     , dpi=ppi, width=8, height=6, units="in")
+        #   }## IF ~ boo_plot ~ END
 
           # Save Plots
           #
@@ -687,35 +681,35 @@ getCoOccur <- function(df_data
           # grDevices::dev.off()
           #
 
-        } else {
-          #
-          # Save Plots
-          #
-          # PDF, p1 only
-          # if(exists("p1")==TRUE & exists("p2")==FALSE){
-          #   p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2)
-          # }
-          # if(exists("p1")==FALSE & exists("p2")==TRUE){
-          #   p3 <- gridExtra::grid.arrange(p2, ncol=1, nrow=2)
-          # }
-          # # print(p3)
-          # # Capture most recent plot to a list
-          # plots_pdf[[ij.num]] <- grDevices::recordPlot()
-          # grDevices::dev.off()
-          #
-          # ggplot mods
-          ## Size modifier - 4:3 isn't big enough for all of text on ggplots
-          #size_mod <- 1.5
-          #
-          # png, p1
-          # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_png_p1)
-          #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
-          #                 , pointsize=8
-          #                 , res = ppi)
-          #    grDevices::replayPlot(1)
-          # grDevices::dev.off()
-
-        }##IF.complete.cases.END
+        # } else {
+        #   #
+        #   # Save Plots
+        #   #
+        #   # PDF, p1 only
+        #   # if(exists("p1")==TRUE & exists("p2")==FALSE){
+        #   #   p3 <- gridExtra::grid.arrange(p1, ncol=1, nrow=2)
+        #   # }
+        #   # if(exists("p1")==FALSE & exists("p2")==TRUE){
+        #   #   p3 <- gridExtra::grid.arrange(p2, ncol=1, nrow=2)
+        #   # }
+        #   # # print(p3)
+        #   # # Capture most recent plot to a list
+        #   # plots_pdf[[ij.num]] <- grDevices::recordPlot()
+        #   # grDevices::dev.off()
+        #   #
+        #   # ggplot mods
+        #   ## Size modifier - 4:3 isn't big enough for all of text on ggplots
+        #   #size_mod <- 1.5
+        #   #
+        #   # png, p1
+        #   # grDevices::jpeg(filename = file.path(wd, dir.sub, dir_sub2, fn_png_p1)
+        #   #                 , width = size_mod*4*ppi, height = size_mod*3*ppi, quality=100
+        #   #                 , pointsize=8
+        #   #                 , res = ppi)
+        #   #    grDevices::replayPlot(1)
+        #   # grDevices::dev.off()
+        #
+        # }##IF.complete.cases.END
 
         # add biocomm, 20190425
         df.scores.i.n[, "biocomm"] <- biocomm
@@ -727,14 +721,13 @@ getCoOccur <- function(df_data
         # Remove
         rm(df.scores.i.n)
 
-
       } else {
         # no data
         message(paste0("   All values NA for stressor (", j, ").\n"))
         utils::flush.console()
         # add data to scores table
         column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50"
-                          , "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
+                          , "q75", "Sc_Box")
         df.i.NA <- df.i[1,1:5]
         df.i.NA[, column_names] <- NA
         df.i.NA[, "Param_Name"] <- j
@@ -744,10 +737,8 @@ getCoOccur <- function(df_data
         utils::write.table(df.i.NA, file=fn.scores, col.names = FALSE
                            , row.names=FALSE, sep="\t", append=TRUE)
 
-
       }##IF.nrow.END
       #
-
 
     }##FOR.j.END
     #
@@ -773,105 +764,4 @@ getCoOccur <- function(df_data
     #
   }##FOR.i.END
 
-
 }##FUNCTION.END
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Old Stuff
-#~~~~~~~~~~~~
-
-# # Confidence Limits
-# ## http://www.stat.cmu.edu/~cshalizi/402/lectures/16-glm-practicals/lecture-16.pdf
-# ## Note that calculating standard errors for predictions on the logit scale, and then
-# # transforming, is better practice than getting standard errors directly on the
-# # probability scale.
-# pred <- stats::predict(fit, newdata=newdat, se.fit=TRUE)
-# mySeq <- seq(min(df.plot$x, na.rm=TRUE), max(df.plot$x, na.rm=TRUE), len=100)
-# library(car)
-# lines(mySeq, logit(pred$fit), col="blue")
-# lines(mySeq, logit(pred$fit+1.96*pred$se.fit), lty=2, col="green")
-# lines(mySeq, logit(pred$fit-1.96*pred$se.fit), lty=2, col="red")
-#
-# critval <- 1.96
-# upr <- pred$fit + (critval * pred$se.fit)
-# lwr <- pred$fit - (critval * pred$se.fit)
-#
-# upr2 <- fit$family$linkinv(upr)
-# lwr2 <- fit$family$linkinv(lwr)
-#
-# # don't plot if use polygon
-# #  lines(mySeq, upr2, col="gray", lty=2)
-# #  lines(mySeq, lwr2, col="gray", lty=2)
-#
-# # will need to replot some stuff
-# polygon(c(mySeq, rev(mySeq)), c(upr2, rev(lwr2)), col="light gray", border=NA)
-#
-#
-# #logr.conf <- confint(fit, )
-#
-# # ci <- matrix(c())
-#
-# #https://stackoverflow.com/questions/14423325/confidence-intervals-for-predictions-from-logistic-regression
-#
-# # score
-# # Need to find out 20th and 50th to score
-# lab.Score.Poor <- "Score = NAN"
-# mtext(lab.Score.Poor, 3, 0.25)
-#
-# y.lo <- 0.75
-# xval.lo <- approx(x=newdat$y.name, y=newdat$x, xout=y.lo)$y
-# y.hi <- 0.70
-#
-# xval.hi <- approx(x=newdat$y.name, y=newdat$x, xout=y.hi)$y
-#
-# points(c(xval.lo, xval.hi), c(y.lo, y.hi), col="blue", pch=19)
-#
-# # #~~~~~~~~~~~~~~~~~~~
-#
-# # logr <- glm(df.comp[,col.Bio.Deg] ~ df.comp[,j], family=binomial)
-# #
-# #
-# # plot(df.comp[,j], df.comp[,col.Bio.Deg], ylim=c(0,2))
-# # curve(stats::predict(logr, data.frame(df.comp[, j])=x,type="response"), add=TRUE)
-# #
-# # curve(predict.glm(logr, newdata=df.comp[,j], type="response"), add=TRUE)
-# # # predict fails
-# #
-# # #
-# # logr <- glm(CSCI.Status ~ SpecCond_uf_µS_cm, data=df.comp, family=binomial)
-# # plot(df.comp$SpecCond_uf_µS_cm, df.comp$CSCI.Status, ylim=c(0,2))
-# # curve(stats::predict(logr, data.frame(SpecCond_uf_µS_cm[1:78]=x), type="response"), add=TRUE)
-# #
-# #
-# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# #
-# # ggplot(df.comp, aes(x=TN_uf_mg_L, y=CSCI.Deg)) + geom_point() +
-# #   stat_smooth(method="glm", method.agrs=list(family="binomial"), se=FALSE)
-#
-# # # # example, base
-# # data(mtcars)
-# # dat <- subset(mtcars, select=c(mpg, am, vs))
-# # logr_vm <- glm(vs ~ mpg, data=dat, family=binomial)
-# # plot(dat$mpg, dat$vs, xlab=j, main=i, ylab="Relative Probability of Degraded Condition")
-# # curve(stats::predict(logr_vm, data.frame(mpg=x), type="response"), add=TRUE)
-# # # ab line (fake)
-# # Range.j <- max(df.comp[,j], na.rm=TRUE) - min(df.comp[,j], na.rm=TRUE)
-# # PctRange.i <- (df.i[,j] - min(df.comp[,j], na.rm=TRUE)) / Range.j
-# # Range.mtcars <- max(dat$mpg) - min(dat$mpg)
-# # val.fake <- (PctRange.i * Range.mtcars) + min(dat$mpg)
-# # abline(v=val.fake, col="red", lty=2, lwd=2.5)
-# # # score
-# # lab.Score.Poor <- "Score = NAN"
-# # mtext(lab.Score.Poor, 3, 0.25)
-#
-# # example, ggplot
-# #library(ggplot2)
-# # ggplot(dat, aes(x=mpg, y=vs)) + geom_point() +
-# #         stat_smooth(method="glm", method.args=list(family="binomial"), se=FALSE)
-
-
-# mfrow not available with ggplot.
-# use another package with named plots, so can only get 2 per page
-# pdf set to width=6 and height=8 so
-
-#gridExtra::grid.arrange(p1, p2, ncol=1, nrow=2 )
