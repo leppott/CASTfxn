@@ -14,12 +14,12 @@ output:
     toc: true
 ---
 
-<!-- #  Copyright 2020 TetraTech. All rights reserved. -->
+<!-- #  Copyright 2023 TetraTech. All rights reserved. -->
 <!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
 <!-- #  is expressly prohibited without prior written permission of TetraTech. -->
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
 #TargetSiteID <- "SRCKN001.61"
 # dir_results <- "C:\\Users\\Erik.Leppo\\OneDrive - Tetra Tech, Inc\\MyDocs_OneDrive\\GitHub\\CASTfxn\\Results"
 #~~~~~~~~~~~~~~~~~
@@ -32,8 +32,9 @@ knitr::opts_chunk$set(results='asis', echo=FALSE, warning=FALSE)
 # Static Map
 ```{r map_jpg, echo=FALSE, eval=TRUE}
 dir.sub3 <- "SiteInfo"
-fn_img <- file.path(dir_results, TargetSiteID, dir.sub3, paste0(TargetSiteID,"_map.png"))
-if(file.exists(fn_img)==TRUE){
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub3
+                    , paste0(TargetSiteID, "_map.png"))
+if (file.exists(fn_img) == TRUE) {
   knitr::include_graphics(fn_img)
 } else {
   print("No static map exists.")
@@ -55,13 +56,13 @@ if(file.exists(fn_img)==TRUE){
     lmap <- leaflet::leaflet(data = sp_outline) %>%
         leaflet::addProviderTiles(leaflet::providers$Stamen.Terrain) %>%
         # Groups, Overlay
-        leaflet::addPolygons(data = sp_outline, color="black", fill = "transparent") %>%
+        leaflet::addPolygons(data = sp_outline, color = "black", fill = "transparent") %>%
         leaflet::addPolylines(data = sp_flowline # All reaches
                               , color = "#2687D1"
                               # , group = "All streams"
                               , opacity = 0.8
                               , weight = 1.5) %>%
-        leaflet::addCircleMarkers(data=sp_sites # All Sites
+        leaflet::addCircleMarkers(data = sp_sites # All Sites
                                   , group = "All sites"
                                   , color = "#3B3846"
                                   , fillColor = "#3B3846"
@@ -71,7 +72,7 @@ if(file.exists(fn_img)==TRUE){
                                   , fillOpacity = 0.8
                                   , opacity = 0.6
                                   , popup = ~StationID_Master) %>%
-        leaflet::addCircleMarkers(data=sp_clustsites # Cluster Sites
+        leaflet::addCircleMarkers(data = sp_allsites # Cluster Sites
                                   , group = "Cluster sites"
                                   , color = "#00CDCD"
                                   , fillColor = "#00CDCD"
@@ -81,7 +82,7 @@ if(file.exists(fn_img)==TRUE){
                                   , fillOpacity = 0.8
                                   , opacity = 0.6
                                   , popup = ~StationID_Master) %>%
-        leaflet::addCircleMarkers(data=sp_refsites # Reference Sites
+        leaflet::addCircleMarkers(data = sp_refsites # Reference Sites
                                   , group = "Reference sites"
                                   , color = "#0000CC"
                                   , fillColor = "transparent"
@@ -91,7 +92,7 @@ if(file.exists(fn_img)==TRUE){
                                   # , fillOpacity = 0.8
                                   , opacity = 0.6
                                   , popup = ~StationID_Master) %>%
-        leaflet::addCircleMarkers(data=sp_targetsite # Target Site
+        leaflet::addCircleMarkers(data = sp_targetsite # Target Site
                                   , group = "Target site"
                                   , color = "#FF0000"
                                   , fillColor = "#FF0000"
