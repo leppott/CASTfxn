@@ -1,4 +1,4 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2023 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -9,10 +9,12 @@
 # Ann.RoseberryLincoln@tetratech.com
 # Erik.Leppo@tetratech.com
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R v4.0.2
+# R v4.3.1
 #
 # library(devtools)
 # install_github("ALincolnTt/RPPTool")
+#
+# requires dplyr, ggplot2, purrr, sf
 #
 # Add Shiny code for use in Shiny App
 # 2020-09-10, Erik
@@ -27,15 +29,20 @@
 #' in blue, and the rest of the sites (not same cluster as target & not reference)
 #' in grey.
 #'
-#' @param sp_outline Outline for map, typically State border.
-#' @param sp_flowline ypically NHD+ flowline.
-#' @param allSites allSites
-#' @param TargetSiteID SiteID
-#' @param dir_results Directory for results.  Default = "Results".
-#' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
-#' @param dir_map_rmd Directory with Map_Leaflet.RMD.  Default = package RMD.
+#' @param sp_outline Spatial dataframe representing region (or subregion) boundary.
+#' @param sp_flowline Spatial dataframe representing stream reaches.
+#' @param region Region or regulatory organization to which the data apply (e.g., AZ, SMC, WA, OR)
+#' @param df_sites dataframe containing site data, including both "inside the case"
+#'                 and "outside the case" identifiers.
+#' @param outcaseID Identifier for "outside the case" sites
+#' @param incaseID Identifier for "inside the case" sites
+#' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
+#' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE"
+#' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results")
+#' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo".
+#' @param dir_map_rmd Directory containing the leaflet map template.
 #'
-#' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID
+#' @return A png map to a subdirectory "SiteInfo" in the folder named by the SiteID
 #' in the user supplied dir_results folder (default is "Results" folder in the
 #' working directory).  Also produced is a summary list; SiteInfo, Samps,
 #' BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
@@ -43,21 +50,54 @@
 # no examples
 #
 #' @export
-getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
-                       , dir_results, dir_sub, dir_map_rmd) {
+getSiteMap <- function(sp_outline
+                       , sp_flowline
+                       , region
+                       , df_sites
+                       , allSites
+                       , compSites
+                       , TargetSiteID
+                       , useBC = FALSE
+                       , dir_results = file.path(getwd(), "Results")
+                       , dir_sub = "SiteInfo"
+                       , dir_map_rmd
+                       ) {
 
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG == TRUE) {
-    sp_outline <- sp_outline
-    sp_flowline <- sp_flowline
-    allSites = data_Sites
+    sp_outline = sp_outline
+    sp_flowline = sp_flowline
+    region = region
+    df_sites = data_Sites
+    allSites = all_sites
+    compSites = comp_sites
     TargetSiteID = TargetSiteID
+    useBC = TRUE
     dir_results = dir_results
     dir_sub = "SiteInfo"
     dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
     # plotLMAP = FALSE
   }
+
+  # Check function arguments
+  if (is.null(sp_outline)) {
+    msg("Please provide boundary (sp_outline).")
+    stop()
+  }
+  if (is.null(sp_flowline)) {
+    msg("Please provide reach file (sp_flowline).")
+    stop()
+  }
+  if (is.null(df_sites)) {
+    msg("Please provide sites file (df_sites).")
+    stop()
+  }
+  if (is.null(TargetSiteID)) {
+    msg("Please provide Target site identifier (TargetSiteID).")
+    stop()
+  }
+
 
   not_all_na <- function(x) {!all(is.na(x))}
 
@@ -78,33 +118,36 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
   dir_path <- file.path(dir_results, dir_sub2, dir_sub3)
 
   # Get filename for saving
-  fn_Map <- file.path(dir_path, paste0(TargetSiteID,"_map.png"))
+  fn_Map <- file.path(dir_path, paste0(TargetSiteID, "_map.png"))
 
   # Get sites (NAD27 coordinates in dataset, transform to WGS84)
   # Subset ref sites, cluster sites, target site
-  allSites <- allSites %>%
+  df_sites <- df_sites %>%
     dplyr::select(StationID_Master, FinalLongitude, FinalLatitude
-                  , CARefSite_2017, COMID, clust)
+                  , RefSiteFlag, COMID)
 
-  sp_sites <- sf::st_as_sf(allSites, crs = 4267
+  sp_sites <- sf::st_as_sf(df_sites, crs = 4267
                            , coords = c("FinalLongitude", "FinalLatitude"))
   sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
-    mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
-           , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+    dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                  , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
 
-  sp_refsites <- dplyr::filter(sp_sites, CARefSite_2017 == 1)
+  sp_refsites <- dplyr::filter(sp_sites, RefSiteFlag == 1)
 
   sp_targetsite <- dplyr::filter(sp_sites, StationID_Master == TargetSiteID)
 
-  targetCluster <- as.numeric(sp_targetsite$clust)
-
-  sp_clustsites <- dplyr::filter(sp_sites, clust == targetCluster)
+  if (useBC == TRUE) {
+    sp_compsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # comparator sitese
+    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% allSites) # cluster sites
+  } else {
+    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # cluster sites
+  }
 
   # Graphics parameters
   bestdpi <- 600
   GIS_offset <- 0.1
-  maptype <- "SMCRegionSites"
-  maptype2 <- "SMC Region Bioassessment Sites"
+  # maptype <- "SMCRegionSites"
+  maptype2 <- paste0(region, " Bioassessment Sites")
 
   col_outline <- "black"
   col_flowline <- "light blue"
@@ -129,8 +172,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
   size_legtitle <- 3
   size_legelement <- 2.5
 
-  # Generate static maps ####
-  sp_bbox <- sp::bbox(sf::as_Spatial(sp_flowline))
+  # Generate static maps ####  # sp_bbox <- sp::bbox(sf::as_Spatial(sp_flowline))
   ggmap_bbox <- setNames(sf::st_bbox(sp_flowline)
                          , c("left","bottom","right","top"))
 
@@ -149,7 +191,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
     ggplot2::geom_sf(data = sp_sites, inherit.aes = FALSE
                      , color = col_sites_all, pch = pch_sites_all
                      , size = cex_sites_all) +
-    ggplot2::geom_sf(data = sp_clustsites, inherit.aes = FALSE
+    ggplot2::geom_sf(data = sp_allsites, inherit.aes = FALSE
                      , color = col_sites_cl, pch = pch_sites_cl
                      , size = cex_sites_cl) +
     ggplot2::geom_sf(data = sp_refsites, inherit.aes = FALSE
@@ -163,7 +205,7 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
     ggplot2::coord_sf(datum = 4326
                       , xlim = c(ggmap_bbox["left"], ggmap_bbox["right"])
                       , ylim = c(ggmap_bbox["bottom"], ggmap_bbox["top"])) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_bw() +
     ggplot2::labs(x = "Longitude", y = "Latitude", title = TargetSiteID
                   , subtitle = maptype2) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"
@@ -204,8 +246,8 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
                       , label = "Reaches", size = size_legelement) +
     ggplot2::annotate(geom = "text", x = -119.135, y = 32.972
                       , label = "All sites", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -119.07, y = 32.865
-                      , label = "Cluster sites", size = size_legelement) +
+    ggplot2::annotate(geom = "text", x = -118.943, y = 32.865
+                      , label = "Outside the case sites", size = size_legelement) +
     ggplot2::annotate(geom = "text", x = -119.0256, y = 32.763
                       , label = "Reference sites", size = size_legelement) +
     ggplot2::annotate(geom = "text", x = -119.095, y = 32.662
@@ -218,10 +260,10 @@ getSiteMap <- function(sp_outline, sp_flowline, allSites, TargetSiteID
   # Leaflet Map in Notebook
   report_format <- "html"
   strFile_out_ext <- paste0(".", report_format)
-  strFile_out <- paste0(TargetSiteID,"_MAP_leaflet", strFile_out_ext)
+  strFile_out <- paste0(TargetSiteID, "_MAP_leaflet", strFile_out_ext)
 
   rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet2.rmd")
-                    , output_format = paste0(report_format,"_document")
+                    , output_format = paste0(report_format, "_document")
                     , output_file = strFile_out
                     , output_dir = dir_path
                     , quiet = TRUE)

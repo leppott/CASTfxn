@@ -1,4 +1,4 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2023 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -7,9 +7,10 @@
 #'
 #' @description Get site info of provided siteID.
 #'
-#' @details Summary info including lat/long, ref status, cluster membership, samps from site, maps
+#' @details Summary info including lat/long, ref status, cluster membership,
+#' samples from site
 #'
-#' Requires package rgdal.
+#' Requires packages dplyr, sf, tidyr
 #'
 #' Required objects:
 #'
@@ -19,42 +20,55 @@
 #' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
 #' , BMI.Metrics.SampID, Algae.Metrics.SampID
 #'
-#' * data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
-#'
 #' * data.bmi.metrics; StationID_Master, CollDate, CSCI, O_E, MMI_Score
 #'
 #' * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 #'
 #' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
 #'
-#' * data.mod; COMID, ReachModStatus, ModReason
-#'
 #' Will create output folder dir_results if it doesn't already exist.  The default is "Results".
 #' A subdirectory is created for each SiteID.
 #'
-#' @param TargetSiteID SiteID
-#' @param dir_results Directory for results.  Default = "Results".
-#' @param data_Sites data_Sites
-#' @param data_SampSummary data_SampSummary
-#' @param data_303d data_303d
-#' @param data_bmiMetrics data_bmiMetrics
-#' @param data_algMetrics data_algMetrics
-#' @param data_cluster data_cluster
-#' @param data_mods data_mods
-#' @param map_proj Map projection.  If no projection is provided an unprojected map is created without flowlines.
-#' @param map_outline Outline for map, typically State border.
-#' @param map_flowline Typically NHD+ flowline.
-#' @param map_flowline2 Typically NHD+ flowline.  Can be more than one but plotted the same.
-#' @param dir_sub Subdirectory for outputs from this function.  Default = "SiteInfo"
-#' @param dir_map_rmd Directory with Map_Leaflet.RMD.  Default = package RMD.
-#' @param boo_plot Boolean value to save plots.  Default = TRUE.
+#' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
+#' @param data_Sites dataframe containing site data, including "inside the case"
+#'                   and "outside the case" identifiers. If useBC == TRUE, "outside
+#'                   the case" will be cluster; if useBC == FALSE, "inside the case"
+#'                   will be cluster.
+#' @param data_bkgdata dataframe containing anthropogenically-influenced variables from StreamCat
+#' @param data_bkginfo dataframe containing metadata for the variables in data_bkgdata
+#' @param data_SampSummary dataframe containing sample IDs for samples collected
+#'                         at the target site, organized by sample date (rows)
+#'                         and type (columns)
+#' @param data_bmiMetrics dataframe containing BMI sample index and metric values
+#' @param bmiIndexGp vector containing one or more BMI indices for display purpose only
+#' @param data_algMetrics dataframe containing algae sample index and metric values.
+#'                        Default is NULL.
+#' @param algIndexGp vector containing one or more algal indices for display purpose only
+#' @param data_fishMetrics dataframe containing fish sample index and metric values
+#' @param fishIndexGp vector containing one or more fish indices for display purpose only
+#' @param comp_sites vector containing comparator site IDs
+#' @param outcaseLabel Label for the "outside the case" identifier. Default = NULL.
+#' @param incaseLabel Label for the "inside the case" identifier. Default = NULL.
+#' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE"
+#' @param dir_photo directory containing all site photos (for every site in the data set).
+#'                  Default is file.path(getwd(), "Data", "Photos").
+#' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results").
+#' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo".
+#' @param boo_plot Boolean value to save plots. Default = TRUE.
 #'
-#' @return A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID
-#' in the user supplied dir_results folder (default is "Results" folder in the
-#' working directory).  Also produced is a summary list; SiteInfo, Samps,
-#' BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+#' @return A list containing a dataframe of site information (site ID, geographic
+#'         coordinates, waterbody name, county name, reach identifier, cluster
+#'         identifier, and reference site flag); a dataframe of any samples obtained
+#'         from the site location by sample date; a dataframe of bmi response
+#'         indices and metric values; a dataframe of algae response indices and
+#'         metric values; the reach identifier for the target site location; the
+#'         cluster identifier for the target site; and a vector of reference reaches.
+#'         Also outputs graphics depicting background variables by category,
+#'         response indices, and tabular site background data. Creates a subfolder
+#'         for site photos within the directory "~/Results/TargetSiteID/SiteInfo".
 #'
 #' @examples
+#' \dontrun{
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
 #'
@@ -63,51 +77,16 @@
 #' #data_Sites <- read.delim(paste(myDir.Data,"data_Sites.tab",sep=""))
 #' #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
 #' #                               , na.strings = c(""," "))
-#' #data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
 #' #data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
 #' #data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#' #data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
-#' #data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
 #'
 #' # Data getSiteInfo
 #' # data, example included with package
 #' data_Sites <- data_Sites
 #' data.SampSummary   <- data_SampSummary
-#' data.303d.ComID    <- data_303d
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
-#' data.mod           <- data_ReachMod
 #'
-#' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
-#' if(elev_cat=="HI"){
-#'    data.cluster <- data_Cluster_Hi
-#' } else if(elev_cat=="LO") {
-#'    data.cluster <- data_Cluster_Lo
-#' }
-#'
-#' # Map data
-#' # San Diego
-#' #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#' #outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-#' # AZ
-#' map_flowline  <- data_GIS_Flow_HI
-#' map_flowline2 <- data_GIS_Flow_LO
-#' if(elev_cat=="HI"){
-#'    map_flowline <- data_GIS_Flow_HI
-#' } else if(elev_cat=="LO") {
-#'    map_flowline <- data_GIS_Flow_LO
-#' }
-#' map_outline   <- data_GIS_AZ_Outline
-#' # Project site data to USGS Albers Equal Area
-#' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-#'               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-#'               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-#' # projection for outline
-#' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
-#'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-#' map_proj <- my.aea
-#' #
 #' dir_sub <- "SiteInfo"
 #'
 #' # Run getSiteInfo
@@ -118,38 +97,35 @@
 #'                                 , data.303d.ComID
 #'                                 , data.bmi.metrics
 #'                                 , data.algae.metrics
-#'                                 , data.cluster
-#'                                 , data.mod
 #'                                 , map_proj
 #'                                 , map_outline
 #'                                 , map_flowline
 #'                                 , dir_sub=dir_sub)
-#
+#' }
 #' @export
 getSiteInfo <- function(TargetSiteID
                         , data_Sites
                         , data_bkgdata
                         , data_bkginfo
                         , data_SampSummary
-                        , data_303d=NULL
-                        , data_bmiMetrics=NULL
-                        , bmiIndexGp = "IBI"
-                        , data_algMetrics=NULL
-                        , algIndexGp = "IBI"
-                        , comp_sites=NULL
-                        , data_cluster
-                        , data_mods=NULL
-                        # , map_proj=NULL
-                        # , map_outline=NULL
-                        # , map_flowline=NULL
-                        # , map_flowline2=NULL
-                        , dir_photo = file.path(dir_data,"Photos")
-                        , dir_results = dir_results
+                        , data_bmiMetrics = NULL
+                        , bmiIndexGp
+                        , data_algMetrics = NULL
+                        , algIndexGp
+                        , data_fishMetrics = NULL
+                        , fishIndexGp
+                        , comp_sites
+                        , outcaseLabel = NULL
+                        , incaseLabel = NULL
+                        , useBC = FALSE
+                        # , data_cluster
+                        # , data_mods = NULL
+                        # , data_303d = NULL
+                        , dir_photo = file.path(getwd(), "Data", "Photos")
+                        , dir_results = file.path(getwd(), "Results")
                         , dir_sub = "SiteInfo"
-                        # , dir_map_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                         , boo_plot = TRUE
-                        ){
-    #
+                        ) {##FUNCTION.START
 
   # DEBUG
   boo_DEBUG <- FALSE
@@ -157,25 +133,25 @@ getSiteInfo <- function(TargetSiteID
   if (boo_DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
     data_Sites = data_Sites
-    data_bkgdata = df_bkgdata
-    data_bkginfo = df_bkginfo
-    data_SampSummary = data_SampSummary
-    data_303d = NULL
+    data_bkgdata = data_bkgdata
+    data_bkginfo = data_bkginfo
+    data_SampSummary = data_sampSummary
     data_bmiMetrics = data_bmiMetrics
     bmiIndexGp = bmiIndexGp
-    data_algMetrics = data_AlgMetrics
+    data_algMetrics = data_algMetrics
     algIndexGp = algIndexGp
+    data_fishMetrics = NULL
+    fishIndexGp = "IBI"
     comp_sites = comp_sites
-    data_cluster = data_cluster
-    data_mods = NULL
-    # map_proj = my.aea
-    # map_outline = sp_outline
-    # map_flowline = sp_flowline
-    # map_flowline2 = NULL
+    outcaseLabel = outcaseLabel
+    incaseLabel = NULL
+    useBC = TRUE
+    # data_cluster = data_cluster
+    # data_mods = NULL
+    # data_303d = NULL
     dir_photo = file.path(dir_data,"Photos")
     dir_results = dir_results
     dir_sub = "SiteInfo"
-    # dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
     boo_plot = TRUE
   }
 
@@ -188,13 +164,13 @@ getSiteInfo <- function(TargetSiteID
   #dir_results = file.path(getwd(), "Results")
   dir_sub2 <- TargetSiteID
   dir_sub3 <- dir_sub
-  ifelse(!dir.exists(dir_results)==TRUE
+  ifelse(!dir.exists(dir_results) == TRUE
          , dir.create(dir_results)
          , FALSE)
-  ifelse(!dir.exists(file.path(dir_results, dir_sub2))==TRUE
+  ifelse(!dir.exists(file.path(dir_results, dir_sub2)) == TRUE
          , dir.create(file.path(dir_results, dir_sub2))
          , FALSE)
-  ifelse(!dir.exists(file.path(dir_results, dir_sub2, dir_sub3))==TRUE
+  ifelse(!dir.exists(file.path(dir_results, dir_sub2, dir_sub3)) == TRUE
          , dir.create(file.path(dir_results, dir_sub2, dir_sub3))
          , FALSE)
 
@@ -209,30 +185,47 @@ getSiteInfo <- function(TargetSiteID
   ppi <- 300
 
   #
-  mySiteInfo <- data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID
-                           ,c("FinalLatitude","FinalLongitude","WaterbodyName"
-                              ,"GIS_County","CARefSite_2017","COMID","clust")]
-  data_refSites <- subset(data_Sites, CARefSite_2017==1
-                          , select= c(StationID_Master, FinalLatitude
-                                      , FinalLongitude, COMID))
+  if (useBC == TRUE) {
+    mySiteInfo <- data_Sites %>%
+      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
+                    , RefSiteFlag, COMID, OutcaseCol)
+    outcaseID <- mySiteInfo$OutcaseCol
+  } else { # useBC == FALSE; cluster ID is inside the case ID
+    mySiteInfo <- data_Sites %>%
+      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
+                    , RefSiteFlag, COMID, OutcaseCol, IncaseCol)
+    incaseID <- mySiteInfo$IncaseCol
+  }
+  myCOMID <- mySiteInfo$COMID
+  data_refSites <- data_Sites %>%
+    dplyr::filter(RefSiteFlag == 1) %>%
+    dplyr::select(StationID_Master, FinalLatitude, FinalLongitude, COMID)
   myRefCOMIDs <- as.vector(unique(data_refSites$COMID))
 
   # get sampling info (dates of samples)
-  mySamps <- data_SampSummary[data_SampSummary[,"StationID_Master"]==TargetSiteID,]
+  mySamps <- dplyr::filter(data_SampSummary, StationID_Master == TargetSiteID)
 
-  # get response information (CSCI, H20, etc)
-  if (!is.null("data_bmiMetrics")) {
+  # get response information (CSCI, MMIhybrid, FIBI, etc.)
+  if (useBC == TRUE) {
+    str_sub <- paste0("Target Site: ", TargetSiteID, ", ", outcaseLabel, " "
+                      , outcaseID)
+  } else {
+    str_sub <- paste0("Target Site: ", TargetSiteID, ", ", outcaseLabel, " "
+                      , outcaseID, "; ", incaseLabel, " ", incaseID)
+  }
 
+  if (!is.null(data_bmiMetrics)) {
     # Prep BMI data for plotting
-    compBMImetrics <- data_bmiMetrics[data_bmiMetrics[,"StationID_Master"]
-                                      %in% comp_sites
-                                      , c("StationID_Master", "BMISampID"
-                                          , "BMISampDate", "Quality"
-                                          , bmiIndexGp)]
+    compBMImetrics <- data_bmiMetrics %>%
+      dplyr::filter(StationID_Master %in% comp_sites)%>%
+      dplyr::select(StationID_Master, BMISampID, BMISampDate, Quality
+                    , all_of(bmiIndexGp))
     compBMImetrics <- compBMImetrics %>%
-      tidyr::pivot_longer(cols = eval(bmiIndexGp), names_to = "Index"
+      tidyr::pivot_longer(cols = all_of(bmiIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID_Master==TargetSiteID
+      dplyr::mutate(Quality = ifelse(StationID_Master == TargetSiteID
                                      , "Target", Quality)
                     , Quality = as.factor(Quality)
                     , Index = as.factor(Index))
@@ -254,6 +247,144 @@ getSiteInfo <- function(TargetSiteID
     write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
 
+    ## Plot, Variables, Strings, other Aesthetics
+    myBMISamps <- dplyr::filter(mySamps, !is.na(BMISampID))
+    lab.sub <- paste0("Comparator samples (n = "
+                      , (nrow(compBMImetrics) - nrow(myBMISamps))
+                      , " from ", (length(comp_sites) - 1), " sites)")
+
+    bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
+    bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
+    bio_alpha <- c(0.3, 0.5, 1)
+
+    str_title <- "Benthic macroinvertebrate index scores"
+    str_xlab  <- "Index"
+    str_ylab  <- "Score"
+
+    ## Plot, Data
+    fn_bmiscores <- paste0(TargetSiteID, "_BMI_IndexBoxplots.png")
+    fn_bmiscores <- file.path(dir_path,fn_bmiscores)
+    pBMI <- ggplot2::ggplot(compBMImetrics, ggplot2::aes(y = round(Score, 3)
+                                                         , x = Index
+                                                         , group = Index)) +
+      ggplot2::geom_boxplot(na.rm = TRUE) +
+      ggplot2::geom_jitter(size = 2, width = 0.2, na.rm = TRUE
+                           , ggplot2::aes(color = Quality, fill = Quality
+                                          , shape = Quality, alpha = Quality)) +
+      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
+      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
+      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
+                    , x = str_xlab, y = str_ylab) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
+                     , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black")
+                     , axis.ticks.y = ggplot2::element_blank())
+    if(boo_plot){
+      ggplot2::ggsave(fn_bmiscores, pBMI, width = plot_W, height = plot_H
+                      , units = "in")
+    }## IF ~ boo_plot ~ END
+
+  } else {
+    myBMIMetrics <- NULL
+  }
+  if (!is.null(data_algMetrics)) {
+    # Prep Alg data for plotting
+    compALGmetrics <- data_algMetrics %>%
+      dplyr::filter(StationID_Master %in% comp_sites)%>%
+      dplyr::select(StationID_Master, AlgSampID, AlgSampDate, Quality
+                    , all_of(algIndexGp))
+    compALGmetrics <- compALGmetrics %>%
+      tidyr::pivot_longer(cols = all_of(algIndexGp), names_to = "Index"
+                          , values_to = "Score") %>%
+      dplyr::mutate(Quality = ifelse(StationID_Master == TargetSiteID
+                                     , "Target", Quality)
+                    , Quality = as.factor(Quality)
+                    , Index = as.factor(Index))
+    goodALGmetrics <- dplyr::filter(compALGmetrics, Quality == "Good")
+    badALGmetrics <- dplyr::filter(compALGmetrics, Quality == "Degraded")
+    myALGmetrics <- dplyr::filter(compALGmetrics, Quality == "Target")
+
+    ## Plot, Variables, Strings, other Aesthetics
+    myAlgSamps <- dplyr::filter(mySamps, !is.na(AlgSampID))
+    lab.sub <- paste0("Comparator samples (n = ", (nrow(compALGmetrics) - nrow(myAlgSamps))
+                      , " from ", (length(comp_sites) - 1), " sites)")
+
+    bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
+    bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
+    bio_alpha <- c(0.5, 0.5, 1)
+
+    str_title <- "Algal community index scores"
+    # str_sub <- paste0("Target Site: ", TargetSiteID, ", cluster ", mySiteInfo$clust)
+    str_xlab  <- "Index"
+    str_ylab  <- "Score"
+
+    ## Plot, Data
+    fn_algscores <- paste0(TargetSiteID, "_ALGAE_IndexBoxplots.png")
+    fn_algscores <- file.path(dir_path, fn_algscores)
+    pAlg <- ggplot2::ggplot(compALGmetrics, ggplot2::aes(y = round(Score, 3)
+                                                         , x = Index
+                                                         , group = Index)) +
+      ggplot2::geom_boxplot(na.rm = TRUE) +
+      ggplot2::geom_jitter(size = 2, width = 0.2, na.rm = TRUE
+                           , ggplot2::aes(color = Quality, fill = Quality
+                                          , shape = Quality, alpha  = Quality)) +
+      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
+      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
+      # ggplot2::geom_jitter(data=filter(compBMImetrics, Quality=="Target")
+      #                      , size=2, width=0.2
+      #                      , ggplot2::aes(y=Score, x=Index, group=Index
+      #                                     , color = "red", fill = "red"
+      #                                     , shape = 17))
+      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
+                    , x = str_xlab, y = str_ylab) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
+                     , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black")
+                     , axis.ticks.y = ggplot2::element_blank())
+    if(boo_plot){
+      ggplot2::ggsave(fn_algscores, pAlg, width = plot_W, height = plot_H
+                      , units = "in")
+    }## IF ~ boo_plot ~ END
+
+  } else {
+    myALGmetrics <- NULL
+  }
+  if (!is.null(data_fishMetrics)) {
+    # Prep Fish data for plotting
+    compFISHmetrics <- data_fishMetrics %>%
+      dplyr::filter(StationID_Master %in% comp_sites)%>%
+      dplyr::select(StationID_Master, FishSampID, FishSampDate, Quality
+                    , all_of(fishIndexGp))
+    compFISHmetrics <- compFISHmetrics %>%
+      tidyr::pivot_longer(cols = all_of(fishIndexGp), names_to = "Index"
+                          , values_to = "Score") %>%
+      dplyr::mutate(Quality = ifelse(StationID_Master==TargetSiteID
+                                     , "Target", Quality)
+                    , Quality = as.factor(Quality)
+                    , Index = as.factor(Index))
+    goodFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Good")
+    badFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Degraded")
+    myFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Target")
+
+    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodFISHmetrics)
+                                 , "Not degraded comparator samples available.")
+    colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
+    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badFISHmetrics)
+                                , "Degraded comparator samples available.")
+    colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
+    gap.comps <- rbind(gap.good, gap.bad)
+    rm(gap.good, gap.bad)
+
+    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+    write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE
+                , row.names = FALSE, sep = "\t")
 
     ## Plot, Variables, Strings, other Aesthetics
     lab.sub <- paste0("Comparator samples (n = ", nrow(compBMImetrics)
@@ -263,128 +394,75 @@ getSiteInfo <- function(TargetSiteID
     bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
     bio_alpha <- c(0.3, 0.5, 1)
 
-    str_title <- "Benthic macroinvertebrate index scores"
-    str_sub <- paste0("Target Site: ", TargetSiteID, ", cluster ", mySiteInfo$clust)
-    str_xlab  <- "Index name"
+    str_title <- "Fish index scores"
+    # str_sub <- paste0("Target Site: ", TargetSiteID, ", cluster ", mySiteInfo$clust)
+    str_xlab  <- "Index"
     str_ylab  <- "Score"
 
     ## Plot, Data
-    fn_bmiscores <- paste0(TargetSiteID, "_BMI_IndexBoxplots.png")
-    fn_bmiscores <- file.path(dir_path,fn_bmiscores)
-    pBMI <- ggplot2::ggplot(compBMImetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
+    fn_fishscores <- paste0(TargetSiteID, "_Fish_IndexBoxplots.png")
+    fn_fishscores <- file.path(dir_path, fn_fishscores)
+    pFish <- ggplot2::ggplot(compFISHmetrics
+                             , ggplot2::aes(y = round(Score, 3), x = Index
+                                            , group = Index)) +
       ggplot2::geom_boxplot(na.rm = TRUE) +
-      ggplot2::geom_jitter(size=2, width = 0.2, na.rm=TRUE
-                           , ggplot2::aes(color=Quality, fill=Quality
-                                          , shape=Quality, alpha=Quality)) +
-      ggplot2::scale_color_manual(values=bio_col, drop=FALSE) +
-      ggplot2::scale_fill_manual(values=bio_col, drop=FALSE) +
-      ggplot2::scale_shape_manual(values=bio_shp, drop=FALSE) +
-      ggplot2::scale_alpha_manual(values=bio_alpha, drop=FALSE) +
+      ggplot2::geom_jitter(size = 2, width = 0.2, na.rm = TRUE
+                           , ggplot2::aes(color = Quality, fill = Quality
+                                          , shape = Quality, alpha = Quality)) +
+      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
+      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
       # ggplot2::geom_jitter(data=filter(compBMImetrics, Quality=="Target")
       #                      , size=2, width=0.2
       #                      , ggplot2::aes(y=Score, x=Index, group=Index
       #                                     , color = "red", fill = "red"
       #                                     , shape = 17))
-      ggplot2::labs(title=str_title, subtitle = str_sub, caption=lab.sub) +
+      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
+                    , x = str_xlab, y = str_ylab) +
       ggplot2::theme_bw() +
-      ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
-                     , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-      ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
-                     , axis.ticks.y=ggplot2::element_blank())
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
+                     , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black")
+                     , axis.ticks.y = ggplot2::element_blank())
     if(boo_plot){
-      ggplot2::ggsave(fn_bmiscores, pBMI, width=plot_W, height=plot_H, units="in")
+      ggplot2::ggsave(fn_fishscores, pFish, width = plot_W, height = plot_H
+                      , units = "in")
     }## IF ~ boo_plot ~ END
 
-  }
-  if (!is.null("data_algMetrics")) {
-    # Prep Alg data for plotting
-    compALGmetrics <- data_algMetrics[data_algMetrics[,"StationID_Master"]
-                                      %in% comp_sites
-                                      , c("StationID_Master", "AlgSampID"
-                                          , "AlgSampDate", "Quality"
-                                          , algIndexGp)]
-    compALGmetrics <- compALGmetrics %>%
-      tidyr::pivot_longer(cols = eval(algIndexGp), names_to = "Index"
-                          , values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID_Master==TargetSiteID
-                                     , "Target", Quality)
-                    , Quality = as.factor(Quality)
-                    , Index = as.factor(Index))
-    goodALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Good")
-    badALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Degraded")
-    myALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Target")
-
-    ## Plot, Variables, Strings, other Aesthetics
-    lab.sub <- paste0("Comparator samples (n = ", nrow(compALGmetrics)
-                      , " from ", length(comp_sites)," sites)")
-
-    bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
-    bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
-    bio_alpha <- c(0.5, 0.5, 1)
-
-    str_title <- "Algal community index scores"
-    str_sub <- paste0("Target Site: ", TargetSiteID, ", cluster ", mySiteInfo$clust)
-    str_xlab  <- "Index name"
-    str_ylab  <- "Score"
-
-    ## Plot, Data
-    fn_algscores <- paste0(TargetSiteID, "_ALGAE_IndexBoxplots.png")
-    fn_algscores <- file.path(dir_path,fn_algscores)
-    pAlg <- ggplot2::ggplot(compALGmetrics, ggplot2::aes(y=Score,x=Index,group=Index)) +
-      ggplot2::geom_boxplot(na.rm = TRUE) +
-      ggplot2::geom_jitter(size=2, width = 0.2, na.rm=TRUE
-                           , ggplot2::aes(color=Quality, fill=Quality
-                                          , shape=Quality, alpha=Quality)) +
-      ggplot2::scale_color_manual(values=bio_col, drop=FALSE) +
-      ggplot2::scale_fill_manual(values=bio_col, drop=FALSE) +
-      ggplot2::scale_shape_manual(values=bio_shp, drop=FALSE) +
-      ggplot2::scale_alpha_manual(values=bio_alpha, drop=FALSE) +
-      # ggplot2::geom_jitter(data=filter(compBMImetrics, Quality=="Target")
-      #                      , size=2, width=0.2
-      #                      , ggplot2::aes(y=Score, x=Index, group=Index
-      #                                     , color = "red", fill = "red"
-      #                                     , shape = 17))
-      ggplot2::labs(title=str_title, subtitle = str_sub, caption=lab.sub) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)
-                     , plot.subtitle = ggplot2::element_text(hjust=0.5)) +
-      ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
-                     , axis.ticks.y=ggplot2::element_blank())
-    if(boo_plot){
-      ggplot2::ggsave(fn_algscores, pAlg, width=plot_W, height=plot_H, units="in")
-    }## IF ~ boo_plot ~ END
-
+  } else {
+    myFISHmetrics <- NULL
   }
 
   # get COMID
-  myCOMID <- mySiteInfo$COMID
-  myWBName <- mySiteInfo$WaterbodyName
-  myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
-
-  if (exists("data_mods")) {
-    myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
-                             ,c("ReachModStatus", "ModReason")]
-  }
-  if (exists("data_303d")) {
-    my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
-    my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
-    myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
-    myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
-                                      "FINAL.LISTING.DECISION")]
-  }
+  # myCOMID <- mySiteInfo$COMID
+  # myWBName <- mySiteInfo$WaterbodyName
+  # myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
+  #
+  # if (exists("data_mods")) {
+  #   myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
+  #                            ,c("ReachModStatus", "ModReason")]
+  # }
+  # if (exists("data_303d")) {
+  #   my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
+  #   my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
+  #   myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
+  #   myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
+  #                                     "FINAL.LISTING.DECISION")]
+  # }
 
   # Check for presence of Photos in data directory. If not present, skip.
-  if (dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0) {
+  if (dir.exists(dir_photo) == TRUE & length(list.files(dir_photo)) > 0) {
     photofiles <- list.files(dir_photo)
     have.photos <- FALSE
     for (l in 1:length(photofiles)) {
-      ifelse(!dir.exists(file.path(dir_path, "Photos"))==TRUE
+      ifelse(!dir.exists(file.path(dir_path, "Photos")) == TRUE
              , dir.create(file.path(dir_path, "Photos"))
              , FALSE)
       photoname <- photofiles[l]
-      if (str_detect(photoname, eval(TargetSiteID))==TRUE) {
-        file.copy(file.path(dir_photo,photoname)
-                  , file.path(dir_path,"Photos",photoname))
+      if (str_detect(photoname, all_of(TargetSiteID)) == TRUE) {
+        file.copy(file.path(dir_photo, photoname)
+                  , file.path(dir_path, "Photos", photoname))
         message(paste0(photoname, " copied."))
         have.photos <- TRUE
       }
@@ -399,7 +477,7 @@ getSiteInfo <- function(TargetSiteID
 
     message(paste0("No site photos are available for ", TargetSiteID))
 
-    gap.photos <- cbind.data.frame("getSiteInfo", "quality", 0
+    gap.photos <- cbind.data.frame("getSiteInfo", "photos", 0
                                    , "Site photos are not available.")
     colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
 
@@ -417,7 +495,7 @@ getSiteInfo <- function(TargetSiteID
   # Check for data to plot
   data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
 
-  if (ncol(data_bkgcheck)<=1) { # If only COMID column, then no data
+  if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
     # NO data in streamcat for the reach.
     gapcomment <- paste0("No background data are available for site "
                          , TargetSiteID, "on reach with COMID = ", myCOMID)
@@ -445,7 +523,7 @@ getSiteInfo <- function(TargetSiteID
 
     # Determine appropriate graphics
     # Bar charts, faceted with catchment on left, watershed on right
-    cat.sub <- unique(df.bkg2plot[,c("Category","Subcategory","Units","AbbrFN")])
+    cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
 
     for (i in 1:nrow(cat.sub)) { # Plot each subcategory
       # pull out temp data set to plot
@@ -454,10 +532,10 @@ getSiteInfo <- function(TargetSiteID
                       , Subcategory == cat.sub$Subcategory[i])
       maxYear <- max(df.temp$StudyYear)
 
-      xlab <- paste0(cat.sub$Category[i],": ",cat.sub$Subcategory[i]
-                     ,", ",cat.sub$Units[i])
+      xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
+                     , ", ", cat.sub$Units[i])
       fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
-                                            , cat.sub[i,4], ".png"))
+                                            , cat.sub[i, 4], ".png"))
       p.title <- paste0(TargetSiteID, ": Site background")
       p.subtitle <- "Potential anthropogenic alterations"
       numcols <- length(unique(df.temp$Scale))/2
@@ -469,9 +547,10 @@ getSiteInfo <- function(TargetSiteID
                                                        , y = signif(val, digits = 2))) +
           ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
           ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                          , vjust=-0.2), color = "black", size=3) +
-          ggplot2::ylim(0, max(df.temp$val)*1.2) +
-          ggplot2::facet_wrap(Scale~.)
+                                          , vjust = -0.2)
+                             , color = "black", size=3) +
+          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+          ggplot2::facet_wrap(Scale ~ .)
         p.bkg <- p.bkg + ggplot2::theme_bw() +
           ggplot2::theme(legend.position = "none") +
           ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
@@ -479,15 +558,21 @@ getSiteInfo <- function(TargetSiteID
           ggplot2::labs(title = p.title, subtitle = p.subtitle
                         , x = xlab, y = "Value")
         p.bkg <- p.bkg +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(size=8
-                                                             ,angle=45,hjust=1)
-                         , axis.text.y = ggplot2::element_text(size=7)
-                         , axis.title.x = ggplot2::element_text(size=9, face="bold")
-                         , axis.title.y = ggplot2::element_text(size=9, face="bold")
-                         , plot.title = ggplot2::element_text(size=12, face="bold")
-                         , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
+          ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
+                                                             , angle = 45
+                                                             , hjust = 1)
+                         , axis.text.y = ggplot2::element_text(size = 7)
+                         , axis.title.x = ggplot2::element_text(size = 9
+                                                                , face = "bold")
+                         , axis.title.y = ggplot2::element_text(size = 9
+                                                                , face = "bold")
+                         , plot.title = ggplot2::element_text(size = 12
+                                                              , face = "bold")
+                         , plot.subtitle = ggplot2::element_text(size = 10
+                                                                 , face = "bold"))
         if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                          , height = plot_H * 1.5)
         }## IF ~ boo_plot ~ END
 
       } else {  # Separate study year to consider in faceting
@@ -497,10 +582,12 @@ getSiteInfo <- function(TargetSiteID
                                                        , group = StudyYear)) +
           ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
                             , fill = "darkred") +
-          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits=2)
-                                          , vjust=-0.2), color = "black", size=3) +
-          ggplot2::ylim(0, max(df.temp$val)*1.2) +
-          ggplot2::facet_grid(stringr::str_wrap(Scale,10)~StudyYear, margins = FALSE)
+          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                          , vjust = -0.2)
+                             , color = "black", size = 3) +
+          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+          ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
+                              , margins = FALSE)
         p.bkg <- p.bkg + ggplot2::theme_bw() +
           ggplot2::theme(legend.position = "none") +
           ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
@@ -510,13 +597,14 @@ getSiteInfo <- function(TargetSiteID
         p.bkg <- p.bkg +
           ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
                                                              , angle = 45, hjust = 1)
-                         , axis.text.y = ggplot2::element_text(size=7)
-                         , axis.title.x = ggplot2::element_text(size=9, face="bold")
-                         , axis.title.y = ggplot2::element_text(size=9, face="bold")
-                         , plot.title = ggplot2::element_text(size=12, face="bold")
-                         , plot.subtitle = ggplot2::element_text(size=10, face="bold"))
+                         , axis.text.y = ggplot2::element_text(size = 7)
+                         , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
+                         , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
+                         , plot.title = ggplot2::element_text(size = 12, face = "bold")
+                         , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
         if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi=ppi, width=plot_W*1.5, height=plot_H*1.5)
+          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                          , height = plot_H * 1.5)
         }## IF ~ boo_plot ~ END
 
       }  # End creating background plot
@@ -530,10 +618,11 @@ getSiteInfo <- function(TargetSiteID
                         , Samps = mySamps
                         , BMImetrics = myBMImetrics
                         , AlgMetrics = myALGmetrics
+                        , FishMetrics = myFISHmetrics
                         , COMID = myCOMID
-                        , ClustID = myClustID
-                        , impair = myImpairments
-                        , mods = myReachMods
+                        # , outcaseID = outcaseID
+                        # , impair = myImpairments
+                        # , mods = myReachMods
                         , refCOMIDs = myRefCOMIDs)
   return(mySiteSummary)
 

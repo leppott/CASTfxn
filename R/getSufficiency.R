@@ -44,20 +44,16 @@
 #' Only a single biological measurement is used. But multiple stressors can be
 #' used.
 #'
-#' Uses the libraries dplyr, wrapr, and ggplot2.
+#' Uses the libraries dplyr, tidyr, and ggplot2.
 #'
-#' @param df_data data frame with data.
-#' @param TargetSiteID ID of station/sample to plot; can be single or multiple.
-#' Default is first entry in df_data[, col_ID]
-#' @param col_ID df_data column with unique Station/Sample identifier.
-#' @param colStressSamp df_data column with stressor sample identifier
-#' @param colRespSamp df_data column with response sample identifier
-#' @param colGroup df_data column containing "outside the case" sites, from
-#'                 which comparator samples are selected
-#' @param colBio df_data column with biological numeric value.
-#' @param colStressors df_data column(s) with stressor variable(s); can be
-#' single or multiple.
-#' @param df_stressinfo dataframe containing stressor metadata (UseYN, LogTransf, Label)
+#' @param TargetSiteID ID of station to be evaluated. May have one or many samples.
+#' @param df_data dataframe containing matched stressor-response data for the
+#'                biological response community desired
+#' @param compSites vector containing comparator site IDs
+#' @param stressors vector of stressors identified as candidate causes
+#' @param df_stressinfo dataframe containing stressor metadata (LogTransf, Label)
+#' @param biocomm Biological community; BMI, algae, or fish  Default = "BMI".
+#' @param colBio df_data column name for the field with biological index value.
 #' @param BioDegBrk Biological assessment degraded status, cut function breaks.
 #' Should be in order from bad (low) to good (high).
 #' Default = c(-2, 0.799, 2)
@@ -65,13 +61,12 @@
 #' Should be in order from bad (low) to good (high).
 #' Defaults are referenced in the code so if change the code will break.
 #' Default = c("Yes", "No").
-#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
-#' @param dir_plots Directory to save plots.  Default = working directory and Results.
-#' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
+#' @param dir_plots Directory to save plots. Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #'
 #' @return Writes individual plots as pngs, and a tab-delimited text file with
-#'         scores for each line of evidence (co-occurrence & sufficiency) to a
-#'         "Results/TargetSiteID/BioComm/CoOccurrence" directory.
+#'         scores for the sufficiency line of evidence to a directory:
+#'         "Results/TargetSiteID/BioComm/Sufficiency".
 #'
 #' @examples
 #' \dontrun{
@@ -82,7 +77,7 @@
 #' #
 #' colGroup     <- "Group"
 #' colBio       <- "CSCI"
-#' colStressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
+#' stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
 #' col_ID        <- "StationID_Master"
 #' #
 #' BioNarBrk <- c(-2, 0.62, 0.799, 0.919, 2)
@@ -100,7 +95,7 @@
 #' col_StressInvScore <- c("DO_uf_mg_L", "pH")
 #'
 #' #
-#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
+#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, stressors
 #'         , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
 #'         , biocomm, dir_plots, dir_sub, col_StressInvScore
 #'         )
@@ -119,7 +114,7 @@
 #' #
 #' colGroup     <- "Group"
 #' colBio       <- "IBI"
-#' colStressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
+#' stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
 #' col_ID        <- "StationID_Master"
 #' #
 #' BioNarBrk <- c(0, 45, 52, 100)
@@ -136,127 +131,48 @@
 #' col_StressInvScore <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"]
 #'
 #' #
-#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
+#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, stressors
 #'         , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
 #'         , biocomm, dir_plots, dir_sub, col_StressInvScore
 #'         )
 #'}
 #' @export
-getSufficiency <- function(df_data
-                       , TargetSiteID = NULL
-                       , col_ID
-                       , colStressSamp
-                       , colRespSamp
-                       , colGroup
-                       , colBio
-                       , colStressors
-                       , df_stressinfo
-                       , BioDegBrk = c(-2, 0.799, 2)
-                       , BioDegLab = c("Yes", "No")
-                       , biocomm = "bmi"
-                       , dir_plots = file.path(getwd(), "Results")
-                       , dir_sub = "Sufficiency"
-                       , boo_plot = TRUE
-                       ) {##FUNCTION.START
+getSufficiency <- function(TargetSiteID
+                           , df_data
+                           , compSites
+                           , stressors
+                           , df_stressinfo
+                           , biocomm
+                           , colBio
+                           , BioDegBrk = c(-2, 0.799, 2)
+                           , BioDegLab = c("Yes", "No")
+                           , dir_plots = file.path(getwd(), "Results")
+                           , dir_sub = "Sufficiency"
+                           , boo_plot = TRUE
+                           ) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
-    df_data = data_bioCoOccur[data_bioCoOccur$StationID_Master %in% comp_sites, ]
+
+    df_data = data_bioCoOccur
     TargetSiteID = TargetSiteID
-    col_ID = "StationID_Master"
-    colStressSamp = "StressSampID"
-    colRespSamp = "RespSampID"
-    colGroup = "clust"
-    colBio = colBio
-    colStressors = stressorsWPairedResponses
+    compSites = comp_sites
+    stressors = stressors
     df_stressinfo = data_stressInfo
+    biocomm = bioComm
+    colBio = bioIndex
     BioDegBrk = BioDegBrk
     BioDegLab = c("Yes", "No")
-    biocomm = bioComm
     dir_plots = dir_results
     dir_sub = "Sufficiency"
-    boo_plot = TRUE
+    boo_plot = boo_plot_user
+
   }
 
   # define pipe
   `%>%` <- dplyr::`%>%`
   biocomm <- toupper(biocomm)
-
-  # QC, 20190418
-  colStressors <- unique(colStressors)
-
-  # QC, 20190418
-  colStressors.NotPresent <- colStressors[!(colStressors %in% names(df_data))]
-  if (length(colStressors.NotPresent) != 0) { ##IF~bad stressors~START
-    msg.warning <- paste0("Stressors listed below are not present in the "
-                          , "provided data frame (df_data) and were not analyzed: \n"
-                          , paste(colStressors.NotPresent, collapse="\n"), "\n\n")
-    message(msg.warning)
-    utils::flush.console()
-    colStressors <- colStressors[colStressors %in% names(df_data)]
-  } ##IF~bad stressors~END
-
-  #
-  col.Bio.Deg   <- "Bio.Deg"
-  col.KEEP      <- c(col_ID, colGroup, colStressSamp, colRespSamp, colBio
-                     , col.Bio.Deg, colStressors)
-  #
-  # Assign Bio Status
-  df_data[, col.Bio.Deg] <- cut(df_data[,colBio]
-                                , breaks=BioDegBrk
-                                , labels=BioDegLab)
-
-  # Change Levels (factors) as 1=No and 2=Yes
-  ## Used to later convert to 0=No (not degraded) and 1=Yes (degraded)
-  df_data$Bio.Deg <- factor(df_data$Bio.Deg, c("No", "Yes"))
-
-  # Add missing variable
-  col.SiteTypeQuality <- col.Bio.Deg
-  #
-  # default sample ID
-  if (is.null(TargetSiteID)) { ##IF.isnull.ID.START
-    TargetSiteID <- as.character(sort(unique(df_data[,col_ID])))[1]
-  } ##IF.isnull.ID.END
-
-
-  # Create Score Output File
-  df.scores <- df_data[, col.KEEP]
-  df.scores[, "Param_Name"]  <- as.character(NA)
-  df.scores[, "Param_Value"] <- as.numeric(NA)
-  df.scores[, "n"]           <- as.character(NA)
-  df.scores[, "q50"]         <- as.numeric(NA)
-  df.scores[, "SR_pred_Deg"] <- as.character(NA)
-  df.scores[, "Sc_SR"]       <- as.character(NA)
-  df.scores[, "biocomm"]     <- as.character(NA)
-  df.scores[, "Label"]       <- as.character(NA)
-
-  # Remove columns
-  col.remove <- names(df.scores) %in% colStressors
-  df.scores <- df.scores[, !col.remove]
-  #
-  # remove all rows
-  df.scores <- df.scores[0, ]
-
-  #
-  # if (boo_DEBUG == TRUE) { ##IF.boo_DEBUG.START
-  #   i <- TargetSiteID[1]
-  # } ##IF.boo_DEBUG.END
-  # outside loop just in case forget to turn off debug flag
-
-  # Analysis for each "test" sample
-  # QC (site in data) ####
-  boo_QC_site <- TargetSiteID %in% df_data[, col_ID]
-  if (boo_QC_site == FALSE) { ##IF~boo_QC_site~START
-    name_df <- deparse(substitute(df_data))
-    name_col <- deparse(substitute(col_ID))
-    name_df_col <- paste0(name_df, name_col)
-    msg_NoSite <- paste0("Target site (", TargetSiteID
-                         , ") was *not* found in the function inputs "
-                         , "(df_data, TargetSiteID, and col_ID).")
-    stop(msg_NoSite)
-  } ##IF~boo_QC_site~END
-  #
 
   # Create subdirectory
   dir_sub2 <- TargetSiteID
@@ -274,116 +190,84 @@ getSufficiency <- function(df_data
 
   dir_path <- file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)
 
-  # Save scores file (append to later)
-  fn.scores <- file.path(dir_path, paste0(i_TargetSiteID, "_", biocomm
-                                          , "_SRLog_Scores.tab"))
+  # Get dataset
+  df_data <- df_data %>%
+    dplyr::filter(StationID_Master %in% compSites) %>%
+    dplyr::select(StationID_Master, StressSampID, StressSampDate, RespSampID
+                  , RespSampDate, all_of(colBio), all_of(stressors))
 
-  utils::write.table(df.scores, file = fn.scores, append = FALSE
-                     , col.names = TRUE, row.names = FALSE, sep = "\t")
-  #
+  # Assign Bio Status
+  df_data[, "Bio.Deg"] <- cut(df_data[, colBio]
+                              , breaks = BioDegBrk
+                              , labels = BioDegLab)
+  # df_data[, "Bio.Nar"] <- cut(df_qual[, colBio]
+  #                             , breaks = BioNarBrk
+  #                             , labels = BioNarLab)
 
-  # Start evaluation
-  i.num <- match(i, TargetSiteID)
-  i.len <- length(TargetSiteID)
-  #
-  df.i <- df_data[df_data[, col_ID] == TargetSiteID, col.KEEP]
-  i.Group <- df.i[, colGroup][1]
-  i.Bio <- min(df_data[df_data[, col_ID] == TargetSiteID, colBio], na.rm = TRUE)
+  # Change Levels (factors) as 1=No and 2=Yes
+  ## Used to later convert to 0=No (not degraded) and 1=Yes (degraded)
+  df_data$Bio.Deg <- factor(df_data$Bio.Deg, c("No", "Yes"))
+  df_data <- dplyr::select(df_data, StationID_Master, StressSampID, StressSampDate
+                           , RespSampID, RespSampDate, all_of(colBio), Bio.Deg
+                           , all_of(stressors))
 
-  # Filter for selected variables
-  mapping <- c(COL.GROUP = colGroup, COL.BIO = colBio)
-  # Comparator Site Data
-  wrapr::let(alias = mapping
-             , expr = {
-               df.comp <- df_data[, col.KEEP] %>%
-                 dplyr::filter(COL.GROUP == i.Group)
-             })
-  #
-  if (boo_DEBUG == TRUE) { ##IF.boo_DEBUG.START
-    j <- colStressors[1]
-  } ##IF.boo_DEBUG.END
-  # outside loop just in case forget to turn off debug flag
+  df_target <- dplyr::filter(df_data, StationID_Master == TargetSiteID)
+
+  # Transform stressor data as required
+  strInfo <- as.data.frame(cbind("StdParamName" = stressors
+                                 , "LogTransfYN" = stressors_logtransf))
+  strInfo <- merge(strInfo, df_stressinfo[, c("StdParamName", "Label")]
+                   , by = "StdParamName")
+
+  # Create Score Output File # add Bio.Nar just before Bio.Deg
+  df.scores <- df_data %>%
+    dplyr::select(StationID_Master, StressSampID, RespSampID, all_of(colBio)
+                  , Bio.Deg) %>%
+    dplyr::mutate(ParamName   = as.character(NA)
+                  , ParamValue  = as.numeric(NA)
+                  , Log1pValue  = as.numeric(NA)
+                  , n           = as.character(NA)
+                  , SRpred_Deg  = as.character(NA)
+                  , Sc_SRlog    = as.character(NA)
+                  , BioComm       = as.character(NA)
+                  , Label       = as.character(NA))
+  # remove all rows
+  df.scores <- df.scores[0, ]
 
   # Calculate quantiles on Comparator Sites
   # Loop, j ####
-  for (j in colStressors) { ##FOR.j.START
+  for (j in seq_along(stressors)) { ##FOR.j.START
     #
-    j.num <- match(j, colStressors)
-    j.len <- length(colStressors)
+    str = stressors[j]
+    j.len <- length(stressors)
+    jlog <- as.numeric(strInfo$LogTransfYN[strInfo$StdParamName == str])
+    jlabel <- as.character(strInfo$Label[strInfo$StdParamName == str])
     #
-    ij.num <- ((i.num - 1) * j.len) + j.num
-    ij.len <- i.len * j.len
-    #
-    message(paste0("Processing item (", ij.num, "/", ij.len, "); ID ("
-                   , i.num, "/", i.len, ") ", i, "; Stressors (", j.num
-                   , "/", j.len, ") ", j, ".\n"))
+    message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
     utils::flush.console()
-    #
-    df.i[, paste0("n_", j)] <- sum(!is.na(df.comp[, j]))
 
-    # Plots
-    # Need to filter df.i to get rid of NA for "j" (stressor)
-    # order values by j then get multiple comp scores
-    df.i.n <- df.i[!is.na(df.i[, j]), ]
-    df.i.n <- df.i.n[order(df.i.n[, j]), ]
+    df.score.j <- df_data %>%
+      dplyr::select(StationID_Master, StressSampID, StressSampDate
+                    , RespSampID, RespSampDate, all_of(colBio), Bio.Deg
+                    , all_of(str)) %>%
+      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName"
+                          , values_to = "ParamValue")
 
-    if (nrow(df.i.n) != 0) { ##IF.nrow.START
-      # Save to Score/Results file
-      df.i.n[, "Param_Name"]  <- j
-      df.i.n[, "Param_Value"] <- df.i.n[, j]
-      df.i.n[, "n"]           <- df.i.n[, paste0("n_", j)]
-      df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))]
-                             , all.y=TRUE)
-      # 2019-05-20, sort by score
-      df.scores.i.n <- df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), ]
+    df.plot <- df_data %>%
+      dplyr::select(all_of(colBio), Bio.Deg, all_of(str))
 
-      ## Box Plot of Comparator Sites (with better bio)
-      lab.N     <- paste0("n = ",df.i[,paste0("n_", j)][1])
+    df.plot <- df.plot[!is.na(df.plot[, str]),]
 
-      # plots ####
-      # File Names
-      fn_png_p1 <- paste0(i_TargetSiteID, "_", biocomm, "_SRInLog_"
-                          , make.names(j), ".png")
-      ppi       <- 300
-
-      # Create (ggplot)
-      bio_col <- c("dark gray", "blue")
-      bio_shp <- c(21, 25) # circle and down triangle
-      bio_size <- c(3, 2)
-      lab_comp <- paste0("Comparator samples selected from cluster = ", i.Group)
-
-      ## Plot, Variables, Target Site Line
-      targ_line_col <- "red"
-      targ_line_lty <- 2
-      targ_line_lwd <- 1
-
-      # Get wordy label for the y-axis
-      jlog <- df_stressinfo$LogTransf[df_stressinfo$StdParamName == j]
-      jlabel <- df_stressinfo$Label[df_stressinfo$StdParamName == j]
-      legendtitle <- "Degraded samples"
-
-      maintitleSR <- paste0(i, ": Stressor-response (logistic regression) line of evidence")
-      subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
-      subtitleSR <- stringr::str_wrap(subtitleSR, 100)
-
-      ## Logistic Regression (all comparator sites)
-      # #~~~~~~~~~~~~~~~~~~~
-      # (plot with all sites in cluster (comparators) not just by condition group)
-      col.glm <- c(colBio, col.Bio.Deg, j)
-      df.comp.glm <- df.comp[stats::complete.cases(df.comp[, col.glm]), col.glm]
-
-      # create data frame with known column names
-      df.plot <- df.comp.glm
-      # Confirm Levels (factors) as 1=No and 2=Yes
-      df.plot$Bio.Deg <- factor(df.plot$Bio.Deg, c("No", "Yes"))
-
-      # fix so 0=No and 1=Yes
-      df.plot$y.name <- as.numeric(df.plot$Bio.Deg) - 1
-
+    if (nrow(df.plot) > 0) {
       # If LogTransf == TRUE, then test both untransformed & transformed models
       if (jlog == 1) {
-        df.plot$log1p_j <- log1p(df.comp.glm[[j]])
-        names(df.plot) <- c("y", "Bio.Deg", "x1", "y.name", "x2")
+        df.plot <- df.plot %>%
+          dplyr::rename(y = eval(colBio), x1 = all_of(str)) %>%
+          dplyr::mutate(y.name = as.numeric(Bio.Deg) - 1
+                        , x2 = log1p(x1))
+        # df.plot$log1p <- log1p(df.comp.glm[[j]])
+        # names(df.plot) <- c("y", "Bio.Deg", "x1", "y.name", "x2")
 
         if (sum(stats::complete.cases(df.plot)) > 0) {
           # Test orig model (fit1)
@@ -398,26 +282,37 @@ getSufficiency <- function(df_data
               dplyr::select(y, Bio.Deg, y.name, x2) %>%
               dplyr::rename(x = x2)
             jlabel <- paste0("Log1p ", jlabel)
-            j_values <- data.frame(x = log1p(df.scores.i.n[, "Param_Value"]))
+            useVal <- "log1p"
+            j_values <- data.frame(x = log1p(df_target[, str]))
+            x_intercept <- as.numeric(x = j_values)
           } else {
             df.plot <- df.plot1 %>%
               dplyr::select(y, Bio.Deg, y.name, x1) %>%
               dplyr::rename(x = x1)
-            j_values <- data.frame(x = df.scores.i.n[, "Param_Value"])
+            useVal <- "normal"
+            j_values <- data.frame(x = df_target[, str])
+            x_intercept <- as.numeric(x = j_values)
           }
           rm(fit1, fit2, df.plot1, df.plot2)
         }
         fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
       } else if (sum(stats::complete.cases(df.plot)) > 0) {
-        names(df.plot) <- c("y", "Bio.Deg", "x", "y.name")
+        df.plot <- df.plot %>%
+          dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
+          dplyr::mutate(y.name = as.numeric(Bio.Deg) - 1) %>%
+          dplyr::select(y, Bio.Deg, y.name, x)
         fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
-        j_values <- data.frame(x = df.scores.i.n[, "Param_Value"])
+        useVal <- "normal"
+        j_values <- data.frame(x = df_target[, str])
+        x_intercept <- as.numeric(x = j_values)
       } else { # no complete cases
         # NEEDS SOMETHING HERE!
       }
+
       #  Stressor Response Curve
-      n_cc_df_plot <- sum(stats::complete.cases(df.plot[, c("x", "y")]))
-      # create data for curve
+      n_cc_df_plot <- nrow(df.plot[stats::complete.cases(df.plot[, c("x", "y")])
+                                   , c("x", "y")])
+      # create data for curve (type "response" gives probabilities)
       newdat <- data.frame(x = seq(min(df.plot$x, na.rm = TRUE)
                                    , max(df.plot$x, na.rm = TRUE), len = 100))
       newdat$y.name <- stats::predict(fit, newdata = newdat, type = "response")
@@ -427,14 +322,46 @@ getSufficiency <- function(df_data
       j_SR_score <- cut(j_SR_predict
                         , breaks = c(0, 0.2, 0.5, 1)
                         , labels = c(-1, 0, 1))
+      # plot ####
+      # File Names
+      fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
+      ppi       <- 300
 
-      # Add scores df so can save
-      df.scores.i.n[, "SR_pred_Deg"] <- j_SR_predict
-      df.scores.i.n[, "Sc_SR"] <- j_SR_score
+      # Create (ggplot)
+      bio_col <- c("dark gray", "blue")
+      bio_shp <- c(21, 25) # circle and down triangle
+      bio_size <- c(3, 2)
+      # lab_comp <- paste0("Comparator samples selected from outside the case ("
+      #                    , outcaseLabel, " ", outcaseID, ")")
 
-      lab.sub <- paste0("All comparator samples (n=", n_cc_df_plot
-                        , ").\n Score = ", paste(j_SR_score, collapse = ", ")
-                        , ".")
+      ## Plot, Variables, Target Site Line
+      targ_line_col <- "red"
+      targ_line_lty <- 2
+      targ_line_lwd <- 1
+
+      legendtitle <- "Degraded samples"
+      ylabel <- "Relative probability of degraded condition"
+      maintitleSR <- paste0(TargetSiteID, ": Stressor-response (logistic regression) line of evidence")
+      subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
+      subtitleSR <- stringr::str_wrap(subtitleSR, 100)
+
+      captionSR <- paste0("All comparator samples (n=", n_cc_df_plot
+                          , ").\n Score = ", paste(j_SR_score, collapse = ", ")
+                          , ".")
+
+      # Get base info for scores table
+      df.score.j <- df.score.j %>%
+        dplyr::mutate(BioComm = biocomm
+                      , Label = jlabel
+                      , Log1pValue = ifelse(useVal == "log1p"
+                                            , log1p(ParamValue)
+                                            , NA)
+                      , n = nrow(df.plot)
+                      , SRpred_Deg = j_SR_predict
+                      , Sc_SRlog = j_SR_score) %>%
+        dplyr::select(StationID_Master, StressSampID, RespSampID, all_of(colBio)
+                      , Bio.Deg, ParamName, ParamValue, Log1pValue, n, SRpred_Deg
+                      , Sc_SRlog, BioComm, Label)
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
@@ -450,53 +377,39 @@ getSufficiency <- function(df_data
         ggplot2::scale_shape_manual(name = legendtitle
                                     , breaks = c("Yes", "No")
                                     , values = bio_shp, drop = FALSE) +
-        ggplot2::geom_vline(xintercept = log1p(df.i[,j]), color = targ_line_col
+        ggplot2::geom_vline(xintercept = x_intercept, color = targ_line_col
                             , lty = targ_line_lty, lwd = targ_line_lwd
                             , na.rm = TRUE) +
         ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
                             , lty = 2, na.rm = TRUE) +
-        ggplot2::labs(title = i, y = "Relative probability of degraded condition"
-                      , x = jlabel) +
+        ggplot2::labs(y = ylabel, x = jlabel) +
         ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat
                            , color = "blue", lwd = 1, na.rm = TRUE) +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
                        , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::labs(title = maintitleSR, subtitle = subtitleSR, caption = lab.sub)
+        ggplot2::labs(title = maintitleSR, subtitle = subtitleSR
+                      , caption = captionSR)
 
-      ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1)
-                      , plot = p1
-                      , dpi = ppi, width = 8, height = 6, units = "in")
+      if ((boo_plot) == TRUE) {
+        ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1
+                        , dpi = ppi, width = 8, height = 6, units = "in")
+      }
 
-      # add biocomm, 20190425
-      df.scores.i.n[, "biocomm"] <- biocomm
-      df.scores.i.n[, "Label"] <- unique(jlabel)
+    } ##IF.PLOT.END
 
-      # Save tabular scores
-      utils::write.table(df.scores.i.n, file=fn.scores
-                         , col.names = FALSE, row.names=FALSE, sep="\t", append=TRUE)
-      # Remove
-      rm(df.scores.i.n)
+    # Write to scores table
+    if (exists("df.scores")) {
+      df.scores <- rbind(df.scores, df.score.j)
+    }
 
-    } else {
-      # no data
-      message(paste0("   All values NA for stressor (", j, ").\n"))
-      utils::flush.console()
-      # add data to scores table
-      column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50"
-                        , "q75", "Sc_Box", "SR_pred_Deg", "Sc_SR")
-      df.i.NA <- df.i[1, 1:5]
-      df.i.NA[, column_names] <- NA
-      df.i.NA[, "Param_Name"] <- j
-      # add biocomm, 20190425
-      df.i.NA[, "biocomm"] <- biocomm
-      df.i.NA[, "Label"] <- unique(jlabel)
-      utils::write.table(df.i.NA, file = fn.scores, col.names = FALSE
-                         , row.names = FALSE, sep = "\t", append = TRUE)
+  } ##FOR.j.END
 
-    }##IF.nrow.END
-
-  }##FOR.j.END
+  # Save scores file (append to later)
+  fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+                                          , "_SRLog_Scores.tab"))
+  utils::write.table(df.scores, file = fn.scores, append = FALSE
+                     , col.names = TRUE, row.names = FALSE, sep = "\t")
 
 }##FUNCTION.END
 

@@ -1,4 +1,4 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2023 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -9,43 +9,31 @@
 #'
 #' @details
 #'
-#' Required objects:
-#'
-#' * data.SampSummary; StationID_Master, CollDate, StressSampID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
-#'
-#' * dataBioTaxa; BMISampID
-#'
-#' * data_stressInfo; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
-#'
-#' * data.SSTV.totabund; BMISampID, StationID_Master, StressSampID, SSTV.analyte
-#' , SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
-#'
-#' * TargetSiteID
+#' Required packages: dplyr, ggplot2, stringr, tidyr
 #'
 #' @param TargetSiteID Site ID
-#' @param data.SampSummary x
-#' @param dataBioTaxa x
-#' @param data_stressInfo x
-#' @param data.SSTV.totabund x
-#' @param dataMasterTaxa Master Taxa list for biological data
-#' @param matchedData matched biological and chemical stressor data.
-#' @param ref.sites Vector of reference sites IDs.
-#' @param BioIndex_Val Column name for biological index value; list.MatchBioData$site.b.rsp
-#' @param BioIndex_Nar Column name for biological index narrative rating; list.MatchBioData$site.b.rsp
-#' @param BioIndex_Nar_Deg Biological index degraded narrative text; list.MatchBioData$site.b.rsp
-#' @param dir_results Directory to save plots.  Default = working directory and Results.
-#' @param dir_sub Subdirectory for outputs from this function.  Default = "VerifiedPredictions"
-#' @param biocomm Biological community; algae or BMI.  Default = "BMI".
-#' @param boo_plot Boolean value to save plots.  Default = TRUE.
+#' @param stressors vector of stressors identified as candidate causes
+#' @param df_stressinfo dataframe of stressor metadata
+#' @param SSTVanalytes vector containing StdParamNames for stressors with stressor-specific tolerance values
+#' @param list.MatchBioData list_MatchBioData
+#' @param biocomm default = "bmi"
+#' @param colBioSample column name for the response sample ID
+#' @param df_BioTaxaRelAbund dataframe of raw response data (counts or relative abundance)
+#' @param df_MasterTaxa dataframe of master taxa with SSTV values determined for individual taxa
+#' @param colBio default = "IBI"
+#' @param BioIndex_Nar default = "Quality"
+#' @param BioIndex_Nar_Deg default = "Degraded"
+#' @param dir_plots default = file.path(getwd(), "Results")
+#' @param dir_sub default = "VerifiedPredictions"
+#' @param boo_plot = TRUE
 #'
-#' @return Results text file and jpeg files to "Results" "VerifiedPredictions" folder
-#' in working directory of box plots and a single PDF of all plots.
-#'
-# @importFrom pryr "%<a-%"
+#' @return Results text file and png files to "Results" "VerifiedPredictions" folder
+#' in working directory of box plots
 #'
 #' @examples
+#' \dontrun{
 #' TargetSiteID <- "SRCKN001.61"
-#' dir_results  <- file.path(getwd(), "Results")
+#' dir_plots  <- file.path(getwd(), "Results")
 #'
 #' # Data getSiteInfo
 #' # data, example included with package
@@ -55,7 +43,7 @@
 #' data.bmi.metrics   <- data_BMIMetrics
 #' data.algae.metrics <- data_AlgMetrics
 #' data.mod           <- data_ReachMod
-#' dataMasterTaxa        <- data_BMIMasterTaxa
+#' df_MasterTaxa        <- data_BMIMasterTaxa
 #'
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
 #' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
@@ -91,7 +79,7 @@
 #' dir_sub <- "SiteInfo"
 #'
 #' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
+#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_plots, data.Stations.Info
 #'                                 , data.SampSummary, data.303d.ComID
 #'                                 , data.bmi.metrics, data.algae.metrics
 #'                                 , data.cluster, data.mod
@@ -126,7 +114,7 @@
 #' # Run getStressorList
 #' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
 #'                                  , cluster.samps, ref.sites, site.chem
-#'                                  , probsHigh, probsLow, biocomm, dir_results
+#'                                  , probsHigh, probsLow, biocomm, dir_plots
 #'                                  , dir_sub)
 #'
 #' # Data getBMIMatches
@@ -142,13 +130,13 @@
 #'
 #' # Data getVerifiedPredictions
 #' # data import, example
-#' # dataBioTaxa  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+#' # df_BioTaxaRelAbund  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' #
 #' # data, example included with package
-#' dataBioTaxa  <- data_BMIcounts
+#' df_BioTaxaRelAbund  <- data_BMIcounts
 #' data.SSTV.totabund <- data_BMIRelAbund
-#' BioIndex_Val       <- "IBI"
+#' colBio       <- "IBI"
 #' BioIndex_Nar       <- "NarRat"
 #' BioIndex_Nar_Deg   <- "Violates"
 #' dir_sub            <- "VerifiedPredictions"
@@ -157,33 +145,34 @@
 #' # Run getVerifiedPredictions
 #' getVerifiedPredictions(TargetSiteID
 #'                        , data.SampSummary
-#'                        , dataBioTaxa
+#'                        , df_BioTaxaRelAbund
 #'                        , data_stressInfo
 #'                        , data.SSTV.totabund
-#'                        , dataMasterTaxa
+#'                        , df_MasterTaxa
 #'                        , list.MatchBioData
 #'                        , ref.sites
-#'                        , BioIndex_Val
+#'                        , colBio
 #'                        , BioIndex_Nar
 #'                        , BioIndex_Nar_Deg
-#'                        , dir_results
+#'                        , dir_plots
 #'                        , dir_sub)
+#' }
 #~~~~~~~~~~~~~~~~
 #' @export
 getVerifiedPredictions <- function(TargetSiteID
-                                   , SSTVanalytes
-                                   , colBioSample
                                    , stressors
-                                   , stressorInfo
-                                   , dataBioTaxa
-                                   , dataMasterTaxa
-                                   , matchedData
-                                   , BioIndex_Val="IBI"
-                                   , BioIndex_Nar="NarRat"
-                                   , BioIndex_Nar_Deg="Violates"
-                                   , dir_results=file.path(getwd(), "Results")
-                                   , dir_sub="VerifiedPredictions"
-                                   , biocomm="bmi"
+                                   , df_stressinfo
+                                   , SSTVanalytes
+                                   , list.MatchBioData
+                                   , biocomm
+                                   , colBioSample
+                                   , df_BioTaxaRelAbund
+                                   , df_MasterTaxa
+                                   , colBio
+                                   , BioIndex_Nar
+                                   , BioIndex_Nar_Deg
+                                   , dir_plots = file.path(getwd(), "Results")
+                                   , dir_sub = "VerifiedPredictions"
                                    , boo_plot = TRUE
                                    ) {##FUNCTION.START
 
@@ -192,23 +181,23 @@ getVerifiedPredictions <- function(TargetSiteID
   # Debugging
   boo.DEBUG <- FALSE
   #
-  if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    TargetSiteID
-    SSTVanalytes = as.character(SSTVparms) # Used
-    colBioSample = colBioSample            # Used
-    stressors = stressorsWPairedResponses  # Used
-    stressorInfo <- siteStressInfo         # Used
-    dataBioTaxa = bioTaxaData              # Used
-    dataMasterTaxa = bioMasterTaxa         # Used
-    matchedData = list_MatchBioData        # Used
-    BioIndex_Val = bioIndex                # Used
-    BioIndex_Nar = "Quality"               # Used
-    BioIndex_Nar_Deg = "Degraded"          # Used
-    dir_results=dir_results                # Used
-    dir_sub="VerifiedPredictions"          # Used
-    biocomm=bioComm                        # Used
-    tv <- 1
+  if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
+    TargetSiteID = TargetSiteID
+    stressors = stressors
+    df_stressinfo = siteStressInfo
+    SSTVanalytes = as.character(SSTVparms)
+    list.MatchBioData = list_MatchBioData
+    biocomm = bioComm
+    colBioSample = colBioSample
+    df_BioTaxaRelAbund = bioTaxaData
+    df_MasterTaxa = bioMasterTaxa
+    colBio = bioIndex
+    BioIndex_Nar = "Quality"
+    BioIndex_Nar_Deg = "Degraded"
+    dir_plots = dir_results
+    dir_sub = "VerifiedPredictions"
     boo_plot = TRUE
+    tv <- 1
   }##IF.boo.DEBUG.END
 
   # wd <- getwd() #2020-02-05
@@ -227,18 +216,18 @@ getVerifiedPredictions <- function(TargetSiteID
   SSTVanalytes <- SSTVanalytes[SSTVanalytes %in% stressors]
 
   # Pull stressor names having SSTVs (from stressor metadata) & in paired samp data
-  df_SSTV <- stressorInfo %>%
+  df_SSTV <- df_stressinfo %>%
     dplyr::filter(StdParamName %in% SSTVanalytes) %>%
-    dplyr::select(StdParamName,SSTV,SSTVname,SensMin,SensMax,TolMin,TolMax)
+    dplyr::select(StdParamName, SSTV, SSTVname, SensMin, SensMax, TolMin, TolMax)
   df_SSTV <- unique(df_SSTV)
   colnames(df_SSTV)[1] <- "Analyte"
 
   SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
   # SSTVnames <- as.character(unique(SSTVnames))
-  mtcols <- colnames(dataMasterTaxa)
+  mtcols <- colnames(df_MasterTaxa)
   # Check whether master taxa file contains SSTVname (tol vals for that stressor)
   for (name in 1:length(SSTVnames)) {  # If more than one SSTV, then must iterate
-    SSTVlabel <- as.character(stressorInfo$Label[stressorInfo$StdParamName==name])
+    SSTVlabel <- as.character(df_stressinfo$Label[df_stressinfo$StdParamName == name])
 
     if (SSTVnames[name] %in% mtcols) {  # Check if TV data in Master Taxa file
       if (exists("keepMTcol")) {
@@ -253,8 +242,8 @@ getVerifiedPredictions <- function(TargetSiteID
       gaps <- cbind.data.frame("getVerifiedPredictions", SSTVnames[name], 0
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+      fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
       if (exists("deleteSSTVname")) {
@@ -267,7 +256,7 @@ getVerifiedPredictions <- function(TargetSiteID
 
   boo.continue = FALSE  # default value; only flips to true if data available
 
-  if (exists("deleteSSTVnames")==TRUE) { # Some SSTV stressors not used
+  if (exists("deleteSSTVnames") == TRUE) { # Some SSTV stressors not used
     if (all(SSTVnames %in% deleteSSTVnames)) { # No SSTV stressors in master taxa
       gapcomment <- paste0("No stressor-specific tolerance values for "
                            , "potential site stressors exist in the master "
@@ -276,7 +265,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
 
@@ -289,38 +278,33 @@ getVerifiedPredictions <- function(TargetSiteID
     } # NO SSTV stressors are used; exit function cleanly
   }
 
-  if (exists("keepMTcol")==TRUE) { # Some stressors have SSTV vals in master taxa file
+  if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
 
     keepMTcol <- as.character(keepMTcol)
-    df_SSTVtaxa <- dataMasterTaxa %>%
+    df_SSTVtaxa <- df_MasterTaxa %>%
       dplyr::select(FinalID, eval(keepMTcol))
 
     # Keep taxa with SSTValues, discard those without
     if (length(keepMTcol)==1) {
       msg <- "Got only 1 SSTV stressor!"
       message(msg)
-      # print(msg)
-      # flush.console()
-      df_SSTVtaxa <- df_SSTVtaxa[!is.na(df_SSTVtaxa[,keepMTcol]),]
+      df_SSTVtaxa <- df_SSTVtaxa[!is.na(df_SSTVtaxa[, keepMTcol]), ]
 
     } else { # Two or more SSTV stressors exist ### NOT TESTED WITH DATA
       msg <- "Got 2 or more SSTV stressors!"
       message(msg)
-      # print(msg)
-      # flush.console()
+
       msg <- keepMTcol
       message(msg)
-      # print(msg)
-      # flush.console()
-      df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[,-1]))>=1,]
+      df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ]
 
     }
 
     SSTVtaxanames <- unique(as.character(df_SSTVtaxa$FinalID))
-    reportedtaxa <- unique(as.vector(dataBioTaxa$FinalID))
+    reportedtaxa <- unique(as.vector(df_BioTaxaRelAbund$FinalID))
 
     if (any(reportedtaxa %in% SSTVtaxanames)==TRUE) {
-      df_SSTVrelabund <- dataBioTaxa %>%
+      df_SSTVrelabund <- df_BioTaxaRelAbund %>%
       # dplyr::rename(RelAbund = RelAbundInds) %>%
       dplyr::select(eval(colBioSample), FinalID, RelAbund) %>%
       dplyr::filter(FinalID %in% SSTVtaxanames)
@@ -333,7 +317,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
 
@@ -348,18 +332,18 @@ getVerifiedPredictions <- function(TargetSiteID
 
   if (boo.continue == TRUE) { # Have
     # check for and create (if necessary) "Results" subdirectory of working directory
-    wd <- dirname(dir_results)
-    dir.sub <- basename(dir_results)
+    wd <- dirname(dir_plots)
+    dir.sub <- basename(dir_plots)
     dir.sub2 <- TargetSiteID
     dir.sub3 <- biocomm
     dir.sub4 <- dir_sub
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2))
            , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
            , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))==TRUE
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
            , FALSE)
     dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
@@ -367,10 +351,10 @@ getVerifiedPredictions <- function(TargetSiteID
     # 20190513, remove scores file if exists
     fn_scores <-  file.path(dir_path, paste0(TargetSiteID, "_", biocomm
                                              , "_VP_Scores.tab"))
-    if(file.exists(fn_scores)){file.remove(fn_scores)}
+    if (file.exists(fn_scores)) { file.remove(fn_scores) }
 
     # plots.tvr <- vector(10, mode="list")
-    plots.tv <- vector(10, mode="list")
+    plots.tv <- vector(10, mode = "list")
     ppi<-300
     plot_H <- 4
     plot_W <- 8
@@ -378,26 +362,26 @@ getVerifiedPredictions <- function(TargetSiteID
     # boo.pryr <- FALSE
 
     # Target Site Bio Scores
-    targ_bio <- matchedData$site.b.rsp[, BioIndex_Val]
-    targ_bio_bad <- matchedData$site.b.rsp[matchedData$site.b.rsp[
-      , BioIndex_Nar]==BioIndex_Nar_Deg, BioIndex_Val]
-    targ_bio_good <- matchedData$site.b.rsp[matchedData$site.b.rsp[
-      , BioIndex_Nar]!=BioIndex_Nar_Deg, BioIndex_Val]
-    targ_bio_min <- min(targ_bio, na.rm=TRUE)
-    targ_bio_max <- max(targ_bio, na.rm=TRUE)
+    targ_bio <- list.MatchBioData$site.b.rsp[, colBio]
+    targ_bio_bad <- list.MatchBioData$site.b.rsp[list.MatchBioData$site.b.rsp[
+      , BioIndex_Nar] == BioIndex_Nar_Deg, colBio]
+    targ_bio_good <- list.MatchBioData$site.b.rsp[list.MatchBioData$site.b.rsp[
+      , BioIndex_Nar] != BioIndex_Nar_Deg, colBio]
+    targ_bio_min <- min(targ_bio, na.rm = TRUE)
+    targ_bio_max <- max(targ_bio, na.rm = TRUE)
 
     # skip to next if no "bad" bio scores for this site
     msg_stop_NoBadBio <- paste0("There are no '", BioIndex_Nar_Deg
                                 , "' bio sites for comparison for this site.")
     # Use minimum good or maximum bad for "better than" threshold
-    if(length(targ_bio_bad)==0){
-      targ_bio_good_min <- min(targ_bio_good, na.rm=TRUE)
-      targ_bio_good_max <- max(targ_bio_good, na.rm=TRUE)
+    if (length(targ_bio_bad) == 0) {
+      targ_bio_good_min <- min(targ_bio_good, na.rm = TRUE)
+      targ_bio_good_max <- max(targ_bio_good, na.rm = TRUE)
       # bio threshold to use for "better"
       bio_better_thresh <- targ_bio_good_min
     } else {
-      targ_bio_bad_min <- min(targ_bio_bad, na.rm=TRUE)
-      targ_bio_bad_max <- max(targ_bio_bad, na.rm=TRUE)
+      targ_bio_bad_min <- min(targ_bio_bad, na.rm = TRUE)
+      targ_bio_bad_max <- max(targ_bio_bad, na.rm = TRUE)
       # bio threshold to use for "better"
       bio_better_thresh <- targ_bio_bad_max
     }
@@ -425,10 +409,10 @@ getVerifiedPredictions <- function(TargetSiteID
           #
           SSTV.analyte <- as.vector(stressor.SSTV$Analyte)[tv]
           SSTV.name <- as.vector(stressor.SSTV$SSTVname)[tv]
-          SSTV.label <- stressorInfo$Label[stressorInfo$StdParamName==SSTV.analyte]
+          SSTV.label <- df_stressinfo$Label[df_stressinfo$StdParamName == SSTV.analyte]
           SSTV.label <- unique(as.character(SSTV.label))
 
-          if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
+          if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
             varFlag <- 0
             #if(tv==1){tv=20}
           }##IF.boo.DEBUG.END
@@ -442,7 +426,7 @@ getVerifiedPredictions <- function(TargetSiteID
 
           # skip if SSTV = ""
           ## 20181211
-          if(is.na(SSTV.name)==TRUE | SSTV.name==""){
+          if (is.na(SSTV.name) == TRUE | SSTV.name == "") {
             msg <- "No data; SKIP"
             message(msg)
             # print(msg)
@@ -452,34 +436,33 @@ getVerifiedPredictions <- function(TargetSiteID
 
           # 20190111, get LogTransf (0 = FALSE; 1 = TRUE)
           # need to use max (default of 1) in case of duplicates
-          chem.info_LogTransf <- stressorInfo %>%
+          chem.info_LogTransf <- df_stressinfo %>%
             dplyr::group_by(StdParamName) %>%
-            dplyr::summarise(max_LogTransf=max(LogTransf, na.rm=TRUE)
-                             , .groups="drop_last")
-          LogTransf <- chem.info_LogTransf$max_LogTransf[chem.info_LogTransf[,"StdParamName"]==SSTV.analyte]
-          # LogTransf <- ifelse(is.na(LogTransf), "TRUE", as.logical(LogTransf))
+            dplyr::summarise(max_LogTransf = max(LogTransf, na.rm = TRUE)
+                             , .groups = "drop_last")
+          LogTransf <- chem.info_LogTransf$max_LogTransf[chem.info_LogTransf[, "StdParamName"] == SSTV.analyte]
           log.yn <- as.logical(LogTransf)
 
           # get all the matched sample data for this stressor
           # 20180620, match names
           col_keep <- c("StationID_Master", "StressSampID", "RespSampID")
           SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in%
-                                                         names(matchedData$all.b.str)]
-          all.match.b.str <- matchedData$all.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
-          cl.match.b <- matchedData$cl.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
+                                                         names(list.MatchBioData$all.b.str)]
+          all.match.b.str <- list.MatchBioData$all.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
+          cl.match.b <- list.MatchBioData$cl.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
 
-          bmi.taxa.raw <- dataBioTaxa[dataBioTaxa$StationID_Master %in%
-                                        unique(all.match.b.str$StationID_Master),]
+          bmi.taxa.raw <- df_BioTaxaRelAbund[df_BioTaxaRelAbund$StationID_Master %in%
+                                        unique(all.match.b.str$StationID_Master), ]
           bmi.taxa.raw <- merge(bmi.taxa.raw
-                                , dataMasterTaxa[, c("FinalID", SSTV.name)]
+                                , df_MasterTaxa[, c("FinalID", SSTV.name)]
                                 , by.x = "FinalID", by.y = "FinalID")
 
-          minTolVal <- min(dataMasterTaxa[,SSTV.name], na.rm = TRUE)
-          maxTolVal <- max(dataMasterTaxa[,SSTV.name], na.rm = TRUE)
+          minTolVal <- min(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
+          maxTolVal <- max(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
 
-          bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==minTolVal |
-                                            bmi.taxa.raw[,SSTV.name]==minTolVal+1,
-                                          bmi.taxa.raw$RelAbund, NA)
+          bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[, SSTV.name] == minTolVal |
+                                            bmi.taxa.raw[, SSTV.name] == minTolVal + 1,
+                                            bmi.taxa.raw$RelAbund, NA)
 
           bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==maxTolVal |
                                            bmi.taxa.raw[,SSTV.name]==maxTolVal-1,
@@ -504,14 +487,14 @@ getVerifiedPredictions <- function(TargetSiteID
 
           # Add Bio Index (value and Narrative Rating) (20190305)
           all.SSTV.abund <- merge(all.SSTV.abund
-                                  , matchedData$all.b.rsp[, c(col_by
+                                  , list.MatchBioData$all.b.rsp[, c(col_by
                                                               , BioIndex_Nar
-                                                              , BioIndex_Val)]
+                                                              , colBio)]
                                   , by.x = col_by
                                   , by.y = col_by
                                   , all.x = TRUE)
 
-          good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund),]
+          good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund), ]
           cl.SSTV.abund      <- subset(good.SSTV.abund
                                        , good.SSTV.abund$StressSampID %in%
                                          cl.match.b$StressSampID)
@@ -524,35 +507,31 @@ getVerifiedPredictions <- function(TargetSiteID
 
           # Generate data for plotting (1 = all complete cases, 3 = comparators
           # 5 = target site)
-          df.plot1 <- good.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
-          df.plot3 <- cl.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
-          df.plot5 <- site.SSTV.abund[,c(SSTV.analyte, SSTV.Resp)]
+          df.plot1 <- good.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
+          df.plot3 <- cl.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
+          df.plot5 <- site.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
 
           # Log transform if indicated
           if (log.yn == TRUE) {
-            df.plot1[, SSTV.analyte] <- log10(df.plot1[, SSTV.analyte])
-            df.plot3[, SSTV.analyte] <- log10(df.plot3[, SSTV.analyte])
-            df.plot5[, SSTV.analyte] <- log10(df.plot5[, SSTV.analyte])
+            df.plot1[, SSTV.analyte] <- log1p(df.plot1[, SSTV.analyte])
+            df.plot3[, SSTV.analyte] <- log1p(df.plot3[, SSTV.analyte])
+            df.plot5[, SSTV.analyte] <- log1p(df.plot5[, SSTV.analyte])
           }
 
           ## ALL
           # 20190305, drop added Bio Index value and narrative
           # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
-          # df_plot_all <- reshape2::melt(good.SSTV.abund[, 1:6]
-          #                               , id.vars=colnames(good.SSTV.abund)[1:4])
           df_plot_all <- good.SSTV.abund[, 1:6] %>%
             tidyr::pivot_longer(cols = c(SensRelAbund, TolRelAbund)
                                 , names_to = "variable", values_to = "value")
-          #df_plot_all$SSTV.analyte <- df_plot_all[, SSTV.analyte]
           df_plot_all[, "Param_Name"] <- SSTV.analyte
-          colnames(df_plot_all)[colnames(df_plot_all)==SSTV.analyte] <- "Param_Value"
-          df_plot_all <- df_plot_all[, c(1:3,7,4:6)]
-          # levels(df_plot_all$variable) <- c("SensRelAbund", "TolRelAbund")
+          colnames(df_plot_all)[colnames(df_plot_all) == SSTV.analyte] <- "Param_Value"
+          df_plot_all <- df_plot_all[, c(1:3, 7, 4:6)]
 
           ## BETTER BIO
           # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
           # 20190305, switch to "better" bio from all
-          df_plot_betterbio <- good.SSTV.abund[good.SSTV.abund[, BioIndex_Val]
+          df_plot_betterbio <- good.SSTV.abund[good.SSTV.abund[, colBio]
                                                > bio_better_thresh, 1:6]
           df_plot_betterbio <- tidyr::pivot_longer(df_plot_betterbio
                                                    , cols = c(SensRelAbund, TolRelAbund)
@@ -564,19 +543,11 @@ getVerifiedPredictions <- function(TargetSiteID
             dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
             dplyr::select(StationID_Master:StressSampID, Param_Name
                           , Param_Value:value)
-          # df_plot_betterbio <- reshape2::melt(df_plot_betterbio
-          #                                     , id.vars=colnames(df_plot_betterbio)[1:4])
-          #df_plot_betterbio$SSTV.analyte <- df_plot_betterbio[, SSTV.analyte]
-          # df_plot_betterbio[, "Param_Name"] <- SSTV.analyte
-          # colnames(df_plot_betterbio)[colnames(df_plot_betterbio)==SSTV.analyte] <- "Param_Value"
-          # df_plot_betterbio <- df_plot_betterbio[, c(1:3,7,4:6)]
-          # levels(df_plot_betterbio$variable) <- c("SensRelAbund", "TolRelAbund")
+
           n_records_better_bio <- nrow(df_plot_betterbio)
 
           ## TARGET
           # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
-          # df_plot_targ <- reshape2::melt(site.SSTV.abund[, 1:6]
-          #                                , id.vars=colnames(site.SSTV.abund)[1:4])
           df_plot_targ <- site.SSTV.abund[, 1:6]
           df_plot_targ <- tidyr::pivot_longer(site.SSTV.abund[, 1:6]
                                               , cols = c(SensRelAbund, TolRelAbund)
@@ -588,19 +559,12 @@ getVerifiedPredictions <- function(TargetSiteID
             dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
             dplyr::select(StationID_Master:StressSampID, Param_Name
                           , Param_Value:value)
-          #df_plot_targ$SSTV.analyte <- df_plot_targ[, SSTV.analyte]
-          # chem var and value to columns (20190513)
-          # df_plot_targ[, "Param_Name"] <- SSTV.analyte
-          # colnames(df_plot_targ)[colnames(df_plot_targ)==SSTV.analyte] <- "Param_Value"
-          # df_plot_targ <- df_plot_targ[, c(1:3,7,4:6)]
-          # levels(df_plot_targ$variable) <- c("SensRelAbund", "TolRelAbund")
-          # factors by default are alphebetical so should be ok that every plot will be in the same order
 
           # 20190510, new data frame for better sites AND bio.deg = No
           # IBI scores (drop variable and value from good.SSTV.abund)
-          df_IBI <- unique(good.SSTV.abund[, c(1:4,7:8)])
+          df_IBI <- unique(good.SSTV.abund[, c(1:4, 7:8)])
           # Add IBI scores to "better" sites
-          df_plot_betterbio_IBI <- merge(df_plot_betterbio, df_IBI, all.x=TRUE)
+          df_plot_betterbio_IBI <- merge(df_plot_betterbio, df_IBI, all.x = TRUE)
           # Add Bio.Deg
           df_plot_betterbio_IBI[, col.Bio.Deg] <-
             ifelse(df_plot_betterbio_IBI[, BioIndex_Nar] == BioIndex_Nar_Deg
@@ -648,36 +612,6 @@ getVerifiedPredictions <- function(TargetSiteID
                                               (value > better_bio_varval_qLo) ~ -1
                                             , TRUE ~ 0))
 
-          # myProbs <- c(10, 20, 25, 50, 75, 80, 90)*0.01
-          # df_quantiles <- aggregate(value ~ variable, data=df_plot_betterbio
-          #                           , FUN = function(x) {quantile(x, probs=myProbs
-          #                                                         , na.rm=TRUE)})
-          # q_Sens_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa"
-          #                                     , "value"][, "25%"])
-          # q_Sens_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Sensitive Taxa"
-          #                                     , "value"][, "50%"])
-          # q_Tol_lo <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa"
-          #                                    , "value"][, "50%"])
-          # q_Tol_hi <- as.vector(df_quantiles[df_quantiles[, 1]=="Tolerant Taxa"
-          #                                    , "value"][, "75%"])
-          # Add scoring thresholds to target siteID data frame
-          # df_plot_targ[, paste0("betterbio_varval_q", c("LO", "HI"))] <- NA
-          # df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa"
-          #              , "betterbio_varval_qLO"] <- q_Sens_lo
-          # df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa"
-          #              , "betterbio_varval_qHI"] <- q_Sens_hi
-          # df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa"
-          #              , "betterbio_varval_qLO"] <- q_Tol_lo
-          # df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa"
-          #              , "betterbio_varval_qHI"] <- q_Tol_hi
-          # Scoring (tolerant than flip for sensitive)
-          # df_plot_targ[, "Score"] <- ifelse(df_plot_targ[, "value"] > df_plot_targ[, "betterbio_varval_qHI"]
-          #                                   , 1
-          #                                   , ifelse(df_plot_targ[, "value"] < df_plot_targ[, "betterbio_varval_qLO"]
-          #                                            , -1
-          #                                            , 0))
-          # df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"] <-
-          #   -1 * df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"]
 
           # Add other variables
           df_plot_targ[, "biocomm"] <- biocomm
@@ -686,18 +620,18 @@ getVerifiedPredictions <- function(TargetSiteID
           df_tbl_scores <- merge(df_plot_targ
                                  , site.SSTV.abund[,c("RespSampID"
                                                       ,"StressSampID"
-                                                      , BioIndex_Val
+                                                      , colBio
                                                       , "Quality")]
                                  , by.x = c("RespSampID","StressSampID")
                                  , by.y = c("RespSampID","StressSampID")
                                  , all.x = TRUE)
           df_tbl_scores <- merge(df_tbl_scores
-                                 , unique(stressorInfo[,c("StdParamName", "Label")])
+                                 , unique(df_stressinfo[,c("StdParamName", "Label")])
                                  , by.x = "Param_Name"
                                  , by.y = "StdParamName"
                                  , all.x = TRUE)
           df_tbl_scores <- dplyr::select(df_tbl_scores, StationID_Master
-                                         , RespSampID, eval(BioIndex_Val)
+                                         , RespSampID, eval(colBio)
                                          , Quality, StressSampID, Label
                                          , Param_Name, Param_Value
                                          , variable, value, better_bio_varval_qLo
@@ -722,9 +656,9 @@ getVerifiedPredictions <- function(TargetSiteID
             boo_colnames <- !boo_colnames
           }##IF~file.exists(fn_scores)~END
 
-          utils::write.table(df_tbl_scores, file=fn_scores
-                             , col.names = boo_colnames, row.names=FALSE
-                             , sep="\t", append=boo_append)
+          utils::write.table(df_tbl_scores, file = fn_scores
+                             , col.names = boo_colnames, row.names = FALSE
+                             , sep="\t", append = boo_append)
 
           # ggplot ####
 
@@ -732,18 +666,19 @@ getVerifiedPredictions <- function(TargetSiteID
             ## Plot, Variables, Strings
             str_title <- paste0(TargetSiteID, ": Verified prediction "
                                 ,"line of evidence for ", SSTV.label)
-            str_title <- stringr::str_wrap(str_title,100)
-            str_subtitle <- paste0("Do the data support the prediction "
+            str_title <- stringr::str_wrap(str_title, 100)
+            str_subtitle <- paste0("Do the data support the prediction"
                                    , " that the abundance of sensitive"
                                    , " taxa will be lower and tolerant"
-                                   , " taxa will be higher than observed at "
-                                   , " comparator sites with better biology?")
+                                   , " taxa will be higher than that"
+                                   , " observed at comparator sites with"
+                                   , " better biology?")
             str_subtitle <- stringr::str_wrap(str_subtitle, 100)
             str_xlab  <- ""
             str_ylab  <- "Relative Abundance"
             # df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
-            str_score_sens <- paste(df_plot_targ[df_plot_targ[, "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
-            str_score_tol <- paste(df_plot_targ[df_plot_targ[, "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
+            str_score_sens <- paste(df_plot_targ[df_plot_targ[, "variable"] == "Sensitive Taxa", "Score"], collapse = ", ")
+            str_score_tol <- paste(df_plot_targ[df_plot_targ[, "variable"] == "Tolerant Taxa", "Score"], collapse = ", ")
             str_caption <- paste0("Score = Tolerant Taxa (", str_score_tol
                                   , "), Sensitive Taxa ("
                                   , str_score_sens
@@ -752,23 +687,8 @@ getVerifiedPredictions <- function(TargetSiteID
                                   , "); better biology and not degraded (n="
                                   , n_records_betterbio_BioDegNo, ")"
                                   , "\nSamples with better biology have "
-                                  , BioIndex_Val, " > "
+                                  , colBio, " > "
                                   , signif(bio_better_thresh, 3))
-            # df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
-            # str_score_sens <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[
-            #   , "variable"]=="Sensitive Taxa", "Score"], collapse=", ")
-            # str_score_tol <- paste(df_plot_targ_sortvalue[df_plot_targ_sortvalue[
-            #   , "variable"]=="Tolerant Taxa", "Score"], collapse=", ")
-            # str_caption <- paste0("Score = Tolerant Taxa (", str_score_tol
-            #                       , "), Sensitive Taxa ("
-            #                       , str_score_sens
-            #                       , ")\nNumber of samples with better biology (n="
-            #                       , n_records_better_bio
-            #                       , "); better biology and not degraded (n="
-            #                       , n_records_betterbio_BioDegNo, ")"
-            #                       , "\nSamples with better biology have "
-            #                       , BioIndex_Val, " > "
-            #                       , signif(bio_better_thresh, 3))
 
             ## Plot, Variables, Colors
             col_sites_targ    <- "red"
@@ -800,7 +720,7 @@ getVerifiedPredictions <- function(TargetSiteID
           ## Plot, Variables, Bio.Deg
           bio_col <- c("gray20", "blue")
           bio_shp <- c(21, 25) # circle and down triangle
-          bio_size <- c(3, 2)
+          bio_size <- c(2, 1)
 
           col.SiteTypeQuality <- col.Bio.Deg
 
@@ -870,9 +790,9 @@ getVerifiedPredictions <- function(TargetSiteID
                                                     , ggplot2::aes(group = variable
                                                                    , ymin = value
                                                                    , ymax = value)
-                                                    , lty=targ_line_lty
-                                                    , lwd=targ_line_lwd
-                                                    , color=targ_line_col
+                                                    , lty = targ_line_lty
+                                                    , lwd = targ_line_lwd
+                                                    , color = targ_line_col
                                                     , show.legend = FALSE)
 
           #
@@ -880,10 +800,11 @@ getVerifiedPredictions <- function(TargetSiteID
           # # plots.tvr[[tvr]] <- grDevices::recordPlot()
           # plots.tv[[tv]] <- grDevices::recordPlot()
           #
-          fn_png <- paste0(TargetSiteID, "_", biocomm, "_VP_", make.names(SSTV.analyte), ".png")
+          fn_png <- paste0(TargetSiteID, "_", biocomm, "_VP_"
+                           , make.names(SSTV.analyte), ".png")
           if(boo_plot){
             ggplot2::ggsave(file.path(dir_path, fn_png), p_SSTV
-                            , width=plot_W, height=plot_H, units="in")
+                            , width = plot_W, height = plot_H, units = "in")
           }## IF ~ boo_plot ~ END
 
           varFlag <- 0
