@@ -52,10 +52,11 @@
 #' @export
 getSiteMap <- function(sp_outline
                        , sp_flowline
+                       , datum = "NAD83"
                        , region
-                       , df_sites
-                       , allSites
-                       , compSites
+                       , df_sites  # sites data frame
+                       , allSites  # outside the case sites
+                       , compSites # comparator sites
                        , TargetSiteID
                        , useBC = FALSE
                        , dir_results = file.path(getwd(), "Results")
@@ -126,21 +127,46 @@ getSiteMap <- function(sp_outline
     dplyr::select(StationID_Master, FinalLongitude, FinalLatitude
                   , RefSiteFlag, COMID)
 
-  sp_sites <- sf::st_as_sf(df_sites, crs = 4267
-                           , coords = c("FinalLongitude", "FinalLatitude"))
-  sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
-    dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
-                  , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+  # NAD27 crs == 4267
+  # NAD83 crs == 4269
+  # WGS84 crs == 4326
+
+  if (datum == "NAD27") {
+
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4267
+                             , coords = c("FinalLongitude", "FinalLatitude"))
+    sp_sites <- sf::st_transform(sp_sites, crs = 4269) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                    , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+
+  } else if (datum == "WGS84") {
+
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4326
+                             , coords = c("FinalLongitude", "FinalLatitude"))
+    sp_sites <- sf::st_transform(sp_sites, crs = 4269) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                    , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+
+  } else {   # assume NAD83
+
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4269
+                             , coords = c("FinalLongitude", "FinalLatitude")) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                    , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+
+  }
 
   sp_refsites <- dplyr::filter(sp_sites, RefSiteFlag == 1)
 
   sp_targetsite <- dplyr::filter(sp_sites, StationID_Master == TargetSiteID)
 
+  # Check this -- useBC has already been incorporated so compSites should be comparator sites
+  # and allSites should be all outside the case sites, no matter how they're defined.
   if (useBC == TRUE) {
-    sp_compsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # comparator sitese
-    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% allSites) # cluster sites
+    sp_compsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # comparator sites
+    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% allSites) # outside the case sites
   } else {
-    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # cluster sites
+    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # outside the case sites
   }
 
   # Graphics parameters

@@ -105,8 +105,6 @@
 #' @export
 getSiteInfo <- function(TargetSiteID
                         , data_Sites
-                        , data_bkgdata
-                        , data_bkginfo
                         , data_SampSummary
                         , data_bmiMetrics = NULL
                         , bmiIndexGp
@@ -115,9 +113,12 @@ getSiteInfo <- function(TargetSiteID
                         , data_fishMetrics = NULL
                         , fishIndexGp
                         , comp_sites
-                        , outcaseLabel = NULL
-                        , incaseLabel = NULL
+                        , outcaseLabel = "Outside the case"
+                        , incaseLabel = "Comparator"
                         , useBC = FALSE
+                        , printBkgdInfo = printBkgdInfo
+                        , data_bkgdata = NULL
+                        , data_bkginfo = NULL
                         # , data_cluster
                         # , data_mods = NULL
                         # , data_303d = NULL
@@ -489,129 +490,132 @@ getSiteInfo <- function(TargetSiteID
 
   message("Completed transferring any available site files.")
 
-  # Get background data from fn_bkgdata; use COMID to select single row
-  data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
+  if (printBkgdInfo) {
+    # Get background data from fn_bkgdata; use COMID to select single row
+    data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
 
-  # Check for data to plot
-  data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
+    # Check for data to plot
+    data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
 
-  if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
-    # NO data in streamcat for the reach.
-    gapcomment <- paste0("No background data are available for site "
-                         , TargetSiteID, "on reach with COMID = ", myCOMID)
-    gaps <- cbind.data.frame("getSiteInfo", "Background Data", 0
-                             , gapcomment)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
-  } else {  # Background data exists
-    data_bkgdata2 <- tidyr::pivot_longer(data_bkgdata, -COMID
-                                         , names_to = "ColName"
-                                         , values_to = "val")
-    data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
+    if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
+      # NO data in streamcat for the reach.
+      gapcomment <- paste0("No background data are available for site "
+                           , TargetSiteID, "on reach with COMID = ", myCOMID)
+      gaps <- cbind.data.frame("getSiteInfo", "Background Data", 0
+                               , gapcomment)
+      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                  , row.names = FALSE, sep = "\t")
+    } else {  # Background data exists
+      data_bkgdata2 <- tidyr::pivot_longer(data_bkgdata, -COMID
+                                           , names_to = "ColName"
+                                           , values_to = "val")
+      data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
 
-    fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
-    write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
-                , sep = "\t", col.names = TRUE, row.names = FALSE)
+      fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
+      write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
+                  , sep = "\t", col.names = TRUE, row.names = FALSE)
 
-    # Get metadata from fn_bkginfo
-    df.bkg2plot <- merge(data_bkginfo, data_bkgdata2, by = "ColName")
+      # Get metadata from fn_bkginfo
+      df.bkg2plot <- merge(data_bkginfo, data_bkgdata2, by = "ColName")
 
-    rm(data_bkgdata, data_bkgdata2, data_bkginfo)
+      rm(data_bkgdata, data_bkgdata2, data_bkginfo)
 
-    # Determine appropriate graphics
-    # Bar charts, faceted with catchment on left, watershed on right
-    cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
+      # Determine appropriate graphics
+      # Bar charts, faceted with catchment on left, watershed on right
+      cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
 
-    for (i in 1:nrow(cat.sub)) { # Plot each subcategory
-      # pull out temp data set to plot
-      df.temp <- df.bkg2plot %>%
-        dplyr::filter(Category == cat.sub$Category[i]
-                      , Subcategory == cat.sub$Subcategory[i])
-      maxYear <- max(df.temp$StudyYear)
+      for (i in 1:nrow(cat.sub)) { # Plot each subcategory
+        # pull out temp data set to plot
+        df.temp <- df.bkg2plot %>%
+          dplyr::filter(Category == cat.sub$Category[i]
+                        , Subcategory == cat.sub$Subcategory[i])
+        maxYear <- max(df.temp$StudyYear)
 
-      xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
-                     , ", ", cat.sub$Units[i])
-      fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
-                                            , cat.sub[i, 4], ".png"))
-      p.title <- paste0(TargetSiteID, ": Site background")
-      p.subtitle <- "Potential anthropogenic alterations"
-      numcols <- length(unique(df.temp$Scale))/2
+        xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
+                       , ", ", cat.sub$Units[i])
+        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
+                                              , cat.sub[i, 4], ".png"))
+        p.title <- paste0(TargetSiteID, ": Site background")
+        p.subtitle <- "Potential anthropogenic alterations"
+        numcols <- length(unique(df.temp$Scale))/2
 
-      message(xlab)
+        message(xlab)
 
-      if (is.na(maxYear)) {  # No study year
-        p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                       , y = signif(val, digits = 2))) +
-          ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
-          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                          , vjust = -0.2)
-                             , color = "black", size=3) +
-          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-          ggplot2::facet_wrap(Scale ~ .)
-        p.bkg <- p.bkg + ggplot2::theme_bw() +
-          ggplot2::theme(legend.position = "none") +
-          ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                         , strip.text.y = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = p.title, subtitle = p.subtitle
-                        , x = xlab, y = "Value")
-        p.bkg <- p.bkg +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                             , angle = 45
-                                                             , hjust = 1)
-                         , axis.text.y = ggplot2::element_text(size = 7)
-                         , axis.title.x = ggplot2::element_text(size = 9
+        if (is.na(maxYear)) {  # No study year
+          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                         , y = signif(val, digits = 2))) +
+            ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
+            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                            , vjust = -0.2)
+                               , color = "black", size=3) +
+            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+            ggplot2::facet_wrap(Scale ~ .)
+          p.bkg <- p.bkg + ggplot2::theme_bw() +
+            ggplot2::theme(legend.position = "none") +
+            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                           , strip.text.y = ggplot2::element_text(size = 8)) +
+            ggplot2::labs(title = p.title, subtitle = p.subtitle
+                          , x = xlab, y = "Value")
+          p.bkg <- p.bkg +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
+                                                               , angle = 45
+                                                               , hjust = 1)
+                           , axis.text.y = ggplot2::element_text(size = 7)
+                           , axis.title.x = ggplot2::element_text(size = 9
+                                                                  , face = "bold")
+                           , axis.title.y = ggplot2::element_text(size = 9
+                                                                  , face = "bold")
+                           , plot.title = ggplot2::element_text(size = 12
                                                                 , face = "bold")
-                         , axis.title.y = ggplot2::element_text(size = 9
-                                                                , face = "bold")
-                         , plot.title = ggplot2::element_text(size = 12
-                                                              , face = "bold")
-                         , plot.subtitle = ggplot2::element_text(size = 10
-                                                                 , face = "bold"))
-        if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                          , height = plot_H * 1.5)
-        }## IF ~ boo_plot ~ END
+                           , plot.subtitle = ggplot2::element_text(size = 10
+                                                                   , face = "bold"))
+          if(boo_plot){
+            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                            , height = plot_H * 1.5)
+          }## IF ~ boo_plot ~ END
 
-      } else {  # Separate study year to consider in faceting
+        } else {  # Separate study year to consider in faceting
 
-        p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                       , y = signif(val, digits = 2)
-                                                       , group = StudyYear)) +
-          ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
-                            , fill = "darkred") +
-          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                          , vjust = -0.2)
-                             , color = "black", size = 3) +
-          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-          ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
-                              , margins = FALSE)
-        p.bkg <- p.bkg + ggplot2::theme_bw() +
-          ggplot2::theme(legend.position = "none") +
-          ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                         , strip.text.y = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = p.title, subtitle = p.subtitle
-                        , x = xlab, y = "Value")
-        p.bkg <- p.bkg +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                             , angle = 45, hjust = 1)
-                         , axis.text.y = ggplot2::element_text(size = 7)
-                         , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
-                         , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
-                         , plot.title = ggplot2::element_text(size = 12, face = "bold")
-                         , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
-        if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                          , height = plot_H * 1.5)
-        }## IF ~ boo_plot ~ END
+          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                         , y = signif(val, digits = 2)
+                                                         , group = StudyYear)) +
+            ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
+                              , fill = "darkred") +
+            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                            , vjust = -0.2)
+                               , color = "black", size = 3) +
+            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+            ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
+                                , margins = FALSE)
+          p.bkg <- p.bkg + ggplot2::theme_bw() +
+            ggplot2::theme(legend.position = "none") +
+            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                           , strip.text.y = ggplot2::element_text(size = 8)) +
+            ggplot2::labs(title = p.title, subtitle = p.subtitle
+                          , x = xlab, y = "Value")
+          p.bkg <- p.bkg +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
+                                                               , angle = 45, hjust = 1)
+                           , axis.text.y = ggplot2::element_text(size = 7)
+                           , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
+                           , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
+                           , plot.title = ggplot2::element_text(size = 12, face = "bold")
+                           , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
+          if(boo_plot){
+            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                            , height = plot_H * 1.5)
+          }## IF ~ boo_plot ~ END
 
-      }  # End creating background plot
+        }  # End creating background plot
 
-    }  # End iteration over subcategories
+      }  # End iteration over subcategories
 
-  }  # End background data portion
+    }  # End background data portion
+
+  }  # End print background information
 
   #
   mySiteSummary <- list(SiteInfo = mySiteInfo
