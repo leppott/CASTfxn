@@ -1,24 +1,24 @@
-#  Copyright 2023 TetraTech. All rights reserved.
-#  Use, copying, modification, or distribution of this file or any of its contents
+#  Copyright 2020 TetraTech. All rights reserved.
+#  Use, copying, modification, or distribution of this file or any of its contents 
 #  is expressly prohibited without prior written permission of TetraTech.
 #
 #
 #' @title Report Generation
-#'
+#' 
 #' @description Generate report
-#'
-#' @details Generates a report based on a Target SiteID in a given directory.
-#' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.
-#' Report format can be "html" (recommended default) or "word" (docx).
-#'
-#' Only the "summary" report is active.
-#'
-#' dir_data and dir_results should be absolute and not relative paths.
+#' 
+#' @details Generates a report based on a Target SiteID in a given directory.  
+#' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
+#' Report format can be "html" (recommended default) or "word" (docx). 
+#' 
+#' Only the "summary" report is active. 
+#' 
+#' dir_data and dir_results should be absolute and not relative paths.  
 #' This is because these directories are passed to an RMD file.
-#' Within the RMD each code chunk assumes a relative path based on the RMD location
+#' Within the RMD each code chunk assumes a relative path based on the RMD location 
 #' and not the working directory of the calling function.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
-#'
+#' 
 #' @param TargetSiteID SiteID
 #' @param probsHigh Default = 0.75
 #' @param probsLow Default = 0.25
@@ -29,23 +29,22 @@
 #' @param lagdays Default = 10
 #' @param bmiIndex Default = "CSCI".
 #' @param algIndex Default = "MMIhybrid"
-#' @param region character used to identify summary report
-#' @param dir_data Absolute path to data. Default = /Data
-#' @param dir_results Absoluthe path with subfolders named by SiteID. Default = Results folder in working directory.
+#' @param dir_data Absolute path to data.  Default = /Data
+#' @param dir_results Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
-#' @param report_format Requested report output format (html or word). Default = html
-#' @param dir_rmd Directory with template RMD for report. Default = package rmd folder.
+#' @param report_format Requested report output format (html or word).  Default = html
+#' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
 #' @param siteQual2Plot Site quality to print.
-#'
-#' @return A report for the provided SiteID in the provided format (html or word)
+#' 
+#' @return A report for the provided SiteID in the provided format (html or word) 
 #' in the results directory.
-#'
+#' 
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
 #' report_type <- "summary"
 #' report_format <- "html"
-#'
+#'  
 #' \dontrun{
 #' # Run Function
 #' getReport(TargetSiteID, dir_results, report_type, report_format)
@@ -65,13 +64,12 @@ getReport <- function(TargetSiteID
                       , lagdays
                       , bmiIndex
                       , algIndex
-                      , region
                       , dir_data = normalizePath(file.path(".", "Data"))
                       , dir_results = normalizePath(file.path(".", "Results"))
                       , report_type = "preliminary"
                       , report_format = "html"
                       , dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
-                      , siteQual2Plot = NULL) { ##FUNCTION.START
+                      , siteQual2Plot = NULL){##FUNCTION.START
   #
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
@@ -90,7 +88,6 @@ getReport <- function(TargetSiteID
     pHlimHigh = pHlimHigh
     bmiIndex = bmiIndex
     algIndex = algIndex
-    region = "SMC"
     if (DEBUG_person == "Ann") {
       dir_data = dir_data_abs
       dir_results = dir_results_abs
@@ -105,7 +102,7 @@ getReport <- function(TargetSiteID
     report_format = "html"
     siteQual2Plot = NULL
   }## IF ~ boo_DEBUG ~ END
-
+  
   # Date and Time for output
   myDate <- format(Sys.Date(),"%Y%m%d")
   myTime <- format(Sys.time(),"%H%M%S")
@@ -122,16 +119,12 @@ getReport <- function(TargetSiteID
   }
   #
   # Report parts
-  if (region == "SMC") {
-    strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
-  } else {
-    strFile_RMD <- file.path(dir_rmd, paste0(region, "_Results_", report_type, ".rmd"))
-  }
+  strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
   strFile_out_ext <- paste0(".", ifelse(report_format == "word", "docx", report_format)) #".docx" # ".html"
   strFile_out <- paste0(paste(TargetSiteID, "Results", stringr::str_to_sentence(report_type)
                               , myDate, myTime, sep = "_"), strFile_out_ext)
   #
-  # Generate Report
+    # Generate Report
   # Test if RMD file exists
   if (file.exists(strFile_RMD)) {##IF.file.exists.START
     #suppressWarnings(
@@ -143,12 +136,8 @@ getReport <- function(TargetSiteID
     #)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-    Msg.Line1 <- paste("Provided report template file directory does not include"
-                       , "the necessary RMD file to generate the report. So no"
-                       , "report will be generated.")
-    # Msg.Line2 <- paste("The default report directory can be modified in"
-    #                    , "config.R (ContData.env$myReport.Dir) and used as"
-    #                   , "input to the function (fun.myConfig).")
+    Msg.Line1 <- "Provided report template file directory does not include the necessary RMD file to generate the report.  So no report will be generated."
+    #Msg.Line2 <- "The default report directory can be modified in config.R (ContData.env$myReport.Dir) and used as input to the function (fun.myConfig)."
     Msg.Line3 <- paste0("file = ", basename(strFile_RMD))
     Msg.Line4 <- paste0("directory = ", dir_rmd)
     Msg <- paste(Msg.Line0, Msg.Line1
@@ -158,12 +147,11 @@ getReport <- function(TargetSiteID
     # cat(Msg)
     # utils::flush.console()
   }##IF.file.exists.END
-  #
+  # 
   # User Feedback
   message("Task COMPLETE.  Report generated.")
-  message(paste0("    User defined parameters: SiteID (", TargetSiteID
-                 , "), Report Type (", report_type, "), Report Format ("
-                 , report_format, ")."))
+  message(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
+               , report_type, "), Report Format (", report_format, ")."))
   #utils::flush.console()
   #
 }##FUNCTION.END

@@ -305,6 +305,7 @@ getVerifiedPredictions <- function(TargetSiteID
 
     if (any(reportedtaxa %in% SSTVtaxanames)==TRUE) {
       df_SSTVrelabund <- df_BioTaxaRelAbund %>%
+      # dplyr::rename(RelAbund = RelAbundInds) %>%
       dplyr::select(eval(colBioSample), FinalID, RelAbund) %>%
       dplyr::filter(FinalID %in% SSTVtaxanames)
       boo.continue = TRUE

@@ -166,7 +166,6 @@ getComparators<- function(TargetSiteID
     eligsites <- as.vector(unique(df_bioCoOccur$StationID_Master))
     outcaseSites <- outcaseSites[outcaseSites %in% eligsites]
     incaseSites <- incaseSites[incaseSites %in% eligsites]
-    outcaseSites <- !(outcaseSites %in% incaseSites)
 
     comp.sites <- incaseSites
     all.sites <- outcaseSites

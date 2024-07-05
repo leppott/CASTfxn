@@ -33,8 +33,8 @@ getOutliers <- function(df_data, df_meta) {##FUNCTION.START
   boo_meas <- TRUE
   if (boo_DEBUG == TRUE) {
     if (boo_meas == TRUE) {
-      df_data = data_measRaw
-      df_meta = data_measInfo
+      df_data = data_chemRaw
+      df_meta = data_chemInfo
     } else {
       df_data = data_modelRaw
       df_meta = data_modelInfo
@@ -113,7 +113,7 @@ getOutliers <- function(df_data, df_meta) {##FUNCTION.START
 
   } # End parameter iteration
 
-  df_temp <- dplyr::select(df_temp, SampleID, StdParamName, ResultValue
+  df_temp <- dplyr::select(df_temp, ChemSampleID, StdParamName, ResultValue
                            , IQRmethod, SDmethod, Outlier)
 
   # Return what?
