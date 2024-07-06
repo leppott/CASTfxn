@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -149,7 +149,7 @@ getSiteInfo <- function(TargetSiteID
     # data_cluster = data_cluster
     # data_mods = NULL
     # data_303d = NULL
-    dir_photo = file.path(dir_data,"Photos")
+    dir_photo = file.path(dir_data, "Photos")
     dir_results = dir_results
     dir_sub = "SiteInfo"
     boo_plot = TRUE
