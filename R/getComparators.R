@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -18,12 +18,16 @@
 #' @param df_bioCoOccur Dataframe containing paired stressor/response sample data
 #' @param bioIndex Character vector corresponding to the biological index column name.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE".
-#' @param outcaseColName If useBC == FALSE, the name of the column in the sites
-#'                       file that indicates "outside the case". Default = NULL.
+#' @param outcaseColName If useBC == FALSE, all the sites in the sites file (NULL).
+#'                       If useBC == TRUE, the name of the column that indicates
+#'                       the "outside the case". Default = NULL.
 #' @param incaseColName If useBC == FALSE, the name of the column in the sites
 #'                      file that indicates "inside the case". Default = NULL.
-#' @param df_bcdist Dataframe containing the biological dissimilarity distance matrix. Default = NULL.
-#' @param bc_cutoff Cutoff value below which will be considered similar to the target site. Default = "0.05".
+#'                      If NULL, df_bcdist and bc_cutoff must be defined.
+#' @param df_bcdist Dataframe containing the biological dissimilarity distance matrix.
+#'                  Default = NULL. Must be defined if incaseColName is not.
+#' @param bc_cutoff Cutoff value below which will be considered similar to the
+#'                  target site. Default = "0.05".
 #' @param dir_results Directory containing all results. Default = "file.path(getwd(),"Results")"
 #' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo"
 #'
