@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -102,6 +102,7 @@
 #'                data_cluster, dir_results, dir_sub)
 #' }
 #' @export
+#'
 getClusterInfo <- function(TargetSiteID
                            , siteCOMID
                            , siteCluster
@@ -136,10 +137,10 @@ getClusterInfo <- function(TargetSiteID
   dir.sub <- basename(dir_results)
   dir.sub2 <- TargetSiteID
   dir.sub3 <- dir_sub
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2))
          , FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
          , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
          , FALSE)
   #
@@ -154,7 +155,7 @@ getClusterInfo <- function(TargetSiteID
   }
   df.plot.target <- data_cluster[data_cluster$COMID == siteCOMID,  ]
   df.plot.ref <- data_cluster[data_cluster$COMID %in% refSiteCOMIDs, ]
-  df.plot   <- data_cluster
+  df.plot <- data_cluster
   clusterLevels <- dplyr::distinct(data_cluster, Cluster) %>%
     dplyr::arrange(Cluster)
   clusterLevels <- unlist(clusterLevels)

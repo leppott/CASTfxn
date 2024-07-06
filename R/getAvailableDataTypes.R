@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -6,7 +6,7 @@
 #'
 #' @description Identifies which data are available for the target site.
 #'
-#' @details Using the entire possible set of data types, which are differentiated by their sample identifiers, this function determines which sample types are available for the target site. Sample IDs are required to end with "SampID".
+#' @details Using the entire possible set of data types, which are differentiated by their sample identifiers, this function determines which sample types are available for the target site. Sample ID column names are required to end with "SampID".
 #'
 #' Uses the library dplyr
 #'

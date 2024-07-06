@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -55,12 +55,12 @@
 #' @param biocomm Biological community; BMI, algae, or fish  Default = "BMI".
 #' @param colBio df_data column name for the field with biological index value.
 #' @param BioDegBrk Biological assessment degraded status, cut function breaks.
-#' Should be in order from bad (low) to good (high).
-#' Default = c(-2, 0.799, 2)
+#'                  Should be in order from bad (low) to good (high).
+#'                  Default = c(-2, 0.799, 2)
 #' @param BioDegLab Biological assessment degraded status, cut function labels.
-#' Should be in order from bad (low) to good (high).
-#' Defaults are referenced in the code so if change the code will break.
-#' Default = c("Yes", "No").
+#'                  Should be in order from bad (low) to good (high).
+#'                  Defaults are referenced in the code so if change the code will break.
+#'                  Default = c("Yes", "No").
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #'

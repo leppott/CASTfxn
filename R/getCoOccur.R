@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -11,7 +11,7 @@
 #'              tab-delimited text file containing scores for these two lines of
 #'              evidence.
 #'
-#' @details \strong{Derive evidence fo spatial/temporal co-occurrence.}
+#' @details \strong{Derive evidence for spatial/temporal co-occurrence.}
 #'
 #' Stressor-response from field observational studies: Are higher levels of the
 #' stressor observed where and when the biological effect occurs?
