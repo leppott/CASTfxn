@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -18,7 +18,7 @@
 #'
 #' @param df_sites Dataframe containing site data for all sites.
 #' @param df_model Dataframe containing modeled stressor data for all sites that
-#' have it. Default = NULL.
+#' have them. Default = NULL.
 #' @param df_meas Dataframe containing measured stressor data for all sites that
 #' have them.
 #' @param biocomm Biological community; algae or BMI.
@@ -127,7 +127,7 @@ getCoOccurDataset <- function(df_sites
                                                      , "ChemSampleID"
                                                      , "StressSampDate"))]
 
-  # Merge site/bmi data with measure data by station & date
+  # Merge site/bmi data with measured data by station & date
   if (exists("df_modresp")) {
     df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas
                                               , by = c("StationID_Master" = "StationID_Master"
