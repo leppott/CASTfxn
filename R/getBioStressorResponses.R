@@ -1,4 +1,4 @@
-#  Copyright 2023 TetraTech. All rights reserved.
+#  Copyright 2024 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -1337,7 +1337,7 @@ getBioStressorResponses <- function(TargetSiteID
       # "n", "statistic", "p.value", "estimate", "r2")
       cn_cor_x    <- colnames(df_corr)
       cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
-      if (cn_cor_match!=length(cn_cor_pref)) { ##IF~length~START
+      if (cn_cor_match != length(cn_cor_pref)) { ##IF~length~START
         df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
         utils::write.table(df_corr, fp_corr, sep = "\t", quote = FALSE, row.names = FALSE)
       } ##IF~length~END
