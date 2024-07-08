@@ -196,13 +196,8 @@ getCoOccurDataset <- function(df_sites
     df_coOccur <- df_coOccur[, c(1:8, ncol(df_coOccur), 9:(ncol(df_coOccur) - 1))]
   }
 
-  if (!exists("df_sites$IncaseCol")){
-    df_sites <- df_sites[, c("StationID", "OutcaseCol")]
-    df_coOccur <- merge(df_sites, df_coOccur)
-  } else {
-    df_sites <- df_sites[, c("StationID", "OutcaseCol", "IncaseCol")]
-    df_coOccur <- merge(df_sites, df_coOccur)
-  }
+  df_sites <- dplyr::select(df_sites, StationID, ends_with("caseCol"))
+  df_coOccur <- merge(df_sites, df_coOccur)
 
   return(df_coOccur)
 
