@@ -315,18 +315,26 @@ if (basename(fn.Sites.Info) != "NA") {
       data_Sites <- dplyr::rename(data_Sites, OutcaseCol = all_of(outcaseColName))
     } else {
       msg <- paste0("Adding ", outcaseColName
-                    , " column to site file, with values equal to 'All reaches'.")
+                    , " column to site file with values equal to "
+                    , outcaseLabel, ".")
       message(msg)
-      data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = "All reaches")
+      data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
     }
   } else {                                 # outside the case is not defined
-    data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = "All reaches")
+    msg <- paste0("Adding ", outcaseColName
+                  , " column to site file with values equal to "
+                  , outcaseLabel, ".")
+    message(msg)
+    data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
   }
 
   # Rename or add RefSiteFlag to sites file
   if (!is.na(refColName)) {                # reference column name is defined
     data_Sites <- dplyr::rename(data_Sites, RefSiteFlag = all_of(refColName))
   } else {
+    msg <- paste("Adding ", refColName, " column to site file with values equal to 0 (FALSE)."
+                 , "No sites will be depicted as reference.", sep = "\n")
+    message(msg)
     data_Sites <- dplyr::mutate(data_Sites, RefSiteFlag = 0)
   }
 
@@ -1130,6 +1138,7 @@ data_sampSummary <- merge(data_sampSummary, data_respTrim
                           , by.x = c("StationID", "StressSampleDate")
                           , by.y = c("StationID", "RespSampleDate")
                           , all = TRUE)
+rm(data_respTrim)
 
 # Add modeled data, if they exist
 if (!is.null(data_modelRaw)) {
@@ -1172,6 +1181,7 @@ write.table(data_sampSummary, file.path(dir_data, "TESTSummarySiteSamples.tab")
             , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
 
 rm(fn.CASTmeta)
+rm(chemsamptypes, respsamptypes)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # RUN CASTool
@@ -1186,7 +1196,7 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 #
-df_targets <- read_excel(fn.targets, col_names = TRUE, trim_ws = TRUE, skip = 0)
+df_targets <- readCASToolData(fn = fn.targets, NAs = c("", "NA"))
 rm(fn.targets)
 
 endprep.time <- Sys.time()
@@ -1212,8 +1222,8 @@ if (boo_Shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-  # df_targets <- dplyr::filter(df_targets, TargetSiteID  == "SMC04134")
-  df_targets <- dplyr::filter(df_targets, TargetSiteID %in% c("SMC04134", "402BA0031"))
+  df_targets <- dplyr::filter(df_targets, TargetSiteID  == "BIO06600_BURP15")
+  # df_targets <- dplyr::filter(df_targets, TargetSiteID %in% c("SMC04134", "402BA0031"))
   msg <- paste0("Number of target sites = ", nrow(df_targets))
   message(msg)
 }
