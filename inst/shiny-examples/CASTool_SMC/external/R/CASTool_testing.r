@@ -811,16 +811,21 @@ for (b in seq_along(biocommlist)) {
     }
     # returns df_coOccur as data_bmiCoOccur
 
-    # Identify modeled parameters to keep or delete (per client)
-    bmiModelParamsDEL  <- setdiff(modelParams, bmiModParams)
-    # modelParams: all modeled Params;
-    # bmiModParams: input data from client re which modeled parameters to use when evaluating bmi responses
-    data_bmiCoOccur <- data_bmiCoOccur %>%
-      dplyr::select(!all_of(bmiModelParamsDEL)) %>%
-      dplyr::select_if(not_all_na)
-    list.bioParamsDEL <- append(list.bioParamsDEL, list(BMI = bmiModelParamsDEL))
+    if (!is.na(bmiModParams)) {
+      # Identify modeled parameters to keep or delete (per client)
+      bmiModelParamsDEL  <- setdiff(modelParams, bmiModParams)
+      # modelParams: all modeled Params;
+      # bmiModParams: input data from client re which modeled parameters to use when evaluating bmi responses
+      data_bmiCoOccur <- data_bmiCoOccur %>%
+        dplyr::select(!all_of(bmiModelParamsDEL)) %>%
+        dplyr::select_if(not_all_na)
+      list.bioParamsDEL <- append(list.bioParamsDEL, list(BMI = bmiModelParamsDEL))
 
-    rm(bmiModParams)
+      rm(bmiModParams)
+    } else {
+      message("No modeled data, if any, should be excluded from BMI evaluations.")
+    } ## END delete ModParams not useful for bmi eval
+
   } else { # NO BMI data
     # message("No BMI data available")
   }
@@ -874,23 +879,50 @@ for (b in seq_along(biocommlist)) {
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
-    data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                         , df_model = data_modelRaw
-                                         , df_meas = data_chemRaw
-                                         , biocomm = "Alg"
-                                         , df_resp = data_algMetrics
-                                         , index = algIndex
-                                         , lagdays = lagdays)
+    if (exists("data_chemRaw") & exists("data_modelRaw")) {
+      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           , df_model = data_modelRaw
+                                           , df_meas = data_chemRaw
+                                           , biocomm = "Alg"
+                                           , df_resp = data_algMetrics
+                                           , index = algIndex
+                                           , lagdays = lagdays)
+    } else if (exists("data_chemRaw")) {
+      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           # , df_model = NULL
+                                           , df_meas = data_chemRaw
+                                           , biocomm = "Alg"
+                                           , df_resp = data_algMetrics
+                                           , index = algIndex
+                                           , lagdays = lagdays)
+
+    } else {
+      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           , df_model = data_modelRaw
+                                           # , df_meas = NULL
+                                           , biocomm = "Alg"
+                                           , df_resp = data_algMetrics
+                                           , index = algIndex
+                                           , lagdays = lagdays)
+
+    }
     # returns df_coOccur as data_algCoOccur
 
-    # Identify modeled parameters to keep or delete (per SCCWRP)
-    algModelParamsDEL  <- setdiff(modelParams, algModParams)
-    data_algCoOccur <- data_algCoOccur %>%
-      dplyr::select(!all_of(algModelParamsDEL)) %>%
-      dplyr::select_if(not_all_na)
-    list.bioParamsDEL <- append(list.bioParamsDEL, list(ALG = algModelParamsDEL))
+    if (!is.na(algModParams)) {
+      # Identify modeled parameters to keep or delete (per client)
+      algModelParamsDEL  <- setdiff(modelParams, algModParams)
+      # modelParams: all modeled Params;
+      # bmiModParams: input data from client re which modeled parameters to use when evaluating bmi responses
+      data_algCoOccur <- data_algCoOccur %>%
+        dplyr::select(!all_of(algModelParamsDEL)) %>%
+        dplyr::select_if(not_all_na)
+      list.bioParamsDEL <- append(list.bioParamsDEL, list(ALG = algModelParamsDEL))
 
-    rm(algModParams)
+      rm(algModParams)
+    }  else {
+      message("No modeled data, if any, should be excluded from algal evaluations.")
+    } ## END delete ModParams not useful for algal eval
+
   } else { # NO algae data
     # message("No algae data available")
   }
@@ -952,16 +984,50 @@ for (b in seq_along(biocommlist)) {
                                           , df_resp = data_fishMetrics
                                           , index = fishIndex
                                           , lagdays = lagdays)
+    if (exists("data_chemRaw") & exists("data_modelRaw")) {
+      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           , df_model = data_modelRaw
+                                           , df_meas = data_chemRaw
+                                           , biocomm = "Fish"
+                                           , df_resp = data_fishMetrics
+                                           , index = fishIndex
+                                           , lagdays = lagdays)
+    } else if (exists("data_chemRaw")) {
+      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           # , df_model = NULL
+                                           , df_meas = data_chemRaw
+                                           , biocomm = "Fish"
+                                           , df_resp = data_fishMetrics
+                                           , index = fishIndex
+                                           , lagdays = lagdays)
+
+    } else {
+      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                           , df_model = data_modelRaw
+                                           # , df_meas = NULL
+                                           , biocomm = "Fish"
+                                           , df_resp = data_fishMetrics
+                                           , index = fishIndex
+                                           , lagdays = lagdays)
+
+    }
     # returns df_coOccur as data_fishCoOccur
 
-    # Identify modeled parameters to keep or delete (per SCCWRP)
-    fishModelParamsDEL  <- setdiff(modelParams, fishModParams)
-    data_fishCoOccur <- data_fishCoOccur %>%
-      dplyr::select(!all_of(fishModelParamsDEL)) %>%
-      dplyr::select_if(not_all_na)
-    list.bioParamsDEL <- append(list.bioParamsDEL, list(FISH = fishModelParamsDEL))
+    if (!is.na(fishModParams)) {
+      # Identify modeled parameters to keep or delete (per client)
+      fishModelParamsDEL  <- setdiff(modelParams, fishModParams)
+      # modelParams: all modeled Params;
+      # bmiModParams: input data from client re which modeled parameters to use when evaluating bmi responses
+      data_fishCoOccur <- data_fishCoOccur %>%
+        dplyr::select(!all_of(fishModelParamsDEL)) %>%
+        dplyr::select_if(not_all_na)
+      list.bioParamsDEL <- append(list.bioParamsDEL, list(FISH = fishModelParamsDEL))
 
-    rm(fishModParams)
+      rm(algModParams)
+    }  else {
+      message("No modeled data, if any, should be excluded from fish evaluations.")
+    } ## END delete ModParams not useful for algal eval
+
   } else { # NO fish data
     # message("No fish data available")
   }
