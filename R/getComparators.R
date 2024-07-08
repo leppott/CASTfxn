@@ -63,8 +63,8 @@ getComparators<- function(TargetSiteID
     bioIndex = bmiIndex
     useBC = useBC
     outcaseColName = "OutcaseCol"
-    incaseColName = NULL
-    df_bcdist = data_BCdist
+    incaseColName = "IncaseCol"
+    df_bcdist = NULL
     bc_cutoff = 0.05
     dir_results = dir_results
     dir_sub = "SiteInfo"
@@ -86,13 +86,13 @@ getComparators<- function(TargetSiteID
   if (useBC == TRUE) {
 
     # Outside the case = cluster; Inside the case uses BC distance matrix
-    eligsites <- as.vector(unique(df_bioCoOccur$StationID_Master))
+    eligsites <- as.vector(unique(df_bioCoOccur$StationID))
 
     # Get cluster to which the target site belongs (outside the case identifier)
-    outcaseNum <- as.numeric(df_sites$OutcaseCol[df_sites$StationID_Master == TargetSiteID])
+    outcaseNum <- as.numeric(df_sites$OutcaseCol[df_sites$StationID == TargetSiteID])
 
     # Get vector of cluster sites (outside the case sites); subset for paired SR samples
-    outcaseSites <- as.vector(df_sites$StationID_Master[df_sites$OutcaseCol == outcaseNum])
+    outcaseSites <- as.vector(df_sites$StationID[df_sites$OutcaseCol == outcaseNum])
     outcaseSites <- outcaseSites[outcaseSites %in% eligsites]
 
     # Subset the BC file for sites in rows = cluster sites; target site is 2nd column
@@ -106,8 +106,8 @@ getComparators<- function(TargetSiteID
       TargetColName <- TargetSiteID
     }
 
-    df_bcdist <- df_bcdist[, c("StationID_Master", TargetColName)]
-    df_bcdist <- df_bcdist %>% filter(StationID_Master %in% outcaseSites)
+    df_bcdist <- df_bcdist[, c("StationID", TargetColName)]
+    df_bcdist <- df_bcdist %>% filter(StationID %in% outcaseSites)
     df_bcdist <- as.data.frame(df_bcdist[order(df_bcdist[, TargetColName]), ])
     df_bcdist.temp <- df_bcdist[df_bcdist[, TargetColName] <= bc_cutoff, ]
 
@@ -143,7 +143,7 @@ getComparators<- function(TargetSiteID
                                       , paste0("OutCase_LTEQ", bc_cutofftxt)
                                       , paste0("OutCase_GT", bc_cutofftxt))
 
-    df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID_Master", "RespSampID"
+    df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID", "RespSampID"
                                           , bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = all_of(TargetColName))
@@ -151,33 +151,33 @@ getComparators<- function(TargetSiteID
                 , col.names = TRUE, row.names = FALSE, sep = "\t")
 
     # Convert to vector that can be returned in the list generated
-    comp.sites <- as.vector(df_bcdist.temp$StationID_Master)
+    comp.sites <- as.vector(df_bcdist.temp$StationID)
     all.sites <- outcaseSites
     outcaseID <- outcaseNum
 
   } else {
 
     # Outside the case = outcaseColName; Inside the case uses cluster
-    outcaseNum <- as.numeric(df_sites$outcaseColName[df_sites$StationID_Master == TargetSiteID])
-    df_outcase <- dplyr::select(df_sites, StationID_Master, all_of(outcaseColName), all_of(incaseColName))
-    outcaseSites <- as.vector(df_outcase$StationID_Master[df_outcase$outcaseColName == outcaseNum])
+    outcaseValue <- df_sites$OutcaseCol[df_sites$StationID == TargetSiteID]
+    df_outcase <- dplyr::select(df_sites, StationID, OutcaseCol, IncaseCol)
+    outcaseSites <- as.vector(df_outcase$StationID[df_outcase$OutcaseCol == outcaseValue])
 
     # Get cluster to which the target site belongs (inside the case identifier)
-    incaseNum <- as.numeric(df_outcase$incaseColName[df_outcase$StationID_Master == TargetSiteID])
-    incaseSites <- as.vector(df_outcase$StationID_Master[df_outcase$incaseColName == incaseNum])
+    incaseValue <- as.numeric(df_outcase$IncaseCol[df_outcase$StationID == TargetSiteID])
+    incaseSites <- unique(as.vector(df_outcase$StationID[df_outcase$IncaseCol == incaseValue]))
 
     # Get cluster sites also having paired stressor/response samples
-    eligsites <- as.vector(unique(df_bioCoOccur$StationID_Master))
+    eligsites <- as.vector(unique(df_bioCoOccur$StationID))
     outcaseSites <- outcaseSites[outcaseSites %in% eligsites]
     incaseSites <- incaseSites[incaseSites %in% eligsites]
 
-    comp.sites <- incaseSites
-    all.sites <- outcaseSites
-    outcaseID <- outcaseNum
+    comp.sites <- unique(incaseSites)
+    all.sites <- unique(outcaseSites)
     statement <- "All cluster sites are used as comparators."
     gap.statement <- cbind.data.frame("getComparators"
                                       , "bc.dist not used"
-                                      , length(incaseSites)
+                                      , paste0("Inside the case: ", incaseLabel
+                                               , " = ", length(incaseSites))
                                       , paste(statement))
     colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
 
@@ -193,7 +193,8 @@ getComparators<- function(TargetSiteID
 
   myCompSites <- list(comp.sites = comp.sites
                       , all.sites = all.sites
-                      , outcaseID = outcaseID)
+                      , outcaseID = outcaseValue
+                      , incaseID = incaseValue)
 
   return(myCompSites)
 
