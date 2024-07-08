@@ -528,7 +528,7 @@ rm(fn.modelinfo)
 
 # Get modeled stressor data
 if (basename(fn.modeldata) != "NA") {
-  data_modelAll <- readCASToolData(fn = data_modelAll, NAs = c("", "na", "NA", "N/A"))
+  data_modelAll <- readCASToolData(fn = fn.modeldata, NAs = c("", "na", "NA", "N/A"))
   # data_modelAll <- read.delim(fn.modeldata, header = TRUE, sep = "\t"
   #                             , stringsAsFactors = FALSE)
   useParams     <- as.character(data_modelInfo$StdParamName)
@@ -655,6 +655,7 @@ boo.bmi <- FALSE
 boo.alg <- FALSE
 boo.fish <- FALSE
 list.bioParamsDEL <- list() # initialize an empty list
+data_respTrim <- data.frame()
 
 for (b in seq_along(biocommlist)) {
   bio <- tolower(biocommlist[b])
@@ -746,6 +747,12 @@ for (b in seq_along(biocommlist)) {
                                , by = c("RespSampleID", "RespSampleDate")
                                , all.x = TRUE)
 
+      data_BMITrim <- data_bmiMetrics %>%
+        dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
+        dplyr::mutate(biocomm = "BMISampleID")
+      data_respTrim <- rbind(data_respTrim, unique(data_BMITrim))
+      rm(data_BMITrim)
+
       if (exists("data_cscicore")) {
         data_bmiMetrics <- merge(data_bmiMetrics, data_cscicore
                                  , by = c("StationID", "RespSampleID"
@@ -769,7 +776,7 @@ for (b in seq_along(biocommlist)) {
       message(msg)
     }
 
-    # Get BMI metric data
+    # Get BMI metric info
     if (basename(fn.bmi.metrics.info) != "NA") {
       data_bmiMetricsInfo <- readCASToolData(fn = fn.bmi.metrics.info
                                              , NAs = c("", "na", "NA", "N/A"))
@@ -827,7 +834,7 @@ for (b in seq_along(biocommlist)) {
     } ## END delete ModParams not useful for bmi eval
 
   } else { # NO BMI data
-    # message("No BMI data available")
+    message("No BMI data available")
   }
 
   if ((bio == "algae") & !boo.alg) {
@@ -860,6 +867,13 @@ for (b in seq_along(biocommlist)) {
       data_algMetrics <- data_algMetrics %>%
         dplyr::mutate(AlgSampDate = lubridate::mdy(AlgSampDate)) %>%
         dplyr::mutate(AlgSampFlag = NA)
+
+      data_algTrim <- data_algMetrics %>%
+        dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
+        dplyr::mutate(biocomm = "AlgSampleID")
+      data_respTrim <- rbind(data_respTrim, unique(data_algTrim))
+      rm(data_algTrim)
+
     } else {
       msg <- "fn.alg.metrics is NA"
       message(msg)
@@ -924,7 +938,7 @@ for (b in seq_along(biocommlist)) {
     } ## END delete ModParams not useful for algal eval
 
   } else { # NO algae data
-    # message("No algae data available")
+    message("No algae data available")
   }
 
   # Read fish data
@@ -958,6 +972,13 @@ for (b in seq_along(biocommlist)) {
       data_fishMetrics <- data_fishMetrics %>%
         dplyr::mutate(FishSampleDate = lubridate::mdy(FishSampDate)) %>%
         dplyr::mutate(FishSampFlag = NA)
+
+      data_fishTrim <- data_fishMetrics %>%
+        dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
+        dplyr::mutate(biocomm = "FishSampleID")
+      data_respTrim <- rbind(data_respTrim, unique(data_fishMetrics))
+      rm(data_fishTrim)
+
     } else {
       msg <- "fn.fish.metrics is NA"
       message(msg)
@@ -1029,7 +1050,7 @@ for (b in seq_along(biocommlist)) {
     } ## END delete ModParams not useful for algal eval
 
   } else { # NO fish data
-    # message("No fish data available")
+    message("No fish data available")
   }
 }
 
@@ -1059,7 +1080,7 @@ if (boo.fish == FALSE) {
 }
 # Clean up
 rm(b, bio, boo.bmi, boo.alg, boo.fish)
-rm(fn.bmi.raw, fn.bmi.metrics, fn.bmi.metrics.info, fn.MT.bmi, fn.bmi.cscicore)
+rm(fn.bmi.raw, fn.bmi.metrics, fn.bmi.metrics.info, fn.MT.bmi, fn.bmi.qualifiers)
 rm(fn.alg.raw, fn.alg.metrics, fn.alg.metrics.info, fn.MT.alg)
 rm(fn.fish.raw, fn.fish.metrics, fn.fish.metrics.info, fn.MT.fish)
 
@@ -1077,158 +1098,78 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 # Prepare stressor data
-# Identify field, lab, phab, model types
-if (exists("data_modelRaw") & exists("data_chemRaw")) {
-  data_modeltrim <- as.data.frame(data_modelRaw) %>%
-    dplyr::distinct(StationID, ChemSampleID) %>%
-    dplyr::rename(FlowSampID = ChemSampleID)
-
-  data_meastrim <- as.data.frame(data_chemRaw) %>%
-    dplyr::distinct(StationID, ChemSampleID, StdParamName, SampleDate)
-  data_meastrim <- merge(data_meastrim, data_stressInfo, by = "StdParamName") %>%
-    dplyr::select(StationID, ChemSampleID, GroupName, StdParamName
-                  , SampleDate, Label) %>%
-    dplyr::mutate(Type = case_when(GroupName == "Habitat" ~ "PhabSampID"
-                                   , grepl("Field-measured", Label) == TRUE ~ "FldChemSampID"
-                                   , TRUE ~ "ChemSampID")) %>%
-    dplyr::distinct(StationID, ChemSampleID, SampleDate, Type)  %>%
-    tidyr::pivot_wider(id_cols = c(StationID, SampleDate), names_from = Type
-                       , values_from = ChemSampleID, values_fill = NA)
-
-  data_sampSummary <- merge(data_meastrim, data_modeltrim
-                            , by = "StationID", all = TRUE)
-
-  rm(data_modeltrim, data_meastrim)
-
-} else if (exists("data_chemRaw")) {
-  data_sampSummary <- as.data.frame(data_chemRaw) %>%
-    dplyr::distinct(StationID, ChemSampleID, StdParamName, SampleDate)
-  data_sampSummary <- merge(data_sampSummary, data_stressInfo, by = "StdParamName") %>%
-    dplyr::select(StationID, ChemSampleID, GroupName, StdParamName
-                  , SampleDate, Label) %>%
-    dplyr::mutate(Type = case_when(GroupName == "Habitat" ~ "PhabSampID"
-                                   , grepl("Field-measured", Label) == TRUE ~ "FldChemSampID"
-                                   , TRUE ~ "ChemSampID")) %>%
-    dplyr::distinct(StationID, ChemSampleID, SampleDate, Type)  %>%
-    tidyr::pivot_wider(id_cols = c(StationID, SampleDate), names_from = Type
-                       , values_from = ChemSampleID, values_fill = NA)
-
-  msg <- "No modeled stressor data available"
-  message(msg)
-
-} else if (exists("data_modelRaw")) {
-  data_modeltrim <- as.data.frame(data_modelRaw) %>%
-    dplyr::distinct(StationID, ChemSampleID) %>%
-    dplyr::rename(FlowSampID = ChemSampleID)
-
-} else {
-  msg <- "No stressor data available"
-  message(msg)
-  stop()
+# Identify field, lab, and phab stressor types
+if (!is.null(data_chemRaw)) {
+  data_sampSummary <- unique(data_chemRaw[, c("StationID", "StressSampleID"
+                                              , "StdParamName", "StressSampleDate")])
+  data_sampSummary <- merge(data_sampSummary, data_stressInfo, by = "StdParamName")
+  data_sampSummary <- data_sampSummary %>%
+    dplyr::select(StationID, StressSampleID, GroupName, StdParamName
+                  , StressSampleDate, Label) %>%
+    dplyr::mutate(Type = case_when(GroupName == "Habitat" ~ "HabitatSampleID"
+                                   , grepl("Field-measured", Label) == TRUE ~ "FieldSampleID"
+                                   , TRUE ~ "ChemistrySampleID"))
+  data_sampSummary <- unique(data_sampSummary[, c("StationID", "StressSampleID"
+                                                  , "StressSampleDate", "Type")])
+  data_sampSummary <- data_sampSummary %>%
+    tidyr::pivot_wider(id_cols = c(StationID, StressSampleDate), names_from = Type
+                       , values_from = StressSampleID, values_fill = NA)
+  chemsamptypes <- colnames(dplyr::select(data_sampSummary, dplyr::ends_with("SampleID")))
 }
 
-# Identify response samples
-if (!is.null(data_bmiMetrics) & exists("data_sampSummary")) {
-  data_bmiMetricsTrim <- data_bmiMetrics %>%
-    dplyr::distinct(StationID, BMISampID, BMISampDate) %>%
-    dplyr::group_by(StationID, BMISampDate) %>%
-    dplyr::summarise(BMISampID = stringr::str_flatten(BMISampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_sampSummary, data_bmiMetricsTrim
-                            , by.x = c("StationID", "SampleDate")
-                            , by.y = c("StationID", "BMISampDate")
+# # Identify response samples
+data_respTrim <- data_respTrim %>%
+  # dplyr::mutate(SampleDate = RespSampleDate)
+  tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm
+                     , values_from = RespSampleID, values_fill = NA)
+data_respTrim <- unique(data_respTrim)
+respsamptypes <- colnames(dplyr::select(data_respTrim, dplyr::ends_with("SampleID")))
+
+# Combine with response data types
+data_sampSummary <- merge(data_sampSummary, data_respTrim
+                          , by.x = c("StationID", "StressSampleDate")
+                          , by.y = c("StationID", "RespSampleDate")
+                          , all = TRUE)
+
+# Add modeled data, if they exist
+if (!is.null(data_modelRaw)) {
+  data_modelTrim <- as.data.frame(data_modelRaw) %>%
+    dplyr::distinct(StationID, StressSampleID) %>%
+    dplyr::rename(ModeledSampleID = StressSampleID)
+
+  data_sampSummary <- merge(data_sampSummary, data_modelTrim
+                            , by.x = "StationID"
+                            , by.y = "StationID"
                             , all = TRUE)
-  rm(data_bmiMetricsTrim)
-} else if (!is.null(data_bmiMetrics) & exists("data_modeltrim")) {
-  data_bmiMetricsTrim <- data_bmiMetrics %>%
-    dplyr::distinct(StationID, BMISampID, BMISampDate) %>%
-    dplyr::group_by(StationID, BMISampDate) %>%
-    dplyr::summarise(BMISampID = stringr::str_flatten(BMISampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_modeltrim, data_bmiMetricsTrim
-                            , by.x = c("StationID")
-                            , by.y = c("StationID")
-                            , all = TRUE)
-  rm(data_bmiMetricsTrim)
+  data_sampSummary <- unique(data_sampSummary)
+
+  data_sampSummary <- data_sampSummary %>%
+    dplyr::rename(SampleDate = StressSampleDate) %>%
+    dplyr::select(StationID, SampleDate, all_of(chemsamptypes), ModeledSampleID
+                  , all_of(respsamptypes))
 } else {
-  msg <- "No BMI data available"
-  message(msg)
-}
-if (!is.null(data_algMetrics) & exists("data_sampSummary")) {
-  data_algMetricsTrim <- data_algMetrics %>%
-    dplyr::distinct(StationID, AlgSampID, AlgSampDate) %>%
-    dplyr::group_by(StationID, AlgSampDate) %>%
-    dplyr::summarise(AlgSampID = stringr::str_flatten(AlgSampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_sampSummary, data_algMetricsTrim
-                            , by.x = c("StationID", "SampleDate")
-                            , by.y = c("StationID", "AlgSampDate")
-                            , all = TRUE)
-  rm(data_algMetricsTrim)
-} else if (!is.null(data_algMetrics) & exists("data_modeltrim")) {
-  data_algMetricsTrim <- data_algMetrics %>%
-    dplyr::distinct(StationID, AlgSampID, AlgSampDate) %>%
-    dplyr::group_by(StationID, AlgSampDate) %>%
-    dplyr::summarise(AlgSampID = stringr::str_flatten(AlgSampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_modeltrim, data_algMetricsTrim
-                            , by.x = c("StationID")
-                            , by.y = c("StationID")
-                            , all = TRUE)
-  rm(data_algMetricsTrim, data_modeltrim)
-} else {
-  msg <- "No Algal data available"
-  message(msg)
-}
-if (!is.null(data_fishMetrics) & exists("data_sampSummary")) {
-  data_fishMetricsTrim <- data_fishMetrics %>%
-    dplyr::distinct(StationID, FishSampID, FishSampDate) %>%
-    dplyr::group_by(StationID, FishSampDate) %>%
-    dplyr::summarise(FishSampID = stringr::str_flatten(FishSampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_sampSummary, data_fishMetricsTrim
-                            , by.x = c("StationID", "SampleDate")
-                            , by.y = c("StationID", "FishSampDate")
-                            , all = TRUE)
-  rm(data_fishMetricsTrim)
-} else if (!is.null(data_fishMetrics) & exists("data_modeltrim")) {
-  data_fishMetricsTrim <- data_fishMetrics %>%
-    dplyr::distinct(StationID, FishSampID, FishSampDate) %>%
-    dplyr::group_by(StationID, FishSampDate) %>%
-    dplyr::summarise(FishSampID = stringr::str_flatten(FishSampID, collapse = "\n")
-                     , .groups = "drop_last")
-  data_sampSummary <- merge(data_modeltrim, data_fishMetricsTrim
-                            , by.x = c("StationID")
-                            , by.y = c("StationID")
-                            , all = TRUE)
-  rm(data_fishMetricsTrim)
-} else {
-  msg <- "No Fish data available"
-  message(msg)
+  data_sampSummary <- data_sampSummary %>%
+    dplyr::rename(SampleDate = StressSampleDate) %>%
+    dplyr::select(StationID, SampleDate, all_of(chemsamptypes), all_of(respsamptypes))
 }
 
+# Add COMID, IncaseCol, OutcaseCol (add labels when writing table)
 if (is.na(incaseColName)) {
   data_sampSummary <- merge(data_Sites[, c("StationID", "COMID", "OutcaseCol")]
                             , data_sampSummary, by = "StationID"
                             , all = TRUE)
   data_sampSummary <- unique(data_sampSummary)
-  # data_sampSummary <- data_sampSummary %>%
-  #   dplyr::distinct(StationID, COMID, OutcaseCol, SampleDate, ChemSampID
-  #                   , FldChemSampID, PhabSampID, FlowSampID, BMISampID, AlgSampID)
 } else {
   data_sampSummary <- merge(data_Sites[, c("StationID", "COMID"
                                            , "OutcaseCol", "IncaseCol")]
                             , data_sampSummary, by = "StationID"
                             , all = TRUE)
   data_sampSummary <- unique(data_sampSummary)
-  # data_sampSummary <- data_sampSummary %>%
-  #   dplyr::distinct(StationID, COMID, OutcaseCol, IncaseCol, SampleDate
-  #                   , ChemSampID, FldChemSampID, PhabSampID, FlowSampID, BMISampID, AlgSampID)
 }
 
 # FOR TESTING ONLY
-# write.table(data_sampSummary, file.path(dir_data, "TESTSummarySiteSamples.tab")
-#             , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
+write.table(data_sampSummary, file.path(dir_data, "TESTSummarySiteSamples.tab")
+            , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
 
 rm(fn.CASTmeta)
 
