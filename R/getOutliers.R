@@ -56,10 +56,11 @@ getOutliers <- function(df_data, df_meta) {##FUNCTION.START
                    , by.x = "StdParamName", by.y = "StdParamName"
                    , all.x = TRUE)
   df_data <- df_data %>%
-    dplyr::mutate(ResultValue = ifelse(ResultValue <= 0 & LogTransf == 1
+    dplyr::mutate(ResultValue = ifelse(ResultValue < 0 & LogTransf == 1
                                        , NA, ResultValue)) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
-    dplyr::mutate(TransfResult = ifelse(LogTransf == 1, log1p(ResultValue)
+    dplyr::mutate(TransfResult = ifelse(LogTransf == 1
+                                        , suppressWarnings(log1p(ResultValue))
                                         , ResultValue))
 
   params <- unique(as.character(df_data$StdParamName))
@@ -113,7 +114,7 @@ getOutliers <- function(df_data, df_meta) {##FUNCTION.START
 
   } # End parameter iteration
 
-  df_temp <- dplyr::select(df_temp, ChemSampleID, StdParamName, ResultValue
+  df_temp <- dplyr::select(df_temp, StressSampleID, StdParamName, ResultValue
                            , IQRmethod, SDmethod, Outlier)
 
   # Return what?
