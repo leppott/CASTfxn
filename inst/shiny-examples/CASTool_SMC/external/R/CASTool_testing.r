@@ -754,7 +754,6 @@ for (b in seq_along(biocommlist)) {
       data_bmiMetrics <- merge(data_bmiMetrics, data_BMISampTotAbund
                                , by = c("RespSampleID", "RespSampleDate")
                                , all.x = TRUE)
-
       data_BMITrim <- data_bmiMetrics %>%
         dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
         dplyr::mutate(biocomm = "BMISampleID")
@@ -790,6 +789,9 @@ for (b in seq_along(biocommlist)) {
                                              , NAs = c("", "na", "NA", "N/A"))
       bmiMetrics <- as.vector(data_bmiMetricsInfo$MetricName)
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN == "Yes"])
+      data_bmiMetrics$Quality <- cut(data_bmiMetrics[, bmiIndex]
+                                     , breaks = bmi_deg_thres
+                                     , labels = bmi_deg_text)
     } else {
       msg <- "fn.bmi.metrics.info is NA"
       message(msg)
@@ -893,6 +895,9 @@ for (b in seq_along(biocommlist)) {
                                              , NAs = c("", "na", "NA", "N/A"))
       algMetrics <- as.vector(data_algMetricsInfo$MetricName[data_algMetricsInfo$UseYN == 1])
       algIndex <- as.character(data_algMetricsInfo$MetricName[data_algMetricsInfo$IndexYN == "Yes"])
+      data_algMetrics$Quality <- cut(data_algMetrics[, algIndex]
+                                     , breaks = alg_deg_thres
+                                     , labels = alg_deg_text)
 
     } else {
       msg <- "fn.alg.metrics.info is NA"
@@ -998,6 +1003,9 @@ for (b in seq_along(biocommlist)) {
                                               , NAs = c("", "na", "NA", "N/A"))
       fishMetrics <- as.vector(data_fishMetricsInfo$MetricName[data_fishMetricsInfo$UseYN == 1])
       fishIndex <- as.character(data_fishMetricsInfo$MetricName[data_fishMetricsInfo$IndexYN == "Yes"])
+      data_fishMetrics$Quality <- cut(data_fishMetrics[, fishIndex]
+                                     , breaks = fish_deg_thres
+                                     , labels = fish_deg_text)
 
     } else {
       msg <- "fn.fish.metrics.info is NA"
@@ -1222,7 +1230,7 @@ if (boo_Shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-  df_targets <- dplyr::filter(df_targets, TargetSiteID  == "BIO06600_BURP15")
+  df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
   # df_targets <- dplyr::filter(df_targets, TargetSiteID %in% c("SMC04134", "402BA0031"))
   msg <- paste0("Number of target sites = ", nrow(df_targets))
   message(msg)
@@ -1245,6 +1253,10 @@ if (boo_Shiny == TRUE) {
 for (site in seq_along(df_targets)) {
   startsite.time <- Sys.time()
   TargetSiteID <- df_targets$TargetSiteID[site]
+  if (boo.debug == TRUE & debug.person == "Ann") {
+    TargetSiteID <- "BIO06600_BURP15"
+  }
+
 
   if (is.na(TargetSiteID)) {
     next()
@@ -1301,11 +1313,12 @@ for (site in seq_along(df_targets)) {
   #                              , all.sites = cluster.sites) ("outside the case")
   # If useBC == FALSE
   # Returns: myCompSites <- list(comp.sites = cluster.sites ("inside the case")
-  #                              , all.sites = elig.sites)
-  # (all sites in ecoregion or other geographic region = "outside the case")
+  #                              , all.sites = elig.sites or other sites specified as "outside the case")
+  # (all sites in ecoregion, specified elevation, or other region = "outside the case")
   comp_sites <- list.CompSites$comp.sites # inside the case
   all_sites <- list.CompSites$all.sites   # outside the case
-  outcaseID <- list.CompSites$outcaseID    # outside the case identifier (value)
+  outcaseID <- list.CompSites$outcaseID   # outside the case identifier (value)
+  incaseID <- list.CompSites$incaseID     # inside the case identifier (value)
   rm(list.CompSites)
   msg <- "getComparators is complete."
   message(msg)
@@ -1326,8 +1339,8 @@ for (site in seq_along(df_targets)) {
   # and folder for photos
   list.SiteSummary <- getSiteInfo(TargetSiteID = TargetSiteID
                                   , data_Sites = data_Sites
-                                  , data_bkgdata = data_bkgdata
-                                  , data_bkginfo = data_bkginfo
+                                  , data_bkgdata = NULL
+                                  , data_bkginfo = NULL
                                   , data_SampSummary = data_sampSummary
                                   , data_bmiMetrics = data_bmiMetrics
                                   , bmiIndexGp = bmiIndexGp
@@ -1336,10 +1349,11 @@ for (site in seq_along(df_targets)) {
                                   , data_fishMetrics = data_fishMetrics
                                   , fishIndexGp = fishIndexGp
                                   , comp_sites = comp_sites
+                                  , all_sites = all_sites
                                   , outcaseLabel = outcaseLabel
                                   , incaseLabel = incaseLabel
                                   , useBC = useBC
-                                  # , data_cluster = data_cluster
+                                  # , data_cluster = NULL
                                   # , data_mods = NULL
                                   # , data_303d = NULL
                                   , dir_photo = file.path(dir_data,"Photos")
