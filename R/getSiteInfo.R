@@ -14,13 +14,13 @@
 #'
 #' Required objects:
 #'
-#' * data_Sites; StationID_Master, FinalLatitude, FinalLongitude
+#' * data_Sites; StationID, FinalLatitude, FinalLongitude
 #' , WaterbodyName, GIS_County, CARefSite_2017, COMID
 #'
-#' * data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
+#' * data.SampSummary; StationID, CollDate, ChemSampleID, PhabSampID
 #' , BMI.Metrics.SampID, Algae.Metrics.SampID
 #'
-#' * data.bmi.metrics; StationID_Master, CollDate, CSCI, O_E, MMI_Score
+#' * data.bmi.metrics; StationID, CollDate, CSCI, O_E, MMI_Score
 #'
 #' * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
 #'
@@ -115,6 +115,7 @@ getSiteInfo <- function(TargetSiteID
                         , data_fishMetrics = NULL
                         , fishIndexGp
                         , comp_sites
+                        , all_sites
                         , outcaseLabel = NULL
                         , incaseLabel = NULL
                         , useBC = FALSE
@@ -133,20 +134,21 @@ getSiteInfo <- function(TargetSiteID
   if (boo_DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
     data_Sites = data_Sites
-    data_bkgdata = data_bkgdata
-    data_bkginfo = data_bkginfo
+    data_bkgdata = NULL
+    data_bkginfo = NULL
     data_SampSummary = data_sampSummary
     data_bmiMetrics = data_bmiMetrics
     bmiIndexGp = bmiIndexGp
     data_algMetrics = data_algMetrics
     algIndexGp = algIndexGp
-    data_fishMetrics = NULL
-    fishIndexGp = "IBI"
+    data_fishMetrics = data_fishMetrics
+    fishIndexGp = fishIndexGp
     comp_sites = comp_sites
+    all_sites = all_sites
     outcaseLabel = outcaseLabel
-    incaseLabel = NULL
-    useBC = TRUE
-    # data_cluster = data_cluster
+    incaseLabel = incaseLabel
+    useBC = FALSE
+    # data_cluster = NULL
     # data_mods = NULL
     # data_303d = NULL
     dir_photo = file.path(dir_data, "Photos")
@@ -187,13 +189,13 @@ getSiteInfo <- function(TargetSiteID
   #
   if (useBC == TRUE) {
     mySiteInfo <- data_Sites %>%
-      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
                     , RefSiteFlag, COMID, OutcaseCol)
     outcaseID <- mySiteInfo$OutcaseCol
   } else { # useBC == FALSE; cluster ID is inside the case ID
     mySiteInfo <- data_Sites %>%
-      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
                     , RefSiteFlag, COMID, OutcaseCol, IncaseCol)
     incaseID <- mySiteInfo$IncaseCol
@@ -201,35 +203,55 @@ getSiteInfo <- function(TargetSiteID
   myCOMID <- mySiteInfo$COMID
   data_refSites <- data_Sites %>%
     dplyr::filter(RefSiteFlag == 1) %>%
-    dplyr::select(StationID_Master, FinalLatitude, FinalLongitude, COMID)
+    dplyr::select(StationID, FinalLatitude, FinalLongitude, COMID)
   myRefCOMIDs <- as.vector(unique(data_refSites$COMID))
 
   # get sampling info (dates of samples)
-  mySamps <- dplyr::filter(data_SampSummary, StationID_Master == TargetSiteID)
+  mySamps <- dplyr::filter(data_SampSummary, StationID == TargetSiteID)
 
   # get response information (CSCI, MMIhybrid, FIBI, etc.)
   if (useBC == TRUE) {
     str_sub <- paste0("Target Site: ", TargetSiteID, ", ", outcaseLabel, " "
                       , outcaseID)
   } else {
-    str_sub <- paste0("Target Site: ", TargetSiteID, ", ", outcaseLabel, " "
-                      , outcaseID, "; ", incaseLabel, " ", incaseID)
+    str_sub <- paste0("Target Site: ", TargetSiteID, "; Outside the case: "
+                      , outcaseLabel, "; Inside the case: ", incaseLabel
+                      , " ", incaseID)
+
   }
 
   if (!is.null(data_bmiMetrics)) {
     # Prep BMI data for plotting
+    OutSamples <- data_bmiMetrics %>%
+      dplyr::mutate(Quality = as.character(Quality)
+                    , Case = "Outside the case")
+    OutSamples <- OutSamples %>%
+      tidyr::pivot_longer(cols = all_of(bmiIndexGp), names_to = "Index"
+                          , values_to = "Score") %>%
+      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
+                                     , "Target", Quality)
+                    , Quality = factor(Quality, levels = c("Target"
+                                                           , "Not degraded"
+                                                           , "Degraded"))) %>%
+      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index
+                    , Score, Case)
+
     compBMImetrics <- data_bmiMetrics %>%
-      dplyr::filter(StationID_Master %in% comp_sites)%>%
-      dplyr::select(StationID_Master, BMISampID, BMISampDate, Quality
-                    , all_of(bmiIndexGp))
+      dplyr::filter(StationID %in% comp_sites)%>%
+      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bmiIndexGp)
+                    , Quality) %>%
+      dplyr::mutate(Quality = as.character(Quality))
     compBMImetrics <- compBMImetrics %>%
       tidyr::pivot_longer(cols = all_of(bmiIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID_Master == TargetSiteID
+      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
                                      , "Target", Quality)
-                    , Quality = as.factor(Quality)
-                    , Index = as.factor(Index))
-    goodBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Good")
+                    , Quality = factor(Quality, levels = c("Target"
+                                                           , "Not degraded"
+                                                           , "Degraded"))
+                    , Index = factor(Index)
+                    , Case = "Inside the case")
+    goodBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Not degraded")
     badBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Degraded")
     myBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Target")
 
@@ -248,17 +270,17 @@ getSiteInfo <- function(TargetSiteID
                 , row.names = FALSE, sep = "\t")
 
     ## Plot, Variables, Strings, other Aesthetics
-    myBMISamps <- dplyr::filter(mySamps, !is.na(BMISampID))
+    myBMISamps <- dplyr::filter(mySamps, !is.na(BMISampleID))
     lab.sub <- paste0("Comparator samples (n = "
                       , (nrow(compBMImetrics) - nrow(myBMISamps))
                       , " from ", (length(comp_sites) - 1), " sites)")
 
-    bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
-    bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
-    bio_alpha <- c(0.3, 0.5, 1)
+    bio_col <- c("red", "blue", "gray25") # Degraded, Good, Target
+    bio_shp <- c(17, 21, 25) # down triangle, circle, and triangle
+    bio_alpha <- c(1, 0.5, 0.3)
+    bio_size <- c(1.5, 1, 1)
 
     str_title <- "Benthic macroinvertebrate index scores"
-    str_xlab  <- "Index"
     str_ylab  <- "Score"
 
     ## Plot, Data
@@ -268,38 +290,84 @@ getSiteInfo <- function(TargetSiteID
                                                          , x = Index
                                                          , group = Index)) +
       ggplot2::geom_boxplot(na.rm = TRUE) +
-      ggplot2::geom_jitter(size = 2, width = 0.2, na.rm = TRUE
+      ggplot2::geom_jitter(width = 0.2, na.rm = TRUE
                            , ggplot2::aes(color = Quality, fill = Quality
-                                          , shape = Quality, alpha = Quality)) +
+                                          , shape = Quality, alpha = Quality
+                                          , size = Quality)) +
       ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
       ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
+      ggplot2::scale_size_manual(values = bio_size, drop = FALSE) +
       ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
-                    , x = str_xlab, y = str_ylab) +
+                    , y = str_ylab) +
       ggplot2::theme_bw() +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
-                     , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
+                                                        size = ggplot2::rel(0.8))
+                     , plot.subtitle = ggplot2::element_text(hjust = 0.5,
+                                                             size = ggplot2::rel(0.5))) +
       ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black")
-                     , axis.ticks.y = ggplot2::element_blank())
-    if(boo_plot){
+                     , axis.ticks.y = ggplot2::element_blank()
+                     , axis.title.x = ggplot2::element_blank())
+    if (boo_plot) {
       ggplot2::ggsave(fn_bmiscores, pBMI, width = plot_W, height = plot_H
                       , units = "in")
     }## IF ~ boo_plot ~ END
 
+    ## Plot, Data by case
+    allsamplesByCase <- rbind(compBMImetrics, OutSamples)
+    targetSamples <- dplyr::filter(allsamplesByCase, StationID == TargetSiteID)
+    allsamplesByCase <- dplyr::filter(allsamplesByCase, StationID != TargetSiteID)
+
+    fn_bmiscoresByCase <- paste0(TargetSiteID, "_BMI_IndexBoxplotsByCase.png")
+    fn_bmiscoresByCase <- file.path(dir_path, fn_bmiscoresByCase)
+    pBMIbyCase <- ggplot2::ggplot(allsamplesByCase, ggplot2::aes(y = round(Score, 3)
+                                                         , x = Case
+                                                         , group = Case)) +
+      ggplot2::geom_boxplot(na.rm = TRUE) +
+      ggplot2::geom_jitter(width = 0.2, na.rm = TRUE
+                           , ggplot2::aes(color = Quality, fill = Quality
+                                          , shape = Quality, alpha = Quality
+                                          , size = Quality)) +
+      ggplot2::geom_jitter(data = targetSamples, width = 0.2, na.rm = TRUE
+                           , ggplot2::aes(color = Quality, fill = Quality
+                                          , shape = Quality, alpha = Quality
+                                          , size = Quality)) +
+      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
+      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
+      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
+      ggplot2::scale_size_manual(values = bio_size, drop = FALSE) +
+      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
+                    , y = str_ylab) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
+                                                        size = ggplot2::rel(0.8))
+                     , plot.subtitle = ggplot2::element_text(hjust = 0.5,
+                                                             size = ggplot2::rel(0.5))) +
+      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black")
+                     , axis.ticks.y = ggplot2::element_blank()
+                     , axis.title.x = ggplot2::element_blank())
+    if (boo_plot) {
+      ggplot2::ggsave(fn_bmiscoresByCase, pBMIbyCase, width = plot_W
+                      , height = plot_H, units = "in")
+    }## IF ~ boo_plot_by_case ~ END
+
   } else {
     myBMIMetrics <- NULL
   }
-  if (!is.null(data_algMetrics)) {
+
+
+if (!is.null(data_algMetrics)) {
     # Prep Alg data for plotting
     compALGmetrics <- data_algMetrics %>%
-      dplyr::filter(StationID_Master %in% comp_sites)%>%
-      dplyr::select(StationID_Master, AlgSampID, AlgSampDate, Quality
+      dplyr::filter(StationID %in% comp_sites)%>%
+      dplyr::select(StationID, AlgSampID, AlgSampDate, Quality
                     , all_of(algIndexGp))
     compALGmetrics <- compALGmetrics %>%
       tidyr::pivot_longer(cols = all_of(algIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID_Master == TargetSiteID
+      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
                                      , "Target", Quality)
                     , Quality = as.factor(Quality)
                     , Index = as.factor(Index))
@@ -358,13 +426,13 @@ getSiteInfo <- function(TargetSiteID
   if (!is.null(data_fishMetrics)) {
     # Prep Fish data for plotting
     compFISHmetrics <- data_fishMetrics %>%
-      dplyr::filter(StationID_Master %in% comp_sites)%>%
-      dplyr::select(StationID_Master, FishSampID, FishSampDate, Quality
+      dplyr::filter(StationID %in% comp_sites)%>%
+      dplyr::select(StationID, FishSampID, FishSampDate, Quality
                     , all_of(fishIndexGp))
     compFISHmetrics <- compFISHmetrics %>%
       tidyr::pivot_longer(cols = all_of(fishIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID_Master==TargetSiteID
+      dplyr::mutate(Quality = ifelse(StationID==TargetSiteID
                                      , "Target", Quality)
                     , Quality = as.factor(Quality)
                     , Index = as.factor(Index))
@@ -413,11 +481,6 @@ getSiteInfo <- function(TargetSiteID
       ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
       ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
-      # ggplot2::geom_jitter(data=filter(compBMImetrics, Quality=="Target")
-      #                      , size=2, width=0.2
-      #                      , ggplot2::aes(y=Score, x=Index, group=Index
-      #                                     , color = "red", fill = "red"
-      #                                     , shape = 17))
       ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
                     , x = str_xlab, y = str_ylab) +
       ggplot2::theme_bw() +
@@ -489,129 +552,131 @@ getSiteInfo <- function(TargetSiteID
 
   message("Completed transferring any available site files.")
 
-  # Get background data from fn_bkgdata; use COMID to select single row
-  data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
+  if (!is.null(data_bkgdata)) {
+    # Get background data from fn_bkgdata; use COMID to select single row
+    data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
 
-  # Check for data to plot
-  data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
+    # Check for data to plot
+    data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
 
-  if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
-    # NO data in streamcat for the reach.
-    gapcomment <- paste0("No background data are available for site "
-                         , TargetSiteID, "on reach with COMID = ", myCOMID)
-    gaps <- cbind.data.frame("getSiteInfo", "Background Data", 0
-                             , gapcomment)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
-  } else {  # Background data exists
-    data_bkgdata2 <- tidyr::pivot_longer(data_bkgdata, -COMID
-                                         , names_to = "ColName"
-                                         , values_to = "val")
-    data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
+    if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
+      # NO data in streamcat for the reach.
+      gapcomment <- paste0("No background data are available for site "
+                           , TargetSiteID, "on reach with COMID = ", myCOMID)
+      gaps <- cbind.data.frame("getSiteInfo", "Background Data", 0
+                               , gapcomment)
+      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                  , row.names = FALSE, sep = "\t")
+    } else {  # Background data exists
+      data_bkgdata2 <- tidyr::pivot_longer(data_bkgdata, -COMID
+                                           , names_to = "ColName"
+                                           , values_to = "val")
+      data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
 
-    fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
-    write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
-                , sep = "\t", col.names = TRUE, row.names = FALSE)
+      fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
+      write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
+                  , sep = "\t", col.names = TRUE, row.names = FALSE)
 
-    # Get metadata from fn_bkginfo
-    df.bkg2plot <- merge(data_bkginfo, data_bkgdata2, by = "ColName")
+      # Get metadata from fn_bkginfo
+      df.bkg2plot <- merge(data_bkginfo, data_bkgdata2, by = "ColName")
 
-    rm(data_bkgdata, data_bkgdata2, data_bkginfo)
+      rm(data_bkgdata, data_bkgdata2, data_bkginfo)
 
-    # Determine appropriate graphics
-    # Bar charts, faceted with catchment on left, watershed on right
-    cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
+      # Determine appropriate graphics
+      # Bar charts, faceted with catchment on left, watershed on right
+      cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
 
-    for (i in 1:nrow(cat.sub)) { # Plot each subcategory
-      # pull out temp data set to plot
-      df.temp <- df.bkg2plot %>%
-        dplyr::filter(Category == cat.sub$Category[i]
-                      , Subcategory == cat.sub$Subcategory[i])
-      maxYear <- max(df.temp$StudyYear)
+      for (i in 1:nrow(cat.sub)) { # Plot each subcategory
+        # pull out temp data set to plot
+        df.temp <- df.bkg2plot %>%
+          dplyr::filter(Category == cat.sub$Category[i]
+                        , Subcategory == cat.sub$Subcategory[i])
+        maxYear <- max(df.temp$StudyYear)
 
-      xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
-                     , ", ", cat.sub$Units[i])
-      fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
-                                            , cat.sub[i, 4], ".png"))
-      p.title <- paste0(TargetSiteID, ": Site background")
-      p.subtitle <- "Potential anthropogenic alterations"
-      numcols <- length(unique(df.temp$Scale))/2
+        xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
+                       , ", ", cat.sub$Units[i])
+        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
+                                              , cat.sub[i, 4], ".png"))
+        p.title <- paste0(TargetSiteID, ": Site background")
+        p.subtitle <- "Potential anthropogenic alterations"
+        numcols <- length(unique(df.temp$Scale))/2
 
-      message(xlab)
+        message(xlab)
 
-      if (is.na(maxYear)) {  # No study year
-        p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                       , y = signif(val, digits = 2))) +
-          ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
-          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                          , vjust = -0.2)
-                             , color = "black", size=3) +
-          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-          ggplot2::facet_wrap(Scale ~ .)
-        p.bkg <- p.bkg + ggplot2::theme_bw() +
-          ggplot2::theme(legend.position = "none") +
-          ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                         , strip.text.y = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = p.title, subtitle = p.subtitle
-                        , x = xlab, y = "Value")
-        p.bkg <- p.bkg +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                             , angle = 45
-                                                             , hjust = 1)
-                         , axis.text.y = ggplot2::element_text(size = 7)
-                         , axis.title.x = ggplot2::element_text(size = 9
+        if (is.na(maxYear)) {  # No study year
+          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                         , y = signif(val, digits = 2))) +
+            ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
+            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                            , vjust = -0.2)
+                               , color = "black", size=3) +
+            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+            ggplot2::facet_wrap(Scale ~ .)
+          p.bkg <- p.bkg + ggplot2::theme_bw() +
+            ggplot2::theme(legend.position = "none") +
+            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                           , strip.text.y = ggplot2::element_text(size = 8)) +
+            ggplot2::labs(title = p.title, subtitle = p.subtitle
+                          , x = xlab, y = "Value")
+          p.bkg <- p.bkg +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
+                                                               , angle = 45
+                                                               , hjust = 1)
+                           , axis.text.y = ggplot2::element_text(size = 7)
+                           , axis.title.x = ggplot2::element_text(size = 9
+                                                                  , face = "bold")
+                           , axis.title.y = ggplot2::element_text(size = 9
+                                                                  , face = "bold")
+                           , plot.title = ggplot2::element_text(size = 12
                                                                 , face = "bold")
-                         , axis.title.y = ggplot2::element_text(size = 9
-                                                                , face = "bold")
-                         , plot.title = ggplot2::element_text(size = 12
-                                                              , face = "bold")
-                         , plot.subtitle = ggplot2::element_text(size = 10
-                                                                 , face = "bold"))
-        if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                          , height = plot_H * 1.5)
-        }## IF ~ boo_plot ~ END
+                           , plot.subtitle = ggplot2::element_text(size = 10
+                                                                   , face = "bold"))
+          if(boo_plot){
+            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                            , height = plot_H * 1.5)
+          }## IF ~ boo_plot ~ END
 
-      } else {  # Separate study year to consider in faceting
+        } else {  # Separate study year to consider in faceting
 
-        p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                       , y = signif(val, digits = 2)
-                                                       , group = StudyYear)) +
-          ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
-                            , fill = "darkred") +
-          ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                          , vjust = -0.2)
-                             , color = "black", size = 3) +
-          ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-          ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
-                              , margins = FALSE)
-        p.bkg <- p.bkg + ggplot2::theme_bw() +
-          ggplot2::theme(legend.position = "none") +
-          ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                         , strip.text.y = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = p.title, subtitle = p.subtitle
-                        , x = xlab, y = "Value")
-        p.bkg <- p.bkg +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                             , angle = 45, hjust = 1)
-                         , axis.text.y = ggplot2::element_text(size = 7)
-                         , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
-                         , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
-                         , plot.title = ggplot2::element_text(size = 12, face = "bold")
-                         , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
-        if(boo_plot){
-          ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                          , height = plot_H * 1.5)
-        }## IF ~ boo_plot ~ END
+          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
+                                                         , y = signif(val, digits = 2)
+                                                         , group = StudyYear)) +
+            ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
+                              , fill = "darkred") +
+            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
+                                            , vjust = -0.2)
+                               , color = "black", size = 3) +
+            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
+            ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
+                                , margins = FALSE)
+          p.bkg <- p.bkg + ggplot2::theme_bw() +
+            ggplot2::theme(legend.position = "none") +
+            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
+                           , strip.text.y = ggplot2::element_text(size = 8)) +
+            ggplot2::labs(title = p.title, subtitle = p.subtitle
+                          , x = xlab, y = "Value")
+          p.bkg <- p.bkg +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
+                                                               , angle = 45, hjust = 1)
+                           , axis.text.y = ggplot2::element_text(size = 7)
+                           , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
+                           , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
+                           , plot.title = ggplot2::element_text(size = 12, face = "bold")
+                           , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
+          if(boo_plot){
+            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
+                            , height = plot_H * 1.5)
+          }## IF ~ boo_plot ~ END
 
-      }  # End creating background plot
+        }  # End creating background plot
 
-    }  # End iteration over subcategories
+      }  # End iteration over subcategories
 
-  }  # End background data portion
+    }  # End background data portion
+  }
 
   #
   mySiteSummary <- list(SiteInfo = mySiteInfo
