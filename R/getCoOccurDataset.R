@@ -65,15 +65,15 @@ getCoOccurDataset <- function(df_sites
   # Read data files (stressor and response)
   if (biocomm == "bmi") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "BMISampFlag")] %>%
+                          , index, "Quality", "BMISampFlag")] %>%
       dplyr::rename(RespSampFlag = BMISampFlag)
   } else if (biocomm == "alg") {
     df_resp <- df_resp[,c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "AlgSampFlag")] %>%
+                          , index, "Quality", "AlgSampFlag")] %>%
       dplyr::rename(RespSampFlag = AlgSampFlag)
   } else if (biocomm == "fish") {
     df_resp <- df_resp[,c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "FishSampFlag")] %>%
+                          , index, "Quality", "FishSampFlag")] %>%
       dplyr::rename(RespSampFlag = FishSampFlag)
   } else {
     print("Biological community type not used.")
@@ -96,13 +96,13 @@ getCoOccurDataset <- function(df_sites
       dplyr::select(StationID
                     , RespSampleDate
                     , RespSampleID
-                    # , Quality
+                    , Quality
                     , all_of(index)
                     , RespSampleFlag
                     , all_of(modColnames))
 
     rm(df_model, df_resp)
-    respColnames <- c("RespSampID", index, "RespSampFlag")
+    respColnames <- c("RespSampID", index, "Quality", "RespSampFlag")
   }
 
   # Clean up measured data and convert to wide format ----
@@ -175,26 +175,27 @@ getCoOccurDataset <- function(df_sites
   if(exists("modColnames") & exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm, all_of(modColnames), all_of(measColnames)) %>%
+                    , BioComm, all_of(index), Quality, all_of(modColnames)
+                    , all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else if (exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm,, all_of(measColnames)) %>%
+                    , BioComm, all_of(index), Quality, all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm, all_of(modColnames)) %>%
+                    , BioComm, all_of(index), Quality, all_of(modColnames)) %>%
       dplyr::select_if(not_all_na)
   }
 
   # Add field RespSampFlag, then rearrange field order
   # For San Diego data, RespSampFlag does appear in the dataframe
-  if (!("RespSampFlag" %in% colnames(df_coOccur))) {
-    df_coOccur$RespSampFlag <- NA
-    df_coOccur <- df_coOccur[, c(1:8, ncol(df_coOccur), 9:(ncol(df_coOccur) - 1))]
-  }
+  # if (!("RespSampFlag" %in% colnames(df_coOccur))) {
+  #   df_coOccur$RespSampFlag <- NA
+  #   df_coOccur <- df_coOccur[, c(1:8, ncol(df_coOccur), 9:(ncol(df_coOccur) - 1))]
+  # }
 
   df_sites <- dplyr::select(df_sites, StationID, ends_with("caseCol"))
   df_coOccur <- merge(df_sites, df_coOccur)
