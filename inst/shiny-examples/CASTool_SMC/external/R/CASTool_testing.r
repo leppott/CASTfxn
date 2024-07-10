@@ -140,6 +140,11 @@ data_CASTmeta <- data_CASTmeta %>%
 
 # Required user-designated options
 # subregion        <- as.character(dplyr::select(data_CASTmeta, subregion))
+if (region %in% state.abb) {
+  regionName     <- state.name[which(state.abb == region)]
+} else {
+  regionName     <- region
+}
 removeOutliers   <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
 useBC            <- as.logical(dplyr::select(data_CASTmeta, useBC))
 samplim          <- as.integer(dplyr::select(data_CASTmeta, samplim))
@@ -192,7 +197,7 @@ if (boo_Shiny == TRUE) {
                  , paste0(region, "_BoundaryShapefile.rda")))  # STATE.shp
   if (!is.na(state.name[match(region, state.abb)])) {
     load(file.path(localdir, region, "Clusters", "NHDPlus"     # NHD.STATE (flowlines in the state)
-                   , paste0("NHD_", state.name[which(state.abb == region)], ".rda")))
+                   , paste0("NHD_", regionName, ".rda")))
   } else {
     load(file.path(localdir, region, "Clusters", "NHDPlus", paste0("NHD_", region, ".rda")))
   }
@@ -215,6 +220,7 @@ if (boo_Shiny == TRUE) {
 
 # Specify user-defined variables
 # Stressors
+datum <- as.character(dplyr::select(data_CASTmeta, datum))
 siteColName <- as.character(dplyr::select(data_CASTmeta, siteColName))
 refColName <- as.character(dplyr::select(data_CASTmeta, refColName))
 outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
@@ -368,8 +374,7 @@ rm(fn.Sites.Info, refColName)
 # Get cluster data
 if (basename(fn.cluster) != "NA") {
   data_cluster <- readCASToolData(fn = fn.cluster, NAs = c("", "na", "NA", "N/A"))
-  # data_cluster <- read.delim(fn.cluster, header = TRUE, sep = "\t"
-  #                            , stringsAsFactors = FALSE)
+  NHD.STATE <- right_join(NHD.STATE, data_cluster[, c("COMID", "US_L3CODE", "ClusterID")])
 } else {
   msg <- "fn.cluster is NA"
   message(msg)
@@ -379,8 +384,6 @@ rm(fn.cluster)
 # Get cluster data metadata
 if (basename(fn.clusterinfo) != "NA") {
   data_clusterInfo <- readCASToolData(fn = fn.clusterinfo, NAs = c("", "na", "NA", "N/A"))
-  # data_clusterInfo <- read.delim(fn.clusterinfo, header = TRUE, sep = "\t"
-  #                                , stringsAsFactors = FALSE)
 } else {
   msg <- "fn.clusterinfo is NA"
   message(msg)
@@ -390,8 +393,6 @@ rm(fn.clusterinfo)
 # Get background data (StreamCat)
 if (basename(fn.bkgdata) != "NA") {
   data_bkgdata <- readCASToolData(fn = fn.bkgdata, NAs = c("", "na", "NA", "N/A"))
-  # data_bkgdata <- read.table(fn.bkgdata, header = TRUE, sep = "\t"
-  #                          , na.strings = c("","NA"))
 } else {
   msg <- "fn.bkgdata is NA"
   message(msg)
@@ -401,9 +402,6 @@ rm(fn.bkgdata)
 # Get background metadata
 if (basename(fn.bkginfo) != "NA") {
   data_bkginfo <- readCASToolData(fn = fn.bkginfo, NAs = c("", "na", "NA", "N/A"))
-  # data_bkginfo <- read.table(fn.bkginfo, header = TRUE, sep = "\t"
-  #                          , na.strings = c("", "NA")
-  #                          , stringsAsFactors = FALSE)
 } else {
   msg <- "fn.bkginfo is NA"
   message(msg)
@@ -414,8 +412,6 @@ rm(fn.bkginfo)
 if (useBC == TRUE & basename(fn.bcdist) != "NA") {
   # Get BC dissimilarity distance matrix to subset cluster sites to comparators
   data_BCdist <- readCASToolData(fn = fn.bcdist, NAs = c("", "na", "NA", "N/A"))
-  # data_BCdist <- read.delim(fn.bcdist, header = TRUE, sep = "\t"
-  #                           , stringsAsFactors = FALSE)
 } else if (useBC == FALSE) {
   msg <- "Use biological filter is FALSE"
   message(msg)
@@ -440,10 +436,7 @@ if (boo_Shiny == TRUE) {
 ## Get metadata for all measured stressors
 if (basename(fn.measinfo) != "NA") {
   data_chemInfo <- readCASToolData(fn = fn.measinfo, NAs = c("", "na", "NA", "N/A"))
-  # data_chemInfo   <- read.delim(fn.measinfo, header = TRUE, sep = "\t"
-  #                               , stringsAsFactors = FALSE)
   data_chemInfo   <- data_chemInfo %>%
-    # dplyr::mutate(Analyte = StdParamName) %>%
     dplyr::filter(UseInStressorID == 1)
 } else {
   msg <- "fn.measinfo is NA"
@@ -454,8 +447,6 @@ rm(fn.measinfo)
 ## Get measured stressor values
 if (basename(fn.measdata) != "NA") {
   data_chemAll <- readCASToolData(fn = fn.measdata, NAs = c("", "na", "NA", "N/A"))
-  # data_chemAll <- read.delim(fn.measdata, header = TRUE, sep = "\t",
-  #                            na.strings = "NA", stringsAsFactors = FALSE)
   analytes     <- as.character(data_chemInfo$StdParamName)
   data_chemRaw <- data_chemAll[data_chemAll$StdParamName %in% analytes,]
 
@@ -537,8 +528,6 @@ rm(fn.modelinfo)
 # Get modeled stressor data
 if (basename(fn.modeldata) != "NA") {
   data_modelAll <- readCASToolData(fn = fn.modeldata, NAs = c("", "na", "NA", "N/A"))
-  # data_modelAll <- read.delim(fn.modeldata, header = TRUE, sep = "\t"
-  #                             , stringsAsFactors = FALSE)
   useParams     <- as.character(data_modelInfo$StdParamName)
   data_modelRaw <- data_modelAll[data_modelAll$StdParamName %in% useParams, ]
 
