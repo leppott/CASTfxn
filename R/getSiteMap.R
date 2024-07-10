@@ -66,9 +66,9 @@ getSiteMap <- function(sp_outline
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG == TRUE) {
-    sp_outline = sp_outline
-    sp_flowline = sp_flowline
-    region = region
+    sp_outline = STATE.shp
+    sp_flowline = NHD.STATE
+    region = regionName
     df_sites = data_Sites
     allSites = all_sites
     compSites = comp_sites
@@ -98,7 +98,6 @@ getSiteMap <- function(sp_outline
     stop()
   }
 
-
   not_all_na <- function(x) {!all(is.na(x))}
 
   # Create results dir, if it doesn't exist
@@ -120,141 +119,191 @@ getSiteMap <- function(sp_outline
   # Get filename for saving
   fn_Map <- file.path(dir_path, paste0(TargetSiteID, "_map.png"))
 
-  # Get sites (NAD27 coordinates in dataset, transform to WGS84)
-  # Subset ref sites, cluster sites, target site
-  df_sites <- df_sites %>%
-    dplyr::select(StationID_Master, FinalLongitude, FinalLatitude
-                  , RefSiteFlag, COMID)
-
-  sp_sites <- sf::st_as_sf(df_sites, crs = 4267
-                           , coords = c("FinalLongitude", "FinalLatitude"))
-  sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
-    dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
-                  , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
-
-  sp_refsites <- dplyr::filter(sp_sites, RefSiteFlag == 1)
-
-  sp_targetsite <- dplyr::filter(sp_sites, StationID_Master == TargetSiteID)
-
+  # Create color vector (range 2 to 6) for reaches
   if (useBC == TRUE) {
-    sp_compsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # comparator sitese
-    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% allSites) # cluster sites
+    maxClusterID <- max(as.numeric(df_sites$OutcaseCol), na.rm = TRUE)
+    if (maxClusterID == 6) {
+      mag.vec <- viridis::viridis(23)[c(3,7,11,15,19,23)]
+    } else if (maxClusterID == 5) {
+      mag.vec <- viridis::viridis(19)[c(3,7,11,15,19)]
+    } else if (maxClusterID == 4) {
+      mag.vec <- viridis::viridis(15)[c(3,7,11,15)]
+    } else if (maxClusterID == 3) {
+      mag.vec <- viridis::viridis(11)[c(3,7,11)]
+    } else { # max clusters = 2
+      mag.vec <- viridis::viridis(7)[c(3,7)]
+    }
   } else {
-    sp_allsites <- dplyr::filter(sp_sites, StationID_Master %in% compSites) # cluster sites
+    maxClusterID <- max(as.numeric(df_sites$IncaseCol), na.rm = TRUE)
+    if (maxClusterID == 6) {
+      mag.vec <- viridis::viridis(23)[c(3,7,11,15,19,23)]
+    } else if (maxClusterID == 5) {
+      mag.vec <- viridis::viridis(19)[c(3,7,11,15,19)]
+    } else if (maxClusterID == 4) {
+      mag.vec <- viridis::viridis(15)[c(3,7,11,15)]
+    } else if (maxClusterID == 3) {
+      mag.vec <- viridis::viridis(11)[c(3,7,11)]
+    } else { # max clusters = 2
+      mag.vec <- viridis::viridis(7)[c(3,7)]
+    }
   }
 
-  # Graphics parameters
-  bestdpi <- 600
-  GIS_offset <- 0.1
-  # maptype <- "SMCRegionSites"
-  maptype2 <- paste0(region, " Bioassessment Sites")
+  # Get sites (if datum is specified in the metadata, transform to WGS84)
+  # Subset ref sites, outside case sites, inside case sites, and target site
+  df_sites <- df_sites %>%
+    dplyr::select(StationID, FinalLongitude, FinalLatitude, RefSiteFlag, COMID
+                  , IncaseCol, OutcaseCol, US_L3CODE) %>%
+    dplyr::rename(Latitude = FinalLatitude, Longitude = FinalLongitude) %>%
+    dplyr::mutate(Case = dplyr::case_when(StationID == TargetSiteID ~ "Target"
+                                          , StationID %in% compSites ~ "Inside the case"
+                                          , StationID %in% allSites ~ "Outside the case"
+                                          , TRUE ~ "Outside the case")
+                  , Case = factor(Case, levels = c("Outside the case"
+                                                   , "Inside the case"
+                                                   , "Target")))
+  if (is.na(datum)) {
+    message("Datum assumed to be WGS84.")
+   sp_sites <- sf::st_as_sf(df_sites, crs = 4326, coords = c("Longitude", "Latitude"))
+  } else if (datum == "NAD27") {
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4267
+                             , coords = c("FinalLongitude", "FinalLatitude"))
+    sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                    , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+  } else if (datum == "NAD83") {
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4268
+                             , coords = c("FinalLongitude", "FinalLatitude"))
+    sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]])
+                    , lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+  } else {
+    message("CRS is not identified")
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4326
+                             , coords = c("FinalLongitude", "FinalLatitude"))
+  }
 
-  col_outline <- "black"
-  col_flowline <- "light blue"
-  col_sites_all <- "dark gray"
-  col_sites_cl  <- "cyan3"
-  col_sites_ref <- "blue"
-  col_sites_targ <- "red"
+  # Get region orientation
+  if (region %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
+                    , "Iowa", "Kansas", "Louisiana", "Maryland", "Massachusetts"
+                    , "Nebraska", "New Mexico", "North Dakota", "Ohio", "Oklahoma"
+                    , "Oregon", "Pennsylvania", "South Carolina", "South Dakota"
+                    , "Utah", "Washington", "West Virginia", "Wisconsin", "Wyoming")) {
+    map.width = 7
+    map.height = 7
+    map.units = "in"
+  }
 
-  pch_sites_all  <- 19
-  pch_sites_cl   <- 19
-  pch_sites_ref  <- 21
-  pch_sites_targ <- 17
-
-  cex_sites_all  <- 0.5
-  cex_sites_ref  <- 0.9
-  cex_sites_cl   <- 1
-  cex_sites_targ <- 1.4
-
-  lwd_outline  <- 1.0
-  lwd_flowline <- 0.25
-
-  size_legtitle <- 3
-  size_legelement <- 2.5
-
-  # Generate static maps ####  # sp_bbox <- sp::bbox(sf::as_Spatial(sp_flowline))
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # Prepare map
+  # Get state bounding box
+  GIS_offset <- 0.01
   ggmap_bbox <- setNames(sf::st_bbox(sp_flowline)
                          , c("left","bottom","right","top"))
 
   diffLat <- as.numeric(ggmap_bbox[4] - ggmap_bbox[2])
   diffLong <- as.numeric(ggmap_bbox[3] - ggmap_bbox[1])
 
-  ggmap_bbox[1] <- ggmap_bbox[1] - GIS_offset*(diffLat)
-  ggmap_bbox[2] <- ggmap_bbox[2] - GIS_offset*(diffLong)
-  ggmap_bbox[3] <- ggmap_bbox[3] + GIS_offset*(diffLat)
-  ggmap_bbox[4] <- ggmap_bbox[4] + GIS_offset*(diffLong)
+  # ggmap_bbox[1] <- ggmap_bbox[1] - GIS_offset*(diffLat)  # Left
+  # ggmap_bbox[2] <- ggmap_bbox[2] - GIS_offset*(diffLong) # Bottom
+  # ggmap_bbox[3] <- ggmap_bbox[3] + GIS_offset*(diffLat)  # Right
+  ggmap_bbox[4] <- ggmap_bbox[4] + GIS_offset*(diffLong) # Top
 
-  site_map <- ggplot2::ggplot(data = sp_outline, fill = NA
-                              , color = col_outline, lwd = lwd_outline) +
-    ggplot2::geom_sf(data = sp_flowline, inherit.aes = FALSE
-                     , color = col_flowline, lwd = lwd_flowline) +
-    ggplot2::geom_sf(data = sp_sites, inherit.aes = FALSE
-                     , color = col_sites_all, pch = pch_sites_all
-                     , size = cex_sites_all) +
-    ggplot2::geom_sf(data = sp_allsites, inherit.aes = FALSE
-                     , color = col_sites_cl, pch = pch_sites_cl
-                     , size = cex_sites_cl) +
-    ggplot2::geom_sf(data = sp_refsites, inherit.aes = FALSE
-                     , color = col_sites_ref, pch = pch_sites_ref
-                     , size = cex_sites_ref) +
-    ggplot2::geom_sf(data = sp_targetsite, inherit.aes = FALSE
-                     , color = col_sites_targ, pch = pch_sites_targ
-                     , size = cex_sites_targ) +
-    ggplot2::geom_sf(data = sp_outline, inherit.aes = FALSE, fill = NA
-                     , color = col_outline, lwd = lwd_outline) +
-    ggplot2::coord_sf(datum = 4326
-                      , xlim = c(ggmap_bbox["left"], ggmap_bbox["right"])
-                      , ylim = c(ggmap_bbox["bottom"], ggmap_bbox["top"])) +
-    ggplot2::theme_bw() +
-    ggplot2::labs(x = "Longitude", y = "Latitude", title = TargetSiteID
-                  , subtitle = maptype2) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"
-                                                      , hjust = 0)
-                   , plot.subtitle = ggplot2::element_text(size = 10
-                                                           , hjust = 0)
-                   , axis.text = ggplot2::element_text(size = 8)
-                   , axis.title = ggplot2::element_text(size = 10)
-                   , legend.title = ggplot2::element_text(size = 8))
-  site_map <- site_map +   # Build legend
-    ggplot2::geom_rect(ggplot2::aes(xmin = -119.5, xmax = -118.5
-                                    , ymin = 32.5, ymax = 33.5)
-                       , color = col_outline, fill = "white"
-                       , lwd = lwd_outline) +
-    ggplot2::annotate(geom = "text", x = -119.25, y = 33.4
-                      , label = "Legend", size = size_legtitle) +
-    ggplot2::annotate(geom = "segment", x = -119.4, xend = -119.3
-                      , y = 33.2, yend = 33.2, color = col_outline
-                      , lwd = lwd_outline) +
-    ggplot2::annotate(geom = "segment", x = -119.4, xend = -119.3
-                      , y = 33.09, yend = 33.09, color = col_flowline
-                      , lwd = lwd_outline) +
-    ggplot2::geom_point(ggplot2:::aes(x = -119.35, y = 32.972)
-                        , color = col_sites_all, pch = pch_sites_all
-                        , size = 1.4) +
-    ggplot2::geom_point(ggplot2:::aes(x = -119.35, y = 32.867)
-                        , color = col_sites_cl, pch = pch_sites_cl
-                        , size = 1.4) +
-    ggplot2::geom_point(ggplot2:::aes(x = -119.35, y = 32.760)
-                        , color = col_sites_ref, pch = pch_sites_ref
-                        , size = 1.4) +
-    ggplot2::geom_point(ggplot2:::aes(x = -119.35, y = 32.653)
-                        , color = col_sites_targ, pch = pch_sites_targ
-                        , size = 1.4) +
-    ggplot2::annotate(geom = "text", x = -119.03, y = 33.2
-                      , label = "Study boundary", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -119.12, y = 33.09
-                      , label = "Reaches", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -119.135, y = 32.972
-                      , label = "All sites", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -118.943, y = 32.865
-                      , label = "Outside the case sites", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -119.0256, y = 32.763
-                      , label = "Reference sites", size = size_legelement) +
-    ggplot2::annotate(geom = "text", x = -119.095, y = 32.662
-                      , label = "Target site", size = size_legelement)
+  NHD.clust <- dplyr::right_join(sp_flowline
+                                  , df_clusters[, c("COMID", "US_L3CODE", "ClusterID")])
+  sp_refsites <- subset(sp_sites, RefSiteFlag == 1)
+  sp_outside <- subset(sp_sites, Case == "Outside the case")
+  sp_inside <- subset(sp_sites, Case == "Inside the case")
+  sp_target <- subset(sp_sites, Case == "Target")
 
-  ggplot2::ggsave(fn_Map, site_map, width = 7, height = 7, units = "in"
-                  , dpi = bestdpi)
+  state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
+    tmap::tm_polygons(fill = "grey80") +
+    tmap::tm_shape(NHD.clust) +
+    tmap::tm_lines("ClusterID", palette = mag.vec, legend.col.show = FALSE
+                   , lwd =0.5) +
+    tmap::tm_shape(sp_outside) +
+    tmap::tm_symbols(col = "gray25", shape = 25, size = 0.1, border.col = NA) +
+    tmap::tm_shape(sp_inside) +
+    tmap::tm_symbols(col = "blue", shape = 21, size = 0.15, border.col = NA) +
+    tmap::tm_shape(sp_target) +
+    tmap::tm_symbols(col = "red", shape = 17, size = 0.2, border.col = NA) +
+    tmap::tm_shape(sp_outline) +
+    tmap::tm_borders(col = "black", lwd = 1) +
+    tmap::tm_add_legend('symbol'
+                        , col = c("gray25", "blue", "red"), border.col = NA
+                        # , shape = c(25, 21, 17)
+                        , labels = c("Outside the case", "Inside the case", "Target")
+                        , title = "", is.portrait = FALSE, reverse = TRUE) +
+    tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.outside = TRUE
+                    , main.title = region, legend.text.size = 0.5
+                    , legend.outside.position = c("bottom", "center"))
+  tmap::tmap_save(state.map, fn_Map, width = map.width, height = map.height
+                  , units = "in", dpi = 600)
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  # Graphics parameters for ggplot2
+  # bestdpi <- 600
+  # maptype2 <- paste0(region, " Bioassessment Sites")
+  #
+  # col_outline <- "black"
+  # col_flowline <- "light blue"
+  # col_sites_out <- "dark gray"
+  # col_sites_in  <- "cyan3"
+  # col_sites_ref <- "blue"
+  # col_sites_targ <- "red"
+  #
+  # pch_sites_out  <- 19
+  # pch_sites_in   <- 19
+  # pch_sites_ref  <- 21
+  # pch_sites_targ <- 17
+  #
+  # cex_sites_out  <- 0.5
+  # cex_sites_ref  <- 0.9
+  # cex_sites_in   <- 1
+  # cex_sites_targ <- 1.4
+  #
+  # lwd_outline  <- 1.0
+  # lwd_flowline <- 0.25
+  #
+  # size_legtitle <- 3
+  # size_legelement <- 2.5
+  #
+  # site_map <- ggplot2::ggplot(data = sp_outline, fill = "lightgray"
+  #                             , color = col_outline, lwd = lwd_outline) +
+  #   ggplot2::geom_sf(data = NHD.clust, inherit.aes = FALSE
+  #                    , color = col_flowline, lwd = lwd_flowline) +
+  #   ggplot2::geom_sf(data = sp_sites, inherit.aes = FALSE
+  #                    , color = col_sites_all, pch = pch_sites_all
+  #                    , size = cex_sites_all) +
+  #   ggplot2::geom_sf(data = sp_outside, inherit.aes = FALSE
+  #                    , color = col_sites_out, pch = pch_sites_out
+  #                    , size = cex_sites_out) +
+  #   ggplot2::geom_sf(data = sp_inside, inherit.aes = FALSE
+  #                    , color = col_sites_in, pch = pch_sites_in
+  #                    , size = cex_sites_in) +
+  #   # ggplot2::geom_sf(data = sp_refsites, inherit.aes = FALSE
+  #   #                  , color = col_sites_ref, pch = pch_sites_ref
+  #   #                  , size = cex_sites_ref) +
+  #   ggplot2::geom_sf(data = sp_target, inherit.aes = FALSE
+  #                    , color = col_sites_targ, pch = pch_sites_targ
+  #                    , size = cex_sites_targ) +
+  #   ggplot2::geom_sf(data = sp_outline, inherit.aes = FALSE, fill = NA
+  #                    , color = col_outline, lwd = lwd_outline) +
+  #   ggplot2::coord_sf(datum = 4326
+  #                     , xlim = c(ggmap_bbox["left"], ggmap_bbox["right"])
+  #                     , ylim = c(ggmap_bbox["bottom"], ggmap_bbox["top"])) +
+  #   ggplot2::theme_bw() +
+  #   ggplot2::labs(x = "Longitude", y = "Latitude", title = TargetSiteID
+  #                 , subtitle = maptype2) +
+  #   ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"
+  #                                                     , hjust = 0)
+  #                  , plot.subtitle = ggplot2::element_text(size = 10
+  #                                                          , hjust = 0)
+  #                  , axis.text = ggplot2::element_text(size = 8)
+  #                  , axis.title = ggplot2::element_text(size = 10)
+  #                  , legend.title = ggplot2::element_text(size = 8))
+  #
+  # ggplot2::ggsave(fn_Map, site_map, width = 7, height = 7, units = "in"
+  #                 , dpi = bestdpi)
 
   #
   # Leaflet Map in Notebook
