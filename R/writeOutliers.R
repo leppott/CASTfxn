@@ -49,18 +49,18 @@ writeOutliers <- function(TargetSiteID
                                 , data_stressInfo[, c("StdParamName", "Label")]
                                 , by = "StdParamName", all.x =  TRUE)
   siteOutliers <- data_OutliersLabeled %>%
-    dplyr::filter(StationID_Master == TargetSiteID) %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
     dplyr::filter(Outlier == "Outlier")
   compOutliers <- data_OutliersLabeled %>%
-    dplyr::filter(StationID_Master %in% compSites) %>%
-    dplyr::filter(StationID_Master != TargetSiteID) %>%
+    dplyr::filter(StationID %in% compSites) %>%
+    dplyr::filter(StationID != TargetSiteID) %>%
     dplyr::filter(StdParamName %in% siteDetectsAll) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
     dplyr::filter(Outlier == "Outlier")
   allOutliers <- data_OutliersLabeled %>%
-    dplyr::filter(StationID_Master %in% allSites) %>%
-    dplyr::filter(StationID_Master != TargetSiteID) %>%
+    dplyr::filter(StationID %in% allSites) %>%
+    dplyr::filter(StationID != TargetSiteID) %>%
     dplyr::filter(StdParamName %in% siteDetectsAll) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
     dplyr::filter(Outlier == "Outlier")
@@ -74,7 +74,7 @@ writeOutliers <- function(TargetSiteID
       statusMsg <- ifelse(status == "Outlier"
                           , paste0("n ", tolower(status))
                           , status)
-      siteID <- as.character(siteOutliers$StationID_Master[r])
+      siteID <- as.character(siteOutliers$StationID[r])
       gapcomment <- paste0(siteID, " value identified as a", statusMsg
                            , ". Transformation applied prior to"
                            , " identification as necessary.")
@@ -99,7 +99,7 @@ writeOutliers <- function(TargetSiteID
       statusMsg <- ifelse(status == "Outlier"
                           , paste0("n ", tolower(status))
                           , status)
-      siteID <- as.character(compOutliers$StationID_Master[r])
+      siteID <- as.character(compOutliers$StationID[r])
       if (siteID != TargetSiteID) {
         gapcomment <- paste0(siteID, " value identified as a", statusMsg
                              , ". Transformation applied prior to"
@@ -126,7 +126,7 @@ writeOutliers <- function(TargetSiteID
       statusMsg <- ifelse(status == "Outlier"
                           , paste0("n ", tolower(status))
                           , status)
-      siteID <- as.character(allOutliers$StationID_Master)[r]
+      siteID <- as.character(allOutliers$StationID)[r]
       if (!(siteID %in% compSites)) {
         gapcomment <- paste0(siteID, " value identified as a", statusMsg
                              , ". Transformation applied prior to"
