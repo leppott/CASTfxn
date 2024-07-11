@@ -183,7 +183,8 @@ getSiteMap <- function(sp_outline
   }
 
   # Get region orientation
-  if (region %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
+  regionName <- state.name[which(state.abb == region)]
+  if (regionName %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
                     , "Iowa", "Kansas", "Louisiana", "Maryland", "Massachusetts"
                     , "Nebraska", "New Mexico", "North Dakota", "Ohio", "Oklahoma"
                     , "Oregon", "Pennsylvania", "South Carolina", "South Dakota"
@@ -208,33 +209,51 @@ getSiteMap <- function(sp_outline
   # ggmap_bbox[3] <- ggmap_bbox[3] + GIS_offset*(diffLat)  # Right
   ggmap_bbox[4] <- ggmap_bbox[4] + GIS_offset*(diffLong) # Top
 
-  NHD.clust <- dplyr::right_join(sp_flowline
-                                  , df_clusters[, c("COMID", "US_L3CODE", "ClusterID")])
-  sp_refsites <- subset(sp_sites, RefSiteFlag == 1)
+  sp_refsites <- subset(sp_sites, !is.na(RefSiteFlag) & RefSiteFlag == 1)
+
   sp_outside <- subset(sp_sites, Case == "Outside the case")
   sp_inside <- subset(sp_sites, Case == "Inside the case")
-  sp_target <- subset(sp_sites, Case == "Target")
+  sp_targetsite <- subset(sp_sites, Case == "Target")
 
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "grey80") +
-    tmap::tm_shape(NHD.clust) +
+    tmap::tm_shape(sp_flowline) +
     tmap::tm_lines("ClusterID", palette = mag.vec, legend.col.show = FALSE
                    , lwd =0.5) +
     tmap::tm_shape(sp_outside) +
     tmap::tm_symbols(col = "gray25", shape = 25, size = 0.1, border.col = NA) +
     tmap::tm_shape(sp_inside) +
-    tmap::tm_symbols(col = "blue", shape = 21, size = 0.15, border.col = NA) +
-    tmap::tm_shape(sp_target) +
+    tmap::tm_symbols(col = "cyan3", shape = 21, size = 0.15, border.col = NA)
+  if (nrow(sp_refsites) > 0) {
+    state.map <- state.map +
+      tmap::tm_shape(sp_refsites) +
+      tmap::tm_symbols(border.col = "blue", col = NA, size = 0.1)
+  }
+  state.map <- state.map +
+    tmap::tm_shape(sp_targetsite) +
     tmap::tm_symbols(col = "red", shape = 17, size = 0.2, border.col = NA) +
     tmap::tm_shape(sp_outline) +
-    tmap::tm_borders(col = "black", lwd = 1) +
-    tmap::tm_add_legend('symbol'
-                        , col = c("gray25", "blue", "red"), border.col = NA
-                        # , shape = c(25, 21, 17)
-                        , labels = c("Outside the case", "Inside the case", "Target")
-                        , title = "", is.portrait = FALSE, reverse = TRUE) +
+    tmap::tm_borders(col = "black", lwd = 1)
+  if (nrow(sp_refsites) > 0) {
+    state.map <- state.map +
+      tmap::tm_add_legend('symbol'
+                          , col = c("gray25", "cyan3", "blue", "red"), border.col = NA
+                          # , shape = c(25, 21, 17)
+                          , labels = c("Outside the case", "Inside the case"
+                                       , "Reference", "Target site")
+                          , title = "", is.portrait = FALSE, reverse = TRUE)
+  } else {
+    state.map <- state.map +
+      tmap::tm_add_legend('symbol'
+                          , col = c("gray25", "cyan3", "red"), border.col = NA
+                          # , shape = c(25, 21, 17)
+                          , labels = c("Outside the case", "Inside the case"
+                                       , "Target site")
+                          , title = "", is.portrait = FALSE, reverse = TRUE)
+  }
+  state.map <- state.map +
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.outside = TRUE
-                    , main.title = region, legend.text.size = 0.5
+                    , main.title = regionName, legend.text.size = 0.5
                     , legend.outside.position = c("bottom", "center"))
   tmap::tmap_save(state.map, fn_Map, width = map.width, height = map.height
                   , units = "in", dpi = 600)
@@ -306,16 +325,16 @@ getSiteMap <- function(sp_outline
   #                 , dpi = bestdpi)
 
   #
-  # Leaflet Map in Notebook
-  report_format <- "html"
-  strFile_out_ext <- paste0(".", report_format)
-  strFile_out <- paste0(TargetSiteID, "_MAP_leaflet", strFile_out_ext)
-
-  rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet2.rmd")
-                    , output_format = paste0(report_format, "_document")
-                    , output_file = strFile_out
-                    , output_dir = dir_path
-                    , quiet = TRUE)
+  # Leaflet Map in Notebook -- FIX THIS!
+  # report_format <- "html"
+  # strFile_out_ext <- paste0(".", report_format)
+  # strFile_out <- paste0(TargetSiteID, "_MAP_leaflet", strFile_out_ext)
+  #
+  # rmarkdown::render(file.path(dir_map_rmd, "Map_Leaflet2.rmd")
+  #                   , output_format = paste0(report_format, "_document")
+  #                   , output_file = strFile_out
+  #                   , output_dir = dir_path
+  #                   , quiet = TRUE)
 
   # place after static map so can insert static map into report
 
