@@ -53,6 +53,8 @@ if (file.exists(fn_img) == TRUE) {
 
 # Data
 
+if (useBC) {
+  
     lmap <- leaflet::leaflet(data = sp_outline) %>%
         leaflet::addProviderTiles(leaflet::providers$Stamen.Terrain) %>%
         # Groups, Overlay
@@ -64,38 +66,48 @@ if (file.exists(fn_img) == TRUE) {
                               , weight = 1.5) %>%
         leaflet::addCircleMarkers(data = sp_sites # All Sites
                                   , group = "All sites"
-                                  , color = "#3B3846"
-                                  , fillColor = "#3B3846"
+                                  , color = "gray50"
+                                  , fillColor = "gray50"
                                   , radius = 4
                                   , stroke = TRUE
                                   , weight = 1
                                   , fillOpacity = 0.8
                                   , opacity = 0.6
-                                  , popup = ~StationID_Master) %>%
-        leaflet::addCircleMarkers(data = sp_allsites # Cluster Sites
-                                  , group = "Cluster sites"
-                                  , color = "#00CDCD"
-                                  , fillColor = "#00CDCD"
+                                  , popup = ~StationID) %>%
+        leaflet::addCircleMarkers(data = sp_outside # Cluster Sites
+                                  , group = "Outside the case sites"
+                                  , color = "gray25"
+                                  , fillColor = "gray25"
                                   , radius = 4
                                   , stroke = TRUE
                                   , weight = 1
-                                  , fillOpacity = 0.8
+                                  , fillOpacity = 0.8 
                                   , opacity = 0.6
-                                  , popup = ~StationID_Master) %>%
+                                  , popup = ~StationID) %>%
+        leaflet::addCircleMarkers(data = sp_inside # Cluster Sites
+                                  , group = "Inside the case sites"
+                                  , color = "cyan3"
+                                  , fillColor = "cyan3"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8 
+                                  , opacity = 0.6
+                                  , popup = ~StationID) %>%
         leaflet::addCircleMarkers(data = sp_refsites # Reference Sites
                                   , group = "Reference sites"
-                                  , color = "#0000CC"
+                                  , color = "blue"
                                   , fillColor = "transparent"
                                   , radius = 4
                                   , stroke = TRUE
                                   , weight = 2
                                   # , fillOpacity = 0.8
                                   , opacity = 0.6
-                                  , popup = ~StationID_Master) %>%
+                                  , popup = ~StationID) %>%
         leaflet::addCircleMarkers(data = sp_targetsite # Target Site
                                   , group = "Target site"
-                                  , color = "#FF0000"
-                                  , fillColor = "#FF0000"
+                                  , color = "red"
+                                  , fillColor = "red"
                                   , radius = 6
                                   , stroke = TRUE
                                   , weight = 1
@@ -105,13 +117,79 @@ if (file.exists(fn_img) == TRUE) {
        # Add Layer Control
         leaflet::addLayersControl(
             baseGroups = "Terrain"
-            , overlayGroups = c("All sites","Cluster sites","Reference sites"
+            , overlayGroups = c("All sites", "Outside the case sites"
+                                , "Inside the case sites","Reference sites"
                                 , "Target site")
             , options = leaflet::layersControlOptions(collapsed = TRUE
                                                       , autoZIndex = TRUE)) %>%
         leaflet::addMiniMap("bottomleft")
     
     lmap
+  
+} else {
+  
+    lmap <- leaflet::leaflet(data = sp_outline) %>%
+        leaflet::addProviderTiles(leaflet::providers$Stamen.Terrain) %>%
+        # Groups, Overlay
+        leaflet::addPolygons(data = sp_outline, color = "black", fill = "transparent") %>%
+        leaflet::addPolylines(data = sp_flowline # All reaches
+                              , color = "#2687D1"
+                              # , group = "All streams"
+                              , opacity = 0.8
+                              , weight = 1.5) %>%
+        leaflet::addCircleMarkers(data = sp_outside # Cluster Sites
+                                  , group = "Outside the case sites"
+                                  , color = "gray25"
+                                  , fillColor = "gray25"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8 
+                                  , opacity = 0.6
+                                  , popup = ~StationID) %>%
+        leaflet::addCircleMarkers(data = sp_inside # Cluster Sites
+                                  , group = "Inside the case sites"
+                                  , color = "cyan3"
+                                  , fillColor = "cyan3"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8 
+                                  , opacity = 0.6
+                                  , popup = ~StationID) %>%
+        leaflet::addCircleMarkers(data = sp_refsites # Reference Sites
+                                  , group = "Reference sites"
+                                  , color = "blue"
+                                  , fillColor = "transparent"
+                                  , radius = 4
+                                  , stroke = TRUE
+                                  , weight = 2
+                                  # , fillOpacity = 0.8
+                                  , opacity = 0.6
+                                  , popup = ~StationID) %>%
+        leaflet::addCircleMarkers(data = sp_targetsite # Target Site
+                                  , group = "Target site"
+                                  , color = "red"
+                                  , fillColor = "red"
+                                  , radius = 6
+                                  , stroke = TRUE
+                                  , weight = 1
+                                  , fillOpacity = 0.8
+                                  , opacity = 1) %>%
+
+       # Add Layer Control
+        leaflet::addLayersControl(
+            baseGroups = "Terrain"
+            , overlayGroups = c("Outside the case sites","Inside the case sites"
+                                ,"Reference sites", "Target site")
+            , options = leaflet::layersControlOptions(collapsed = TRUE
+                                                      , autoZIndex = TRUE)) %>%
+        leaflet::addMiniMap("bottomleft")
+    
+    lmap
+  
+}
+
     
 # # save widget              
 # library(htmlwidgets)
