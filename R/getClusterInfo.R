@@ -39,7 +39,7 @@
 #' data.mod           <- data_ReachMod
 #'
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
 #'                    , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data_cluster <- data_Cluster_Hi
