@@ -201,20 +201,7 @@ if (boo_Shiny == TRUE) {
   } else {
     load(file.path(localdir, region, "Clusters", "NHDPlus", paste0("NHD_", region, ".rda")))
   }
-  # dsn_outline   <- file.path(dir_data, dplyr::select(data_CASTmeta, dsn_outline))
-  # lyr_outline   <- as.character(dplyr::select(data_CASTmeta, lyr_outline))
-  # dsn_flowline  <- file.path(dir_data, dplyr::select(data_CASTmeta, dsn_flowline))
-  # lyr_flowline  <- as.character(dplyr::select(data_CASTmeta, lyr_flowline))
 
-  # Get boundary file for desired region
-  # sp_outline <- sf::read_sf(dsn = file.path(dsn_outline)
-  #                           , layer = lyr_outline) %>%
-  #   sf::st_transform(crs = 4326) # EPSG identifier for WGS84
-  #
-  # sp_flowline <- sf::read_sf(dsn = file.path(dsn_flowline)
-  #                            , layer = lyr_flowline) %>%
-  #   suppressWarnings(sf::st_transform(crs = 4326)) %>%
-  #   sf::st_zm(drop = TRUE, what = "ZM")
 }## IF ~ boo_Shiny ~ END
 # rm(dsn_outline, lyr_outline, dsn_flowline, lyr_flowline)
 
@@ -1357,9 +1344,8 @@ for (site in seq_along(df_targets)) {
   # clustID <- list.SiteSummary$ClustID
 
   # Create site map
-  # Q: Map entire state or only ecoregion? ####
-  getSiteMap(sp_outline = sp_outline
-             , sp_flowline = sp_flowline
+  getSiteMap(sp_outline = STATE.shp
+             , sp_flowline = NHD.STATE
              , region = region
              , df_sites = data_Sites
              , allSites = all_sites
@@ -1383,8 +1369,8 @@ for (site in seq_along(df_targets)) {
     dplyr::select_if(not_all_na)
   siteDetectsAll <- as.vector(colnames(siteStressAll))
   siteDetectsAll <- siteDetectsAll[!(siteDetectsAll %in%
-                                       c("StationID", "StressSampID"
-                                         , "StressSampDate"))]
+                                       c("StationID", "StressSampleID"
+                                         , "StressSampleDate"))]
 
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
