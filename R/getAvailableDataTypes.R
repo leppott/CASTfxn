@@ -6,7 +6,9 @@
 #'
 #' @description Identifies which data are available for the target site.
 #'
-#' @details Using the entire possible set of data types, which are differentiated by their sample identifiers, this function determines which sample types are available for the target site. Sample ID column names are required to end with "SampID".
+#' @details Using the entire possible set of data types, this function determines
+#' which sample types are available for the target site based on the summary
+#' sample data. Sample ID column names are required to end with "SampleID".
 #'
 #' Uses the library dplyr
 #'
@@ -14,20 +16,9 @@
 #' @param df_SampSummary dataframe containing sample IDs for samples collected
 #'                       at the target site, organized by sample date (rows) and
 #'                       type (columns)
-#' @param measStressSamps vector of all measured stressor sample types, each must
-#'                        end in "SampID".
-#' @param modStressSamps vector of all modeled stressor sample types, each must
-#'                       end in "SampID". Default = NULL.
-#' @param chemStressSamps vector of all field or lab chemistry sample types, each
-#'                        must end in "SampID".
-#' @param habStressSamps vector of all habitat sample types, each must end in
-#'                       "SampID". Default = NULL.
-#' @param bmiRespSamps vector of all BMI response sample types, each must end
-#'                     in "SampID".
-#' @param algRespSamps vector of all Algae response sample types, each must end
-#'                     in "SampID". Default = NULL.
-#' @param fishRespSamps vector of all Fish response sample types, each must end
-#'                      in "SampID". Default = NULL.
+#' @param measStressSamps boolean indicating if measured stressor data are expected..
+#' @param modStressSamps boolean indicating if modeled stressor data are expected.
+#' @param biocommlist vector of biocommunity data expected.
 #' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results")
 #'
 #' @return A list containing five boolean values 1) useBMI, 2) useAlg, 3) useFish,
@@ -40,11 +31,7 @@ getAvailableDataTypes <- function(TargetSiteID
                                   , df_SampSummary
                                   , measStressSamps
                                   , modStressSamps = NULL
-                                  , chemStressSamps
-                                  , habStressSamps = NULL
-                                  , bmiRespSamps
-                                  , algRespSamps = NULL
-                                  , fishRespSamps = NULL
+                                  , biocommlist = biocommlist
                                   , dir_results = file.path(getwd(), "Results")
                                   ) {##FUNCTION.START
 
@@ -53,13 +40,9 @@ getAvailableDataTypes <- function(TargetSiteID
   if(boo.DEBUG) {
     TargetSiteID = TargetSiteID
     df_SampSummary = data_sampSummary
-    measStressSamps = meas.stress
-    modStressSamps = mod.stress
-    chemStressSamps = chem.stress
-    habStressSamps = hab.stress
-    bmiRespSamps = bmiResp
-    algRespSamps = algResp
-    fishRespSamps = fishResp
+    measStressSamps = measStressData
+    modStressSamps = modelStressData
+    biocommlist = biocommlist
     dir_results = dir_results
   }
 
@@ -74,146 +57,100 @@ getAvailableDataTypes <- function(TargetSiteID
 
   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+  gapsCols <- c("fxnname", "condition", "result", "comment")
+  gaps <- as.data.frame(matrix(ncol = 4, nrow = 0, dimnames = list(NULL, gapsCols)))
 
   avail.data <- data_sampSummary %>%
-    dplyr::filter(StationID_Master == TargetSiteID) %>%
-    dplyr::select(ends_with("SampID")) %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
+    dplyr::select(ends_with("SampleID")) %>%
     dplyr::select_if(not_all_na)
   samptypes <- names(avail.data)
 
-  if (!is.null(measStressSamps)) {
-    if (any(samptypes %in% measStressSamps)) { # Either chem or phab samps exist
-      useMeasStress = TRUE
-      if (!any(samptypes %in% chemStressSamps)) {         # No chem samps
-        gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0
-                                            , "No chemistry stressors available.")
-        colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-
-        gap.phab.stress <- cbind.data.frame("general", "HabStress", 1
-                                            , "Habitat stressors available.")
-        colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-
-      } else if (!any(samptypes %in% habStressSamps)) {   # No habitat samps
-        gap.phab.stress <- cbind.data.frame("general", "HabStress", 0
-                                            , "No habitat stressors available.")
-        colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-
-        gap.chem.stress <- cbind.data.frame("general", "ChemStress", 1
-                                            , "Chemistry stressors available.")
-        colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-      } else {
-        gap.phab.stress <- cbind.data.frame("general", "HabStress", 1
-                                            , "Habitat stressors available.")
-        colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-
-        gap.chem.stress <- cbind.data.frame("general", "ChemStress", 1
-                                            , "Chemistry stressors available.")
-        colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-      }
-      df_allStress <- data_chemRaw
-    } else {# No measured stressors at all
-      useMeasStress <- FALSE
-      gap.chem.stress <- cbind.data.frame("general", "ChemStress", 0
-                                          , "No chemistry stressors available.")
-      colnames(gap.chem.stress) <- c("fxnname", "condition", "result", "comment")
-
-      gap.phab.stress <- cbind.data.frame("general", "HabStress", 0
-                                          , "No habitat stressors available.")
-      colnames(gap.phab.stress) <- c("fxnname", "condition", "result", "comment")
-    } ### End If statement for measured stressors
+  if (measStressSamps & modStressSamps) {
+    stressSamps <- c("ChemistrySampleID", "FieldSampleID", "HabitatSampleID"
+                     , "ModeledSampleID")
+  } else if (measStressSamps) {
+    stressSamps <- c("ChemistrySampleID", "FieldSampleID", "HabitatSampleID")
+  } else {
+    stressSamps <- "ModeledSampleID"
   }
 
-  if (!is.null(modStressSamps)) {
-    if (any(samptypes %in% modStressSamps)) {
-      useModStress <- TRUE
-      gap.mod.stress <- cbind.data.frame("general", "useModStress", 1
-                                         , "Modeled stressors available.")
-      colnames(gap.mod.stress) <- c("fxnname", "condition", "result", "comment")
-      if (exists("df_allStress") == TRUE) {
-        df_allStress <- rbind(df_allStress, data_modelRaw)
-      } else {
-        df_allStress <- data_modelRaw
+  availStressSamps <- intersect(samptypes, stressSamps)
+  missingStressSamps <- setdiff(stressSamps, samptypes)
+
+  if (length(availStressSamps) == 0) {
+    noStressors <-TRUE
+  } else {
+    noStressors <- FALSE
+    for (m in seq_along(missingStressSamps))
+      missing <- missingStressSamps[m]
+      gap.stress <- cbind.data.frame("general", missing, 0
+                                          , "No data available.")
+      colnames(gap.stress) <- c("fxnname", "condition", "result", "comment")
+      gaps <- rbind(gaps, gap.stress)
+      rm(gap.stress)
+  }
+
+  for (b in seq_along(biocommlist)) {
+    bio <- tolower(biocommlist[b])
+    if (bio == "bmi") {
+      if ("BMISampleID" %in% samptypes) {
+        useBMI <- TRUE
+      } else {   # BMI data are included, but this site does not have BMI data
+        useBMI <- FALSE
+        gap.bmi.rsp <- rbind(cbind("general", "BMISampleID", 0, "No data available."))
+        colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
+        gaps <- rbind(gaps, gap.bmi.rsp)
+        rm(gap.bmi.rsp)
       }
+    }
+    if (bio == "alg") {
+      if ("AlgSampleID" %in% samptypes) {
+        useAlg <- TRUE
+      } else {   # Algal data are included, but this site does not have algal data
+        useAlg <- FALSE
+        gap.alg.rsp <- cbind.data.frame("general", "AlgSampleID", 0, "No data available.")
+        colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
+        gaps <- rbind(gaps, gap.alg.rsp)
+        rm(gap.alg.rsp)
+      }
+    }
+    if (bio == "fish") {
+      if ("FishSampleID" %in% samptypes) {
+        useFish <- TRUE
+      } else {   # Fish data are included, but this site does not have fish data
+        useFish <- FALSE
+        gap.fish.rsp <- cbind.data.frame("general", "FishSampleID", 0, "No data available.")
+        colnames(gap.fish.rsp) <- c("fxnname", "condition", "result", "comment")
+        gaps <- rbind(gaps, gap.fish.rsp)
+        rm(gap.fish.rsp)
+      }
+    }
+  }
+
+  if (nrow(gaps) > 0) {
+    if (file.exists(fn.gaps)) {
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                  , row.names = FALSE, sep = "\t")
     } else {
-      useModStress <- FALSE
-      gap.mod.stress <- cbind.data.frame("general", "useModStress", 0
-                                         , "No modeled stressors available.")
-      colnames(gap.mod.stress) <- c("fxnname", "condition", "result", "comment")
-    } ### End If statement for modeled stressors
+      write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE
+                  , row.names = FALSE, sep = "\t")
+    }
   }
 
-  if (!is.null(bmiRespSamps)) {
-    if (any(samptypes == bmiRespSamps)) {
-      useBMI <- TRUE
-      gap.bmi.rsp <- cbind.data.frame("general", "useBMI", 1, "BMI responses available.")
-      colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
-    }
-  } else{
+  if (!exists("useBMI")) {
     useBMI <- FALSE
-    gap.bmi.rsp <- cbind.data.frame("general", "useBMI", 0, "No BMI responses available.")
-    colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
-  } ### End If statement for benthic macroinvertebrate responses
-
-  if (!is.null(algRespSamps)) {
-    if (any(samptypes == algRespSamps)) {
-      useAlg <- TRUE
-      gap.alg.rsp <- cbind.data.frame("general", "useALG", 1, "Algae responses available.")
-      colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
-    }
-  } else {
+  }
+  if (!exists("useAlg")) {
     useAlg <- FALSE
-    gap.alg.rsp <- cbind.data.frame("general", "useALG", 0, "No algae responses available.")
-    colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
-  } ### End If statement for measured stressorsalgal responses
-
-  if (!is.null(fishRespSamps)) {
-    if (any(samptypes == fishRespSamps)) {
-      useFish <- TRUE
-      gap.fish.rsp <- cbind.data.frame("general", "useFISH", 1, "Fish responses available.")
-      colnames(gap.fish.rsp) <- c("fxnname", "condition", "result", "comment")
-    }
-  } else {
+  }
+  if (!exists("useFish")) {
     useFish <- FALSE
-    gap.fish.rsp <- cbind.data.frame("general", "useFISH", 0, "No fish responses available.")
-    colnames(gap.fish.rsp) <- c("fxnname", "condition", "result", "comment")
-  } ### End If statement for measured stressorsalgal responses
-
-  gaps <- rbind.data.frame(gap.chem.stress, gap.phab.stress, gap.mod.stress
-                           , gap.bmi.rsp, gap.alg.rsp)
-  if (file.exists(fn.gaps)) {
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
-  } else {
-    write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE
-                , row.names = FALSE, sep = "\t")
   }
-
-  # Clean up unnecessary objects
-  rm(avail.data, samptypes)
-
-  noStressors <- FALSE
-  noResponses <- FALSE
-
-  if ((useMeasStress == FALSE) & (useModStress == FALSE)) {
-    # No stressor data available
-    gap.stress <- cbind.data.frame("general", "Stressors", 0
-                                   , "No stressor data available.")
-    colnames(gap.stress) <- c("fxnname", "condition", "result"
-                              , "comment")
-    write.table(gap.stress, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
-    noStressors <- TRUE
-  }
-
-  if ((useAlg == FALSE) & (useBMI == FALSE) & (useFish == FALSE)) {
-    # No response data available
-    gap.resp <- cbind.data.frame("general", "Responses", 0
-                                 , "No response data available.")
-    colnames(gap.resp) <- c("fxnname", "condition", "result"
-                            , "comment")
-    write.table(gap.resp, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
+  if (!useBMI & !useAlg & !useFish) {
     noResponses <- TRUE
+  } else {
+    noResponses <- FALSE
   }
 
   myAvailData <- list(useBMI = useBMI
