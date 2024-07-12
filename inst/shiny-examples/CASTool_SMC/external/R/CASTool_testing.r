@@ -480,10 +480,13 @@ if (basename(fn.measdata) != "NA") {
     # don't do anything differently
   }
 
+  measStressData <- TRUE
+
 } else {
   msg <- "fn.measdata is NA"
   message(msg)
   data_chemRaw <- NULL
+  measStressData <- FALSE
 }
 rm(fn.measdata, analytes)
 
@@ -553,10 +556,13 @@ if (basename(fn.modeldata) != "NA") {
     # don't do anything differently
   }
 
+  modelStressData <- TRUE
+
 } else {
   msg <- "fn.modeldata is NA"
   message(msg)
   data_modelRaw <- NULL
+  modelStressData <- FALSE
 }
 rm(fn.modeldata)
 
@@ -1436,13 +1442,14 @@ for (site in seq_along(df_targets)) {
   # Prepare flags for types of stressor and response data to use
   list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID
                                           , df_SampSummary = data_sampSummary
-                                          , measStressSamps = meas.stress
-                                          , modStressSamps = mod.stress
-                                          , chemStressSamps = chem.stress
-                                          , habStressSamps = hab.stress
-                                          , bmiRespSamps = bmiResp
-                                          , algRespSamps = algResp
-                                          , fishRespSamps = fishResp
+                                          , measStressSamps = measStressData
+                                          , modStressSamps = modelStressData
+                                          , biocommlist = biocommlist
+                                          # , chemStressSamps = chem.stress
+                                          # , habStressSamps = hab.stress
+                                          # , bmiRespSamps = bmiResp
+                                          # , algRespSamps = algResp
+                                          # , fishRespSamps = fishResp
                                           , dir_results = dir_results)
   # Returns: myAvailData <- list(useBMI = useBMI
   #                              , useAlg = useAlg
