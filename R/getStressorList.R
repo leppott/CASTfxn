@@ -60,7 +60,7 @@
 #' data.mod           <- data_ReachMod
 #'
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
 #'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
@@ -226,7 +226,7 @@ getStressorList <- function(TargetSiteID
   # Create dataset for outside the case, from which inside the case, reference
   # and target site data can be subset
   outcaseChemLONG <- df_Stress %>%
-    dplyr::filter(StationID_Master %in% outcaseSites) %>%
+    dplyr::filter(StationID %in% outcaseSites) %>%
     dplyr::filter(StdParamName %in% siteChem) %>%
     dplyr::select(!c(IQRmethod, SDmethod, Outlier))
 
@@ -234,22 +234,23 @@ getStressorList <- function(TargetSiteID
                            , chemInfo[, c("StdParamName", "LogTransf")]
                            , by = "StdParamName")
   outcaseChemLONG <- outcaseChemLONG %>%
-    dplyr::mutate(TransfValue = ifelse(LogTransf == 1, log1p(ResultValue)
+    dplyr::mutate(TransfValue = ifelse(LogTransf == 1
+                                       , suppressWarnings(log1p(ResultValue))
                                        , ResultValue)) %>%
     dplyr::mutate(TransfValue = ifelse(!is.finite(TransfValue), ResultValue
                                        , TransfValue))
 
   # Use this dataframe for chemvalues table
   outcaseChemVals <- outcaseChemLONG %>%
-    dplyr::select(StationID_Master, StressSampID, StressSampDate, StdParamName
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
                   , ResultValue) %>%
     tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
 
   # Use this dataframe for stressor id visualization & percentile rank
   outcaseChemData <- outcaseChemLONG %>%
-    dplyr::select(StationID_Master, StressSampID, StressSampDate, StdParamName
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
                   , TransfValue) %>%
-    dplyr::mutate(RefSiteFlag = ifelse(StationID_Master %in% refSites, 1, 0)) %>%
+    dplyr::mutate(RefSiteFlag = ifelse(StationID %in% refSites, 1, 0)) %>%
     tidyr::pivot_wider(names_from = StdParamName, values_from = TransfValue)
 
   # ID all "reference" samples
@@ -259,18 +260,18 @@ getStressorList <- function(TargetSiteID
 
   # ID "comparator" samples
   incaseChemData <- outcaseChemData %>%
-    dplyr::filter(StationID_Master %in% incaseSites) %>%
+    dplyr::filter(StationID %in% incaseSites) %>%
     dplyr::select(!RefSiteFlag)
 
   # ID all "comparator reference" samples
   incaseRefChemData <- outcaseChemData %>%
-    dplyr::filter(StationID_Master %in% incaseSites) %>%
+    dplyr::filter(StationID %in% incaseSites) %>%
     dplyr::filter(RefSiteFlag == 1) %>%
     dplyr::select(!RefSiteFlag)
 
   # ID "target" samples
   siteChemData <- outcaseChemData %>%
-    dplyr::filter(StationID_Master == TargetSiteID) %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::select(!RefSiteFlag)
 
   # clean up unnecessary objects
@@ -281,7 +282,7 @@ getStressorList <- function(TargetSiteID
   #   # No reference sites in the comparator set
   # } else {
   #   clusterRefChemData <- clusterRefChem %>%
-  #     dplyr::select(!c(StationID_Master, StressSampID, StressSampDate)) %>%
+  #     dplyr::select(!c(StationID, StressSampleID, StressSampleDate)) %>%
   #     dplyr::select_if(not_all_na)
   #   # clusterRefChemData <- clusterRefChem[7:ncol(clusterRefChem)]
   #   clustRefChemCols <- colnames(clusterRefChemData)
@@ -301,7 +302,7 @@ getStressorList <- function(TargetSiteID
   # Adjusted (mostly) to use tidyverse syntax ARL 2023-05-27
   # chemnames <- colnames(outcaseChemData)
   # chemnames <- outcaseChemData %>%
-  #   dplyr::select(!c(StressSampDate, IQRmethod, SDmethod, Outlier))
+  #   dplyr::select(!c(StressSampleDate, IQRmethod, SDmethod, Outlier))
   # chemnames <- colnames(chemnames)
 
   # Remove any parameters having all NA values and use only chemnames
@@ -446,11 +447,11 @@ getStressorList <- function(TargetSiteID
       str_ylab <- str_Group
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "dark gray"
+      col_sites_all     <- "dark gray"     # outside the case
       # col_sites_all_ref <- "blue"
-      col_sites_cl      <- "cyan3"
-      col_sites_cl_ref  <- "blue"
-      col_sites_targ    <- "red"
+      col_sites_cl      <- "cyan3"         # inside the case
+      col_sites_cl_ref  <- "blue"          # reference sites inside the case
+      col_sites_targ    <- "red"           # target site
       col_line          <- "black"
 
       ## Plot, Variables, Fill
@@ -590,21 +591,21 @@ getStressorList <- function(TargetSiteID
   # Percentile Data File ####
   if (nrow(outcaseChemData) > 1) { # more than one sample from target site exists for cluster
     chem.clusterCore <- as.data.frame(outcaseChemData %>%
-      dplyr::select(StationID_Master, StressSampID, StressSampDate, RefSiteFlag))
+      dplyr::select(StationID, StressSampleID, StressSampleDate, RefSiteFlag))
     chem.pctrank <- as.data.frame(apply(outcaseChemData[, 5:ncol(outcaseChemData)]
                                         , 2, function(x) dplyr::percent_rank(x)))
     data.chem.pctrank <- cbind(chem.clusterCore, as.data.frame(chem.pctrank))
     fn.pctrank <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_ChemPctRank.tab"))
   } else { # only the target sample exists
-    data.chem.pctrank <- cbind(outcaseChemData[, c("StationID_Master", "StressSampID"
-                                               , "StressSampDate")]
+    data.chem.pctrank <- cbind(outcaseChemData[, c("StationID", "StressSampleID"
+                                               , "StressSampleDate")]
                                , outcaseChemData[, 5:ncol(outcaseChemData)])
     data.chem.pctrank[, 5:ncol(data.chem.pctrank)] <- 1
     fn.pctrank <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_ChemPctRank.tab"))
   }
   utils::write.table(data.chem.pctrank, fn.pctrank, sep = "\t", col.names = TRUE
                      , row.names = FALSE, append = FALSE)
-  site.pctrank <- subset(data.chem.pctrank, StationID_Master == TargetSiteID)
+  site.pctrank <- subset(data.chem.pctrank, StationID == TargetSiteID)
   stressor <- "none"
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
@@ -630,9 +631,10 @@ getStressorList <- function(TargetSiteID
     } else {
       ExpDirIncStress <- "unk"
     }
-    if (grepl("^pH_", chemname, perl = TRUE, ignore.case = FALSE) == TRUE) {
+    if (grepl("^pH[_]?", chemname, perl = TRUE, ignore.case = FALSE) == TRUE) {
       if ((minSiteVal < pHlimLow) | (maxSiteVal > pHlimHigh)) {
         if ((minSiteRank <= probsLow) | (maxSiteRank >= probsHigh)) {
+          message("pH is a stressor.")
           stressor <- c(stressor, chemname)
         }
       } else {
@@ -749,7 +751,7 @@ getStressorList <- function(TargetSiteID
   # Data File ####
   stressorlist_trim <- stressorlist[stressorlist != "none"]
   data.chemVals <- outcaseChemVals %>%
-    dplyr::select(StationID_Master, StressSampID, StressSampDate
+    dplyr::select(StationID, StressSampleID, StressSampleDate
                   , eval(stressorlist_trim))
   fn.chemVals <- file.path(dir_path, paste0(TargetSiteID,
                                             "_CandCauses_ChemValues.tab"))
