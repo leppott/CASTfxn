@@ -183,16 +183,16 @@ getSiteMap <- function(sp_outline
   }
 
   # Get region orientation
-  regionName <- state.name[which(state.abb == region)]
-  if (regionName %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
-                    , "Iowa", "Kansas", "Louisiana", "Maryland", "Massachusetts"
-                    , "Nebraska", "New Mexico", "North Dakota", "Ohio", "Oklahoma"
-                    , "Oregon", "Pennsylvania", "South Carolina", "South Dakota"
-                    , "Utah", "Washington", "West Virginia", "Wisconsin", "Wyoming")) {
+  # regionName <- state.name[which(state.abb == region)]
+  # if (regionName %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
+  #                   , "Iowa", "Kansas", "Louisiana", "Maryland", "Massachusetts"
+  #                   , "Nebraska", "New Mexico", "North Dakota", "Ohio", "Oklahoma"
+  #                   , "Oregon", "Pennsylvania", "South Carolina", "South Dakota"
+  #                   , "Utah", "Washington", "West Virginia", "Wisconsin", "Wyoming")) {
     map.width = 7
     map.height = 7
     map.units = "in"
-  }
+  # }
 
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # Prepare map
@@ -218,8 +218,8 @@ getSiteMap <- function(sp_outline
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "grey80") +
     tmap::tm_shape(sp_flowline) +
-    tmap::tm_lines("ClusterID", palette = mag.vec, legend.col.show = FALSE
-                   , lwd =0.5) +
+    tmap::tm_lines("Cluster", palette = mag.vec, legend.col.show = TRUE
+                   , lwd = 0.5, legend.col.is.portrait = FALSE) +
     tmap::tm_shape(sp_outside) +
     tmap::tm_symbols(col = "gray25", shape = 25, size = 0.1, border.col = NA) +
     tmap::tm_shape(sp_inside) +
@@ -233,7 +233,9 @@ getSiteMap <- function(sp_outline
     tmap::tm_shape(sp_targetsite) +
     tmap::tm_symbols(col = "red", shape = 17, size = 0.2, border.col = NA) +
     tmap::tm_shape(sp_outline) +
-    tmap::tm_borders(col = "black", lwd = 1)
+    tmap::tm_borders(col = "black", lwd = 1) +
+    # tmap::tm_add_legend('line', col = c(mag.vec[1]:mag.vec[length(mag.vec)])
+    #                     , lwd = 1, title = Cluster, is.portrait = FALSE)
   if (nrow(sp_refsites) > 0) {
     state.map <- state.map +
       tmap::tm_add_legend('symbol'
@@ -254,7 +256,8 @@ getSiteMap <- function(sp_outline
   state.map <- state.map +
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.outside = TRUE
                     , main.title = regionName, legend.text.size = 0.5
-                    , legend.outside.position = c("bottom", "center"))
+                    , legend.outside.position = c("bottom", "center")
+                    , legend.title.size = 0.5)
   tmap::tmap_save(state.map, fn_Map, width = map.width, height = map.height
                   , units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
