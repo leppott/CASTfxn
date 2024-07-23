@@ -277,34 +277,6 @@ getStressorList <- function(TargetSiteID
   # clean up unnecessary objects
   rm(df_Stress, outcaseChemLONG)
 
-  # This loop is not necessary now?
-  # if (nrow(clusterRefChem)==0) {
-  #   # No reference sites in the comparator set
-  # } else {
-  #   clusterRefChemData <- clusterRefChem %>%
-  #     dplyr::select(!c(StationID, StressSampleID, StressSampleDate)) %>%
-  #     dplyr::select_if(not_all_na)
-  #   # clusterRefChemData <- clusterRefChem[7:ncol(clusterRefChem)]
-  #   clustRefChemCols <- colnames(clusterRefChemData)
-  #   # clustRefChemCols <- clustRefChemCols[!(clustRefChemCols %in% outliercols)]
-  #   addcols <- setdiff(chemnames, clustRefChemCols)
-  #   if (length(addcols)>0) {
-  #     for (add in 1:length(addcols)) {
-  #       addcolname <- addcols[add]
-  #       clusterRefChemData[[addcolname]] <- NA
-  #     }
-  #     clusterRefChemData <- dplyr::select(clusterRefChemData, all_of(chemnames))
-  #   }
-  # }
-  # rm(clusterRefChem)
-
-  # Select parameters with > 2 samples for candidate cause identification
-  # Adjusted (mostly) to use tidyverse syntax ARL 2023-05-27
-  # chemnames <- colnames(outcaseChemData)
-  # chemnames <- outcaseChemData %>%
-  #   dplyr::select(!c(StressSampleDate, IQRmethod, SDmethod, Outlier))
-  # chemnames <- colnames(chemnames)
-
   # Remove any parameters having all NA values and use only chemnames
   allcount <- outcaseChemData %>%
     dplyr::select_if(not_all_na) %>%
