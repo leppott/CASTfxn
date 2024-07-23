@@ -130,7 +130,8 @@ getCoOccurDataset <- function(df_sites
                                               , by = c("StationID" = "StationID"
                                                        , "RespSampleDate" = "StressSampleDate")
                                               , match_fun = list(`==`, function(x, y)
-                                                (x - y >= 0 & x - y < lagdays[1]) | abs(x - y) <= lagdays[2])) %>%
+                                                (x - y >= 0 & x - y <= lagdays[1]) |
+                                                  abs(x - y) <= lagdays[2])) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
       dplyr::rename(StationID = StationID.x)
 
@@ -157,7 +158,8 @@ getCoOccurDataset <- function(df_sites
                                               , by = c("StationID" = "StationID"
                                                        , "RespSampleDate" = "StressSampleDate")
                                               , match_fun = list(`==`, function(x, y)
-                                                (x - y >= 0 & x - y < lagdays[1]) | abs(x - y) <= lagdays[2])) %>%
+                                                (x - y >= 0 & x - y <= lagdays[1]) |
+                                                  abs(x - y) <= lagdays[2])) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
       dplyr::rename(StationID = StationID.x)
     # Select the minimum diffDays match only (avoids more than 1 match)
@@ -175,18 +177,19 @@ getCoOccurDataset <- function(df_sites
   if(exists("modColnames") & exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm, all_of(index), Quality, all_of(modColnames)
+                    , RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)
                     , all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else if (exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm, all_of(index), Quality, all_of(measColnames)) %>%
+                    , RespSampleID, BioComm, all_of(index), Quality
+                    , all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , BioComm, all_of(index), Quality, all_of(modColnames)) %>%
+                    , RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)) %>%
       dplyr::select_if(not_all_na)
   }
 
