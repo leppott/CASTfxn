@@ -86,17 +86,18 @@ getTimeSeq <- function(TargetSiteID
 
   # Prep measured stressor data
   df_stress <- df_stress %>%
-    dplyr::select(-StationID_Master) %>%
+    dplyr::select(-StationID) %>%
     dplyr::select_if(not_all_na) %>%
-    tidyr::pivot_longer(!c(StressSampID, StressSampDate)
+    tidyr::pivot_longer(!c(StressSampleID, StressSampleDate)
                         , names_to = "StdParamName"
                         , values_to = "ResultValue") %>%
     dplyr::filter(!is.na(ResultValue)) %>%
-    dplyr::group_by(StressSampDate, StdParamName) %>%
+    dplyr::group_by(StressSampleDate, StdParamName) %>%
     dplyr::summarize(meanResultValue = signif(mean(ResultValue, na.rm = TRUE)
                                               , digits = 3), .groups = "drop_last") %>%
-    dplyr::rename(SampDate = StressSampDate, variable = StdParamName) %>%
+    dplyr::rename(SampDate = StressSampleDate, variable = StdParamName) %>%
     dplyr::filter(variable %in% stressors)
+  df_stress <- as.data.frame(df_stress)
 
   if (any(is.na(df_stress$SampDate))) {
     msg <- "NA values in Sample Date indicative of modeled stressor data."
@@ -132,17 +133,17 @@ getTimeSeq <- function(TargetSiteID
   # Prep response data
   df_resp <- df_resp %>%
     dplyr::select_if(not_all_na) %>%
-    dplyr::select(!c(StationID_Master, Quality, ends_with("SampFlag"))) %>%
-    tidyr::pivot_longer(!c(RespSampID, RespSampDate)
+    dplyr::select(!c(StationID, Quality, ends_with("SampFlag"))) %>%
+    tidyr::pivot_longer(!c(RespSampleID, RespSampleDate)
                         , names_to = "Biometric"
                         , values_to = "ResultValue") %>%
     dplyr::filter(!is.na(ResultValue), Biometric %in% BioResp)
   df_resp$ResultValue <- as.numeric(df_resp$ResultValue)
   df_resp <- df_resp %>%
-    dplyr::group_by(RespSampDate, Biometric) %>%
+    dplyr::group_by(RespSampleDate, Biometric) %>%
     dplyr::summarize(meanResultValue = signif(mean(ResultValue, na.rm = TRUE)
                                               , digits=3), .groups = "drop_last") %>%
-    dplyr::rename(SampDate = RespSampDate, variable = Biometric)
+    dplyr::rename(SampDate = RespSampleDate, variable = Biometric)
   df_respinfo <- unique(df_respinfo[, c("MetricName", "MetricLabel")])
   df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")
   df_resp <- dplyr::rename(df_resp, Label = MetricLabel)
@@ -157,10 +158,11 @@ getTimeSeq <- function(TargetSiteID
                      , as.data.frame(df_resp))
 
     minDate <- as.Date(min(df.data$SampDate) - 30)
+    minYear <- lubridate::year(minDate)
+    minDate <- lubridate::ymd(paste0(minYear, "/01/01"))
     maxDate <- as.Date(max(df.data$SampDate) + 30)
-    diffDate <- paste(round((maxDate - minDate)/10, 2), "days")
-    # print(diffDate)
-    # flush.console()
+    maxYear <- lubridate::year(maxDate)
+    maxDate <- lubridate::ymd(paste0(maxYear, "/12/31"))
 
     # Loop over each stressor
     ppi = 300
@@ -188,10 +190,8 @@ getTimeSeq <- function(TargetSiteID
         fpath = file.path(path, fn)
 
         df.plot <- df.data %>%
-          dplyr::filter(variable %in% c(stressName,respName))
-        df.plot$Label <- factor(df.plot$Label
-                                , levels = c(df.plot$Label[1]
-                                             , df.plot$Label[2]))
+          dplyr::filter(variable %in% c(stressName, respName)) %>%
+          dplyr::mutate(type = factor(type, levels = c("Stressor", "Response")))
         maxStress <- max(df.plot$meanResultValue[df.plot$variable == stressName])
         maxResp <- max(df.plot$meanResultValue[df.plot$variable == respName])
 
@@ -201,26 +201,21 @@ getTimeSeq <- function(TargetSiteID
 
         p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampDate
                                                       , y = as.numeric(meanResultValue)))
-        p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = 0.8)
-        # p_ts <- p_ts + ggplot2::geom_col(fill = "black", width = colwid
-        #              , position = ggplot2::position_dodge(preserve = "single")
-        #              , na.rm = TRUE)
-        # p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanResultValue)
-        #                         , hjust= 2, vjust = 0, size=2.5, na.rm = TRUE)
-
-        # p_ts <- p_ts + ggplot2::geom_text(ggplot2::aes(label=df.plot$meanResultValue)
-        p_ts <- p_ts + ggplot2::geom_text(ggplot2::aes(label = meanResultValue)
-                                          , hjust = 2, vjust = 0.5
-                                          , size = 3, na.rm = TRUE)
+        p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black", size = 0.1
+                                         , alpha = 0.5, linewidth = 0.25)
+        # p_ts <- p_ts + ggplot2::geom_hline(y = BioDegBrk[2])     # Use this for response graph only
+        p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanResultValue)
+                                , hjust= 2, vjust = 0, size=2, na.rm = TRUE
+                                , min.segment.length = 0)
         p_ts <- p_ts + ggplot2::facet_wrap(~Label, ncol = 1, scales = "free_y")
         p_ts <- p_ts + ggplot2::theme_bw()
         p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
                                                                           , hjust = 1
-                                                                          , size = 8)
+                                                                          , size = 6)
                                       , panel.grid.minor = ggplot2::element_blank())
         p_ts <- p_ts + ggplot2::scale_x_date(limits = c(minDate, maxDate)
-                                             , date_labels = "%m/%d/%Y"
-                                             , date_breaks = diffDate)
+                                             , date_labels = "%Y-%m-%d"
+                                             , date_breaks = "3 months")
         p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID
                                                    ,"Stressor/Response Time Series")
                                      , x = "Sample Date", y = "Value")
