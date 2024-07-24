@@ -48,8 +48,6 @@ getDataSets <- function(TargetSiteID
                         , df_coOccur
                         , siteStressors
                         , bioParmsDEL = NULL
-                        , colBioSample
-                        , colBioSampDate
                         , df_biometrics
                         , df_stressinfo
                         ) {##FUNCTION.START
@@ -64,8 +62,6 @@ getDataSets <- function(TargetSiteID
     df_coOccur = data_bioCoOccur
     siteStressors = stressors
     bioParmsDEL = bioParmsDEL
-    colBioSample = colBioSample
-    colBioSampDate = colBioSampDate
     df_biometrics = bioMetricData
     df_stressinfo = data_stressInfo
   }
@@ -79,29 +75,25 @@ getDataSets <- function(TargetSiteID
   # Get dataframe of parameters detected at target site (meas & mod)
   df_detects <- df_coOccur %>% dplyr::select_if(not_all_na)
   useParams <- setdiff(stressors, bioParmsDEL)
-  coreCols <- c("StationID_Master", "StressSampID", "StressSampDate"
-                , "RespSampID", "RespSampDate")
+  coreCols <- c("StationID", "StressSampleID", "StressSampleDate"
+                , "RespSampleID", "RespSampleDate")
   useCols <- c(coreCols, useParams)
 
   # Subset big dataset to only detected stressors at target site
   # Create stressor data sets for target, inside the case, and outside the case
   siteBioStressData <- df_detects[, useCols] %>%
-    dplyr::filter(StationID_Master == TargetSiteID)
+    dplyr::filter(StationID == TargetSiteID)
   allBioStressData <- df_detects[, useCols] %>%
-    dplyr::filter(StationID_Master %in% allSites)
+    dplyr::filter(StationID %in% allSites)
   compBioStressData <- df_detects[, useCols] %>%
-    dplyr::filter(StationID_Master %in% compSites)
+    dplyr::filter(StationID %in% compSites)
 
   # Create response data sets for target, inside the case, and outside the case
   df_core <- dplyr::select(df_detects, all_of(coreCols))
-  allBioRespData <- merge(df_core, df_biometrics
-                          , by.x = c("StationID_Master", "RespSampID"
-                                     , "RespSampDate")
-                          , by.y = c("StationID_Master", colBioSample
-                                     , colBioSampDate))
-  allBioRespData  <- dplyr::filter(allBioRespData, StationID_Master %in% allSites)
-  compBioRespData <- dplyr::filter(allBioRespData, StationID_Master %in% compSites)
-  siteBioRespData <- dplyr::filter(allBioRespData, StationID_Master == TargetSiteID)
+  allBioRespData <- merge(df_core, df_biometrics)
+  allBioRespData  <- dplyr::filter(allBioRespData, StationID %in% allSites)
+  compBioRespData <- dplyr::filter(allBioRespData, StationID %in% compSites)
+  siteBioRespData <- dplyr::filter(allBioRespData, StationID == TargetSiteID)
 
   # Identify "no match" data
   # Do this when generating coOccurrence dataset
