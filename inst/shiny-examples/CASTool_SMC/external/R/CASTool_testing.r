@@ -197,9 +197,10 @@ if (boo_Shiny == TRUE) {
                  , paste0(region, "_BoundaryShapefile.rda")))  # STATE.shp
   if (!is.na(state.name[match(region, state.abb)])) {
     load(file.path(localdir, region, "Clusters", "NHDPlus"     # NHD.STATE (flowlines in the state)
-                   , paste0("NHD_", regionName, ".rda")))
+                   , paste0(regionName, "_NHDclusters.rda")))
   } else {
-    load(file.path(localdir, region, "Clusters", "NHDPlus", paste0("NHD_", region, ".rda")))
+    load(file.path(localdir, region, "Clusters", "NHDPlus"
+                   , paste0(region, "_NHDclusters.rda")))
   }
 
 }## IF ~ boo_Shiny ~ END
@@ -214,10 +215,10 @@ outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
 outcaseLabel <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
 incaseColName <- as.character(dplyr::select(data_CASTmeta, incaseColName))
 incaseLabel <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
-meas.stress <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, meas.stress), ", "))
-chem.stress <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, chem.stress), ", "))
-hab.stress <- as.character(dplyr::select(data_CASTmeta, hab.stress))
-mod.stress <- as.character(dplyr::select(data_CASTmeta, mod.stress))
+# meas.stress <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, meas.stress), ", "))
+# chem.stress <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, chem.stress), ", "))
+# hab.stress <- as.character(dplyr::select(data_CASTmeta, hab.stress))
+# mod.stress <- as.character(dplyr::select(data_CASTmeta, mod.stress))
 
 # Bio responses
 for (b in seq_along(biocommlist)) {
@@ -361,7 +362,6 @@ rm(fn.Sites.Info, refColName)
 # Get cluster data
 if (basename(fn.cluster) != "NA") {
   data_cluster <- readCASToolData(fn = fn.cluster, NAs = c("", "na", "NA", "N/A"))
-  NHD.STATE <- right_join(NHD.STATE, data_cluster[, c("COMID", "US_L3CODE", "ClusterID")])
 } else {
   msg <- "fn.cluster is NA"
   message(msg)
@@ -1351,7 +1351,7 @@ for (site in seq_along(df_targets)) {
 
   # Create site map
   getSiteMap(sp_outline = STATE.shp
-             , sp_flowline = NHD.STATE
+             , sp_flowline = NHD.clust
              , region = region
              , df_sites = data_Sites
              , allSites = all_sites
@@ -1445,11 +1445,6 @@ for (site in seq_along(df_targets)) {
                                           , measStressSamps = measStressData
                                           , modStressSamps = modelStressData
                                           , biocommlist = biocommlist
-                                          # , chemStressSamps = chem.stress
-                                          # , habStressSamps = hab.stress
-                                          # , bmiRespSamps = bmiResp
-                                          # , algRespSamps = algResp
-                                          # , fishRespSamps = fishResp
                                           , dir_results = dir_results)
   # Returns: myAvailData <- list(useBMI = useBMI
   #                              , useAlg = useAlg
@@ -1581,13 +1576,25 @@ for (site in seq_along(df_targets)) {
       bioTaxaData <- data_BMIcounts
       bioMasterTaxa <- data_BMIMasterTaxa
       colBio <- bmiIndex
-      colBioSample <- bmiResp
-      colBioSampDate <- bmiRespDate
-      BioNarBrk <- bmi_thresholds
-      BioNarLab <- bmi_narrative
+      # colBioSample <- bmiResp
+      # colBioSampDate <- bmiRespDate
+      if (!is.na(bmi_thresholds)) {
+        BioNarBrk <- bmi_thresholds
+      } else {
+        BioNarBrk <- NULL
+      }
+      if (!is.na(bmi_narrative)) {
+        BioNarLab <- bmi_narrative
+      } else {
+        BioNarLab <- NULL
+      }
       BioDegBrk <- bmi_deg_thres
       BioDegLab <- bmi_deg_text
-      bioParmsDEL <- bmiModelParamsDEL
+      if (exists("bmiModelParamsDEL")) {
+        bioParmsDEL <- bmiModelParamsDEL
+      } else {
+        bioParmsDEL <- NULL
+      }
     } else if ((bioComm == "algae") && (useAlg == TRUE)) {
       data_bioCoOccur <- data_algCoOccur
       bioIndex <- algIndex
@@ -1598,13 +1605,17 @@ for (site in seq_along(df_targets)) {
       bioTaxaData <- data_algCounts
       bioMasterTaxa <- data_algMasterTaxa
       colBio <- algIndex
-      colBioSample <- algResp
-      colBioSampDate <- algRespDate
+      # colBioSample <- algResp
+      # colBioSampDate <- algRespDate
       BioNarBrk <- alg_thresholds
       BioNarLab <- alg_narrative
       BioDegBrk <- alg_deg_thres
       BioDegLab <- alg_deg_text
-      bioParmsDEL <- algModelParamsDEL
+      if (exists("algModelParamsDEL")) {
+        bioParmsDEL <- algModelParamsDEL
+      } else {
+        bioParmsDEL <- NULL
+      }
     } else if ((bioComm == "fish") && (useFish == TRUE)) {
       data_bioCoOccur <- data_fishCoOccur
       bioIndex <- fishIndex
@@ -1615,13 +1626,17 @@ for (site in seq_along(df_targets)) {
       bioTaxaData <- data_fishCounts
       bioMasterTaxa <- data_fishMasterTaxa
       colBio <- fishIndex
-      colBioSample <- fishResp
-      colBioSampDate <- fishRespDate
+      # colBioSample <- fishResp
+      # colBioSampDate <- fishRespDate
       BioNarBrk <- fish_thresholds
       BioNarLab <- fish_narrative
       BioDegBrk <- fish_deg_thres
       BioDegLab <- fish_deg_text
-      bioParmsDEL <- fishModelParamsDEL
+      if (exists("fishModelParamsDEL")) {
+        bioParmsDEL <- fishModelParamsDEL
+      } else {
+        bioParmsDEL <- NULL
+      }
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
       message(msg)
@@ -1630,14 +1645,16 @@ for (site in seq_along(df_targets)) {
 
     # If no paired stressor-response samples for target site, no eval possible
     # First 10 colnames of data_bioCoOccur are:
-    # "StationID", "OutcaseCol", "StressSampDate", "RespSampDate",
-    # "StressSampID", "BioComm", "RespSampID", "Quality", "CSCI", "RespSampFlag"
+    # "StationID", "IncaseCol", "OutcaseCol", "StressSampleDate", "RespSampleDate",
+    # "StressSampleID", "BioComm", "RespSampleID", bioIndex, "Quality"
+    # , "RespSampFlag"    # THIS COLUMN IS NOT INCLUDED
     # Remaining columns are stressors/responses
     if (!(TargetSiteID %in% data_bioCoOccur$StationID)) { # Not in data_bioCoOccur
       noStressors = TRUE
     } else {
       dfTarget <- dplyr::filter(data_bioCoOccur, StationID == TargetSiteID)
-      if (all(is.na(dfTarget[, 11:ncol(dfTarget)]))) { # In data_bioCoOccur but all values NA
+      if (all(is.na(dfTarget[, stressors]))) { # In data_bioCoOccur but all values NA
+        # if (all(is.na(dfTarget[, 11:ncol(dfTarget)]))) { # In data_bioCoOccur but all values NA
         noStressors = TRUE
       } else {
         noStressors = FALSE
@@ -1700,8 +1717,6 @@ for (site in seq_along(df_targets)) {
                                       , biocomm = bioComm
                                       , df_qual = data_bioCoOccur
                                       , colBio = colBio
-                                      , colBioSample = "RespSampID"
-                                      , colStressSample = "StressSampID"
                                       , compSites = comp_sites # inside the case
                                       , allSites = all_sites # outside the case
                                       , useBC = useBC
@@ -1738,8 +1753,7 @@ for (site in seq_along(df_targets)) {
     # target site for use in getTimeSeq
     siteRespAll <- bioMetricData %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::rename(RespSampID = eval(colBioSample), RespSampDate = eval(colBioSampDate)) %>%
-      dplyr::select(StationID, RespSampID, RespSampDate, Quality, eval(bioIndex))
+      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, all_of(bioIndex))
 
     # 20, getDataSets ####
     # Progress, 20
@@ -1753,14 +1767,16 @@ for (site in seq_along(df_targets)) {
     }## IF ~ boo_Shiny ~ END
     #
     # Get data sets for stressors paired with response data, if available
+    # The difference between this and getCoOccurDataset is that this function
+    # subsets that dataset to just the matched data that are required:
+    # stressors detected and responses measured at the target site and related
+    # lists from inside the case and outside the case sites
     listPairedStressResp <- getDataSets(TargetSiteID = TargetSiteID
                                         , compSites = comp_sites
                                         , allSites = all_sites
                                         , df_coOccur = data_bioCoOccur
                                         , siteStressors = stressors
                                         , bioParmsDEL = bioParmsDEL
-                                        , colBioSample = colBioSample
-                                        , colBioSampDate = colBioSampDate
                                         , df_biometrics = bioMetricData
                                         , df_stressinfo = data_stressInfo)
     # Returns: mySubsets <- list(siteStressInfo = df_stressinfo
