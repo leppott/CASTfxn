@@ -59,8 +59,6 @@ getQualSites <- function(TargetSiteID
                         , biocomm
                         , df_qual
                         , colBio
-                        , colBioSample
-                        , colStressSample
                         , compSites
                         , allSites
                         , useBC = FALSE
@@ -84,8 +82,6 @@ getQualSites <- function(TargetSiteID
     biocomm = bioComm
     df_qual = data_bioCoOccur
     colBio = bioIndex
-    colBioSample = "RespSampID"
-    colStressSample = "StressSampID"
     compSites = comp_sites
     allSites = all_sites
     useBC = TRUE
@@ -108,14 +104,14 @@ getQualSites <- function(TargetSiteID
 
   # Subset bio index data frame to just site, sample, index score
   df_qual <- df_qual  %>%
-    dplyr::select(StationID_Master, all_of(outcaseColName), all_of(colStressSample)
-                  , all_of(colBioSample), all_of(colBio))
+    dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleID
+                  , RespSampleID, all_of(colBio))
   df_qual <- df_qual[!is.na(df_qual[, colBio]), ]
 
   # Get vector of all "reference" sites in data_sites
   all.ref <- df_sites %>%
     dplyr::filter(RefSiteFlag == 1) %>%
-    dplyr::select(StationID_Master)
+    dplyr::select(StationID)
   all.ref <- unlist(all.ref)
 
   # Get vector of "reference" reaches in data_sites
@@ -126,12 +122,12 @@ getQualSites <- function(TargetSiteID
 
   # Get vector of "reference" samples in data_bioCoOccur
   all.ref.samps.bio <- df_qual %>%
-    dplyr::filter(StationID_Master %in% all.ref) %>%
-    dplyr::select(all_of(colBioSample))
+    dplyr::filter(StationID %in% all.ref) %>%
+    dplyr::select(RespSampleID)
   all.ref.samps.bio <- unlist(all.ref.samps.bio)
   all.ref.samps.stress <- df_qual %>%
-    dplyr::filter(StationID_Master %in% all.ref) %>%
-    dplyr::select(all_of(colStressSample))
+    dplyr::filter(StationID %in% all.ref) %>%
+    dplyr::select(StressSampleID)
   all.ref.samps.stress <- unlist(all.ref.samps.stress)
 
   # Flag quality of samples based on degradation threshold
@@ -144,32 +140,32 @@ getQualSites <- function(TargetSiteID
 
   # Get vector of "not degraded" samples in data_bioCoOccur
   all.good <- df_qual %>%
-    dplyr::filter(BioDeg == "No") %>%
-    dplyr::select(StationID_Master)
+    dplyr::filter(BioDeg == BioDegLab[2]) %>%
+    dplyr::select(StationID)
   all.good <- unlist(all.good)
 
   all.good.samps.bio <- df_qual %>%
-    dplyr::filter(StationID_Master %in% all.good) %>%
-    dplyr::select(all_of(colBioSample))
+    dplyr::filter(StationID %in% all.good) %>%
+    dplyr::select(RespSampleID)
   all.good.samps.bio <- unlist(all.good.samps.bio)
   all.good.samps.stress <- df_qual %>%
-    dplyr::filter(StationID_Master %in% all.good) %>%
-    dplyr::select(all_of(colStressSample))
+    dplyr::filter(StationID %in% all.good) %>%
+    dplyr::select(StressSampleID)
   all.good.samps.stress <- unlist(all.good.samps.stress)
 
   # Get vector of "not degraded" reaches in data_sites
   all.good.reaches <- df_sites %>%
-    dplyr::filter(StationID_Master %in% all.good) %>%
+    dplyr::filter(StationID %in% all.good) %>%
     dplyr::select(COMID)
   all.good.reaches <- unlist(all.good.reaches)
 
   # Get vector of sites with samples having index > min target site index
   # Get bio samples and chem sample where bio is better than target
-  min.targ <- min(df_qual[, colBio][df_qual$StationID_Master == TargetSiteID])
-  all.better <- as.vector(unique(df_qual$StationID_Master[df_qual[, colBio] > min.targ]))
-  all.better.samps.bio <- as.vector(unique(df_qual[, colBioSample][df_qual[, colBio] > min.targ]))
-  all.better.samps.stress <- as.vector(unique(df_qual[, colStressSample][df_qual[, colBio] > min.targ]))
-  all.better.reaches <- as.vector(df_sites$COMID[df_sites$StationID_Master %in% all.better])
+  min.targ <- min(df_qual[, colBio][df_qual$StationID == TargetSiteID])
+  all.better <- as.vector(unique(df_qual$StationID[df_qual[, colBio] > min.targ]))
+  all.better.samps.bio <- as.vector(unique(df_qual[, "RespSampleID"][df_qual[, colBio] > min.targ]))
+  all.better.samps.stress <- as.vector(unique(df_qual[, "StressSampleID"][df_qual[, colBio] > min.targ]))
+  all.better.reaches <- as.vector(df_sites$COMID[df_sites$StationID %in% all.better])
 
   all.ref <- all.ref[!is.na(all.ref)]
   all.ref.samps.bio <- all.ref.samps.bio[!is.na(all.ref.samps.bio)]
@@ -188,17 +184,17 @@ getQualSites <- function(TargetSiteID
   # better than samples, quality vs. Inside the case (Comparator)/Outside the case/Total
 
   # First get max(degraded) site index value
-  maxDegSiteIndexVal <- max(df_qual[, colBio][df_qual$StationID_Master == TargetSiteID])
+  maxDegSiteIndexVal <- max(df_qual[, colBio][df_qual$StationID == TargetSiteID])
 
-  df_qual[, "ComparatorYN"] <- ifelse(df_qual$StationID_Master %in% compSites, "Yes", "No")
-  df_qual[, "OutsideCaseYN"] <- ifelse(df_qual$StationID_Master %in% allSites, "Yes", "No")
+  df_qual[, "InsideCaseYN"] <- ifelse(df_qual$StationID %in% compSites, "Yes", "No")
+  df_qual[, "OutsideCaseYN"] <- ifelse(df_qual$StationID %in% allSites, "Yes", "No")
   df_qual[, "BetterThan"] <- ifelse(df_qual[, colBio] > maxDegSiteIndexVal, "Yes", "No")
 
   df_qualstats <- df_qual %>%
-    dplyr::mutate(CompSites = ifelse(ComparatorYN == "Yes", 1, 0)
-                  , CompGood = ifelse((ComparatorYN == "Yes") & (BioDeg == "No"), 1, 0)
-                  , CompBad = ifelse((ComparatorYN == "Yes") & (BioDeg == "Yes"), 1, 0)
-                  , CompBT = ifelse((ComparatorYN == "Yes") & (BetterThan == "Yes"), 1, 0)
+    dplyr::mutate(CompSites = ifelse(InsideCaseYN == "Yes", 1, 0)
+                  , CompGood = ifelse((InsideCaseYN == "Yes") & (BioDeg == "No"), 1, 0)
+                  , CompBad = ifelse((InsideCaseYN == "Yes") & (BioDeg == "Yes"), 1, 0)
+                  , CompBT = ifelse((InsideCaseYN == "Yes") & (BetterThan == "Yes"), 1, 0)
                   , CompBTGood = ifelse((CompBT == 1) & (BioDeg == "No"), 1, 0)
                   , CompBTBad = ifelse((CompBT == 1) & (BioDeg == "Yes"), 1, 0)
                   , OutcaseSites = ifelse((OutcaseCol == outcaseID), 1, 0)
@@ -234,7 +230,7 @@ getQualSites <- function(TargetSiteID
                                    , "Better than"
                                    , "All")
                   , Sites = ifelse(stringr::str_detect(Label, "Comp")
-                                   , "ComparatorSamples"
+                                   , "InsideCaseSamples"
                                    , ifelse(stringr::str_detect(Label
                                                                 , "Outcase")
                                             , "OutsideCaseSamples"
@@ -244,7 +240,7 @@ getQualSites <- function(TargetSiteID
     dplyr::select(-Label) %>%
     dplyr::group_by(BioComm, Group, Quality) %>%
     tidyr::pivot_wider(names_from = "Sites", values_from = "Count") %>%
-    dplyr::select(BioComm, Group, Quality, ComparatorSamples
+    dplyr::select(BioComm, Group, Quality, InsideCaseSamples
                   , OutsideCaseSamples, AllSamples) %>%
     dplyr::arrange(Group, Quality)
 
@@ -256,9 +252,9 @@ getQualSites <- function(TargetSiteID
 
   numcompsfinal <- as.numeric(df_qualstats[1, 4])
   if (numcompsfinal < length(compSites)) {
-    gapcomment <- paste0("Comparator sites do not have paired "
+    gapcomment <- paste0("Inside case sites do not have paired "
                          , " stressor-response data for comparison.")
-    gaps <- cbind.data.frame("getQualSites", "Number of Comparators"
+    gaps <- cbind.data.frame("getQualSites", "Number of Inside Case sites"
                              , length(compSites) - numcompsfinal
                              , gapcomment)
     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
