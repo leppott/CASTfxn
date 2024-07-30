@@ -275,7 +275,7 @@ getSiteInfo <- function(TargetSiteID
                       , (nrow(compBMImetrics) - nrow(myBMISamps))
                       , " from ", (length(comp_sites) - 1), " sites)")
 
-    bio_col <- c("red", "blue", "gray25") # Target, Good, Degraded
+    bio_col <- c("red", "steelblue2", "gray25") # Target, Not degraded, Degraded
     bio_shp <- c(17, 21, 25) # triangle, circle, and down triangle
     bio_alpha <- c(1, 0.5, 0.3)
     bio_size <- c(1.5, 1, 1)
