@@ -191,9 +191,12 @@ getTimeSeq <- function(TargetSiteID
 
         df.plot <- df.data %>%
           dplyr::filter(variable %in% c(stressName, respName)) %>%
-          dplyr::mutate(type = factor(type, levels = c("Stressor", "Response")))
+          dplyr::mutate(type = factor(type, levels = c("Stressor", "Response")
+                                      , labels = c(stressLabel, respLabel)))
         maxStress <- max(df.plot$meanResultValue[df.plot$variable == stressName])
         maxResp <- max(df.plot$meanResultValue[df.plot$variable == respName])
+        textlabels <- c(as.character(unique(df.plot$stressName))
+                        , as.character(unique(df.plot$respName)))
 
         msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") "
                       , stressName, " and ", respName)
@@ -201,13 +204,13 @@ getTimeSeq <- function(TargetSiteID
 
         p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampDate
                                                       , y = as.numeric(meanResultValue)))
-        p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black", size = 0.1
-                                         , alpha = 0.5, linewidth = 0.25)
+        p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black"
+                                         , linewidth = 0.2, alpha = 0.5)
         # p_ts <- p_ts + ggplot2::geom_hline(y = BioDegBrk[2])     # Use this for response graph only
         p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanResultValue)
                                 , hjust= 2, vjust = 0, size=2, na.rm = TRUE
                                 , min.segment.length = 0)
-        p_ts <- p_ts + ggplot2::facet_wrap(~Label, ncol = 1, scales = "free_y")
+        p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
         p_ts <- p_ts + ggplot2::theme_bw()
         p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
                                                                           , hjust = 1
