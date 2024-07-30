@@ -78,7 +78,7 @@
 #' colGroup     <- "Group"
 #' colBio       <- "CSCI"
 #' stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
-#' col_ID        <- "StationID_Master"
+#' col_ID        <- "StationID"
 #' #
 #' BioNarBrk <- c(-2, 0.62, 0.799, 0.919, 2)
 #' BioNarLab <- c("very likely altered", "likely altered"
@@ -105,7 +105,7 @@
 #' TargetSiteID <- c("SRCKN001.61")
 #' #
 #' # comparator Data based on elevation category
-#' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID_Master
+#' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID
 #' if(boo_Lo==TRUE){
 #'    df_data <- data_CoOccur_AZ_Lo
 #' } else {
@@ -115,7 +115,7 @@
 #' colGroup     <- "Group"
 #' colBio       <- "IBI"
 #' stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-#' col_ID        <- "StationID_Master"
+#' col_ID        <- "StationID"
 #' #
 #' BioNarBrk <- c(0, 45, 52, 100)
 #' BioNarLab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
@@ -144,8 +144,8 @@ getSufficiency <- function(TargetSiteID
                            , df_stressinfo
                            , biocomm
                            , colBio
-                           , BioDegBrk = c(-2, 0.799, 2)
-                           , BioDegLab = c("Yes", "No")
+                           # , BioDegBrk = c(-2, 0.799, 2)
+                           # , BioDegLab = c("Yes", "No")
                            , dir_plots = file.path(getwd(), "Results")
                            , dir_sub = "Sufficiency"
                            , boo_plot = TRUE
@@ -162,8 +162,8 @@ getSufficiency <- function(TargetSiteID
     df_stressinfo = data_stressInfo
     biocomm = bioComm
     colBio = bioIndex
-    BioDegBrk = BioDegBrk
-    BioDegLab = c("Yes", "No")
+    # BioDegBrk = BioDegBrk
+    # BioDegLab = c("Yes", "No")
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
@@ -192,26 +192,11 @@ getSufficiency <- function(TargetSiteID
 
   # Get dataset
   df_data <- df_data %>%
-    dplyr::filter(StationID_Master %in% compSites) %>%
-    dplyr::select(StationID_Master, StressSampID, StressSampDate, RespSampID
-                  , RespSampDate, all_of(colBio), all_of(stressors))
+    dplyr::filter(StationID %in% compSites) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID
+                  , RespSampleDate, Quality, all_of(colBio), all_of(stressors))
 
-  # Assign Bio Status
-  df_data[, "Bio.Deg"] <- cut(df_data[, colBio]
-                              , breaks = BioDegBrk
-                              , labels = BioDegLab)
-  # df_data[, "Bio.Nar"] <- cut(df_qual[, colBio]
-  #                             , breaks = BioNarBrk
-  #                             , labels = BioNarLab)
-
-  # Change Levels (factors) as 1=No and 2=Yes
-  ## Used to later convert to 0=No (not degraded) and 1=Yes (degraded)
-  df_data$Bio.Deg <- factor(df_data$Bio.Deg, c("No", "Yes"))
-  df_data <- dplyr::select(df_data, StationID_Master, StressSampID, StressSampDate
-                           , RespSampID, RespSampDate, all_of(colBio), Bio.Deg
-                           , all_of(stressors))
-
-  df_target <- dplyr::filter(df_data, StationID_Master == TargetSiteID)
+  df_target <- dplyr::filter(df_data, StationID == TargetSiteID)
 
   # Transform stressor data as required
   strInfo <- as.data.frame(cbind("StdParamName" = stressors
@@ -219,17 +204,17 @@ getSufficiency <- function(TargetSiteID
   strInfo <- merge(strInfo, df_stressinfo[, c("StdParamName", "Label")]
                    , by = "StdParamName")
 
-  # Create Score Output File # add Bio.Nar just before Bio.Deg
+  # Create Score Output File # add Bio.Nar just before Quality
   df.scores <- df_data %>%
-    dplyr::select(StationID_Master, StressSampID, RespSampID, all_of(colBio)
-                  , Bio.Deg) %>%
-    dplyr::mutate(ParamName   = as.character(NA)
+    dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio)
+                  , Quality) %>%
+    dplyr::mutate(ParamName     = as.character(NA)
                   , ParamValue  = as.numeric(NA)
                   , Log1pValue  = as.numeric(NA)
                   , n           = as.character(NA)
                   , SRpred_Deg  = as.character(NA)
                   , Sc_SRlog    = as.character(NA)
-                  , BioComm       = as.character(NA)
+                  , BioComm     = as.character(NA)
                   , Label       = as.character(NA))
   # remove all rows
   df.scores <- df.scores[0, ]
@@ -247,15 +232,15 @@ getSufficiency <- function(TargetSiteID
     utils::flush.console()
 
     df.score.j <- df_data %>%
-      dplyr::select(StationID_Master, StressSampID, StressSampDate
-                    , RespSampID, RespSampDate, all_of(colBio), Bio.Deg
+      dplyr::select(StationID, StressSampleID, StressSampleDate
+                    , RespSampleID, RespSampleDate, all_of(colBio), Quality
                     , all_of(str)) %>%
-      dplyr::filter(StationID_Master == TargetSiteID) %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName"
                           , values_to = "ParamValue")
 
     df.plot <- df_data %>%
-      dplyr::select(all_of(colBio), Bio.Deg, all_of(str))
+      dplyr::select(all_of(colBio), Quality, all_of(str))
 
     df.plot <- df.plot[!is.na(df.plot[, str]),]
 
@@ -264,49 +249,50 @@ getSufficiency <- function(TargetSiteID
       if (jlog == 1) {
         df.plot <- df.plot %>%
           dplyr::rename(y = eval(colBio), x1 = all_of(str)) %>%
-          dplyr::mutate(y.name = as.numeric(Bio.Deg) - 1
+          dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)
                         , x2 = log1p(x1))
-        # df.plot$log1p <- log1p(df.comp.glm[[j]])
-        # names(df.plot) <- c("y", "Bio.Deg", "x1", "y.name", "x2")
+        # x1 = stressor value, x2 = log1p[stressor value]
+        # y = bioIndex, y.name = Quality (Degraded = 1, Not degraded = 0)
 
         if (sum(stats::complete.cases(df.plot)) > 0) {
           # Test orig model (fit1)
-          df.plot1 <- dplyr::select(df.plot, y, Bio.Deg, x1, y.name)
+          df.plot1 <- dplyr::select(df.plot, y, Quality, x1, y.name)
           fit1 <- stats::glm(y.name ~ x1, data = df.plot1, family = stats::binomial)
           # Test log1p model (fit2)
-          df.plot2 <- dplyr::select(df.plot, y, Bio.Deg, x2, y.name)
+          df.plot2 <- dplyr::select(df.plot, y, Quality, x2, y.name)
           fit2 <- stats::glm(y.name ~ x2, data = df.plot2, family = stats::binomial)
           # Compare two models
-          if (fit2$deviance <= fit1$deviance) {
+          if (fit2$deviance <= fit1$deviance) { # transformed has better fit
             df.plot <- df.plot2 %>%
-              dplyr::select(y, Bio.Deg, y.name, x2) %>%
+              dplyr::select(y, Quality, y.name, x2) %>%
               dplyr::rename(x = x2)
             jlabel <- paste0("Log1p ", jlabel)
             useVal <- "log1p"
             j_values <- data.frame(x = log1p(df_target[, str]))
-            x_intercept <- as.numeric(x = j_values)
-          } else {
+          } else {                              # untransformed has better fit
             df.plot <- df.plot1 %>%
-              dplyr::select(y, Bio.Deg, y.name, x1) %>%
+              dplyr::select(y, Quality, y.name, x1) %>%
               dplyr::rename(x = x1)
             useVal <- "normal"
             j_values <- data.frame(x = df_target[, str])
-            x_intercept <- as.numeric(x = j_values)
           }
+          fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
           rm(fit1, fit2, df.plot1, df.plot2)
+        } else {
+          # no complete cases
         }
-        fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
-      } else if (sum(stats::complete.cases(df.plot)) > 0) {
-        df.plot <- df.plot %>%
-          dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
-          dplyr::mutate(y.name = as.numeric(Bio.Deg) - 1) %>%
-          dplyr::select(y, Bio.Deg, y.name, x)
-        fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
-        useVal <- "normal"
-        j_values <- data.frame(x = df_target[, str])
-        x_intercept <- as.numeric(x = j_values)
-      } else { # no complete cases
-        # NEEDS SOMETHING HERE!
+      } else {        # jlog == 0
+        if (sum(stats::complete.cases(df.plot)) > 0) {
+          df.plot <- df.plot %>%
+            dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
+            dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
+            dplyr::select(y, Quality, y.name, x)
+          fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
+          useVal <- "normal"
+          j_values <- data.frame(x = df_target[, str])
+        } else { # no complete cases
+          # NEEDS SOMETHING HERE!
+        }
       }
 
       #  Stressor Response Curve
@@ -328,7 +314,7 @@ getSufficiency <- function(TargetSiteID
       ppi       <- 300
 
       # Create (ggplot)
-      bio_col <- c("dark gray", "blue")
+      bio_col <- c("midnightblue", "cyan2")
       bio_shp <- c(21, 25) # circle and down triangle
       bio_size <- c(3, 2)
       # lab_comp <- paste0("Comparator samples selected from outside the case ("
@@ -338,16 +324,17 @@ getSufficiency <- function(TargetSiteID
       targ_line_col <- "red"
       targ_line_lty <- 2
       targ_line_lwd <- 1
+      targ_vals <- as.numeric(unlist(j_values))
 
-      legendtitle <- "Degraded samples"
+      legendtitle <- "Samples"
       ylabel <- "Relative probability of degraded condition"
       maintitleSR <- paste0(TargetSiteID, ": Stressor-response (logistic regression) line of evidence")
       subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
       subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
-      captionSR <- paste0("All comparator samples (n=", n_cc_df_plot
-                          , ").\n Score = ", paste(j_SR_score, collapse = ", ")
-                          , ".")
+      captionSR <- paste(paste0("All comparator samples (n=", n_cc_df_plot, ").")
+                         , paste0("Score = ", paste(j_SR_score, collapse = ", "), ".")
+                         , sep = "\n")
 
       # Get base info for scores table
       df.score.j <- df.score.j %>%
@@ -359,32 +346,32 @@ getSufficiency <- function(TargetSiteID
                       , n = nrow(df.plot)
                       , SRpred_Deg = j_SR_predict
                       , Sc_SRlog = j_SR_score) %>%
-        dplyr::select(StationID_Master, StressSampID, RespSampID, all_of(colBio)
-                      , Bio.Deg, ParamName, ParamValue, Log1pValue, n, SRpred_Deg
+        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio)
+                      , Quality, ParamName, ParamValue, Log1pValue, n, SRpred_Deg
                       , Sc_SRlog, BioComm, Label)
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
-        ggplot2::geom_point(ggplot2::aes(color = Bio.Deg, shape = Bio.Deg
-                                         , fill = Bio.Deg)
+        ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality
+                                         , fill = Quality)
                             , alpha = 0.5, size = 2, na.rm = TRUE) +
         ggplot2::scale_fill_manual(name = legendtitle
-                                   , breaks = c("Yes", "No")
+                                   , breaks = c("Degraded", "Not degraded")
                                    , values = bio_col, drop = FALSE) +
         ggplot2::scale_color_manual(name = legendtitle
-                                    , breaks = c("Yes", "No")
+                                    , breaks = c("Degraded", "Not degraded")
                                     , values = bio_col, drop = FALSE) +
         ggplot2::scale_shape_manual(name = legendtitle
-                                    , breaks = c("Yes", "No")
+                                    , breaks = c("Degraded", "Not degraded")
                                     , values = bio_shp, drop = FALSE) +
-        ggplot2::geom_vline(xintercept = x_intercept, color = targ_line_col
+        ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col
                             , lty = targ_line_lty, lwd = targ_line_lwd
                             , na.rm = TRUE) +
         ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
                             , lty = 2, na.rm = TRUE) +
         ggplot2::labs(y = ylabel, x = jlabel) +
         ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat
-                           , color = "blue", lwd = 1, na.rm = TRUE) +
+                           , color = "black", lwd = 1, na.rm = TRUE) +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
                        , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
