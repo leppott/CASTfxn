@@ -419,24 +419,26 @@ getStressorList <- function(TargetSiteID
       str_ylab <- str_Group
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "dark gray"     # outside the case
-      # col_sites_all_ref <- "blue"
-      col_sites_cl      <- "cyan3"         # inside the case
-      col_sites_cl_ref  <- "blue"          # reference sites inside the case
-      col_sites_targ    <- "red"           # target site
+      col_sites_all     <- "black"        # outside the case
+      # col_sites_all_ref <- "black"
+      col_sites_cl      <- "black"        # inside the case
+      col_sites_cl_ref  <- "blue"         # reference sites inside the case
+      col_sites_targ    <- "red"          # target site
       col_line          <- "black"
 
       ## Plot, Variables, Fill
-      fill_sites_all     <- col_sites_all
+      fill_sites_all     <- "gray35"
       # fill_sites_all_ref <- col_sites_all_ref
-      fill_sites_cl      <- col_sites_cl
-      fill_sites_cl_ref  <- col_sites_all
-      fill_sites_targ    <- col_sites_targ
+      fill_sites_cl      <- "cyan3"
+      fill_sites_cl_ref  <- "cyan3"
+      fill_sites_targ    <- "red"
 
       ## Plot, Variables, Points
-      pch_sites_all     <- 19 # solid circle
-      # pch_sites_all_ref <- 21 # circle outline
-      pch_sites_cl      <- 19
+      pch_sites_all     <- 21 # circle with outline
+      # pch_sites_all     <- 19 # solid circle
+      pch_sites_all_ref <- 21 # circle outline
+      pch_sites_cl      <- 21 # circle outline
+      # pch_sites_cl      <- 19
       pch_sites_cl_ref  <- 21 # circle outline
       pch_sites_targ    <- 17 # triangle
 
@@ -471,6 +473,7 @@ getStressorList <- function(TargetSiteID
           ggplot2::geom_jitter(data=df_plot_long, width = 0.1
                                , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
                                               , y = value, color = "col_sites_all"
+                                              , stroke = 0.5
                                               , shape = "pch_sites_all"
                                               , fill = "fill_sites_all")
                                , size = 1, na.rm = TRUE) +
@@ -606,13 +609,13 @@ getStressorList <- function(TargetSiteID
     if (grepl("^pH[_]?", chemname, perl = TRUE, ignore.case = FALSE) == TRUE) {
       if ((minSiteVal < pHlimLow) | (maxSiteVal > pHlimHigh)) {
         if ((minSiteRank <= probsLow) | (maxSiteRank >= probsHigh)) {
-          message("pH is a stressor.")
+          message("pH is a candidate cause")
           stressor <- c(stressor, chemname)
         }
       } else {
         if (!exists("tmpParmDEL")) { tmpParmDEL <- chemname }
         else { tmpParmDEL <- c(tmpParmDEL, chemname) }
-        message("pH is not a stressor.")
+        message("pH is not a candidate cause")
       }
       next()
     }
@@ -620,12 +623,12 @@ getStressorList <- function(TargetSiteID
       if (grepl("^DO_", chemname, perl = TRUE, ignore.case = FALSE) == TRUE) {
 
         if ((minSiteVal < DOlim) & (minSiteRank <= probsLow)) {
-          message("DO is a stressor.")
+          message("DO is a candidate cause")
           stressor <- c(stressor, chemname)
         } else {
           if (!exists("tmpParmDEL")) { tmpParmDEL <- chemname }
           else { tmpParmDEL <- c(tmpParmDEL, chemname) }
-          message("DO is not a stressor.")
+          message("DO is not a candidate cause")
         }
 
       } else if (minSiteRank <= probsLow) {
