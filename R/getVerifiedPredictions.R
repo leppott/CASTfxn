@@ -46,7 +46,7 @@
 #' df_MasterTaxa        <- data_BMIMasterTaxa
 #'
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
 #'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
@@ -445,14 +445,14 @@ getVerifiedPredictions <- function(TargetSiteID
 
           # get all the matched sample data for this stressor
           # 20180620, match names
-          col_keep <- c("StationID_Master", "StressSampID", "RespSampID")
+          col_keep <- c("StationID", "StressSampleID", "RespSampleID")
           SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in%
                                                          names(list.MatchBioData$all.b.str)]
           all.match.b.str <- list.MatchBioData$all.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
           cl.match.b <- list.MatchBioData$cl.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
 
-          bmi.taxa.raw <- df_BioTaxaRelAbund[df_BioTaxaRelAbund$StationID_Master %in%
-                                        unique(all.match.b.str$StationID_Master), ]
+          bmi.taxa.raw <- df_BioTaxaRelAbund[df_BioTaxaRelAbund$StationID %in%
+                                        unique(all.match.b.str$StationID), ]
           bmi.taxa.raw <- merge(bmi.taxa.raw
                                 , df_MasterTaxa[, c("FinalID", SSTV.name)]
                                 , by.x = "FinalID", by.y = "FinalID")
@@ -468,17 +468,17 @@ getVerifiedPredictions <- function(TargetSiteID
                                            bmi.taxa.raw[,SSTV.name]==maxTolVal-1,
                                          bmi.taxa.raw$RelAbund, NA)
 
-          bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID_Master
+          bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID
                                           , BMISampID) %>%
             dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
                              , TolRelAbund = sum(TolTaxa, na.rm = TRUE)
                              , .groups = "drop_last")
-          bmi.taxa.raw <- dplyr::rename(bmi.taxa.raw, RespSampID = BMISampID)
+          bmi.taxa.raw <- dplyr::rename(bmi.taxa.raw, RespSampleID = BMISampID)
 
-          all.match.b.resp <- bmi.taxa.raw[bmi.taxa.raw$RespSampID %in%
-                                             unique(all.match.b.str$RespSampID), ]
+          all.match.b.resp <- bmi.taxa.raw[bmi.taxa.raw$RespSampleID %in%
+                                             unique(all.match.b.str$RespSampleID), ]
 
-          col_by <- c("StationID_Master", "RespSampID")
+          col_by <- c("StationID", "RespSampleID")
           all.SSTV.abund <- merge(all.match.b.str
                                   , all.match.b.resp
                                   , by.x = col_by
@@ -496,10 +496,10 @@ getVerifiedPredictions <- function(TargetSiteID
 
           good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund), ]
           cl.SSTV.abund      <- subset(good.SSTV.abund
-                                       , good.SSTV.abund$StressSampID %in%
-                                         cl.match.b$StressSampID)
+                                       , good.SSTV.abund$StressSampleID %in%
+                                         cl.match.b$StressSampleID)
           site.SSTV.abund    <- subset(good.SSTV.abund
-                                       , good.SSTV.abund$StationID_Master
+                                       , good.SSTV.abund$StationID
                                        %in% TargetSiteID)
           SSTV.Resp          <- c("SensRelAbund", "TolRelAbund")
 
@@ -541,7 +541,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                             , "Sensitive Taxa", "Tolerant Taxa")
                           , Param_Name = SSTV.analyte) %>%
             dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
-            dplyr::select(StationID_Master:StressSampID, Param_Name
+            dplyr::select(StationID:StressSampleID, Param_Name
                           , Param_Value:value)
 
           n_records_better_bio <- nrow(df_plot_betterbio)
@@ -557,7 +557,7 @@ getVerifiedPredictions <- function(TargetSiteID
                                             , "Sensitive Taxa", "Tolerant Taxa")
                           , Param_Name = SSTV.analyte) %>%
             dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
-            dplyr::select(StationID_Master:StressSampID, Param_Name
+            dplyr::select(StationID:StressSampleID, Param_Name
                           , Param_Value:value)
 
           # 20190510, new data frame for better sites AND bio.deg = No
@@ -618,21 +618,21 @@ getVerifiedPredictions <- function(TargetSiteID
           df_plot_targ[, "n_BetterBio"] <- n_records_better_bio
           df_plot_targ[, "n_BetterBioDegNo"] <- n_records_betterbio_BioDegNo
           df_tbl_scores <- merge(df_plot_targ
-                                 , site.SSTV.abund[,c("RespSampID"
-                                                      ,"StressSampID"
+                                 , site.SSTV.abund[,c("RespSampleID"
+                                                      ,"StressSampleID"
                                                       , colBio
                                                       , "Quality")]
-                                 , by.x = c("RespSampID","StressSampID")
-                                 , by.y = c("RespSampID","StressSampID")
+                                 , by.x = c("RespSampleID","StressSampleID")
+                                 , by.y = c("RespSampleID","StressSampleID")
                                  , all.x = TRUE)
           df_tbl_scores <- merge(df_tbl_scores
                                  , unique(df_stressinfo[,c("StdParamName", "Label")])
                                  , by.x = "Param_Name"
                                  , by.y = "StdParamName"
                                  , all.x = TRUE)
-          df_tbl_scores <- dplyr::select(df_tbl_scores, StationID_Master
-                                         , RespSampID, eval(colBio)
-                                         , Quality, StressSampID, Label
+          df_tbl_scores <- dplyr::select(df_tbl_scores, StationID
+                                         , RespSampleID, eval(colBio)
+                                         , Quality, StressSampleID, Label
                                          , Param_Name, Param_Value
                                          , variable, value, better_bio_varval_qLo
                                          , better_biovarval_qHi, Score
