@@ -47,7 +47,7 @@
 #' data.mod           <- data_ReachMod
 #'
 #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
 #'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
@@ -157,7 +157,7 @@
 #' data.mod           <- data_ReachMod
 #'
 #' #' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
 #'                     , "ElevCategory"])
 #' if(elev_cat=="HI"){
 #'    data.cluster <- data_Cluster_Hi
@@ -257,6 +257,8 @@ getBioStressorResponses <- function(TargetSiteID
                                     , qual2plotSamps
                                     , siteQual2Plot
                                     , biocomm
+                                    , p.val_cutoff = 0.05
+                                    , r2_cutoff = 0.1
                                     , dir_plots = file.path(getwd(), "Results")
                                     , dir_sub = "StressorResponse"
                                     , boo_pred_warn = TRUE
@@ -276,6 +278,8 @@ getBioStressorResponses <- function(TargetSiteID
     qual2plotSamps = allQual2PlotSamps
     siteQual2Plot = siteQual2Plot
     biocomm = bioComm
+    p.val_cutoff = 0.05
+    r2_cutoff = 0.1
     dir_plots = dir_results
     dir_sub = "StressorResponse"
     boo_pred_warn = TRUE
@@ -291,7 +295,7 @@ getBioStressorResponses <- function(TargetSiteID
   # site.b.rsp <- list.MatchBioData[["site.b.rsp"]]
 
   # Correlation file output header row
-  cn_cor_pref <- c("StationID_Master", "biocomm", "stressName", "stressLabel"
+  cn_cor_pref <- c("StationID", "biocomm", "stressName", "stressLabel"
                    ,"respName","respLabel", "n", "statistic", "p.value"
                    , "estimate", "r2")
 
@@ -304,7 +308,7 @@ getBioStressorResponses <- function(TargetSiteID
   # Check for no data
   # if(biocomm=="BMI"){##IF.biocomm.START
   #
-  col_Bio_Metrics_SampID <- "RespSampID"
+  col_Bio_Metrics_SampID <- "RespSampleID"
   min_cases  <- 20
   all.x.str  <- "all.b.str"
   cl.x.str   <- "cl.b.str"
@@ -369,8 +373,8 @@ getBioStressorResponses <- function(TargetSiteID
   #
   #}##QC, NUMERIC ~ END
 
-  col_StationID  <- "StationID_Master"
-  col_ChemSampID <- "StressSampID"
+  col_StationID  <- "StationID"
+  col_ChemSampID <- "StressSampleID"
 
   # check for and create (if necessary) "Results" subdirectory of working directory
   wd <- dirname(dir_plots)
@@ -424,21 +428,21 @@ getBioStressorResponses <- function(TargetSiteID
   # Prep site data for merging with scores
   ##site.b.str %>%
   df_str <- list.MatchBioData[["site.b.str"]] %>%
-    tidyr::pivot_longer(cols = !c(StationID_Master, StressSampID, RespSampID)
+    tidyr::pivot_longer(cols = !c(StationID, StressSampleID, RespSampleID)
                         , names_to = "Stressor", values_to = "StressorValue")
-  # , c(-StationID_Master, -StressSampID, -RespSampID))
+  # , c(-StationID, -StressSampleID, -RespSampleID))
   #site.b.rsp %>%
   df_rsp <- list.MatchBioData[["site.b.rsp"]] %>%
-    dplyr::select(-RespSampDate) %>%
-    tidyr::pivot_longer(cols = !c(StationID_Master, StressSampID, RespSampID, Quality)
+    dplyr::select(-RespSampleDate) %>%
+    tidyr::pivot_longer(cols = !c(StationID, StressSampleID, RespSampleID, Quality)
                         , names_to = "Response", values_to = "ResponseValue")
-  # , c(-StationID_Master, -StressSampID, -RespSampID, -Quality))
+  # , c(-StationID, -StressSampleID, -RespSampleID, -Quality))
   df_SiteData <- merge(df_str, df_rsp
-                       , by.x = c("StationID_Master", "StressSampID", "RespSampID")
-                       , by.y = c("StationID_Master", "StressSampID", "RespSampID")
+                       , by.x = c("StationID", "StressSampleID", "RespSampleID")
+                       , by.y = c("StationID", "StressSampleID", "RespSampleID")
                        , all = TRUE)
   df_SiteData <- df_SiteData %>%
-    dplyr::select(StationID_Master, StressSampID, RespSampID, Quality
+    dplyr::select(StationID, StressSampleID, RespSampleID, Quality
                   , Stressor, StressorValue, Response, ResponseValue)
   rm(df_str, df_rsp)
 
@@ -454,9 +458,9 @@ getBioStressorResponses <- function(TargetSiteID
 
     # Determine expected direction of slope
     dirIncStress <- unique(df_stressinfo$DirIncStress[df_stressinfo$StdParamName == stressName])
-    if (dirIncStress == "Inc") {
+    if (dirIncStress == "Inc") {  # increasing stressor decreases biological integrity
       exp.dir <- -1
-    } else {
+    } else {                      # decreasing stressor decreases biological integrity
       exp.dir <- 1
     }
 
@@ -540,8 +544,8 @@ getBioStressorResponses <- function(TargetSiteID
       }
 
       #get all ref data to plot
-      all.ref.xvar <- subset(all.xvar, all.xvar$StressSampID %in% qual2plotSamps)
-      all.ref.yvar <- subset(all.yvar, all.yvar$StressSampID %in% qual2plotSamps)
+      all.ref.xvar <- subset(all.xvar, all.xvar$StressSampleID %in% qual2plotSamps)
+      all.ref.yvar <- subset(all.yvar, all.yvar$StressSampleID %in% qual2plotSamps)
       all.ref.merge <- merge(all.ref.xvar, all.ref.yvar)
       df_plot_all_ref <- all.ref.merge[stats::complete.cases(all.ref.merge), ]
       colnames(df_plot_all_ref)[colnames(df_plot_all_ref) == stressName] <- "Stressor"
@@ -556,8 +560,8 @@ getBioStressorResponses <- function(TargetSiteID
       colnames(df_plot_cl)[colnames(df_plot_cl) == respName]   <- "Response"
 
       #get all cluster ref data to plot
-      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StressSampID %in% qual2plotSamps)
-      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StressSampID %in% qual2plotSamps)
+      cl.ref.xvar <- subset(cl.xvar, cl.xvar$StressSampleID %in% qual2plotSamps)
+      cl.ref.yvar <- subset(cl.yvar, cl.yvar$StressSampleID %in% qual2plotSamps)
       cl.ref.merge <- merge(cl.ref.xvar, cl.ref.yvar)
       df_plot_cl_ref <- cl.ref.merge[stats::complete.cases(cl.ref.merge), ]
       colnames(df_plot_cl_ref)[colnames(df_plot_cl_ref) == stressName] <- "Stressor"
@@ -725,13 +729,13 @@ getBioStressorResponses <- function(TargetSiteID
                                          , signif(c1S_cl$p.value, 2)
                                          , signif(c1S_cl$estimate, 2)
                                          , r2_cl))
-          # names(df.corr_cl) <- c("StationID_Master", "biocomm", "stressName"
+          # names(df.corr_cl) <- c("StationID", "biocomm", "stressName"
           # , "respName", "n", "statistic", "p.value", "estimate", "r2")
           names(df.corr_cl) <- cn_cor_pref
           pval.corr_cl <- signif(c1S_cl$p.value, 2)
           #
           # 20180621, scoring
-          slope.dir_cl <- sign(slope_cl) #1 = positive, -1 = negative
+          slope.dir_cl <- sign(slope_cl) # 1 = positive, -1 = negative
           #
         } # End std dev If eval
 
@@ -814,7 +818,7 @@ getBioStressorResponses <- function(TargetSiteID
                                           , signif(c1S_all$p.value, 2)
                                           , signif(c1S_all$estimate, 2)
                                           , r2_all))
-          #names(df.corr_all) <- c("StationID_Master", "biocomm", "stressName"
+          #names(df.corr_all) <- c("StationID", "biocomm", "stressName"
           #, "respName", "n", "statistic", "p.value", "estimate", "r2")
           names(df.corr_all) <- cn_cor_pref
           pval.corr_all <- signif(c1S_all$p.value, 2)
@@ -877,10 +881,11 @@ getBioStressorResponses <- function(TargetSiteID
           # Score, cluster
           # Generate scores based on slope, significance value, and r2
           if (boo_corr == TRUE) { # Cluster data should be scored
-            if ((nrow(df_plot_cl) >= 5) && (abs(pval.corr_cl) <= 0.1) && (r2_cl >= 0.1)) { ##IF~length~START
+            if ((nrow(df_plot_cl) >= 5) &&
+                (abs(pval.corr_cl) <= p.val_cutoff) && (r2_cl >= r2_cutoff)) { ##IF~length~START
               # print to console p (stressName) and q (respName)
               if (slope.dir_cl == exp.dir) {
-                txt.score_cl <-  "1"
+                txt.score_cl <- "1"
                 sr.score_cl = 1
               } else if (slope.dir_cl != exp.dir) {
                 txt.score_cl <- "-1"
@@ -900,7 +905,8 @@ getBioStressorResponses <- function(TargetSiteID
 
           # Score, all
           if (boo_all == TRUE) {
-            if ((length(df_plot_all) >= 5) && (abs(pval.corr_all) <= 0.1) && (r2_all >= 0.1)) { ##IF~length~START
+            if ((length(df_plot_all) >= 5) &&
+                (abs(pval.corr_all) <= p.val_cutoff) && (r2_all >= r2_cutoff)) { ##IF~length~START
               # print to console p (stressName) and q (respName)
               if (slope.dir_all == exp.dir) {
                 txt.score_all <-  "1"
@@ -931,7 +937,7 @@ getBioStressorResponses <- function(TargetSiteID
                              , txt.score_all, ", ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
-        df.temp2 <- as.data.frame(cbind("StationID_Master" = TargetSiteID
+        df.temp2 <- as.data.frame(cbind("StationID" = TargetSiteID
                                         , "biocomm" = biocomm
                                         , "stressName" = stressName
                                         , "stressLabel" = stressLabel
@@ -944,8 +950,8 @@ getBioStressorResponses <- function(TargetSiteID
                                         , "SRLin_Score_all" = sr.score_all))
 
         df.temp2 <- merge(df_SiteData, df.temp2
-                          , by.x = c("StationID_Master", "Stressor", "Response")
-                          , by.y = c("StationID_Master", "stressName", "respName")
+                          , by.x = c("StationID", "Stressor", "Response")
+                          , by.y = c("StationID", "stressName", "respName")
                           , all.y = TRUE)
 
 
@@ -1061,35 +1067,35 @@ getBioStressorResponses <- function(TargetSiteID
       }
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "dark gray"
+      col_sites_all     <- "gray45"
       col_sites_all_ref <- "blue"
-      col_sites_cl      <- "cyan3"
+      col_sites_cl      <- "cyan4"
       col_sites_cl_ref  <- col_sites_all_ref
       col_sites_targ    <- "red"
       col_line_cl       <- "cyan4"
-      col_line_all      <- "dark gray"
+      col_line_all      <- "gray20"
 
       ## Plot, Variables, Fill
       fill_sites_all     <- col_sites_all
       fill_sites_all_ref <- fill_sites_all
-      fill_sites_cl      <- col_sites_cl
+      fill_sites_cl      <- "cyan3"
       fill_sites_cl_ref  <- fill_sites_cl
       fill_sites_targ    <- col_sites_targ
 
       ## Plot, Variables, Points
       pch_sites_all     <- 19 # solid circle
       pch_sites_all_ref <- 21 # circle outline
-      pch_sites_cl      <- 19 # solid circle
+      pch_sites_cl      <- 21 # solid circle
       pch_sites_cl_ref  <- pch_sites_all_ref
       pch_sites_targ    <- 17 # triangle
 
       ## Plot, Variables, Sizes
       cex_mod <- 2
-      cex_sites_all     <- 1 #cex_mod*0.3
+      cex_sites_all     <- cex_mod * 0.5
       cex_sites_all_ref <- cex_sites_all
-      cex_sites_cl      <- cex_mod*0.95
+      cex_sites_cl      <- cex_mod * 0.7
       cex_sites_cl_ref  <- cex_sites_cl
-      cex_sites_targ    <- cex_mod*1.2
+      cex_sites_targ    <- cex_mod * 0.9
 
       ## Plot, Variables, Alpha
       alpha_lm_all <- 0.5
@@ -1228,9 +1234,9 @@ getBioStressorResponses <- function(TargetSiteID
             ggplot2::stat_smooth(data = df_plot_cl
                                  , method = lm
                                  , color = col_line_cl
-                                 , fill = fill_sites_cl
+                                 , fill = col_line_cl
                                  , alpha = alpha_lm_cl
-                                 , formula = y ~ x # Added to avaoid message
+                                 , formula = y ~ x # Added to avoid message
                                  , show.legend = FALSE
                                  , na.rm = TRUE)
           p_SR <- p_SR +
@@ -1275,24 +1281,6 @@ getBioStressorResponses <- function(TargetSiteID
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      ## PDF, capture plot in list
-      ### Need to run plot.pryr as is only created above
-      #boo.pryr <- TRUE
-      #  plot.pryr
-      #boo.pryr <- FALSE
-      #pq <- q.len*(p-1)+q
-      # plots.pq[[pq]] <- grDevices::recordPlot()
-      #
-      # ## JPG, Create
-      # # grDevices::jpeg(filename = paste(varFileOut, stressName, "_", respName,
-      # #                                  ".jpg", sep = ""), width = 4 * ppi,
-      # #                 height = 3 * ppi, quality=100, pointsize=8, res = ppi)
-      # #   plot.pryr
-      # # grDevices::dev.off()
-      #
-      # fn_jpg <- paste0(varFileOut, stressName, "_", respName, ".jpg")
-      # ggplot2::ggsave(fn_jpg, p_SR)
-      #
       varFlag <- 0
       varFlag.b <- 0 # Set varFlag.b to zero
     } ##FOR.q.END
@@ -1300,29 +1288,6 @@ getBioStressorResponses <- function(TargetSiteID
   } ##FOR.p.END
 
   # END ####
-  ## PDF ####
-  # Create PDF from list
-  # if (ngraph > 0) {
-  #   fn_pdf <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,"_SRLin_ALL.pdf"))
-  #   grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
-  #   for (pq in plots.pq){##FOR.gp.START
-  #     #grDevices::replayPlot(g.plot)
-  #     if(is.null(pq)==TRUE) {next}
-  #     grDevices::replayPlot(pq)
-  #   }##FOR.gp.END
-  #   grDevices::dev.off()
-  # } else {
-  #   msg <- "No graphs to plot to PDF"
-  #   message(msg)
-  # }
-  # rm(plots.pq)
-  #
-  # utils::write.table(df.CorrTable
-  #                    , file.path(wd,dir.sub,dir.sub2,"StressRespCorrs.BMI.txt")
-  #                    , sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
-  # utils::write.table(df.sc.sr
-  #                    , file.path(wd,dir.sub,dir.sub2,"StressRespScores.BMI.txt")
-  #                   , sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
   #
   # CorrPlot ####
   ## read
@@ -1333,7 +1298,7 @@ getBioStressorResponses <- function(TargetSiteID
     if (file.exists(fp_corr)==TRUE) {
       df_corr <- utils::read.delim(fp_corr)
 
-      # Columns: c("StationID_Master", "biocomm", "stressName", "respName",
+      # Columns: c("StationID", "biocomm", "stressName", "respName",
       # "n", "statistic", "p.value", "estimate", "r2")
       cn_cor_x    <- colnames(df_corr)
       cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
@@ -1359,7 +1324,7 @@ getBioStressorResponses <- function(TargetSiteID
                                        , y = stringr::str_wrap(stressLabel, wrap_length)
                                        , fill = Estimate)) +
         ggplot2::geom_tile(color = "black", lwd = 1, linetype = 1) +
-        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 4) +
+        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.5) +
         ggplot2::scale_fill_gradient2(low = "blue", high = "red", midpoint = 0
                                      , limits = c(-1, 1), guide = "colorbar") +
 
@@ -1368,7 +1333,7 @@ getBioStressorResponses <- function(TargetSiteID
                        , legend.title = ggplot2::element_text(size = 8)
                        , legend.text = ggplot2::element_text(size = 6)
                        , axis.title = ggplot2::element_text(size = 10)
-                       , axis.text.x = ggplot2::element_text(size = 8, angle = 45
+                       , axis.text.x = ggplot2::element_text(size = 5, angle = 45
                                                            , hjust = 1)
                        , axis.text.y = ggplot2::element_text(size = 5, angle = 30)) +
         ggplot2::labs(title = str_title, x = str_xlab, y = str_ylab)
