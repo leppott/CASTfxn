@@ -446,40 +446,12 @@ if (basename(fn.measdata) != "NA") {
     dplyr::summarize(MeanResultValue = mean(ResultValue), .groups = "drop_last") %>%
     dplyr::rename(ResultValue = MeanResultValue) %>%
     dplyr::filter(!is.na(ResultValue))
-  data_chemRaw <- unique(data_chemRaw) # should be redundant
+  data_chemRaw <- unique(data_chemRaw) # should be unique, long-form sample/analyte
 
   ## Get measured parameter names and separately, algal parameter names
   measParams <- as.vector(unique(data_chemRaw$StdParamName))
   algParams  <- as.vector(unique(data_chemRaw$StdParamName[grepl("^AFDM|^Chlor_a|^Pheophytin"
                                                                  ,data_chemRaw$StdParamName)]))
-  ## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
-  ## IQRmethod, SDmethod, Outlier
-  ## Nonsensical values are flagged as possible data entry errors
-  data_measoutliers <- getOutliers(df_data = data_chemRaw
-                               , df_meta = data_chemInfo)
-  ## Merge outlier flags with raw data by sample ID (should be all.y not all.x) -- CHECK!
-  data_chemRaw <- merge(data_chemRaw, data_measoutliers
-                        , by.x = c("StressSampleID", "StdParamName", "ResultValue")
-                        , by.y = c("StressSampleID", "StdParamName", "ResultValue")
-                        , all.x = TRUE)
-  data_chemRaw <- data_chemRaw %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
-                  , ResultValue, IQRmethod, SDmethod, Outlier) %>%
-    dplyr::mutate(Outlier = ifelse(is.na(Outlier), "Possible data entry error"
-                                   , Outlier))
-  # Clean up
-  rm(data_chemAll, data_measoutliers)
-
-  # Remove measured outliers here!
-  if (removeOutliers) {
-    data_chemoutliers <- data_chemRaw %>%
-      dplyr::filter(!(Outlier %in% c("Good", "NE")))
-    data_chemRaw <- data_chemRaw %>%
-      dplyr::filter(Outlier %in% c("Good", "NE"))
-  } else {
-    # don't do anything differently
-  }
-
   measStressData <- TRUE
 
 } else {
@@ -525,36 +497,7 @@ if (basename(fn.modeldata) != "NA") {
   data_modelRaw <- data_modelRaw %>%
     dplyr::mutate(SampYear = NA, SampleDate = NA) %>%
     dplyr::select(StationID, ChemSampleID, SampDate, StdParamName
-           , ResultValue, SampleDate)
-
-  ## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
-  ## IQRmethod, SDmethod, Outlier
-  data_modoutliers <- getOutliers(df_data = data_modelRaw
-                                  , df_meta = data_modelInfo)
-
-  ## Merge outlier flags with raw data by sample ID (should be all.y not all.x)
-  data_modelRaw <- merge(data_modelRaw, data_modoutliers
-                         , by.x = c("ChemSampleID", "StdParamName", "ResultValue")
-                         , by.y = c("ChemSampleID", "StdParamName", "ResultValue")
-                         , all.x = TRUE)
-  data_modelRaw <- data_modelRaw %>%
-    dplyr::select(StationID, ChemSampleID, SampleDate, StdParamName
-                  , ResultValue, IQRmethod, SDmethod, Outlier) %>%
-    dplyr::mutate(Outlier = ifelse(is.na(Outlier), "NE", Outlier))
-  modelParams <- as.vector(unique(data_modelRaw$StdParamName))
-
-  # Clean up
-  rm(data_modelAll, useParams, data_modoutliers)
-
-  # Remove modeled outliers here
-  if (removeOutliers) {
-    data_modeloutliers <- data_modelRaw %>%
-      dplyr::filter(!(Outlier %in% c("Good", "NE")))
-    data_modelRaw <- data_modelRaw %>%
-      dplyr::filter(Outlier %in% c("Good", "NE"))
-  } else {
-    # don't do anything differently
-  }
+                  , ResultValue, SampleDate)
 
   modelStressData <- TRUE
 
@@ -625,19 +568,33 @@ if (exists("data_chemRaw") & exists("data_modelRaw")) {
   message(msg)
 }
 
-# Combine outliers for all stressors into one datafile
-if (exists("data_chemoutliers") & exists("data_modeloutliers")) {
-  data_outliers <- rbind(data_chemoutliers, data_modeloutliers)
-  rm(data_chemoutliers, data_modeloutliers)
-} else if (exists("data_chemoutliers")) {
-  data_outliers <- data_chemoutliers
-  rm(data_chemoutliers)
-} else if (exists("data_modeloutliers")) {
-  data_outliers <- data_modeloutliers
-  rm(data_modeloutliers)
+## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
+## IQRmethod, SDmethod, Outlier
+## Nonsensical values are flagged as possible data entry errors
+data_StressOutliers <- getOutliers(df_data = data_Stress
+                                   , df_meta = data_stressInfo
+                                   , dir_plots = file.path(dir_results, "Histograms"))
+## Merge outlier flags with raw data by sample ID (should be all.y not all.x) -- CHECK!
+data_Stress <- merge(data_Stress, data_StressOutliers
+                      , by.x = c("StressSampleID", "StdParamName", "ResultValue")
+                      , by.y = c("StressSampleID", "StdParamName", "ResultValue")
+                      , all.x = TRUE)
+data_Stress <- data_Stress %>%
+  dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName, LogTransf
+                , ResultValue, TransfResult, IQRmethod, SDmethod, Outlier) %>%
+  dplyr::mutate(Outlier = ifelse(is.na(Outlier), "Possible data entry error"
+                                 , Outlier))
+# Clean up
+rm(data_chemAll, data_StressOutliers)
+
+# Remove measured outliers here!
+if (removeOutliers) {
+  data_stressoutliers <- data_Stress %>%
+    dplyr::filter(!(Outlier %in% c("Good", "NE")))
+  data_Stress <- data_Stress %>%
+    dplyr::filter(Outlier %in% c("Good", "NE"))
 } else {
-  msg <- "Neither measured nor modeled metadata are available"
-  message(msg)
+  # don't do anything differently
 }
 
 # Bio responses
@@ -690,7 +647,8 @@ for (b in seq_along(biocommlist)) {
       message(msg)
     }
 
-    # Get csci core data
+    # Get csci core data -- this should be a file that contains response sample
+    # qualifiers, but neither OR nor WA have anything similar
     if (basename(fn.bmi.qualifiers) != "NA") {
       data_cscicore <- readCASToolData(fn = fn.bmi.qualifiers
                                        , NAs = c("", "na", "NA", "N/A"))
@@ -765,7 +723,7 @@ for (b in seq_along(biocommlist)) {
       message(msg)
     }
 
-    # Get BMI metric info
+    # Get BMI metric info and add Quality
     if (basename(fn.bmi.metrics.info) != "NA") {
       data_bmiMetricsInfo <- readCASToolData(fn = fn.bmi.metrics.info
                                              , NAs = c("", "na", "NA", "N/A"))
@@ -781,33 +739,12 @@ for (b in seq_along(biocommlist)) {
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
-    if (exists("data_chemRaw") & exists("data_modelRaw")) {
-      data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "BMI"
-                                           , df_resp = data_bmiMetrics
-                                           , index = bmiIndex
-                                           , lagdays = lagdays)
-    } else if (exists("data_chemRaw")) {
-      data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           # , df_model = NULL
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "BMI"
-                                           , df_resp = data_bmiMetrics
-                                           , index = bmiIndex
-                                           , lagdays = lagdays)
-
-    } else {
-      data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           # , df_meas = NULL
-                                           , biocomm = "BMI"
-                                           , df_resp = data_bmiMetrics
-                                           , index = bmiIndex
-                                           , lagdays = lagdays)
-
-    }
+    data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                         , df_stress = data_Stress
+                                         , biocomm = "BMI"
+                                         , df_resp = data_bmiMetrics
+                                         , index = bmiIndex
+                                         , lagdays = lagdays)
     # returns df_coOccur as data_bmiCoOccur
 
     if (!is.na(bmiModParams)) {
@@ -888,33 +825,12 @@ for (b in seq_along(biocommlist)) {
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
-    if (exists("data_chemRaw") & exists("data_modelRaw")) {
-      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "Alg"
-                                           , df_resp = data_algMetrics
-                                           , index = algIndex
-                                           , lagdays = lagdays)
-    } else if (exists("data_chemRaw")) {
-      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           # , df_model = NULL
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "Alg"
-                                           , df_resp = data_algMetrics
-                                           , index = algIndex
-                                           , lagdays = lagdays)
-
-    } else {
-      data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           # , df_meas = NULL
-                                           , biocomm = "Alg"
-                                           , df_resp = data_algMetrics
-                                           , index = algIndex
-                                           , lagdays = lagdays)
-
-    }
+    data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
+                                         , df_stress = data_Stress
+                                         , biocomm = "Alg"
+                                         , df_resp = data_algMetrics
+                                         , index = algIndex
+                                         , lagdays = lagdays)
     # returns df_coOccur as data_algCoOccur
 
     if (!is.na(algModParams)) {
@@ -997,39 +913,11 @@ for (b in seq_along(biocommlist)) {
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
     data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                          , df_model = data_modelRaw
-                                          , df_meas = data_chemRaw
+                                          , df_stress = data_Stress
                                           , biocomm = "Fish"
                                           , df_resp = data_fishMetrics
                                           , index = fishIndex
                                           , lagdays = lagdays)
-    if (exists("data_chemRaw") & exists("data_modelRaw")) {
-      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "Fish"
-                                           , df_resp = data_fishMetrics
-                                           , index = fishIndex
-                                           , lagdays = lagdays)
-    } else if (exists("data_chemRaw")) {
-      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           # , df_model = NULL
-                                           , df_meas = data_chemRaw
-                                           , biocomm = "Fish"
-                                           , df_resp = data_fishMetrics
-                                           , index = fishIndex
-                                           , lagdays = lagdays)
-
-    } else {
-      data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                           , df_model = data_modelRaw
-                                           # , df_meas = NULL
-                                           , biocomm = "Fish"
-                                           , df_resp = data_fishMetrics
-                                           , index = fishIndex
-                                           , lagdays = lagdays)
-
-    }
     # returns df_coOccur as data_fishCoOccur
 
     if (!is.na(fishModParams)) {
@@ -1097,8 +985,10 @@ if (boo_Shiny == TRUE) {
 
 # Prepare stressor data
 # Identify field, lab, and phab stressor types
-if (!is.null(data_chemRaw)) {
-  data_sampSummary <- unique(data_chemRaw[, c("StationID", "StressSampleID"
+data_meas <- dplyr::filter(data_Stress, !is.na(StressSampleDate))
+data_model <- dplyr::filter(data_Stress, is.na(StressSampleDate))
+if (nrow(data_meas) > 0) {
+  data_sampSummary <- unique(data_meas[, c("StationID", "StressSampleID"
                                               , "StdParamName", "StressSampleDate")])
   data_sampSummary <- merge(data_sampSummary, data_stressInfo, by = "StdParamName")
   data_sampSummary <- data_sampSummary %>%
@@ -1117,7 +1007,6 @@ if (!is.null(data_chemRaw)) {
 
 # # Identify response samples
 data_respTrim <- data_respTrim %>%
-  # dplyr::mutate(SampleDate = RespSampleDate)
   tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm
                      , values_from = RespSampleID, values_fill = NA)
 data_respTrim <- unique(data_respTrim)
@@ -1131,8 +1020,8 @@ data_sampSummary <- merge(data_sampSummary, data_respTrim
 rm(data_respTrim)
 
 # Add modeled data, if they exist
-if (!is.null(data_modelRaw)) {
-  data_modelTrim <- as.data.frame(data_modelRaw) %>%
+if (nrow(data_model) > 0) {
+  data_modelTrim <- as.data.frame(data_model) %>%
     dplyr::distinct(StationID, StressSampleID) %>%
     dplyr::rename(ModeledSampleID = StressSampleID)
 
@@ -1236,7 +1125,18 @@ for (site in seq_along(df_targets)) {
   startsite.time <- Sys.time()
   TargetSiteID <- df_targets$TargetSiteID[site]
   if (boo.debug == TRUE & debug.person == "Ann") {
-    TargetSiteID <- "BIO06600_BURP15"
+    if (region == "WA") {
+      TargetSiteID <- "ERR06600_000451"
+      TargetSiteID <- "PSS05515_007726"
+      TargetSiteID <- "WAM06600_003688"
+      TargetSiteID <- "WAM06600_000586"   # Temp (tests getVerifiedPredictions.R)
+      TargetSiteID <- "BIO06600_BURP15"
+      TargetSiteID <- "RSM06600_007971"
+    } else if (region == "OR") {
+
+    } else {
+
+    }
   }
 
 
@@ -1712,6 +1612,17 @@ for (site in seq_along(df_targets)) {
     # Identify "quality" samples using different definitions
     # These are identified only from paired stressor-response samples
     # Data gaps statements from getSiteInfo aren't necessarily paired
+
+    # IMPORTANT ----
+    # The only required part of this is to identify "better than" minimum quality
+    # target sample as measured by the index values; Quality is added to the response
+    # metric file during the data prep process
+    # dfQuality includes the following columns, which are used by the function getWoE:
+    # [1] "StationID"      "IncaseCol"      "OutcaseCol"     "StressSampleID"
+    # [5] "RespSampleID"   "BIBI100"        "BioDeg"         "BioNarrative"
+    # [9] "InsideCaseYN"   "OutsideCaseYN"  "BetterThan"
+    # The rows in this dataframe are all sites both inside the case and all sites
+    # outside the case.
     list.BioQualSites <- getQualSites(TargetSiteID = TargetSiteID
                                       , df_sites = data_Sites
                                       , biocomm = bioComm
@@ -1742,7 +1653,7 @@ for (site in seq_along(df_targets)) {
     #                              , allBTBioStressSamps = all.samp.better.stress
     #                              , allBTBioReaches = all.better.reaches)
 
-    allQual2PlotSamps <- switch(siteQual2Plot
+    allQual2PlotSamps <- switch(tolower(siteQual2Plot)
                                    , "reference" = list.BioQualSites$allRefBioStressSamps
                                    , "not degraded" = list.BioQualSites$allGoodBioStressSamps
                                    , "better than" = list.BioQualSites$allBTBioStressSamps)
@@ -1844,17 +1755,11 @@ for (site in seq_along(df_targets)) {
       message(msg)
       getCoOccur(TargetSiteID = TargetSiteID
                  , df_data = data_bioCoOccur[data_bioCoOccur$StationID %in% comp_sites, ]
-                 , col_ID = "StationID"
-                 , colStressSamp = "StressSampID"
-                 , colRespSamp = "RespSampID"
-                 , colGroup = "OutcaseCol"
-                 , colBio = colBio
+                 , incaseLabel = incaseLabel
+                 , colBio = bioIndex
+                 , useBetter = FALSE
                  , colStressors = stressors
                  , df_stressinfo = data_stressInfo
-                 , BioNarBrk = BioNarBrk
-                 , BioNarLab = BioNarLab
-                 , BioDegBrk = BioDegBrk
-                 , BioDegLab = c("Yes", "No")
                  , biocomm = bioComm
                  , dir_plots = dir_results
                  , dir_sub = "CoOccurrence"
@@ -1883,6 +1788,7 @@ for (site in seq_along(df_targets)) {
       }
     }
 
+
     # 24, getSufficiency ####
     # Progress, 24
     if (boo_Shiny == TRUE) {
@@ -1905,8 +1811,6 @@ for (site in seq_along(df_targets)) {
                      , df_stressinfo = data_stressInfo
                      , biocomm = bioComm
                      , colBio = bioIndex
-                     , BioDegBrk = BioDegBrk
-                     , BioDegLab = c("Yes", "No")
                      , dir_plots = dir_results
                      , dir_sub = "Sufficiency"
                      , boo_plot = boo_plot_user)
@@ -1934,27 +1838,27 @@ for (site in seq_along(df_targets)) {
     }
 
     # Refine all.b.str, cl.b.str, and site.b.str for just identified stressors
-    core.cols <- c("StationID", "StressSampDate", "RespSampDate"
-                   , "StressSampID", "RespSampID")
+    core.cols <- c("StationID", "StressSampleDate", "RespSampleDate"
+                   , "StressSampleID", "RespSampleID")
 
     all.b.str <- listPairedStressResp$allBioStress %>%
       dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampID, RespSampID, StationID, eval(stressors))
+      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
     cl.b.str <- listPairedStressResp$compBioStress %>%
       dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampID, RespSampID, StationID, eval(stressors))
+      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
     site.b.str <- listPairedStressResp$siteBioStress %>%
       dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampID, RespSampID, StationID, eval(stressors))
+      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
 
     all.b.rsp <- listPairedStressResp$allBioResp %>%
-      dplyr::select(RespSampID, StressSampID, StationID, RespSampDate
+      dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
              , Quality, eval(bioMetricNames))
     cl.b.rsp <- listPairedStressResp$compBioResp %>%
-      dplyr::select(RespSampID, StressSampID, StationID, RespSampDate
+      dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
              , Quality, eval(bioMetricNames))
     site.b.rsp <- listPairedStressResp$siteBioResp %>%
-      dplyr::select(RespSampID, StressSampID, StationID, RespSampDate
+      dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
              , Quality, eval(bioMetricNames))
 
     siteStressInfo <- listPairedStressResp$siteStressInfo
@@ -1981,6 +1885,23 @@ for (site in seq_along(df_targets)) {
     }## IF ~ boo_Shiny ~ END
     #
     # Get Stressor Responses inside (comparators) and outside (all) the case
+    getBioGradient(TargetSiteID = TargetSiteID
+                   , df_data = data_bioCoOccur    # added 20240730 ARL
+                   , all_sites                    # added 20240730 ARL
+                   , compSites = comp_sites       # added 20240730 ARL
+                   , stressors = stressors
+                   , df_stressinfo = siteStressInfo
+                   , BioResp = bioMetricNames
+                   , df_respinfo = bioMetricInfo
+                   , list.MatchBioData = list_MatchBioData
+                   , qual2plotSamps = allQual2PlotSamps
+                   , siteQual2Plot = siteQual2Plot
+                   , biocomm = bioComm
+                   , p.val_cutoff = 0.05
+                   , r2_cutoff = 0.1
+                   , dir_plots = dir_results
+                   , dir_sub = "StressorResponse"
+                   , boo_plot = boo_plot_user)
     getBioStressorResponses(TargetSiteID = TargetSiteID
                             , stressors = stressors
                             , df_stressinfo = siteStressInfo
@@ -1990,6 +1911,8 @@ for (site in seq_along(df_targets)) {
                             , qual2plotSamps = allQual2PlotSamps
                             , siteQual2Plot = siteQual2Plot
                             , biocomm = bioComm
+                            , p.val_cutoff = 0.05
+                            , r2_cutoff = 0.1
                             , dir_plots = dir_results
                             , dir_sub = "StressorResponse"
                             , boo_plot = boo_plot_user)
