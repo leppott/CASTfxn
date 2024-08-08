@@ -36,8 +36,7 @@
 #'
 #' @export
 getCoOccurDataset <- function(df_sites
-                              , df_model = NULL
-                              , df_meas = NULL
+                              , df_stress
                               , biocomm
                               , df_resp
                               , index
@@ -49,8 +48,7 @@ getCoOccurDataset <- function(df_sites
 
   if  (boo_DEBUG == TRUE) {
     df_sites = data_Sites
-    df_model = NULL
-    df_meas = data_chemRaw
+    df_stress = data_Stress
     biocomm = "BMI"
     df_resp = data_bmiMetrics
     index = bmiIndex
@@ -61,6 +59,9 @@ getCoOccurDataset <- function(df_sites
   `%>%` <- dplyr::`%>%`
   not_all_na <- function(x) {!all(is.na(x))}
   biocomm <- tolower(biocomm)
+
+  df_model <- dplyr::filter(df_stress, is.na(StressSampleDate))
+  df_meas <- dplyr::filter(df_stress, !is.na(StressSampleDate))
 
   # Read data files (stressor and response)
   if (biocomm == "bmi") {
@@ -82,7 +83,7 @@ getCoOccurDataset <- function(df_sites
 
   # Clean up modeled data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
-  if (!is.null(df_model)) {
+  if (nrow(df_model) > 0) {
     df_model <- df_model %>%
       dplyr::select(StationID, StdParamName, ResultValue) %>%
       tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
@@ -107,7 +108,7 @@ getCoOccurDataset <- function(df_sites
 
   # Clean up measured data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
-  if (!is.null(df_meas)) {
+  if (nrow(df_meas) > 0) {
     df_meas <- as.data.frame(df_meas) %>%
       dplyr::filter(!is.na(ResultValue)) %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate
