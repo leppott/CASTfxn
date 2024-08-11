@@ -124,7 +124,7 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     fn2 <- paste0(paramName, "_transf.png")
 
     # plot histogram of data
-    p1 <- ggplot2::ggplot(df_sub1, ggplot2::aes(x = ResultValue)) +
+    p1 <- ggplot2::ggplot(df_sub, ggplot2::aes(x = ResultValue)) +
       ggplot2::geom_histogram(bins = 500) +
       ggplot2::ggtitle(paste0("Histogram of ", paramName, " observations")) +
       ggplot2::xlab(paramName) +
@@ -132,8 +132,8 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     ggplot2::ggsave(file.path(dir_plots, fn), p1, width = 6, height = 4
                     , units = "in")
 
-    if (unique(df_sub2$LogTransf) == 1) {
-      p2 <- ggplot2::ggplot(df_sub2, ggplot2::aes(x = TransfResult)) +
+    if (unique(df_sub$LogTransf) == 1) {
+      p2 <- ggplot2::ggplot(df_sub, ggplot2::aes(x = TransfResult)) +
         ggplot2::geom_histogram(bins = 500) +
         ggplot2::ggtitle(paste0("Histogram of Log1p transformed ", paramName, " observations")) +
         ggplot2::xlab(paramName) +
