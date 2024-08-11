@@ -64,11 +64,6 @@ getQualSites <- function(TargetSiteID
                         , useBC = FALSE
                         , outcaseColName
                         , outcaseID
-                        , BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2)
-                        , BioNarLab = c("very likely altered", "likely altered"
-                                        , "possibly altered", "likely intact")
-                        , BioDegBrk = c(-2, 0.799, 2)
-                        , BioDegLab = c("Yes", "No")
                         , dir_results = file.path(getwd(), "Results")
                         , dir_sub = "SiteInfo"
                         ) {##FUNCTION.START
@@ -84,13 +79,9 @@ getQualSites <- function(TargetSiteID
     colBio = bioIndex
     compSites = comp_sites
     allSites = all_sites
-    useBC = TRUE
+    useBC = FALSE
     outcaseColName = "OutcaseCol"
     outcaseID = outcaseID
-    BioNarBrk = BioNarBrk
-    BioNarLab = BioNarLab
-    BioDegBrk = BioDegBrk
-    BioDegLab = BioDegLab
     dir_sub = "SiteInfo"
   }
   #
@@ -99,13 +90,13 @@ getQualSites <- function(TargetSiteID
 
   # Declare name of column to hold biodegradation flag value
   biocomm <- tolower(biocomm)
-  colBioDeg = "BioDeg"
-  colBioNar = "BioNarrative"
+  # colBioDeg = "BioDeg"
+  # colBioNar = "BioNarrative"
 
   # Subset bio index data frame to just site, sample, index score
   df_qual <- df_qual  %>%
     dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleID
-                  , RespSampleID, all_of(colBio))
+                  , RespSampleID, all_of(colBio), Quality)
   df_qual <- df_qual[!is.na(df_qual[, colBio]), ]
 
   # Get vector of all "reference" sites in data_sites
@@ -130,17 +121,9 @@ getQualSites <- function(TargetSiteID
     dplyr::select(StressSampleID)
   all.ref.samps.stress <- unlist(all.ref.samps.stress)
 
-  # Flag quality of samples based on degradation threshold
-  df_qual[, colBioDeg] <- cut(df_qual[, colBio]
-                              , breaks = BioDegBrk
-                              , labels = BioDegLab)
-  df_qual[, colBioNar] <- cut(df_qual[, colBio]
-                              , breaks = BioNarBrk
-                              , labels = BioNarLab)
-
   # Get vector of "not degraded" samples in data_bioCoOccur
   all.good <- df_qual %>%
-    dplyr::filter(BioDeg == BioDegLab[2]) %>%
+    dplyr::filter(Quality == "Not degraded") %>%
     dplyr::select(StationID)
   all.good <- unlist(all.good)
 
@@ -192,23 +175,23 @@ getQualSites <- function(TargetSiteID
 
   df_qualstats <- df_qual %>%
     dplyr::mutate(CompSites = ifelse(InsideCaseYN == "Yes", 1, 0)
-                  , CompGood = ifelse((InsideCaseYN == "Yes") & (BioDeg == "No"), 1, 0)
-                  , CompBad = ifelse((InsideCaseYN == "Yes") & (BioDeg == "Yes"), 1, 0)
+                  , CompGood = ifelse((InsideCaseYN == "Yes") & (Quality == "Not degraded"), 1, 0)
+                  , CompBad = ifelse((InsideCaseYN == "Yes") & (Quality == "Degraded"), 1, 0)
                   , CompBT = ifelse((InsideCaseYN == "Yes") & (BetterThan == "Yes"), 1, 0)
-                  , CompBTGood = ifelse((CompBT == 1) & (BioDeg == "No"), 1, 0)
-                  , CompBTBad = ifelse((CompBT == 1) & (BioDeg == "Yes"), 1, 0)
+                  , CompBTGood = ifelse((CompBT == 1) & (Quality == "Not degraded"), 1, 0)
+                  , CompBTBad = ifelse((CompBT == 1) & (Quality == "Degraded"), 1, 0)
                   , OutcaseSites = ifelse((OutcaseCol == outcaseID), 1, 0)
-                  , OutcaseGood = ifelse((OutcaseCol == outcaseID) & (BioDeg == "No"), 1, 0)
-                  , OutcaseBad = ifelse((OutcaseCol == outcaseID) & (BioDeg == "Yes"), 1, 0)
+                  , OutcaseGood = ifelse((OutcaseCol == outcaseID) & (Quality == "Not degraded"), 1, 0)
+                  , OutcaseBad = ifelse((OutcaseCol == outcaseID) & (Quality == "Degraded"), 1, 0)
                   , OutcaseBT = ifelse((OutcaseCol == outcaseID) & (BetterThan == "Yes"), 1, 0)
-                  , OutcaseBTGood = ifelse((OutcaseBT == 1) & (BioDeg == "No"), 1, 0)
-                  , OutcaseBTBad = ifelse((OutcaseBT == 1) & (BioDeg == "Yes"), 1, 0)
+                  , OutcaseBTGood = ifelse((OutcaseBT == 1) & (Quality == "Not degraded"), 1, 0)
+                  , OutcaseBTBad = ifelse((OutcaseBT == 1) & (Quality == "Degraded"), 1, 0)
                   , AllSites = 1
-                  , AllSitesGood = ifelse(BioDeg == "No", 1, 0)
-                  , AllSitesBad = ifelse(BioDeg == "Yes", 1, 0)
+                  , AllSitesGood = ifelse(Quality == "Not degraded", 1, 0)
+                  , AllSitesBad = ifelse(Quality == "Degraded", 1, 0)
                   , AllSitesBT = ifelse(BetterThan == "Yes", 1, 0)
-                  , AllSitesBTGood = ifelse((AllSitesBT == 1) & (BioDeg == "No"), 1, 0)
-                  , AllSitesBTBad = ifelse((AllSitesBT == 1)&(BioDeg == "Yes"), 1, 0)) %>%
+                  , AllSitesBTGood = ifelse((AllSitesBT == 1) & (Quality == "Not degraded"), 1, 0)
+                  , AllSitesBTBad = ifelse((AllSitesBT == 1) & (Quality == "Degraded"), 1, 0)) %>%
     dplyr::select(CompSites, CompGood, CompBad, CompBT, CompBTGood
                   , CompBTBad, OutcaseSites, OutcaseGood, OutcaseBad
                   , OutcaseBT, OutcaseBTGood, OutcaseBTBad, AllSites
@@ -222,8 +205,7 @@ getQualSites <- function(TargetSiteID
   df_qualstats <- df_qualstats %>%
     dplyr::mutate(Quality = ifelse(stringr::str_detect(Label, "Good")
                                    , "Not degraded"
-                                   , ifelse(stringr::str_detect(Label
-                                                                , "Bad")
+                                   , ifelse(stringr::str_detect(Label, "Bad")
                                             , "Degraded"
                                             , "All qualities"))
                   , Group = ifelse(stringr::str_detect(Label, "BT")
@@ -231,17 +213,16 @@ getQualSites <- function(TargetSiteID
                                    , "All")
                   , Sites = ifelse(stringr::str_detect(Label, "Comp")
                                    , "InsideCaseSamples"
-                                   , ifelse(stringr::str_detect(Label
-                                                                , "Outcase")
+                                   , ifelse(stringr::str_detect(Label, "Outcase")
                                             , "OutsideCaseSamples"
                                             , "AllSamples"))
-                  , BioComm = biocomm)
+                  , BioComm = toupper(biocomm))
   df_qualstats <- df_qualstats %>%
     dplyr::select(-Label) %>%
     dplyr::group_by(BioComm, Group, Quality) %>%
     tidyr::pivot_wider(names_from = "Sites", values_from = "Count") %>%
-    dplyr::select(BioComm, Group, Quality, InsideCaseSamples
-                  , OutsideCaseSamples, AllSamples) %>%
+    dplyr::select(BioComm, Group, Quality, InsideCaseSamples, OutsideCaseSamples
+                  , AllSamples) %>%
     dplyr::arrange(Group, Quality)
 
   dirSiteInfo <- file.path(dir_results, TargetSiteID, "SiteInfo")
@@ -250,11 +231,11 @@ getQualSites <- function(TargetSiteID
               , append = FALSE, col.names = TRUE, row.names = FALSE
               , sep = "\t")
 
-  numcompsfinal <- as.numeric(df_qualstats[1, 4])
+  numcompsfinal <- as.numeric(df_qualstats[1, "InsideCaseSamples"])
   if (numcompsfinal < length(compSites)) {
     gapcomment <- paste0("Inside case sites do not have paired "
-                         , " stressor-response data for comparison.")
-    gaps <- cbind.data.frame("getQualSites", "Number of Inside Case sites"
+                         , "stressor-response data for comparison.")
+    gaps <- cbind.data.frame("getQualSites", "Number of inside case samples"
                              , length(compSites) - numcompsfinal
                              , gapcomment)
     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
