@@ -187,6 +187,9 @@ getStressorList <- function(TargetSiteID
   chemInfo$DirIncStress <- tolower(chemInfo$DirIncStress)
   biocommlist <- toupper(biocommlist)
   outcaseLabel <- tolower(outcaseLabel)
+  if (is.character(outcaseID)) {
+    outcaseID <- tolower(outcaseID)
+  }
   `%>%` <- dplyr::`%>%`
   not_all_na <- function(x) {!all(is.na(x))}
   plot_ext <- ".png"
@@ -233,12 +236,6 @@ getStressorList <- function(TargetSiteID
   outcaseChemLONG <- merge(outcaseChemLONG
                            , chemInfo[, c("StdParamName", "LogTransf")]
                            , by = "StdParamName")
-  outcaseChemLONG <- outcaseChemLONG %>%
-    dplyr::mutate(TransfValue = ifelse(LogTransf == 1
-                                       , suppressWarnings(log1p(ResultValue))
-                                       , ResultValue)) %>%
-    dplyr::mutate(TransfValue = ifelse(!is.finite(TransfValue), ResultValue
-                                       , TransfValue))
 
   # Use this dataframe for chemvalues table
   outcaseChemVals <- outcaseChemLONG %>%
@@ -249,9 +246,9 @@ getStressorList <- function(TargetSiteID
   # Use this dataframe for stressor id visualization & percentile rank
   outcaseChemData <- outcaseChemLONG %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
-                  , TransfValue) %>%
+                  , TransfResult) %>%
     dplyr::mutate(RefSiteFlag = ifelse(StationID %in% refSites, 1, 0)) %>%
-    tidyr::pivot_wider(names_from = StdParamName, values_from = TransfValue)
+    tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
 
   # ID all "reference" samples
   outcaseRefChemData <- outcaseChemData %>%
@@ -412,9 +409,15 @@ getStressorList <- function(TargetSiteID
       str_Group <- stringr::str_to_sentence(as.character(groupnames[g, 1]))
       str_title <- paste0(TargetSiteID, ": Selection of detected stressors for"
                           , " evaluation as causes of impairment")
-      str_title <- stringr::str_wrap(str_title,100)
-      str_subtitle <- paste0("All stressor samples from outside the case ("
-                            , outcaseLabel, " ", outcaseID, ")")
+      str_title <- stringr::str_wrap(str_title, 100)
+      if (outcaseLabel == outcaseID) {
+        str_subtitle <- paste0("All stressor samples from outside the case ("
+                               , outcaseLabel, ")")
+      } else {
+        str_subtitle <- paste0("All stressor samples from outside the case ("
+                               , outcaseLabel, " ", outcaseID, ")")
+      }
+      message(str_subtitle)
       str_xlab <- "Standardized values"
       str_ylab <- str_Group
 
