@@ -1017,7 +1017,7 @@ getBioStressorResponses <- function(TargetSiteID
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
       # str_subtitle <- stringr::str_wrap(paste0(str_subtitle1,str_subtitle2),85)
       str_subtitle <- paste0(str_subtitle1, str_subtitle2)
-      str_xlab  <- paste0(ifelse(log.yn == TRUE, "log1p ", ""), stressLabel)
+      str_xlab  <- paste0(ifelse(log.yn == TRUE, "Log1p ", ""), stressLabel)
       str_ylab  <- respLabel
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) { ##IF.equation.START
