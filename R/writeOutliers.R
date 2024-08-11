@@ -45,7 +45,7 @@ writeOutliers <- function(TargetSiteID
   }
 
   # Log removed or not removed outliers as data gaps
-  data_OutliersLabeled <- merge(data_outliers
+  data_OutliersLabeled <- merge(df_outliers
                                 , data_stressInfo[, c("StdParamName", "Label")]
                                 , by = "StdParamName", all.x =  TRUE)
   siteOutliers <- data_OutliersLabeled %>%
