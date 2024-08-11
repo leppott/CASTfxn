@@ -192,6 +192,7 @@ getCoOccur <- function(TargetSiteID
     # colGroup = "IncaseCol"
     incaseLabel = incaseLabel
     colBio = bioIndex
+    useBetter = TRUE
     colStressors = stressors
     df_stressinfo = data_stressInfo
     # BioNarBrk = BioNarBrk
@@ -214,6 +215,7 @@ getCoOccur <- function(TargetSiteID
 
   # QC, 20190418
   colStressors <- unique(colStressors)
+  stressors_logtransf <- unlist(as.character(df_stressinfo$StdParamName[df_stressinfo$LogTransf == 1]))
 
   # QC, 20190418
   colStressors.NotPresent <- colStressors[!(colStressors %in% names(df_data))]
@@ -228,10 +230,6 @@ getCoOccur <- function(TargetSiteID
 
   #
   myDateTime    <- format(Sys.time(),"%Y%m%d_%H%M%S")
-
-  ### TODO: Lookup where degraded/not degraded is first assigned ----
-  # Answer: When the biocoOccur file is generated (getCoOccurDataset)
-
   col.KEEP      <- c("StationID", "IncaseCol", "StressSampleID", "RespSampleID"
                      , colBio, "Quality", colStressors)
   #
@@ -291,12 +289,34 @@ getCoOccur <- function(TargetSiteID
   i.Group <- df.i[, "IncaseCol"][1]
   i.Bio <- min(df_data[df_data[, "StationID"] == TargetSiteID, colBio], na.rm=TRUE)
 
+  df.i <- df.i  %>%
+    tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
+                        , values_to = "ResultValue", values_drop_na = TRUE) %>%
+    dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
+                                        , suppressWarnings(log1p(ResultValue))
+                                        , ResultValue)) %>%
+    dplyr::select(!ResultValue) %>%
+    tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
+                                   , RespSampleID, all_of(colBio), Quality)
+                       , names_from = Stressor, values_from = TransfResult
+                       , values_fill = NA)
+
   # Filter for selected variables
   mapping <- c(COL.GROUP = "IncaseCol", COL.BIO = colBio)
   # Comparator Site Data
   wrapr::let(alias = mapping
              , expr = {
-               df.comp <- df_data[, col.KEEP] %>% dplyr::filter(COL.GROUP == i.Group)
+               df.comp <- df_data[, col.KEEP] %>% dplyr::filter(COL.GROUP == i.Group) %>%
+                 tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
+                                     , values_to = "ResultValue", values_drop_na = TRUE) %>%
+                 dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
+                                                     , suppressWarnings(log1p(ResultValue))
+                                                     , ResultValue)) %>%
+                 dplyr::select(!ResultValue) %>%
+                 tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
+                                                , RespSampleID, all_of(colBio), Quality)
+                                    , names_from = Stressor, values_from = TransfResult
+                                    , values_fill = NA)
              })
   # Better Bio Comparator Site Data
   wrapr::let(alias = mapping
@@ -320,6 +340,7 @@ getCoOccur <- function(TargetSiteID
     #
     message(paste0("Processing stressor (", j.num, "/", j.len, ") ", j, ".\n"))
     utils::flush.console()
+
     #
     if (useBetter) {
     df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
@@ -344,7 +365,7 @@ getCoOccur <- function(TargetSiteID
       if (grepl("^pH", j, perl = TRUE, ignore.case = FALSE) == TRUE) {  # Parameter is pH
         vals <- df_data %>%
           dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(eval(j))
+          dplyr::select(all_of(j))
         vals <- as.vector(vals[!is.na(vals)])
         # if pH val < pHlimLow then 1
         # if pH val > pHlimHigh then 1
@@ -371,7 +392,7 @@ getCoOccur <- function(TargetSiteID
       } else if (grepl("^DO", j, perl = TRUE, ignore.case = FALSE) == TRUE) {  #Parameter is DO
         vals <- df_data %>%
           dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(eval(j))
+          dplyr::select(all_of(j))
         vals <- as.vector(vals[!is.na(vals)])
         df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q50_", j)]
                                                , -1
@@ -389,14 +410,14 @@ getCoOccur <- function(TargetSiteID
                                              , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
     }##IF~j_in_InvSc~END
 
-    df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
-    df.i[is.na(df.i[, paste0("Sc_Box_", j)]), paste0("Sc_Box_", j)] <- "NE"
+    # df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
+    # df.i[is.na(df.i[, paste0("Sc_Box_", j)]), paste0("Sc_Box_", j)] <- "NE"
 
     # Plots
     # Need to filter df.i to get rid of NA for "j" (stressor)
     # order values by j then get multiple comp scores
     df.i.n <- df.i[!is.na(df.i[, j]), ]
-    df.i.n <- df.i.n[order(df.i.n[, j]), ]
+    # df.i.n <- df.i.n[order(df.i.n[, j]), ]
 
     if (nrow(df.i.n) != 0) {##IF.nrow.START
       # Save to Score/Results file
@@ -414,9 +435,10 @@ getCoOccur <- function(TargetSiteID
       df.scores.i.n <- df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), ]
 
       ## Box Plot of Comparator Sites (with better bio)
-      lab.Score <- paste0("Score = ", paste0(df.i.n[, paste0("Sc_Box_", j)]
-                                             , collapse=", "))
-      lab.N     <- paste0("n = ", df.i[,paste0("n_", j)][1])
+      scores <- unlist(as.vector(df.i.n[, "Sc_Box"]))
+      lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
+      # num <- df.i
+      lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", j)][1]))
 
       # plots ####
       # File Names
@@ -447,8 +469,12 @@ getCoOccur <- function(TargetSiteID
       targ_line_lwd <- 1
 
       # Get wordy label for the y-axis
-      jlabel <- df_stressinfo$Label[df_stressinfo$StdParamName == j]
       jlog <- df_stressinfo$LogTransf[df_stressinfo$StdParamName == j]
+      if (j %in% stressors_logtransf) {
+        jlabel <- paste0("Log1p ", df_stressinfo$Label[df_stressinfo$StdParamName == j])
+      } else {
+        jlabel <- df_stressinfo$Label[df_stressinfo$StdParamName == j]
+      }
       legendtitle <- "Samples"
       maintitleCO <- "Co-occurrence line of evidence"
       subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
@@ -459,8 +485,6 @@ getCoOccur <- function(TargetSiteID
       # plot1, ggplot ####
       if (useBetter) {
         df.plot <- df.comp.bio.better
-        # lab.sub <- paste0("Comparator samples with higher ", colBio, " scores and paired "
-        #                   , j, " data (", lab.N, ").\n ", lab.Score,".")
         lab.sub <- paste0("Comparator samples with higher ", colBio
                           , " scores (", lab.N, ").\n", lab.Score, ".")
       } else {
@@ -469,6 +493,8 @@ getCoOccur <- function(TargetSiteID
                           , " (", lab.N, ").\n", lab.Score, ".")
       }
 
+      targetvals <- as.numeric(unlist(df.i[, j]))
+
       p1<- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[j]]  # ARL 2023-05-25
                                           , x = IncaseCol, group = IncaseCol)) +
         ggplot2::geom_boxplot(na.rm = TRUE) +
@@ -476,12 +502,10 @@ getCoOccur <- function(TargetSiteID
         ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality
                                          , fill = Quality), alpha = 0.5
                             , na.rm = TRUE, position = "jitter") +
-        # ggplot2::geom_jitter(size=2, alpha=0.5, na.rm=TRUE
-        #                      , ggplot2::aes_string(color=col.SiteTypeQuality
-        #                                            , shape=col.SiteTypeQuality
-        #                                            , fill=col.SiteTypeQuality)) +
-        ggplot2::geom_hline(yintercept = df.i[,j], color = targ_line_col
+        ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col
                             , lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
+        ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black"
+                            , lty = 2, na.rm = TRUE) +
         ggplot2::scale_color_manual(name = legendtitle
                                     , breaks = c("Degraded", "Not degraded")
                                     , values = bio_col, drop = TRUE) +
@@ -493,16 +517,10 @@ getCoOccur <- function(TargetSiteID
                                     , values = bio_shp, drop = TRUE) +
         ggplot2::labs(title = maintitleCO, subtitle = subtitleCO, caption = lab.sub
                       , y = jlabel, x = lab_comp) +
-        ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black"
-                            , lty = 2, na.rm = TRUE) +
-        # ggplot2::guides(colour = ggplot2::guide_legend("Samples")
-        #                 , size = ggplot2::guide_legend("Samples")
-        #                 , shape = ggplot2::guide_legend("Samples")) +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
                        , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
         ggplot2::theme(axis.text.y = ggplot2::element_blank()
-                       # ggplot2::theme(axis.text.y=ggplot2::element_text(color="white")
                        , axis.ticks.y = ggplot2::element_blank())
       # Capture plot (png)
       # Capture most recent plot to a list
