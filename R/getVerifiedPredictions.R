@@ -165,7 +165,6 @@ getVerifiedPredictions <- function(TargetSiteID
                                    , SSTVanalytes
                                    , list.MatchBioData
                                    , biocomm
-                                   , colBioSample
                                    , df_BioTaxaRelAbund
                                    , df_MasterTaxa
                                    , colBio
@@ -188,7 +187,6 @@ getVerifiedPredictions <- function(TargetSiteID
     SSTVanalytes = as.character(SSTVparms)
     list.MatchBioData = list_MatchBioData
     biocomm = bioComm
-    colBioSample = colBioSample
     df_BioTaxaRelAbund = bioTaxaData
     df_MasterTaxa = bioMasterTaxa
     colBio = bioIndex
@@ -200,11 +198,9 @@ getVerifiedPredictions <- function(TargetSiteID
     tv <- 1
   }##IF.boo.DEBUG.END
 
-  # wd <- getwd() #2020-02-05
-
   # define pipe
   `%>%` <- dplyr::`%>%`
-  col.Bio.Deg   <- "Bio.Deg"
+  col.Bio.Deg   <- "Quality"
   # QC, biocomm ####
   biocomm <- toupper(biocomm)
 
@@ -212,80 +208,129 @@ getVerifiedPredictions <- function(TargetSiteID
   if (exists("deleteSSTVnames")) {rm(deleteSSTVnames)}
   if (exists("mtcols")) {rm(mtcols)}
 
-  # Pull only SSTVanalytes that are also in the list of paired stressors (at least one is)
-  SSTVanalytes <- SSTVanalytes[SSTVanalytes %in% stressors]
+  # Write results directory ----
+  wd <- dirname(dir_plots)
+  dir.sub <- basename(dir_plots)
+  dir.sub2 <- TargetSiteID
+  dir.sub3 <- biocomm
+  dir.sub4 <- dir_sub
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2))
+         , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
+         , FALSE)
+  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
+         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+         , FALSE)
+  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
 
-  # Pull stressor names having SSTVs (from stressor metadata) & in paired samp data
+  # Intersect SSTVanalytes with stressors ----
+  # These are the stressors that need evaluating. Other stressors will be
+  # logged as data gaps?
+  SSTVanalytes <- SSTVanalytes[SSTVanalytes %in% stressors]
+  otherAnalytes <- stressors[!(stressors %in% SSTVanalytes)]
+
+  # Write data gaps ----
+  for (o in seq_along(otherAnalytes)) {
+    otherName <- otherAnalytes[o]
+    gapcomment <- paste0("No stressor-specific tolerance values for "
+                         , otherName, ".")
+    gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
+                             , gapcomment)
+    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+    # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+    #             , row.names = FALSE, sep = "\t")
+  }
+
+  # Iterate over stressors with SSTVs ----
   df_SSTV <- df_stressinfo %>%
     dplyr::filter(StdParamName %in% SSTVanalytes) %>%
-    dplyr::select(StdParamName, SSTV, SSTVname, SensMin, SensMax, TolMin, TolMax)
+    dplyr::select(StdParamName, SSTVname, SensMin, SensMax, TolMin, TolMax)
   df_SSTV <- unique(df_SSTV)
-  colnames(df_SSTV)[1] <- "Analyte"
+  df_SSTV <- merge(df_SSTV, df_stressinfo[, c("StdParamName", "Label")])
 
   SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
-  # SSTVnames <- as.character(unique(SSTVnames))
   mtcols <- colnames(df_MasterTaxa)
-  # Check whether master taxa file contains SSTVname (tol vals for that stressor)
-  for (name in 1:length(SSTVnames)) {  # If more than one SSTV, then must iterate
-    SSTVlabel <- as.character(df_stressinfo$Label[df_stressinfo$StdParamName == name])
 
-    if (SSTVnames[name] %in% mtcols) {  # Check if TV data in Master Taxa file
+  # Check whether master taxa file contains SSTVname (tol vals for that stressor)
+
+  # Check for SSTV column names in master taxa file ----
+  for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
+    name <- SSTVnames[n]
+    SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
+
+    if (name %in% mtcols) {  # Check if TV data in Master Taxa file
       if (exists("keepMTcol")) {
-        keepMTcol <- c(keepMTcol, SSTVnames[name])
+        keepMTcol <- c(keepMTcol, name)
       } else {
-        keepMTcol <- SSTVnames[name]
+        keepMTcol <- name
       }
     } else {
       # no taxa in MT taxa are assigned tol values for this stressor
       gapcomment <- paste0("No ", biocomm, " taxa have tolerance "
                            , "values for this stressor.")
-      gaps <- cbind.data.frame("getVerifiedPredictions", SSTVnames[name], 0
-                               , gapcomment)
+      gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
       if (exists("deleteSSTVname")) {
-        deleteSSTVnames <- c(deleteSSTVnames, SSTVnames[name])
+        deleteSSTVnames <- c(deleteSSTVnames, name)
       } else {
-        deleteSSTVnames <- SSTVnames[name]
+        deleteSSTVnames <- name
       }
     }
   }
 
-  boo.continue = FALSE  # default value; only flips to true if data available
+  # Merge biotaxa results with master taxa file ----
+  df_MT_SSTVs <- df_MasterTaxa %>%
+    dplyr::select(TaxonID, all_of(keepMTcol))
 
-  if (exists("deleteSSTVnames") == TRUE) { # Some SSTV stressors not used
-    if (all(SSTVnames %in% deleteSSTVnames)) { # No SSTV stressors in master taxa
-      gapcomment <- paste0("No stressor-specific tolerance values for "
-                           , "potential site stressors exist in the master "
-                           , "taxa file for ", biocomm, ".")
-      gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
-                               , gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+  allDetectedTaxa <- df_BioTaxaRelAbund %>%
+    dplyr::distinct(TaxonID)
+  allDetectedTaxa <- as.character(unlist(allDetectedTaxa))
 
-      msg <- gapcomment
-      message(msg)
-      # print(msg)
-      # flush.console()
+  # Is this necessary?
+  siteDetectedTaxa <- df_BioTaxaRelAbund %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
+    dplyr::distinct(TaxonID)
+  siteDetectedTaxa <- as.character(unlist(siteDetectedTaxa))
 
-      boo.continue = FALSE
-    } # NO SSTV stressors are used; exit function cleanly
-  }
+  # boo.continue = FALSE  # default value; only flips to true if data available
+  #
+  # if (exists("deleteSSTVnames") == TRUE) { # Some SSTV stressors not used
+  #   if (all(SSTVnames %in% deleteSSTVnames)) { # No SSTV stressors in master taxa
+  #     gapcomment <- paste0("No stressor-specific tolerance values for "
+  #                          , "potential site stressors exist in the master "
+  #                          , "taxa file for ", biocomm, ".")
+  #     gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
+  #                              , gapcomment)
+  #     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+  #     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+  #     fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+  #     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+  #                 , row.names = FALSE, sep = "\t")
+  #
+  #     msg <- gapcomment
+  #     message(msg)
+  #
+  #     boo.continue = FALSE
+  #   } # NO SSTV stressors are used; exit function cleanly
+  # }
+  #
 
   if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
 
     keepMTcol <- as.character(keepMTcol)
     df_SSTVtaxa <- df_MasterTaxa %>%
-      dplyr::select(FinalID, eval(keepMTcol))
+      dplyr::select(TaxonID, all_of(keepMTcol))
 
     # Keep taxa with SSTValues, discard those without
-    if (length(keepMTcol)==1) {
+    if (length(keepMTcol) == 1) {
       msg <- "Got only 1 SSTV stressor!"
       message(msg)
       df_SSTVtaxa <- df_SSTVtaxa[!is.na(df_SSTVtaxa[, keepMTcol]), ]
@@ -300,14 +345,14 @@ getVerifiedPredictions <- function(TargetSiteID
 
     }
 
-    SSTVtaxanames <- unique(as.character(df_SSTVtaxa$FinalID))
-    reportedtaxa <- unique(as.vector(df_BioTaxaRelAbund$FinalID))
+    SSTVtaxanames <- unique(as.character(df_SSTVtaxa$TaxonID))
+    reportedtaxa <- unique(as.vector(df_BioTaxaRelAbund$TaxonID))
 
-    if (any(reportedtaxa %in% SSTVtaxanames)==TRUE) {
+    if (any(reportedtaxa %in% SSTVtaxanames) == TRUE) {
       df_SSTVrelabund <- df_BioTaxaRelAbund %>%
       # dplyr::rename(RelAbund = RelAbundInds) %>%
-      dplyr::select(eval(colBioSample), FinalID, RelAbund) %>%
-      dplyr::filter(FinalID %in% SSTVtaxanames)
+      dplyr::select(RespSampleID, TaxonID, RelAbund) %>%
+      dplyr::filter(TaxonID %in% SSTVtaxanames)
       boo.continue = TRUE
     } else {
       gapcomment <- paste0("No stressor-specific tolerance values for "
@@ -332,21 +377,21 @@ getVerifiedPredictions <- function(TargetSiteID
 
   if (boo.continue == TRUE) { # Have
     # check for and create (if necessary) "Results" subdirectory of working directory
-    wd <- dirname(dir_plots)
-    dir.sub <- basename(dir_plots)
-    dir.sub2 <- TargetSiteID
-    dir.sub3 <- biocomm
-    dir.sub4 <- dir_sub
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2))
-           , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
-           , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
-           , FALSE)
-    dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+    # wd <- dirname(dir_plots)
+    # dir.sub <- basename(dir_plots)
+    # dir.sub2 <- TargetSiteID
+    # dir.sub3 <- biocomm
+    # dir.sub4 <- dir_sub
+    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
+    #        , dir.create(file.path(wd, dir.sub, dir.sub2))
+    #        , FALSE)
+    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
+    #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
+    #        , FALSE)
+    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
+    #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
+    #        , FALSE)
+    # dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
 
     # 20190513, remove scores file if exists
     fn_scores <-  file.path(dir_path, paste0(TargetSiteID, "_", biocomm
@@ -454,19 +499,19 @@ getVerifiedPredictions <- function(TargetSiteID
           bmi.taxa.raw <- df_BioTaxaRelAbund[df_BioTaxaRelAbund$StationID %in%
                                         unique(all.match.b.str$StationID), ]
           bmi.taxa.raw <- merge(bmi.taxa.raw
-                                , df_MasterTaxa[, c("FinalID", SSTV.name)]
-                                , by.x = "FinalID", by.y = "FinalID")
+                                , df_MasterTaxa[, c("TaxonID", SSTV.name)]
+                                , by.x = "TaxonID", by.y = "TaxonID")
 
           minTolVal <- min(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
           maxTolVal <- max(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
 
           bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[, SSTV.name] == minTolVal |
-                                            bmi.taxa.raw[, SSTV.name] == minTolVal + 1,
-                                            bmi.taxa.raw$RelAbund, NA)
+                                            bmi.taxa.raw[, SSTV.name] == minTolVal + 1
+                                          , bmi.taxa.raw$RelAbund, NA)
 
-          bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name]==maxTolVal |
-                                           bmi.taxa.raw[,SSTV.name]==maxTolVal-1,
-                                         bmi.taxa.raw$RelAbund, NA)
+          bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name] == maxTolVal |
+                                           bmi.taxa.raw[,SSTV.name] == maxTolVal - 1
+                                         , bmi.taxa.raw$RelAbund, NA)
 
           bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID
                                           , BMISampID) %>%

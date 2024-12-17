@@ -54,7 +54,7 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     dplyr::summarise(LogTransf = max(LogTransf), .groups = "drop_last")
 
   # Merge data with metadata (note that some metadata may not be in the raw data)
-  df_data <- merge(df_data, df_meta[,c("StdParamName","LogTransf")]
+  df_data <- merge(df_data, df_meta[, c("StdParamName", "LogTransf")]
                    , by.x = "StdParamName", by.y = "StdParamName"
                    , all.x = TRUE)
   df_data <- df_data %>%
@@ -109,7 +109,6 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     # fitdistrplus::cdfcomp(list(fnorm_transf, flnorm_transf), xlogscale = TRUE
     #                               , ylogscale = TRUE, legendtext = c("normal", "lognormal"))
 
-
     ## Transform/scale variables ----
     ## Plot histograms before/after ----
     # cols <- setdiff(colnames(WS.STATE.final), c("COMID", "US_L3CODE"))
@@ -119,6 +118,8 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     # for (c in seq_along(cols)) {
     #   col <- cols[c]
     #   print(col)
+
+
 
     fn <- paste0(paramName, ".png")
     fn2 <- paste0(paramName, "_transf.png")
@@ -140,6 +141,17 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
         ggplot2::theme_bw()
       ggplot2::ggsave(file.path(dir_plots, fn2), p2, width = 6, height = 4
                       , units = "in")
+      fnorm_transf <- fitdistrplus::fitdist(df_sub$TransfResult, "norm")
+      flnorm_transf <- fitdistrplus::fitdist(df_sub$TransfResult, "lnorm")
+      df_sub2_gofstat <- fitdistrplus::gofstat(list(fnorm_transf, flnorm_transf))
+      fitdistrplus::cdfcomp(list(fnorm_transf, flnorm_transf), xlogscale = FALSE
+                                    , ylogscale = FALSE, legendtext = c("normal", "lognormal"))
+      fitdistrplus::denscomp(list(fnorm_transf, flnorm_transf), xlogscale = FALSE
+                            , ylogscale = FALSE, legendtext = c("normal", "lognormal"))
+      fitdistrplus::qqcomp(list(fnorm_transf, flnorm_transf), xlogscale = FALSE
+                            , ylogscale = FALSE, legendtext = c("normal", "lognormal"))
+      fitdistrplus::ppcomp(list(fnorm_transf, flnorm_transf), xlogscale = FALSE
+                            , ylogscale = FALSE, legendtext = c("normal", "lognormal"))
     }
 
     # 3*IQR method for identifying outliers
@@ -159,7 +171,7 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     paramMean <- mean(df_sub$TransfResult[is.finite(df_sub$TransfResult)]
                       , na.rm = TRUE)
     paramSD <- stats::sd(df_sub$TransfResult[is.finite(df_sub$TransfResult)]
-                  , na.rm = TRUE)
+                         , na.rm = TRUE)
     df_sub <- df_sub %>%
       dplyr::mutate(SDmethod = ifelse((abs(TransfResult - paramMean) >
                                          (6 * paramSD)), "Outlier", "Good"))

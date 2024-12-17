@@ -83,6 +83,7 @@ getCoOccurDataset <- function(df_sites
 
   # Clean up modeled data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
+  # TODO: Select TransfResult or ResultValue?
   if (nrow(df_model) > 0) {
     df_model <- df_model %>%
       dplyr::select(StationID, StdParamName, ResultValue) %>%
@@ -108,6 +109,7 @@ getCoOccurDataset <- function(df_sites
 
   # Clean up measured data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
+  # TODO: Select TransfResult or ResultValue?
   if (nrow(df_meas) > 0) {
     df_meas <- as.data.frame(df_meas) %>%
       dplyr::filter(!is.na(ResultValue)) %>%

@@ -239,7 +239,7 @@ getQualSites <- function(TargetSiteID
                              , length(compSites) - numcompsfinal
                              , gapcomment)
     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")

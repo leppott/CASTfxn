@@ -1098,7 +1098,8 @@ rm(startprep.time, endprep.time, elapsedprep.time, df_runstats)
 ### Evaluate each target site
 ## Use this for debugging
 if (boo_Shiny == TRUE) {
-  df_targets <- data.frame("TargetSiteID" = input$Station, "Chosen by" = NA, "Comment" = NA)
+  df_targets <- data.frame("TargetSiteID" = input$Station
+                           , "Chosen by" = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
   df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
@@ -1138,7 +1139,6 @@ for (site in seq_along(df_targets)) {
 
     }
   }
-
 
   if (is.na(TargetSiteID)) {
     next()
@@ -1266,12 +1266,21 @@ for (site in seq_along(df_targets)) {
   # Prepare data sets of all stressors ever detected at the target site
   # This requires data_Stress, which either includes or excludes outliers
   # used in getStressorList and getTimeSeq
+  # TODO: Pivot wider from TransfResult or ResultValue? Probably should use
+  # TransfResult, so site data aren't plotting on a different scale.
   siteStressAll <- data_Stress %>%
     dplyr::select(!c(IQRmethod, SDmethod, Outlier)) %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
     tidyr::pivot_wider(names_from = StdParamName
                        , values_from = ResultValue) %>%
+    dplyr::select_if(not_all_na)
+  siteStressAllTransf <- data_Stress %>%
+    dplyr::select(!c(IQRmethod, SDmethod, Outlier)) %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
+    dplyr::filter(!is.na(TransfResult)) %>%
+    tidyr::pivot_wider(names_from = StdParamName
+                       , values_from = TransfResult) %>%
     dplyr::select_if(not_all_na)
   siteDetectsAll <- as.vector(colnames(siteStressAll))
   siteDetectsAll <- siteDetectsAll[!(siteDetectsAll %in%
@@ -1281,7 +1290,7 @@ for (site in seq_along(df_targets)) {
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
   writeOutliers(TargetSiteID = TargetSiteID
-                , df_outliers = data_outliers
+                , df_outliers = data_stressoutliers
                 , df_stressInfo = data_stressInfo
                 , siteDetects = siteDetectsAll
                 , compSites = comp_sites
@@ -1386,7 +1395,7 @@ for (site in seq_along(df_targets)) {
   # Get Stressor List using all stressors ever detected at the target site
   # regardless of match status
   list.stressors <- getStressorList(TargetSiteID = TargetSiteID
-                                    , outcaseLabel = outcaseColName # used for subtitle
+                                    , outcaseLabel = outcaseLabel   # used for subtitle
                                     , outcaseID = outcaseID         # used for title
                                     , outcaseSites = all_sites      # vector
                                     , incaseSites = comp_sites      # vector
@@ -1420,12 +1429,12 @@ for (site in seq_along(df_targets)) {
 
     # No identified stressors may be a data gap, but may not be, either
     gapcomment <- paste0("No potential stressors fall outside the specified "
-                         , "quantile range (", probsLow, " to ", probsHigh,").")
+                         , "quantile range (", probsLow, " to ", probsHigh, ").")
     gaps <- cbind.data.frame("getStressorList", "Number of stressors", 0
                              , gapcomment)
     colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+    fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
 
@@ -1456,7 +1465,7 @@ for (site in seq_along(df_targets)) {
     NE_true <- FALSE
     numLoE = 0
 
-    LoEs <- c("TS", "CO", "SRLog", "SRLin", "VP", "SSD")
+    LoEs <- c("TS", "CO", "Suff", "Grad", "VP", "SSD")
     df_LoE <- as.data.frame(LoEs)
     colnames(df_LoE) <- "LoE"
     df_LoE <- df_LoE %>%
@@ -1633,10 +1642,6 @@ for (site in seq_along(df_targets)) {
                                       , useBC = useBC
                                       , outcaseColName = "OutcaseCol"
                                       , outcaseID = outcaseID
-                                      , BioNarBrk = BioNarBrk
-                                      , BioNarLab = BioNarLab
-                                      , BioDegBrk = BioDegBrk
-                                      , BioDegLab = c("Yes", "No")
                                       , dir_results = dir_results
                                       , dir_sub = "SiteInfo")
     # Returns: myQualSites <- list(dfQuality = df_qual
@@ -1788,7 +1793,6 @@ for (site in seq_along(df_targets)) {
       }
     }
 
-
     # 24, getSufficiency ####
     # Progress, 24
     if (boo_Shiny == TRUE) {
@@ -1842,24 +1846,24 @@ for (site in seq_along(df_targets)) {
                    , "StressSampleID", "RespSampleID")
 
     all.b.str <- listPairedStressResp$allBioStress %>%
-      dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
+      dplyr::select(all_of(core.cols), all_of(stressors)) %>%
+      dplyr::select(StressSampleID, RespSampleID, StationID, all_of(stressors))
     cl.b.str <- listPairedStressResp$compBioStress %>%
-      dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
+      dplyr::select(all_of(core.cols), all_of(stressors)) %>%
+      dplyr::select(StressSampleID, RespSampleID, StationID, all_of(stressors))
     site.b.str <- listPairedStressResp$siteBioStress %>%
-      dplyr::select(eval(core.cols), eval(stressors)) %>%
-      dplyr::select(StressSampleID, RespSampleID, StationID, eval(stressors))
+      dplyr::select(all_of(core.cols), all_of(stressors)) %>%
+      dplyr::select(StressSampleID, RespSampleID, StationID, all_of(stressors))
 
     all.b.rsp <- listPairedStressResp$allBioResp %>%
       dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
-             , Quality, eval(bioMetricNames))
+             , Quality, all_of(bioMetricNames))
     cl.b.rsp <- listPairedStressResp$compBioResp %>%
       dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
-             , Quality, eval(bioMetricNames))
+             , Quality, all_of(bioMetricNames))
     site.b.rsp <- listPairedStressResp$siteBioResp %>%
       dplyr::select(RespSampleID, StressSampleID, StationID, RespSampleDate
-             , Quality, eval(bioMetricNames))
+             , Quality, all_of(bioMetricNames))
 
     siteStressInfo <- listPairedStressResp$siteStressInfo
 
@@ -1885,23 +1889,6 @@ for (site in seq_along(df_targets)) {
     }## IF ~ boo_Shiny ~ END
     #
     # Get Stressor Responses inside (comparators) and outside (all) the case
-    getBioGradient(TargetSiteID = TargetSiteID
-                   , df_data = data_bioCoOccur    # added 20240730 ARL
-                   , all_sites                    # added 20240730 ARL
-                   , compSites = comp_sites       # added 20240730 ARL
-                   , stressors = stressors
-                   , df_stressinfo = siteStressInfo
-                   , BioResp = bioMetricNames
-                   , df_respinfo = bioMetricInfo
-                   , list.MatchBioData = list_MatchBioData
-                   , qual2plotSamps = allQual2PlotSamps
-                   , siteQual2Plot = siteQual2Plot
-                   , biocomm = bioComm
-                   , p.val_cutoff = 0.05
-                   , r2_cutoff = 0.1
-                   , dir_plots = dir_results
-                   , dir_sub = "StressorResponse"
-                   , boo_plot = boo_plot_user)
     getBioStressorResponses(TargetSiteID = TargetSiteID
                             , stressors = stressors
                             , df_stressinfo = siteStressInfo
@@ -1953,7 +1940,7 @@ for (site in seq_along(df_targets)) {
                              , SSTVanalytes = as.character(SSTVparms)
                              , list.MatchBioData = list_MatchBioData
                              , biocomm = bioComm
-                             , colBioSample = colBioSample
+                             # , colBioSample = colBioSample
                              , df_BioTaxaRelAbund = bioTaxaData
                              , df_MasterTaxa = bioMasterTaxa
                              , colBio = bioIndex

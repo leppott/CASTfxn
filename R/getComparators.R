@@ -139,16 +139,16 @@ getComparators<- function(TargetSiteID
     bc_cutofftxt <- ifelse((bc_cutoff * 100) < 10, paste0(0, bc_cutoff * 100)
                            , bc_cutoff * 100)
     comp.sites.info <- df_bcdist.temp
-    comp.sites.info$Comment <- ifelse(comp.sites.info[,TargetColName] <= 0.05
+    comp.sites.info$Comment <- ifelse(comp.sites.info[, TargetColName] <= 0.05
                                       , paste0("OutCase_LTEQ", bc_cutofftxt)
                                       , paste0("OutCase_GT", bc_cutofftxt))
 
-    df_bioCoOccurTrim <- df_bioCoOccur[,c("StationID", "RespSampID"
+    df_bioCoOccurTrim <- df_bioCoOccur[, c("StationID", "RespSampID"
                                           , bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = all_of(TargetColName))
-    write.table(comp.samps, fn.compsites, append = FALSE
-                , col.names = TRUE, row.names = FALSE, sep = "\t")
+    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE
+                , row.names = FALSE, sep = "\t")
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)

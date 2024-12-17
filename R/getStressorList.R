@@ -209,18 +209,18 @@ getStressorList <- function(TargetSiteID
   dir.sub3 <- dir_sub
 
   if (!is_local) { # Is shiny
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2))==TRUE
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2))
            , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3))==TRUE
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
            , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
            , FALSE)
     dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3)
   } else {
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2))==TRUE
+    ifelse(!dir.exists(file.path(dir.sub, dir.sub2)) == TRUE
            , dir.create(file.path(dir.sub, dir.sub2))
            , FALSE)
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3))==TRUE
+    ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3)) == TRUE
            , dir.create(file.path(dir.sub, dir.sub2, dir.sub3))
            , FALSE)
     dir_path <- file.path(dir.sub, dir.sub2, dir.sub3)
@@ -417,7 +417,7 @@ getStressorList <- function(TargetSiteID
         str_subtitle <- paste0("All stressor samples from outside the case ("
                                , outcaseLabel, " ", outcaseID, ")")
       }
-      message(str_subtitle)
+      # message(str_subtitle)
       str_xlab <- "Standardized values"
       str_ylab <- str_Group
 
@@ -603,9 +603,9 @@ getStressorList <- function(TargetSiteID
     minSiteVal <- min(as.data.frame(siteChemData[, chemname]), na.rm = TRUE)
     # DirIncStress ####
     # (not all in chem.info)
-    if(chemname %in% chemInfo[, "StdParamName"]){
+    if (chemname %in% chemInfo[, "StdParamName"]) {
       ExpDirIncStress <- tolower((chemInfo[chemInfo[,"StdParamName"] == chemname
-                                           ,"DirIncStress"])[1])
+                                           , "DirIncStress"])[1])
     } else {
       ExpDirIncStress <- "unk"
     }
@@ -657,7 +657,7 @@ getStressorList <- function(TargetSiteID
     stressorlist <- setdiff(stressor, bioParmsDEL)
     stressorsExcepted <- intersect(stressor, bioParmsDEL)
     if (exists("tmpParmDEL")) {
-      stressorsExcepted<-unique(c(stressorsExcepted, tmpParmDEL))
+      stressorsExcepted <- unique(c(stressorsExcepted, tmpParmDEL))
       stressorlist <- setdiff(stressorlist, tmpParmDEL)
     }
     # ID and write stressors evaluated by biocomm
@@ -667,44 +667,44 @@ getStressorList <- function(TargetSiteID
     colnames(stressorsEvaluated)[1] <- "Stressor"
     stressorsEvaluated <- merge(stressorsEvaluated
                                 , chemInfo[,c("StdParamName", "Label")]
-                               , by.x = "Stressor", by.y = "StdParamName"
-                               , all.x = TRUE)
+                                , by.x = "Stressor", by.y = "StdParamName"
+                                , all.x = TRUE)
     if (nrow(stressorsEvaluated)==0) {
       stressorsEvaluated <- rbind(stressorsEvaluated
                                   , (cbind("None", biocomm, "None")))
     }
-    colnames(stressorsEvaluated) <- c("Stressor","BioComm","Label")
+    colnames(stressorsEvaluated) <- c("Stressor", "BioComm", "Label")
     stressorsEvaluated <- unique(stressorsEvaluated)
     stressorsEvaluated <- dplyr::filter(stressorsEvaluated, Stressor != "none")
     # Write stressors evaluated table
     if (file.exists(fn.stressorsEval)) {
-      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep="\t"
-                         , col.names=FALSE, row.names = FALSE, append=TRUE)
+      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t"
+                         , col.names = FALSE, row.names = FALSE, append = TRUE)
     } else {
-      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep="\t"
-                         , col.names=TRUE, row.names = FALSE, append=FALSE)
+      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t"
+                         , col.names = TRUE, row.names = FALSE, append = FALSE)
     }
     # ID and write stressors evaluated by biocomm
     stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
       dplyr::mutate(Biocomm = biocomm)
     colnames(stressorsExcepted)[1] <- "Stressor"
     stressorsExcepted <- merge(stressorsExcepted
-                               , chemInfo[,c("StdParamName", "Label")]
+                               , chemInfo[, c("StdParamName", "Label")]
                                , by.x = "Stressor", by.y = "StdParamName"
                                , all.x = TRUE)
-    if (nrow(stressorsExcepted)==0) {
+    if (nrow(stressorsExcepted) == 0) {
       stressorsExcepted <- rbind(stressorsExcepted
                                  , (cbind("None", biocomm, "None")))
     }
-    colnames(stressorsExcepted) <- c("Stressor","BioComm","Label")
+    colnames(stressorsExcepted) <- c("Stressor", "BioComm", "Label")
     stressorsExcepted <- unique(stressorsExcepted)
     # Write stressors excepted table
     if (file.exists(fn.stressorsExc)) {
-      utils::write.table(stressorsExcepted, fn.stressorsExc, sep="\t"
-                         , col.names=FALSE, row.names = FALSE, append=TRUE)
+      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t"
+                         , col.names = FALSE, row.names = FALSE, append = TRUE)
     } else {
-      utils::write.table(stressorsExcepted, fn.stressorsExc, sep="\t"
-                         , col.names=TRUE, row.names = FALSE, append=FALSE)
+      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t"
+                         , col.names = TRUE, row.names = FALSE, append = FALSE)
     }
   }
 
