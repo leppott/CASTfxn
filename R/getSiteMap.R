@@ -32,6 +32,7 @@
 #' @param sp_outline Spatial dataframe representing region (or subregion) boundary.
 #' @param sp_flowline Spatial dataframe representing stream reaches.
 #' @param region Region or regulatory organization to which the data apply (e.g., AZ, SMC, WA, OR)
+#' @param df_cluster dataframe containing clustered reaches (COMID, ClusterID)
 #' @param df_sites dataframe containing site data, including both "inside the case"
 #'                 and "outside the case" identifiers.
 #' @param outcaseID Identifier for "outside the case" sites
@@ -53,6 +54,7 @@
 getSiteMap <- function(sp_outline
                        , sp_flowline
                        , region
+                       , df_cluster
                        , df_sites
                        , allSites
                        , compSites
@@ -66,18 +68,19 @@ getSiteMap <- function(sp_outline
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG == TRUE) {
-    sp_outline = STATE.shp
-    sp_flowline = NHD.STATE
-    region = regionName
-    df_sites = data_Sites
-    allSites = all_sites
-    compSites = comp_sites
-    TargetSiteID = TargetSiteID
-    useBC = TRUE
-    dir_results = dir_results
-    dir_sub = "SiteInfo"
-    dir_map_rmd = "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
-    # plotLMAP = FALSE
+    sp_outline <- STATE.shp
+    sp_flowline <- WS.STATE.region
+    region <- regionName
+    df_cluster <- data_cluster
+    df_sites <- data_Sites
+    allSites <- all_sites
+    compSites <- comp_sites
+    TargetSiteID <- TargetSiteID
+    useBC <- FALSE
+    dir_results <- dir_results
+    dir_sub <- "SiteInfo"
+    dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+    # plotLMAP <- FALSE
   }
 
   # Check function arguments
@@ -122,31 +125,27 @@ getSiteMap <- function(sp_outline
   # Create color vector (range 2 to 6) for reaches
   if (useBC == TRUE) {
     maxClusterID <- max(as.numeric(df_sites$OutcaseCol), na.rm = TRUE)
-    if (maxClusterID == 6) {
-      mag.vec <- viridis::viridis(23)[c(3,7,11,15,19,23)]
-    } else if (maxClusterID == 5) {
-      mag.vec <- viridis::viridis(19)[c(3,7,11,15,19)]
-    } else if (maxClusterID == 4) {
-      mag.vec <- viridis::viridis(15)[c(3,7,11,15)]
-    } else if (maxClusterID == 3) {
-      mag.vec <- viridis::viridis(11)[c(3,7,11)]
-    } else { # max clusters = 2
-      mag.vec <- viridis::viridis(7)[c(3,7)]
-    }
   } else {
     maxClusterID <- max(as.numeric(df_sites$IncaseCol), na.rm = TRUE)
-    if (maxClusterID == 6) {
-      mag.vec <- viridis::viridis(23)[c(3,7,11,15,19,23)]
-    } else if (maxClusterID == 5) {
-      mag.vec <- viridis::viridis(19)[c(3,7,11,15,19)]
-    } else if (maxClusterID == 4) {
-      mag.vec <- viridis::viridis(15)[c(3,7,11,15)]
-    } else if (maxClusterID == 3) {
-      mag.vec <- viridis::viridis(11)[c(3,7,11)]
-    } else { # max clusters = 2
-      mag.vec <- viridis::viridis(7)[c(3,7)]
-    }
   }
+  if (maxClusterID == 6) {
+    mag.vec <- viridis::viridis(23)[c(3,7,11,15,19,23)]
+  } else if (maxClusterID == 5) {
+    mag.vec <- viridis::viridis(19)[c(3,7,11,15,19)]
+  } else if (maxClusterID == 4) {
+    mag.vec <- viridis::viridis(15)[c(3,7,11,15)]
+  } else if (maxClusterID == 3) {
+    mag.vec <- viridis::viridis(11)[c(3,7,11)]
+  } else { # max clusters = 2
+    mag.vec <- viridis::viridis(7)[c(3,7)]
+  }
+  mag.vec <- c(mag.vec, "#A9A9A9FF")
+
+  # Ensure flowline shapefile contains "ClusterID"
+  sp_flowline <- dplyr::left_join(sp_flowline, as.data.frame(df_cluster),
+                                  by = "COMID")
+  sp_outline <- sf::st_transform(sp_outline, crs = sf::st_crs(sp_flowline))
+
 
   # Get sites (if datum is specified in the metadata, transform to WGS84)
   # Subset ref sites, outside case sites, inside case sites, and target site
@@ -163,7 +162,7 @@ getSiteMap <- function(sp_outline
                                                    , "Target")))
   if (is.na(datum)) {
     message("Datum assumed to be WGS84.")
-   sp_sites <- sf::st_as_sf(df_sites, crs = 4326, coords = c("Longitude", "Latitude"))
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4326, coords = c("Longitude", "Latitude"))
   } else if (datum == "NAD27") {
     sp_sites <- sf::st_as_sf(df_sites, crs = 4267
                              , coords = c("FinalLongitude", "FinalLatitude"))
@@ -181,18 +180,12 @@ getSiteMap <- function(sp_outline
     sp_sites <- sf::st_as_sf(df_sites, crs = 4326
                              , coords = c("FinalLongitude", "FinalLatitude"))
   }
+  sp_sites <- sf::st_transform(sp_sites, crs = sf::st_crs(sp_flowline))
 
   # Get region orientation
-  # regionName <- state.name[which(state.abb == region)]
-  # if (regionName %in% c("Arizona", "Arkansas", "Colorado", "Connecticut", "Georgia"
-  #                   , "Iowa", "Kansas", "Louisiana", "Maryland", "Massachusetts"
-  #                   , "Nebraska", "New Mexico", "North Dakota", "Ohio", "Oklahoma"
-  #                   , "Oregon", "Pennsylvania", "South Carolina", "South Dakota"
-  #                   , "Utah", "Washington", "West Virginia", "Wisconsin", "Wyoming")) {
     map.width = 7
     map.height = 7
     map.units = "in"
-  # }
 
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # Prepare map
@@ -218,37 +211,38 @@ getSiteMap <- function(sp_outline
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "grey80") +
     tmap::tm_shape(sp_flowline) +
-    tmap::tm_lines("Cluster", palette = mag.vec#, legend.col.show = FALSE
-                   , lwd = 0.5, legend.col.is.portrait = FALSE) +
-    # tmap::tm_lines("Cluster", palette = mag.vec, legend.col.show = TRUE
-    #                , lwd = 0.5, legend.col.is.portrait = FALSE) +
+    tmap::tm_lines("ClusterID", palette = mag.vec, lwd = 0.5,
+                   legend.col.is.portrait = FALSE) +
     tmap::tm_shape(sp_outside) +
     tmap::tm_symbols(col = "gray25", shape = 25, size = 0.1, border.col = NA) +
     tmap::tm_shape(sp_inside) +
-    tmap::tm_symbols(col = "cyan3", shape = 21, size = 0.15, border.col = NA) +
+    tmap::tm_symbols(col = "cyan4", shape = 21, size = 0.15, border.col = NA) +
     tmap::tm_shape(sp_targetsite) +
     tmap::tm_symbols(col = "red", shape = 17, size = 0.5, border.col = NA) +
     tmap::tm_shape(sp_outline) +
-    tmap::tm_borders(col = "black", lwd = 1) +
-    tmap::tm_add_legend('symbol'
-                        , col = c("gray25", "cyan3", "red"), border.col = NA
-                        , labels = c("Outside case", "Inside case"
-                                     , "Target site")
-                        , title = "Sites", is.portrait = FALSE, reverse = TRUE) +
+    tmap::tm_borders(col = "black", lwd = 1)
+
+  if (nrow(sp_refsites) > 0) {
+    state.map <- state.map +
+      tmap::tm_shape(sp_refsites) +
+      tmap::tm_symbols(border.col = "blue", col = NA, size = 0.1) +
+      tmap::tm_add_legend('symbol'
+                          , col = c("gray25", "cyan4", "blue", "red"), border.col = NA
+                          , labels = c("Outside the case", "Inside the case"
+                                       , "Reference", "Target site")
+                          , title = "", is.portrait = FALSE, reverse = TRUE)
+  } else {
+    state.map <- state.map +
+      tmap::tm_add_legend('symbol', col = c("gray25", "cyan4", "red"),
+                          border.col = NA, title = "Sites", is.portrait = FALSE,
+                          labels = c("Outside case ", "Inside case", "Target site"),
+                          reverse = TRUE)
+  }
+  state.map <- state.map +
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.outside = TRUE
                     , main.title = regionName, legend.text.size = 0.5
                     , legend.outside.position = "bottom", legend.stack = "horizontal"
                     , legend.title.size = 0.8)
-  # if (nrow(sp_refsites) > 0) {
-  #   state.map <- state.map +
-  #     tmap::tm_shape(sp_refsites) +
-  #     tmap::tm_symbols(border.col = "blue", col = NA, size = 0.1) +
-  #     tmap::tm_add_legend('symbol'
-  #                         , col = c("gray25", "cyan3", "blue", "red"), border.col = NA
-  #                         , labels = c("Outside the case", "Inside the case"
-  #                                      , "Reference", "Target site")
-  #                         , title = "", is.portrait = FALSE, reverse = TRUE)
-  # }
   tmap::tmap_save(state.map, fn_Map#, width = map.width, height = map.height
                   , units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
