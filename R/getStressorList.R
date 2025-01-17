@@ -470,10 +470,10 @@ getStressorList <- function(TargetSiteID
 
       if (boo_plot == TRUE) { # No rows in df_plot_long
         # ggplot, main (outside the case)
-        p_SL <- ggplot2::ggplot(data=df_plot_long) +
+        p_SL <- ggplot2::ggplot(data = df_plot_long) +
           ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
                                              , y = value))  +
-          ggplot2::geom_jitter(data=df_plot_long, width = 0.1
+          ggplot2::geom_jitter(data = df_plot_long, width = 0.1
                                , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
                                               , y = value, color = "col_sites_all"
                                               , stroke = 0.5
@@ -539,10 +539,7 @@ getStressorList <- function(TargetSiteID
 
         #
         if (!is_local) {message(p_SL)}
-        # ENABLE THIS LATER
-        # plots.g[[g]] <- grDevices::recordPlot()
-        #
-        # fn_title <- make.names(groupnames[g,])
+
         fn_title <- stringr::str_to_title(str_Group)
         fn_title <- gsub("\\s","",fn_title)
         fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_"
@@ -551,20 +548,6 @@ getStressorList <- function(TargetSiteID
       }##IF.boo_plot==TRUE
     }##IF.n.END
   }##FOR.g.END
-
-  # PDF ####
-  # Create PDF from list
-  # ENABLE THIS LATER
-  # fn_pdf <- file.path(dir_path, paste0(TargetSiteID,"_",biocomm,"_"
-  #                                      ,"CandCauses_ALL.pdf"))
-  # grDevices::pdf(file=fn_pdf, width=plot_W, height=plot_H)
-  #   for (i in plots.g){##FOR.gp.START
-  #     #grDevices::replayPlot(g.plot)
-  #     if(is.null(i)==TRUE) {next}
-  #     grDevices::replayPlot(i)
-  #   }##FOR.gp.END
-  # grDevices::dev.off()
-  # rm(plots.g)
 
   # Percentile Data File ####
   if (nrow(outcaseChemData) > 1) { # more than one sample from target site exists for cluster
