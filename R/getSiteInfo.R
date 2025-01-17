@@ -30,25 +30,25 @@
 #' A subdirectory is created for each SiteID.
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
-#' @param data_Sites dataframe containing site data, including "inside the case"
+#' @param df_Sites dataframe containing site data, including "inside the case"
 #'                   and "outside the case" identifiers. If useBC == TRUE, "outside
 #'                   the case" will be cluster; if useBC == FALSE, "inside the case"
 #'                   will be cluster.
-#' @param data_bkgdata dataframe containing anthropogenically-influenced variables from StreamCat
-#' @param data_bkginfo dataframe containing metadata for the variables in data_bkgdata
-#' @param data_SampSummary dataframe containing sample IDs for samples collected
+#' @param df_BkgData dataframe containing anthropogenically-influenced variables from StreamCat
+#' @param df_BkgInfo dataframe containing metadata for the variables in df_BkgData
+#' @param df_SampSummary dataframe containing sample IDs for samples collected
 #'                         at the target site, organized by sample date (rows)
 #'                         and type (columns)
-#' @param data_bmiMetrics dataframe containing BMI sample index and metric values
-#' @param bmiIndexGp vector containing one or more BMI indices for display purpose only
-#' @param data_algMetrics dataframe containing algae sample index and metric values.
+#' @param df_BMIMetrics dataframe containing BMI sample index and metric values
+#' @param BMIIndexGp vector containing one or more BMI indices for display purpose only
+#' @param df_ALGMetrics dataframe containing algae sample index and metric values.
 #'                        Default is NULL.
-#' @param algIndexGp vector containing one or more algal indices for display purpose only
-#' @param data_fishMetrics dataframe containing fish sample index and metric values
-#' @param fishIndexGp vector containing one or more fish indices for display purpose only
-#' @param comp_sites vector containing comparator site IDs
-#' @param outcaseLabel Label for the "outside the case" identifier. Default = NULL.
-#' @param incaseLabel Label for the "inside the case" identifier. Default = NULL.
+#' @param ALGIndexGp vector containing one or more algal indices for display purpose only
+#' @param df_FishMetrics dataframe containing fish sample index and metric values
+#' @param FishIndexGp vector containing one or more fish indices for display purpose only
+#' @param comp.sites vector containing comparator site IDs
+#' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
+#' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE"
 #' @param dir_photo directory containing all site photos (for every site in the data set).
 #'                  Default is file.path(getwd(), "Data", "Photos").
@@ -104,21 +104,21 @@
 #' }
 #' @export
 getSiteInfo <- function(TargetSiteID
-                        , data_Sites
-                        , data_bkgdata
-                        , data_bkginfo
-                        , data_SampSummary
-                        , data_bmiMetrics = NULL
-                        , bmiIndexGp
-                        , data_algMetrics = NULL
-                        , algIndexGp
-                        , data_fishMetrics = NULL
-                        , fishIndexGp
-                        , comp_sites
-                        , all_sites
-                        , outcaseLabel = NULL
-                        , incaseLabel = NULL
-                        , useBC = FALSE
+                        , df_Sites
+                        , df_BkgData
+                        , df_BkgInfo
+                        , df_SampSummary
+                        , df_BMIMetrics = NULL
+                        , BMIIndexGp
+                        , df_ALGMetrics = NULL
+                        , ALGIndexGp
+                        , df_FishMetrics = NULL
+                        , FishIndexGp
+                        , comp.sites
+                        , all.sites
+                        , OutcaseLabel = NULL
+                        , IncaseLabel = NULL
+                        , UseBC = FALSE
                         # , data_cluster
                         # , data_mods = NULL
                         # , data_303d = NULL
@@ -126,27 +126,27 @@ getSiteInfo <- function(TargetSiteID
                         , dir_results = file.path(getwd(), "Results")
                         , dir_sub = "SiteInfo"
                         , boo_plot = TRUE
-                        ) {##FUNCTION.START
+) {##FUNCTION.START
 
   # DEBUG
   boo_DEBUG <- FALSE
   #
   if (boo_DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
-    data_Sites = data_Sites
-    data_bkgdata = NULL
-    data_bkginfo = NULL
-    data_SampSummary = data_sampSummary
-    data_bmiMetrics = data_bmiMetrics
-    bmiIndexGp = bmiIndexGp
-    data_algMetrics = data_algMetrics
-    algIndexGp = algIndexGp
-    data_fishMetrics = data_fishMetrics
-    fishIndexGp = fishIndexGp
-    comp_sites = comp_sites
-    all_sites = all_sites
-    outcaseLabel = outcaseLabel
-    incaseLabel = incaseLabel
+    df_Sites = data_Sites
+    df_BkgData = data_bkgdata
+    df_BkgInfo = data_bkginfo
+    df_SampSummary = data_sampSummary
+    df_BMIMetrics = data_bmiMetrics
+    BMIIndexGp = bmiIndexGp
+    df_ALGMetrics = data_algMetrics
+    ALGIndexGp = algIndexGp
+    df_FishMetrics = data_fishMetrics
+    FishIndexGp = fishIndexGp
+    comp.sites = comp_sites
+    all.sites = all_sites
+    OutcaseLabel = outcaseLabel
+    IncaseLabel = incaseLabel
     useBC = FALSE
     # data_cluster = NULL
     # data_mods = NULL
@@ -188,45 +188,51 @@ getSiteInfo <- function(TargetSiteID
 
   #
   if (useBC == TRUE) {
-    mySiteInfo <- data_Sites %>%
+    mySiteInfo <- df_Sites %>%
       dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
                     , RefSiteFlag, COMID, OutcaseCol)
-    outcaseID <- mySiteInfo$OutcaseCol
+    outcaseID <- mySiteInfo$OutcaseCol # this represents cluster ID
+    data_compbkgd <- df_BkgData[df_BkgData$ClusterID == outcaseID, ]
   } else { # useBC == FALSE; cluster ID is inside the case ID
-    mySiteInfo <- data_Sites %>%
+    mySiteInfo <- df_Sites %>%
       dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::select(FinalLatitude, FinalLongitude, WaterbodyName
                     , RefSiteFlag, COMID, OutcaseCol, IncaseCol)
-    incaseID <- mySiteInfo$IncaseCol
+    incaseID <- mySiteInfo$IncaseCol # this represents cluster ID
+    data_compbkgd <- df_BkgData[df_BkgData$ClusterID == incaseID, ]
   }
   myCOMID <- mySiteInfo$COMID
-  data_refSites <- data_Sites %>%
+  data_refSites <- df_Sites %>%
     dplyr::filter(RefSiteFlag == 1) %>%
     dplyr::select(StationID, FinalLatitude, FinalLongitude, COMID)
   myRefCOMIDs <- as.vector(unique(data_refSites$COMID))
 
+  data_compsites <- dplyr::filter(df_Sites, StationID %in% comp.sites)
+  myCompCOMIDs <- as.vector(unique(data_compsites$COMID))
+
   # get sampling info (dates of samples)
-  mySamps <- dplyr::filter(data_SampSummary, StationID == TargetSiteID)
+  mySamps <- dplyr::filter(df_SampSummary, StationID == TargetSiteID) %>%
+    dplyr::mutate(SampYear = lubridate::year(SampleDate))
+  mySampsYears <- sort(as.integer(unique(mySamps$SampYear)))
 
   # get response information (CSCI, MMIhybrid, FIBI, etc.)
   if (useBC == TRUE) {
-    str_sub <- paste0("Target Site: ", TargetSiteID, ", ", outcaseLabel, " "
+    str_sub <- paste0("Target Site: ", TargetSiteID, ", ", OutcaseLabel, " "
                       , outcaseID)
   } else {
     str_sub <- paste0("Target Site: ", TargetSiteID, "; Outside the case: "
-                      , outcaseLabel, "; Inside the case: ", incaseLabel
+                      , OutcaseLabel, "; Inside the case: ", IncaseLabel
                       , " ", incaseID)
-
   }
 
-  if (!is.null(data_bmiMetrics)) {
+  if (!is.null(df_BMIMetrics)) {
     # Prep BMI data for plotting
-    OutSamples <- data_bmiMetrics %>%
+    OutSamples <- df_BMIMetrics %>%
       dplyr::mutate(Quality = as.character(Quality)
                     , Case = "Outside the case")
     OutSamples <- OutSamples %>%
-      tidyr::pivot_longer(cols = all_of(bmiIndexGp), names_to = "Index"
+      tidyr::pivot_longer(cols = all_of(BMIIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
                                      , "Target", Quality)
@@ -236,13 +242,13 @@ getSiteInfo <- function(TargetSiteID
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index
                     , Score, Case)
 
-    compBMImetrics <- data_bmiMetrics %>%
-      dplyr::filter(StationID %in% comp_sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bmiIndexGp)
+    compBMImetrics <- df_BMIMetrics %>%
+      dplyr::filter(StationID %in% comp.sites)%>%
+      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(BMIIndexGp)
                     , Quality) %>%
       dplyr::mutate(Quality = as.character(Quality))
     compBMImetrics <- compBMImetrics %>%
-      tidyr::pivot_longer(cols = all_of(bmiIndexGp), names_to = "Index"
+      tidyr::pivot_longer(cols = all_of(BMIIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
                                      , "Target", Quality)
@@ -273,7 +279,7 @@ getSiteInfo <- function(TargetSiteID
     myBMISamps <- dplyr::filter(mySamps, !is.na(BMISampleID))
     lab.sub <- paste0("Comparator samples (n = "
                       , (nrow(compBMImetrics) - nrow(myBMISamps))
-                      , " from ", (length(comp_sites) - 1), " sites)")
+                      , " from ", (length(comp.sites) - 1), " sites)")
 
     bio_col <- c("red", "steelblue2", "gray25") # Target, Not degraded, Degraded
     bio_shp <- c(17, 21, 25) # triangle, circle, and down triangle
@@ -322,8 +328,8 @@ getSiteInfo <- function(TargetSiteID
     fn_bmiscoresByCase <- paste0(TargetSiteID, "_BMI_IndexBoxplotsByCase.png")
     fn_bmiscoresByCase <- file.path(dir_path, fn_bmiscoresByCase)
     pBMIbyCase <- ggplot2::ggplot(allsamplesByCase, ggplot2::aes(y = round(Score, 3)
-                                                         , x = Case
-                                                         , group = Case)) +
+                                                                 , x = Case
+                                                                 , group = Case)) +
       ggplot2::geom_boxplot(na.rm = TRUE) +
       ggplot2::geom_jitter(width = 0.2, na.rm = TRUE
                            , ggplot2::aes(color = Quality, fill = Quality
@@ -358,14 +364,14 @@ getSiteInfo <- function(TargetSiteID
   }
 
 
-if (!is.null(data_algMetrics)) {
+  if (!is.null(df_ALGMetrics)) {
     # Prep Alg data for plotting
-    compALGmetrics <- data_algMetrics %>%
-      dplyr::filter(StationID %in% comp_sites)%>%
+    compALGmetrics <- df_ALGMetrics %>%
+      dplyr::filter(StationID %in% comp.sites)%>%
       dplyr::select(StationID, AlgSampID, AlgSampDate, Quality
-                    , all_of(algIndexGp))
+                    , all_of(ALGIndexGp))
     compALGmetrics <- compALGmetrics %>%
-      tidyr::pivot_longer(cols = all_of(algIndexGp), names_to = "Index"
+      tidyr::pivot_longer(cols = all_of(ALGIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID
                                      , "Target", Quality)
@@ -378,7 +384,7 @@ if (!is.null(data_algMetrics)) {
     ## Plot, Variables, Strings, other Aesthetics
     myAlgSamps <- dplyr::filter(mySamps, !is.na(AlgSampID))
     lab.sub <- paste0("Comparator samples (n = ", (nrow(compALGmetrics) - nrow(myAlgSamps))
-                      , " from ", (length(comp_sites) - 1), " sites)")
+                      , " from ", (length(comp.sites) - 1), " sites)")
 
     bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
     bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
@@ -403,11 +409,6 @@ if (!is.null(data_algMetrics)) {
       ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
       ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
-      # ggplot2::geom_jitter(data=filter(compBMImetrics, Quality=="Target")
-      #                      , size=2, width=0.2
-      #                      , ggplot2::aes(y=Score, x=Index, group=Index
-      #                                     , color = "red", fill = "red"
-      #                                     , shape = 17))
       ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub
                     , x = str_xlab, y = str_ylab) +
       ggplot2::theme_bw() +
@@ -423,14 +424,14 @@ if (!is.null(data_algMetrics)) {
   } else {
     myALGmetrics <- NULL
   }
-  if (!is.null(data_fishMetrics)) {
+  if (!is.null(df_FishMetrics)) {
     # Prep Fish data for plotting
-    compFISHmetrics <- data_fishMetrics %>%
-      dplyr::filter(StationID %in% comp_sites)%>%
+    compFISHmetrics <- df_FishMetrics %>%
+      dplyr::filter(StationID %in% comp.sites)%>%
       dplyr::select(StationID, FishSampID, FishSampDate, Quality
-                    , all_of(fishIndexGp))
+                    , all_of(FishIndexGp))
     compFISHmetrics <- compFISHmetrics %>%
-      tidyr::pivot_longer(cols = all_of(fishIndexGp), names_to = "Index"
+      tidyr::pivot_longer(cols = all_of(FishIndexGp), names_to = "Index"
                           , values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID==TargetSiteID
                                      , "Target", Quality)
@@ -456,7 +457,7 @@ if (!is.null(data_algMetrics)) {
 
     ## Plot, Variables, Strings, other Aesthetics
     lab.sub <- paste0("Comparator samples (n = ", nrow(compBMImetrics)
-                      , " from ", length(comp_sites)," sites)")
+                      , " from ", length(comp.sites)," sites)")
 
     bio_col <- c("dark gray", "blue", "red") # Degraded, Good, Target
     bio_shp <- c(25, 21, 17) # down triangle, circle, and triangle
@@ -497,23 +498,6 @@ if (!is.null(data_algMetrics)) {
     myFISHmetrics <- NULL
   }
 
-  # get COMID
-  # myCOMID <- mySiteInfo$COMID
-  # myWBName <- mySiteInfo$WaterbodyName
-  # myClustID <- as.integer(data_cluster$clust[data_cluster$COMID==myCOMID])
-  #
-  # if (exists("data_mods")) {
-  #   myReachMods <- data_mods[data_mods[,"COMID"]==myCOMID
-  #                            ,c("ReachModStatus", "ModReason")]
-  # }
-  # if (exists("data_303d")) {
-  #   my303d.COMID <- subset(data_303d, data_303d$ComID == myCOMID)
-  #   my303d.COMID.WBName <- subset(my303d.COMID, my303d.COMID$WATER.BODY.NAME %in% myWBName)
-  #   myCurrent303d <- subset(my303d.COMID.WBName, my303d.COMID.WBName$Year == 2012)
-  #   myImpairments <- myCurrent303d[,c("ComID", "WATER.BODY.NAME", "POLLUTANT",
-  #                                     "FINAL.LISTING.DECISION")]
-  # }
-
   # Check for presence of Photos in data directory. If not present, skip.
   if (dir.exists(dir_photo) == TRUE & length(list.files(dir_photo)) > 0) {
     photofiles <- list.files(dir_photo)
@@ -552,129 +536,181 @@ if (!is.null(data_algMetrics)) {
 
   message("Completed transferring any available site files.")
 
-  if (!is.null(data_bkgdata)) {
-    # Get background data from fn_bkgdata; use COMID to select single row
-    data_bkgdata <- dplyr::filter(data_bkgdata, COMID == myCOMID)
+  if (!is.null(df_BkgData)) {
+    # Get background data from df_BkgData; use COMID to select single reach
+    data_sitebkgdata <- dplyr::filter(data_compbkgd, COMID == myCOMID)
+    naVars.site <- unique(data_sitebkgdata$Metric[is.na(data_sitebkgdata$WatershedValue)])
+    data_sitebkgdata <- dplyr::filter(data_sitebkgdata, !is.na(WatershedValue))
+    vars.site <- unique(data_sitebkgdata$StreamCatVar[!is.na(data_sitebkgdata$WatershedValue)])
 
-    # Check for data to plot
-    data_bkgcheck <- dplyr::select_if(data_bkgdata, not_all_na)
-
-    if (ncol(data_bkgcheck) <= 1) { # If only COMID column, then no data
-      # NO data in streamcat for the reach.
-      gapcomment <- paste0("No background data are available for site "
+    if (length(naVars.site) > 0) { # if any NA values, then missing data for site
+      # Missing one or more values in StreamCat for the target reach.
+      naVars.site <- paste(naVars.site, collapse = "; ")
+      gapcomment <- paste0("Missing background data for site "
                            , TargetSiteID, "on reach with COMID = ", myCOMID)
-      gaps <- cbind.data.frame("getSiteInfo", "Background Data", 0
+      gaps <- cbind.data.frame("getSiteInfo", "Background Data", naVars.site
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID,fn.gaps)
+      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
-    } else {  # Background data exists
-      data_bkgdata2 <- tidyr::pivot_longer(data_bkgdata, -COMID
-                                           , names_to = "ColName"
-                                           , values_to = "val")
-      data_bkgdata2 <- dplyr::select(data_bkgdata2, -COMID)
+    }
 
-      fn_bkg <- paste0(TargetSiteID,"_BKGDATA.tab")
-      write.table(data_bkgdata, file.path(dir_path,fn_bkg), append = FALSE
-                  , sep = "\t", col.names = TRUE, row.names = FALSE)
+    if (length(vars.site) > 0) { # Background data exists
+      fn_bkg <- paste0(TargetSiteID, "_BKGDATA.tab")
+      write.table(data_sitebkgdata, file.path(dir_path, fn_bkg), append = FALSE,
+                  sep = "\t", col.names = TRUE, row.names = FALSE)
+
+      # If EPA wants to use only comparator reaches having site data:
+      # data_compbkgd <- dplyr::filter(data_compbkgd, COMID %in% myCompCOMIDs)
 
       # Get metadata from fn_bkginfo
-      df.bkg2plot <- merge(data_bkginfo, data_bkgdata2, by = "ColName")
+      data_compbkgd <- data_compbkgd %>%
+        dplyr::mutate(Scaled = scale(WatershedValue, scale = TRUE, center = TRUE))
+      # Note that this results in a column name "Scaled[, 1]"
+      # which is a column with attributes of center and scale)
 
-      rm(data_bkgdata, data_bkgdata2, data_bkginfo)
+      data_compbkgd <- data_compbkgd %>%
+        dplyr::mutate(PctRank = round(dplyr::percent_rank(WatershedValue)*100, 0))
 
-      # Determine appropriate graphics
-      # Bar charts, faceted with catchment on left, watershed on right
-      cat.sub <- unique(df.bkg2plot[, c("Category", "Subcategory", "Units", "AbbrFN")])
 
-      for (i in 1:nrow(cat.sub)) { # Plot each subcategory
-        # pull out temp data set to plot
-        df.temp <- df.bkg2plot %>%
-          dplyr::filter(Category == cat.sub$Category[i]
-                        , Subcategory == cat.sub$Subcategory[i])
-        maxYear <- max(df.temp$StudyYear)
+      # Draw boxplots
+      # TODO: Ask EPA if they want to group variables that do not have years
 
-        xlab <- paste0(cat.sub$Category[i], ": ", cat.sub$Subcategory[i]
-                       , ", ", cat.sub$Units[i])
-        fn.plot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
-                                              , cat.sub[i, 4], ".png"))
-        p.title <- paste0(TargetSiteID, ": Site background")
-        p.subtitle <- "Potential anthropogenic alterations"
-        numcols <- length(unique(df.temp$Scale))/2
+      # Prepare boxplot main elements
+      str_title <- paste0(TargetSiteID, ": Site background")
 
-        message(xlab)
+      for (i in seq_along(vars.site)) { # StreamCatVar (no year--Metric includes year)
+        print(paste0("Prepping ", vars.site[i]))
+        plotvar <- vars.site[i]
+        fn.bkgplot <- file.path(dir_path, paste0(TargetSiteID, "_BKGD_"
+                                                 , plotvar, ".png"))
+        str_sub <- unique(df_BkgInfo$Label[df_BkgInfo$StreamCatVar == plotvar])
+        str_caption <- paste0("Target reach (", myCOMID, ") relative to ",
+                              "distribution of values for all comparator reaches")
 
-        if (is.na(maxYear)) {  # No study year
-          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                         , y = signif(val, digits = 2))) +
-            ggplot2::geom_bar(stat = "identity", width = 0.5, fill = "darkred") +
-            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                            , vjust = -0.2)
-                               , color = "black", size=3) +
-            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-            ggplot2::facet_wrap(Scale ~ .)
-          p.bkg <- p.bkg + ggplot2::theme_bw() +
-            ggplot2::theme(legend.position = "none") +
-            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                           , strip.text.y = ggplot2::element_text(size = 8)) +
-            ggplot2::labs(title = p.title, subtitle = p.subtitle
-                          , x = xlab, y = "Value")
-          p.bkg <- p.bkg +
-            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                               , angle = 45
-                                                               , hjust = 1)
-                           , axis.text.y = ggplot2::element_text(size = 7)
-                           , axis.title.x = ggplot2::element_text(size = 9
-                                                                  , face = "bold")
-                           , axis.title.y = ggplot2::element_text(size = 9
-                                                                  , face = "bold")
-                           , plot.title = ggplot2::element_text(size = 12
-                                                                , face = "bold")
-                           , plot.subtitle = ggplot2::element_text(size = 10
-                                                                   , face = "bold"))
+        # OR, If EPA wants to use only comparator reaches having site data:
+        # str_caption <- paste0("Target reach (", myCOMID, ") relative to ",
+        #                       "distribution of values for all comparator sites' reaches")
+
+        df.plot.comp <- dplyr::filter(data_compbkgd, StreamCatVar == plotvar)
+        dataYears <- sort(unique(df.plot.comp$Year))
+
+        if (length(dataYears) > 0) {
+          # TODO: Figure out matching samp years to data years to allow plotting
+          # Probably add a SampYears column to df.plot.site to add as labels
+
+          xmin <- min(df.plot.comp$Year) - min(df.plot.comp$Year) %% 10
+          xmax <- max(df.plot.comp$Year) - (max(df.plot.comp$Year) %% 10) + 10
+          numYears <- xmax - xmin
+
+          p.box <- ggplot2::ggplot(data = df.plot.comp,
+                                   ggplot2::aes(x = Year, y = WatershedValue,
+                                                group = Year)) +
+            ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.75, na.rm = TRUE,
+                                  staplewidth = 0.5, linewidth = 0.1) +
+            ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0
+                                 , ggplot2::aes(x = Year, y = WatershedValue)
+                                 , size = 0.25, na.rm = TRUE, color = "cyan4") +
+            # ggplot2::scale_x_continuous(limits = c(xmin, xmax),
+            #                             breaks = scales::breaks_extended(numYears)) +
+            ggplot2::scale_x_continuous(limits = c(xmin, xmax),
+                                        breaks = scales::breaks_width(1)) +
+            ggplot2::labs(title = str_title, subtitle = str_sub,
+                          caption = str_caption) +
+            ggplot2::ylab("Watershed Value") +
+            ggplot2::theme_bw() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
+                           plot.caption = ggplot2::element_text(size = 5)) +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(color = "black",
+                                                               size = 6,
+                                                               angle = 90,
+                                                               vjust = 0.6,
+                                                               hjust = 0.5),
+                           axis.text.y = ggplot2::element_text(color = "black",
+                                                               size = 6),
+                           axis.title.x = ggplot2::element_text(color = "black",
+                                                                size = 8),
+                           axis.title.y = ggplot2::element_text(color = "black",
+                                                                size = 8),
+                           legend.position = "none")
+
+          p.box <- p.box +
+            ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == myCOMID),
+                                ggplot2::aes(x = Year, y = WatershedValue, group = Year),
+                                color = "red", shape = 17) +
+            ggplot2::geom_text(data = dplyr::filter(df.plot.comp, COMID == myCOMID),
+                               ggplot2::aes(x = Year, y = WatershedValue,
+                                            group = Year,
+                                            label = formatC(WatershedValue,
+                                                            format = "fg",
+                                                            digits = 3)),
+                               size = 2.1, color = "red", nudge_x = 0.75,
+                               nudge_y = 0.75)
           if(boo_plot){
-            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                            , height = plot_H * 1.5)
+            ggplot2::ggsave(fn.bkgplot, p.box, width = plot_W, height = plot_H,
+                            units = "in")
           }## IF ~ boo_plot ~ END
 
-        } else {  # Separate study year to consider in faceting
+        } else { # no years to consider
+          p.box <- ggplot2::ggplot(data = df.plot.comp,
+                                   ggplot2::aes(x = StreamCatVar, y = WatershedValue)) +
+            ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.75, na.rm = TRUE,
+                                  staplewidth = 0.5, linewidth = 0.1) +
+            ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0
+                                 , ggplot2::aes(x = StreamCatVar, y = WatershedValue)
+                                 , size = 0.25, na.rm = TRUE, color = "cyan4") +
+            ggplot2::labs(title = str_title, subtitle = str_sub,
+                          caption = str_caption) +
+            ggplot2::xlab(str_sub) +
+            ggplot2::ylab("Watershed Value")
 
-          p.bkg <- ggplot2::ggplot(df.temp, ggplot2::aes(x = ShortName
-                                                         , y = signif(val, digits = 2)
-                                                         , group = StudyYear)) +
-            ggplot2::geom_bar(position="dodge", stat = "identity", width = 0.5
-                              , fill = "darkred") +
-            ggplot2::geom_text(ggplot2::aes(label = signif(val, digits = 2)
-                                            , vjust = -0.2)
-                               , color = "black", size = 3) +
-            ggplot2::ylim(0, max(df.temp$val) * 1.2) +
-            ggplot2::facet_grid(stringr::str_wrap(Scale, 10) ~ StudyYear
-                                , margins = FALSE)
-          p.bkg <- p.bkg + ggplot2::theme_bw() +
-            ggplot2::theme(legend.position = "none") +
-            ggplot2::theme(strip.text.x = ggplot2::element_text(size = 9)
-                           , strip.text.y = ggplot2::element_text(size = 8)) +
-            ggplot2::labs(title = p.title, subtitle = p.subtitle
-                          , x = xlab, y = "Value")
-          p.bkg <- p.bkg +
-            ggplot2::theme(axis.text.x = ggplot2::element_text(size = 8
-                                                               , angle = 45, hjust = 1)
-                           , axis.text.y = ggplot2::element_text(size = 7)
-                           , axis.title.x = ggplot2::element_text(size = 9, face = "bold")
-                           , axis.title.y = ggplot2::element_text(size = 9, face = "bold")
-                           , plot.title = ggplot2::element_text(size = 12, face = "bold")
-                           , plot.subtitle = ggplot2::element_text(size = 10, face = "bold"))
+          # if (plotvar == "WSAREASQKM") {
+          #   p.box <- p.box +
+          #     ggplot2::scale_y_log10() +
+          #     ggplot2::ylab("Log10 Watershed Value")
+          # } else {
+          #   p.box <- p.box +
+          #     ggplot2::ylab("Watershed Value")
+          # }
+          #
+          p.box <- p.box +
+            ggplot2::theme_bw() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
+                           plot.caption = ggplot2::element_text(size = 5)) +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(color = "black",
+                                                               size = 6,
+                                                               # angle = 90,
+                                                               vjust = 0.6,
+                                                               hjust = 0.5),
+                           axis.text.y = ggplot2::element_text(color = "black",
+                                                               size = 6),
+                           axis.title.x = ggplot2::element_text(color = "black",
+                                                                size = 8),
+                           axis.title.y = ggplot2::element_text(color = "black",
+                                                                size = 8),
+                           legend.position = "none")
+
+          p.box <- p.box +
+            ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == myCOMID),
+                                ggplot2::aes(x = StreamCatVar, y = WatershedValue),
+                                color = "red", shape = 17) +
+            ggplot2::geom_text(data = dplyr::filter(df.plot.comp, COMID == myCOMID),
+                               ggplot2::aes(x = StreamCatVar, y = WatershedValue,
+                                            label = formatC(WatershedValue,
+                                                            format = "fg",
+                                                            digits = 3)),
+                               size = 2.3, color = "red", nudge_x = 0.15,
+                               nudge_y = 0.15)
           if(boo_plot){
-            ggplot2::ggsave(fn.plot, p.bkg, dpi = ppi, width = plot_W * 1.5
-                            , height = plot_H * 1.5)
+            ggplot2::ggsave(fn.bkgplot, p.box, width = plot_W, height = plot_H,
+                            units = "in")
           }## IF ~ boo_plot ~ END
-
-        }  # End creating background plot
-
-      }  # End iteration over subcategories
-
+        }## If/else for graphs ends
+      }## for loop over variables ends
     }  # End background data portion
   }
 
