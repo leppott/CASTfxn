@@ -16,7 +16,7 @@
 #' Stressor-response from field observational studies: Are higher levels of the
 #' stressor observed where and when the biological effect occurs?
 #'
-#' Box plots are used to show the distribution of the stressor levels at compartor
+#' Box plots are used to show the distribution of the stressor levels at comparator
 #' sites with better biological condition.  If a site has multiple biological
 #' condition scores the lowest score is used to determine "better" sites.
 #'
@@ -46,15 +46,15 @@
 #' corresponding to median (50%) and low (20%) probabilities of observing poor
 #' condition.
 #'
-#' 1. Supports the case for the candidate cause.  Stressor levels at the test
-#' site are above the lower confidence limit  (LCL) corresponding to 50%
+#' 1. Supports the case for the candidate cause. Stressor levels at the test
+#' site are above the lower confidence limit (LCL) corresponding to 50%
 #' probability of observing poor condition
 #'
-#' 0. Indeterminate.  Stressor levels at the test site are between the LCL
+#' 0. Indeterminate. Stressor levels at the test site are between the LCL
 #' corresponding to 50% probability of observing poor condition and the UCL
 #' corresponding to 20% probability of observing poor condition.
 #'
-#' -1. Weakens the case for the candidate cause.  Stressor levels at the test
+#' -1. Weakens the case for the candidate cause. Stressor levels at the test
 #' site are below the upper confidence limit (UCL) corresponding to 20%
 #' probability of observing poor condition.
 #'
@@ -160,20 +160,11 @@
 #' @export
 getCoOccur <- function(TargetSiteID
                        , df_data
-                       # , col_ID
-                       # , colStressSamp
-                       # , colRespSamp
-                       # , colGroup = "IncaseCol"
                        , incaseLabel = incaseLabel
                        , colBio = bioIndex
-                       , useBetter = TRUE
+                       , useBetter = FALSE
                        , colStressors
                        , df_stressinfo
-                       # , BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2)
-                       # , BioNarLab = c("very likely altered", "likely altered"
-                       #                 , "possibly altered ", "likely intact")
-                       # , BioDegBrk = c(-2, 0.799, 2)
-                       # , BioDegLab = c("Yes", "No")
                        , biocomm = "BMI"
                        , dir_plots = file.path(getwd(), "Results")
                        , dir_sub = "CoOccurrence"
@@ -186,19 +177,11 @@ getCoOccur <- function(TargetSiteID
   if (boo_DEBUG==TRUE) {
     TargetSiteID = TargetSiteID
     df_data = data_bioCoOccur
-    # col_ID = "StationID"
-    # colStressSamp = "StressSampID"
-    # colRespSamp = "RespSampID"
-    # colGroup = "IncaseCol"
     incaseLabel = incaseLabel
     colBio = bioIndex
-    useBetter = TRUE
+    useBetter = FALSE
     colStressors = stressors
     df_stressinfo = data_stressInfo
-    # BioNarBrk = BioNarBrk
-    # BioNarLab = BioNarLab
-    # BioDegBrk = BioDegBrk
-    # BioDegLab = BioDegLab
     biocomm = bioComm
     dir_plots = dir_results
     dir_sub = "CoOccurrence"
@@ -342,14 +325,16 @@ getCoOccur <- function(TargetSiteID
     utils::flush.console()
 
     #
-    if (useBetter) {
-    df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
-    df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j]
-                                                 , probs=0.25, na.rm=TRUE)
-    df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j]
-                                                 , probs=0.50, na.rm=TRUE)
-    df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j]
-                                                 , probs=0.75, na.rm=TRUE)
+    if (useBetter == TRUE) {
+      df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
+      df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                   , probs=0.25, na.rm=TRUE)
+      df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                   , probs=0.50, na.rm=TRUE)
+      df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j]
+                                                   , probs=0.75, na.rm=TRUE)
+      minVal <- min(df.comp.bio.better[, j], na.rm = TRUE)
+      maxVal <- max(df.comp.bio.better[, j], na.rm = TRUE)
     } else {
       df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp[, j]))
       df.i[, paste0("q25_", j)] <- stats::quantile(df.comp[, j]
@@ -358,6 +343,8 @@ getCoOccur <- function(TargetSiteID
                                                    , probs=0.50, na.rm=TRUE)
       df.i[, paste0("q75_", j)] <- stats::quantile(df.comp[, j]
                                                    , probs=0.75, na.rm=TRUE)
+      minVal <- min(df.comp[, j], na.rm = TRUE)
+      maxVal <- max(df.comp[, j], na.rm = TRUE)
     }
     # Comp Score for box plot
     if (j %in% col_StressInvScore) {##IF~j_in_InvSc~START
@@ -375,7 +362,7 @@ getCoOccur <- function(TargetSiteID
           print("pH low")
           flush.console()
           # Inverse Scoring
-          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)]
+          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q50_", j)]
                                                  , -1
                                                  , ifelse(df.i[, j] < df.i[, paste0("q25_",j)]
                                                           , 1, 0))
@@ -383,7 +370,7 @@ getCoOccur <- function(TargetSiteID
           print("pH high")
           flush.console()
           # Regular Scoring
-          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)]
+          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q75_", j)]
                                                  , -1
                                                  , ifelse(df.i[, j] < df.i[, paste0("q50_",j)]
                                                           , -1, 0))
@@ -409,9 +396,6 @@ getCoOccur <- function(TargetSiteID
       df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)], 1
                                              , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
     }##IF~j_in_InvSc~END
-
-    # df.i[is.na(df.i[, j]), paste0("Sc_Box_", j)] <- NA
-    # df.i[is.na(df.i[, paste0("Sc_Box_", j)]), paste0("Sc_Box_", j)] <- "NE"
 
     # Plots
     # Need to filter df.i to get rid of NA for "j" (stressor)
@@ -446,22 +430,34 @@ getCoOccur <- function(TargetSiteID
       ppi       <- 300
 
       # Create (ggplot)
-      bio_col <- c("midnightblue", "cyan2")
-      bio_shp <- c(21, 25) # circle and down triangle
+      bio_col <- c("gray25", "steelblue2")
+      bio_shp <- c(25, 21) # down triangle and circle
       bio_size <- c(3, 2)
       lab_comp <- paste0("Comparator samples selected from ", incaseLabel
                          , " = ", i.Group)
 
       # scoring lines
       if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
+        # TODO: TEST THIS!
         # Inverse Scoring
         box_qHI <- df.scores.i.n$q50[1]
         box_qLO <- df.scores.i.n$q25[1]
+        segNeg <- ((maxVal - box_qHI) / 2) + box_qHI
+        segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
+        segPos <- ((box_qLO - minVal) / 2) + minVal
       } else {
         # Regular Scoring
         box_qHI <- df.scores.i.n$q75[1]
         box_qLO <- df.scores.i.n$q50[1]
+        segPos <- ((maxVal - box_qHI) / 2) + box_qHI
+        segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
+        segNeg <- ((box_qLO - minVal) / 2) + minVal
       }##IF~j_in_InvSc~END
+
+      # arrow labels
+      aLabPos <- "1"
+      aLabZero <- "0"
+      aLabNeg <- "-1"
 
       ## Plot, Variables, Target Site Line
       targ_line_col <- "red"
@@ -494,18 +490,34 @@ getCoOccur <- function(TargetSiteID
       }
 
       targetvals <- as.numeric(unlist(df.i[, j]))
+      xseg <- i.Group + 0.5
 
       p1<- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[j]]  # ARL 2023-05-25
                                           , x = IncaseCol, group = IncaseCol)) +
-        ggplot2::geom_boxplot(na.rm = TRUE) +
+        ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
+                              staplewidth = 0.5) +
         ggplot2::coord_flip() +
-        ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality
-                                         , fill = Quality), alpha = 0.5
-                            , na.rm = TRUE, position = "jitter") +
+        ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality
+                                         , fill = Quality), alpha = 0.5,
+                             na.rm = TRUE, width = 0.25, height = 0.01) +
         ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col
                             , lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
         ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black"
                             , lty = 2, na.rm = TRUE) +
+        ggplot2::annotate("segment", y = minVal, yend = box_qLO, x = c(xseg, xseg),
+                          color = "orange", linewidth = 0.7, alpha = 0.6,
+                          arrow = grid::arrow(ends = "both", type = "open",
+                                              length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("segment", y = box_qLO, yend = box_qHI, x = c(xseg, xseg),
+                        color = "orange", linewidth = 0.7, alpha = 0.6,
+                        arrow = grid::arrow(ends = "both", type = "open",
+                                            length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("segment", y = box_qHI, yend = maxVal, x = c(xseg, xseg),
+                          color = "orange", linewidth = 0.7, alpha = 0.6,
+                          arrow = grid::arrow(ends = "both", type = "open",
+                                              length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("text", x = xseg + 0.02, y = c(segNeg, segZero, segPos),
+                          label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
         ggplot2::scale_color_manual(name = legendtitle
                                     , breaks = c("Degraded", "Not degraded")
                                     , values = bio_col, drop = TRUE) +
@@ -522,12 +534,7 @@ getCoOccur <- function(TargetSiteID
                        , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
         ggplot2::theme(axis.text.y = ggplot2::element_blank()
                        , axis.ticks.y = ggplot2::element_blank())
-      # Capture plot (png)
-      # Capture most recent plot to a list
-      # print(p1)
-      # plots_pdf[[ij.num]] <- grDevices::recordPlot()
-      # p1
-      # plot_png[[1]] <- grDevices::recordPlot()
+
       if(boo_plot){
         ggplot2::ggsave(filename=file.path(dir_path, fn_png_p1)
                         , plot=p1
