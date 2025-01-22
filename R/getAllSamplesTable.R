@@ -22,9 +22,6 @@
 #' * data_Stress containing minimally these columns:
 #'   StationID, StressSampleID, StressSampleDate, StdParamName
 #'
-#' * data_stressInfo containing minimally these columns:
-#'   StdParamName, GroupName, Label
-#'
 #' * data_respTrim containing minimally these columns:
 #'   StationID, RespSampleID, RespSampleDate, biocomm
 #'
@@ -34,7 +31,6 @@
 #' @param df.stress dataframe containing stressor data for all sites, including
 #'                  measured or observed quantitative water chemistry and quality,
 #'                  physical habitat data, and modeled data.
-#' @param df.stressInfo dataframe containing metadata for the variables in df.stress
 #' @param df.respTrim dataframe containing all response samples obtained from a site,
 #'                    including the station ID, sample ID, sample date, and biological
 #'                    community sampled
@@ -58,18 +54,18 @@
 getAllSamplesTable <- function(df.stress,
                                df.stressInfo,
                                df.resp,
-                               df.sites,
-                               out.dir) {
+                               df.sites) {
 
   boo.debug = FALSE
 
   if (boo.debug) {
     df.stress <- data_Stress
-    df.stressInfo <- data_stressInfo
     df.resp <- data_respTrim
     df.sites <- data_Sites
-    out.dir <- dir_data
   }
+
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   # Prepare stressor data
   # Identify field, lab, and phab stressor types
@@ -83,29 +79,29 @@ getAllSamplesTable <- function(df.stress,
     df.sampSummary <- df.sampSummary %>%
       dplyr::select(StationID, StressSampleID, GroupName, StdParamName
                     , StressSampleDate, Label) %>%
-      dplyr::mutate(Type = case_when(GroupName == "Habitat" ~ "HabitatSampleID"
-                                     , grepl("Field-measured", Label) == TRUE ~ "FieldSampleID"
-                                     , TRUE ~ "ChemistrySampleID"))
-    df.sampSummary <- unique(df.sampSummary[, c("StationID", "StressSampleID"
-                                                    , "StressSampleDate", "Type")])
+      dplyr::mutate(Type = dplyr::case_when(GroupName == "Habitat" ~ "HabitatSampleID",
+                                            grepl("Field-measured", Label) == TRUE ~ "FieldSampleID",
+                                            TRUE ~ "ChemistrySampleID"))
+    df.sampSummary <- unique(df.sampSummary[, c("StationID", "StressSampleID",
+                                                "StressSampleDate", "Type")])
     df.sampSummary <- df.sampSummary %>%
-      tidyr::pivot_wider(id_cols = c(StationID, StressSampleDate), names_from = Type
-                         , values_from = StressSampleID, values_fill = NA)
+      tidyr::pivot_wider(id_cols = c(StationID, StressSampleDate), names_from = Type,
+                         values_from = StressSampleID, values_fill = NA)
     chemsamptypes <- colnames(dplyr::select(df.sampSummary, dplyr::ends_with("SampleID")))
   }
 
   # # Identify response samples
   df.resp <- df.resp %>%
-    tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm
-                       , values_from = RespSampleID, values_fill = NA)
+    tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm,
+                       values_from = RespSampleID, values_fill = NA)
   df.resp <- unique(df.resp)
   respsamptypes <- colnames(dplyr::select(df.resp, dplyr::ends_with("SampleID")))
 
   # Combine with response data types
-  df.sampSummary <- merge(df.sampSummary, df.resp
-                            , by.x = c("StationID", "StressSampleDate")
-                            , by.y = c("StationID", "RespSampleDate")
-                            , all = TRUE)
+  df.sampSummary <- merge(df.sampSummary, df.resp,
+                          by.x = c("StationID", "StressSampleDate"),
+                          by.y = c("StationID", "RespSampleDate"),
+                          all = TRUE)
   rm(df.resp)
 
   # Add modeled data, if they exist
@@ -114,16 +110,14 @@ getAllSamplesTable <- function(df.stress,
       dplyr::distinct(StationID, StressSampleID) %>%
       dplyr::rename(ModeledSampleID = StressSampleID)
 
-    df.sampSummary <- merge(df.sampSummary, df.modelTrim
-                              , by.x = "StationID"
-                              , by.y = "StationID"
-                              , all = TRUE)
+    df.sampSummary <- merge(df.sampSummary, df.modelTrim, by = "StationID",
+                            all = TRUE)
     df.sampSummary <- unique(df.sampSummary)
 
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
-      dplyr::select(StationID, SampleDate, all_of(chemsamptypes), ModeledSampleID
-                    , all_of(respsamptypes))
+      dplyr::select(StationID, SampleDate, all_of(chemsamptypes), ModeledSampleID,
+                    all_of(respsamptypes))
   } else {
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
@@ -132,19 +126,15 @@ getAllSamplesTable <- function(df.stress,
 
   # Add COMID, IncaseCol, OutcaseCol (add labels when writing table)
   if (is.na(incaseColName)) {
-    df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol")]
-                              , df.sampSummary, by = "StationID", all = TRUE)
+    df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol")],
+                            df.sampSummary, by = "StationID", all = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   } else {
-    df.sampSummary <- merge(df.sites[, c("StationID", "COMID"
-                                             , "OutcaseCol", "IncaseCol")]
-                              , df.sampSummary, by = "StationID", all = TRUE)
+    df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol",
+                                         "IncaseCol")], df.sampSummary,
+                            by = "StationID", all = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   }
-
-  # FOR TESTING ONLY
-  write.table(df.sampSummary, file.path(dir_data, "TESTSummarySiteSamples.tab")
-              , append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
 
   return(df.sampSummary)
 
