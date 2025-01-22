@@ -46,7 +46,9 @@ getComparators<- function(TargetSiteID
                           , bioIndex
                           , useBC = FALSE
                           , outcaseColName = NULL
+                          , outcaseLabel = outcaseLabel
                           , incaseColName = NULL
+                          , incaseLabel = incaseLabel
                           , df_bcdist = NULL
                           , bc_cutoff = 0.05
                           , dir_results = file.path(getwd(), "Results")
@@ -63,7 +65,9 @@ getComparators<- function(TargetSiteID
     bioIndex = bmiIndex
     useBC = useBC
     outcaseColName = "OutcaseCol"
+    outcaseLabel = "Entire state"
     incaseColName = "IncaseCol"
+    incaseLabel = "ClusterID"
     df_bcdist = NULL
     bc_cutoff = 0.05
     dir_results = dir_results
@@ -83,9 +87,15 @@ getComparators<- function(TargetSiteID
          , dir.create(file.path(dir_results, TargetSiteID, dir_sub))
          , FALSE)
 
+  TargetCOMID <- df_sites$COMID[df_sites$StationID == TargetSiteID]
+
   if (useBC == TRUE) {
 
+    # TODO: revisit this when another state using a biological filter wants
+    # to use the CASTool for its water quality program
+
     # Outside the case = cluster; Inside the case uses BC distance matrix
+    # eligsites are those sites having paired stressor/response samples
     eligsites <- as.vector(unique(df_bioCoOccur$StationID))
 
     # Get cluster to which the target site belongs (outside the case identifier)
@@ -152,8 +162,11 @@ getComparators<- function(TargetSiteID
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)
+    comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
     all.sites <- outcaseSites
+    all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
     outcaseID <- outcaseNum
+    incaseID <- NULL
 
   } else {
 
@@ -172,12 +185,20 @@ getComparators<- function(TargetSiteID
     incaseSites <- incaseSites[incaseSites %in% eligsites]
 
     comp.sites <- unique(incaseSites)
+    comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
     all.sites <- unique(outcaseSites)
-    statement <- "All cluster sites are used as comparators."
+    all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
+    statement <- paste0("All '", incaseLabel, "=", incaseValue, "' sites from '",
+                        outcaseLabel, "' are used as comparators.")
     gap.statement <- cbind.data.frame("getComparators"
                                       , "bc.dist not used"
                                       , paste0("Inside the case: ", incaseLabel
                                                , " = ", length(incaseSites))
+                                      , paste(statement))
+    gap.statement <- cbind.data.frame("getComparators"
+                                      , "bc.dist not used"
+                                      , paste0("Outside the case: ", outcaseLabel
+                                               , " = ", length(outcaseSites))
                                       , paste(statement))
     colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
 
@@ -191,10 +212,13 @@ getComparators<- function(TargetSiteID
   CompMsg2 <- paste("Using final number of comparators =", length(comp.sites) - 1)
   message(CompMsg2)
 
-  myCompSites <- list(comp.sites = comp.sites
-                      , all.sites = all.sites
-                      , outcaseID = outcaseValue
-                      , incaseID = incaseValue)
+  myCompSites <- list(TargetCOMID = TargetCOMID,
+                      comp.sites = comp.sites,
+                      comp.reaches = comp.reaches,
+                      all.sites = all.sites,
+                      all.reaches = all.reaches,
+                      incaseID = incaseValue,
+                      outcaseID = outcaseValue)
 
   return(myCompSites)
 
