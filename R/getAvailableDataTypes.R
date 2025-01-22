@@ -30,8 +30,8 @@
 getAvailableDataTypes <- function(TargetSiteID
                                   , df_SampSummary
                                   , measStressSamps
-                                  , modStressSamps = NULL
-                                  , biocommlist = biocommlist
+                                  , modStressSamps = FALSE
+                                  , biocommlist
                                   , dir_results = file.path(getwd(), "Results")
                                   ) {##FUNCTION.START
 
@@ -79,7 +79,7 @@ getAvailableDataTypes <- function(TargetSiteID
   missingStressSamps <- setdiff(stressSamps, samptypes)
 
   if (length(availStressSamps) == 0) {
-    noStressors <-TRUE
+    noStressors <- TRUE
   } else {
     noStressors <- FALSE
     for (m in seq_along(missingStressSamps))
