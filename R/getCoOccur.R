@@ -158,30 +158,26 @@
 #'         )
 #'}
 #' @export
-getCoOccur <- function(TargetSiteID
-                       , df_data
-                       , incaseLabel = incaseLabel
-                       , colBio = bioIndex
-                       , useBetter = FALSE
-                       , colStressors
-                       , df_stressinfo
-                       , biocomm = "BMI"
-                       , dir_plots = file.path(getwd(), "Results")
-                       , dir_sub = "CoOccurrence"
-                       , col_StressInvScore
-                       , boo_plot = TRUE
-) {##FUNCTION.START
+getCoOccur <- function(TargetSiteID,
+                       df_data,
+                       incaseLabel = incaseLabel,
+                       colBio = bioIndex,
+                       useBetter = FALSE,
+                       df_stressinfo,
+                       biocomm = "BMI",
+                       dir_plots = file.path(getwd(), "Results"),
+                       dir_sub = "CoOccurrence",
+                       boo_plot = TRUE) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
     TargetSiteID = TargetSiteID
-    df_data = data_bioCoOccur
+    df_data = df_PairedSRTransf
     incaseLabel = incaseLabel
     colBio = bioIndex
     useBetter = FALSE
-    colStressors = stressors
-    df_stressinfo = data_stressInfo
+    df_stressinfo = list.stressors$stressors
     biocomm = bioComm
     dir_plots = dir_results
     dir_sub = "CoOccurrence"
@@ -197,8 +193,8 @@ getCoOccur <- function(TargetSiteID
   biocomm <- toupper(biocomm)
 
   # QC, 20190418
-  colStressors <- unique(colStressors)
-  stressors_logtransf <- unlist(as.character(df_stressinfo$StdParamName[df_stressinfo$LogTransf == 1]))
+  colStressors <- as.vector(unlist(df_stressinfo$Stressor))
+  # stressors_logtransf <- unlist(as.character(df_stressinfo$StdParamName[df_stressinfo$LogTransf == 1]))
 
   # QC, 20190418
   colStressors.NotPresent <- colStressors[!(colStressors %in% names(df_data))]
@@ -211,8 +207,7 @@ getCoOccur <- function(TargetSiteID
     colStressors <- colStressors[colStressors %in% names(df_data)]
   }##IF~bad stressors~END
 
-  #
-  myDateTime    <- format(Sys.time(),"%Y%m%d_%H%M%S")
+  # Identify columns to keep for the analysis
   col.KEEP      <- c("StationID", "IncaseCol", "StressSampleID", "RespSampleID"
                      , colBio, "Quality", colStressors)
   #
@@ -221,19 +216,9 @@ getCoOccur <- function(TargetSiteID
     TargetSiteID <- as.character(sort(unique(df_data[, "StationID"])))[1]
   }##IF.isnull.ID.END
 
-
-  # Create Score Output File
-  df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID"
-                                  , "RespSampleID", colBio, "Quality")],
-                     data.frame(Param_Name = character(), Param_Value = double()
-                                , n = integer(), q25 = double(), q50 = double()
-                                , q75 = double(), Sc_Box = character()
-                                , biocomm = character(), Label = character()
-                                , stringsAsFactors = FALSE))
-
   # QC (site in data) ####
   boo_QC_site <- TargetSiteID %in% df_data[, "StationID"]
-  if(boo_QC_site==FALSE){##IF~boo_QC_site~START
+  if (boo_QC_site == FALSE) {##IF~boo_QC_site~START
     name_df <- deparse(substitute(df_data))
     name_col <- deparse(substitute("StationID"))
     name_df_col <- paste0(name_df, name_col)
@@ -259,53 +244,78 @@ getCoOccur <- function(TargetSiteID
          , FALSE)
 
   dir_path <- file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)
-  plot_png <- vector(2, mode="list")
-  # #
+  # plot_png <- vector(2, mode="list")
+
+  # Create Score Output File
+  df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID"
+                                  , "RespSampleID", colBio, "Quality")],
+                     data.frame(Param_Name = character(), Param_Value = double()
+                                , n = integer(), q25 = double(), q50 = double()
+                                , q75 = double(), Sc_Box = character()
+                                , biocomm = character(), Label = character()
+                                , stringsAsFactors = FALSE))
+
   # Save scores file (append to later)
-  # fn.scores <- file.path(wd, dir.sub, dir_sub2, paste0(TargetSiteID,".CoOccurrence.Scores.", myDateTime,".txt"))
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
                                           , "_CO_Scores.tab"))
   utils::write.table(df.scores, file=fn.scores, append = FALSE
                      , col.names = TRUE, row.names=FALSE, sep="\t")
+
+  # df.i <- df_data[df_data[, "StationID"] == TargetSiteID, col.KEEP]
+  # i.Group <- df.i[, "IncaseCol"][1]
+  # i.Bio <- min(df_data[df_data[, "StationID"] == TargetSiteID, colBio], na.rm=TRUE)
+
+  # df.i <- df.i  %>%
+  #   tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
+  #                       , values_to = "ResultValue", values_drop_na = TRUE) %>%
+  #   dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
+  #                                       , suppressWarnings(log1p(ResultValue))
+  #                                       , ResultValue)) %>%
+  #   dplyr::select(!ResultValue) %>%
+  #   tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
+  #                                  , RespSampleID, all_of(colBio), Quality)
+  #                      , names_from = Stressor, values_from = TransfResult
+  #                      , values_fill = NA)
   #
-  df.i <- df_data[df_data[, "StationID"] == TargetSiteID, col.KEEP]
-  i.Group <- df.i[, "IncaseCol"][1]
-  i.Bio <- min(df_data[df_data[, "StationID"] == TargetSiteID, colBio], na.rm=TRUE)
-
-  df.i <- df.i  %>%
-    tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
-                        , values_to = "ResultValue", values_drop_na = TRUE) %>%
-    dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
-                                        , suppressWarnings(log1p(ResultValue))
-                                        , ResultValue)) %>%
-    dplyr::select(!ResultValue) %>%
-    tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
-                                   , RespSampleID, all_of(colBio), Quality)
-                       , names_from = Stressor, values_from = TransfResult
-                       , values_fill = NA)
-
   # Filter for selected variables
-  mapping <- c(COL.GROUP = "IncaseCol", COL.BIO = colBio)
+  # mapping <- c(COL.GROUP = "IncaseCol", COL.BIO = colBio)
   # Comparator Site Data
-  wrapr::let(alias = mapping
-             , expr = {
-               df.comp <- df_data[, col.KEEP] %>% dplyr::filter(COL.GROUP == i.Group) %>%
-                 tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
-                                     , values_to = "ResultValue", values_drop_na = TRUE) %>%
-                 dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
-                                                     , suppressWarnings(log1p(ResultValue))
-                                                     , ResultValue)) %>%
-                 dplyr::select(!ResultValue) %>%
-                 tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
-                                                , RespSampleID, all_of(colBio), Quality)
-                                    , names_from = Stressor, values_from = TransfResult
-                                    , values_fill = NA)
-             })
+  # wrapr::let(alias = mapping
+  #            , expr = {
+  #              df.comp <- df_data[, col.KEEP] %>% dplyr::filter(COL.GROUP == i.Group) %>%
+  #                tidyr::pivot_longer(all_of(colStressors), names_to = "Stressor"
+  #                                    , values_to = "ResultValue", values_drop_na = TRUE) %>%
+  #                dplyr::mutate(TransfResult = ifelse(Stressor %in% stressors_logtransf
+  #                                                    , suppressWarnings(log1p(ResultValue))
+  #                                                    , ResultValue)) %>%
+  #                dplyr::select(!ResultValue) %>%
+  #                tidyr::pivot_wider(id_cols = c(StationID, IncaseCol, StressSampleID
+  #                                               , RespSampleID, all_of(colBio), Quality)
+  #                                   , names_from = Stressor, values_from = TransfResult
+  #                                   , values_fill = NA)
+  #            })
   # Better Bio Comparator Site Data
-  wrapr::let(alias = mapping
-             , expr = {
-               df.comp.bio.better <- df.comp %>% dplyr::filter(COL.BIO > i.Bio)
-             })
+  # wrapr::let(alias = mapping
+  #            , expr = {
+  #              df.compBT <- df.comp %>% dplyr::filter(COL.BIO > i.Bio)
+  #            })
+
+  if (useBetter == TRUE) {
+    # Subset df_data for comparator sites having better biology
+    df.compBT <- df_data %>%
+      dplyr::filter(IncaseYN == 1 & BetterThan == 1)
+  } else {
+    # Subset df_data for comparator sites
+    df.comp <- df_data %>%
+      dplyr::filter(IncaseYN == 1)
+  }
+  df.i <- df.comp[df.comp$StationID == TargetSiteID, ]
+  i.Group <- df.i[1, "IncaseCol"]
+
+  # core_cols <- c("StationID", "StressSampleID", "StressSampleDate", "IncaseCol",
+  #                "OutcaseCol", "RespSampleDate", "RespSampleID", "BioComm",
+  #                "RefSiteFlag", "IncaseYN", "OutcaseYN", "BetterThan", "BIBI100",
+  #                "Quality")
 
   #
   if (boo_DEBUG==TRUE) {##IF.boo_DEBUG.START
@@ -316,102 +326,112 @@ getCoOccur <- function(TargetSiteID
 
   # Calculate quantiles on Comparator Sites
   # Loop, j ####
-  for (j in colStressors){##FOR.j.START
+  for (j in seq_along(colStressors)) {##FOR.j.START
     #
-    j.num <- match(j, colStressors)
+    stressname <- colStressors[j]
     j.len <- length(colStressors)
     #
-    message(paste0("Processing stressor (", j.num, "/", j.len, ") ", j, ".\n"))
+    message(paste0("Processing stressor (", j, "/", j.len, ") ", stressname, ".\n"))
     utils::flush.console()
 
     #
     if (useBetter == TRUE) {
-      df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp.bio.better[, j]))
-      df.i[, paste0("q25_", j)] <- stats::quantile(df.comp.bio.better[, j]
+      df.i[, paste0("n_", stressname)] <- sum(!is.na(df.compBT[, stressname]))
+      df.i[, paste0("q25_", stressname)] <- stats::quantile(df.compBT[, stressname]
                                                    , probs=0.25, na.rm=TRUE)
-      df.i[, paste0("q50_", j)] <- stats::quantile(df.comp.bio.better[, j]
+      df.i[, paste0("q50_", stressname)] <- stats::quantile(df.compBT[, stressname]
                                                    , probs=0.50, na.rm=TRUE)
-      df.i[, paste0("q75_", j)] <- stats::quantile(df.comp.bio.better[, j]
+      df.i[, paste0("q75_", stressname)] <- stats::quantile(df.compBT[, stressname]
                                                    , probs=0.75, na.rm=TRUE)
-      minVal <- min(df.comp.bio.better[, j], na.rm = TRUE)
-      maxVal <- max(df.comp.bio.better[, j], na.rm = TRUE)
+      minVal <- min(df.compBT[, stressname], na.rm = TRUE)
+      maxVal <- max(df.compBT[, stressname], na.rm = TRUE)
     } else {
-      df.i[ ,paste0("n_", j)] <- sum(!is.na(df.comp[, j]))
-      df.i[, paste0("q25_", j)] <- stats::quantile(df.comp[, j]
+      df.i[, paste0("n_", stressname)] <- sum(!is.na(df.comp[, stressname]))
+      df.i[, paste0("q25_", stressname)] <- stats::quantile(df.comp[, stressname]
                                                    , probs=0.25, na.rm=TRUE)
-      df.i[, paste0("q50_", j)] <- stats::quantile(df.comp[, j]
+      df.i[, paste0("q50_", stressname)] <- stats::quantile(df.comp[, stressname]
                                                    , probs=0.50, na.rm=TRUE)
-      df.i[, paste0("q75_", j)] <- stats::quantile(df.comp[, j]
+      df.i[, paste0("q75_", stressname)] <- stats::quantile(df.comp[, stressname]
                                                    , probs=0.75, na.rm=TRUE)
-      minVal <- min(df.comp[, j], na.rm = TRUE)
-      maxVal <- max(df.comp[, j], na.rm = TRUE)
+      minVal <- min(df.comp[, stressname], na.rm = TRUE)
+      maxVal <- max(df.comp[, stressname], na.rm = TRUE)
     }
     # Comp Score for box plot
-    if (j %in% col_StressInvScore) {##IF~j_in_InvSc~START
+    colInvScore <- df_stressinfo %>%
+      dplyr::filter(Stressor == stressname) %>%
+      dplyr::select(DirIncStress)
+    colInvScore <- as.character(colInvScore)
+    if (colInvScore == "Dec") {##IF~j_in_InvSc~START
       ## Use different criteria for some parameters (Specifically pH and DO)
-      if (grepl("^pH", j, perl = TRUE, ignore.case = FALSE) == TRUE) {  # Parameter is pH
+      if (grepl("^pH", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {  # Parameter is pH
         vals <- df_data %>%
           dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(all_of(j))
+          dplyr::select(all_of(stressname))
         vals <- as.vector(vals[!is.na(vals)])
         # if pH val < pHlimLow then 1
         # if pH val > pHlimHigh then 1
         # if pH val between pHlimLow & pHlimHigh, then what?
         # TODO ----
-        if(any(vals < pHlimLow)) {
+        if (any(vals < pHlimLow)) {
           print("pH low")
           flush.console()
           # Inverse Scoring
-          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q50_", j)]
-                                                 , -1
-                                                 , ifelse(df.i[, j] < df.i[, paste0("q25_",j)]
-                                                          , 1, 0))
+          df.i[, paste0("Sc_Box_", stressname)] <-
+            ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
+                   -1,
+                   ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
+                          1, 0))
         } else if(any(vals > pHlimHigh)) {
           print("pH high")
           flush.console()
           # Regular Scoring
-          df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q75_", j)]
-                                                 , -1
-                                                 , ifelse(df.i[, j] < df.i[, paste0("q50_",j)]
-                                                          , -1, 0))
-          # col_StressInvScore <- setdiff(col_StressInvScore, j)
+          df.i[, paste0("Sc_Box_", stressname)] <-
+            ifelse(df.i[, stressname] > df.i[, paste0("q75_", stressname)],
+                   -1,
+                   ifelse(df.i[, stressname] < df.i[, paste0("q50_", stressname)],
+                          -1, 0))
         }
-      } else if (grepl("^DO", j, perl = TRUE, ignore.case = FALSE) == TRUE) {  #Parameter is DO
+      } else if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {  #Parameter is DO
         vals <- df_data %>%
           dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(all_of(j))
+          dplyr::select(all_of(stressname))
         vals <- as.vector(vals[!is.na(vals)])
-        df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[, paste0("q50_", j)]
-                                               , -1
-                                               , ifelse(df.i[, j] < DOlim
-                                                        , 1, 0))
+        df.i[, paste0("Sc_Box_", stressname)] <-
+          ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
+                 -1,
+                 ifelse(df.i[, stressname] < DOlim, 1, 0))
       } else {
         # Inverse Scoring
-        df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q50_", j)], -1
-                                               , ifelse(df.i[, j] < df.i[, paste0("q25_", j)]
-                                                        , 1, 0))
+        df.i[, paste0("Sc_Box_", stressname)] <-
+          ifelse(df.i[, stressname] > df.i[,paste0("q50_", stressname)],
+                 -1,
+                 ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
+                        1, 0))
       }
     } else {
       # Regular Scoring
-      df.i[, paste0("Sc_Box_", j)] <- ifelse(df.i[, j] > df.i[,paste0("q75_", j)], 1
-                                             , ifelse(df.i[, j] < df.i[, paste0("q50_",j)], -1, 0))
+      df.i[, paste0("Sc_Box_", stressname)] <-
+        ifelse(df.i[, stressname] > df.i[,paste0("q75_", stressname)],
+               1,
+               ifelse(df.i[, stressname] < df.i[, paste0("q50_", stressname)],
+                      -1, 0))
     }##IF~j_in_InvSc~END
 
     # Plots
     # Need to filter df.i to get rid of NA for "j" (stressor)
     # order values by j then get multiple comp scores
-    df.i.n <- df.i[!is.na(df.i[, j]), ]
+    df.i.n <- df.i[!is.na(df.i[, stressname]), ]
     # df.i.n <- df.i.n[order(df.i.n[, j]), ]
 
     if (nrow(df.i.n) != 0) {##IF.nrow.START
       # Save to Score/Results file
-      df.i.n[, "Param_Name"]  <- j
-      df.i.n[, "Param_Value"] <- df.i.n[, j]
-      df.i.n[, "n"]           <- df.i.n[, paste0("n_", j)]
-      df.i.n[, "q25"]         <- df.i.n[, paste0("q25_", j)]
-      df.i.n[, "q50"]         <- df.i.n[, paste0("q50_", j)]
-      df.i.n[, "q75"]         <- df.i.n[, paste0("q75_", j)]
-      df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_", j)]
+      df.i.n[, "Param_Name"]  <- stressname
+      df.i.n[, "Param_Value"] <- df.i.n[, stressname]
+      df.i.n[, "n"]           <- df.i.n[, paste0("n_", stressname)]
+      df.i.n[, "q25"]         <- df.i.n[, paste0("q25_", stressname)]
+      df.i.n[, "q50"]         <- df.i.n[, paste0("q50_", stressname)]
+      df.i.n[, "q75"]         <- df.i.n[, paste0("q75_", stressname)]
+      df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_", stressname)]
       # df.i.n append to output (only keep matching columns)
       df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))]
                              , all.y=TRUE)
@@ -422,11 +442,11 @@ getCoOccur <- function(TargetSiteID
       scores <- unlist(as.vector(df.i.n[, "Sc_Box"]))
       lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
       # num <- df.i
-      lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", j)][1]))
+      lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", stressname)][1]))
 
       # plots ####
       # File Names
-      fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_", make.names(j), ".png")
+      fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_", make.names(stressname), ".png")
       ppi       <- 300
 
       # Create (ggplot)
@@ -437,7 +457,7 @@ getCoOccur <- function(TargetSiteID
                          , " = ", i.Group)
 
       # scoring lines
-      if(j %in% col_StressInvScore){##IF~j_in_InvSc~START
+      if (colInvScore == "Dec") {##IF~j_in_InvSc~START
         # TODO: TEST THIS!
         # Inverse Scoring
         box_qHI <- df.scores.i.n$q50[1]
@@ -465,11 +485,11 @@ getCoOccur <- function(TargetSiteID
       targ_line_lwd <- 1
 
       # Get wordy label for the y-axis
-      jlog <- df_stressinfo$LogTransf[df_stressinfo$StdParamName == j]
-      if (j %in% stressors_logtransf) {
-        jlabel <- paste0("Log1p ", df_stressinfo$Label[df_stressinfo$StdParamName == j])
+      jlog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressname]
+      if (jlog == 1) {
+        jlabel <- paste0("Log1p ", df_stressinfo$Label[df_stressinfo$Stressor == stressname])
       } else {
-        jlabel <- df_stressinfo$Label[df_stressinfo$StdParamName == j]
+        jlabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
       }
       legendtitle <- "Samples"
       maintitleCO <- "Co-occurrence line of evidence"
@@ -477,22 +497,22 @@ getCoOccur <- function(TargetSiteID
       subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
       # if non-empty
-      # if(sum(is.na(df.comp.bio.better[, j]))!=nrow(df.comp.bio.better)){##IF~non-empty~START
+      # if(sum(is.na(df.compBT[, j]))!=nrow(df.compBT)){##IF~non-empty~START
       # plot1, ggplot ####
       if (useBetter) {
-        df.plot <- df.comp.bio.better
+        df.plot <- df.compBT
         lab.sub <- paste0("Comparator samples with higher ", colBio
                           , " scores (", lab.N, ").\n", lab.Score, ".")
       } else {
         df.plot <- df.comp
-        lab.sub <- paste0("Comparator samples with paired ", j, " and ", colBio
+        lab.sub <- paste0("Comparator samples with paired ", stressname, " and ", colBio
                           , " (", lab.N, ").\n", lab.Score, ".")
       }
 
-      targetvals <- as.numeric(unlist(df.i[, j]))
+      targetvals <- as.numeric(unlist(df.i[, stressname]))
       xseg <- i.Group + 0.5
 
-      p1<- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[j]]  # ARL 2023-05-25
+      p1<- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[stressname]]  # ARL 2023-05-25
                                           , x = IncaseCol, group = IncaseCol)) +
         ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
                               staplewidth = 0.5) +
@@ -555,14 +575,14 @@ getCoOccur <- function(TargetSiteID
 
     } else {
       # no data
-      message(paste0("   All values NA for stressor (", j, ").\n"))
+      message(paste0("   All values NA for stressor (", stressname, ").\n"))
       utils::flush.console()
       # add data to scores table
       column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50"
                         , "q75", "Sc_Box")
-      df.i.NA <- df.i[1,1:5]
+      df.i.NA <- df.i[1, 1:5]
       df.i.NA[, column_names] <- NA
-      df.i.NA[, "Param_Name"] <- j
+      df.i.NA[, "Param_Name"] <- stressname
       # add biocomm, 20190425
       df.i.NA[, "biocomm"] <- biocomm
       df.i.NA[, "Label"] <- unique(jlabel)
