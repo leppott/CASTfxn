@@ -33,18 +33,16 @@
 #' @keywords internal
 #'
 #' @export
-getTimeSeq <- function(TargetSiteID
-                       , biocomm
-                       , BioResp
-                       , stressors
-                       , df_stress
-                       , df_stressinfo
-                       , df_resp
-                       , df_respinfo
-                       , dir_results = file.path(getwd(),"Results")
-                       , dir_sub = "TimeSequence"
-                       , boo_plot = TRUE
-                       ) {##FUNCTION.START
+getTimeSeq <- function(TargetSiteID,
+                       biocomm,
+                       bioindex,
+                       df_stress,
+                       df_resp,
+                       df_respinfo,
+                       df_stressinfo,
+                       dir_results = file.path(getwd(),"Results"),
+                       dir_sub = "TimeSequence",
+                       boo_plot = TRUE) {##FUNCTION.START
 
   # Debug
   boo_DEBUG <- FALSE
@@ -52,16 +50,14 @@ getTimeSeq <- function(TargetSiteID
   if (boo_DEBUG == TRUE) {
     TargetSiteID
     biocomm = bioComm
-    BioResp = bioMetricNames
-    stressors = stressors
+    bioindex = bioIndex
     df_stress = siteStressAll
-    df_stressinfo = data_stressInfo
-    df_resp = siteRespAll
+    df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
+    df_stressinfo = list.stressors$stressors
     dir_results = dir_results
     dir_sub = "TimeSequence"
   }
-
 
   # Define pipe
   `%>%` <- dplyr::`%>%`
@@ -82,32 +78,19 @@ getTimeSeq <- function(TargetSiteID
 
   path <- file.path(dir_results, TargetSiteID, biocomm, dir_sub)
 
-  skipflag = FALSE
+  # Get vector of target site stressors
+  stressors <- as.vector(unlist(df_stressinfo$Stressor))
+  metrics <- as.vector(unlist(df_respinfo$MetricName))
 
-  # Prep measured stressor data
   df_stress <- df_stress %>%
-    dplyr::select(-StationID) %>%
-    dplyr::select_if(not_all_na) %>%
-    tidyr::pivot_longer(!c(StressSampleID, StressSampleDate)
-                        , names_to = "StdParamName"
-                        , values_to = "ResultValue") %>%
-    dplyr::filter(!is.na(ResultValue)) %>%
-    dplyr::group_by(StressSampleDate, StdParamName) %>%
-    dplyr::summarize(meanResultValue = signif(mean(ResultValue, na.rm = TRUE)
-                                              , digits = 3), .groups = "drop_last") %>%
-    dplyr::rename(SampDate = StressSampleDate, variable = StdParamName) %>%
-    dplyr::filter(variable %in% stressors)
-  df_stress <- as.data.frame(df_stress)
+    dplyr::select(StationID, StressSampleDate, all_of(stressors))
 
-  if (any(is.na(df_stress$SampDate))) {
+  if (any(is.na(df_stress$StressSampleDate))) {
     msg <- "NA values in Sample Date indicative of modeled stressor data."
     message(msg)
-    # print(msg)
-    # flush.console()
-    df_NAs <- as.data.frame(dplyr::filter(df_stress, is.na(SampDate))) %>%
-      dplyr::select(variable)
-    df_stress <- dplyr::filter(df_stress, !is.na(SampDate)) # Removes modeled stressors, which have not date
+    df_NAs <- as.data.frame(dplyr::filter(df_stress, is.na(StressSampleDate)))
 
+    # TODO: Fix this!
     for (i in 1:nrow(df_NAs)) {
       stressNA <- df_NAs$variable[i]
       gapcomment <- "No date is available for modeled stressors."
@@ -123,116 +106,103 @@ getTimeSeq <- function(TargetSiteID
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
+  } # End modeled data write to data gaps
 
-  }
-  df_stressinfo <- unique(df_stressinfo[, c("StdParamName", "Label")])
-  df_stress <- merge(df_stress, df_stressinfo, by.x = "variable"
-                     , by.y = "StdParamName")
-  df_stress$type <- "Stressor"
+  df_stress <- df_stress %>%
+    dplyr::filter(!is.na(StressSampleDate)) %>%   # Eliminate modeled stressors which are not time-bound
+    dplyr::select(StationID, StressSampleDate, all_of(stressors)) %>%
+    dplyr::select_if(not_all_na)
 
-  # Prep response data
+  stressors <- intersect(stressors, colnames(df_stress))
+
   df_resp <- df_resp %>%
-    dplyr::select_if(not_all_na) %>%
-    dplyr::select(!c(StationID, Quality, ends_with("SampFlag"))) %>%
-    tidyr::pivot_longer(!c(RespSampleID, RespSampleDate)
-                        , names_to = "Biometric"
-                        , values_to = "ResultValue") %>%
-    dplyr::filter(!is.na(ResultValue), Biometric %in% BioResp)
-  df_resp$ResultValue <- as.numeric(df_resp$ResultValue)
-  df_resp <- df_resp %>%
-    dplyr::group_by(RespSampleDate, Biometric) %>%
-    dplyr::summarize(meanResultValue = signif(mean(ResultValue, na.rm = TRUE)
-                                              , digits=3), .groups = "drop_last") %>%
-    dplyr::rename(SampDate = RespSampleDate, variable = Biometric)
-  df_respinfo <- unique(df_respinfo[, c("MetricName", "MetricLabel")])
-  df_resp <- merge(df_resp, df_respinfo, by.x = "variable", by.y = "MetricName")
-  df_resp <- dplyr::rename(df_resp, Label = MetricLabel)
-  df_resp$type <- "Response"
+    dplyr::select(StationID, RespSampleDate, all_of(metrics)) %>%
+    dplyr::select_if(not_all_na)
 
-  skipflag <- ifelse(nrow(df_resp) == 0, TRUE, FALSE)
+  metricData <- intersect(metrics, colnames(df_resp))
 
-  if (skipflag == FALSE) {
+  ppi = 300
+  plot_H <- 6
+  plot_W <- 9
+  count = 1
+  totplots <- length(stressors) * length(metricData)
 
-    # Ensure all data in one dataframe
-    df.data <- rbind(as.data.frame(df_stress)
-                     , as.data.frame(df_resp))
+  # Loop over stressors
+  for (s in seq_along(stressors)) {
+    stressname <- stressors[s]
+    stressLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
 
-    minDate <- as.Date(min(df.data$SampDate) - 30)
-    minYear <- lubridate::year(minDate)
-    minDate <- lubridate::ymd(paste0(minYear, "/01/01"))
-    maxDate <- as.Date(max(df.data$SampDate) + 30)
-    maxYear <- lubridate::year(maxDate)
-    maxDate <- lubridate::ymd(paste0(maxYear, "/12/31"))
+    # Loop over responses
+    for (r in seq_along(metricData)) {
+      metricname <- metricData[r]
+      metricLabel <- df_respinfo$MetricLabel[df_respinfo$MetricName == metricname]
 
-    # Loop over each stressor
-    ppi = 300
-    plot_H <- 6
-    plot_W <- 9
-    stresses <- unique(df_stress[, c("variable", "Label", "type")])
-    count = 1
+      # Create filename for graphic
+      fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressname, "_"
+                  , metricname, ".png")
+      fpath = file.path(path, fn)
 
-    for (s in 1:nrow(stresses)) {
+      # subset dataframe for dates and stressor/response values
+      df.plotresp <- df_resp %>%
+        dplyr::select(StationID, RespSampleDate, all_of(metricname)) %>%
+        dplyr::rename(SampleDate = RespSampleDate, Value = {{metricname}}) %>%
+        dplyr::mutate(type = "Response",
+                      Value = signif(Value, digits = 3))
+      maxYvalR <- 0.2 * max(df.plotresp$Value)
 
-      stressName = stresses[s, "variable"]
-      stressLabel = as.character(stresses[s, "Label"])
-      # print(paste0("s=",s," stressor is "))
+      df.plotstress <- df_stress %>%
+        dplyr::select(StationID, StressSampleDate, all_of(stressname)) %>%
+        dplyr::rename(SampleDate = StressSampleDate, Value = {{stressname}}) %>%
+        dplyr::mutate(type = "Stressor",
+                      Value = signif(Value, digits = 3))
+      maxYvalS <- 0.2 * max(df.plotstress$Value)
 
-      # Plot time series for stressor & bio response
-      responses <- unique(df_resp[, c("variable", "Label", "type")])
-      totplots <- nrow(stresses) * nrow(responses)
-      for (r in 1:nrow(responses)) {
+      minYval <- min(maxYvalR, maxYvalS)
 
-        respName = responses[r, "variable"]
-        respLabel = as.character(responses[r, "Label"])
+      df.plot <- rbind(df.plotstress, df.plotresp) %>%
+        dplyr::mutate(type = factor(type, levels = c("Stressor", "Response"),
+                                    labels = c(stressLabel, metricLabel)))
 
-        fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressName, "_"
-                    , respName, ".png")
-        fpath = file.path(path, fn)
+      # Get min/max date range
+      minDate <- as.Date(min(df.plot$SampleDate) - 30)
+      minYear <- lubridate::year(minDate)
+      minDate <- lubridate::ymd(paste0(minYear, "/01/01"))
+      maxDate <- as.Date(max(df.plot$SampleDate) + 30)
+      maxYear <- lubridate::year(maxDate)
+      maxDate <- lubridate::ymd(paste0(maxYear, "/12/31"))
 
-        df.plot <- df.data %>%
-          dplyr::filter(variable %in% c(stressName, respName)) %>%
-          dplyr::mutate(type = factor(type, levels = c("Stressor", "Response")
-                                      , labels = c(stressLabel, respLabel)))
-        maxStress <- max(df.plot$meanResultValue[df.plot$variable == stressName])
-        maxResp <- max(df.plot$meanResultValue[df.plot$variable == respName])
-        textlabels <- c(as.character(unique(df.plot$stressName))
-                        , as.character(unique(df.plot$respName)))
 
-        msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") "
-                      , stressName, " and ", respName)
-        message(msg)
+      msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") "
+                    , stressname, " and ", metricname)
+      message(msg)
 
-        p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampDate
-                                                      , y = as.numeric(meanResultValue)))
-        p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black"
-                                         , linewidth = 0.2, alpha = 0.5)
-        # p_ts <- p_ts + ggplot2::geom_hline(y = BioDegBrk[2])     # Use this for response graph only
-        p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label=meanResultValue)
-                                , hjust= 2, vjust = 0, size=2, na.rm = TRUE
-                                , min.segment.length = 0)
-        p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
-        p_ts <- p_ts + ggplot2::theme_bw()
-        p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90
-                                                                          , hjust = 1
-                                                                          , size = 6)
-                                      , panel.grid.minor = ggplot2::element_blank())
-        p_ts <- p_ts + ggplot2::scale_x_date(limits = c(minDate, maxDate)
-                                             , date_labels = "%Y-%m-%d"
-                                             , date_breaks = "3 months")
-        p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID
-                                                   ,"Stressor/Response Time Series")
-                                     , x = "Sample Date", y = "Value")
-        if(boo_plot){
-          ggplot2::ggsave(filename = fpath, p_ts, dpi = ppi, width = plot_W
-                          , height = plot_H, units = "in")
-        }## IF ~ boo_plot ~ END
-        count = count + 1
-      } # End loop over responses
+      p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampleDate,
+                                                    y = as.numeric(Value)))
+      p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black",
+                                       linewidth = 0.2, alpha = 0.5)
+      p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label = Value),
+                                              nudge_x = 0, nudge_y = minYval,
+                                              size = 2, na.rm = TRUE)
+      p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
+      p_ts <- p_ts + ggplot2::theme_bw()
+      p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                                        hjust = 1,
+                                                                        size = 6),
+                                    panel.grid.minor = ggplot2::element_blank())
+      p_ts <- p_ts + ggplot2::scale_x_date(limits = c(minDate, maxDate),
+                                           date_labels = "%Y-%m-%d",
+                                           date_breaks = "3 months")
+      p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID,
+                                                 "Stressor/Response Time Series"),
+                                   x = "Sample Date", y = "Value")
+      if(boo_plot){
+        ggplot2::ggsave(filename = fpath, p_ts, dpi = ppi, width = plot_W
+                        , height = plot_H, units = "in")
+      }## IF ~ boo_plot ~ END
+      count = count + 1
 
-    } # End loop over stressors
-  } else {
-    msg <- paste("No", biocomm, "response data available for", TargetSiteID)
-    message(msg)
-  }
+    } # END loop over responses & graphics
+
+  } # END loop over stressors
 
 }
