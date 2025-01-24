@@ -39,15 +39,18 @@ writeOutliers <- function(TargetSiteID
     df_stressInfo = data_stressInfo
     TargetSiteID = TargetSiteID
     siteDetects = siteDetectsAll
-    compSites = comp_sites
-    allSites = all_sites
+    compSites = list.CompSites$comp.sites
+    allSites = list.CompSites$all.sites
     dir_results = dir_results
   }
 
+  # define pipe
+  `%>%` <- dplyr::`%>%`
+
   # Log removed or not removed outliers as data gaps
-  data_OutliersLabeled <- merge(df_outliers
-                                , data_stressInfo[, c("StdParamName", "Label")]
-                                , by = "StdParamName", all.x =  TRUE)
+  data_OutliersLabeled <- merge(df_outliers,
+                                data_stressInfo[, c("StdParamName", "Label")],
+                                by = "StdParamName", all.x =  TRUE)
   siteOutliers <- data_OutliersLabeled %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::filter(!is.na(ResultValue)) %>%
