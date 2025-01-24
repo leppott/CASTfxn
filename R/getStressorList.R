@@ -136,35 +136,34 @@
 #' }
 #' @export
 #'
-getStressorList <- function(TargetSiteID
-                            , outcaseLabel
-                            , outcaseID
-                            , outcaseSites
-                            , incaseSites
-                            , refSites
-                            , siteChem
-                            , df_Stress
-                            , chemInfo
-                            , samplim = 10
-                            , probsHigh = 0.75
-                            , probsLow = 0.25
-                            , DOlim = 7
-                            , pHlimLow = 6.5
-                            , pHlimHigh = 9
-                            , biocommlist
-                            , listbioParamsDEL
-                            , dir_results = file.path(getwd(), "Results")
-                            , dir_sub = "CandidateCauses"
-                            ) {##FUNCTION.START
+getStressorList <- function(TargetSiteID,
+                            outcaseLabel,
+                            outcaseID,
+                            outcaseSites,
+                            incaseSites,
+                            refSites,
+                            siteChem,
+                            df_Stress,
+                            chemInfo,
+                            samplim = 10,
+                            probsHigh = 0.75,
+                            probsLow = 0.25,
+                            DOlim = 7,
+                            pHlimLow = 6.5,
+                            pHlimHigh = 9,
+                            biocommlist,
+                            listbioParamsDEL,
+                            dir_results = file.path(getwd(), "Results"),
+                            dir_sub = "CandidateCauses") {##FUNCTION.START
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
     outcaseLabel = outcaseLabel
-    outcaseID = outcaseID
-    outcaseSites = all_sites
-    incaseSites = comp_sites
+    outcaseID = list.CompSites$outcaseID
+    outcaseSites = list.CompSites$all.sites
+    incaseSites = list.CompSites$comp.sites
     refSites = refSites # vector
     siteChem = siteDetectsAll # dataframe
     df_Stress = data_Stress
@@ -231,45 +230,36 @@ getStressorList <- function(TargetSiteID
   outcaseChemLONG <- df_Stress %>%
     dplyr::filter(StationID %in% outcaseSites) %>%
     dplyr::filter(StdParamName %in% siteChem) %>%
-    dplyr::select(!c(IQRmethod, SDmethod, Outlier))
-
-  outcaseChemLONG <- merge(outcaseChemLONG
-                           , chemInfo[, c("StdParamName", "LogTransf")]
-                           , by = "StdParamName")
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+                  ResultValue, TransfResult)
 
   # Use this dataframe for chemvalues table
   outcaseChemVals <- outcaseChemLONG %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
-                  , ResultValue) %>%
+    dplyr::select(!TransfResult) %>%
     tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
 
   # Use this dataframe for stressor id visualization & percentile rank
   outcaseChemData <- outcaseChemLONG %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
-                  , TransfResult) %>%
+    dplyr::select(!ResultValue) %>%
     dplyr::mutate(RefSiteFlag = ifelse(StationID %in% refSites, 1, 0)) %>%
     tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
 
   # ID all "reference" samples
   outcaseRefChemData <- outcaseChemData %>%
-    dplyr::filter(RefSiteFlag == 1) %>%
-    dplyr::select(!RefSiteFlag)
+    dplyr::filter(RefSiteFlag == 1)
 
   # ID "comparator" samples
   incaseChemData <- outcaseChemData %>%
-    dplyr::filter(StationID %in% incaseSites) %>%
-    dplyr::select(!RefSiteFlag)
+    dplyr::filter(StationID %in% incaseSites)
 
   # ID all "comparator reference" samples
   incaseRefChemData <- outcaseChemData %>%
     dplyr::filter(StationID %in% incaseSites) %>%
-    dplyr::filter(RefSiteFlag == 1) %>%
-    dplyr::select(!RefSiteFlag)
+    dplyr::filter(RefSiteFlag == 1)
 
   # ID "target" samples
   siteChemData <- outcaseChemData %>%
-    dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::select(!RefSiteFlag)
+    dplyr::filter(StationID == TargetSiteID)
 
   # clean up unnecessary objects
   rm(df_Stress, outcaseChemLONG)
@@ -372,23 +362,43 @@ getStressorList <- function(TargetSiteID
         }
       }##IF~nrow(cluster.ref.chem.data)~END
 
-      ## Plot, Data, Reference
-      boo_plot_ref <- FALSE
+      ## Plot, Data, Reference outside-the-case
+      boo_plot_ref_out <- FALSE
       if (exists("outcaseRefChemData")) {##IF~nrow(cluster.ref.chem.data)~START
-        df_plot_ref_wide <- as.data.frame(outcaseRefChemData[, colnames(gpcoolvar)])
-        df_plot_ref_wide_valminusmin <- sweep(df_plot_ref_wide, 2, df_plot_wide_min, FUN = "-")
-        df_plot_ref_wide_mod <- sweep(df_plot_ref_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
-        refchemcolnames <- colnames(df_plot_ref_wide_mod)
+        df_plot_ref_out_wide <- as.data.frame(outcaseRefChemData[, colnames(gpcoolvar)])
+        df_plot_ref_out_wide_valminusmin <- sweep(df_plot_ref_out_wide, 2, df_plot_wide_min, FUN = "-")
+        df_plot_ref_out_wide_mod <- sweep(df_plot_ref_out_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+        refchemcolnames <- colnames(df_plot_ref_out_wide_mod)
 
         if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
-          df_plot_long_ref <- df_plot_ref_wide_mod %>%
+          df_plot_long_ref_out <- df_plot_ref_out_wide_mod %>%
             tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
             dplyr::filter(!is.na(value))
-          df_plot_long_ref <- merge(gpchems, df_plot_long_ref, by.x = "StdParamName", by.y = "GrpNm")
-          boo_plot_ref <- ifelse(nrow(df_plot_long_ref) > 0, TRUE, FALSE)
-          boo_plot_ref <- ifelse(all(is.na(df_plot_long_ref$value)), FALSE, TRUE)
+          df_plot_long_ref_out <- merge(gpchems, df_plot_long_ref_out, by.x = "StdParamName", by.y = "GrpNm")
+          boo_plot_ref_out <- ifelse(nrow(df_plot_long_ref_out) > 0, TRUE, FALSE)
+          boo_plot_ref_out <- ifelse(all(is.na(df_plot_long_ref_out$value)), FALSE, TRUE)
         } else {
-          boo_plot_ref <- FALSE
+          boo_plot_ref_out <- FALSE
+        }
+      }##IF~nrow(cluster.ref.chem.data)~END
+
+      ## Plot, Data, Reference inside-the-case
+      boo_plot_ref_in <- FALSE
+      if (exists("incaseRefChemData")) {##IF~nrow(cluster.ref.chem.data)~START
+        df_plot_ref_in_wide <- as.data.frame(incaseRefChemData[, colnames(gpcoolvar)])
+        df_plot_ref_in_wide_valminusmin <- sweep(df_plot_ref_in_wide, 2, df_plot_wide_min, FUN = "-")
+        df_plot_ref_in_wide_mod <- sweep(df_plot_ref_in_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+        refchemcolnames <- colnames(df_plot_ref_in_wide_mod)
+
+        if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
+          df_plot_long_ref_in <- df_plot_ref_in_wide_mod %>%
+            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
+            dplyr::filter(!is.na(value))
+          df_plot_long_ref_in <- merge(gpchems, df_plot_long_ref_in, by.x = "StdParamName", by.y = "GrpNm")
+          boo_plot_ref_in <- ifelse(nrow(df_plot_long_ref_in) > 0, TRUE, FALSE)
+          boo_plot_ref_in <- ifelse(all(is.na(df_plot_long_ref_in$value)), FALSE, TRUE)
+        } else {
+          boo_plot_ref_in <- FALSE
         }
       }##IF~nrow(cluster.ref.chem.data)~END
 
@@ -422,43 +432,42 @@ getStressorList <- function(TargetSiteID
       str_ylab <- str_Group
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "black"        # outside the case
-      # col_sites_all_ref <- "black"
-      col_sites_cl      <- "black"        # inside the case
-      col_sites_cl_ref  <- "blue"         # reference sites inside the case
+      col_sites_all     <- "gray25"        # outside the case
+      col_sites_all_ref <- "blue"         # reference sites outside the case
+      col_sites_cl      <- "cyan4"        # inside the case
+      col_sites_cl_ref  <- "blue"         # reference sites outside the case
       col_sites_targ    <- "red"          # target site
       col_line          <- "black"
 
       ## Plot, Variables, Fill
-      fill_sites_all     <- "gray35"
-      # fill_sites_all_ref <- col_sites_all_ref
-      fill_sites_cl      <- "cyan3"
-      fill_sites_cl_ref  <- "cyan3"
+      fill_sites_all     <- "gray25"
+      fill_sites_all_ref <- "gray25"
+      fill_sites_cl      <- "cyan4"
+      fill_sites_cl_ref  <- "cyan4"
       fill_sites_targ    <- "red"
 
       ## Plot, Variables, Points
       pch_sites_all     <- 21 # circle with outline
-      # pch_sites_all     <- 19 # solid circle
       pch_sites_all_ref <- 21 # circle outline
       pch_sites_cl      <- 21 # circle outline
-      # pch_sites_cl      <- 19
       pch_sites_cl_ref  <- 21 # circle outline
       pch_sites_targ    <- 17 # triangle
 
       ## Plot, Variables, Sizes
       cex_mod <- 3
       cex_sites_all     <- cex_mod * 1
-      # cex_sites_all_ref <- cex_mod * 1
+      cex_sites_all_ref <- cex_mod * 1
       cex_sites_cl      <- cex_mod * 0.95
       cex_sites_cl_ref  <- cex_mod * 0.9
       cex_sites_targ    <- cex_mod * 2
 
       ## Plot, Variables, Legend
       leg_name   <- "Samples"
-      leg_labels <- c("Outside the case", "Inside the case", qualtext, "Target")
-      leg_shape  <- c(pch_sites_all, pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
-      leg_col    <- c(col_sites_all, col_sites_cl, col_sites_cl_ref, col_sites_targ)
-      leg_fill   <- c(fill_sites_all, fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
+      leg_labels <- c("Outside the case", "Inside the case", "Outside the case, reference",
+                      "Inside the case, reference", "Target")
+      leg_shape  <- c(pch_sites_all, pch_sites_cl, pch_sites_all_ref, pch_sites_cl_ref, pch_sites_targ)
+      leg_col    <- c(col_sites_all, col_sites_cl, col_sites_all_ref, col_sites_cl_ref, col_sites_targ)
+      leg_fill   <- c(fill_sites_all, fill_sites_cl, fill_sites_all_ref, fill_sites_cl_ref, fill_sites_targ)
 
       if (n > 8) {
         yaxistextsize = 6
@@ -472,87 +481,104 @@ getStressorList <- function(TargetSiteID
         # ggplot, main (outside the case)
         p_SL <- ggplot2::ggplot(data = df_plot_long) +
           ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                             , y = value))  +
-          ggplot2::geom_jitter(data = df_plot_long, width = 0.1
-                               , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                              , y = value, color = "col_sites_all"
-                                              , stroke = 0.5
-                                              , shape = "pch_sites_all"
-                                              , fill = "fill_sites_all")
-                               , size = 1, na.rm = TRUE) +
+                                             , y = value), staplewidth = 0.5)  +
+          ggplot2::geom_jitter(data = df_plot_long, width = 0.1,
+                               ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                            y = value, color = "col_sites_all",
+                                            stroke = 0.5,
+                                            shape = "pch_sites_all",
+                                            fill = "fill_sites_all"),
+                               size = 1, na.rm = TRUE, show.legend = TRUE) +
           ggplot2::coord_flip() +
-          ggplot2::labs(title = str_title, subtitle = str_subtitle
-                        , y = str_xlab, x = str_ylab, caption = str_caption) +
+          ggplot2::labs(title = str_title, subtitle = str_subtitle,
+                        y = str_xlab, x = str_ylab, caption = str_caption) +
           ggplot2::theme_bw() +
-          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10)
-                         , plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)
-                         , axis.text.x = ggplot2::element_blank()
-                         , axis.text.y = ggplot2::element_text(size = yaxistextsize)
-                         , axis.ticks.x = ggplot2::element_blank()
-                         , plot.caption = ggplot2::element_text(size = 8))
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
+                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
+                         axis.text.x = ggplot2::element_blank(),
+                         axis.text.y = ggplot2::element_text(size = yaxistextsize),
+                         axis.ticks.x = ggplot2::element_blank(),
+                         plot.caption = ggplot2::element_text(size = 8),
+                         legend.title.position = "top",
+                         legend.title = ggplot2::element_text(size = 8),
+                         legend.text = ggplot2::element_text(size = 6))
         #
         # ggplot, points subsets
         ## Comparators (inside the case)
         if (boo_plot_comp == TRUE) {##IF~boo_plot_comp~START
-          p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_comp, width = 0.1
-                                              , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                                             , y = value, color = "col_sites_cl"
-                                                             , shape = "pch_sites_cl"
-                                                             , fill = "fill_sites_cl")
-                                              , size = 1, na.rm = TRUE)
+          p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_comp, width = 0.1,
+                                              ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                                           y = value, color = "col_sites_cl",
+                                                           shape = "pch_sites_cl",
+                                                           fill = "fill_sites_cl"),
+                                              size = 1, na.rm = TRUE, show.legend = TRUE)
         } else if (boo_plot_comp == FALSE) {
-          p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color = "col_sites_cl"
-                                                          , shape = "pch_sites_cl"
-                                                          , fill = "fill_sites_cl"))
+          p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color = "col_sites_cl",
+                                                          shape = "pch_sites_cl",
+                                                          fill = "fill_sites_cl"))
         }##IF~boo_plot_comp~END
-        ## Comp, Ref
-        if (boo_plot_ref == TRUE) {##IF~boo_plot_ref~START
-          p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_ref, width = 0.1
-                                              , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                                             , y = value, color = "col_sites_cl_ref"
-                                                             , shape = "pch_sites_cl_ref"
-                                                             , fill = "fill_sites_cl_ref")
-                                              , size = 1.5, na.rm = TRUE)
+        ## Out, Ref
+        if (boo_plot_ref_out == TRUE) {##IF~boo_plot_ref~START
+          p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_ref_out, width = 0.1,
+                                              ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                                           y = value, color = "col_sites_all_ref",
+                                                           shape = "pch_sites_all_ref",
+                                                           fill = "fill_sites_all_ref"),
+                                              size = 1.5, na.rm = TRUE, show.legend = TRUE)
         } else if (boo_plot_ref == FALSE) {
-          p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color = "col_sites_cl_ref"
-                                                          , shape = "pch_sites_cl_ref"
-                                                          , fill = "fill_sites_cl_ref"))
+          p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color = "col_sites_all_ref",
+                                                          shape = "pch_sites_all_ref",
+                                                          fill = "fill_sites_all_ref"))
+        }##IF~boo_plot_ref~END
+        ## In, Ref
+        if (boo_plot_ref_in == TRUE) {##IF~boo_plot_ref_in~START
+          p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_ref_in, width = 0.1,
+                                              ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                                           y = value, color = "col_sites_cl_ref",
+                                                           shape = "pch_sites_cl_ref",
+                                                           fill = "fill_sites_cl_ref"),
+                                              size = 1.5, na.rm = TRUE, show.legend = TRUE)
+        } else if (boo_plot_ref == FALSE) {
+          p_SL <- p_SL + ggplot2::geom_blank(ggplot2::aes(color = "col_sites_cl_ref",
+                                                          shape = "pch_sites_cl_ref",
+                                                          fill = "fill_sites_cl_ref"))
         }##IF~boo_plot_ref~END
         ## Target Site
-        p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_targ, width = 0.1
-                                            , ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                                           , y = value
-                                                           , color = "col_sites_targ"
-                                                           , shape = "pch_sites_targ"
-                                                           , fill = "fill_sites_targ")
-                                            , size = 1.5, na.rm = TRUE)
+        p_SL <- p_SL + ggplot2::geom_jitter(data = df_plot_long_targ, width = 0.1,
+                                            ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                                         y = value,
+                                                         color = "col_sites_targ",
+                                                         shape = "pch_sites_targ",
+                                                         fill = "fill_sites_targ"),
+                                            size = 1.5, na.rm = TRUE, show.legend = TRUE)
         #
         # ggplot, Legend
-        p_SL <- p_SL + ggplot2::scale_shape_manual(name = leg_name
-                                                   , labels = leg_labels
-                                                   , values = leg_shape)  +
-          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels
-                                      , values = leg_col) +
-          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels
-                                     , values = leg_fill)
-
-
+        p_SL <- p_SL + ggplot2::scale_shape_manual(name = leg_name,
+                                                   labels = leg_labels,
+                                                   values = leg_shape)  +
+          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels,
+                                      values = leg_col) +
+          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels,
+                                     values = leg_fill)
         #
         if (!is_local) {message(p_SL)}
 
         fn_title <- stringr::str_to_title(str_Group)
         fn_title <- gsub("\\s","",fn_title)
-        fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_"
-                                              , fn_title, plot_ext))
+        fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_",
+                                              fn_title, plot_ext))
         ggplot2::ggsave(fn_plot, p_SL, width = plot_W, height = plot_H, units = "in")
       }##IF.boo_plot==TRUE
     }##IF.n.END
   }##FOR.g.END
 
   # Percentile Data File ####
+  # NOTE: This is based on outside the case data, which is what the boxplots use
+  # If EPA prefers to identify candidate causes relative to comparators, then the
+  # identification below must change, and the plots should also change
   if (nrow(outcaseChemData) > 1) { # more than one sample from target site exists for cluster
     chem.clusterCore <- as.data.frame(outcaseChemData %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate, RefSiteFlag))
+      dplyr::select(StationID, StressSampleID, StressSampleDate))
     chem.pctrank <- as.data.frame(apply(outcaseChemData[, 5:ncol(outcaseChemData)]
                                         , 2, function(x) dplyr::percent_rank(x)))
     data.chem.pctrank <- cbind(chem.clusterCore, as.data.frame(chem.pctrank))
@@ -570,13 +596,14 @@ getStressorList <- function(TargetSiteID
   stressor <- "none"
   #
   if(boo.DEBUG==TRUE){##IF.boo.DEBUG.START
-    c <- 5
+    c <- 4
   }##IF.boo.DEBUG.END
 
   # Handle exceptions from standard stressor list ID
-  for (c in 5:ncol(site.pctrank)) {
-    # print(c)
+  for (c in 4:ncol(site.pctrank)) {
     chemname <- colnames(site.pctrank)[c]
+    # msg <- paste0("Evaluating ", chemname, " as a potential candidate cause.")
+    # message(msg)
     bad <- is.na(site.pctrank[, c])
     check <- site.pctrank[, c]
     good <- check[!bad]
@@ -619,13 +646,17 @@ getStressorList <- function(TargetSiteID
 
       } else if (minSiteRank <= probsLow) {
         stressor <- c(stressor, chemname)
+        msg <- paste0(chemname, " is a candidate cause")
+        message(msg)
       }
     } else if ((ExpDirIncStress == "inc") && (maxSiteRank >= probsHigh)) {
       stressor <- c(stressor, chemname)
+      msg <- paste0(chemname, " is a candidate cause")
+      message(msg)
     }
   }##FOR~c~END
 
-  # Stressor list contains identified candidate causes
+  # Stressor variable contains identified candidate causes
   # bioParmsDEL contains parameters that don't apply for this biocomm
   # tmpParmDEL contains parameters with <= only 2 sample points for cluster data
   fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID
@@ -649,14 +680,20 @@ getStressorList <- function(TargetSiteID
       dplyr::mutate(Biocomm = biocomm)
     colnames(stressorsEvaluated)[1] <- "Stressor"
     stressorsEvaluated <- merge(stressorsEvaluated
-                                , chemInfo[,c("StdParamName", "Label")]
+                                , chemInfo
                                 , by.x = "Stressor", by.y = "StdParamName"
                                 , all.x = TRUE)
+    stressorsEvaluated <- stressorsEvaluated %>%
+      dplyr::select(Biocomm, Stressor, GroupName, Label, LogTransf, SSTV, SSI,
+                    SensMin, SensMax, TolMin, TolMax, DirIncStress, SSTVname,
+                    SSIndex)
     if (nrow(stressorsEvaluated)==0) {
       stressorsEvaluated <- rbind(stressorsEvaluated
-                                  , (cbind("None", biocomm, "None")))
+                                  , (cbind(biocomm, "None", "None", "None",
+                                           "None", "None", "None", "None",
+                                           "None", "None", "None", "None",
+                                           "None", "None")))
     }
-    colnames(stressorsEvaluated) <- c("Stressor", "BioComm", "Label")
     stressorsEvaluated <- unique(stressorsEvaluated)
     stressorsEvaluated <- dplyr::filter(stressorsEvaluated, Stressor != "none")
     # Write stressors evaluated table
@@ -672,14 +709,20 @@ getStressorList <- function(TargetSiteID
       dplyr::mutate(Biocomm = biocomm)
     colnames(stressorsExcepted)[1] <- "Stressor"
     stressorsExcepted <- merge(stressorsExcepted
-                               , chemInfo[, c("StdParamName", "Label")]
+                               , chemInfo
                                , by.x = "Stressor", by.y = "StdParamName"
                                , all.x = TRUE)
+    stressorsExcepted <- stressorsExcepted %>%
+      dplyr::select(Biocomm, Stressor, GroupName, Label, LogTransf, SSTV, SSI,
+                    SensMin, SensMax, TolMin, TolMax, DirIncStress, SSTVname,
+                    SSIndex)
     if (nrow(stressorsExcepted) == 0) {
       stressorsExcepted <- rbind(stressorsExcepted
-                                 , (cbind("None", biocomm, "None")))
+                                 , (cbind(biocomm, "None", "None", "None",
+                                          "None", "None", "None", "None",
+                                          "None", "None", "None", "None",
+                                          "None", "None")))
     }
-    colnames(stressorsExcepted) <- c("Stressor", "BioComm", "Label")
     stressorsExcepted <- unique(stressorsExcepted)
     # Write stressors excepted table
     if (file.exists(fn.stressorsExc)) {
@@ -691,38 +734,19 @@ getStressorList <- function(TargetSiteID
     }
   }
 
-  # LogTransf ####
-  # 20190110, get log transformation code from chem.info
-  # x <- unique(chem.info[chem.info$StdParamName %in% stressorlist, c("StdParamName", "LogTransf")])
-  # need to use max (default of 1) in case of duplicates
-  chemInfo_LogTransf <- chemInfo %>%
-    dplyr::group_by(StdParamName) %>%
-    dplyr::summarise(max_LogTransf = max(LogTransf, na.rm = TRUE)
-                     , .groups = "drop_last")
-  stressorlist4merge <- data.frame(StdParamName = stressorlist
-                                   , Sort = 1:length(stressorlist))
-  # merge
-  LogTransf_merge <- merge(stressorlist4merge, chemInfo_LogTransf, all.x = TRUE)
-  # sort
-  LogTransf_merge <- LogTransf_merge[order(LogTransf_merge$Sort), ]
-  # NA to 0
-  LogTransf_merge[is.na(LogTransf_merge[,"max_LogTransf"]), "max_LogTransf"] <- 0
-
-
   # Data File ####
-  stressorlist_trim <- stressorlist[stressorlist != "none"]
+  stressor_trim <- stressor[stressor != "none"]
   data.chemVals <- outcaseChemVals %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate
-                  , eval(stressorlist_trim))
+                  , eval(stressor_trim))
   fn.chemVals <- file.path(dir_path, paste0(TargetSiteID,
                                             "_CandCauses_ChemValues.tab"))
   utils::write.table(data.chemVals, fn.chemVals, sep = "\t", col.names = TRUE
                      , row.names = FALSE, append = FALSE)
 
   # create output ####
-  myStressors <- list(stressors = stressorlist
-                      , site.stressor.pctrank = site.pctrank
-                      , stressors_LogTransf = LogTransf_merge$max_LogTransf)
+  myStressors <- list(stressors = stressorsEvaluated
+                      , site.stressor.pctrank = site.pctrank)
   #
   return(myStressors)
 
