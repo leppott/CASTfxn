@@ -1,4 +1,4 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -140,12 +140,9 @@
 getSufficiency <- function(TargetSiteID
                            , df_data
                            , compSites
-                           , stressors
                            , df_stressinfo
                            , biocomm
                            , colBio
-                           # , BioDegBrk = c(-2, 0.799, 2)
-                           # , BioDegLab = c("Yes", "No")
                            , dir_plots = file.path(getwd(), "Results")
                            , dir_sub = "Sufficiency"
                            , boo_plot = TRUE
@@ -155,15 +152,12 @@ getSufficiency <- function(TargetSiteID
 
   if (boo_DEBUG==TRUE) {
 
-    df_data = data_bioCoOccur
+    df_data = df_PairedSRTransf
     TargetSiteID = TargetSiteID
-    compSites = comp_sites
-    stressors = stressors
-    df_stressinfo = data_stressInfo
+    compSites = list.CompSites$comp.sites
+    df_stressinfo = list.stressors$stressors
     biocomm = bioComm
     colBio = bioIndex
-    # BioDegBrk = BioDegBrk
-    # BioDegLab = c("Yes", "No")
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
@@ -173,6 +167,20 @@ getSufficiency <- function(TargetSiteID
   # define pipe
   `%>%` <- dplyr::`%>%`
   biocomm <- toupper(biocomm)
+  stressors <- as.vector(df_stressinfo$Stressor)
+
+  # define scoring limits
+  negStart <- 0
+  negEnd   <- 0.2  # same as zeroStart
+  zeroEnd  <- 0.5  # same as posStart
+  posEnd   <- 1
+  midNeg   <- ((negEnd - negStart) / 2) + negStart
+  midZero  <- ((zeroEnd - negEnd) / 2) + negEnd
+  midPos   <- ((posEnd - zeroEnd) / 2) + zeroEnd
+  # arrow labels
+  aLabNeg  <- "-1"
+  aLabZero <- "0"
+  aLabPos  <- "1"
 
   # Create subdirectory
   dir_sub2 <- TargetSiteID
@@ -199,10 +207,9 @@ getSufficiency <- function(TargetSiteID
   df_target <- dplyr::filter(df_data, StationID == TargetSiteID)
 
   # Transform stressor data as required
-  strInfo <- as.data.frame(cbind("StdParamName" = stressors
-                                 , "LogTransfYN" = stressors_logtransf))
-  strInfo <- merge(strInfo, df_stressinfo[, c("StdParamName", "Label")]
-                   , by = "StdParamName")
+  strInfo <- df_stressinfo %>%
+    dplyr::filter(Stressor %in% stressors) %>%
+    dplyr::select(Stressor, LogTransf, Label)
 
   # Create Score Output File # add Bio.Nar just before Quality
   df.scores <- df_data %>%
@@ -210,7 +217,7 @@ getSufficiency <- function(TargetSiteID
                   , Quality) %>%
     dplyr::mutate(ParamName     = as.character(NA)
                   , ParamValue  = as.numeric(NA)
-                  , Log1pValue  = as.numeric(NA)
+                  # , Log1pValue  = as.numeric(NA)
                   , n           = as.character(NA)
                   , SRpred_Deg  = as.character(NA)
                   , Sc_SRlog    = as.character(NA)
@@ -223,77 +230,36 @@ getSufficiency <- function(TargetSiteID
   # Loop, j ####
   for (j in seq_along(stressors)) { ##FOR.j.START
     #
-    str = stressors[j]
+    str <- stressors[j]
     j.len <- length(stressors)
-    jlog <- as.numeric(strInfo$LogTransfYN[strInfo$StdParamName == str])
-    jlabel <- as.character(strInfo$Label[strInfo$StdParamName == str])
+    jlog <- as.numeric(strInfo$LogTransf[strInfo$Stressor == str])
+    jlabel <- as.character(strInfo$Label[strInfo$Stressor == str])
     #
     message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
     utils::flush.console()
 
     df.score.j <- df_data %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate
-                    , RespSampleID, RespSampleDate, all_of(colBio), Quality
-                    , all_of(str)) %>%
+      dplyr::select(StationID, StressSampleID, StressSampleDate,
+                    RespSampleID, RespSampleDate, Quality, all_of(colBio),
+                    all_of(str)) %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName"
-                          , values_to = "ParamValue")
+      tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName",
+                          values_to = "ParamValue")
 
     df.plot <- df_data %>%
       dplyr::select(all_of(colBio), Quality, all_of(str))
 
-    df.plot <- df.plot[!is.na(df.plot[, str]),]
+    df.plot <- df.plot[!is.na(df.plot[, str]), ]
 
-    if (nrow(df.plot) > 0) {
-      # If LogTransf == TRUE, then test both untransformed & transformed models
-      if (jlog == 1) {
-        df.plot <- df.plot %>%
-          dplyr::rename(y = eval(colBio), x1 = all_of(str)) %>%
-          dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)
-                        , x2 = log1p(x1))
-        # x1 = stressor value, x2 = log1p[stressor value]
-        # y = bioIndex, y.name = Quality (Degraded = 1, Not degraded = 0)
-
-        if (sum(stats::complete.cases(df.plot)) > 0) {
-          # Test orig model (fit1)
-          df.plot1 <- dplyr::select(df.plot, y, Quality, x1, y.name)
-          fit1 <- stats::glm(y.name ~ x1, data = df.plot1, family = stats::binomial)
-          # Test log1p model (fit2)
-          df.plot2 <- dplyr::select(df.plot, y, Quality, x2, y.name)
-          fit2 <- stats::glm(y.name ~ x2, data = df.plot2, family = stats::binomial)
-          # Compare two models
-          if (fit2$deviance <= fit1$deviance) { # transformed has better fit
-            df.plot <- df.plot2 %>%
-              dplyr::select(y, Quality, y.name, x2) %>%
-              dplyr::rename(x = x2)
-            jlabel <- paste0("Log1p ", jlabel)
-            useVal <- "log1p"
-            j_values <- data.frame(x = log1p(df_target[, str]))
-          } else {                              # untransformed has better fit
-            df.plot <- df.plot1 %>%
-              dplyr::select(y, Quality, y.name, x1) %>%
-              dplyr::rename(x = x1)
-            useVal <- "normal"
-            j_values <- data.frame(x = df_target[, str])
-          }
-          fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
-          rm(fit1, fit2, df.plot1, df.plot2)
-        } else {
-          # no complete cases
-        }
-      } else {        # jlog == 0
-        if (sum(stats::complete.cases(df.plot)) > 0) {
-          df.plot <- df.plot %>%
-            dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
-            dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
-            dplyr::select(y, Quality, y.name, x)
-          fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
-          useVal <- "normal"
-          j_values <- data.frame(x = df_target[, str])
-        } else { # no complete cases
-          # NEEDS SOMETHING HERE!
-        }
-      }
+    if (nrow(df.plot) > 0) { # This uses the dataframe with transformed (if necessary) values
+      df.plot <- df.plot %>%
+        dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
+        dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
+        dplyr::select(y, Quality, y.name, x)
+      fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
+      useVal <- "normal"
+      j_values <- data.frame(x = df_target[, str])
+      df.plot <- df.plot[stats::complete.cases(df.plot), ]
 
       #  Stressor Response Curve
       n_cc_df_plot <- nrow(df.plot[stats::complete.cases(df.plot[, c("x", "y")])
@@ -314,9 +280,9 @@ getSufficiency <- function(TargetSiteID
       ppi       <- 300
 
       # Create (ggplot)
-      bio_col <- c("midnightblue", "cyan2")
-      bio_shp <- c(21, 25) # circle and down triangle
-      bio_size <- c(3, 2)
+      bio_col <- c("gray25", "steelblue2")
+      bio_shp <- c(25, 21) # down triangle and circle
+      bio_size <- c(3, 3)
       # lab_comp <- paste0("Comparator samples selected from outside the case ("
       #                    , outcaseLabel, " ", outcaseID, ")")
 
@@ -336,19 +302,27 @@ getSufficiency <- function(TargetSiteID
                          , paste0("Score = ", paste(j_SR_score, collapse = ", "), ".")
                          , sep = "\n")
 
+      # Annotation values
+      # Score = -1 runs from 0 to 0.20 on the y axis
+      # Score = 0 runs from 0.20 to 0.50 on the y axis
+      # Score = 1 runs from 0.50 to 1 on the y axis
+      xmin <- min(df.plot$x, na.rm = TRUE)
+      xmax <- max(df.plot$x, na.rm = TRUE)
+      xseg <- xmax + (0.02 * xmax)
+
       # Get base info for scores table
       df.score.j <- df.score.j %>%
         dplyr::mutate(BioComm = biocomm
                       , Label = jlabel
-                      , Log1pValue = ifelse(useVal == "log1p"
-                                            , log1p(ParamValue)
-                                            , NA)
+                      # , Log1pValue = ifelse(useVal == "log1p"
+                      #                       , log1p(ParamValue)
+                      #                       , NA)
                       , n = nrow(df.plot)
                       , SRpred_Deg = j_SR_predict
                       , Sc_SRlog = j_SR_score) %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio)
-                      , Quality, ParamName, ParamValue, Log1pValue, n, SRpred_Deg
-                      , Sc_SRlog, BioComm, Label)
+        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio),
+                      Quality, ParamName, ParamValue, #Log1pValue,
+                      n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
@@ -369,6 +343,20 @@ getSufficiency <- function(TargetSiteID
                             , na.rm = TRUE) +
         ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
                             , lty = 2, na.rm = TRUE) +
+        ggplot2::annotate("segment", y = negStart, yend = negEnd, x = xseg,
+                          color = "orange", linewidth = 0.7, alpha = 0.6,
+                          arrow = grid::arrow(ends = "both", type = "open",
+                                              length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("segment", y = negEnd, yend = zeroEnd, x = xseg,
+                          color = "orange", linewidth = 0.7, alpha = 0.6,
+                          arrow = grid::arrow(ends = "both", type = "open",
+                                              length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("segment", y = zeroEnd, yend = posEnd, x = xseg,
+                          color = "orange", linewidth = 0.7, alpha = 0.6,
+                          arrow = grid::arrow(ends = "both", type = "open",
+                                              length = grid::unit(0.2, "cm"))) +
+        ggplot2::annotate("text", x = xmax, y = c(midNeg, midZero, midPos),
+                          label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
         ggplot2::labs(y = ylabel, x = jlabel) +
         ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat
                            , color = "black", lwd = 1, na.rm = TRUE) +
