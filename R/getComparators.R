@@ -1,6 +1,8 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Get Comparator Sites
 #'
@@ -21,9 +23,15 @@
 #' @param outcaseColName If useBC == FALSE, all the sites in the sites file (NULL).
 #'                       If useBC == TRUE, the name of the column that indicates
 #'                       the "outside the case". Default = NULL.
+#' @param outcaseLabel A label used to describe the "outside the case" region.
+#'                     Examples include "Entire state" or "Omernik Level 3 Ecoregion."
 #' @param incaseColName If useBC == FALSE, the name of the column in the sites
 #'                      file that indicates "inside the case". Default = NULL.
 #'                      If NULL, df_bcdist and bc_cutoff must be defined.
+#' @param incaseLabel A label used to describe the "inside the case" region.
+#'                    Examples include "Cluster" or "Sites with expected biologic
+#'                    similarity from cluster x" where x refers to the cluster
+#'                    membership of the target site.
 #' @param df_bcdist Dataframe containing the biological dissimilarity distance matrix.
 #'                  Default = NULL. Must be defined if incaseColName is not.
 #' @param bc_cutoff Cutoff value below which will be considered similar to the
@@ -40,20 +48,19 @@
 #' @keywords internal
 #'
 #' @export
-getComparators<- function(TargetSiteID
-                          , df_sites
-                          , df_bioCoOccur
-                          , bioIndex
-                          , useBC = FALSE
-                          , outcaseColName = NULL
-                          , outcaseLabel = outcaseLabel
-                          , incaseColName = NULL
-                          , incaseLabel = incaseLabel
-                          , df_bcdist = NULL
-                          , bc_cutoff = 0.05
-                          , dir_results = file.path(getwd(), "Results")
-                          , dir_sub = "SiteInfo"
-                          ) {##FUNCTION.START
+getComparators<- function(TargetSiteID,
+                          df_sites,
+                          df_bioCoOccur,
+                          bioIndex,
+                          useBC = FALSE,
+                          outcaseColName = NULL,
+                          outcaseLabel = outcaseLabel,
+                          incaseColName = NULL,
+                          incaseLabel = incaseLabel,
+                          df_bcdist = NULL,
+                          bc_cutoff = 0.05,
+                          dir_results = file.path(getwd(), "Results"),
+                          dir_sub = "SiteInfo") {##FUNCTION.START
 
   # For QC purposes
   boo_DEBUG <- FALSE
@@ -77,15 +84,15 @@ getComparators<- function(TargetSiteID
   # define pipe
   `%>%` <- dplyr::`%>%`
 
-  fn.compsites <- file.path(dir_results, TargetSiteID, dir_sub
-                            , paste0(TargetSiteID, "_COMPARATORS.tab"))
+  fn.compsites <- file.path(dir_results, TargetSiteID, dir_sub,
+                            paste0(TargetSiteID, "_COMPARATORS.tab"))
 
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID))
-         , FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, dir_sub)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID, dir_sub))
-         , FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID)),
+         FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, dir_sub)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID, dir_sub)),
+         FALSE)
 
   TargetCOMID <- df_sites$COMID[df_sites$StationID == TargetSiteID]
 
@@ -129,36 +136,36 @@ getComparators<- function(TargetSiteID
     num.good <- nrow(df_bcdist.temp) - 1
     if (num.good < 30) {
       df_bcdist.temp <- dplyr::top_n(df_bcdist, -31)
-      gap.statement <- cbind.data.frame("getComparators"
-                                        , paste0("bc.dist <= ", bc_cutoff)
-                                        , num.good
-                                        , paste("max bc.dist for"
-                                                , nrow(df_bcdist.temp) - 1
-                                                , "comparators ="
-                                                , max(df_bcdist.temp[, TargetColName])))
+      gap.statement <- cbind.data.frame("getComparators",
+                                        paste0("bc.dist <= ", bc_cutoff),
+                                        num.good,
+                                        paste("max bc.dist for",
+                                              nrow(df_bcdist.temp) - 1,
+                                              "comparators =",
+                                              max(df_bcdist.temp[, TargetColName])))
       colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     } else {
-      gap.statement <- cbind.data.frame("getComparators"
-                                        , paste0("bc.dist <= ", bc_cutoff)
-                                        , num.good
-                                        , paste("max bc.dist ="
-                                                , round(max(df_bcdist.temp[, TargetColName]), 4)))
+      gap.statement <- cbind.data.frame("getComparators",
+                                        paste0("bc.dist <= ", bc_cutoff),
+                                        num.good,
+                                        paste("max bc.dist =",
+                                              round(max(df_bcdist.temp[, TargetColName]), 4)))
       colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     }
 
-    bc_cutofftxt <- ifelse((bc_cutoff * 100) < 10, paste0(0, bc_cutoff * 100)
-                           , bc_cutoff * 100)
+    bc_cutofftxt <- ifelse((bc_cutoff * 100) < 10, paste0(0, bc_cutoff * 100),
+                            bc_cutoff * 100)
     comp.sites.info <- df_bcdist.temp
-    comp.sites.info$Comment <- ifelse(comp.sites.info[, TargetColName] <= 0.05
-                                      , paste0("OutCase_LTEQ", bc_cutofftxt)
-                                      , paste0("OutCase_GT", bc_cutofftxt))
+    comp.sites.info$Comment <- ifelse(comp.sites.info[, TargetColName] <= bc_cutoff,
+                                      paste0("OutCase_LTEQ", bc_cutofftxt),
+                                      paste0("OutCase_GT", bc_cutofftxt))
 
-    df_bioCoOccurTrim <- df_bioCoOccur[, c("StationID", "RespSampID"
-                                          , bioIndex, "Quality", "RespSampFlag")]
+    df_bioCoOccurTrim <- df_bioCoOccur[, c("StationID", "RespSampID",
+                                           bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = all_of(TargetColName))
-    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE
-                , row.names = FALSE, sep = "\t")
+    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+                row.names = FALSE, sep = "\t")
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)
@@ -190,24 +197,24 @@ getComparators<- function(TargetSiteID
     all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
     statement <- paste0("All '", incaseLabel, "=", incaseValue, "' sites from '",
                         outcaseLabel, "' are used as comparators.")
-    gap.statement <- cbind.data.frame("getComparators"
-                                      , "bc.dist not used"
-                                      , paste0("Inside the case: ", incaseLabel
-                                               , " = ", length(incaseSites))
-                                      , paste(statement))
-    gap.statement <- cbind.data.frame("getComparators"
-                                      , "bc.dist not used"
-                                      , paste0("Outside the case: ", outcaseLabel
-                                               , " = ", length(outcaseSites))
-                                      , paste(statement))
+    gap.statement <- cbind.data.frame("getComparators",
+                                      "bc.dist not used",
+                                      paste0("Inside the case: ", incaseLabel,
+                                             " = ", length(incaseSites)),
+                                      paste(statement))
+    gap.statement <- cbind.data.frame("getComparators",
+                                      "bc.dist not used",
+                                      paste0("Outside the case: ", outcaseLabel,
+                                             " = ", length(outcaseSites)),
+                                      paste(statement))
     colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
 
   }
 
   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-  write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE
-              , row.names = FALSE, sep = "\t")
+  write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
+              row.names = FALSE, sep = "\t")
 
   CompMsg2 <- paste("Using final number of comparators =", length(comp.sites) - 1)
   message(CompMsg2)
