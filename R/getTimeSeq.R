@@ -1,9 +1,10 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
-#
-#' @title Time Sequence Graphics
+#' @title Time Sequence Line of Evidence (Graphics only)
 #'
 #' @description Graph time-specific stressor-response values.
 #'
@@ -15,19 +16,18 @@
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
 #' @param biocomm biological response community (bmi, algae, or fish)
-#' @param BioResp vector of biological response metric names (including the index)
-#' @param stressors vector of stressors identified as candidate causes for the target site
+#' @param bioindex the column name containing the biological index value
 #' @param df_stress dataframe containing all target site stressors, regardless of matching status.
-#' @param df_stressinfo dataframe containing stressor metadata, specifically "Label"
 #' @param df_resp dataframe containing the target site biological response samples'
 #' index and metric values, regardless of matching status
 #' @param df_respinfo dataframe containing response metadata, specifically "Label"
+#' @param df_stressinfo dataframe containing stressor metadata, specifically "Label"
 #' @param dir_results Directory containing all results. Default = file.path(getwd(),"Results").
 #' NOTE: the code adds a middle directory, BioComm, between the Results and the subdirectory.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "TimeSequence"
 #' @param boo_plot Flag declaring whether the plots should be saved or not. Default = TRUE.
 #'
-#' @return One or more jpgs in SiteID/Biocomm/TemporalSequence subfolder of the
+#' @return One or more pngs in SiteID/Biocomm/TemporalSequence subfolder of the
 #'        "Results" folder. No scores are currently generated.
 #'
 #' @keywords internal
@@ -66,15 +66,15 @@ getTimeSeq <- function(TargetSiteID,
   biocomm <- toupper(biocomm)
 
   # Check for presence of TemporalSequence directory. If not present, create
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID))
-         , FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID, biocomm))
-         , FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm, dir_sub)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID, biocomm, dir_sub))
-         , FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID)),
+         FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID, biocomm)),
+         FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm, dir_sub)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID, biocomm, dir_sub)),
+         FALSE)
 
   path <- file.path(dir_results, TargetSiteID, biocomm, dir_sub)
 
@@ -94,8 +94,7 @@ getTimeSeq <- function(TargetSiteID,
     for (i in 1:nrow(df_NAs)) {
       stressNA <- df_NAs$variable[i]
       gapcomment <- "No date is available for modeled stressors."
-      df.temp <- cbind.data.frame("getTimeSeq", stressNA, 0
-                                  , gapcomment)
+      df.temp <- cbind.data.frame("getTimeSeq", stressNA, 0, gapcomment)
       if (i == 1) {
         gaps <- df.temp
       } else {
@@ -104,8 +103,8 @@ getTimeSeq <- function(TargetSiteID,
     }
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
+    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                row.names = FALSE, sep = "\t")
   } # End modeled data write to data gaps
 
   df_stress <- df_stress %>%
@@ -138,8 +137,8 @@ getTimeSeq <- function(TargetSiteID,
       metricLabel <- df_respinfo$MetricLabel[df_respinfo$MetricName == metricname]
 
       # Create filename for graphic
-      fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressname, "_"
-                  , metricname, ".png")
+      fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressname, "_",
+                  metricname, ".png")
       fpath = file.path(path, fn)
 
       # subset dataframe for dates and stressor/response values
@@ -172,8 +171,8 @@ getTimeSeq <- function(TargetSiteID,
       maxDate <- lubridate::ymd(paste0(maxYear, "/12/31"))
 
 
-      msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") "
-                    , stressname, " and ", metricname)
+      msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") ",
+                    stressname, " and ", metricname)
       message(msg)
 
       p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampleDate,
