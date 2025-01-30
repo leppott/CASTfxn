@@ -1,9 +1,8 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
-#  R version 4.3.1
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Identifies Stressor Outliers
 #'
@@ -11,14 +10,16 @@
 #'              6 times sd. If both suggest a given value as an outlier, the
 #'              value is identified as an outlier.
 #'
-#' @details Generates faceted time sequence graphics (stressor/response, one
-#' atop the other). All stressor/response data are graphed.
-#' Improvements: Add scoring.
+#' @details In addition to flagging likely outliers (by both 3x IQR and 6X sd),
+#'          this function writes histograms of all untransformed stressors and
+#'          for transformed stressors when transformation is specified in the
+#'          stressor metadata.
 #'
 #' Uses the library dplyr.
 #'
 #' @param df_data dataframe containing all stressor data values
 #' @param df_meta dataframe containing stressor metadata
+#' @param dir_plots directory to which to write stressor histograms
 #'
 #' @return Dataframe containing sample ID, stressor name, stressor value,
 #'         IQR method flag, SD method flag, Outlier flag
@@ -40,12 +41,12 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
   `%>%` <- dplyr::`%>%`
   # not_all_na <- function(x) {!all(is.na(x))}
 
-  ifelse(!dir.exists(dir_results) == TRUE
-         , dir.create(dir_results)
-         , FALSE)
-  ifelse(!dir.exists(dir_plots) == TRUE
-         , dir.create(dir_plots)
-         , FALSE)
+  ifelse(!dir.exists(dir_results) == TRUE,
+         dir.create(dir_results),
+         FALSE)
+  ifelse(!dir.exists(dir_plots) == TRUE,
+         dir.create(dir_plots),
+         FALSE)
 
   # Ensure uniqueness of df_meta
   df_meta <- df_meta %>%
@@ -93,7 +94,8 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
     if (unique(df_sub$LogTransf) == 1) {
       p2 <- ggplot2::ggplot(df_sub, ggplot2::aes(x = TransfResult)) +
         ggplot2::geom_histogram(bins = 500) +
-        ggplot2::ggtitle(paste0("Histogram of Log1p transformed ", paramName, " observations")) +
+        ggplot2::ggtitle(paste0("Histogram of Log1p transformed ", paramName,
+                                " observations")) +
         ggplot2::xlab(paramName) +
         ggplot2::theme_bw()
       ggplot2::ggsave(file.path(dir_plots, fn2), p2, width = 6, height = 4
