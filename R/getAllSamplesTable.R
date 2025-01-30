@@ -1,7 +1,8 @@
 #  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Sample Summary
 #'
@@ -73,12 +74,12 @@ getAllSamplesTable <- function(df.stress,
   # Identify modeled stressor types
   df.model <- dplyr::filter(df.stress, is.na(StressSampleDate))
   if (nrow(df.meas) > 0) {
-    df.sampSummary <- unique(df.meas[, c("StationID", "StressSampleID"
-                                             , "StdParamName", "StressSampleDate")])
+    df.sampSummary <- unique(df.meas[, c("StationID", "StressSampleID",
+                                         "StdParamName", "StressSampleDate")])
     df.sampSummary <- merge(df.sampSummary, df.stressInfo, by = "StdParamName")
     df.sampSummary <- df.sampSummary %>%
-      dplyr::select(StationID, StressSampleID, GroupName, StdParamName
-                    , StressSampleDate, Label) %>%
+      dplyr::select(StationID, StressSampleID, GroupName, StdParamName,
+                    StressSampleDate, Label) %>%
       dplyr::mutate(Type = dplyr::case_when(GroupName == "Habitat" ~ "HabitatSampleID",
                                             grepl("Field-measured", Label) == TRUE ~ "FieldSampleID",
                                             TRUE ~ "ChemistrySampleID"))
