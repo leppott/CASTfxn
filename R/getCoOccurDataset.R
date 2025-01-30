@@ -1,4 +1,4 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -17,10 +17,8 @@
 #' Uses the libraries dplyr and tidyr.
 #'
 #' @param df_sites Dataframe containing site data for all sites.
-#' @param df_model Dataframe containing modeled stressor data for all sites that
-#' have them. Default = NULL.
-#' @param df_meas Dataframe containing measured stressor data for all sites that
-#' have them.
+#' @param df_stress Dataframe containing measured or modeled stressor data
+#' for all sites that have them.
 #' @param biocomm Biological community; algae or BMI.
 #' @param df_resp Dataframe containing biological response metrics.
 #' @param index Name of the response index column.
@@ -30,18 +28,17 @@
 #'
 #' @return A dataframe containing matched stressor response data based on
 #' a stressor sample obtained between lagdays before and lagdays after the
-#' response sample was obtained.
+#' response sample was obtained. Result values are *not* transformed.
 #'
 #' @keywords internal
 #'
 #' @export
-getCoOccurDataset <- function(df_sites
-                              , df_stress
-                              , biocomm
-                              , df_resp
-                              , index
-                              , lagdays = c(0, 0)
-                              ) {##FUNCTION.START
+getCoOccurDataset <- function(df_sites,
+                              df_stress,
+                              biocomm,
+                              df_resp,
+                              index,
+                              lagdays = c(0, 0)) {##FUNCTION.START
 
   # Debug
   boo_DEBUG <- FALSE
@@ -65,16 +62,16 @@ getCoOccurDataset <- function(df_sites
 
   # Read data files (stressor and response)
   if (biocomm == "bmi") {
-    df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "Quality", "BMISampFlag")] %>%
+    df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
+                           index, "Quality", "BMISampFlag")] %>%
       dplyr::rename(RespSampFlag = BMISampFlag)
   } else if (biocomm == "alg") {
-    df_resp <- df_resp[,c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "Quality", "AlgSampFlag")] %>%
+    df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
+                           index, "Quality", "AlgSampFlag")] %>%
       dplyr::rename(RespSampFlag = AlgSampFlag)
   } else if (biocomm == "fish") {
-    df_resp <- df_resp[,c("StationID", "RespSampleDate", "RespSampleID"
-                          , index, "Quality", "FishSampFlag")] %>%
+    df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
+                           index, "Quality", "FishSampFlag")] %>%
       dplyr::rename(RespSampFlag = FishSampFlag)
   } else {
     print("Biological community type not used.")
@@ -83,7 +80,6 @@ getCoOccurDataset <- function(df_sites
 
   # Clean up modeled data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
-  # TODO: Select TransfResult or ResultValue?
   if (nrow(df_model) > 0) {
     df_model <- df_model %>%
       dplyr::select(StationID, StdParamName, ResultValue) %>%
@@ -95,44 +91,49 @@ getCoOccurDataset <- function(df_sites
     df_modresp <- merge(df_resp, df_model, by.x = "StationID"
                         , by.y = "StationID", all = TRUE)
     df_modresp <- df_modresp %>%
-      dplyr::select(StationID
-                    , RespSampleDate
-                    , RespSampleID
-                    , Quality
-                    , all_of(index)
-                    , RespSampleFlag
-                    , all_of(modColnames))
+      dplyr::select(StationID,
+                    RespSampleDate,
+                    RespSampleID,
+                    Quality,
+                    all_of(index),
+                    RespSampleFlag,
+                    all_of(modColnames))
 
     rm(df_model, df_resp)
     respColnames <- c("RespSampID", index, "Quality", "RespSampFlag")
+  } else {
+    msg <- "No modeled stressors"
+    message(msg)
   }
 
   # Clean up measured data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
-  # TODO: Select TransfResult or ResultValue?
   if (nrow(df_meas) > 0) {
     df_meas <- as.data.frame(df_meas) %>%
       dplyr::filter(!is.na(ResultValue)) %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate
-                    , StdParamName, ResultValue) %>%
-      dplyr::group_by(StationID, StressSampleID, StressSampleDate
-                      , StdParamName) %>%
-      dplyr::summarise(meanResult = mean(ResultValue, na.rm = TRUE)
-                       , .groups = "drop_last") %>%
+      dplyr::select(StationID, StressSampleID, StressSampleDate,
+                    StdParamName, ResultValue) %>%
+      dplyr::group_by(StationID, StressSampleID, StressSampleDate,
+                      StdParamName) %>%
+      dplyr::summarise(meanResult = mean(ResultValue, na.rm = TRUE),
+                        .groups = "drop_last") %>%
       dplyr::rename(ResultValue = meanResult) %>%
       tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
     measColnames <- names(df_meas)
-    measColnames <- measColnames[!(measColnames %in% c("StationID"
-                                                       , "StressSampleID"
-                                                       , "StressSampleDate"))]
+    measColnames <- measColnames[!(measColnames %in% c("StationID",
+                                                       "StressSampleID",
+                                                       "StressSampleDate"))]
+  } else {
+    msg <- "No measured stressors"
+    message(msg)
   }
 
   # Merge site/bmi data with measured data by station & date
   if (exists("df_modresp") & exists("df_meas")) {
-    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas
-                                              , by = c("StationID" = "StationID"
-                                                       , "RespSampleDate" = "StressSampleDate")
-                                              , match_fun = list(`==`, function(x, y)
+    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas,
+                                              by = c("StationID" = "StationID",
+                                                     "RespSampleDate" = "StressSampleDate"),
+                                              match_fun = list(`==`, function(x, y)
                                                 (x - y >= 0 & x - y <= lagdays[1]) |
                                                   abs(x - y) <= lagdays[2])) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
@@ -140,27 +141,26 @@ getCoOccurDataset <- function(df_sites
 
     # Select the minimum diffDays match only (avoids more than 1 match)
     df_coOccur3 <- unique(df_coOccur2) %>%
-      dplyr::select(StationID, StressSampleDate, RespSampleDate
-                    , StressSampleID) %>%
+      dplyr::select(StationID, StressSampleDate, RespSampleDate,
+                    StressSampleID) %>%
       dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
       dplyr::mutate(mindiff = min(abs(diff))) %>%
       dplyr::filter(mindiff == abs(diff)) %>%
       dplyr::distinct(StationID, StressSampleDate, RespSampleDate, StressSampleID)
 
-    df_coOccur <- unique(merge(df_coOccur3, df_modresp
-                               , by = c("StationID", "RespSampleDate")
-                               # , by.y = c("StationID", "RespSampleDate")
-                               , all.x = TRUE))
-    df_coOccur <- unique(merge(df_coOccur, df_meas
-                               , by = c("StationID", "StressSampleDate", "StressSampleID")
-                               # , by.y = c("StationID", "StressSampleDate", "ChemSampleID")
-                               , all.x = TRUE))
+    df_coOccur <- unique(merge(df_coOccur3, df_modresp,
+                               by = c("StationID", "RespSampleDate"),
+                               all.x = TRUE))
+    df_coOccur <- unique(merge(df_coOccur, df_meas,
+                               by = c("StationID", "StressSampleDate",
+                                      "StressSampleID"),
+                               all.x = TRUE))
     rm(df_coOccur2, df_coOccur3)
   } else if (exists("df_meas")) {
-    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_resp, df_meas
-                                              , by = c("StationID" = "StationID"
-                                                       , "RespSampleDate" = "StressSampleDate")
-                                              , match_fun = list(`==`, function(x, y)
+    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_resp, df_meas,
+                                              by = c("StationID" = "StationID",
+                                                     "RespSampleDate" = "StressSampleDate"),
+                                              match_fun = list(`==`, function(x, y)
                                                 (x - y >= 0 & x - y <= lagdays[1]) |
                                                   abs(x - y) <= lagdays[2])) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
@@ -179,20 +179,19 @@ getCoOccurDataset <- function(df_sites
   df_coOccur$BioComm <- biocomm
   if(exists("modColnames") & exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
-      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)
-                    , all_of(measColnames)) %>%
+      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
+                    RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames),
+                    all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else if (exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
-      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , RespSampleID, BioComm, all_of(index), Quality
-                    , all_of(measColnames)) %>%
+      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
+                    RespSampleID, BioComm, all_of(index), Quality, all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else {
     df_coOccur <- df_coOccur %>%
-      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID
-                    , RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)) %>%
+      dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
+                    RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)) %>%
       dplyr::select_if(not_all_na)
   }
 
