@@ -1,6 +1,8 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Write Outliers
 #'
@@ -24,13 +26,13 @@
 #' @keywords internal
 #'
 #' @export
-writeOutliers <- function(TargetSiteID
-                          , df_outliers
-                          , df_stressInfo
-                          , siteDetects
-                          , compSites
-                          , allSites
-                          , dir_results = file.path(getwd(), "Results")) {
+writeOutliers <- function(TargetSiteID,
+                          df_outliers,
+                          df_stressInfo,
+                          siteDetects,
+                          compSites,
+                          allSites,
+                          dir_results = file.path(getwd(), "Results")) {
 
   boo.debug = FALSE
 
@@ -74,20 +76,19 @@ writeOutliers <- function(TargetSiteID
       strLabel <- siteOutliers$Label[r]
       result <- siteOutliers$ResultValue[r]
       status <- siteOutliers$Outlier[r]
-      statusMsg <- ifelse(status == "Outlier"
-                          , paste0("n ", tolower(status))
-                          , status)
+      statusMsg <- ifelse(status == "Outlier",
+                          paste0("n ", tolower(status)),
+                          status)
       siteID <- as.character(siteOutliers$StationID[r])
-      gapcomment <- paste0(siteID, " value identified as a", statusMsg
-                           , ". Transformation applied prior to"
-                           , " identification as necessary.")
-      gaps <- cbind.data.frame("Site outliers", strLabel, result
-                               , gapcomment)
+      gapcomment <- paste0(siteID, " value identified as a", statusMsg,
+                           ". Transformation applied prior to",
+                           " identification as necessary.")
+      gaps <- cbind.data.frame("Site outliers", strLabel, result, gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
     }
   }## IF ~ siteOutliers ~ END
   message(paste0("Identified ", nrow(siteOutliers), " site outliers"))
@@ -99,26 +100,25 @@ writeOutliers <- function(TargetSiteID
       strLabel <- compOutliers$Label[r]
       result <- compOutliers$ResultValue[r]
       status <- compOutliers$Outlier[r]
-      statusMsg <- ifelse(status == "Outlier"
-                          , paste0("n ", tolower(status))
-                          , status)
+      statusMsg <- ifelse(status == "Outlier",
+                          paste0("n ", tolower(status)),
+                          status)
       siteID <- as.character(compOutliers$StationID[r])
       if (siteID != TargetSiteID) {
-        gapcomment <- paste0(siteID, " value identified as a", statusMsg
-                             , ". Transformation applied prior to"
-                             , " identification as necessary.")
-        gaps <- cbind.data.frame("Comparator (inside the case) outliers", strLabel, result
-                                 , gapcomment)
+        gapcomment <- paste0(siteID, " value identified as a", statusMsg,
+                             ". Transformation applied prior to",
+                             " identification as necessary.")
+        gaps <- cbind.data.frame("Comparator (inside the case) outliers",
+                                 strLabel, result, gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
       }
     }
   }## IF ~ compOutliers ~ END
-  message(paste0("Identified ", nrow(compOutliers)
-                 , " comparator site outliers"))
+  message(paste0("Identified ", nrow(compOutliers), " comparator site outliers"))
 
   if (nrow(allOutliers) > 0) {
     for (r in 1:nrow(allOutliers)) {
@@ -126,25 +126,24 @@ writeOutliers <- function(TargetSiteID
       strLabel <- allOutliers$Label[r]
       result <- allOutliers$ResultValue[r]
       status <- allOutliers$Outlier[r]
-      statusMsg <- ifelse(status == "Outlier"
-                          , paste0("n ", tolower(status))
-                          , status)
+      statusMsg <- ifelse(status == "Outlier",
+                          paste0("n ", tolower(status)),
+                          status)
       siteID <- as.character(allOutliers$StationID)[r]
       if (!(siteID %in% compSites)) {
-        gapcomment <- paste0(siteID, " value identified as a", statusMsg
-                             , ". Transformation applied prior to"
-                             , " identification as necessary.")
-        gaps <- cbind.data.frame("Outside-the-case data outliers", strLabel, result
-                                 , gapcomment)
+        gapcomment <- paste0(siteID, " value identified as a", statusMsg,
+                             ". Transformation applied prior to",
+                             " identification as necessary.")
+        gaps <- cbind.data.frame("Outside-the-case data outliers",
+                                 strLabel, result, gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
       }
     }
   }## IF ~ allOutliers ~ END
-  message(paste0("Identified ", nrow(allOutliers)
-                 , " outside the case site outliers"))
+  message(paste0("Identified ", nrow(allOutliers), " outside the case site outliers"))
 
 }
