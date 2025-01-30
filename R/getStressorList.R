@@ -1,7 +1,8 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Stressor List
 #'
@@ -18,26 +19,33 @@
 #' @param TargetSiteID Site ID
 #' @param outcaseLabel Label for the "outside the case" identifier
 #' @param outcaseID Name of column in sites file that indicates the "outside
-#' the case" id
+#'                  the case" id
 #' @param outcaseSites Vector containing "outside the case" site IDs
 #' @param incaseSites Vector containing "inside the case" site IDs (comparators)
 #' @param refSites all reference sites
 #' @param siteChem dataframe containing any detected stressor data from target
-#' site samples at any time
+#'                 site samples at any time
 #' @param df_Stress dataframe containing stressor data
 #' @param cheminfo dataframe containing stressor metadata, specifically "Label",
-#' "DirIncStress", and "LogTransformYN"
+#'                 "DirIncStress", and "LogTransformYN"
 #' @param samplim minimum number of samples required to id stressors as
-#' candidate causes
-#' @param probsHigh probabilities, high
-#' @param probsLow probabilities, low
-#' @param DOlim Dissolved Oxygen limit, default = 7
-#' @param pHlimLow  pH limit, low, default = 6.5
-#' @param pHlimHigh pH limit, high, default = 9
+#' candidate causes. Defaults to 10.
+#' @param probsHigh probabilities, high. Defaults to 0.75. For stressors considered
+#'                  to be increasers (stress increases with increasing concentration),
+#'                  values above this are considered to be candidate causes.
+#' @param probsLow probabilities, low, Defaults to 0.25.For stressors considered
+#'                 to be decreasers (stress increases with decreasing concentration),
+#'                 values above this are considered to be candidate causes.
+#' @param DOlim Dissolved Oxygen limit, default = 7. Used to exclude values
+#'              < probsLow if they are also > 7 mg/L.
+#' @param pHlimLow  pH limit, low, default = 6.5. Used to exclude values
+#'                  < probsLow if they are also between 6.5 and 9 pH units.
+#' @param pHlimHigh pH limit, high, default = 9. Used to exclude values
+#'                  > probsHigh if they are also between 6.5 and 9 pH units.
 #' @param biocommlist vector of each biological response community available
-#' ("bmi", "alg", or "fish")
+#'                    ("bmi", "alg", or "fish")
 #' @param listbioParamsDEL list of vectors corresponding to biocommlist of
-#' stressors not considered relevant for evaluation
+#'                         stressors not considered relevant for evaluation
 #' @param dir_results Directory to save plots. Default = file.path(getwd(), "Results").
 #' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo"
 #'
@@ -47,92 +55,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' TargetSiteID <- "SRCKN001.61"
-#' dir_results <- file.path(getwd(), "Results")
-#'
-#' # Data getSiteInfo
-#' # data, example included with package
-#' data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
-#' data.SampSummary   <- data_SampSummary
-#' data.303d.ComID    <- data_303d
-#' data.bmi.metrics   <- data_BMIMetrics
-#' data.algae.metrics <- data_AlgMetrics
-#' data.mod           <- data_ReachMod
-#'
-#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-#' elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
-#'                     , "ElevCategory"])
-#' if(elev_cat=="HI"){
-#'    data.cluster <- data_Cluster_Hi
-#' } else if(elev_cat=="LO") {
-#'    data.cluster <- data_Cluster_Lo
-#' }
-#'
-#' # Map data
-#' # San Diego
-#' #flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#' #outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-#' # AZ
-#' map_flowline  <- data_GIS_Flow_HI
-#' map_flowline2 <- data_GIS_Flow_LO
-#' if(elev_cat=="HI"){
-#'    map_flowline <- data_GIS_Flow_HI
-#' } else if(elev_cat=="LO") {
-#'    map_flowline <- data_GIS_Flow_LO
-#' }
-#' map_outline   <- data_GIS_AZ_Outline
-#' # Project site data to USGS Albers Equal Area
-#' usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-#'               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-#'               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-#' # projection for outline
-#' my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
-#'            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-#' map_proj <- my.aea
-#' #
-#' dir_sub <- "SiteInfo"
-#'
-#' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-#'                                 , data.SampSummary, data.303d.ComID
-#'                                 , data.bmi.metrics, data.algae.metrics
-#'                                 , data.cluster, data.mod
-#'                                 , map_proj, map_outline, map_flowline
-#'                                 , dir_sub=dir_sub)
-#'
-#' # Data getChemDataSubsets
-#' # data import, example
-#' # data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
-#' # data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-#' # data, example included with package
-#' site.COMID <- list.SiteSummary$COMID
-#' site.Clusters <- list.SiteSummary$ClustIDs
-#' data.chem.raw <- data_Chem
-#' data.chem.info <- data_ChemInfo
-#'
-#' # Run getChemDataSubsets
-#' list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-#'                                 , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-#'                                 , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
-#'
-#' # datasets getStressorList
-#' chem.info <- list.data$chem.info
-#' cluster.chem <- list.data$cluster.chem
-#' cluster.samps <- list.data$cluster.samps
-#' ref.sites <- list.data$ref.sites
-#' siteChem <- list.data$siteChem
-#' dir_sub <- "CandidateCauses"
-#'
-#' # set cutoff for possible stressor identification
-#' probsLow <- 0.10
-#' probsHigh <- 0.90
-#' biocomm <- "bmi"
-#'
-#' # Run getStressorList
-#' list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-#'                                  , cluster.samps, ref.sites, siteChem
-#'                                  , probsHigh, probsLow, biocomm, dir_results
-#'                                  , dir_sub)
 #' }
 #' @export
 #'
@@ -208,20 +130,20 @@ getStressorList <- function(TargetSiteID,
   dir.sub3 <- dir_sub
 
   if (!is_local) { # Is shiny
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2))
-           , FALSE)
-    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
-           , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
-           , FALSE)
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE,
+           dir.create(file.path(wd, dir.sub, dir.sub2)),
+           FALSE)
+    ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE,
+           dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3)),
+           FALSE)
     dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3)
   } else {
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2)) == TRUE
-           , dir.create(file.path(dir.sub, dir.sub2))
-           , FALSE)
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3)) == TRUE
-           , dir.create(file.path(dir.sub, dir.sub2, dir.sub3))
-           , FALSE)
+    ifelse(!dir.exists(file.path(dir.sub, dir.sub2)) == TRUE,
+           dir.create(file.path(dir.sub, dir.sub2)),
+           FALSE)
+    ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3)) == TRUE,
+           dir.create(file.path(dir.sub, dir.sub2, dir.sub3)),
+           FALSE)
     dir_path <- file.path(dir.sub, dir.sub2, dir.sub3)
   }
 
@@ -277,8 +199,8 @@ getStressorList <- function(TargetSiteID,
   alltype <- dplyr::select_if(outcaseChemData, is.numeric) %>%
     dplyr::select(!RefSiteFlag)
   coolvar <- alltype[, allcountnames]
-  groupnames <- unique(subset(chemInfo, chemInfo$StdParamName %in% siteChem
-                              , select = "GroupName"))
+  groupnames <- unique(subset(chemInfo, chemInfo$StdParamName %in% siteChem,
+                              select = "GroupName"))
   numgps <- length(groupnames[, 1])
 
   # Get data having <=2 samples in cluster, write to data gaps & add to eliminated
@@ -290,14 +212,14 @@ getStressorList <- function(TargetSiteID,
     for (s in 1:ncol(df_allcount)) {
       elimName <- colnames(df_allcount)[s]
       gapcomment <- paste0("Number of outside-the-case samples is too few for analysis.")
-      gaps <- cbind.data.frame("getStressorList", elimName
-                               , df_allcount[[elimName]][1]
-                               , gapcomment)
+      gaps <- cbind.data.frame("getStressorList", elimName,
+                               df_allcount[[elimName]][1],
+                               gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
       if (!exists("tmpParmDEL")) { tmpParmDEL <- elimName }
       else { tmpParmDEL <- c(tmpParmDEL, elimName) }
     }
@@ -314,8 +236,8 @@ getStressorList <- function(TargetSiteID,
   # plots.g <- vector(numgps, mode="list")
   # Generate 1 box plot for each group, ref sites in blue, target site in red
   for (g in 1:numgps) {##FOR.g.START
-    gpchems <- subset(chemInfo, GroupName == groupnames[g, ]
-                      , select = c("StdParamName", "Label"))
+    gpchems <- subset(chemInfo, GroupName == groupnames[g, ],
+                      select = c("StdParamName", "Label"))
     # gpcoolvar <- subset(coolvar, coolvar %in% gpchems$StdParamName)
     gpcoolvar <- coolvar[, colnames(coolvar) %in% gpchems$StdParamName]
     n <- length(gpcoolvar)
@@ -332,12 +254,16 @@ getStressorList <- function(TargetSiteID,
       df_plot_wide_min <- apply(df_plot_wide, 2, min, na.rm = TRUE)
       df_plot_wide_range <- apply(df_plot_wide, 2, range, na.rm = TRUE)
       df_plot_wide_diff <- apply(df_plot_wide_range, 2, diff)
-      df_plot_wide_valminusmin <- sweep(df_plot_wide, 2, df_plot_wide_min, FUN = "-")
-      df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+      df_plot_wide_valminusmin <- sweep(df_plot_wide, 2,
+                                        df_plot_wide_min, FUN = "-")
+      df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2,
+                                df_plot_wide_diff, FUN = "/")
       df_plot_long <- df_plot_wide_mod %>%
-        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
+        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                            values_to = "value") %>%
         dplyr::filter(!is.na(value))
-      df_plot_long <- merge(gpchems, df_plot_long, by.x = "StdParamName", by.y = "GrpNm")
+      df_plot_long <- merge(gpchems, df_plot_long, by.x = "StdParamName",
+                            by.y = "GrpNm")
 
       if (nrow(df_plot_long) > 0) {boo_plot <- TRUE} else {boo_plot <- FALSE}
 
@@ -345,16 +271,19 @@ getStressorList <- function(TargetSiteID,
       boo_plot_comp <- FALSE
       if (exists("incaseChemData")) {##IF~nrow(cluster.ref.chem.data)~START
         df_plot_comp_wide <- as.data.frame(incaseChemData[, colnames(gpcoolvar)])
-        df_plot_comp_wide_valminusmin <- sweep(df_plot_comp_wide, 2, df_plot_wide_min, FUN = "-")
-        df_plot_comp_wide_mod <- sweep(df_plot_comp_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+        df_plot_comp_wide_valminusmin <- sweep(df_plot_comp_wide, 2,
+                                               df_plot_wide_min, FUN = "-")
+        df_plot_comp_wide_mod <- sweep(df_plot_comp_wide_valminusmin, 2,
+                                       df_plot_wide_diff, FUN = "/")
         compchemcolnames <- colnames(df_plot_comp_wide_mod)
 
         if (any(colnames(gpcoolvar) %in% compchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_comp <- df_plot_comp_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm"
-                                , values_to = "value") %>%
+            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                                values_to = "value") %>%
             dplyr::filter(!is.na(value))
-          df_plot_long_comp <- merge(gpchems, df_plot_long_comp, by.x="StdParamName", by.y = "GrpNm")
+          df_plot_long_comp <- merge(gpchems, df_plot_long_comp,
+                                     by.x="StdParamName", by.y = "GrpNm")
           boo_plot_comp <- ifelse(nrow(df_plot_long_comp) > 0, TRUE, FALSE)
           boo_plot_comp <- ifelse(all(is.na(df_plot_long_comp$value)), FALSE, TRUE)
         } else {
@@ -366,15 +295,19 @@ getStressorList <- function(TargetSiteID,
       boo_plot_ref_out <- FALSE
       if (exists("outcaseRefChemData")) {##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_out_wide <- as.data.frame(outcaseRefChemData[, colnames(gpcoolvar)])
-        df_plot_ref_out_wide_valminusmin <- sweep(df_plot_ref_out_wide, 2, df_plot_wide_min, FUN = "-")
-        df_plot_ref_out_wide_mod <- sweep(df_plot_ref_out_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+        df_plot_ref_out_wide_valminusmin <- sweep(df_plot_ref_out_wide, 2,
+                                                  df_plot_wide_min, FUN = "-")
+        df_plot_ref_out_wide_mod <- sweep(df_plot_ref_out_wide_valminusmin, 2,
+                                          df_plot_wide_diff, FUN = "/")
         refchemcolnames <- colnames(df_plot_ref_out_wide_mod)
 
         if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_ref_out <- df_plot_ref_out_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
+            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                                values_to = "value") %>%
             dplyr::filter(!is.na(value))
-          df_plot_long_ref_out <- merge(gpchems, df_plot_long_ref_out, by.x = "StdParamName", by.y = "GrpNm")
+          df_plot_long_ref_out <- merge(gpchems, df_plot_long_ref_out,
+                                        by.x = "StdParamName", by.y = "GrpNm")
           boo_plot_ref_out <- ifelse(nrow(df_plot_long_ref_out) > 0, TRUE, FALSE)
           boo_plot_ref_out <- ifelse(all(is.na(df_plot_long_ref_out$value)), FALSE, TRUE)
         } else {
@@ -386,15 +319,19 @@ getStressorList <- function(TargetSiteID,
       boo_plot_ref_in <- FALSE
       if (exists("incaseRefChemData")) {##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_in_wide <- as.data.frame(incaseRefChemData[, colnames(gpcoolvar)])
-        df_plot_ref_in_wide_valminusmin <- sweep(df_plot_ref_in_wide, 2, df_plot_wide_min, FUN = "-")
-        df_plot_ref_in_wide_mod <- sweep(df_plot_ref_in_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+        df_plot_ref_in_wide_valminusmin <- sweep(df_plot_ref_in_wide, 2,
+                                                 df_plot_wide_min, FUN = "-")
+        df_plot_ref_in_wide_mod <- sweep(df_plot_ref_in_wide_valminusmin, 2,
+                                         df_plot_wide_diff, FUN = "/")
         refchemcolnames <- colnames(df_plot_ref_in_wide_mod)
 
         if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_ref_in <- df_plot_ref_in_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
+            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                                values_to = "value") %>%
             dplyr::filter(!is.na(value))
-          df_plot_long_ref_in <- merge(gpchems, df_plot_long_ref_in, by.x = "StdParamName", by.y = "GrpNm")
+          df_plot_long_ref_in <- merge(gpchems, df_plot_long_ref_in,
+                                       by.x = "StdParamName", by.y = "GrpNm")
           boo_plot_ref_in <- ifelse(nrow(df_plot_long_ref_in) > 0, TRUE, FALSE)
           boo_plot_ref_in <- ifelse(all(is.na(df_plot_long_ref_in$value)), FALSE, TRUE)
         } else {
@@ -404,12 +341,16 @@ getStressorList <- function(TargetSiteID,
 
       ## Plot, Data, Target Site
       df_plot_targ_wide <- as.data.frame(siteChemData[, colnames(gpcoolvar)])
-      df_plot_targ_wide_valminusmin <- sweep(df_plot_targ_wide, 2, df_plot_wide_min, FUN = "-")
-      df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2, df_plot_wide_diff, FUN = "/")
+      df_plot_targ_wide_valminusmin <- sweep(df_plot_targ_wide, 2,
+                                             df_plot_wide_min, FUN = "-")
+      df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2,
+                                     df_plot_wide_diff, FUN = "/")
       df_plot_long_targ <- df_plot_targ_wide_mod %>%
-        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm", values_to = "value") %>%
+        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                            values_to = "value") %>%
         dplyr::filter(!is.na(value))
-      df_plot_long_targ <- merge(gpchems, df_plot_long_targ, by.x="StdParamName", by.y="GrpNm")
+      df_plot_long_targ <- merge(gpchems, df_plot_long_targ,
+                                 by.x="StdParamName", by.y="GrpNm")
       boo_plot_targ <- ifelse(nrow(siteChemData) != 0, TRUE, FALSE)
 
       qualtext <- "Reference"
@@ -432,7 +373,7 @@ getStressorList <- function(TargetSiteID,
       str_ylab <- str_Group
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "gray25"        # outside the case
+      col_sites_all     <- "gray40"        # outside the case
       col_sites_all_ref <- "blue"         # reference sites outside the case
       col_sites_cl      <- "cyan4"        # inside the case
       col_sites_cl_ref  <- "blue"         # reference sites outside the case
@@ -440,8 +381,8 @@ getStressorList <- function(TargetSiteID,
       col_line          <- "black"
 
       ## Plot, Variables, Fill
-      fill_sites_all     <- "gray25"
-      fill_sites_all_ref <- "gray25"
+      fill_sites_all     <- "gray40"
+      fill_sites_all_ref <- "gray40"
       fill_sites_cl      <- "cyan4"
       fill_sites_cl_ref  <- "cyan4"
       fill_sites_targ    <- "red"
@@ -454,7 +395,7 @@ getStressorList <- function(TargetSiteID,
       pch_sites_targ    <- 17 # triangle
 
       ## Plot, Variables, Sizes
-      cex_mod <- 3
+      cex_mod <- 2.5
       cex_sites_all     <- cex_mod * 1
       cex_sites_all_ref <- cex_mod * 1
       cex_sites_cl      <- cex_mod * 0.95
@@ -463,11 +404,15 @@ getStressorList <- function(TargetSiteID,
 
       ## Plot, Variables, Legend
       leg_name   <- "Samples"
-      leg_labels <- c("Outside the case", "Inside the case", "Outside the case, reference",
+      leg_labels <- c("Outside the case", "Inside the case",
+                      "Outside the case, reference",
                       "Inside the case, reference", "Target")
-      leg_shape  <- c(pch_sites_all, pch_sites_cl, pch_sites_all_ref, pch_sites_cl_ref, pch_sites_targ)
-      leg_col    <- c(col_sites_all, col_sites_cl, col_sites_all_ref, col_sites_cl_ref, col_sites_targ)
-      leg_fill   <- c(fill_sites_all, fill_sites_cl, fill_sites_all_ref, fill_sites_cl_ref, fill_sites_targ)
+      leg_shape  <- c(pch_sites_all, pch_sites_cl, pch_sites_all_ref,
+                      pch_sites_cl_ref, pch_sites_targ)
+      leg_col    <- c(col_sites_all, col_sites_cl, col_sites_all_ref,
+                      col_sites_cl_ref, col_sites_targ)
+      leg_fill   <- c(fill_sites_all, fill_sites_cl, fill_sites_all_ref,
+                      fill_sites_cl_ref, fill_sites_targ)
 
       if (n > 8) {
         yaxistextsize = 6
@@ -480,8 +425,8 @@ getStressorList <- function(TargetSiteID,
       if (boo_plot == TRUE) { # No rows in df_plot_long
         # ggplot, main (outside the case)
         p_SL <- ggplot2::ggplot(data = df_plot_long) +
-          ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length)
-                                             , y = value), staplewidth = 0.5)  +
+          ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+                                             y = value), staplewidth = 0.5)  +
           ggplot2::geom_jitter(data = df_plot_long, width = 0.1,
                                ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
                                             y = value, color = "col_sites_all",
@@ -564,7 +509,7 @@ getStressorList <- function(TargetSiteID,
         if (!is_local) {message(p_SL)}
 
         fn_title <- stringr::str_to_title(str_Group)
-        fn_title <- gsub("\\s","",fn_title)
+        fn_title <- gsub("\\s", "", fn_title)
         fn_plot <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_",
                                               fn_title, plot_ext))
         ggplot2::ggsave(fn_plot, p_SL, width = plot_W, height = plot_H, units = "in")
@@ -579,19 +524,19 @@ getStressorList <- function(TargetSiteID,
   if (nrow(outcaseChemData) > 1) { # more than one sample from target site exists for cluster
     chem.clusterCore <- as.data.frame(outcaseChemData %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate))
-    chem.pctrank <- as.data.frame(apply(outcaseChemData[, 5:ncol(outcaseChemData)]
-                                        , 2, function(x) dplyr::percent_rank(x)))
+    chem.pctrank <- as.data.frame(apply(outcaseChemData[, 5:ncol(outcaseChemData)],
+                                        2, function(x) dplyr::percent_rank(x)))
     data.chem.pctrank <- cbind(chem.clusterCore, as.data.frame(chem.pctrank))
     fn.pctrank <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_ChemPctRank.tab"))
   } else { # only the target sample exists
-    data.chem.pctrank <- cbind(outcaseChemData[, c("StationID", "StressSampleID"
-                                               , "StressSampleDate")]
-                               , outcaseChemData[, 5:ncol(outcaseChemData)])
+    data.chem.pctrank <- cbind(outcaseChemData[, c("StationID", "StressSampleID",
+                                                   "StressSampleDate")],
+                               outcaseChemData[, 5:ncol(outcaseChemData)])
     data.chem.pctrank[, 5:ncol(data.chem.pctrank)] <- 1
     fn.pctrank <- file.path(dir_path, paste0(TargetSiteID, "_CandCauses_ChemPctRank.tab"))
   }
-  utils::write.table(data.chem.pctrank, fn.pctrank, sep = "\t", col.names = TRUE
-                     , row.names = FALSE, append = FALSE)
+  utils::write.table(data.chem.pctrank, fn.pctrank, sep = "\t",
+                     col.names = TRUE, row.names = FALSE, append = FALSE)
   site.pctrank <- subset(data.chem.pctrank, StationID == TargetSiteID)
   stressor <- "none"
   #
@@ -614,8 +559,8 @@ getStressorList <- function(TargetSiteID,
     # DirIncStress ####
     # (not all in chem.info)
     if (chemname %in% chemInfo[, "StdParamName"]) {
-      ExpDirIncStress <- tolower((chemInfo[chemInfo[,"StdParamName"] == chemname
-                                           , "DirIncStress"])[1])
+      ExpDirIncStress <- tolower((chemInfo[chemInfo[,"StdParamName"] == chemname,
+                                           "DirIncStress"])[1])
     } else {
       ExpDirIncStress <- "unk"
     }
@@ -659,10 +604,10 @@ getStressorList <- function(TargetSiteID,
   # Stressor variable contains identified candidate causes
   # bioParmsDEL contains parameters that don't apply for this biocomm
   # tmpParmDEL contains parameters with <= only 2 sample points for cluster data
-  fn.stressorsExc <- file.path(dir_path, paste0(TargetSiteID
-                                                , "_CandCauses_StressorsExcluded.tab"))
-  fn.stressorsEval <- file.path(dir_path, paste0(TargetSiteID
-                                                , "_CandCauses_StressorsEvaluated.tab"))
+  fn.stressorsExc <- file.path(dir_path,
+                               paste0(TargetSiteID, "_CandCauses_StressorsExcluded.tab"))
+  fn.stressorsEval <- file.path(dir_path,
+                                paste0(TargetSiteID, "_CandCauses_StressorsEvaluated.tab"))
 
   for (b in seq_along(biocommlist)) {
     biocomm = biocommlist[b]
@@ -679,74 +624,72 @@ getStressorList <- function(TargetSiteID,
     stressorsEvaluated <- as.data.frame(stressorsEvaluated) %>%
       dplyr::mutate(Biocomm = biocomm)
     colnames(stressorsEvaluated)[1] <- "Stressor"
-    stressorsEvaluated <- merge(stressorsEvaluated
-                                , chemInfo
-                                , by.x = "Stressor", by.y = "StdParamName"
-                                , all.x = TRUE)
+    stressorsEvaluated <- merge(stressorsEvaluated,
+                                chemInfo,
+                                by.x = "Stressor", by.y = "StdParamName",
+                                all.x = TRUE)
     stressorsEvaluated <- stressorsEvaluated %>%
       dplyr::select(Biocomm, Stressor, GroupName, Label, LogTransf, SSTV, SSI,
                     SensMin, SensMax, TolMin, TolMax, DirIncStress, SSTVname,
                     SSIndex)
     if (nrow(stressorsEvaluated)==0) {
-      stressorsEvaluated <- rbind(stressorsEvaluated
-                                  , (cbind(biocomm, "None", "None", "None",
-                                           "None", "None", "None", "None",
-                                           "None", "None", "None", "None",
-                                           "None", "None")))
+      stressorsEvaluated <- rbind(stressorsEvaluated,
+                                  (cbind(biocomm, "None", "None", "None", "None",
+                                         "None", "None", "None", "None", "None",
+                                         "None", "None", "None", "None")))
     }
     stressorsEvaluated <- unique(stressorsEvaluated)
     stressorsEvaluated <- dplyr::filter(stressorsEvaluated, Stressor != "none")
     # Write stressors evaluated table
     if (file.exists(fn.stressorsEval)) {
-      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t"
-                         , col.names = FALSE, row.names = FALSE, append = TRUE)
+      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t",
+                         col.names = FALSE, row.names = FALSE, append = TRUE)
     } else {
-      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t"
-                         , col.names = TRUE, row.names = FALSE, append = FALSE)
+      utils::write.table(stressorsEvaluated, fn.stressorsEval, sep = "\t",
+                         col.names = TRUE, row.names = FALSE, append = FALSE)
     }
     # ID and write stressors evaluated by biocomm
     stressorsExcepted <- as.data.frame(stressorsExcepted) %>%
       dplyr::mutate(Biocomm = biocomm)
     colnames(stressorsExcepted)[1] <- "Stressor"
-    stressorsExcepted <- merge(stressorsExcepted
-                               , chemInfo
-                               , by.x = "Stressor", by.y = "StdParamName"
-                               , all.x = TRUE)
+    stressorsExcepted <- merge(stressorsExcepted,
+                               chemInfo,
+                               by.x = "Stressor", by.y = "StdParamName",
+                               all.x = TRUE)
     stressorsExcepted <- stressorsExcepted %>%
       dplyr::select(Biocomm, Stressor, GroupName, Label, LogTransf, SSTV, SSI,
                     SensMin, SensMax, TolMin, TolMax, DirIncStress, SSTVname,
                     SSIndex)
     if (nrow(stressorsExcepted) == 0) {
-      stressorsExcepted <- rbind(stressorsExcepted
-                                 , (cbind(biocomm, "None", "None", "None",
-                                          "None", "None", "None", "None",
-                                          "None", "None", "None", "None",
-                                          "None", "None")))
+      stressorsExcepted <- rbind(stressorsExcepted,
+                                 (cbind(biocomm, "None", "None", "None", "None",
+                                        "None", "None", "None", "None", "None",
+                                        "None", "None", "None", "None")))
     }
     stressorsExcepted <- unique(stressorsExcepted)
     # Write stressors excepted table
     if (file.exists(fn.stressorsExc)) {
-      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t"
-                         , col.names = FALSE, row.names = FALSE, append = TRUE)
+      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t",
+                         col.names = FALSE, row.names = FALSE, append = TRUE)
     } else {
-      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t"
-                         , col.names = TRUE, row.names = FALSE, append = FALSE)
+      utils::write.table(stressorsExcepted, fn.stressorsExc, sep = "\t",
+                         col.names = TRUE, row.names = FALSE, append = FALSE)
     }
   }
 
   # Data File ####
   stressor_trim <- stressor[stressor != "none"]
   data.chemVals <- outcaseChemVals %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate
-                  , eval(stressor_trim))
+    dplyr::select(StationID, StressSampleID, StressSampleDate,
+                  eval(stressor_trim))
   fn.chemVals <- file.path(dir_path, paste0(TargetSiteID,
                                             "_CandCauses_ChemValues.tab"))
-  utils::write.table(data.chemVals, fn.chemVals, sep = "\t", col.names = TRUE
-                     , row.names = FALSE, append = FALSE)
+  utils::write.table(data.chemVals, fn.chemVals, sep = "\t", col.names = TRUE,
+                     row.names = FALSE, append = FALSE)
 
   # create output ####
-  myStressors <- list(stressors = stressorsEvaluated
-                      , site.stressor.pctrank = site.pctrank)
+  myStressors <- list(stressors = stressorsEvaluated,
+                      site.stressor.pctrank = site.pctrank)
   #
   return(myStressors)
 
