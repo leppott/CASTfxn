@@ -1,6 +1,8 @@
 #  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.2
 #
 #' @title Stressor Sufficiency Line of Evidence
 #'
@@ -17,7 +19,7 @@
 #' the site?
 #'
 #' Using all comparator sites, fit logistical regression curve of the probability
-#' of poor condition (i.e., poor California index score) as a function of
+#' of poor condition (i.e., poor biological index score) as a function of
 #' stressor level.  Compare stressor levels from test site to levels
 #' corresponding to median (50%) and low (20%) probabilities of observing poor
 #' condition.
@@ -46,23 +48,18 @@
 #'
 #' Uses the libraries dplyr, tidyr, and ggplot2.
 #'
+#'
 #' @param TargetSiteID ID of station to be evaluated. May have one or many samples.
 #' @param df_data dataframe containing matched stressor-response data for the
 #'                biological response community desired
 #' @param compSites vector containing comparator site IDs
-#' @param stressors vector of stressors identified as candidate causes
 #' @param df_stressinfo dataframe containing stressor metadata (LogTransf, Label)
 #' @param biocomm Biological community; BMI, algae, or fish  Default = "BMI".
 #' @param colBio df_data column name for the field with biological index value.
-#' @param BioDegBrk Biological assessment degraded status, cut function breaks.
-#'                  Should be in order from bad (low) to good (high).
-#'                  Default = c(-2, 0.799, 2)
-#' @param BioDegLab Biological assessment degraded status, cut function labels.
-#'                  Should be in order from bad (low) to good (high).
-#'                  Defaults are referenced in the code so if change the code will break.
-#'                  Default = c("Yes", "No").
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
+#' @param boo_plot Boolean value indicating whether or not to print the plot.
+#'                 Defaults to TRUE.
 #'
 #' @return Writes individual plots as pngs, and a tab-delimited text file with
 #'         scores for the sufficiency line of evidence to a directory:
@@ -70,71 +67,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Example #1, CA data (multiple sites)
-#' #
-#' #Load Data
-#' df_data <- data_CoOccur_CA
-#' #
-#' colGroup     <- "Group"
-#' colBio       <- "CSCI"
-#' stressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
-#' col_ID        <- "StationID"
-#' #
-#' BioNarBrk <- c(-2, 0.62, 0.799, 0.919, 2)
-#' BioNarLab <- c("very likely altered", "likely altered"
-#'                 , "possibly altered ", "likely intact")
-#' BioDegBrk <- c(-2, 0.799, 2)
-#' BioDegLab <- c("Yes", "No")
-#' biocomm <- "bmi"
-#' dir_plots <- file.path(getwd(), "Results")
-#' dir_sub <- "CoOccurrence"
-#' #
-#' TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
-#' #
-#' # Specify stressors by name
-#' col_StressInvScore <- c("DO_uf_mg_L", "pH")
-#'
-#' #
-#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, stressors
-#'         , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
-#'         , biocomm, dir_plots, dir_sub, col_StressInvScore
-#'         )
-#' #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' # Example #2, AZ data (single site)
-#' #
-#' TargetSiteID <- c("SRCKN001.61")
-#' #
-#' # comparator Data based on elevation category
-#' boo_Lo <- TargetSiteID %in% data_CoOccur_AZ_Lo$StationID
-#' if(boo_Lo==TRUE){
-#'    df_data <- data_CoOccur_AZ_Lo
-#' } else {
-#'    df_data <- data_CoOccur_AZ_Hi
-#' }
-#' #
-#' colGroup     <- "Group"
-#' colBio       <- "IBI"
-#' stressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-#' col_ID        <- "StationID"
-#' #
-#' BioNarBrk <- c(0, 45, 52, 100)
-#' BioNarLab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
-#' BioDegBrk <- c(0, 45, 100)
-#' BioDegLab <- c("Yes", "No")
-#' biocomm <- "bmi"
-#' dir_plots <- file.path(getwd(), "Results")
-#' dir_sub <- "CoOccurrence"
-#'
-#' # Specify stressors by name
-#' #col_StressInvScore <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
-#' # Get stressors from chem.info
-#' col_StressInvScore <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"]
-#'
-#' #
-#' getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, stressors
-#'         , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
-#'         , biocomm, dir_plots, dir_sub, col_StressInvScore
-#'         )
 #'}
 #' @export
 getSufficiency <- function(TargetSiteID
