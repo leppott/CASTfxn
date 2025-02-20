@@ -85,35 +85,29 @@ getBioStressorResponses <- function(TargetSiteID,
                    "respName","respLabel", "n", "statistic", "p.value",
                    "estimate", "r2")
 
-  # Community ####
+  # Definitions ####
   biocomm <- toupper(biocomm)
   not_all_na <- function(x) {!all(is.na(x))}
-  # Define pipe
   `%>%` <- dplyr::`%>%`
 
-  # check for and create (if necessary) "Results" subdirectory of working directory
-  wd <- dirname(dir_plots)
-  dir.sub  <- basename(dir_plots)
-  dir.sub2 <- TargetSiteID
-  dir.sub3 <- biocomm
-  dir.sub4 <- dir_sub
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE,
-         dir.create(file.path(wd, dir.sub, dir.sub2)),
-         FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE,
-         dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3)),
-         FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE,
-         dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)),
-         FALSE)
+  # Write results directory ----
+  out.dir <- dirname(dir_plots)
+  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, dir_sub)
 
-  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
 
   # Define plot dimensions
   plot_H <- 4
   plot_W <- 8
-
-  # QC here ####
 
   # Merge other metrics into paired dataset with transformed stressor values
   df_datapaired <- merge(df_datapaired, df_respdata,

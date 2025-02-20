@@ -114,21 +114,20 @@ getSufficiency <- function(TargetSiteID
   aLabZero <- "0"
   aLabPos  <- "1"
 
-  # Create subdirectory
-  dir_sub2 <- TargetSiteID
-  dir_sub3 <- biocomm
-  dir_sub4 <- dir_sub
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2)) == TRUE
-         , dir.create(file.path(dir_plots, dir_sub2))
-         , FALSE)
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3)) == TRUE
-         , dir.create(file.path(dir_plots, dir_sub2, dir_sub3))
-         , FALSE)
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)) == TRUE
-         , dir.create(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4))
-         , FALSE)
+  # Write results directory ----
+  out.dir <- dirname(dir_plots)
+  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, dir_sub)
 
-  dir_path <- file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
 
   # Get dataset
   df_data <- df_data %>%
@@ -166,7 +165,11 @@ getSufficiency <- function(TargetSiteID
     j.len <- length(stressors)
     jlog <- as.numeric(strInfo$LogTransf[strInfo$Stressor == str])
     jlabel <- as.character(strInfo$Label[strInfo$Stressor == str])
-    #
+
+    if (jlog == 1) {
+      jlabel <- paste("Log1p ", jlog)
+    }
+
     message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
     utils::flush.console()
 
