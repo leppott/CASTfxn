@@ -88,12 +88,17 @@ getQualSites <- function(TargetSiteID,
 
   # Get bio samples and chem sample where bio is better than target
   # First get max(degraded) index value or, if site isn't degraded, min index value
-  df_targqual <- as.character(df_qual$Quality[df_qual$StationID == TargetSiteID])
-  if ("Degraded" %in% df_targqual) {
-    qual.targ <- max(df_qual[, colBio][df_qual$StationID == TargetSiteID &
-                                         df_qual$Quality == "Degraded"])
-  } else {
-    qual.targ <- min(df_qual[, colBio][df_qual$StationID == TargetSiteID])
+  target.quals <- as.character(df_qual$Quality[df_qual$StationID == TargetSiteID])
+  if ("Degraded" %in% target.quals) {
+    qual.targ <- df_qual %>%
+      dplyr::filter(StationID == TargetSiteID & Quality == "Degraded") %>%
+      dplyr::summarise(max := max(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+    qual.targ <- as.numeric(qual.targ$max)
+  } else { #
+    qual.targ <- df_qual %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
+      dplyr::summarise(min := min(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+    qual.targ <- as.numeric(qual.targ$min)
   }
 
   df_qual[, "BetterThan"] <- ifelse(df_qual[, colBio] >= qual.targ, 1, 0)

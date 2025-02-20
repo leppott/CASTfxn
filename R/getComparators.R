@@ -87,16 +87,24 @@ getComparators<- function(TargetSiteID,
   fn.compsites <- file.path(dir_results, TargetSiteID, dir_sub,
                             paste0(TargetSiteID, "_COMPARATORS.tab"))
 
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE,
-         dir.create(file.path(dir_results, TargetSiteID)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, dir_sub)) == TRUE,
-         dir.create(file.path(dir_results, TargetSiteID, dir_sub)),
-         FALSE)
+  # Write results directory ----
+  out.dir <- dirname(dir_results)
+  out.folders <- c(out.dir, basename(dir_results), TargetSiteID, dir_sub)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
 
   TargetCOMID <- df_sites$COMID[df_sites$StationID == TargetSiteID]
 
-  if (useBC == TRUE) {
+  if (useBC == TRUE) { # UseBC == TRUE not tested ----
 
     # TODO: revisit this when another state using a biological filter wants
     # to use the CASTool for its water quality program
@@ -114,7 +122,7 @@ getComparators<- function(TargetSiteID,
 
     # Subset the BC file for sites in rows = cluster sites; target site is 2nd column
     # If site ids start with a number, prepend an X so they can match colnames
-    # NOTE: might need to change this for OR/WA site ids! ####
+    ## NOTE: might need to change this for OR/WA site ids! ####
     if (grepl("^\\d+\\w*$", TargetSiteID) == TRUE) {
       TargetColName <- paste0("X", TargetSiteID)
     } else if (grepl("-", TargetSiteID)) {
@@ -175,7 +183,7 @@ getComparators<- function(TargetSiteID,
     outcaseID <- outcaseNum
     incaseID <- NULL
 
-  } else {
+  } else { # UseBC == FALSE (tested) ----
 
     # Outside the case = outcaseColName; Inside the case uses cluster
     outcaseValue <- df_sites$OutcaseCol[df_sites$StationID == TargetSiteID]

@@ -65,16 +65,19 @@ getTimeSeq <- function(TargetSiteID,
   not_all_na <- function(x) {!all(is.na(x))}
   biocomm <- toupper(biocomm)
 
-  # Check for presence of TemporalSequence directory. If not present, create
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE,
-         dir.create(file.path(dir_results, TargetSiteID)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm)) == TRUE,
-         dir.create(file.path(dir_results, TargetSiteID, biocomm)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID, biocomm, dir_sub)) == TRUE,
-         dir.create(file.path(dir_results, TargetSiteID, biocomm, dir_sub)),
-         FALSE)
+  # Write results directory ----
+  out.folders <- c(dir_results, TargetSiteID, biocomm, dir_sub)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      path <- file.path(out.folders[i])
+    } else {
+      path <- file.path(path, out.folders[i])
+    }
+    if (dir.exists(path) == FALSE) {
+      dir.create(path)
+    }
+  }
 
   path <- file.path(dir_results, TargetSiteID, biocomm, dir_sub)
 
