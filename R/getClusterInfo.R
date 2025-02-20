@@ -129,6 +129,8 @@ getClusterInfo <- function(TargetSiteID
   }##IF~boo_DEBUG~END
   #
 
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   # check for and create (if necessary) "Results" subdirectory of working directory
   # wd <- getwd()
