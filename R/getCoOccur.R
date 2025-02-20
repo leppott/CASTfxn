@@ -139,6 +139,21 @@ getCoOccur <- function(TargetSiteID,
   `%>%` <- dplyr::`%>%`
   biocomm <- toupper(biocomm)
 
+  # Write results directory ----
+  out.dir <- dirname(dir_plots)
+  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, dir_sub)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir_path <- file.path(out.folders[i])
+    } else {
+      dir_path <- file.path(dir_path, out.folders[i])
+    }
+    if (dir.exists(dir_path) == FALSE) {
+      dir.create(dir_path)
+    }
+  }
+
   # QC, 20190418
   colStressors <- as.vector(unlist(df_stressinfo$Stressor))
 
@@ -174,23 +189,6 @@ getCoOccur <- function(TargetSiteID,
     stop(msg_NoSite)
   }##IF~boo_QC_site~END
   #
-  # Create dirs ####
-  #wd <- getwd()
-  #dir.sub <- "Results"
-  dir_sub2 <- TargetSiteID
-  dir_sub3 <- biocomm
-  dir_sub4 <- dir_sub
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2)) == TRUE,
-         dir.create(file.path(dir_plots, dir_sub2)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3)) == TRUE,
-         dir.create(file.path(dir_plots, dir_sub2, dir_sub3)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)) == TRUE,
-         dir.create(file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)),
-         FALSE)
-
-  dir_path <- file.path(dir_plots, dir_sub2, dir_sub3, dir_sub4)
 
   # Create Score Output File ####
   df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID",
