@@ -179,26 +179,20 @@ getSiteInfo <- function(TargetSiteID,
   not_all_na <- function(x) {!all(is.na(x))}
   all_na <- function(x) {all(is.na(x))}
 
-  # check for and create (if necessary) dir_results and SiteID subdirectory
-  # default structure: Results/TargetSiteID/SiteInfo
+  # Write results directory ----
+  out.dir <- dirname(dir_plots)
+  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, dir_sub)
 
-  #dir_results = file.path(getwd(), "Results")
-  dir_sub2 <- TargetSiteID
-  dir_sub3 <- dir_sub
-  ifelse(!dir.exists(dir_results) == TRUE,
-         dir.create(dir_results),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_results, dir_sub2)) == TRUE,
-         dir.create(file.path(dir_results, dir_sub2)),
-         FALSE)
-  ifelse(!dir.exists(file.path(dir_results, dir_sub2, dir_sub3)) == TRUE,
-         dir.create(file.path(dir_results, dir_sub2, dir_sub3)),
-         FALSE)
-
-  dir_path <- file.path(dir_results, dir_sub2, dir_sub3)
-
-  # Define pipe
-  `%>%` <- dplyr::`%>%`
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir_path <- file.path(out.folders[i])
+    } else {
+      dir_path <- file.path(dir_path, out.folders[i])
+    }
+    if (dir.exists(dir_path) == FALSE) {
+      dir.create(dir_path)
+    }
+  }
 
   ## Plot, Variables, Output Size (inches)
   plot_H <- 4

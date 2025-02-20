@@ -138,13 +138,17 @@ getStressorList <- function(TargetSiteID,
            FALSE)
     dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3)
   } else {
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2)) == TRUE,
-           dir.create(file.path(dir.sub, dir.sub2)),
-           FALSE)
-    ifelse(!dir.exists(file.path(dir.sub, dir.sub2, dir.sub3)) == TRUE,
-           dir.create(file.path(dir.sub, dir.sub2, dir.sub3)),
-           FALSE)
-    dir_path <- file.path(dir.sub, dir.sub2, dir.sub3)
+    out.folders <- c(dir.sub, dir.sub2, dir.sub3)
+    for (i in 1:length(out.folders)) {
+      if (i == 1) {
+        dir_path <- file.path(out.folders[i])
+      } else {
+        dir_path <- file.path(dir_path, out.folders[i])
+      }
+      if (dir.exists(dir_path) == FALSE) {
+        dir.create(dir_path)
+      }
+    }
   }
 
   # Create dataset for outside the case, from which inside the case, reference
