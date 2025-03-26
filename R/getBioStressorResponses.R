@@ -43,7 +43,6 @@
 #' @export
 getBioStressorResponses <- function(TargetSiteID,
                                     df_stressinfo,
-                                    # BioResp,
                                     df_respinfo,
                                     df_respdata,
                                     df_datapaired,
@@ -53,6 +52,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                     min_cases = 20,
                                     p.val_cutoff = 0.05,
                                     r2_cutoff = 0.1,
+                                    plotvars,
                                     dir_plots = file.path(getwd(), "Results"),
                                     dir_sub = "StressorResponse",
                                     boo_pred_warn = TRUE,
@@ -64,7 +64,6 @@ getBioStressorResponses <- function(TargetSiteID,
   if (boo.DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
     df_stressinfo = list.stressors$stressors
-    # BioResp = bioMetricNames
     df_respinfo = bioMetricInfo
     df_respdata = bioMetricData
     df_datapaired = df_PairedSRTransf
@@ -74,6 +73,7 @@ getBioStressorResponses <- function(TargetSiteID,
     min_cases = samplim
     p.val_cutoff = 0.05
     r2_cutoff = 0.2
+    plotvars = data_plotvars
     dir_plots = dir_results
     dir_sub = "StressorResponse"
     boo_pred_warn = TRUE
@@ -96,12 +96,12 @@ getBioStressorResponses <- function(TargetSiteID,
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
-      dir.path <- file.path(out.folders[i])
+      dir_path <- file.path(out.folders[i])
     } else {
-      dir.path <- file.path(dir.path, out.folders[i])
+      dir_path <- file.path(dir_path, out.folders[i])
     }
-    if (dir.exists(dir.path) == FALSE) {
-      dir.create(dir.path)
+    if (dir.exists(dir_path) == FALSE) {
+      dir.create(dir_path)
     }
   }
 
@@ -161,18 +161,23 @@ getBioStressorResponses <- function(TargetSiteID,
   # Capture each plot in a list for the PDF
   plots.pq <- vector(q.len * p.len, mode = "list")
   ppi<-300
-  varFileOut <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_SRLin_"
-                                          , "_"))
+  varFileOut <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_BioGrad_"))
 
   # FOR.p ####
   for (p in 1:length(stressors)) {
 
     stressName <- stressors[p]
-    stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
     varFlag <- 1
     varFlag.b <- 1
 
     log.yn <- as.logical(df_stressinfo$LogTransf[df_stressinfo$Stressor == stressName])
+
+    if (log.yn == TRUE) {
+      stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
+      stressLabel <- paste0("Log 1p ", stressLabel)
+    } else {
+      stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
+    }
 
     # Determine expected direction of slope
     dirIncStress <- unique(df_stressinfo$DirIncStress[df_stressinfo$Stressor == stressName])
@@ -545,7 +550,7 @@ getBioStressorResponses <- function(TargetSiteID,
       # Corr table output ####
       # # Create results data frame
       # ~~~ Check QC of Corr Table at end of code ~~~~
-      if(boo_corr == TRUE) { ##IF~boo_corr~START
+      if (boo_corr == TRUE) { ##IF~boo_corr~START
         if (varFlag == 1) {  #First time through loop
           df.CorrTable <- df.corr_cl
         } else {
@@ -625,7 +630,7 @@ getBioStressorResponses <- function(TargetSiteID,
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
                              " (", p, "/", p.len, "), ", respName, " (",
-                             q, "/", q.len, "); score (all, cluster) = ",
+                             q, "/", q.len, "); score (outside, inside) = ",
                              txt.score_all, ", ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
@@ -641,16 +646,6 @@ getBioStressorResponses <- function(TargetSiteID,
                                         "n_out" = n_str_all,
                                         "SRLin_Score_all" = sr.score_all))
 
-        df.temp2 <- merge(df_SiteData[, c("StationID", "StressSampleID",
-                                          "StressSampleDate", stressName,
-                                          "RespSampleID", "RespSampleDate",
-                                          respName)],
-                          df.temp2,
-                          by.x = c("StationID", stressName, respName),
-                          by.y = c("StationID", "stressName", "respName"),
-                          all.y = TRUE)
-
-
         if (varFlag.b == 1) { # First time through this loop
           df.sc.sr <- df.temp2
         } else {
@@ -663,6 +658,32 @@ getBioStressorResponses <- function(TargetSiteID,
         df.sc.sr$SRLin_Score_comp <- ifelse(is.na(df.sc.sr$SRLin_Score_comp),
                                             "NE",
                                             as.character(df.sc.sr$SRLin_Score_comp))
+
+        # Pivot longer site data before merging with df.sc.sr
+        df_SiteDataStrLong <- df_SiteData %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate,
+                        RespSampleID, RespSampleDate, all_of(stressName)) %>%
+          tidyr::pivot_longer(cols = c(all_of(stressName)),
+                              names_to = "stressName",
+                              values_to = "stressVal")
+        df_SiteDataRespLong <- df_SiteData %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate,
+                        RespSampleID, RespSampleDate, all_of(respName)) %>%
+          tidyr::pivot_longer(cols = c(all_of(respName)), names_to = "respName",
+                              values_to = "respVal")
+        df_SiteDataLong <- merge(df_SiteDataStrLong, df_SiteDataRespLong,
+                                 by = c("StationID", "StressSampleID",
+                                        "StressSampleDate", "RespSampleID",
+                                        "RespSampleDate"))
+        rm(df_SiteDataStrLong, df_SiteDataRespLong)
+
+        df.sc.sr <- merge(df_SiteDataLong, df.sc.sr,
+                          by = c("StationID", "stressName", "respName"))
+        df.sc.sr <- dplyr::select(df.sc.sr, StationID, StressSampleID,
+                                  StressSampleDate, RespSampleID, RespSampleDate,
+                                  biocomm, stressName, stressLabel, stressVal,
+                                  respName, respLabel, respVal, n_site,
+                                  n_comp, SRLin_Score_comp, SRLin_Score_all)
 
         #if(boo.pryr==TRUE){
         fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
@@ -726,11 +747,13 @@ getBioStressorResponses <- function(TargetSiteID,
 
       ## Plot, Variables, Strings
       str_title <- paste0(TargetSiteID, ": Stressor-Response (linear regression) line of evidence")
-      str_subtitle1 <- "Is there evidence of a biological gradient from inside or outside the case?\n"
+      str_subtitle1.in <- "Is there evidence of a biological gradient from inside the case?\n"
+      str_subtitle1.out <- "Is there evidence of a biological gradient from outside the case?\n"
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
       # str_subtitle <- stringr::str_wrap(paste0(str_subtitle1,str_subtitle2),85)
-      str_subtitle <- paste0(str_subtitle1, str_subtitle2)
-      str_xlab  <- paste0(ifelse(log.yn == TRUE, "Log1p ", ""), stressLabel)
+      str_subtitle.in <- paste0(str_subtitle1.in, str_subtitle2)
+      str_subtitle.out <- paste0(str_subtitle1.out, str_subtitle2)
+      str_xlab  <- stressLabel
       str_ylab  <- respLabel
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) {
@@ -749,7 +772,7 @@ getBioStressorResponses <- function(TargetSiteID,
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {
         ##IF.equation.START
-        str_caption_all <- paste(paste0("Regression (all, outside the case): ",
+        str_caption_all <- paste(paste0("Regression (outside the case): ",
                                         "y = ", slope_all, " x + ", intercept_all),
                                  paste0("r2 = ", r2_all),
                                  paste0("p-value = ", pval.corr_all),
@@ -763,25 +786,25 @@ getBioStressorResponses <- function(TargetSiteID,
       if (siteQual2Plot == "not degraded") {
         qualtext <- "not degraded*"
         str_caption_qual <- "*Samples rated not degraded."
-        str_caption <- paste0(str_caption_all, "\n", str_caption_cl,
-                              "\n", str_caption_qual)
+        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
         leg_all_ref <- qualtext
-        leg_cl_ref <- paste0("comparator ",qualtext)
+        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
+        leg_cl_ref <- paste0("comparator ", qualtext)
       } else if (siteQual2Plot == "better than") {
         qualtext <- "better quality*"
         str_caption_qual <- paste0("*Samples with biological quality better than ",
                                    "the maximum degraded or the minimum not ",
                                    "degraded target site quality.")
-        str_caption <- paste0(str_caption_all, "\n", str_caption_cl,
-                              "\n", str_caption_qual)
+        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
         leg_all_ref <- qualtext
+        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
         leg_cl_ref <- paste0("comparator ", qualtext)
       } else {
         qualtext <- "all ref"
-        str_caption <- paste0(str_caption_all, "\n", str_caption_cl,
-                              "\n", str_caption_qual)
-        leg_all_ref <- "all ref"
-        leg_cl_ref <- "comparator ref"
+        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
+        leg_all_ref <- "reference"
+        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
+        leg_cl_ref <- "reference"
       }
 
       ## Plot, Variables, Colors
@@ -821,22 +844,23 @@ getBioStressorResponses <- function(TargetSiteID,
 
       ## Plot, Variables, Legend
       leg_name   <- "Samples"
-      leg_labels <- c("all", leg_all_ref, "comparator", leg_cl_ref, "target")
-      leg_shape  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_cl,
-                      pch_sites_cl_ref, pch_sites_targ)
-      leg_col    <- c(col_sites_all, col_sites_all_ref, col_sites_cl,
-                      col_sites_cl_ref, col_sites_targ)
-      leg_fill   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_cl,
-                      fill_sites_cl_ref, fill_sites_targ)
+      leg_labels_all <- c("all", leg_all_ref, "target")
+      leg_shape_all  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_targ)
+      leg_col_all    <- c(col_sites_all, col_sites_all_ref, col_sites_targ)
+      leg_fill_all   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_targ)
+      leg_labels_cl  <- c("comparator", leg_cl_ref, "target")
+      leg_shape_cl   <- c(pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
+      leg_col_cl     <- c(col_sites_cl, col_sites_cl_ref, col_sites_targ)
+      leg_fill_cl    <- c(fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
       # }# Plot, Variables ~ END
 
-      # Plot, ggplot ####
+      # Plot, outside ####
       # Plot, Plot
       boo.Plot <- ifelse(nrow(df_plot_site) == 0, FALSE, TRUE)
       # skip plot if no data for target site
       if (boo.Plot == TRUE) { ##IF.boo.Plot.START
         # ggplot, main
-        p_SR <- ggplot2::ggplot(df_plot_all,
+        p_SR_all <- ggplot2::ggplot(df_plot_all,
                                 ggplot2::aes(x = Stressor, y = Response,
                                              color = "all",
                                              shape = "all",
@@ -847,7 +871,7 @@ getBioStressorResponses <- function(TargetSiteID,
         # ggplot, point subsets
         # Add points if exist, otherwise plot dummy values
         if (boo_plot_ref == TRUE) { ##IF~boo_plot_ref~START
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_point(data = df_plot_all_ref,
                                 ggplot2::aes(x = Stressor, y = Response,
                                              color = "all ref",
@@ -856,44 +880,14 @@ getBioStressorResponses <- function(TargetSiteID,
                                 size = cex_sites_all_ref,
                                 na.rm = TRUE)
         } else {
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_blank(ggplot2::aes(color = "all ref",
                                              shape = "all ref",
                                              fill = "all ref"))
         } ##IF~boo_plot_ref~END
         #
-        if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
-          p_SR <- p_SR +
-            ggplot2::geom_point(data = df_plot_cl,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "cluster",
-                                             shape = "cluster",
-                                             fill = "cluster"),
-                                size = cex_sites_cl, na.rm = TRUE)
-        } else {
-          p_SR <- p_SR +
-            ggplot2::geom_blank(ggplot2::aes(color = "cluster",
-                                             shape = "cluster",
-                                             fill = "cluster"))
-        } ##IF~boo_plot_cl~END
-        #
-        if (boo_plot_cl_ref == TRUE) { ##IF~boo_plot_cl_ref~START
-          p_SR <- p_SR +
-            ggplot2::geom_point(data = df_plot_cl_ref,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "cluster ref",
-                                             shape = "cluster ref",
-                                             fill = "cluster ref"),
-                                size = cex_sites_cl_ref, na.rm = TRUE)
-        } else {
-          p_SR <- p_SR +
-            ggplot2::geom_blank(ggplot2::aes(color = "cluster ref",
-                                             shape = "cluster ref",
-                                             fill = "cluster ref"))
-        } ##IF~boo_plot_cl_ref~END
-        #
         if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_point(data=df_plot_site,
                                 ggplot2::aes(x = Stressor, y = Response,
                                              color = "target",
@@ -901,23 +895,23 @@ getBioStressorResponses <- function(TargetSiteID,
                                              fill = "target"),
                                 size = cex_sites_targ, na.rm = TRUE)
         } else {
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_blank(ggplot2::aes(color = "target", shape = "target",
                                              fill = "target"))
         } ##IF~boo_plot_targ~END
         #
         # Add rest of plot
-        p_SR <- p_SR +
-          ggplot2::scale_shape_manual(name = leg_name, labels = leg_labels,
-                                      values = leg_shape)  +
-          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels,
-                                      values = leg_col) +
-          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels,
-                                     values = leg_fill)
+        p_SR_all <- p_SR_all +
+          ggplot2::scale_shape_manual(name = leg_name, labels = leg_labels_all,
+                                      values = leg_shape_all)  +
+          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels_all,
+                                      values = leg_col_all) +
+          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels_all,
+                                     values = leg_fill_all)
         # Regression, all
         if (exists("model_all_val")) {
           # Linear model (all data)
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::stat_smooth(data = df_plot_all,
                                  method = lm,
                                  color = col_line_all,
@@ -926,7 +920,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  formula = y ~ x, # Added to avoid message
                                  show.legend = FALSE,
                                  na.rm = TRUE)
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_line(data = model_all_val,
                                ggplot2::aes(y = lwr),
                                color = col_line_all,
@@ -934,7 +928,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                show.legend = FALSE,
                                # , linewidth = 1.25
                                na.rm = TRUE)
-          p_SR <- p_SR +
+          p_SR_all <- p_SR_all +
             ggplot2::geom_line(data = model_all_val,
                                ggplot2::aes(y = upr),
                                color = col_line_all,
@@ -943,10 +937,86 @@ getBioStressorResponses <- function(TargetSiteID,
                                # , linewidth = 1.25
                                na.rm = TRUE)
         } ## End regression, all
+
+        # other
+        p_SR_all <- p_SR_all +
+          ggplot2::theme_bw() +
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
+                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
+                         plot.caption = ggplot2::element_text(size = 6),
+                         legend.title = ggplot2::element_text(size = 8),
+                         legend.text = ggplot2::element_text(size = 6),
+                         axis.title = ggplot2::element_text(size = 8)) +
+          ggplot2::labs(title = str_title, subtitle = str_subtitle.out,
+                        caption = str_caption_all, x = str_xlab, y = str_ylab)
+
+        # Write biological gradient for all sites
+        fn_png_out <- paste0(varFileOut, make.names(stressName), "_",
+                             make.names(respName), "_Outside.png")
+        if (boo_plot) {
+          ggplot2::ggsave(fn_png_out, p_SR_all, width = plot_W, height = plot_H,
+                          units = "in")
+        } ## IF ~ boo_plot ~ END
+        #
+
+        # Plot, inside ####
+        if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
+          p_SR_cl <- ggplot2::ggplot(df_plot_cl,
+                                     ggplot2::aes(x = Stressor, y = Response,
+                                                  color = "cluster",
+                                                  shape = "cluster",
+                                                  fill = "cluster"),
+                                     size = cex_sites_cl, na.rm = TRUE) +
+            ggplot2::geom_point(na.rm = TRUE)
+        } else {
+          p_SR_cl <- p_SR_cl +
+            ggplot2::geom_blank(ggplot2::aes(color = "cluster",
+                                             shape = "cluster",
+                                             fill = "cluster"))
+        } ##IF~boo_plot_cl~END
+        #
+        if (boo_plot_cl_ref == TRUE) { ##IF~boo_plot_cl_ref~START
+          p_SR_cl <- p_SR_cl +
+            ggplot2::geom_point(data = df_plot_cl_ref,
+                                ggplot2::aes(x = Stressor, y = Response,
+                                             color = "cluster ref",
+                                             shape = "cluster ref",
+                                             fill = "cluster ref"),
+                                size = cex_sites_cl_ref, na.rm = TRUE)
+        } else {
+          p_SR_cl <- p_SR_cl +
+            ggplot2::geom_blank(ggplot2::aes(color = "cluster ref",
+                                             shape = "cluster ref",
+                                             fill = "cluster ref"))
+        } ##IF~boo_plot_cl_ref~END
+        #
+        #
+        if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
+          p_SR_cl <- p_SR_cl +
+            ggplot2::geom_point(data=df_plot_site,
+                                ggplot2::aes(x = Stressor, y = Response,
+                                             color = "target",
+                                             shape = "target",
+                                             fill = "target"),
+                                size = cex_sites_targ, na.rm = TRUE)
+        } else {
+          p_SR_cl <- p_SR_cl +
+            ggplot2::geom_blank(ggplot2::aes(color = "target", shape = "target",
+                                             fill = "target"))
+        } ##IF~boo_plot_targ~END
+        #
+        # Add rest of plot
+        p_SR_cl <- p_SR_cl +
+          ggplot2::scale_shape_manual(name = leg_name, labels = leg_labels_cl,
+                                      values = leg_shape_cl)  +
+          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels_cl,
+                                      values = leg_col_cl) +
+          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels_cl,
+                                     values = leg_fill_cl)
         # Regression, cluster
         if (exists("model_cl_val")) {
           # Linear model (cluster)
-          p_SR <- p_SR +
+          p_SR_cl <- p_SR_cl +
             ggplot2::stat_smooth(data = df_plot_cl,
                                  method = lm,
                                  color = col_line_cl,
@@ -955,14 +1025,14 @@ getBioStressorResponses <- function(TargetSiteID,
                                  formula = y ~ x,
                                  show.legend = FALSE,
                                  na.rm = TRUE)
-          p_SR <- p_SR +
+          p_SR_cl <- p_SR_cl +
             ggplot2::geom_line(data = model_cl_val,
                                ggplot2::aes(y = lwr),
                                color = col_line_cl,
                                linetype = "dashed",
                                show.legend = FALSE,
                                na.rm = TRUE)
-          p_SR <- p_SR +
+          p_SR_cl <- p_SR_cl +
             ggplot2::geom_line(data = model_cl_val,
                                ggplot2::aes(y = upr),
                                color = col_line_cl,
@@ -972,7 +1042,7 @@ getBioStressorResponses <- function(TargetSiteID,
         } ## END regression, cluster
 
         # other
-        p_SR <- p_SR +
+        p_SR_cl <- p_SR_cl +
           ggplot2::theme_bw() +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
                          plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
@@ -980,16 +1050,15 @@ getBioStressorResponses <- function(TargetSiteID,
                          legend.title = ggplot2::element_text(size = 8),
                          legend.text = ggplot2::element_text(size = 6),
                          axis.title = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = str_title, subtitle = str_subtitle,
-                        caption = str_caption, x = str_xlab, y = str_ylab)
+          ggplot2::labs(title = str_title, subtitle = str_subtitle.in,
+                        caption = str_caption_cl, x = str_xlab, y = str_ylab)
         #
-        # print(p_SR)
-        # plots.pq[[pq]] <- grDevices::recordPlot()
-        #
-        fn_png <- paste0(varFileOut, make.names(stressName), "_",
-                         make.names(respName), ".png")
+        # Write biological gradient for all sites
+        fn_png_in <- paste0(varFileOut, make.names(stressName), "_",
+                            make.names(respName), "_Inside.png")
         if (boo_plot) {
-          ggplot2::ggsave(fn_png, p_SR, width = plot_W, height = plot_H, units = "in")
+          ggplot2::ggsave(fn_png_in, p_SR_cl, width = plot_W, height = plot_H,
+                          units = "in")
           ngraph = ngraph + 1
         } ## IF ~ boo_plot ~ END
         #
@@ -1003,7 +1072,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
   } ##FOR.p.END
 
-  # END ####
+  ## END LR plots ####
   #
   # CorrPlot ####
   ## read
@@ -1043,7 +1112,7 @@ getBioStressorResponses <- function(TargetSiteID,
         ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.5) +
         ggplot2::scale_fill_gradient2(low = "blue", high = "red", midpoint = 0,
                                       limits = c(-1, 1), guide = "colorbar") +
-
+        ggplot2::coord_flip() +
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
                        legend.title = ggplot2::element_text(size = 8),
@@ -1056,7 +1125,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Save correlation plot
       fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_CorrPlot.png"))
-      ggplot2::ggsave(fn_png_cp, p_cp, width = plot_W, height = plot_H, units = "in")
+      ggplot2::ggsave(fn_png_cp, p_cp, width = plot_H, height = plot_W, units = "in")
 
       msg.corr <- "Printing correlation plot."
       message(msg.corr)
