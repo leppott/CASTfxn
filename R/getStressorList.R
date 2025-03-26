@@ -75,6 +75,7 @@ getStressorList <- function(TargetSiteID,
                             pHlimHigh = 9,
                             biocommlist,
                             listbioParamsDEL,
+                            plotVars,
                             dir_results = file.path(getwd(), "Results"),
                             dir_sub = "CandidateCauses") {##FUNCTION.START
   # DEBUGGING ####
@@ -98,6 +99,7 @@ getStressorList <- function(TargetSiteID,
     pHlimHigh = pHlimHigh
     biocommlist = biocommlist
     listbioParamsDEL = list.bioParamsDEL
+    plotVars = data_plotvars
     dir_results = dir_results
     dir_sub = "CandidateCauses"
   }##IF.boo.DEBUG.END
@@ -151,6 +153,7 @@ getStressorList <- function(TargetSiteID,
     }
   }
 
+  # TODO: If EPA really wants only inside the case samples, then modify this
   # Create dataset for outside the case, from which inside the case, reference
   # and target site data can be subset
   outcaseChemLONG <- df_Stress %>%
@@ -170,12 +173,17 @@ getStressorList <- function(TargetSiteID,
     dplyr::mutate(RefSiteFlag = ifelse(StationID %in% refSites, 1, 0)) %>%
     tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
 
+  # Consider using this going forward, but will need to specify "TransfResult"
+  outcaseChemDataAll <- merge(outcaseChemVals, outcaseChemData)
+
   # ID all "reference" samples
   outcaseRefChemData <- outcaseChemData %>%
     dplyr::filter(RefSiteFlag == 1)
 
   # ID "comparator" samples
   incaseChemData <- outcaseChemData %>%
+    dplyr::filter(StationID %in% incaseSites)
+  incaseChemVals <- outcaseChemVals %>%
     dplyr::filter(StationID %in% incaseSites)
 
   # ID all "comparator reference" samples
@@ -191,6 +199,7 @@ getStressorList <- function(TargetSiteID,
   rm(df_Stress, outcaseChemLONG)
 
   # Remove any parameters having all NA values and use only chemnames
+  # TODO: change to incaseChemData
   allcount <- outcaseChemData %>%
     dplyr::select_if(not_all_na) %>%
     dplyr::select(any_of(siteChem)) %>%
@@ -254,6 +263,16 @@ getStressorList <- function(TargetSiteID,
 
       ## Plot, Data, Outside the case
       df_plot_wide <- gpcoolvar
+
+      # Testing % rank -- doesn't work for TSS
+      df_plot_pctrank <- gpcoolvar %>%
+        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+                            values_to = "value", values_drop_na = TRUE) %>%
+        dplyr::group_by(GrpNm) %>%
+        dplyr::mutate(PctRank = dplyr::percent_rank(value))
+      df_plot_pctrank <- merge(gpchems, df_plot_pctrank, by.x = "StdParamName",
+                            by.y = "GrpNm")
+
       # need as.data.frame and colnames for groups with only 1 parameter
       df_plot_wide_min <- apply(df_plot_wide, 2, min, na.rm = TRUE)
       df_plot_wide_range <- apply(df_plot_wide, 2, range, na.rm = TRUE)
@@ -272,6 +291,7 @@ getStressorList <- function(TargetSiteID,
       if (nrow(df_plot_long) > 0) {boo_plot <- TRUE} else {boo_plot <- FALSE}
 
       ## Plot, Data, Comparator (inside the case)
+      # TODO: if changing to only inside the case, eliminate this step
       boo_plot_comp <- FALSE
       if (exists("incaseChemData")) {##IF~nrow(cluster.ref.chem.data)~START
         df_plot_comp_wide <- as.data.frame(incaseChemData[, colnames(gpcoolvar)])
@@ -296,6 +316,7 @@ getStressorList <- function(TargetSiteID,
       }##IF~nrow(cluster.ref.chem.data)~END
 
       ## Plot, Data, Reference outside-the-case
+      # TODO: if changing to only inside the case, eliminate this step
       boo_plot_ref_out <- FALSE
       if (exists("outcaseRefChemData")) {##IF~nrow(cluster.ref.chem.data)~START
         df_plot_ref_out_wide <- as.data.frame(outcaseRefChemData[, colnames(gpcoolvar)])
@@ -373,10 +394,12 @@ getStressorList <- function(TargetSiteID,
                                , outcaseLabel, " ", outcaseID, ")")
       }
       # message(str_subtitle)
-      str_xlab <- "Standardized values"
+      str_xlab <- "Standardized values [(observed value - minimum value)/range of values]"
       str_ylab <- str_Group
 
       ## Plot, Variables, Colors
+      # TODO: don't plot outside the case
+      # TODO: use standardized colors (plotVars)
       col_sites_all     <- "gray40"        # outside the case
       col_sites_all_ref <- "blue"         # reference sites outside the case
       col_sites_cl      <- "cyan4"        # inside the case
@@ -385,6 +408,8 @@ getStressorList <- function(TargetSiteID,
       col_line          <- "black"
 
       ## Plot, Variables, Fill
+      # TODO: don't plot outside the case
+      # TODO: use standardized colors (plotVars)
       fill_sites_all     <- "gray40"
       fill_sites_all_ref <- "gray40"
       fill_sites_cl      <- "cyan4"
@@ -392,6 +417,8 @@ getStressorList <- function(TargetSiteID,
       fill_sites_targ    <- "red"
 
       ## Plot, Variables, Points
+      # TODO: don't plot outside the case
+      # TODO: use standardized shapes (plotVars)
       pch_sites_all     <- 21 # circle with outline
       pch_sites_all_ref <- 21 # circle outline
       pch_sites_cl      <- 21 # circle outline
@@ -399,6 +426,8 @@ getStressorList <- function(TargetSiteID,
       pch_sites_targ    <- 17 # triangle
 
       ## Plot, Variables, Sizes
+      # TODO: don't plot outside the case
+      # TODO: use standardized sizes (plotVars), but test first
       cex_mod <- 2.5
       cex_sites_all     <- cex_mod * 1
       cex_sites_all_ref <- cex_mod * 1
@@ -407,6 +436,7 @@ getStressorList <- function(TargetSiteID,
       cex_sites_targ    <- cex_mod * 2
 
       ## Plot, Variables, Legend
+      # TODO: don't plot outside the case
       leg_name   <- "Samples"
       leg_labels <- c("Outside the case", "Inside the case",
                       "Outside the case, reference",
@@ -428,6 +458,16 @@ getStressorList <- function(TargetSiteID,
 
       if (boo_plot == TRUE) { # No rows in df_plot_long
         # ggplot, main (outside the case)
+        # p_SL <- ggplot2::ggplot(data = df_plot_pctrank) +
+        # ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+        #                                    y = PctRank), staplewidth = 0.5)  +
+        #   ggplot2::geom_jitter(data = df_plot_pctrank, width = 0.1,
+        #                        ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
+        #                                     y = PctRank, color = "col_sites_all",
+        #                                     stroke = 0.5,
+        #                                     shape = "pch_sites_all",
+        #                                     fill = "fill_sites_all"),
+        #                        size = 1, na.rm = TRUE, show.legend = TRUE) +
         p_SL <- ggplot2::ggplot(data = df_plot_long) +
           ggplot2::geom_boxplot(ggplot2::aes(x = stringr::str_wrap(Label, wrap_length),
                                              y = value), staplewidth = 0.5)  +
@@ -444,7 +484,7 @@ getStressorList <- function(TargetSiteID,
           ggplot2::theme_bw() +
           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
                          plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
-                         axis.text.x = ggplot2::element_blank(),
+                         axis.text.x = ggplot2::element_text(size = 6),
                          axis.text.y = ggplot2::element_text(size = yaxistextsize),
                          axis.ticks.x = ggplot2::element_blank(),
                          plot.caption = ggplot2::element_text(size = 8),
@@ -525,6 +565,7 @@ getStressorList <- function(TargetSiteID,
   # NOTE: This is based on outside the case data, which is what the boxplots use
   # If EPA prefers to identify candidate causes relative to comparators, then the
   # identification below must change, and the plots should also change
+  # TODO: use incaseChemData
   if (nrow(outcaseChemData) > 1) { # more than one sample from target site exists for cluster
     chem.clusterCore <- as.data.frame(outcaseChemData %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate))
@@ -683,6 +724,7 @@ getStressorList <- function(TargetSiteID,
 
   # Data File ####
   stressor_trim <- stressor[stressor != "none"]
+  # TODO: use incaseChemVals instead
   data.chemVals <- outcaseChemVals %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate,
                   eval(stressor_trim))
