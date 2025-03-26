@@ -58,6 +58,8 @@ getSiteMap <- function(sp_outline,
                        compSites,
                        TargetSiteID,
                        useBC = FALSE,
+                       plotvars,
+                       refOutline,
                        dir_results = file.path(getwd(), "Results"),
                        dir_sub = "SiteInfo",
                        dir_map_rmd) {
@@ -74,6 +76,8 @@ getSiteMap <- function(sp_outline,
     compSites <- list.CompSites$comp.sites
     TargetSiteID <- TargetSiteID
     useBC <- FALSE
+    plotvars = data_plotvars
+    refOutline = refOutline_col
     dir_results <- dir_results
     dir_sub <- "SiteInfo"
     dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
@@ -84,8 +88,8 @@ getSiteMap <- function(sp_outline,
   not_all_na <- function(x) {!all(is.na(x))}
 
   # Write results directory ----
-  out.dir <- dirname(dir_plots)
-  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, dir_sub)
+  out.dir <- dirname(dir_results)
+  out.folders <- c(out.dir, basename(dir_results), TargetSiteID, dir_sub)
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
@@ -108,30 +112,35 @@ getSiteMap <- function(sp_outline,
     maxClusterID <- max(as.numeric(df_sites$IncaseCol), na.rm = TRUE)
   }
 
-  # Select colors from viridis palette with good separation
-  mag.vec <- switch(maxClusterID,
-                    6 ~ viridis::viridis(23)[c(3, 7, 11, 15, 19, 23)],
-                    5 ~ viridis::viridis(19)[c(3, 7, 11, 15, 19)],
-                    4 ~ viridis::viridis(15)[c(3, 7, 11, 15)],
-                    3 ~ viridis::viridis(11)[c(3, 7, 11)],
-                    2 ~ viridis::viridis(7)[c(3, 7)])
+  # Select colors from viridis palette with good separation (for reaches)
+  if (maxClusterID == 6) {
+    mag.vec <- viridis::viridis(23)[c(3, 7, 11, 15, 19, 23)]
+  } else if (maxClusterID == 5) {
+    mag.vec <- viridis::viridis(19)[c(3, 7, 11, 15, 19)]
+  } else if (maxClusterID == 4) {
+    mag.vec <- viridis::viridis(15)[c(3, 7, 11, 15)]
+  } else if (maxClusterID == 3) {
+    mag.vec <- viridis::viridis(11)[c(3, 7, 11)]
+  } else { # max clusters = 2
+    mag.vec <- viridis::viridis(7)[c(3, 7)]
+  }
+  mag.vec <- paste0(mag.vec, collapse = ",")
 
-  # if (maxClusterID == 6) {
-  #   mag.vec <- viridis::viridis(23)[c(3, 7, 11, 15, 19, 23)]
-  # } else if (maxClusterID == 5) {
-  #   mag.vec <- viridis::viridis(19)[c(3, 7, 11, 15, 19)]
-  # } else if (maxClusterID == 4) {
-  #   mag.vec <- viridis::viridis(15)[c(3, 7, 11, 15)]
-  # } else if (maxClusterID == 3) {
-  #   mag.vec <- viridis::viridis(11)[c(3, 7, 11)]
-  # } else { # max clusters = 2
-  #   mag.vec <- viridis::viridis(7)[c(3, 7)]
-  # }
-  # mag.vec <- c(mag.vec, "#A9A9A9FF")
+  ## Plot colors, sizes, etc  ----
+  targetFill   <- plotvars$Fill[plotvars$Type == "target"]
+  targetShape  <- plotvars$Shape[plotvars$Type == "target"]
+  targetSize   <- plotvars$Size[plotvars$Type == "target"]/2
+  insideFill   <- plotvars$Fill[plotvars$Type == "insideND"]
+  insideShape  <- plotvars$Shape[plotvars$Type == "insideND"]
+  insideSize   <- plotvars$Size[plotvars$Type == "insideND"]/2
+  outsideFill  <- plotvars$Fill[plotvars$Type == "outsideND"]
+  outsideShape <- plotvars$Shape[plotvars$Type == "outsideND"]
+  outsideSize  <- plotvars$Size[plotvars$Type == "outsideND"]/2
+  # refSiteCol is reference site outline color
 
   # Ensure flowline shapefile contains "ClusterID"
   sp_outline <- sf::st_transform(sp_outline, crs = sf::st_crs(sp_flowline))
-
+  # sp_flowline <- dplyr::filter(sp_flowline, !is.na(ClusterID))
 
   # Get sites (if datum is specified in the metadata, transform to WGS84,
   # otherwise, assume wGS84)
@@ -199,38 +208,48 @@ getSiteMap <- function(sp_outline,
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "grey80") +
     tmap::tm_shape(sp_flowline) +
-    tmap::tm_lines("ClusterID", palette = mag.vec, lwd = 0.5,
-                   legend.col.is.portrait = FALSE) +
+    tmap::tm_lines(lwd = 0.5, #palette = mag.vec,
+                   col = "ClusterID",
+                   col.scale = tmap::tm_scale_discrete(values = "viridis"),
+                   col.legend = tmap::tm_legend(title = "ClusterID",
+                                          orientation = "portrait")) +
     tmap::tm_shape(sp_outside) +
-    tmap::tm_symbols(col = "gray25", shape = 25, size = 0.1, border.col = NA) +
+    tmap::tm_symbols(fill = outsideFill, col = "grey15", shape = outsideShape,
+                     size = outsideSize) +
     tmap::tm_shape(sp_inside) +
-    tmap::tm_symbols(col = "cyan4", shape = 21, size = 0.15, border.col = NA) +
+    tmap::tm_symbols(fill = insideFill, col = "grey15", shape = insideShape,
+                     size = insideSize) +
     tmap::tm_shape(sp_targetsite) +
-    tmap::tm_symbols(col = "red", shape = 17, size = 0.5, border.col = NA) +
+    tmap::tm_symbols(fill = targetFill, col = "grey15", shape = targetShape,
+                     size = targetSize) +
     tmap::tm_shape(sp_outline) +
     tmap::tm_borders(col = "black", lwd = 1)
 
   if (nrow(sp_refsites) > 0) {
     state.map <- state.map +
       tmap::tm_shape(sp_refsites) +
-      tmap::tm_symbols(border.col = "blue", col = NA, size = 0.1) +
-      tmap::tm_add_legend('symbol', border.col = NA,
-                          col = c("gray25", "cyan4", "blue", "red"),
+      tmap::tm_symbols(col = refOutline, fill = "grey40", size = 0.25) +
+      tmap::tm_add_legend(type = 'symbols',
+                          col = c("grey15", "grey15", refOutline, "grey15"),
+                          fill = c(outsideFill, insideFill, "grey40", targetFill),
+                          shape = c(outsideShape, insideShape, 21, targetShape),
                           labels = c("Outside the case", "Inside the case"
                                        , "Reference", "Target site"),
-                          title = "", is.portrait = FALSE, reverse = TRUE)
+                          title = "", orientation = "portrait", reverse = TRUE)
   } else {
     state.map <- state.map +
-      tmap::tm_add_legend('symbol', col = c("gray25", "cyan4", "red"),
-                          border.col = NA, title = "Sites", is.portrait = FALSE,
+      tmap::tm_add_legend(type = 'symbols', col = "grey15",
+                          fill = c(outsideFill, insideFill, targetFill),
+                          shape = c(outsideShape, insideShape, targetShape),
+                          title = "Sites", orientation = "portrait",
                           labels = c("Outside case ", "Inside case", "Target site"),
                           reverse = TRUE)
   }
   state.map <- state.map +
-    tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.outside = TRUE,
-                    main.title = regionName, legend.text.size = 0.5,
-                    legend.outside.position = "bottom", legend.stack = "horizontal",
-                    legend.title.size = 0.8)
+    tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.text.size = 0.5,
+                    legend.title.size = 0.8, legend.stack = "horizontal",
+                    legend.outside = TRUE, legend.outside.position = "bottom") +
+    tmap::tm_title(regionName)
   tmap::tmap_save(state.map, fn_Map, , width = map.width, height = map.height,
                   units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
