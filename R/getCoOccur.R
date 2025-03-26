@@ -113,6 +113,7 @@ getCoOccur <- function(TargetSiteID,
                        pHlimLow = 6.5,
                        pHlimHigh = 9,
                        DOlim = 7,
+                       plotvars,
                        dir_plots = file.path(getwd(), "Results"),
                        dir_sub = "CoOccurrence",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -123,15 +124,16 @@ getCoOccur <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     df_data = df_PairedSRTransf
     incaseLabel = incaseLabel
+    biocomm = bioComm
     colBio = bioIndex
     useBetter = FALSE
     df_stressinfo = list.stressors$stressors
-    biocomm = bioComm
-    dir_plots = dir_results
-    dir_sub = "CoOccurrence"
     pHlimLow = 6.5
     pHlimHigh = 9
     DOlim = 7
+    plotvars = data_plotvars
+    dir_plots = dir_results
+    dir_sub = "CoOccurrence"
     boo_plot = TRUE
   }
 
@@ -280,7 +282,7 @@ getCoOccur <- function(TargetSiteID,
                    -1,
                    ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
                           1, 0))
-        } else if(any(vals > pHlimHigh)) {
+        } else if (any(vals > pHlimHigh)) {
           print("pH high")
           flush.console()
           # Regular Scoring
@@ -302,7 +304,7 @@ getCoOccur <- function(TargetSiteID,
       } else {
         # Inverse Scoring
         df.i[, paste0("Sc_Box_", stressname)] <-
-          ifelse(df.i[, stressname] > df.i[,paste0("q50_", stressname)],
+          ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
                  -1,
                  ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
                         1, 0))
@@ -310,7 +312,7 @@ getCoOccur <- function(TargetSiteID,
     } else {
       # Regular Scoring
       df.i[, paste0("Sc_Box_", stressname)] <-
-        ifelse(df.i[, stressname] > df.i[,paste0("q75_", stressname)],
+        ifelse(df.i[, stressname] > df.i[, paste0("q75_", stressname)],
                1,
                ifelse(df.i[, stressname] < df.i[, paste0("q50_", stressname)],
                       -1, 0))
@@ -477,8 +479,8 @@ getCoOccur <- function(TargetSiteID,
       message(paste0("   All values NA for stressor (", stressname, ").\n"))
       utils::flush.console()
       # add data to scores table
-      column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50",
-                        "q75", "Sc_Box")
+      column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75",
+                        "Sc_Box")
       df.i.NA <- df.i[1, 1:5]
       df.i.NA[, column_names] <- NA
       df.i.NA[, "Param_Name"] <- stressname
