@@ -69,31 +69,30 @@
 #' \dontrun{
 #'}
 #' @export
-getSufficiency <- function(TargetSiteID
-                           , df_data
-                           , compSites
-                           , df_stressinfo
-                           , biocomm
-                           , colBio
-                           , dir_plots = file.path(getwd(), "Results")
-                           , dir_sub = "Sufficiency"
-                           , boo_plot = TRUE
-                           ) {##FUNCTION.START
+getSufficiency <- function(TargetSiteID,
+                           df_data,
+                           compSites,
+                           df_stressinfo,
+                           biocomm,
+                           colBio,
+                           plotvars,
+                           dir_plots = file.path(getwd(), "Results"),
+                           dir_sub = "Sufficiency",
+                           boo_plot = TRUE) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
-
-    df_data = df_PairedSRTransf
     TargetSiteID = TargetSiteID
+    df_data = df_PairedSRTransf
     compSites = list.CompSites$comp.sites
     df_stressinfo = list.stressors$stressors
     biocomm = bioComm
     colBio = bioIndex
+    plotvars = data_plotvars
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
-
   }
 
   # define pipe
@@ -120,12 +119,12 @@ getSufficiency <- function(TargetSiteID
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
-      dir.path <- file.path(out.folders[i])
+      dir_path <- file.path(out.folders[i])
     } else {
-      dir.path <- file.path(dir.path, out.folders[i])
+      dir_path <- file.path(dir_path, out.folders[i])
     }
-    if (dir.exists(dir.path) == FALSE) {
-      dir.create(dir.path)
+    if (dir.exists(dir_path) == FALSE) {
+      dir.create(dir_path)
     }
   }
 
@@ -148,7 +147,6 @@ getSufficiency <- function(TargetSiteID
                   , Quality) %>%
     dplyr::mutate(ParamName     = as.character(NA)
                   , ParamValue  = as.numeric(NA)
-                  # , Log1pValue  = as.numeric(NA)
                   , n           = as.character(NA)
                   , SRpred_Deg  = as.character(NA)
                   , Sc_SRlog    = as.character(NA)
@@ -167,7 +165,7 @@ getSufficiency <- function(TargetSiteID
     jlabel <- as.character(strInfo$Label[strInfo$Stressor == str])
 
     if (jlog == 1) {
-      jlabel <- paste("Log1p ", jlog)
+      jlabel <- paste("Log1p ", jlabel)
     }
 
     message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
@@ -218,8 +216,6 @@ getSufficiency <- function(TargetSiteID
       bio_col <- c("gray25", "steelblue2")
       bio_shp <- c(25, 21) # down triangle and circle
       bio_size <- c(3, 3)
-      # lab_comp <- paste0("Comparator samples selected from outside the case ("
-      #                    , outcaseLabel, " ", outcaseID, ")")
 
       ## Plot, Variables, Target Site Line
       targ_line_col <- "red"
@@ -249,9 +245,6 @@ getSufficiency <- function(TargetSiteID
       df.score.j <- df.score.j %>%
         dplyr::mutate(BioComm = biocomm
                       , Label = jlabel
-                      # , Log1pValue = ifelse(useVal == "log1p"
-                      #                       , log1p(ParamValue)
-                      #                       , NA)
                       , n = nrow(df.plot)
                       , SRpred_Deg = j_SR_predict
                       , Sc_SRlog = j_SR_score) %>%
