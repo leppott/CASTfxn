@@ -61,6 +61,7 @@ getAllSamplesTable <- function(df.stress,
 
   if (boo.debug) {
     df.stress <- data_Stress
+    df.stressInfo <- data_stressInfo
     df.resp <- data_respTrim
     df.sites <- data_Sites
   }
@@ -125,7 +126,6 @@ getAllSamplesTable <- function(df.stress,
       dplyr::select(StationID, SampleDate, all_of(chemsamptypes), all_of(respsamptypes))
   }
 
-  # Add COMID, IncaseCol, OutcaseCol (add labels when writing table)
   if (is.na(incaseColName)) {
     df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol")],
                             df.sampSummary, by = "StationID", all = TRUE)
@@ -136,6 +136,20 @@ getAllSamplesTable <- function(df.stress,
                             by = "StationID", all = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   }
+
+  # Update blank COMID, IncaseCol, OutcaseCol (add labels when writing table)
+  df.siteTrim <- unique(df.sites[, c("StationID", "COMID", "OutcaseCol", "IncaseCol")])
+
+  df.sampSummary <- df.sampSummary %>%
+    dplyr::mutate(COMID = suppressWarnings(ifelse(is.na(COMID),
+                                 df.siteTrim$COMID[df.siteTrim$StationID == StationID],
+                                 COMID)),
+                  OutcaseCol = suppressWarnings(ifelse(is.na(OutcaseCol),
+                                 df.siteTrim$OutcaseCol[df.siteTrim$StationID == StationID],
+                                 OutcaseCol)),
+                  IncaseCol = suppressWarnings(ifelse(is.na(IncaseCol),
+                                 df.siteTrim$IncaseCol[df.siteTrim$StationID == StationID],
+                                 IncaseCol)))
 
   return(df.sampSummary)
 
