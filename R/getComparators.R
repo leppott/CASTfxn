@@ -50,6 +50,7 @@
 #' @export
 getComparators<- function(TargetSiteID,
                           df_sites,
+                          df_cluster,
                           df_bioCoOccur,
                           bioIndex,
                           useBC = FALSE,
@@ -57,6 +58,7 @@ getComparators<- function(TargetSiteID,
                           outcaseLabel = outcaseLabel,
                           incaseColName = NULL,
                           incaseLabel = incaseLabel,
+                          useAllCompReaches = FALSE,
                           df_bcdist = NULL,
                           bc_cutoff = 0.05,
                           dir_results = file.path(getwd(), "Results"),
@@ -65,9 +67,10 @@ getComparators<- function(TargetSiteID,
   # For QC purposes
   boo_DEBUG <- FALSE
 
-  if (boo_DEBUG == TRUE) {
+  if (boo_DEBUG == TRUE) { # Specific to WA state
     TargetSiteID = TargetSiteID
     df_sites = data_Sites
+    df_cluster = data_cluster # need if useAllCompReaches == TRUE
     df_bioCoOccur = data_bmiCoOccur
     bioIndex = bmiIndex
     useBC = useBC
@@ -75,6 +78,7 @@ getComparators<- function(TargetSiteID,
     outcaseLabel = "Entire state"
     incaseColName = "IncaseCol"
     incaseLabel = "ClusterID"
+    useAllCompReaches = useAllCompReaches
     df_bcdist = NULL
     bc_cutoff = 0.05
     dir_results = dir_results
@@ -177,7 +181,11 @@ getComparators<- function(TargetSiteID,
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)
-    comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
+    if (useAllCompReaches == FALSE) {
+      comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
+    } else {
+      comp.reaches <- unique(as.vector(df_cluster$COMID[df_cluster$ClusterID == outcaseNum]))
+    }
     all.sites <- outcaseSites
     all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
     outcaseID <- outcaseNum
@@ -200,7 +208,11 @@ getComparators<- function(TargetSiteID,
     incaseSites <- incaseSites[incaseSites %in% eligsites]
 
     comp.sites <- unique(incaseSites)
-    comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
+    if (useAllCompReaches == FALSE) { # use only comparator reaches having sites
+      comp.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% comp.sites]))
+    } else {
+      comp.reaches <- unique(as.vector(df_cluster$COMID[df_cluster$ClusterID == incaseValue]))
+    }
     all.sites <- unique(outcaseSites)
     all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
     statement <- paste0("All '", incaseLabel, "=", incaseValue, "' sites from '",
