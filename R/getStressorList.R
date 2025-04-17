@@ -91,7 +91,7 @@ getStressorList <- function(TargetSiteID,
     siteChem = siteDetectsAll # dataframe
     df_Stress = data_Stress
     chemInfo = data_stressInfo
-    samplim = 10
+    samplim = samplim
     probsHigh = probsHigh
     probsLow = probsLow
     DOlim = DOlim
