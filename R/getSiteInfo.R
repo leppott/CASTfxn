@@ -53,7 +53,7 @@
 #' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
-#' @param UseAllCompReaches TRUE to use all inside-the-case reaches, even those
+#' @param useAllCompReaches TRUE to use all inside-the-case reaches, even those
 #'                          without sites; FALSE to use only inside-the-case reaches
 #'                          with sites. DEFAULT = FALSE.
 #' @param dir_photo directory containing all site photos (for every site in the data set).
@@ -113,8 +113,8 @@
 #'                                 all.sites,
 #'                                 IncaseLabel = NULL,
 #'                                 OutcaseLabel = NULL,
-#'                                 UseBC = FALSE,
-#'                                 UseAllCompReaches = FALSE,
+#'                                 useBC = FALSE,
+#'                                 useAllCompReaches = FALSE,
 #'                                 dir_photo = file.path(getwd(), "Data", "Photos"),
 #'                                 dir_results = file.path(getwd(), "Results"),
 #'                                 dir_sub = "SiteInfo",
@@ -139,8 +139,8 @@ getSiteInfo <- function(TargetSiteID,
                         all.sites,
                         IncaseLabel = NULL,
                         OutcaseLabel = NULL,
-                        UseBC = FALSE,
-                        UseAllCompReaches = FALSE,
+                        useBC = FALSE,
+                        useAllCompReaches = FALSE,
                         plot_vars = data_plotvars,
                         refSiteCol = refOutline_col,
                         dir_photo = file.path(getwd(), "Data", "Photos"),
@@ -170,8 +170,8 @@ getSiteInfo <- function(TargetSiteID,
     all.sites = list.CompSites$all.sites
     OutcaseLabel = outcaseLabel
     IncaseLabel = incaseLabel
-    UseBC = FALSE
-    UseAllCompReaches = FALSE
+    useBC = FALSE
+    useAllCompReaches = FALSE
     plot_vars = data_plotvars
     refSiteCol = refOutline_col
     dir_photo = file.path(dir_data, "Photos")
@@ -759,9 +759,12 @@ getSiteInfo <- function(TargetSiteID,
 
       # If EPA wants to use all comparator reaches, make sure to set
       # useAllCompReaches to TRUE in the CASTool_Metadata.xlsx file.
-      if (UseAllCompReaches) { # use all comparator reaches, even those not having sites
+      if (useAllCompReaches) { # use all comparator reaches, even those not having sites
         if (useBC == TRUE) {
-          outcaseID <- mySiteInfo$OutcaseCol # this represents cluster ID
+          # If useAllCompReaches == T & useBC == T, this means use all
+          # outside-the-case reaches because filtering happens on a site basis,
+          # meaning that inside the case is by definition reaches having sites.
+          outcaseID <- mySiteInfo$OutcaseCol
           data_compbkgd <- df_WSData[df_WSData$ClusterID == outcaseID, ]
         } else { # useBC == FALSE; cluster ID is the inside the case ID
           incaseID <- mySiteInfo$IncaseCol # this represents cluster ID
