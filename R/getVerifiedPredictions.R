@@ -1,4 +1,4 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -14,11 +14,11 @@
 #' @param TargetSiteID Site ID
 #' @param stressors vector of stressors identified as candidate causes
 #' @param df_stressinfo dataframe of stressor metadata
-#' @param SSTVanalytes vector containing StdParamNames for stressors with stressor-specific tolerance values
-#' @param list.MatchBioData list_MatchBioData
+#' @param SSTVanalytes vector containing Stressors for stressors with stressor-specific tolerance values
+#' @param df_paired list_MatchBioData
 #' @param biocomm default = "bmi"
 #' @param colBioSample column name for the response sample ID
-#' @param df_BioTaxaRelAbund dataframe of raw response data (counts or relative abundance)
+#' @param df_bioTaxaData dataframe of raw response data (counts or relative abundance)
 #' @param df_MasterTaxa dataframe of master taxa with SSTV values determined for individual taxa
 #' @param colBio default = "IBI"
 #' @param BioIndex_Nar default = "Quality"
@@ -125,16 +125,16 @@
 #' # Run getBioMatches
 #' biocomm <- "BMI"
 #' data.bio.metrics <- data_BMIMetrics
-#' list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
+#' df_paired<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
 #'                                   , data.chem.raw, data.bio.metrics, biocomm)
 #'
 #' # Data getVerifiedPredictions
 #' # data import, example
-#' # df_BioTaxaRelAbund  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
+#' # df_bioTaxaData  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
 #' # data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
 #' #
 #' # data, example included with package
-#' df_BioTaxaRelAbund  <- data_BMIcounts
+#' df_bioTaxaData  <- data_BMIcounts
 #' data.SSTV.totabund <- data_BMIRelAbund
 #' colBio       <- "IBI"
 #' BioIndex_Nar       <- "NarRat"
@@ -145,11 +145,11 @@
 #' # Run getVerifiedPredictions
 #' getVerifiedPredictions(TargetSiteID
 #'                        , data.SampSummary
-#'                        , df_BioTaxaRelAbund
+#'                        , df_bioTaxaData
 #'                        , data_stressInfo
 #'                        , data.SSTV.totabund
 #'                        , df_MasterTaxa
-#'                        , list.MatchBioData
+#'                        , df_paired
 #'                        , ref.sites
 #'                        , colBio
 #'                        , BioIndex_Nar
@@ -159,206 +159,79 @@
 #' }
 #~~~~~~~~~~~~~~~~
 #' @export
-getVerifiedPredictions <- function(TargetSiteID
-                                   , stressors
-                                   , df_stressinfo
-                                   , SSTVanalytes
-                                   , list.MatchBioData
-                                   , biocomm
-                                   , df_BioTaxaRelAbund
-                                   , df_MasterTaxa
-                                   , colBio
-                                   , BioIndex_Nar
-                                   , BioIndex_Nar_Deg
-                                   , dir_plots = file.path(getwd(), "Results")
-                                   , dir_sub = "VerifiedPredictions"
-                                   , boo_plot = TRUE
-                                   ) {##FUNCTION.START
-
-
+getVerifiedPredictions <- function(TargetSiteID,
+                                   stressors.sstv,
+                                   # stressors.ssi,
+                                   df_stressinfo,
+                                   df_paired,
+                                   biocomm,
+                                   # df_bioMetricData,
+                                   df_bioTaxaData,
+                                   df_MasterTaxa,
+                                   siteQual2Plot,
+                                   colBio,
+                                   plot_vars,
+                                   dir_plots = file.path(getwd(), "Results"),
+                                   dir_sub = "VerifiedPredictions_SSTVs",
+                                   boo_plot = TRUE) {##FUNCTION.START
 
   # Debugging
   boo.DEBUG <- FALSE
   #
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
-    stressors = stressors
-    df_stressinfo = siteStressInfo
-    SSTVanalytes = as.character(SSTVparms)
-    list.MatchBioData = list_MatchBioData
+    stressors.sstv = stressors.sstv
+    # stressors.ssi = stressors.ssi
+    df_stressinfo = list.stressors$stressors
+    df_paired = df_PairedSRTransf
     biocomm = bioComm
-    df_BioTaxaRelAbund = bioTaxaData
+    # df_bioMetricData = bioMetricData
+    # df_bioMetricInfo = bioMetricInfo
+    df_bioTaxaData = bioTaxaData
     df_MasterTaxa = bioMasterTaxa
+    siteQual2Plot = siteQual2Plot
     colBio = bioIndex
-    BioIndex_Nar = "Quality"
-    BioIndex_Nar_Deg = "Degraded"
+    plot_vars = data_plotvars
     dir_plots = dir_results
-    dir_sub = "VerifiedPredictions"
-    boo_plot = TRUE
+    dir_sub = "VerifiedPredictions_SSTVs"
+    boo_plot = boo_plot_user
     tv <- 1
   }##IF.boo.DEBUG.END
 
   # define pipe
   `%>%` <- dplyr::`%>%`
   col.Bio.Deg   <- "Quality"
-  # QC, biocomm ####
+  # QC, biocomm
   biocomm <- toupper(biocomm)
 
-  if (exists("keepMTcol")) {rm(keepMTcol)}
-  if (exists("deleteSSTVnames")) {rm(deleteSSTVnames)}
-  if (exists("mtcols")) {rm(mtcols)}
-
   # Write results directory ----
-  wd <- dirname(dir_plots)
-  dir.sub <- basename(dir_plots)
-  dir.sub2 <- TargetSiteID
-  dir.sub3 <- biocomm
-  dir.sub4 <- dir_sub
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2))
-         , FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
-         , FALSE)
-  ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
-         , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
-         , FALSE)
-  dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
+  out.dir <- dirname(dir_plots)
+  out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, dir_sub)
 
-  # Intersect SSTVanalytes with stressors ----
-  # These are the stressors that need evaluating. Other stressors will be
-  # logged as data gaps?
-  SSTVanalytes <- SSTVanalytes[SSTVanalytes %in% stressors]
-  otherAnalytes <- stressors[!(stressors %in% SSTVanalytes)]
-
-  # Write data gaps ----
-  for (o in seq_along(otherAnalytes)) {
-    otherName <- otherAnalytes[o]
-    gapcomment <- paste0("No stressor-specific tolerance values for "
-                         , otherName, ".")
-    gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
-                             , gapcomment)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-    # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-    #             , row.names = FALSE, sep = "\t")
-  }
-
-  # Iterate over stressors with SSTVs ----
-  df_SSTV <- df_stressinfo %>%
-    dplyr::filter(StdParamName %in% SSTVanalytes) %>%
-    dplyr::select(StdParamName, SSTVname, SensMin, SensMax, TolMin, TolMax)
-  df_SSTV <- unique(df_SSTV)
-  df_SSTV <- merge(df_SSTV, df_stressinfo[, c("StdParamName", "Label")])
-
-  SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
-  mtcols <- colnames(df_MasterTaxa)
-
-  # Check whether master taxa file contains SSTVname (tol vals for that stressor)
-
-  # Check for SSTV column names in master taxa file ----
-  for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
-    name <- SSTVnames[n]
-    SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
-
-    if (name %in% mtcols) {  # Check if TV data in Master Taxa file
-      if (exists("keepMTcol")) {
-        keepMTcol <- c(keepMTcol, name)
-      } else {
-        keepMTcol <- name
-      }
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
     } else {
-      # no taxa in MT taxa are assigned tol values for this stressor
-      gapcomment <- paste0("No ", biocomm, " taxa have tolerance "
-                           , "values for this stressor.")
-      gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-      fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
-      if (exists("deleteSSTVname")) {
-        deleteSSTVnames <- c(deleteSSTVnames, name)
-      } else {
-        deleteSSTVnames <- name
-      }
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
     }
   }
 
-  # Merge biotaxa results with master taxa file ----
-  df_MT_SSTVs <- df_MasterTaxa %>%
-    dplyr::select(TaxonID, all_of(keepMTcol))
+  # Create vector of stressors (to identify data gaps)
+  stressors <- as.vector(unlist(df_stressinfo$Stressor))
 
-  allDetectedTaxa <- df_BioTaxaRelAbund %>%
-    dplyr::distinct(TaxonID)
-  allDetectedTaxa <- as.character(unlist(allDetectedTaxa))
+  # Prepare default plot variables
+  ppi <- 300
+  plot_H <- 4
+  plot_W <- 8
 
-  # Is this necessary?
-  siteDetectedTaxa <- df_BioTaxaRelAbund %>%
-    dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::distinct(TaxonID)
-  siteDetectedTaxa <- as.character(unlist(siteDetectedTaxa))
+  # SSTV data gaps ----
+  if (length(stressors.sstv) == 0) {
 
-  # boo.continue = FALSE  # default value; only flips to true if data available
-  #
-  # if (exists("deleteSSTVnames") == TRUE) { # Some SSTV stressors not used
-  #   if (all(SSTVnames %in% deleteSSTVnames)) { # No SSTV stressors in master taxa
-  #     gapcomment <- paste0("No stressor-specific tolerance values for "
-  #                          , "potential site stressors exist in the master "
-  #                          , "taxa file for ", biocomm, ".")
-  #     gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
-  #                              , gapcomment)
-  #     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-  #     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-  #     fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-  #     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-  #                 , row.names = FALSE, sep = "\t")
-  #
-  #     msg <- gapcomment
-  #     message(msg)
-  #
-  #     boo.continue = FALSE
-  #   } # NO SSTV stressors are used; exit function cleanly
-  # }
-  #
-
-  if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
-
-    keepMTcol <- as.character(keepMTcol)
-    df_SSTVtaxa <- df_MasterTaxa %>%
-      dplyr::select(TaxonID, all_of(keepMTcol))
-
-    # Keep taxa with SSTValues, discard those without
-    if (length(keepMTcol) == 1) {
-      msg <- "Got only 1 SSTV stressor!"
-      message(msg)
-      df_SSTVtaxa <- df_SSTVtaxa[!is.na(df_SSTVtaxa[, keepMTcol]), ]
-
-    } else { # Two or more SSTV stressors exist ### NOT TESTED WITH DATA
-      msg <- "Got 2 or more SSTV stressors!"
-      message(msg)
-
-      msg <- keepMTcol
-      message(msg)
-      df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ]
-
-    }
-
-    SSTVtaxanames <- unique(as.character(df_SSTVtaxa$TaxonID))
-    reportedtaxa <- unique(as.vector(df_BioTaxaRelAbund$TaxonID))
-
-    if (any(reportedtaxa %in% SSTVtaxanames) == TRUE) {
-      df_SSTVrelabund <- df_BioTaxaRelAbund %>%
-      # dplyr::rename(RelAbund = RelAbundInds) %>%
-      dplyr::select(RespSampleID, TaxonID, RelAbund) %>%
-      dplyr::filter(TaxonID %in% SSTVtaxanames)
-      boo.continue = TRUE
-    } else {
-      gapcomment <- paste0("No stressor-specific tolerance values for "
-                           , "potential site stressors exist in the master "
-                           , "taxa file for ", biocomm, ".")
-      gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
+      gapcomment <- paste0("No stressor-specific tolerance values.")
+      gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data", 0
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
@@ -366,516 +239,1050 @@ getVerifiedPredictions <- function(TargetSiteID
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
 
-      msg <- gapcomment
-      message(msg)
+  }
+
+  if (length(stressors.sstv) > 0) {
+    ## Subset stressInfo ----
+    df_SSTV <- df_stressinfo %>%
+      dplyr::filter(Stressor %in% stressors.sstv) %>%
+      dplyr::select(Stressor, LogTransf, SSTVname, SensMin, SensMax, TolMin,
+                    TolMax, Label)
+    df_SSTV <- unique(df_SSTV)
+
+    SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
+    mtcols <- colnames(df_MasterTaxa)
+
+    # Match sstv to master taxa file ----
+    # Check whether master taxa file contains SSTVname (tol vals for that stressor),
+    # if so, add to keepMTcol vector; if not write to data gaps file
+    for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
+      name <- SSTVnames[n]
+      SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
+
+      if (name %in% mtcols) {  # Check if TV data in Master Taxa file
+        if (exists("keepMTcol")) {
+          keepMTcol <- c(keepMTcol, name)
+        } else {
+          keepMTcol <- name
+        }
+      } else {
+        # no taxa in MT taxa are assigned tol values for this stressor
+        gapcomment <- paste0("No ", biocomm, " taxa have tolerance "
+                             , "values available for this SSTV.")
+        gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
+        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                    , row.names = FALSE, sep = "\t")
+        if (exists("deleteSSTVname")) {
+          deleteSSTVnames <- c(deleteSSTVnames, name)
+        } else {
+          deleteSSTVnames <- name
+        }
+      }
+      rm(SSTVlabel)
+    }
+
+    # Create taxa file for SSTVs ----
+    if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
+
+      # Merge biotaxa results with master taxa file ----
+      df_SSTVtaxa <- df_MasterTaxa %>%
+        dplyr::select(TaxonID, all_of(keepMTcol))
+
+      df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ]
+
+      df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa, by = "TaxonID")
+
+      boo.continue = TRUE
+
+    } else {
 
       boo.continue = FALSE
-    }
-  } else {
-    boo.continue = FALSE
-  }
 
-  if (boo.continue == TRUE) { # Have
-    # check for and create (if necessary) "Results" subdirectory of working directory
-    # wd <- dirname(dir_plots)
-    # dir.sub <- basename(dir_plots)
-    # dir.sub2 <- TargetSiteID
-    # dir.sub3 <- biocomm
-    # dir.sub4 <- dir_sub
-    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2)) == TRUE
-    #        , dir.create(file.path(wd, dir.sub, dir.sub2))
-    #        , FALSE)
-    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3)) == TRUE
-    #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3))
-    #        , FALSE)
-    # ifelse(!dir.exists(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)) == TRUE
-    #        , dir.create(file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4))
-    #        , FALSE)
-    # dir_path <- file.path(wd, dir.sub, dir.sub2, dir.sub3, dir.sub4)
-
-    # 20190513, remove scores file if exists
-    fn_scores <-  file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                             , "_VP_Scores.tab"))
-    if (file.exists(fn_scores)) { file.remove(fn_scores) }
-
-    # plots.tvr <- vector(10, mode="list")
-    plots.tv <- vector(10, mode = "list")
-    ppi<-300
-    plot_H <- 4
-    plot_W <- 8
-
-    # boo.pryr <- FALSE
-
-    # Target Site Bio Scores
-    targ_bio <- list.MatchBioData$site.b.rsp[, colBio]
-    targ_bio_bad <- list.MatchBioData$site.b.rsp[list.MatchBioData$site.b.rsp[
-      , BioIndex_Nar] == BioIndex_Nar_Deg, colBio]
-    targ_bio_good <- list.MatchBioData$site.b.rsp[list.MatchBioData$site.b.rsp[
-      , BioIndex_Nar] != BioIndex_Nar_Deg, colBio]
-    targ_bio_min <- min(targ_bio, na.rm = TRUE)
-    targ_bio_max <- max(targ_bio, na.rm = TRUE)
-
-    # skip to next if no "bad" bio scores for this site
-    msg_stop_NoBadBio <- paste0("There are no '", BioIndex_Nar_Deg
-                                , "' bio sites for comparison for this site.")
-    # Use minimum good or maximum bad for "better than" threshold
-    if (length(targ_bio_bad) == 0) {
-      targ_bio_good_min <- min(targ_bio_good, na.rm = TRUE)
-      targ_bio_good_max <- max(targ_bio_good, na.rm = TRUE)
-      # bio threshold to use for "better"
-      bio_better_thresh <- targ_bio_good_min
-    } else {
-      targ_bio_bad_min <- min(targ_bio_bad, na.rm = TRUE)
-      targ_bio_bad_max <- max(targ_bio_bad, na.rm = TRUE)
-      # bio threshold to use for "better"
-      bio_better_thresh <- targ_bio_bad_max
     }
 
-    # skip to next if no "bad" bio scores for this site
-    # This should never be triggered, because there is a bio index score
-    if(is.na(bio_better_thresh)){
-      #next
-      stop(msg_stop_NoBadBio)
-    }
+    if (boo.continue == TRUE) { # Have taxa
 
-    # IF ####
-    if (nrow(df_SSTV) != 0) {##IF.SSTV.START
-      #
-      stressor.SSTV <- subset(df_SSTV, Analyte %in% stressors)
+      # 20190513, remove scores file if exists
+      fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm
+                                               , "_VP_SSTV_Scores.tab"))
+      if (file.exists(fn_scores)) { file.remove(fn_scores) }
 
-      tv.len <- nrow(stressor.SSTV)
+      # Obtain relevant data from df_paired
+      ## Prep stressor data ----
+      qual <- switch(tolower(siteQual2Plot),
+                     "reference" = "RefSiteFlag",
+                     "not degraded" = "Quality",
+                     "better than" = "BetterThan")
 
-      #
-      if (nrow(stressor.SSTV) != 0) {##IF.stressor.SSTV.START
+      # Filter for outside case sites (but use inside the case sites)
+      # Trim unnecessary columns
+      df_stress.sstv <- df_paired %>%
+        dplyr::filter(OutcaseYN == 1) %>%
+        dplyr::mutate(Quality = forcats::fct_expand(Quality, "Target")) %>%
+        dplyr::select(StationID, IncaseYN, StressSampleID, StressSampleDate,
+                      RespSampleID, RespSampleDate, BioComm, all_of(colBio),
+                      RefSiteFlag, Quality, BetterThan, all_of(stressors.sstv))
+
+      for (tv in seq_along(keepMTcol)) { # Obtain one or more sstv columns
+
+        sstv <- keepMTcol[tv]
+        sstv.sensmin <- df_stressinfo$SensMin[df_stressinfo$SSTVname == sstv]
+        sstv.sensmin <- sstv.sensmin[!is.na(sstv.sensmin)]
+        sstv.sensmax <- df_stressinfo$SensMax[df_stressinfo$SSTVname == sstv]
+        sstv.sensmax <- sstv.sensmax[!is.na(sstv.sensmax)]
+        sstv.label   <- df_stressinfo$Label[df_stressinfo$SSTVname == sstv]
+        sstv.label   <- sstv.label[!is.na(sstv.label)]
+
+        # Modify taxon count data to identify sensmin and sensmin through sensmax
+        if (grepl("^\\d*$", sstv.sensmin) && grepl("^\\d*$", sstv.sensmax)) { # tv is numeric
+          # convert to numeric
+          sstv.sensmin <- as.numeric(sstv.sensmin)
+          sstv.sensmax <- as.numeric(sstv.sensmax)
+
+          sstv.sensall <- seq(from = sstv.sensmin, to = sstv.sensmax, by = 1)
+          sstv.sensall.gp <- paste0(sstv.sensall, collapse = ", ")
+
+          # Generate Labels to be used as groups
+          sstv.sensminLabel <- paste(sstv, "SensMin", sep = "_")
+          sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
+
+          df_temp <- df_bioTaxaData %>%
+            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] == sstv.sensmin,
+                                                          "Most sensitive",
+                                                          NA),
+                          {{sstv.sensallLabel}} := ifelse(.data[[sstv]] %in% sstv.sensall,
+                                                          "All sensitive",
+                                                          NA))
+        } else { # tv is character
+          sstv.sensminLabel <- paste(sstv, "SensMin", sep = "_")
+          sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
+          sstv.sensall.gp   <- paste0(sstv.sensmin, ", ", sstv.sensmax)
+
+          df_temp <- df_bioTaxaData %>%
+            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] == sstv.sensmin,
+                                                          sstv.sensmin, NA),
+                          {{sstv.sensallLabel}} := dplyr::case_when(.data[[sstv]] %in%
+                                                                      c(sstv.sensmin, sstv.sensmax) ~
+                                                                      sstv.sensall.gp,
+                                                                    TRUE ~ NA))
+        } ## End assignments
+
+        if (tv == 1) { # merge temp df with df_resp
+          df_resp <- df_temp
+        } else {
+          df_resp <- merge(df_resp, df_temp,
+                           by = c("TaxonID", "StationID", "RespSampleID",
+                                  "RespSampleDate", "BMISampFlag", "NumIndividuals",
+                                  "PctInd", "SampleTotAbund", "SampleTotTaxa",
+                                  "PctTaxa", keepMTcol))
+        }
+
+        # Remove sstv variables, labels
+        suppressWarnings(rm(sstv, sstv.sensmin, sstv.sensmax, sstv.label,
+                            sstv.sensall, sstv.sensall.gp, sstv.sensallLabel,
+                            sstv.sensmaxLabel, sstv.sensminLabel))
+
+      } ## END for tv
+
+      # Summarize data
+      df_resp.summary <- df_resp %>%
+        tidyr::pivot_longer(cols = dplyr::contains("Sens"),
+                            names_to = "Group", values_to = "Label",
+                            values_ptypes = character(),
+                            values_drop_na = TRUE) %>%
+        dplyr::group_by(StationID, RespSampleID, RespSampleDate, Group, Label) %>%
+        dplyr::summarise(NumInds = sum(NumIndividuals, na.rm = TRUE),
+                         PctInds = sum(PctInd, na.rm = TRUE),
+                         NumTaxa = dplyr::n(),
+                         PctTaxa = sum(PctTaxa, na.rm = TRUE),
+                         .groups = "drop_last") %>%
+        dplyr::mutate(Group = sub("(_SensMin)$", "", Group),
+                      Group = sub("(_SensAll)$", "", Group))
+
+      df_GpLbl <- unique(df_resp.summary[, c("Group", "Label")])
+
+      df_tv <- merge(df_stress.sstv, df_resp.summary,
+                     by = c("StationID", "RespSampleID", "RespSampleDate"))
+
+      # Loop - Score SSTVs ####
+      for (s in seq_along(stressors.sstv)) {
+
+        stressor <- stressors.sstv[s]
+        message(paste("Scoring", stressor))
+        stressorLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressor]
+        tolval <- df_SSTV$SSTVname[df_SSTV$Stressor == stressor]
+        tolval.min <- paste0(tolval, "_SensMin")
+        tolval.all <- paste0(tolval, "_SensAll")
+
+        df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} & IncaseYN == 1) %>%
+          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+                        StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+                        RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+                        Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
+          dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
+                        PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
+          tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
+                              values_to = "value")
+
+        if (nrow(dplyr::filter(df_tv.incase, StationID == TargetSiteID)) == 0) {
+          # Create dataframe containing response values to include
+          df_tv.target <- df_tv[df_tv$StationID == TargetSiteID, ]
+          # Select only the columns prior to Group
+          df_tv.target <- df_tv.target %>%
+            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+                          StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+                          RefSiteFlag, Quality, BetterThan, all_of(stressor)) %>%
+            dplyr::mutate(Group := {{tolval}})
+          df_tv.target <- unique(df_tv.target) # Reduce to individual samples
+          # Subset the group/label dataframe to the current tolval group
+          df_GpLbl.tolval <- dplyr::filter(df_GpLbl, Group == {{tolval}})
+          # Merge Label into the dataframe & add NumInds, PctInds, NumTaxa, PctTaxa
+          df_tv.target <- merge(df_tv.target, df_GpLbl.tolval, by = "Group")
+          df_tv.target <- df_tv.target %>%
+            dplyr::mutate(NumInds = 0, PctInds = 0, NumTaxa = 0, PctTaxa = 0) %>%
+            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+                          StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+                          RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+                          Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
+            tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
+                                values_to = "value")
+          # Add target samples back into df_tv.incase
+          df_tv.incase <- rbind(df_tv.incase, df_tv.target)
+        }
+
+        ## Scoring ####
+        # Get percentiles by most sensitive, all sensitive for each of
+        # NumTaxa, %Taxa, NumInds, %Inds over all comparator sites
+        df_quantiles.incase <- df_tv.incase %>%
+          dplyr::select(Label, variable, value) %>%
+          dplyr::group_by(Label, variable) %>%
+          dplyr::summarise(min = suppressWarnings(min(value, na.rm = TRUE)),
+                           q25 = quantile(value, probs = 0.25, na.rm = TRUE),
+                           q50 = quantile(value, probs = 0.50, na.rm = TRUE),
+                           q75 = quantile(value, probs = 0.75, na.rm = TRUE),
+                           max = suppressWarnings(max(value, na.rm = TRUE)),
+                           .groups = "drop_last")
+
+        df_tv.incase <- merge(df_tv.incase, df_quantiles.incase,
+                              by = c("Label", "variable"))
+
+        # Calculate num samples better than, & better than, not degraded
+        # Yields 1-row x 3-col df (# samps BT, # samps not deg, # samps BT & not deg)
+        df_tv.incase.summary <- df_tv.incase %>%
+          dplyr::distinct(StationID, RespSampleID, RespSampleDate, Quality, BetterThan) %>%
+          dplyr::mutate(QualityNum = ifelse(Quality == "Not degraded", 1, 0),
+                        BTNotDeg = ifelse((BetterThan == 1 & Quality == 1), 1, 0)) %>%
+          dplyr::filter(StationID != TargetSiteID) %>% # Do NOT include target site samples
+          dplyr::summarise(numSampsBT = sum(BetterThan, na.rm = TRUE),
+                           numSampsNotDeg = sum(QualityNum, na.rm = TRUE),
+                           numSampsBTNotDeg = sum(BTNotDeg, na.rm = TRUE),
+                           .groups = "drop_last")
+
+        # Assign scores to target site
+        df_tbl_scores <- dplyr::filter(df_tv.incase, StationID == TargetSiteID) %>%
+          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+                        StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+                        RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+                        Label, variable, value, q25, q50, q75) %>%
+          dplyr::rename(StressorValue = {{stressor}},
+                        Response = variable,
+                        ResponseValue = value) %>%
+          dplyr::mutate(Score = dplyr::case_when(ResponseValue < q25 ~ 1,
+                                                 dplyr::between(ResponseValue, q25, q50) ~ 0,
+                                                 ResponseValue > q50 ~ -1),
+                        StressorLabel = stressorLabel,
+                        Stressor := {{stressor}},
+                        nBetterBio = as.integer(df_tv.incase.summary$numSampsBT),
+                        nBetterBioNotDeg = as.integer(df_tv.incase.summary$numSampsBTNotDeg)) %>%
+          dplyr::select(StationID, RespSampleID, RespSampleDate, StressSampleID,
+                        StressSampleDate, BioComm, all_of(colBio), RefSiteFlag,
+                        Quality, BetterThan, StressorLabel, Stressor, StressorValue,
+                        Group, Label, Response, ResponseValue, q25, q50, Score,
+                        nBetterBio, nBetterBioNotDeg)
+
         #
-        # Loop tv (stressor) ####
-        for (tv in 1:nrow(stressor.SSTV)) {##FOR.tv.START
-          # Currently only valid for SpecCond
-          #
-          SSTV.analyte <- as.vector(stressor.SSTV$Analyte)[tv]
-          SSTV.name <- as.vector(stressor.SSTV$SSTVname)[tv]
-          SSTV.label <- df_stressinfo$Label[df_stressinfo$StdParamName == SSTV.analyte]
-          SSTV.label <- unique(as.character(SSTV.label))
+        boo_append <- TRUE
+        boo_colnames <- FALSE
 
-          if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
-            varFlag <- 0
-            #if(tv==1){tv=20}
-          }##IF.boo.DEBUG.END
-          #
+        if (file.exists(fn_scores) == FALSE) {##IF~file.exists(fn_scores)~START
+          # invert for 1st instance
+          boo_append <- !boo_append
+          boo_colnames <- !boo_colnames
+        }##IF~file.exists(fn_scores)~END
 
-          tv.len <- nrow(stressor.SSTV)
-          msg <- paste0("Item (", tv, "/", tv.len,"); Stressor = ", SSTV.analyte)
-          message(msg)
-          # print(msg)
-          # utils::flush.console()
+        utils::write.table(df_tbl_scores, file = fn_scores,
+                           col.names = boo_colnames, row.names = FALSE,
+                           sep="\t", append = boo_append)
 
-          # skip if SSTV = ""
-          ## 20181211
-          if (is.na(SSTV.name) == TRUE | SSTV.name == "") {
-            msg <- "No data; SKIP"
-            message(msg)
-            # print(msg)
-            # utils::flush.console()
-            next
-          }
+        # Prepare plots ----
+        # Boxplots: x = Label [SensMin, SensMax], y = value,
+        # Group = variable [NumInds, PctInds, NumTaxa, PctTaxa], df_tv.incase
+        # Jitterplots: all incase degraded [grey25, down triangle],
+        # not degraded [steelblue, round], target [red triangle]
+        df_tv.incase <- df_tv.incase %>%
+          dplyr::mutate(Quality = as.character(Quality),
+                        Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
+                        Quality = factor(Quality,
+                                         levels = c("Not degraded", "Degraded", "Target"),
+                                         labels = c("Not degraded", "Degraded", "Target")))
 
-          # 20190111, get LogTransf (0 = FALSE; 1 = TRUE)
-          # need to use max (default of 1) in case of duplicates
-          chem.info_LogTransf <- df_stressinfo %>%
-            dplyr::group_by(StdParamName) %>%
-            dplyr::summarise(max_LogTransf = max(LogTransf, na.rm = TRUE)
-                             , .groups = "drop_last")
-          LogTransf <- chem.info_LogTransf$max_LogTransf[chem.info_LogTransf[, "StdParamName"] == SSTV.analyte]
-          log.yn <- as.logical(LogTransf)
+        df_tv.notTarget <- dplyr::filter(df_tv.incase, StationID != TargetSiteID)
+        df_tv.target <- dplyr::filter(df_tv.incase, StationID == TargetSiteID)
 
-          # get all the matched sample data for this stressor
-          # 20180620, match names
-          col_keep <- c("StationID", "StressSampleID", "RespSampleID")
-          SSTV.analyte.match.all.b.str <- SSTV.analyte[SSTV.analyte %in%
-                                                         names(list.MatchBioData$all.b.str)]
-          all.match.b.str <- list.MatchBioData$all.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
-          cl.match.b <- list.MatchBioData$cl.b.str[, c(col_keep, SSTV.analyte.match.all.b.str)]
+        df_sstv.scores <- merge(df_quantiles.incase, df_tbl_scores)
 
-          bmi.taxa.raw <- df_BioTaxaRelAbund[df_BioTaxaRelAbund$StationID %in%
-                                        unique(all.match.b.str$StationID), ]
-          bmi.taxa.raw <- merge(bmi.taxa.raw
-                                , df_MasterTaxa[, c("TaxonID", SSTV.name)]
-                                , by.x = "TaxonID", by.y = "TaxonID")
+        str_scores <- df_sstv.scores %>%
+          dplyr::filter(Group == {{tolval}}) %>%
+          dplyr::select(Label, variable, max, q25, q50, RespSampleDate, Score) %>%
+          dplyr::arrange(Label, variable, max, RespSampleDate) %>%
+          dplyr::group_by(Label, variable, max, q25, q50) %>%
+          dplyr::summarise(Scores = toString(Score),
+                           .groups = "drop_last") %>%
+          dplyr::mutate(min = -10,
+                        segNeg = ((q25 - min) / 2) + min,
+                        aLabNeg = -1,
+                        segZero = ((q50 - q25) / 2) + q25,
+                        aLabZero = 0,
+                        segPos = ((max - q50) / 2) + q50,
+                        aLabPos = 1,
+                        Scores = paste0("Scores = ", Scores))
 
-          minTolVal <- min(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
-          maxTolVal <- max(df_MasterTaxa[,SSTV.name], na.rm = TRUE)
+        str_scores_max <- str_scores %>%
+          dplyr::group_by(variable) %>%
+          dplyr::summarise(OverallMax = max(max, na.rm = TRUE),
+                           .groups = "drop_last")
 
-          bmi.taxa.raw$SensTaxa <- ifelse(bmi.taxa.raw[, SSTV.name] == minTolVal |
-                                            bmi.taxa.raw[, SSTV.name] == minTolVal + 1
-                                          , bmi.taxa.raw$RelAbund, NA)
+        str_scores <- merge(str_scores, str_scores_max)
 
-          bmi.taxa.raw$TolTaxa <- ifelse(bmi.taxa.raw[,SSTV.name] == maxTolVal |
-                                           bmi.taxa.raw[,SSTV.name] == maxTolVal - 1
-                                         , bmi.taxa.raw$RelAbund, NA)
+        ## Plot, Variables
+        ## Prepare colors, sizes, etc  ----
+        plot_vars  <- plot_vars %>%
+          dplyr::filter(Type %in% c("target", "insideND", "insideD"))
+        bio_fill    <- rev(unlist(plot_vars$Fill)) # Degraded, Not degraded, Target
+        bio_shape   <- rev(unlist(plot_vars$Shape)) # down triangle, circle, and triangle
+        bio_size    <- rev(unlist(plot_vars$Size)) # Degraded, Not degraded, Target
+        bio_alpha   <- rev(unlist(plot_vars$Alpha)) # Degraded, Not degraded, Target
 
-          bmi.taxa.raw <- dplyr::group_by(bmi.taxa.raw, StationID
-                                          , BMISampID) %>%
-            dplyr::summarize(SensRelAbund = sum(SensTaxa, na.rm = TRUE)
-                             , TolRelAbund = sum(TolTaxa, na.rm = TRUE)
-                             , .groups = "drop_last")
-          bmi.taxa.raw <- dplyr::rename(bmi.taxa.raw, RespSampleID = BMISampID)
+        # Prepare labels
+        str_title <- paste0(TargetSiteID, ": Verified prediction "
+                            ,"line of evidence for ", stressorLabel)
+        str_title <- stringr::str_wrap(str_title, 100)
+        str_subtitle <- paste0("Do the data support the prediction that",
+                               " the abundance and richness of sensitive",
+                               " taxa will be lower than that observed at",
+                               " comparator sites?")
+        str_subtitle <- stringr::str_wrap(str_subtitle, 100)
+        legendtitle <- "Samples"
+        str_xlab  <- ""
 
-          all.match.b.resp <- bmi.taxa.raw[bmi.taxa.raw$RespSampleID %in%
-                                             unique(all.match.b.str$RespSampleID), ]
+        # Arrow labels
+        # aLabPos <- "1"
+        # aLabZero <- "0"
+        # aLabNeg <- "-1"
 
-          col_by <- c("StationID", "RespSampleID")
-          all.SSTV.abund <- merge(all.match.b.str
-                                  , all.match.b.resp
-                                  , by.x = col_by
-                                  , by.y = col_by
-                                  , all = TRUE)
+        ##PLOT VARIABLES ~ END
 
-          # Add Bio Index (value and Narrative Rating) (20190305)
-          all.SSTV.abund <- merge(all.SSTV.abund
-                                  , list.MatchBioData$all.b.rsp[, c(col_by
-                                                              , BioIndex_Nar
-                                                              , colBio)]
-                                  , by.x = col_by
-                                  , by.y = col_by
-                                  , all.x = TRUE)
+        fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_VP_SSTV_", stressor, ".png")
 
-          good.SSTV.abund    <- all.SSTV.abund[stats::complete.cases(all.SSTV.abund), ]
-          cl.SSTV.abund      <- subset(good.SSTV.abund
-                                       , good.SSTV.abund$StressSampleID %in%
-                                         cl.match.b$StressSampleID)
-          site.SSTV.abund    <- subset(good.SSTV.abund
-                                       , good.SSTV.abund$StationID
-                                       %in% TargetSiteID)
-          SSTV.Resp          <- c("SensRelAbund", "TolRelAbund")
+        p_tv <- ggplot2::ggplot(NULL, ggplot2::aes(x = Label, y = value,
+                                                   group = Label)) +
+          ggplot2::geom_boxplot(data = df_tv.incase, outliers = TRUE,
+                                outlier.size = 0.5, na.rm = TRUE,
+                                staplewidth = 0.5, linewidth = 0.25) +
+          ggplot2::geom_jitter(data = df_tv.notTarget,
+                               ggplot2::aes(color = Quality, shape = Quality,
+                                            fill = Quality, alpha = Quality),
+                               na.rm = TRUE, width = 0.15, height = 0.01,
+                               size = 0.4) +
+          ggplot2::geom_jitter(data = df_tv.target,
+                               ggplot2::aes(color = Quality, shape = Quality,
+                                            fill = Quality, alpha = Quality),
+                               na.rm = TRUE, width = 0.2, height = 0.01,
+                               size = 1.5) +
+          ggplot2::geom_boxplot(data = df_tv.incase,
+                                ggplot2::aes(group = Label), outliers = TRUE,
+                                outlier.size = 0.5, na.rm = TRUE,
+                                staplewidth = 0.5, linewidth = 0.25, fill = NA) +
+          # ggplot2::ylim(0, NA) +
+          ggplot2::coord_flip() +
+          ggplot2::facet_wrap(. ~ variable, scales = "free") +
+          ggplot2::scale_color_manual(name = legendtitle,
+                                      breaks = c("Degraded", "Not degraded", "Target"),
+                                      values = bio_fill, drop = TRUE) +
+          ggplot2::scale_fill_manual(name = legendtitle,
+                                     breaks = c("Degraded", "Not degraded", "Target"),
+                                     values = bio_fill, drop = TRUE) +
+          ggplot2::scale_shape_manual(name = legendtitle,
+                                      breaks = c("Degraded", "Not degraded", "Target"),
+                                      values = bio_shape, drop = TRUE) +
+          ggplot2::scale_alpha_manual(name = legendtitle,
+                                      breaks = c("Degraded", "Not degraded", "Target"),
+                                      values = bio_alpha, drop = TRUE) +
+          ggplot2::labs(title = str_title, subtitle = str_subtitle) +
+          ggplot2::theme_bw() +
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 8),
+                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 6)) +
+          ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                         axis.text.x = ggplot2::element_text(size = 6),
+                         axis.title.y = ggplot2::element_blank(),
+                         axis.text.y = ggplot2::element_text(size = 6),
+                         axis.ticks.y = ggplot2::element_blank())
 
-          varFlag <- 1
+        p_tv <- p_tv +
+          ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = 5,
+                             ggplot2::aes(x = Label, y = OverallMax, label = Scores)) #+
+          # ggplot2::geom_segment(data = str_scores, color = "orange",
+          #                       ggplot2::aes(x = Label, xend = Label,
+          #                                    y = min, yend = q25),
+          #                       arrow = grid::arrow(ends = "both", type = "open",
+          #                                            length = grid::unit(0.08, "cm"))) +
+          # ggplot2::geom_segment(data = str_scores, color = "orange",
+          #                       ggplot2::aes(x = Label, xend = Label,
+          #                                    y = q25, yend = q50),
+          #                       arrow = grid::arrow(ends = "both", type = "open",
+          #                                           length = grid::unit(0.08, "cm"))) +
+          # ggplot2::geom_segment(data = str_scores, color = "orange",
+          #                       ggplot2::aes(x = Label, xend = Label,
+          #                                    y = q50, yend = OverallMax),
+          #                       arrow = grid::arrow(ends = "both", type = "open",
+          #                                           length = grid::unit(0.08, "cm"))) #+
+          # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+          #                    ggplot2::aes(x = Label, y = segNeg, label = aLabNeg,
+          #                                 color = "orange")) +
+          # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+          #                    ggplot2::aes(x = Label, y = segZero, label = aLabZero,
+          #                                 color = "orange")) +
+          # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+          #                    ggplot2::aes(x = Label, y = segPos, label = aLabPos,
+          #                                 color = "orange"))
 
-          # Generate data for plotting (1 = all complete cases, 3 = comparators
-          # 5 = target site)
-          df.plot1 <- good.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
-          df.plot3 <- cl.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
-          df.plot5 <- site.SSTV.abund[, c(SSTV.analyte, SSTV.Resp)]
+        if (boo_plot) {
+          ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p_tv,
+                          dpi = ppi, width = 8, height = 6, units = "in")
+        }## IF ~ boo_plot ~ END
 
-          # Log transform if indicated
-          if (log.yn == TRUE) {
-            df.plot1[, SSTV.analyte] <- log1p(df.plot1[, SSTV.analyte])
-            df.plot3[, SSTV.analyte] <- log1p(df.plot3[, SSTV.analyte])
-            df.plot5[, SSTV.analyte] <- log1p(df.plot5[, SSTV.analyte])
-          }
+      }## FOR SSTV ~ END
 
-          ## ALL
-          # 20190305, drop added Bio Index value and narrative
-          # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
-          df_plot_all <- good.SSTV.abund[, 1:6] %>%
-            tidyr::pivot_longer(cols = c(SensRelAbund, TolRelAbund)
-                                , names_to = "variable", values_to = "value")
-          df_plot_all[, "Param_Name"] <- SSTV.analyte
-          colnames(df_plot_all)[colnames(df_plot_all) == SSTV.analyte] <- "Param_Value"
-          df_plot_all <- df_plot_all[, c(1:3, 7, 4:6)]
+    }## IF ~ boo_continue ~ END
 
-          ## BETTER BIO
-          # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
-          # 20190305, switch to "better" bio from all
-          df_plot_betterbio <- good.SSTV.abund[good.SSTV.abund[, colBio]
-                                               > bio_better_thresh, 1:6]
-          df_plot_betterbio <- tidyr::pivot_longer(df_plot_betterbio
-                                                   , cols = c(SensRelAbund, TolRelAbund)
-                                                   , names_to = "variable"
-                                                   , values_to = "value") %>%
-            dplyr::mutate(variable = ifelse(variable == "SensRelAbund"
-                                            , "Sensitive Taxa", "Tolerant Taxa")
-                          , Param_Name = SSTV.analyte) %>%
-            dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
-            dplyr::select(StationID:StressSampleID, Param_Name
-                          , Param_Value:value)
+  }## IF ~ SSTV ~ END
 
-          n_records_better_bio <- nrow(df_plot_betterbio)
-
-          ## TARGET
-          # 20230529, convert reshape2::melt to tidyr::pivot_longer ARL
-          df_plot_targ <- site.SSTV.abund[, 1:6]
-          df_plot_targ <- tidyr::pivot_longer(site.SSTV.abund[, 1:6]
-                                              , cols = c(SensRelAbund, TolRelAbund)
-                                              , names_to = "variable"
-                                              , values_to = "value") %>%
-            dplyr::mutate(variable = ifelse(variable == "SensRelAbund"
-                                            , "Sensitive Taxa", "Tolerant Taxa")
-                          , Param_Name = SSTV.analyte) %>%
-            dplyr::rename(Param_Value = eval(SSTV.analyte)) %>%
-            dplyr::select(StationID:StressSampleID, Param_Name
-                          , Param_Value:value)
-
-          # 20190510, new data frame for better sites AND bio.deg = No
-          # IBI scores (drop variable and value from good.SSTV.abund)
-          df_IBI <- unique(good.SSTV.abund[, c(1:4, 7:8)])
-          # Add IBI scores to "better" sites
-          df_plot_betterbio_IBI <- merge(df_plot_betterbio, df_IBI, all.x = TRUE)
-          # Add Bio.Deg
-          df_plot_betterbio_IBI[, col.Bio.Deg] <-
-            ifelse(df_plot_betterbio_IBI[, BioIndex_Nar] == BioIndex_Nar_Deg
-                   , "Yes", "No")
-          df_plot_betterbio_BioDegNo <-
-            df_plot_betterbio_IBI[df_plot_betterbio_IBI[, col.Bio.Deg] == "No", ]
-
-          n_records_betterbio_BioDegNo <- nrow(df_plot_betterbio_BioDegNo)
-
-          # Scoring ####
-          # Get percentiles by taxa group
-          # 20230530 ARL; Converted to tidyverse
-          df_quantiles <- df_plot_betterbio %>%
-            dplyr::select(variable, value) %>%
-            dplyr::group_by(variable) %>%
-            dplyr::summarise(q25 = quantile(value, probs = 0.25)
-                             , q50 = quantile(value, probs = 0.50)
-                             , q75 = quantile(value, probs = 0.75)
-                             , .groups = "drop_last")
-          q_Sens_lo <- df_quantiles %>% filter(variable == "Sensitive Taxa") %>%
-            select(q25) %>% as.numeric(.)
-          q_Sens_hi <- df_quantiles %>% filter(variable == "Sensitive Taxa") %>%
-            select(q50) %>% as.numeric(.)
-          q_Tol_lo <- df_quantiles %>% filter(variable == "Tolerant Taxa") %>%
-            select(q50) %>% as.numeric(.)
-          q_Tol_hi <- df_quantiles %>% filter(variable == "Tolerant Taxa") %>%
-            select(q75) %>% as.numeric(.)
-
-          # Add scoring thresholds to target site data frame
-          # 20230530 ARL; converted to tidyverse
-          df_plot_targ <- df_plot_targ %>%
-            dplyr::mutate(better_bio_varval_qLo = ifelse(variable == "Sensitive Taxa"
-                                                         , q_Sens_lo, q_Tol_lo)
-                          , better_biovarval_qHi = ifelse(variable == "Sensitive Taxa"
-                                                          , q_Sens_hi, q_Tol_hi))
-          # Add scores to target site data frame
-          df_plot_targ <- df_plot_targ %>%
-            dplyr::mutate(Score = case_when((variable == "Sensitive Taxa") &
-                                              (value < better_bio_varval_qLo) ~ 1
-                                            , (variable == "Sensitive Taxa") &
-                                              (value > better_biovarval_qHi) ~ -1
-                                            , (variable == "Tolerant Taxa") &
-                                              (value > better_biovarval_qHi) ~ 1
-                                            , (variable == "Tolerant Taxa") &
-                                              (value > better_bio_varval_qLo) ~ -1
-                                            , TRUE ~ 0))
-
-
-          # Add other variables
-          df_plot_targ[, "biocomm"] <- biocomm
-          df_plot_targ[, "n_BetterBio"] <- n_records_better_bio
-          df_plot_targ[, "n_BetterBioDegNo"] <- n_records_betterbio_BioDegNo
-          df_tbl_scores <- merge(df_plot_targ
-                                 , site.SSTV.abund[,c("RespSampleID"
-                                                      ,"StressSampleID"
-                                                      , colBio
-                                                      , "Quality")]
-                                 , by.x = c("RespSampleID","StressSampleID")
-                                 , by.y = c("RespSampleID","StressSampleID")
-                                 , all.x = TRUE)
-          df_tbl_scores <- merge(df_tbl_scores
-                                 , unique(df_stressinfo[,c("StdParamName", "Label")])
-                                 , by.x = "Param_Name"
-                                 , by.y = "StdParamName"
-                                 , all.x = TRUE)
-          df_tbl_scores <- dplyr::select(df_tbl_scores, StationID
-                                         , RespSampleID, eval(colBio)
-                                         , Quality, StressSampleID, Label
-                                         , Param_Name, Param_Value
-                                         , variable, value, better_bio_varval_qLo
-                                         , better_biovarval_qHi, Score
-                                         , biocomm, n_BetterBio
-                                         , n_BetterBioDegNo) %>%
-            dplyr::rename(Stressor = Param_Name
-                        , StressorValue = Param_Value
-                        , Response = variable
-                        , ResponseValue = value
-                        , qLoValue_Cutoff = better_bio_varval_qLo
-                        , qHiValue_Cutoff = better_biovarval_qHi)
-
-          # Save
-          # fn_scores <-  file.path(dir.sub, dir.sub2, dir.sub3
-          #                         , paste0(TargetSiteID, ".SR.SSTV.Scores.txt"))
-          boo_append <- TRUE
-          boo_colnames <- FALSE
-          if(file.exists(fn_scores)==FALSE){##IF~file.exists(fn_scores)~START
-            # invert for 1st instance
-            boo_append <- !boo_append
-            boo_colnames <- !boo_colnames
-          }##IF~file.exists(fn_scores)~END
-
-          utils::write.table(df_tbl_scores, file = fn_scores
-                             , col.names = boo_colnames, row.names = FALSE
-                             , sep="\t", append = boo_append)
-
-          # ggplot ####
-
-          ##PLOT VARIABLES ~ START
-            ## Plot, Variables, Strings
-            str_title <- paste0(TargetSiteID, ": Verified prediction "
-                                ,"line of evidence for ", SSTV.label)
-            str_title <- stringr::str_wrap(str_title, 100)
-            str_subtitle <- paste0("Do the data support the prediction"
-                                   , " that the abundance of sensitive"
-                                   , " taxa will be lower and tolerant"
-                                   , " taxa will be higher than that"
-                                   , " observed at comparator sites with"
-                                   , " better biology?")
-            str_subtitle <- stringr::str_wrap(str_subtitle, 100)
-            str_xlab  <- ""
-            str_ylab  <- "Relative Abundance"
-            # df_plot_targ_sortvalue <- df_plot_targ[order(df_plot_targ[,"value"]), ]
-            str_score_sens <- paste(df_plot_targ[df_plot_targ[, "variable"] == "Sensitive Taxa", "Score"], collapse = ", ")
-            str_score_tol <- paste(df_plot_targ[df_plot_targ[, "variable"] == "Tolerant Taxa", "Score"], collapse = ", ")
-            str_caption <- paste0("Score = Tolerant Taxa (", str_score_tol
-                                  , "), Sensitive Taxa ("
-                                  , str_score_sens
-                                  , ")\nNumber of samples with better biology (n="
-                                  , n_records_better_bio
-                                  , "); better biology and not degraded (n="
-                                  , n_records_betterbio_BioDegNo, ")"
-                                  , "\nSamples with better biology have "
-                                  , colBio, " > "
-                                  , signif(bio_better_thresh, 3))
-
-            ## Plot, Variables, Colors
-            col_sites_targ    <- "red"
-
-            ## Plot, Variables, Fill
-            fill_sites_targ    <- col_sites_targ
-
-            ## Plot, Variables, Points
-            pch_sites_targ    <- 17 # triangle
-
-            ## Plot, Variables, Sizes
-            cex_mod <- 2
-            cex_sites_targ    <- cex_mod*1.2
-
-            ## Plot, Variables, Target Site Line
-            targ_line_col <- col_sites_targ
-            targ_line_lty <- 2
-            targ_line_lwd <- 1
-
-            ## Plot, Variables, Legend
-            leg_name   <- "Sites"
-            leg_labels <- c("target")
-            leg_shape  <- c(pch_sites_targ)
-            leg_col    <- c(col_sites_targ)
-            leg_fill   <- c(fill_sites_targ)
-
-          ##PLOT VARIABLES ~ END
-
-          ## Plot, Variables, Bio.Deg
-          bio_col <- c("gray20", "blue")
-          bio_shp <- c(21, 25) # circle and down triangle
-          bio_size <- c(2, 1)
-
-          col.SiteTypeQuality <- col.Bio.Deg
-
-          display_target <- "lines"  # "lines", "points"
-
-          p_SSTV <- ggplot2::ggplot(df_plot_betterbio_IBI, ggplot2::aes(variable, value)) +
-            ggplot2::geom_boxplot(ggplot2::aes(group = variable)) +
-            ggplot2::labs(title = str_title
-                          , subtitle = str_subtitle
-                          , y = str_ylab
-                          , caption = str_caption) +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12)
-                           , plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)
-                           , plot.caption = ggplot2::element_text(size = 8)
-                           , legend.title = ggplot2::element_text(size = 8)
-                           , legend.text = ggplot2::element_text(size = 6)
-                           , axis.title.x = ggplot2::element_text(size = 10)
-                           , axis.title.y = ggplot2::element_blank()) +
-            ggplot2::coord_flip() +
-
-            # Add degraded y/n for better bio sites
-            # 20230530 ARL; Convert geom_jitter(aes_string) to
-            # geom_point(position = "jitter", aes())
-            ggplot2::geom_point(ggplot2::aes(color=Bio.Deg, shape=Bio.Deg
-                                             , fill=Bio.Deg, size=Bio.Deg)
-                                , alpha=0.45, na.rm = TRUE, position = "jitter") +
-            # ggplot2::geom_jitter(data = df_plot_betterbio_IBI
-            #                      # , size = 1
-            #                      , alpha = 0.45
-            #                      , na.rm = TRUE
-            #                      , ggplot2::aes_string(color = col.SiteTypeQuality
-            #                                            , shape = col.SiteTypeQuality
-            #                                            , fill = col.SiteTypeQuality)) +
-            # redo box with no fill (can't change alpha of just the box if do 2nd and want to keep gray background)
-            ggplot2::geom_boxplot(fill = NA, ggplot2::aes(group = variable)) +
-            # scoring thresholds
-            # ggplot2::geom_errorbar(data = df_plot_targ
-            #                        , ggplot2::aes(group = variable
-            #                                       , ymin = betterbio_varval_qLO
-            #                                       , ymax = betterbio_varval_qHI)
-            #                        , lty = 2
-            #                        , lwd = 1
-            #                        , color = "black"
-            #                        , show.legend = FALSE
-            #                        , na.rm = TRUE) +
-            # Legend, Points
-            ggplot2::scale_color_manual(name="Degraded"
-                                        , breaks = c("Yes", "No")
-                                        , values = bio_col
-                                        , drop = FALSE) +
-            ggplot2::scale_fill_manual(name="Degraded"
-                                       , breaks = c("Yes", "No")
-                                       , values = bio_col
-                                       , drop = FALSE) +
-            ggplot2::scale_shape_manual(name="Degraded"
-                                        , breaks = c("Yes", "No")
-                                        , values = bio_shp
-                                        , drop = FALSE) +
-            ggplot2::scale_size_manual(name = "Degraded"
-                                     , breaks = c("Yes", "No")
-                                     , values = bio_size
-                                     , drop = FALSE)
-
-          # target site, line (no legend - color outside of aes)
-          p_SSTV <- p_SSTV + ggplot2::geom_errorbar(data = df_plot_targ
-                                                    , ggplot2::aes(group = variable
-                                                                   , ymin = value
-                                                                   , ymax = value)
-                                                    , lty = targ_line_lty
-                                                    , lwd = targ_line_lwd
-                                                    , color = targ_line_col
-                                                    , show.legend = FALSE)
-
-          #
-          # print(p_SSTV)
-          # # plots.tvr[[tvr]] <- grDevices::recordPlot()
-          # plots.tv[[tv]] <- grDevices::recordPlot()
-          #
-          fn_png <- paste0(TargetSiteID, "_", biocomm, "_VP_"
-                           , make.names(SSTV.analyte), ".png")
-          if(boo_plot){
-            ggplot2::ggsave(file.path(dir_path, fn_png), p_SSTV
-                            , width = plot_W, height = plot_H, units = "in")
-          }## IF ~ boo_plot ~ END
-
-          varFlag <- 0
-
-          #}##FOR.r.END  # End For loop over responses
-          #grDevices::graphics.off()
-
-        }##FOR.tv.END  # End For loop over stressors
-        # SSTVfile <- paste("Results/",TargetSiteID, "/", TargetSiteID, ".SSTVCorrs.txt", sep="")
-        # utils::write.table(df.CorrTable, file=SSTVfile, sep= "\t",quote=FALSE,
-        #                    row.names=FALSE,col.names=TRUE)
-      }##IF.stressor.SSTV.END
-    }##IF.SSTV.END
-
-    # Create PDF from list
-    # fn_pdf <- paste0(TargetSiteID, "_", biocomm, "_VP_AllStressors.pdf")
-    # grDevices::pdf(file.path(dir_path, fn_pdf), width=8)
-    # for (tv in plots.tv){##FOR.gp.START
-    #     #grDevices::replayPlot(g.plot)
-    #     if(is.null(tv)==TRUE) {next}
-    #     grDevices::replayPlot(tv)
-    # }##FOR.gp.END
-    # grDevices::dev.off()
-    # rm(plots.tv)
-
-  }
+  # stop()
+  #
+  # if (length(stressors.ssi) == 0) { # SSI data gaps ----
+  #
+  #   gapcomment <- paste0("No stressor-specific index values.")
+  #   gaps <- cbind.data.frame("getVerifiedPredictions", "No VP data", 0
+  #                            , gapcomment)
+  #   colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+  #   fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+  #   fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+  #   write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+  #               , row.names = FALSE, sep = "\t")
+  # }
+  #
+  # ## Subset stressInfo ----
+  # if (length(stressors.ssi) > 0) {
+  #   df_SSI <- df_stressinfo %>%
+  #     dplyr::filter(Stressor %in% stressors.ssi) %>%
+  #     dplyr::distinct(Stressor, SSIndex)
+  #   df_SSI <- merge(df_SSI,
+  #                   df_bioMetricInfo[, c("MetricName", "MetricLabel",
+  #                                        "TrendWIncStress")],
+  #                   by.x = "SSIndex", by.y = "MetricName")
+  #   # df_SSI <- merge(df_SSI,
+  #   #                 df_bioMetricInfo[, c("MetricName", "MetricLabel",
+  #   #                                      "TrendWIncStress", "CutoffValue")],
+  #   #                 by.x = "SSIndex", by.y = "MetricName")
+  #
+  #   mtcols <- colnames(df_bioMetricData)
+  #
+  #   ## Match ssi to metrics data and metadata files ----
+  #   # Check whether metrics data file contains SSI name (SSI for that stressor),
+  #   # if so, add to keepMTcol vector; if not write to data gaps file
+  #   for (n in seq_along(stressors.ssi)) {  # If more than one SSI, then must iterate
+  #     name <- stressors.ssi[n]
+  #     SSIname <- as.character(df_SSI$SSIndex[df_SSI$Stressor == name])
+  #     SSIlabel <- stringr::str_to_title(df_SSI$MetricLabel[df_SSI$Stressor == name])
+  #
+  #     if (SSIname %in% mtcols) {  # Check if TV data in Master Taxa file
+  #       if (exists("keepSSIcol")) {
+  #         keepSSIcol <- c(keepSSIcol, SSIname)
+  #       } else {
+  #         keepSSIcol <- SSIname
+  #       }
+  #     } else {
+  #       # no columns in the bioMetricData file are available for this SSI.
+  #       gapcomment <- paste0("No ", biocomm, " samples have index values "
+  #                            , "available for this SSI.")
+  #       gaps <- cbind.data.frame("getVerifiedPredictions", SSIlabel, 0, gapcomment)
+  #       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+  #       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+  #       fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+  #       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+  #                   , row.names = FALSE, sep = "\t")
+  #     }
+  #   } # ID Metric data columns to use ~ END
+  #
+  #   ## Create data file for SSIs ----
+  #   if (exists("keepSSIcol") == TRUE) { # >=1 stressors have SSI vals in metrics data
+  #
+  #     df_SSIdata <- df_bioMetricData %>%
+  #       dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(keepSSIcol))
+  #     # Eliminate samples with no SSI data for any SSIs
+  #     df_SSIdata <- df_SSIdata %>%
+  #       dplyr::rowwise() %>%
+  #       dplyr::mutate(Total = sum(dplyr::c_across(all_of(keepSSIcol)), na.rm = TRUE)) %>%
+  #       dplyr::filter(is.finite(Total)) %>%
+  #       dplyr::select(!Total)
+  #
+  #     boo.continue = TRUE
+  #
+  #   } else {
+  #
+  #     boo.continue = FALSE
+  #
+  #   }
+  #
+  #   if (boo.continue == TRUE) { # Have taxa
+  #
+  #     # 20190513, remove scores file if exists
+  #     fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm
+  #                                              , "_VP_SSI_Scores.tab"))
+  #     if (file.exists(fn_scores)) { file.remove(fn_scores) }
+  #
+  #     # Obtain relevant data from df_paired
+  #     ## Prep stressor data ----
+  #     qual <- switch(tolower(siteQual2Plot),
+  #                    "reference" = "RefSiteFlag",
+  #                    "not degraded" = "Quality",
+  #                    "better than" = "BetterThan")
+  #
+  #     # Filter for outside case sites (but use inside the case sites)
+  #     # Trim unnecessary columns
+  #     df_stress.ssi <- df_paired %>%
+  #       dplyr::filter(OutcaseYN == 1) %>%
+  #       dplyr::mutate(Quality = forcats::fct_expand(Quality, "Target")) %>%
+  #       dplyr::select(StationID, IncaseYN, StressSampleID, StressSampleDate,
+  #                     RespSampleID, RespSampleDate, BioComm, all_of(colBio),
+  #                     RefSiteFlag, Quality, BetterThan, all_of(stressors.ssi))
+  #     df_stress.ssi <- merge(df_stress.ssi, df_SSIdata,
+  #                            by = c("StationID", "RespSampleID", "RespSampleDate"),
+  #                            all.y = TRUE)
+  #
+  #     for (i in seq_along(keepSSIcol)) { # Iterate over one or more ssi columns
+  #
+  #       ssi <- keepSSIcol[i]
+  #       ssi.qual <- paste0(ssi, "Quality")
+  #       ssi.cutoff <- df_SSI$Cutoff[df_SSI$SSIndex == ssi]
+  #       trend <- df_SSI$TrendWIncStress[df_SSI$SSIndex == ssi]
+  #
+  #       # Create breaks for degraded, not degraded
+  #       df_stress.ssi.minmax <- df_stress.ssi %>%
+  #         dplyr::summarise(min = min(.data[[ssi]], na.rm = TRUE),
+  #                          max = max(.data[[ssi]], na.rm = TRUE))
+  #       minval <- floor(df_stress.ssi.minmax$min - 10)
+  #       maxval <- ceiling(df_stress.ssi.minmax$max + 10)
+  #
+  #       if (trend == "Inc") { # < cutoff is degraded
+  #         df_temp <- df_stress.ssi %>%
+  #           dplyr::mutate({{ssi.qual}} := cut(.data[[ssi]],
+  #                                             breaks = c(minval, {{ssi.cutoff}}, maxval),
+  #                                             labels = c("Degraded", "Not degraded"),
+  #                                             right = FALSE))
+  #       } else { # <= cutoff is not degraded
+  #         df_temp <- df_stress.ssi %>%
+  #           dplyr::mutate({{ssi.qual}} := cut(.data[[ssi]],
+  #                                             breaks = c(minval, {{ssi.cutoff}}, maxval),
+  #                                             labels = c("Not degraded", "Degraded")))
+  #       }## assignments ~ END
+  #
+  #       #TODO: Check merge for i > 1.
+  #       if (i == 1) { # merge temp df with df_resp
+  #         df_stress.ssi <- df_temp
+  #         ssi.qual.gp <- ssi.qual
+  #       } else {
+  #         df_stress.ssi <- merge(df_stress.ssi, df_temp)
+  #         ssi.qual.gp <- c(ssi.qual.gp, ssi.qual)
+  #         # df_stress.ssi <- merge(df_stress.ssi, df_temp,
+  #         #                  by = c("StationID", "RespSampleID", "RespSampleDate",
+  #         #                         "IncaseYN", "StressSampleID", "StressSampleDate",
+  #         #                         "BioComm", colBio, "RefSiteFlag", "Quality",
+  #         #                         "BetterThan", stressors.ssi, keepSSIcol))
+  #       }
+  #
+  #       # Remove sstv variables, labels
+  #       suppressWarnings(rm(ssi.cutoff, SSIname, SSIlabel, ssi.qual, ssi))
+  #
+  #     } ## END for ssi
+  #
+  #     # TODO: Start here ----
+  #
+  #     # FROM getSufficiency - Unchanged ----
+  #
+  #     for (s in seq_along())
+  #     # Create Score Output File ----
+  #     df.scores <- df_stress.ssi %>%
+  #       dplyr::select(StationID, StressSampleID, RespSampleID, all_of(keepSSIcol)
+  #                     , all_of(ssi.qual.gp)) %>%
+  #       dplyr::mutate(ParamName     = as.character(NA)
+  #                     , ParamValue  = as.numeric(NA)
+  #                     # , Log1pValue  = as.numeric(NA)
+  #                     , n           = as.character(NA)
+  #                     , SRpred_Deg  = as.character(NA)
+  #                     , Sc_SRlog    = as.character(NA)
+  #                     , BioComm     = as.character(NA)
+  #                     , Label       = as.character(NA))
+  #     # remove all rows
+  #     df.scores <- df.scores[0, ]
+  #
+  #     # Calculate quantiles on Comparator Sites
+  #     # Loop, j ####
+  #     for (j in seq_along(stressors.ssi)) { ##FOR.j.START
+  #       #
+  #       stressor <- stressors.ssi[s]
+  #       message(paste("Scoring", stressor))
+  #       stressorLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressor]
+  #       #
+  #       message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
+  #       utils::flush.console()
+  #
+  #       df.score.j <- df_data %>%
+  #         dplyr::select(StationID, StressSampleID, StressSampleDate,
+  #                       RespSampleID, RespSampleDate, all_of(colBio),
+  #                       all_of(str)) %>%
+  #         dplyr::filter(StationID == TargetSiteID) %>%
+  #         tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName",
+  #                             values_to = "ParamValue")
+  #
+  #       df.plot <- df_data %>%
+  #         dplyr::select(all_of(colBio), Quality, all_of(str))
+  #
+  #       df.plot <- df.plot[!is.na(df.plot[, str]), ]
+  #
+  #       if (nrow(df.plot) > 0) { # This uses the dataframe with transformed (if necessary) values
+  #         df.plot <- df.plot %>%
+  #           dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
+  #           dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
+  #           dplyr::select(y, Quality, y.name, x)
+  #         fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
+  #         useVal <- "normal"
+  #         j_values <- data.frame(x = df_target[, str])
+  #         df.plot <- df.plot[stats::complete.cases(df.plot), ]
+  #
+  #         #  Stressor Response Curve
+  #         n_cc_df_plot <- nrow(df.plot[stats::complete.cases(df.plot[, c("x", "y")])
+  #                                      , c("x", "y")])
+  #         # create data for curve (type "response" gives probabilities)
+  #         newdat <- data.frame(x = seq(min(df.plot$x, na.rm = TRUE)
+  #                                      , max(df.plot$x, na.rm = TRUE), len = 100))
+  #         newdat$y.name <- stats::predict(fit, newdata = newdat, type = "response")
+  #
+  #         # Scoring
+  #         j_SR_predict <- stats::predict(fit, newdata = j_values, type = "response")
+  #         j_SR_score <- cut(j_SR_predict
+  #                           , breaks = c(0, 0.2, 0.5, 1)
+  #                           , labels = c(-1, 0, 1))
+  #         # plot ####
+  #         # File Names
+  #         fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
+  #         ppi       <- 300
+  #
+  #         # Create (ggplot)
+  #         bio_col <- c("gray25", "steelblue2")
+  #         bio_shp <- c(25, 21) # down triangle and circle
+  #         bio_size <- c(3, 3)
+  #         # lab_comp <- paste0("Comparator samples selected from outside the case ("
+  #         #                    , outcaseLabel, " ", outcaseID, ")")
+  #
+  #         ## Plot, Variables, Target Site Line
+  #         targ_line_col <- "red"
+  #         targ_line_lty <- 2
+  #         targ_line_lwd <- 1
+  #         targ_vals <- as.numeric(unlist(j_values))
+  #
+  #         legendtitle <- "Samples"
+  #         ylabel <- "Relative probability of degraded condition"
+  #         maintitleSR <- paste0(TargetSiteID, ": Stressor-response (logistic regression) line of evidence")
+  #         subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
+  #         subtitleSR <- stringr::str_wrap(subtitleSR, 100)
+  #
+  #         captionSR <- paste(paste0("All comparator samples (n=", n_cc_df_plot, ").")
+  #                            , paste0("Score = ", paste(j_SR_score, collapse = ", "), ".")
+  #                            , sep = "\n")
+  #
+  #         # Annotation values
+  #         # Score = -1 runs from 0 to 0.20 on the y axis
+  #         # Score = 0 runs from 0.20 to 0.50 on the y axis
+  #         # Score = 1 runs from 0.50 to 1 on the y axis
+  #         xmin <- min(df.plot$x, na.rm = TRUE)
+  #         xmax <- max(df.plot$x, na.rm = TRUE)
+  #         xseg <- xmax + (0.02 * xmax)
+  #
+  #         # Get base info for scores table
+  #         df.score.j <- df.score.j %>%
+  #           dplyr::mutate(BioComm = biocomm
+  #                         , Label = jlabel
+  #                         # , Log1pValue = ifelse(useVal == "log1p"
+  #                         #                       , log1p(ParamValue)
+  #                         #                       , NA)
+  #                         , n = nrow(df.plot)
+  #                         , SRpred_Deg = j_SR_predict
+  #                         , Sc_SRlog = j_SR_score) %>%
+  #           dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio),
+  #                         Quality, ParamName, ParamValue, #Log1pValue,
+  #                         n, SRpred_Deg, Sc_SRlog, BioComm, Label)
+  #
+  #         # plot1, ggplot ####
+  #         p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
+  #           ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality
+  #                                            , fill = Quality)
+  #                               , alpha = 0.5, size = 2, na.rm = TRUE) +
+  #           ggplot2::scale_fill_manual(name = legendtitle
+  #                                      , breaks = c("Degraded", "Not degraded")
+  #                                      , values = bio_col, drop = FALSE) +
+  #           ggplot2::scale_color_manual(name = legendtitle
+  #                                       , breaks = c("Degraded", "Not degraded")
+  #                                       , values = bio_col, drop = FALSE) +
+  #           ggplot2::scale_shape_manual(name = legendtitle
+  #                                       , breaks = c("Degraded", "Not degraded")
+  #                                       , values = bio_shp, drop = FALSE) +
+  #           ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col
+  #                               , lty = targ_line_lty, lwd = targ_line_lwd
+  #                               , na.rm = TRUE) +
+  #           ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
+  #                               , lty = 2, na.rm = TRUE) +
+  #           ggplot2::annotate("segment", y = negStart, yend = negEnd, x = xseg,
+  #                             color = "orange", linewidth = 0.7, alpha = 0.6,
+  #                             arrow = grid::arrow(ends = "both", type = "open",
+  #                                                 length = grid::unit(0.2, "cm"))) +
+  #           ggplot2::annotate("segment", y = negEnd, yend = zeroEnd, x = xseg,
+  #                             color = "orange", linewidth = 0.7, alpha = 0.6,
+  #                             arrow = grid::arrow(ends = "both", type = "open",
+  #                                                 length = grid::unit(0.2, "cm"))) +
+  #           ggplot2::annotate("segment", y = zeroEnd, yend = posEnd, x = xseg,
+  #                             color = "orange", linewidth = 0.7, alpha = 0.6,
+  #                             arrow = grid::arrow(ends = "both", type = "open",
+  #                                                 length = grid::unit(0.2, "cm"))) +
+  #           ggplot2::annotate("text", x = xmax, y = c(midNeg, midZero, midPos),
+  #                             label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
+  #           ggplot2::labs(y = ylabel, x = jlabel) +
+  #           ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat
+  #                              , color = "black", lwd = 1, na.rm = TRUE) +
+  #           ggplot2::theme_bw() +
+  #           ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
+  #                          , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+  #           ggplot2::labs(title = maintitleSR, subtitle = subtitleSR
+  #                         , caption = captionSR)
+  #
+  #         if ((boo_plot) == TRUE) {
+  #           ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1
+  #                           , dpi = ppi, width = 8, height = 6, units = "in")
+  #         }
+  #
+  #       } ##IF.PLOT.END
+  #
+  #       # Write to scores table
+  #       if (exists("df.scores")) {
+  #         df.scores <- rbind(df.scores, df.score.j)
+  #       }
+  #
+  #     } ##FOR.j.END
+  #
+  #     # Save scores file (append to later)
+  #     fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
+  #                                             , "_SRLog_Scores.tab"))
+  #     utils::write.table(df.scores, file = fn.scores, append = FALSE
+  #                        , col.names = TRUE, row.names = FALSE, sep = "\t")
+  #
+  #     # END From getSufficiency ----
+  #
+  #
+  #
+  #
+  #
+  #
+  #
+  #     # Summarize data
+  #     df_resp.summary <- df_resp %>%
+  #       tidyr::pivot_longer(cols = dplyr::contains("Sens"),
+  #                           names_to = "Group", values_to = "Label",
+  #                           values_ptypes = character(),
+  #                           values_drop_na = TRUE) %>%
+  #       dplyr::group_by(StationID, RespSampleID, RespSampleDate, Group, Label) %>%
+  #       dplyr::summarise(NumInds = sum(NumIndividuals, na.rm = TRUE),
+  #                        PctInds = sum(PctInd, na.rm = TRUE),
+  #                        NumTaxa = dplyr::n(),
+  #                        PctTaxa = sum(PctTaxa, na.rm = TRUE),
+  #                        .groups = "drop_last") %>%
+  #       dplyr::mutate(Group = sub("(_SensMin)$", "", Group),
+  #                     Group = sub("(_SensAll)$", "", Group))
+  #
+  #     df_GpLbl <- unique(df_resp.summary[, c("Group", "Label")])
+  #
+  #     df_tv <- merge(df_stress.sstv, df_resp.summary,
+  #                    by = c("StationID", "RespSampleID", "RespSampleDate"))
+  #
+  #     ## Loop - Score SSIs ####
+  #     for (s in seq_along(stressors.ssi)) {
+  #
+  #       stressor <- stressors.ssi[s]
+  #       message(paste("Scoring", stressor))
+  #       stressorLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressor]
+  #       # SSIname, SSIlabel, ssi.qual
+  #       tolval <- df_SSTV$SSTVname[df_SSTV$Stressor == stressor]
+  #       tolval.min <- paste0(tolval, "_SensMin")
+  #       tolval.all <- paste0(tolval, "_SensAll")
+  #
+  #       df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} & IncaseYN == 1) %>%
+  #         dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+  #                       StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+  #                       RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+  #                       Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
+  #         dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
+  #                       PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
+  #         tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
+  #                             values_to = "value")
+  #
+  #       if (nrow(dplyr::filter(df_tv.incase, StationID == TargetSiteID)) == 0) {
+  #         # Create dataframe containing response values to include
+  #         df_tv.target <- df_tv[df_tv$StationID == TargetSiteID, ]
+  #         # Select only the columns prior to Group
+  #         df_tv.target <- df_tv.target %>%
+  #           dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+  #                         StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+  #                         RefSiteFlag, Quality, BetterThan, all_of(stressor)) %>%
+  #           dplyr::mutate(Group := {{tolval}})
+  #         df_tv.target <- unique(df_tv.target) # Reduce to individual samples
+  #         # Subset the group/label dataframe to the current tolval group
+  #         df_GpLbl.tolval <- dplyr::filter(df_GpLbl, Group == {{tolval}})
+  #         # Merge Label into the dataframe & add NumInds, PctInds, NumTaxa, PctTaxa
+  #         df_tv.target <- merge(df_tv.target, df_GpLbl.tolval, by = "Group")
+  #         df_tv.target <- df_tv.target %>%
+  #           dplyr::mutate(NumInds = 0, PctInds = 0, NumTaxa = 0, PctTaxa = 0) %>%
+  #           dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+  #                         StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+  #                         RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+  #                         Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
+  #           tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
+  #                               values_to = "value")
+  #         # Add target samples back into df_tv.incase
+  #         df_tv.incase <- rbind(df_tv.incase, df_tv.target)
+  #       }
+  #
+  #       ## Scoring ####
+  #       # Get percentiles by most sensitive, all sensitive for each of
+  #       # NumTaxa, %Taxa, NumInds, %Inds over all comparator sites
+  #       df_quantiles.incase <- df_tv.incase %>%
+  #         dplyr::select(Label, variable, value) %>%
+  #         dplyr::group_by(Label, variable) %>%
+  #         dplyr::summarise(min = min(value, na.rm = TRUE),
+  #                          q25 = quantile(value, probs = 0.25, na.rm = TRUE),
+  #                          q50 = quantile(value, probs = 0.50, na.rm = TRUE),
+  #                          q75 = quantile(value, probs = 0.75, na.rm = TRUE),
+  #                          max = max(value, na.rm = TRUE),
+  #                          .groups = "drop_last")
+  #
+  #       df_tv.incase <- merge(df_tv.incase, df_quantiles.incase,
+  #                             by = c("Label", "variable"))
+  #
+  #       # Calculate num samples better than, & better than, not degraded
+  #       # Yields 1-row x 3-col df (# samps BT, # samps not deg, # samps BT & not deg)
+  #       df_tv.incase.summary <- df_tv.incase %>%
+  #         dplyr::distinct(StationID, RespSampleID, RespSampleDate, Quality, BetterThan) %>%
+  #         dplyr::mutate(QualityNum = ifelse(Quality == "Not degraded", 1, 0),
+  #                       BTNotDeg = ifelse((BetterThan == 1 & Quality == 1), 1, 0)) %>%
+  #         dplyr::filter(StationID != TargetSiteID) %>% # Do NOT include target site samples
+  #         dplyr::summarise(numSampsBT = sum(BetterThan, na.rm = TRUE),
+  #                          numSampsNotDeg = sum(QualityNum, na.rm = TRUE),
+  #                          numSampsBTNotDeg = sum(BTNotDeg, na.rm = TRUE),
+  #                          .groups = "drop_last")
+  #
+  #       # Assign scores to target site
+  #       df_tbl_scores <- dplyr::filter(df_tv.incase, StationID == TargetSiteID) %>%
+  #         dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+  #                       StressSampleID, StressSampleDate, BioComm, all_of(colBio),
+  #                       RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
+  #                       Label, variable, value, q25, q50, q75) %>%
+  #         dplyr::rename(StressorValue = {{stressor}},
+  #                       Response = variable,
+  #                       ResponseValue = value) %>%
+  #         dplyr::mutate(Score = dplyr::case_when(ResponseValue < q25 ~ 1,
+  #                                                dplyr::between(ResponseValue, q25, q50) ~ 0,
+  #                                                ResponseValue > q50 ~ -1),
+  #                       StressorLabel = stressorLabel,
+  #                       Stressor := {{stressor}},
+  #                       nBetterBio = as.integer(df_tv.incase.summary$numSampsBT),
+  #                       nBetterBioNotDeg = as.integer(df_tv.incase.summary$numSampsBTNotDeg)) %>%
+  #         dplyr::select(StationID, RespSampleID, RespSampleDate, StressSampleID,
+  #                       StressSampleDate, BioComm, all_of(colBio), RefSiteFlag,
+  #                       Quality, BetterThan, StressorLabel, Stressor, StressorValue,
+  #                       Group, Label, Response, ResponseValue, Score, q25, q50,
+  #                       nBetterBio, nBetterBioNotDeg)
+  #
+  #       #
+  #       boo_append <- TRUE
+  #       boo_colnames <- FALSE
+  #
+  #       if (file.exists(fn_scores) == FALSE) {##IF~file.exists(fn_scores)~START
+  #         # invert for 1st instance
+  #         boo_append <- !boo_append
+  #         boo_colnames <- !boo_colnames
+  #       }##IF~file.exists(fn_scores)~END
+  #
+  #       utils::write.table(df_tbl_scores, file = fn_scores,
+  #                          col.names = boo_colnames, row.names = FALSE,
+  #                          sep="\t", append = boo_append)
+  #
+  #       ## Prepare plots ----
+  #       # Boxplots: x = Label [SensMin, SensMax], y = value,
+  #       # Group = variable [NumInds, PctInds, NumTaxa, PctTaxa], df_tv.incase
+  #       # Jitterplots: all incase degraded [grey25, down triangle],
+  #       # not degraded [steelblue, round], target [red triangle]
+  #       df_tv.incase <- df_tv.incase %>%
+  #         dplyr::mutate(Quality = as.character(Quality),
+  #                       Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
+  #                       Quality = factor(Quality,
+  #                                        levels = c("Not degraded", "Degraded", "Target"),
+  #                                        labels = c("Not degraded", "Degraded", "Target")))
+  #
+  #       df_sstv.scores <- merge(df_quantiles.incase, df_tbl_scores)
+  #
+  #       str_scores <- df_sstv.scores %>%
+  #         dplyr::filter(Group == {{tolval}}) %>%
+  #         dplyr::select(Label, variable, max, q25, q50, RespSampleDate, Score) %>%
+  #         dplyr::arrange(Label, variable, max, RespSampleDate) %>%
+  #         dplyr::group_by(Label, variable, max, q25, q50) %>%
+  #         dplyr::summarise(Scores = toString(Score),
+  #                          .groups = "drop_last") %>%
+  #         dplyr::mutate(min = -10,
+  #                       segNeg = ((q25 - min) / 2) + min,
+  #                       aLabNeg = -1,
+  #                       segZero = ((q50 - q25) / 2) + q25,
+  #                       aLabZero = 0,
+  #                       segPos = ((max - q50) / 2) + q50,
+  #                       aLabPos = 1,
+  #                       Scores = paste0("Scores = ", Scores))
+  #
+  #       str_scores_max <- str_scores %>%
+  #         dplyr::group_by(variable) %>%
+  #         dplyr::summarise(OverallMax = max(max, na.rm = TRUE),
+  #                          .groups = "drop_last")
+  #
+  #       str_scores <- merge(str_scores, str_scores_max)
+  #
+  #       ## Plot, Variables
+  #       bio_col           <- c("gray25", "steelblue", "red") # Degraded, Not degraded, Target
+  #       bio_shp           <- c(25, 21, 17) # down triangle, circle, and triangle
+  #       bio_size          <- c(1, 0.8, 1.2) # Degraded, Not degraded, Target
+  #       bio_alpha         <- c(0.2, 0.5, 1) # Degraded, Not degraded, Target
+  #
+  #       # Prepare labels
+  #       str_title <- paste0(TargetSiteID, ": Verified prediction "
+  #                           ,"line of evidence for ", stressorLabel)
+  #       str_title <- stringr::str_wrap(str_title, 100)
+  #       str_subtitle <- paste0("Do the data support the prediction that",
+  #                              " the abundance and richness of sensitive",
+  #                              " taxa will be lower than that observed at",
+  #                              " comparator sites?")
+  #       str_subtitle <- stringr::str_wrap(str_subtitle, 100)
+  #       legendtitle <- "Samples"
+  #       str_xlab  <- ""
+  #
+  #       # Arrow labels
+  #       # aLabPos <- "1"
+  #       # aLabZero <- "0"
+  #       # aLabNeg <- "-1"
+  #
+  #       ##PLOT VARIABLES ~ END
+  #
+  #       fn_png_p2 <- paste0(TargetSiteID, "_", biocomm, "_VP_SSI_", stressor, ".png")
+  #
+  #       p_ssi <- ggplot2::ggplot(NULL, ggplot2::aes(x = Label, y = value,
+  #                                                  group = Label)) +
+  #         ggplot2::geom_boxplot(data = df_tv.incase, outliers = TRUE,
+  #                               outlier.size = 0.5, na.rm = TRUE,
+  #                               staplewidth = 0.5, linewidth = 0.25) +
+  #         ggplot2::geom_jitter(data = df_tv.notTarget,
+  #                              ggplot2::aes(color = Quality, shape = Quality,
+  #                                           fill = Quality, alpha = Quality),
+  #                              na.rm = TRUE, width = 0.15, height = 0.01) +
+  #         ggplot2::geom_jitter(data = df_tv.target,
+  #                              ggplot2::aes(color = Quality, shape = Quality,
+  #                                           fill = Quality, alpha = Quality),
+  #                              na.rm = TRUE, width = 0.15, height = 0.01) +
+  #         ggplot2::geom_boxplot(data = df_tv.incase,
+  #                               ggplot2::aes(group = Label), outliers = TRUE,
+  #                               outlier.size = 0.5, na.rm = TRUE, staplewidth = 0.5,
+  #                               linewidth = 0.25, fill = NA) +
+  #         ggplot2::coord_flip() +
+  #         ggplot2::facet_wrap(. ~ variable, scales = "free") +
+  #         ggplot2::scale_color_manual(name = legendtitle,
+  #                                     breaks = c("Degraded", "Not degraded", "Target"),
+  #                                     values = bio_col, drop = TRUE) +
+  #         ggplot2::scale_fill_manual(name = legendtitle,
+  #                                    breaks = c("Degraded", "Not degraded", "Target"),
+  #                                    values = bio_col, drop = TRUE) +
+  #         ggplot2::scale_shape_manual(name = legendtitle,
+  #                                     breaks = c("Degraded", "Not degraded", "Target"),
+  #                                     values = bio_shp, drop = TRUE) +
+  #         ggplot2::scale_alpha_manual(name = legendtitle,
+  #                                     breaks = c("Degraded", "Not degraded", "Target"),
+  #                                     values = bio_alpha, drop = TRUE) +
+  #         ggplot2::labs(title = str_title, subtitle = str_subtitle) +
+  #         ggplot2::theme_bw() +
+  #         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 8),
+  #                        plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 6)) +
+  #         ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+  #                        axis.text.x = ggplot2::element_text(size = 6),
+  #                        axis.title.y = ggplot2::element_text(size = 6),
+  #                        axis.text.y = ggplot2::element_text(size = 6),
+  #                        axis.ticks.y = ggplot2::element_blank())
+  #
+  #       p_ssi <- p_ssi +
+  #         ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = 5,
+  #                            ggplot2::aes(x = Label, y = OverallMax, label = Scores)) #+
+  #       # ggplot2::geom_segment(data = str_scores, color = "orange",
+  #       #                       ggplot2::aes(x = Label, xend = Label,
+  #       #                                    y = min, yend = q25),
+  #       #                       arrow = grid::arrow(ends = "both", type = "open",
+  #       #                                            length = grid::unit(0.08, "cm"))) +
+  #       # ggplot2::geom_segment(data = str_scores, color = "orange",
+  #       #                       ggplot2::aes(x = Label, xend = Label,
+  #       #                                    y = q25, yend = q50),
+  #       #                       arrow = grid::arrow(ends = "both", type = "open",
+  #       #                                           length = grid::unit(0.08, "cm"))) +
+  #       # ggplot2::geom_segment(data = str_scores, color = "orange",
+  #       #                       ggplot2::aes(x = Label, xend = Label,
+  #       #                                    y = q50, yend = OverallMax),
+  #       #                       arrow = grid::arrow(ends = "both", type = "open",
+  #       #                                           length = grid::unit(0.08, "cm"))) #+
+  #       # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+  #       #                    ggplot2::aes(x = Label, y = segNeg, label = aLabNeg,
+  #       #                                 color = "orange")) +
+  #       # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+  #       #                    ggplot2::aes(x = Label, y = segZero, label = aLabZero,
+  #       #                                 color = "orange")) +
+  #       # ggplot2::geom_text(data = str_scores, size = 2, hjust = 1.5, vjust = -5,
+  #       #                    ggplot2::aes(x = Label, y = segPos, label = aLabPos,
+  #       #                                 color = "orange"))
+  #
+  #       if (boo_plot) {
+  #         ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p_ssi,
+  #                         dpi = ppi, width = 8, height = 6, units = "in")
+  #       }## IF ~ boo_plot ~ END
+  #
+  #     }## IF ~ boo_continue ~ END
+  #
+  #   }##IF.SSTV.END
+  #
+  #
+  #
+  #
+  # }
 
 }##FUNCTION.END
 
