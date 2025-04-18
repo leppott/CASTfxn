@@ -179,15 +179,6 @@ getBioStressorResponses <- function(TargetSiteID,
       stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
     }
 
-    # Determine expected direction of slope
-    dirIncStress <- unique(df_stressinfo$DirIncStress[df_stressinfo$Stressor == stressName])
-    dirIncStress <- tolower(dirIncStress)
-    if (dirIncStress == "inc") {  # increasing stressor decreases biological integrity
-      exp.dir <- -1
-    } else {                      # decreasing stressor decreases biological integrity
-      exp.dir <- 1
-    }
-
     # DEBUG
     if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
       message(paste0("p; ", p, "; ", stressors[p]))
@@ -206,7 +197,28 @@ getBioStressorResponses <- function(TargetSiteID,
       pq <- q.len * (p - 1) + q
       pq.len <- p.len * q.len
 
-      # boo.pryr <- TRUE
+      # Determine expected direction of slope
+      dirIncStress <- unique(df_stressinfo$DirIncStress[df_stressinfo$Stressor == stressName])
+      dirIncStress <- tolower(dirIncStress)
+      dirRespBad <- unique(df_respinfo$TrendWIncStress[df_respinfo$MetricName == respName])
+      dirRespBad <- tolower(dirRespBad)
+      if (dirIncStress == "inc" & dirRespBad == "dec") {
+        # increasing stressor decreases biological integrity when bad values are
+        # lower than good values; slope should be negative
+        exp.dir <- -1
+      } else if (dirIncStress == "inc" & dirRespBad == "inc") {
+        # increasing stressor decreases biological integrity when bad values are
+        # higher than good values; slope should be positive
+        exp.dir <- 1
+      } else if (dirIncStress == "dec" & dirRespBad == "dec") {
+        # decreasing stressor decreases biological integrity when bad values are
+        # lower than good values; slope should be positive
+        exp.dir <- 1
+      } else { # (dirIncStress == "dec" & dirRespBad == "inc")
+        # decreasing stressor decreases biological integrity when bad values are
+        # higher than good values; slope should be negative
+        exp.dir <- -1
+      }
 
       # QC
       if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
@@ -642,9 +654,9 @@ getBioStressorResponses <- function(TargetSiteID,
                                         "respLabel" = respLabel,
                                         "n_site" = length(df_plot_site),
                                         "n_comp" = n_str_cl,
-                                        "SRLin_Score_comp" = sr.score_cl,
+                                        "SRLin_Score_inside" = sr.score_cl,
                                         "n_out" = n_str_all,
-                                        "SRLin_Score_all" = sr.score_all))
+                                        "SRLin_Score_outside" = sr.score_all))
 
         if (varFlag.b == 1) { # First time through this loop
           df.sc.sr <- df.temp2
@@ -652,12 +664,12 @@ getBioStressorResponses <- function(TargetSiteID,
           df.sc.sr <- rbind(df.sc.sr, df.temp2)
         }
 
-        df.sc.sr$SRLin_Score_all <- ifelse(is.na(df.sc.sr$SRLin_Score_all),
+        df.sc.sr$SRLin_Score_outside <- ifelse(is.na(df.sc.sr$SRLin_Score_outside),
                                         "NE",
-                                        as.character(df.sc.sr$SRLin_Score_all))
-        df.sc.sr$SRLin_Score_comp <- ifelse(is.na(df.sc.sr$SRLin_Score_comp),
+                                        as.character(df.sc.sr$SRLin_Score_outside))
+        df.sc.sr$SRLin_Score_inside <- ifelse(is.na(df.sc.sr$SRLin_Score_inside),
                                             "NE",
-                                            as.character(df.sc.sr$SRLin_Score_comp))
+                                            as.character(df.sc.sr$SRLin_Score_inside))
 
         # Pivot longer site data before merging with df.sc.sr
         df_SiteDataStrLong <- df_SiteData %>%
@@ -683,7 +695,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                   StressSampleDate, RespSampleID, RespSampleDate,
                                   biocomm, stressName, stressLabel, stressVal,
                                   respName, respLabel, respVal, n_site,
-                                  n_comp, SRLin_Score_comp, SRLin_Score_all)
+                                  n_comp, SRLin_Score_inside, SRLin_Score_outside)
 
         #if(boo.pryr==TRUE){
         fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
@@ -1097,19 +1109,19 @@ getBioStressorResponses <- function(TargetSiteID,
       df_corr <- unique(df_corr) %>% dplyr::rename(Estimate = estimate)
 
       # Define plot dimensions
-      plot_H <- 4
+      plot_H <- 6
       plot_W <- 8
       # Plot, Variables, Strings
       str_title <- paste0(TargetSiteID, ": Stressor-Response Correlations")
       str_ylab  <- "Stressors"
       str_xlab  <- "Responses"
-      wrap_length <- 20
+      wrap_length <- 28
       # Create plot
       p_cp <- ggplot2::ggplot(df_corr, ggplot2::aes(x = stringr::str_wrap(respLabel, wrap_length),
                                        y = stringr::str_wrap(stressLabel, wrap_length),
                                        fill = Estimate)) +
         ggplot2::geom_tile(color = "black", lwd = 1, linetype = 1) +
-        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.5) +
+        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.25) +
         ggplot2::scale_fill_gradient2(low = "blue", high = "red", midpoint = 0,
                                       limits = c(-1, 1), guide = "colorbar") +
         ggplot2::coord_flip() +
