@@ -415,17 +415,17 @@ getCoOccur <- function(TargetSiteID,
   }##FOR.j.END
 
   # Identify stressors ####
-  # df.scores <- read.table(fn.scores, header = TRUE, sep = "\t",
-  #                         stringsAsFactors = FALSE)
-  # Save tabular scores
+  fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
+                                          "_CO_Scores.tab"))
   utils::write.table(df.scores, file = fn.scores, col.names = TRUE,
                      row.names = FALSE, sep = "\t", append = FALSE)
 
   stressors <- unique(df.scores$Param_Name[df.scores$Sc_Box != -1])
   notstressors <- unique(df.scores$Param_Name[df.scores$Sc_Box == -1])
   notstressors <- setdiff(notstressors, stressors)
+  # prevents a stressor identified by 1 sample fromm appearing in the "notstressors" vector
 
-  # if not stressors has more than one row, write data to data gaps
+  # if notstressors has more than one row, write data to data gaps
   if (length(notstressors) > 0) {
     for (s in seq_along(notstressors)) {
       notstress <- notstressors[s]
