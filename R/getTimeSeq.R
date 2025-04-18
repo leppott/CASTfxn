@@ -54,7 +54,7 @@ getTimeSeq <- function(TargetSiteID,
     df_stress = siteStressAll
     df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
-    df_stressinfo = list.stressors$stressors
+    df_stressinfo = df_stressorMetadata
     dir_results = dir_results
     dir_sub = "TimeSequence"
   }
@@ -148,15 +148,15 @@ getTimeSeq <- function(TargetSiteID,
       df.plotresp <- df_resp %>%
         dplyr::select(StationID, RespSampleDate, all_of(metricname)) %>%
         dplyr::rename(SampleDate = RespSampleDate, Value = {{metricname}}) %>%
-        dplyr::mutate(type = "Response",
-                      Value = signif(Value, digits = 3))
+        dplyr::mutate(type = "Response", Value = signif(Value, digits = 3)) %>%
+        dplyr::filter(!is.na(Value))
       maxYvalR <- 0.2 * max(df.plotresp$Value)
 
       df.plotstress <- df_stress %>%
         dplyr::select(StationID, StressSampleDate, all_of(stressname)) %>%
         dplyr::rename(SampleDate = StressSampleDate, Value = {{stressname}}) %>%
-        dplyr::mutate(type = "Stressor",
-                      Value = signif(Value, digits = 3))
+        dplyr::mutate(type = "Stressor", Value = signif(Value, digits = 3)) %>%
+        dplyr::filter(!is.na(Value))
       maxYvalS <- 0.2 * max(df.plotstress$Value)
 
       minYval <- min(maxYvalR, maxYvalS)
