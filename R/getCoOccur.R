@@ -35,40 +35,8 @@
 #' sites are between the 50th and 75th percentile of comparator sites having
 #' higher biological quality.
 #'
-#' \strong{Derive Evidence for Stressor-Response Relationships from Field
-#' Observational Studies.}
-#'
-#' Stressor-response from field observational studies: Is the level of the
-#' stressor sufficient to explain the level of biological effect observed at
-#' the site?
-#'
-#' Using all comparator sites, fit logistical regression curve of the probability
-#' of poor condition (i.e., poor California index score) as a function of
-#' stressor level.  Compare stressor levels from test site to levels
-#' corresponding to median (50%) and low (20%) probabilities of observing poor
-#' condition.
-#'
-#' 1. Supports the case for the candidate cause. Stressor levels at the test
-#' site are above the lower confidence limit (LCL) corresponding to 50%
-#' probability of observing poor condition
-#'
-#' 0. Indeterminate. Stressor levels at the test site are between the LCL
-#' corresponding to 50% probability of observing poor condition and the UCL
-#' corresponding to 20% probability of observing poor condition.
-#'
-#' -1. Weakens the case for the candidate cause. Stressor levels at the test
-#' site are below the upper confidence limit (UCL) corresponding to 20%
-#' probability of observing poor condition.
-#'
-#' Cut function is used to assign narrative categories and degraded status based
-#' on provided biological score.
-#' Ensures criteria are applied the same across all sites.
-#'
-#' The BioDegLab has to remain as the default values of Yes and No.
-#' Other values will break the code.
-#'
-#' Only a single biological measurement is used. But multiple stressors can be
-#' used.
+#' Multiple stressors can be used. Stressors for which all target samples are
+#' scored -1 are not included in further lines of evidence evaluation.
 #'
 #' Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
 #'
@@ -105,11 +73,13 @@
 #' @export
 getCoOccur <- function(TargetSiteID,
                        df_data,
-                       incaseLabel,
+                       detects,
+                       df_stressinfo,
+                       compsites = list.CompSites$comp.sites,
                        biocomm,
                        colBio,
+                       onlyNotDeg = TRUE,
                        useBetter = FALSE,
-                       df_stressinfo,
                        pHlimLow = 6.5,
                        pHlimHigh = 9,
                        DOlim = 7,
@@ -123,14 +93,16 @@ getCoOccur <- function(TargetSiteID,
   if (boo_DEBUG==TRUE) {
     TargetSiteID = TargetSiteID
     df_data = df_PairedSRTransf
-    incaseLabel = incaseLabel
+    detects = siteDetectsAll
+    df_stressinfo = data_stressInfo
+    compsites = list.CompSites$comp.sites
     biocomm = bioComm
     colBio = bioIndex
-    useBetter = FALSE
-    df_stressinfo = list.stressors$stressors
-    pHlimLow = 6.5
-    pHlimHigh = 9
-    DOlim = 7
+    onlyNotDeg = onlyNotDeg
+    useBetter = useBetter
+    pHlimLow = pHlimLow
+    pHlimHigh = pHlimHigh
+    DOlim = DOlim
     plotvars = data_plotvars
     dir_plots = dir_results
     dir_sub = "CoOccurrence"
@@ -140,6 +112,7 @@ getCoOccur <- function(TargetSiteID,
   # define pipe
   `%>%` <- dplyr::`%>%`
   biocomm <- toupper(biocomm)
+  not_all_na <- function(x) {!all(is.na(x))}
 
   # Write results directory ----
   out.dir <- dirname(dir_plots)
@@ -156,105 +129,91 @@ getCoOccur <- function(TargetSiteID,
     }
   }
 
-  # QC, 20190418
+  # Prep metadata, 20250330 --
+  df_stressinfo <- dplyr::rename(df_stressinfo, Stressor = StdParamName) %>%
+    dplyr::filter(Stressor %in% detects)
   colStressors <- as.vector(unlist(df_stressinfo$Stressor))
 
-  # QC, 20190418
-  colStressors.NotPresent <- colStressors[!(colStressors %in% names(df_data))]
-  if (length(colStressors.NotPresent) !=0 ) {##IF~bad stressors~START
-    msg.warning <- paste0("Stressors listed below are not present in the ",
-                          "provided data frame (df_data) and were not analyzed: \n",
-                          paste(colStressors.NotPresent, collapse="\n"), "\n\n")
-    message(msg.warning)
-    utils::flush.console()
-    colStressors <- colStressors[colStressors %in% names(df_data)]
-  }##IF~bad stressors~END
-
-  # Identify columns to keep for the analysis
-  col.KEEP      <- c("StationID", "IncaseCol", "StressSampleID", "RespSampleID",
-                     colBio, "Quality", colStressors)
-  #
-  # default sample ID
-  if(is.null(TargetSiteID)){##IF.isnull.ID.START
-    TargetSiteID <- as.character(sort(unique(df_data[, "StationID"])))[1]
-  }##IF.isnull.ID.END
-
-  # QC (site in data) ####
-  boo_QC_site <- TargetSiteID %in% df_data[, "StationID"]
-  if (boo_QC_site == FALSE) {##IF~boo_QC_site~START
-    name_df <- deparse(substitute(df_data))
-    name_col <- deparse(substitute("StationID"))
-    name_df_col <- paste0(name_df, name_col)
-    msg_NoSite <- paste0("Target site (", TargetSiteID,
-                         ") was *not* found in the function inputs ",
-                         "(df_data, column StationID).")
-    stop(msg_NoSite)
-  }##IF~boo_QC_site~END
-  #
+  # Prep data, 20250330 --
+  df_data <- dplyr::select(df_data, StationID, StressSampleID, StressSampleDate,
+                           IncaseCol, OutcaseCol, RespSampleID, RespSampleDate,
+                           RefSiteFlag, BetterThan, all_of(colBio), Quality,
+                           all_of(detects)) %>%
+    dplyr::filter(StationID %in% c(TargetSiteID, compsites))
 
   # Create Score Output File ####
   df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID",
                                   "RespSampleID", colBio, "Quality")],
                      data.frame(Param_Name = character(), Param_Value = double(),
                                 n = integer(), q25 = double(), q50 = double(),
-                                q75 = double(), Sc_Box = character(),
+                                q75 = double(), Sc_Box = integer(),
                                 biocomm = character(), Label = character(),
                                 stringsAsFactors = FALSE))
 
   # Save scores file (append to later)
-  fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                          "_CO_Scores.tab"))
-  utils::write.table(df.scores, file=fn.scores, append = FALSE,
-                     col.names = TRUE, row.names=FALSE, sep="\t")
+  # fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
+  #                                         "_CO_Scores.tab"))
+  # utils::write.table(df.scores, file=fn.scores, append = FALSE,
+  #                    col.names = TRUE, row.names=FALSE, sep="\t")
 
   if (useBetter == TRUE) {
     # Subset df_data for comparator sites having better biology
-    df.compBT <- df_data %>%
-      dplyr::filter(IncaseYN == 1 & BetterThan == 1)
+    df.comp <- df_data %>%
+      dplyr::filter(BetterThan == 1)
   } else {
     # Subset df_data for comparator sites
-    df.comp <- df_data %>%
-      dplyr::filter(IncaseYN == 1)
+    df.comp <- df_data
   }
-  df.i <- df.comp[df.comp$StationID == TargetSiteID, ]
+
+  # Filter for only not degraded samples plus target samples
+  if (onlyNotDeg == TRUE) {
+    df.comp <- dplyr::filter(df.comp, Quality == "Not degraded")
+    # Replace Target site if it is considered degraded
+    if (!(TargetSiteID %in% df.comp$StationID)) {
+      df.target <- df_data[df_data$StationID == TargetSiteID, ]
+      df.comp <- rbind(df.target, df.comp)
+    }
+  }
+
+  df.comp <- dplyr::select_if(df.comp, not_all_na)
+  detects <- intersect(detects, colnames(df.comp))
+
+  df.stats <- df.comp %>%
+    dplyr::select(all_of(detects)) %>%
+    tidyr::pivot_longer(cols = everything(), names_to = "Param_Name",
+                        values_to = "Param_Value") %>%
+    dplyr::mutate(NotNA = ifelse(!is.na(Param_Value), 1, 0)) %>%
+    dplyr::group_by(Param_Name) %>%
+    dplyr::summarize(n = sum(NotNA, na.rm = TRUE),
+                     q25 = quantile(Param_Value, probs = 0.25, na.rm = TRUE),
+                     q50 = quantile(Param_Value, probs = 0.50, na.rm = TRUE),
+                     q75 = quantile(Param_Value, probs = 0.75, na.rm = TRUE),
+                     minVal = min(Param_Value, na.rm = TRUE),
+                     maxVal = max(Param_Value, na.rm = TRUE))
+
+  df.i <- dplyr::filter(df.comp, StationID == TargetSiteID)
   i.Group <- df.i[1, "IncaseCol"]
 
-  if (boo_DEBUG==TRUE) {##IF.boo_DEBUG.START
-    j <- colStressors[1]
-  }##IF.boo_DEBUG.END
-  # outside loop just in case forget to turn off debug flag
-
   # Loop, j, calc quantiles ####
-  for (j in seq_along(colStressors)) {##FOR.j.START
+  for (j in seq_along(detects)) {##FOR.j.START
     #
-    stressname <- colStressors[j]
-    j.len <- length(colStressors)
+    stressname <- detects[j]
+    j.len <- length(detects)
     #
     message(paste0("Processing stressor (", j, "/", j.len, ") ", stressname, ".\n"))
     utils::flush.console()
 
-    #
-    if (useBetter == TRUE) {
-      df.i[, paste0("n_", stressname)] <- sum(!is.na(df.compBT[, stressname]))
-      df.i[, paste0("q25_", stressname)] <- stats::quantile(df.compBT[, stressname],
-                                                   probs=0.25, na.rm=TRUE)
-      df.i[, paste0("q50_", stressname)] <- stats::quantile(df.compBT[, stressname],
-                                                   probs=0.50, na.rm=TRUE)
-      df.i[, paste0("q75_", stressname)] <- stats::quantile(df.compBT[, stressname],
-                                                   probs=0.75, na.rm=TRUE)
-      minVal <- min(df.compBT[, stressname], na.rm = TRUE)
-      maxVal <- max(df.compBT[, stressname], na.rm = TRUE)
-    } else {
-      df.i[, paste0("n_", stressname)] <- sum(!is.na(df.comp[, stressname]))
-      df.i[, paste0("q25_", stressname)] <- stats::quantile(df.comp[, stressname],
-                                                   probs=0.25, na.rm=TRUE)
-      df.i[, paste0("q50_", stressname)] <- stats::quantile(df.comp[, stressname],
-                                                   probs=0.50, na.rm=TRUE)
-      df.i[, paste0("q75_", stressname)] <- stats::quantile(df.comp[, stressname],
-                                                   probs=0.75, na.rm=TRUE)
-      minVal <- min(df.comp[, stressname], na.rm = TRUE)
-      maxVal <- max(df.comp[, stressname], na.rm = TRUE)
-    } ## Quantiles calculated
+    # Select only necessary columns
+    df.j <- df.i %>%
+      dplyr::select(StationID, IncaseCol, StressSampleID, RespSampleID,
+                    all_of(colBio), Quality, all_of(stressname)) %>%
+      dplyr::rename(Param_Value = {{stressname}}) %>%
+      dplyr::mutate(Param_Name = stressname) %>%
+      dplyr::mutate(n = df.stats$n[df.stats$Param_Name == stressname],
+                    q25 = df.stats$q25[df.stats$Param_Name == stressname],
+                    q50 = df.stats$q50[df.stats$Param_Name == stressname],
+                    q75 = df.stats$q75[df.stats$Param_Name == stressname]) %>%
+      dplyr::filter(!is.na(Param_Value))
 
     # Comp Score for box plot
     colInvScore <- df_stressinfo %>%
@@ -263,237 +222,230 @@ getCoOccur <- function(TargetSiteID,
     colInvScore <- as.character(colInvScore)
 
     # Score samples ####
-    if (colInvScore == "Dec") {##IF~j_in_InvSc~START
-      ## Use different criteria for some parameters (Specifically pH and DO)
-      if (grepl("^pH", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {  # Parameter is pH
-        vals <- df_data %>%
-          dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(all_of(stressname))
-        vals <- as.vector(vals[!is.na(vals)])
-        # if pH val < pHlimLow then 1
-        # if pH val > pHlimHigh then 1
-        # if pH val between pHlimLow & pHlimHigh, then what?
-        if (any(vals < pHlimLow)) {
-          print("pH low")
-          flush.console()
-          # Inverse Scoring
-          df.i[, paste0("Sc_Box_", stressname)] <-
-            ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
-                   -1,
-                   ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
-                          1, 0))
-        } else if (any(vals > pHlimHigh)) {
-          print("pH high")
-          flush.console()
-          # Regular Scoring
-          df.i[, paste0("Sc_Box_", stressname)] <-
-            ifelse(df.i[, stressname] > df.i[, paste0("q75_", stressname)],
-                   -1,
-                   ifelse(df.i[, stressname] < df.i[, paste0("q50_", stressname)],
-                          -1, 0))
-        }
-      } else if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {  #Parameter is DO
-        vals <- df_data %>%
-          dplyr::filter(StationID == TargetSiteID) %>%
-          dplyr::select(all_of(stressname))
-        vals <- as.vector(vals[!is.na(vals)])
-        df.i[, paste0("Sc_Box_", stressname)] <-
-          ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
-                 -1,
-                 ifelse(df.i[, stressname] < DOlim, 1, 0))
-      } else {
-        # Inverse Scoring
-        df.i[, paste0("Sc_Box_", stressname)] <-
-          ifelse(df.i[, stressname] > df.i[, paste0("q50_", stressname)],
-                 -1,
-                 ifelse(df.i[, stressname] < df.i[, paste0("q25_", stressname)],
-                        1, 0))
-      }
+    ## Use different criteria for some parameters (Specifically pH and DO)
+    ## Score pH in both directions
+    if (stressname == "pH_alkEnv") { # pH is a decreaser in alkalkine environments
+      # Parameter is pH; need two scores, one for acid environments & one for alkaline
+      df.j <- df.j %>%
+        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value < pHlimLow ~ 1,
+                                                Param_Value < q25 ~ 1,
+                                                Param_Value > q50 ~ -1,
+                                                TRUE ~ 0))
+    } else if (stressname == "pH_acidicEnv") {
+      df.j <- df.j %>%
+        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > pHlimHigh ~ 1,
+                                                Param_Value > q75 ~ 1,
+                                                Param_Value < q50 ~ -1,
+                                                TRUE ~ 0))
+    } else if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
+      #Parameter is DO; If values are < DOlim, then 1 by definition
+      df.j <- df.j %>%
+        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value < DOlim ~ 1,
+                                                Param_Value > q50 ~ -1,
+                                                Param_Value < q25 ~ 1,
+                                                TRUE ~0))
+    } else if (colInvScore == "Dec") {
+      # Inverse Scoring
+      df.j <- df.j %>%
+        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > q50 ~ -1,
+                                                Param_Value < q25 ~ 1,
+                                                TRUE ~0))
     } else {
       # Regular Scoring
-      df.i[, paste0("Sc_Box_", stressname)] <-
-        ifelse(df.i[, stressname] > df.i[, paste0("q75_", stressname)],
-               1,
-               ifelse(df.i[, stressname] < df.i[, paste0("q50_", stressname)],
-                      -1, 0))
+      df.j <- df.j %>%
+        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > q75 ~ 1,
+                                                Param_Value < q50 ~ -1,
+                                                TRUE ~ 0))
+    }
+
+    # Append scores to table
+    cols <- colnames(df.scores)
+    df.j <- df.j %>%
+      dplyr::mutate(biocomm = "BMI",
+                    Label = df_stressinfo$Label[df_stressinfo$Stressor == stressname]) %>%
+      dplyr::select(all_of(cols))
+
+    df.scores <- rbind(df.scores, df.j)
+    # Save tabular scores
+    # utils::write.table(df.j, file = fn.scores, col.names = FALSE,
+    #                    row.names = FALSE, sep = "\t", append = TRUE)
+
+    ## Box Plot of Comparator Sites (with better bio)
+    scores <- unlist(as.vector(df.j$Sc_Box))
+    # scores <- unlist(as.vector(df.i.n[, "Sc_Box"]))
+    lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
+    # lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", stressname)][1]))
+    lab.N <- paste0("n = ", unique(df.j$n))
+
+    # plots ####
+    # File Names
+    fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_",
+                        make.names(stressname), ".png")
+    ppi       <- 300
+
+    # Create (ggplot)
+    bio_col <- c("gray25", "steelblue2")
+    bio_shp <- c(25, 21) # down triangle and circle
+    bio_size <- c(5, 2)
+    lab_comp <- paste0("Comparator samples selected from ", incaseLabel,
+                       " = ", i.Group)
+
+    # scoring lines
+    maxVal <- df.stats$maxVal[df.stats$Param_Name == stressname]
+    minVal <- df.stats$minVal[df.stats$Param_Name == stressname]
+    if (colInvScore == "Dec") {##IF~j_in_InvSc~START
+      # Inverse Scoring
+      box_qHI <- df.stats$q50[df.stats$Param_Name == stressname]
+      box_qLO <- df.stats$q25[df.stats$Param_Name == stressname]
+      segNeg <- ((maxVal - box_qHI) / 2) + box_qHI
+      segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
+      segPos <- ((box_qLO - minVal) / 2) + minVal
+    } else {
+      # Regular Scoring
+      box_qHI <- df.stats$q75[df.stats$Param_Name == stressname]
+      box_qLO <- df.stats$q50[df.stats$Param_Name == stressname]
+      segPos <- ((maxVal - box_qHI) / 2) + box_qHI
+      segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
+      segNeg <- ((box_qLO - minVal) / 2) + minVal
     }##IF~j_in_InvSc~END
 
-    # Plots
-    # Need to filter df.i to get rid of NA for "j" (stressor)
-    # order values by j then get multiple comp scores
-    df.i.n <- df.i[!is.na(df.i[, stressname]), ]
-    # df.i.n <- df.i.n[order(df.i.n[, j]), ]
+    # arrow labels
+    aLabPos <- "1"
+    aLabZero <- "0"
+    aLabNeg <- "-1"
 
-    if (nrow(df.i.n) != 0) {##IF.nrow.START
-      # Save to Score/Results file
-      df.i.n[, "Param_Name"]  <- stressname
-      df.i.n[, "Param_Value"] <- df.i.n[, stressname]
-      df.i.n[, "n"]           <- df.i.n[, paste0("n_", stressname)]
-      df.i.n[, "q25"]         <- df.i.n[, paste0("q25_", stressname)]
-      df.i.n[, "q50"]         <- df.i.n[, paste0("q50_", stressname)]
-      df.i.n[, "q75"]         <- df.i.n[, paste0("q75_", stressname)]
-      df.i.n[, "Sc_Box"]      <- df.i.n[, paste0("Sc_Box_", stressname)]
-      # df.i.n append to output (only keep matching columns)
-      df.scores.i.n <- merge(df.scores, df.i.n[, (names(df.i.n) %in% names(df.scores))],
-                             all.y=TRUE)
-      # 2019-05-20, sort by score
-      df.scores.i.n <- df.scores.i.n[order(df.scores.i.n[, "Param_Value"]), ]
+    ## Plot, Variables, Target Site Line
+    targ_line_col <- "red"
+    targ_line_lty <- 2
+    targ_line_lwd <- 1
 
-      ## Box Plot of Comparator Sites (with better bio)
-      scores <- unlist(as.vector(df.i.n[, "Sc_Box"]))
-      lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
-      # num <- df.i
-      lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", stressname)][1]))
+    ## Limit line types (dotted)
+    lim_lty <- 3
 
-      # plots ####
-      # File Names
-      fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_",
-                          make.names(stressname), ".png")
-      ppi       <- 300
+    # Get wordy label for the y-axis
+    jlog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressname]
+    if (jlog == 1) {
+      jlabel <- paste0("Log1p ",
+                       df_stressinfo$Label[df_stressinfo$Stressor == stressname])
+    } else {
+      jlabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
+    }
+    legendtitle <- "Samples"
+    maintitleCO <- "Co-occurrence line of evidence"
+    subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
+    subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
-      # Create (ggplot)
-      bio_col <- c("gray25", "steelblue2")
-      bio_shp <- c(25, 21) # down triangle and circle
-      bio_size <- c(3, 2)
-      lab_comp <- paste0("Comparator samples selected from ", incaseLabel,
-                         " = ", i.Group)
+    # plot1, ggplot ####
+    if (useBetter) {
+      df.plot <- df.compBT
+      lab.sub <- paste0("Comparator samples with paired stressor/response samples and ",
+                        "higher response scores (", lab.N, ").\n", lab.Score, ".")
+    } else {
+      df.plot <- df.comp
+      lab.sub <- paste0("Comparator samples with paired stressor/response samples",
+                        " (", lab.N, ").\n", lab.Score, ".")
+    }
 
-      # scoring lines
-      if (colInvScore == "Dec") {##IF~j_in_InvSc~START
-        # TODO: TEST THIS!
-        # Inverse Scoring
-        box_qHI <- df.scores.i.n$q50[1]
-        box_qLO <- df.scores.i.n$q25[1]
-        segNeg <- ((maxVal - box_qHI) / 2) + box_qHI
-        segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
-        segPos <- ((box_qLO - minVal) / 2) + minVal
-      } else {
-        # Regular Scoring
-        box_qHI <- df.scores.i.n$q75[1]
-        box_qLO <- df.scores.i.n$q50[1]
-        segPos <- ((maxVal - box_qHI) / 2) + box_qHI
-        segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
-        segNeg <- ((box_qLO - minVal) / 2) + minVal
-      }##IF~j_in_InvSc~END
+    if (onlyNotDeg) {
+      lab.sub <- stringr::str_to_sentence(paste0("Not degraded ", lab.sub))
+    }
 
-      # arrow labels
-      aLabPos <- "1"
-      aLabZero <- "0"
-      aLabNeg <- "-1"
+    targetvals <- as.numeric(unlist(df.j[, "Param_Value"]))
+    xseg <- i.Group + 0.5
 
-      ## Plot, Variables, Target Site Line
-      targ_line_col <- "red"
-      targ_line_lty <- 2
-      targ_line_lwd <- 1
-
-      # Get wordy label for the y-axis
-      jlog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressname]
-      if (jlog == 1) {
-        jlabel <- paste0("Log1p ",
-                         df_stressinfo$Label[df_stressinfo$Stressor == stressname])
-      } else {
-        jlabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
-      }
-      legendtitle <- "Samples"
-      maintitleCO <- "Co-occurrence line of evidence"
-      subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
-      subtitleCO <- stringr::str_wrap(subtitleCO, 100)
-
-      # plot1, ggplot ####
-      if (useBetter) {
-        df.plot <- df.compBT
-        lab.sub <- paste0("Comparator samples with higher ", colBio,
-                          " scores (", lab.N, ").\n", lab.Score, ".")
-      } else {
-        df.plot <- df.comp
-        lab.sub <- paste0("Comparator samples with paired ", stressname, " and ",
-                          colBio, " (", lab.N, ").\n", lab.Score, ".")
-      }
-
-      targetvals <- as.numeric(unlist(df.i[, stressname]))
-      xseg <- i.Group + 0.5
-
-      p1<- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[stressname]],  # ARL 2023-05-25
-                                                 x = IncaseCol,
-                                                 group = IncaseCol)) +
-        ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
-                              staplewidth = 0.5) +
-        ggplot2::coord_flip() +
-        ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality,
-                                          fill = Quality), alpha = 0.5,
-                             na.rm = TRUE, width = 0.25, height = 0.01) +
-        ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
-                            lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
-        ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
-                            lty = 2, na.rm = TRUE) +
-        ggplot2::annotate("segment", y = minVal, yend = box_qLO, x = c(xseg, xseg),
-                          color = "orange", linewidth = 0.7, alpha = 0.6,
-                          arrow = grid::arrow(ends = "both", type = "open",
-                                              length = grid::unit(0.2, "cm"))) +
-        ggplot2::annotate("segment", y = box_qLO, yend = box_qHI, x = c(xseg, xseg),
+    p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[stressname]],
+                                                x = IncaseCol,
+                                                group = IncaseCol)) +
+      ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
+                            staplewidth = 0.5) +
+      ggplot2::coord_flip() +
+      ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
+                          lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
+      ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
+                          lty = 2, na.rm = TRUE) +
+      ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality,
+                                           fill = Quality), alpha = 0.5,
+                              na.rm = TRUE, width = 0.25, height = 0.01) +
+      ggplot2::annotate("segment", y = minVal, yend = box_qLO, x = c(xseg, xseg),
                         color = "orange", linewidth = 0.7, alpha = 0.6,
                         arrow = grid::arrow(ends = "both", type = "open",
                                             length = grid::unit(0.2, "cm"))) +
-        ggplot2::annotate("segment", y = box_qHI, yend = maxVal, x = c(xseg, xseg),
-                          color = "orange", linewidth = 0.7, alpha = 0.6,
-                          arrow = grid::arrow(ends = "both", type = "open",
-                                              length = grid::unit(0.2, "cm"))) +
-        ggplot2::annotate("text", x = xseg + 0.02, y = c(segNeg, segZero, segPos),
-                          label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
-        ggplot2::scale_color_manual(name = legendtitle,
-                                    breaks = c("Degraded", "Not degraded"),
-                                    values = bio_col, drop = TRUE) +
-        ggplot2::scale_fill_manual(name = legendtitle,
-                                   breaks = c("Degraded", "Not degraded"),
-                                   values = bio_col, drop = TRUE) +
-        ggplot2::scale_shape_manual(name = legendtitle,
-                                    breaks = c("Degraded", "Not degraded"),
-                                    values = bio_shp, drop = TRUE) +
-        ggplot2::labs(title = maintitleCO, subtitle = subtitleCO,
-                      caption = lab.sub, y = jlabel, x = lab_comp) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                       plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                       axis.ticks.y = ggplot2::element_blank())
+      ggplot2::annotate("segment", y = box_qLO, yend = box_qHI, x = c(xseg, xseg),
+                        color = "orange", linewidth = 0.7, alpha = 0.6,
+                        arrow = grid::arrow(ends = "both", type = "open",
+                                            length = grid::unit(0.2, "cm"))) +
+      ggplot2::annotate("segment", y = box_qHI, yend = maxVal, x = c(xseg, xseg),
+                        color = "orange", linewidth = 0.7, alpha = 0.6,
+                        arrow = grid::arrow(ends = "both", type = "open",
+                                            length = grid::unit(0.2, "cm"))) +
+      ggplot2::annotate("text", x = xseg + 0.02, y = c(segNeg, segZero, segPos),
+                        label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
+      ggplot2::scale_color_manual(name = legendtitle,
+                                  breaks = c("Degraded", "Not degraded"),
+                                  values = bio_col, drop = TRUE) +
+      ggplot2::scale_fill_manual(name = legendtitle,
+                                 breaks = c("Degraded", "Not degraded"),
+                                 values = bio_col, drop = TRUE) +
+      ggplot2::scale_shape_manual(name = legendtitle,
+                                  breaks = c("Degraded", "Not degraded"),
+                                  values = bio_shp, drop = TRUE) +
+      ggplot2::labs(title = maintitleCO, subtitle = subtitleCO,
+                    caption = lab.sub, y = jlabel, x = lab_comp) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+      ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                     axis.ticks.y = ggplot2::element_blank())
 
-      if(boo_plot){
-        ggplot2::ggsave(filename=file.path(dir_path, fn_png_p1),
-                        plot=p1, dpi=ppi, width=8, height=6, units="in")
-      }## IF ~ boo_plot ~ END
-      #}##IF~non-empty~END
+    # if (stressname == "pH_alkEnv") {
+    #   p1 + ggplot2::geom_hline(yintercept = pHlimLow, color = "black",
+    #                            lty = lim_lty)
+    # }
+    # if (stressname == "pH_acidicEnv") {
+    #   p1 + ggplot2::geom_hline(yintercept = pHlimHigh, color = "black",
+    #                            lty = lim_lty)
+    # }
+    # if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
+    #   p1 + ggplot2::geom_hline(yintercept = DOlim, color = "black", lty = lim_lty)
+    # }
 
-
-      # add biocomm, 20190425
-      df.scores.i.n[, "biocomm"] <- biocomm
-      df.scores.i.n[, "Label"] <- unique(jlabel)
-
-      # Save tabular scores
-      utils::write.table(df.scores.i.n, file=fn.scores, col.names = FALSE,
-                         row.names=FALSE, sep="\t", append=TRUE)
-      # Remove
-      rm(df.scores.i.n)
-
-    } else {
-      # no data
-      message(paste0("   All values NA for stressor (", stressname, ").\n"))
-      utils::flush.console()
-      # add data to scores table
-      column_names <- c("Param_Name", "Param_Value", "n", "q25", "q50", "q75",
-                        "Sc_Box")
-      df.i.NA <- df.i[1, 1:5]
-      df.i.NA[, column_names] <- NA
-      df.i.NA[, "Param_Name"] <- stressname
-      # add biocomm, 20190425
-      df.i.NA[, "biocomm"] <- biocomm
-      df.i.NA[, "Label"] <- unique(jlabel)
-      utils::write.table(df.i.NA, file=fn.scores, col.names = FALSE,
-                         row.names=FALSE, sep="\t", append=TRUE)
-
-    }##IF.nrow.END
-    #
+      ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
+                      dpi = ppi, width = 8, height = 6, units = "in")
 
   }##FOR.j.END
-  #
+
+  # Identify stressors ####
+  # df.scores <- read.table(fn.scores, header = TRUE, sep = "\t",
+  #                         stringsAsFactors = FALSE)
+  # Save tabular scores
+  utils::write.table(df.scores, file = fn.scores, col.names = TRUE,
+                     row.names = FALSE, sep = "\t", append = FALSE)
+
+  stressors <- unique(df.scores$Param_Name[df.scores$Sc_Box != -1])
+  notstressors <- unique(df.scores$Param_Name[df.scores$Sc_Box == -1])
+  notstressors <- setdiff(notstressors, stressors)
+
+  # if not stressors has more than one row, write data to data gaps
+  if (length(notstressors) > 0) {
+    for (s in seq_along(notstressors)) {
+      notstress <- notstressors[s]
+      msg <- paste0(notstress, " identified as not a stressor for ",
+                    TargetSiteID," for the ", bioComm, " community.")
+      message(msg)
+
+      # No identified stressors may be a data gap, but may not be, either
+      gaps <- cbind.data.frame("getCoOccur", paste0(notstress, " score for ",
+                                                    bioComm, " refutes"),
+                               -1, msg)
+
+      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+      fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+                  , row.names = FALSE, sep = "\t")
+    }
+  } ### End no stressors statement
+
+  df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
 
 }##FUNCTION.END
