@@ -80,10 +80,14 @@ getCoOccur <- function(TargetSiteID,
                        colBio,
                        onlyNotDeg = TRUE,
                        useBetter = FALSE,
-                       pHlimLow = 6.5,
+                       pHlimLow = 5,
                        pHlimHigh = 9,
-                       DOlim = 7,
+                       DOlim = 6,
                        plotvars,
+                       plot_dpi,
+                       plot_H,
+                       plot_W,
+                       plot_units,
                        dir_plots = file.path(getwd(), "Results"),
                        dir_sub = "CoOccurrence",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -104,6 +108,10 @@ getCoOccur <- function(TargetSiteID,
     pHlimHigh = pHlimHigh
     DOlim = DOlim
     plotvars = data_plotvars
+    plot_dpi = plot_dpi
+    plot_H = plot_H
+    plot_W = plot_W
+    plot_units = plot_units
     dir_plots = dir_results
     dir_sub = "CoOccurrence"
     boo_plot = TRUE
