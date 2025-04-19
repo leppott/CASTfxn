@@ -40,6 +40,10 @@ getTimeSeq <- function(TargetSiteID,
                        df_resp,
                        df_respinfo,
                        df_stressinfo,
+                       plot_dpi,
+                       plot_H,
+                       plot_W,
+                       plot_units,
                        dir_results = file.path(getwd(),"Results"),
                        dir_sub = "TimeSequence",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -55,6 +59,10 @@ getTimeSeq <- function(TargetSiteID,
     df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
     df_stressinfo = df_stressorMetadata
+    plot_dpi = plot_dpi
+    plot_H = plot_H
+    plot_W = plot_W
+    plot_units = plot_units
     dir_results = dir_results
     dir_sub = "TimeSequence"
   }
@@ -123,9 +131,6 @@ getTimeSeq <- function(TargetSiteID,
 
   metricData <- intersect(metrics, colnames(df_resp))
 
-  ppi = 300
-  plot_H <- 6
-  plot_W <- 9
   count = 1
   totplots <- length(stressors) * length(metricData)
 
@@ -198,8 +203,8 @@ getTimeSeq <- function(TargetSiteID,
                                                  "Stressor/Response Time Series"),
                                    x = "Sample Date", y = "Value")
       if(boo_plot){
-        ggplot2::ggsave(filename = fpath, p_ts, dpi = ppi, width = plot_W
-                        , height = plot_H, units = "in")
+        ggplot2::ggsave(filename = fpath, p_ts, dpi = plot_dpi, width = plot_W
+                        , height = plot_H, units = plot_units)
       }## IF ~ boo_plot ~ END
       count = count + 1
 
