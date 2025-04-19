@@ -53,6 +53,10 @@ getBioStressorResponses <- function(TargetSiteID,
                                     p.val_cutoff = 0.05,
                                     r2_cutoff = 0.1,
                                     plotvars,
+                                    plot_dpi,
+                                    plot_H,
+                                    plot_W,
+                                    plot_units,
                                     dir_plots = file.path(getwd(), "Results"),
                                     dir_sub = "StressorResponse",
                                     boo_pred_warn = TRUE,
@@ -74,6 +78,10 @@ getBioStressorResponses <- function(TargetSiteID,
     p.val_cutoff = 0.05
     r2_cutoff = 0.2
     plotvars = data_plotvars
+    plot_dpi = plot_dpi
+    plot_H = plot_H
+    plot_W = plot_W
+    plot_units = plot_units
     dir_plots = dir_results
     dir_sub = "StressorResponse"
     boo_pred_warn = TRUE
@@ -104,10 +112,6 @@ getBioStressorResponses <- function(TargetSiteID,
       dir.create(dir_path)
     }
   }
-
-  # Define plot dimensions
-  plot_H <- 4
-  plot_W <- 8
 
   # Merge other metrics into paired dataset with transformed stressor values
   df_datapaired <- merge(df_datapaired, df_respdata,
@@ -967,7 +971,7 @@ getBioStressorResponses <- function(TargetSiteID,
                              make.names(respName), "_Outside.png")
         if (boo_plot) {
           ggplot2::ggsave(fn_png_out, p_SR_all, width = plot_W, height = plot_H,
-                          units = "in")
+                          units = plot_units, dpi = plot_dpi)
         } ## IF ~ boo_plot ~ END
         #
 
@@ -1070,7 +1074,7 @@ getBioStressorResponses <- function(TargetSiteID,
                             make.names(respName), "_Inside.png")
         if (boo_plot) {
           ggplot2::ggsave(fn_png_in, p_SR_cl, width = plot_W, height = plot_H,
-                          units = "in")
+                          units = plot_units, dpi = plot_dpi)
           ngraph = ngraph + 1
         } ## IF ~ boo_plot ~ END
         #
@@ -1136,8 +1140,10 @@ getBioStressorResponses <- function(TargetSiteID,
         ggplot2::labs(title = str_title, x = str_xlab, y = str_ylab)
 
       # Save correlation plot
-      fn_png_cp <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_CorrPlot.png"))
-      ggplot2::ggsave(fn_png_cp, p_cp, width = plot_H, height = plot_W, units = "in")
+      fn_png_cp <- file.path(dir_path,
+                             paste0(TargetSiteID, "_", biocomm, "_CorrPlot.png"))
+      ggplot2::ggsave(fn_png_cp, p_cp, width = plot_H, height = plot_W,
+                      units = plot_units, dpi = plot_dpi)
 
       msg.corr <- "Printing correlation plot."
       message(msg.corr)
