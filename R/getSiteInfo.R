@@ -143,6 +143,10 @@ getSiteInfo <- function(TargetSiteID,
                         useAllCompReaches = FALSE,
                         plot_vars = data_plotvars,
                         refSiteCol = refOutline_col,
+                        plot_dpi,
+                        plot_H,
+                        plot_W,
+                        plot_units,
                         dir_photo = file.path(getwd(), "Data", "Photos"),
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
@@ -173,6 +177,10 @@ getSiteInfo <- function(TargetSiteID,
     useBC = FALSE
     useAllCompReaches = FALSE
     plot_vars = data_plotvars
+    plot_dpi = plot_dpi
+    plot_H = plot_H
+    plot_W = plot_W
+    plot_units = plot_units
     refSiteCol = refOutline_col
     dir_photo = file.path(dir_data, "Photos")
     dir_results = dir_results
@@ -201,19 +209,14 @@ getSiteInfo <- function(TargetSiteID,
     }
   }
 
-  ## Plot, Output Size (inches) ----
-  plot_H <- 4
-  plot_W <- 6
-  ppi <- 300
-
   ## Plot colors, sizes, etc  ----
+  # bio_types   <- unlist(plot_vars$Type)
   # bio_fill    <- unlist(plot_vars$Fill)
   # bio_shape   <- unlist(plot_vars$Shape)
   # bio_size    <- unlist(plot_vars$Size)
   # bio_alpha   <- unlist(plot_vars$Alpha)
   # refSiteCol is reference site outline color
 
-  #
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::select(FinalLatitude, FinalLongitude, RefSiteFlag, COMID,
@@ -261,15 +264,6 @@ getSiteInfo <- function(TargetSiteID,
   }
 
   if (!is.null(df_BMIMetrics)) {
-
-    # data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
-    #                             "Fill" = c("#CC79A7", "#56B4E9", "#0072B2", "#E69F00", "#D55E00"),
-    #                             "Shape" = c(17, 21, 21, 25, 25),
-    #                             "Size" = c(1.2, 0.8, 1, 0.8, 1),
-    #                             "Alpha" = c(1, 0.5, 0.2, 0.5, 0.2))
-    # refOutline_col <- "#009E73"
-    # Incorporate these colors in the future (colorblind-friendly)
-    # This has been set up already, it just needs to be incorporated (see above)
 
     # Prep BMI data for plotting
     allBMImetrics <- df_BMIMetrics %>%
@@ -371,10 +365,6 @@ getSiteInfo <- function(TargetSiteID,
     targetSamples <- dplyr::filter(allsamplesByCase, StationID == TargetSiteID)
     allsamplesByCase <- dplyr::filter(allsamplesByCase, StationID != TargetSiteID)
 
-
-
-
-
     fn_bmiscoresByCase <- paste0(TargetSiteID, "_BMI_IndexBoxplotsByCase.png")
     fn_bmiscoresByCase <- file.path(dir_path, fn_bmiscoresByCase)
     pBMIbyCase <- ggplot2::ggplot(allsamplesByCase,
@@ -407,7 +397,7 @@ getSiteInfo <- function(TargetSiteID,
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {
       ggplot2::ggsave(fn_bmiscoresByCase, pBMIbyCase, width = plot_W,
-                      height = plot_H, units = "in")
+                      height = plot_H, units = plot_units, dpi = plot_dpi)
     }## IF ~ boo_plot_by_case ~ END
 
   } else {
@@ -547,7 +537,7 @@ getSiteInfo <- function(TargetSiteID,
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {
       ggplot2::ggsave(fn_algscoresByCase, pALGbyCase, width = plot_W,
-                      height = plot_H, units = "in")
+                      height = plot_H, units = plot_units, dpi = plot_dpi)
     }## IF ~ boo_plot_by_case ~ END
 
   } else {
@@ -688,7 +678,7 @@ getSiteInfo <- function(TargetSiteID,
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {
       ggplot2::ggsave(fn_FISHscoresByCase, pFISHbyCase, width = plot_W,
-                      height = plot_H, units = "in")
+                      height = plot_H, units = plot_units, dpi = plot_dpi)
     }## IF ~ boo_plot_by_case ~ END
 
   } else {
@@ -779,8 +769,6 @@ getSiteInfo <- function(TargetSiteID,
       }
 
       ## Draw boxplots ----
-      # TODO: Ask EPA if they want to group variables that do not have years
-
       # Prepare boxplot main elements
       str_title <- paste0(TargetSiteID, ": Site watershed-scale stressors")
 
@@ -863,8 +851,8 @@ getSiteInfo <- function(TargetSiteID,
           }
 
           if (boo_plot) {
-            ggplot2::ggsave(fn.bkgplot, p.boxtime, width = plot_W,
-                            height = 1.5 * plot_H, units = "in")
+            ggplot2::ggsave(fn.bkgplot, p.boxtime, dpi = plot_dpi, width = plot_W,
+                            height = 1.5 * plot_H, units = plot_units)
           }## IF ~ boo_plot ~ END
 
         } else { # no years to consider
@@ -877,7 +865,6 @@ getSiteInfo <- function(TargetSiteID,
                                  size = 0.25, na.rm = TRUE, color = "cyan4") +
             ggplot2::labs(title = str_title, subtitle = str_sub,
                           caption = str_caption) +
-            # ggplot2::xlab(str_sub) +
             ggplot2::ylab("Watershed Value")
 
           p.box <- p.box +
@@ -886,10 +873,6 @@ getSiteInfo <- function(TargetSiteID,
                            plot.subtitle = ggplot2::element_text(hjust = 0.5),
                            plot.caption = ggplot2::element_text(size = 5)) +
             ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                           # axis.text.x = ggplot2::element_text(color = "black",
-                           #                                     size = 6,
-                           #                                     vjust = 0.6,
-                           #                                     hjust = 0.5),
                            axis.text.y = ggplot2::element_text(color = "black",
                                                                size = 6),
                            axis.title.x = ggplot2::element_blank(),
@@ -909,8 +892,8 @@ getSiteInfo <- function(TargetSiteID,
                                size = 2.3, color = "red", nudge_x = 0.15,
                                nudge_y = 0.15)
           if(boo_plot){
-            ggplot2::ggsave(fn.bkgplot, p.box, width = plot_W, height = plot_H,
-                            units = "in")
+            ggplot2::ggsave(fn.bkgplot, p.box, dpi = plot_dpi, width = plot_W,
+                            height = plot_H, units = plot_units)
           }## IF ~ boo_plot ~ END
         }## If/else for graphs ends
       }## for loop over variables ends
