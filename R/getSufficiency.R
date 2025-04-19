@@ -76,6 +76,10 @@ getSufficiency <- function(TargetSiteID,
                            biocomm,
                            colBio,
                            plotvars,
+                           plot_dpi,
+                           plot_H,
+                           plot_W,
+                           plot_units,
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "Sufficiency",
                            boo_plot = TRUE) {##FUNCTION.START
@@ -90,6 +94,10 @@ getSufficiency <- function(TargetSiteID,
     biocomm = bioComm
     colBio = bioIndex
     plotvars = data_plotvars
+    plot_dpi = plot_dpi
+    plot_H = plot_H
+    plot_W = plot_W
+    plot_units = plot_units
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
@@ -295,8 +303,9 @@ getSufficiency <- function(TargetSiteID,
                       , caption = captionSR)
 
       if ((boo_plot) == TRUE) {
-        ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1
-                        , dpi = ppi, width = 8, height = 6, units = "in")
+        ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
+                        dpi = plot_dpi, width = plot_W, height = plot_H,
+                        units = plot_units)
       }
 
     } ##IF.PLOT.END
