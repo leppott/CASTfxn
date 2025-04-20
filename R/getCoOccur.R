@@ -158,12 +158,6 @@ getCoOccur <- function(TargetSiteID,
                                 biocomm = character(), Label = character(),
                                 stringsAsFactors = FALSE))
 
-  # Save scores file (append to later)
-  # fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-  #                                         "_CO_Scores.tab"))
-  # utils::write.table(df.scores, file=fn.scores, append = FALSE,
-  #                    col.names = TRUE, row.names=FALSE, sep="\t")
-
   if (useBetter == TRUE) {
     # Subset df_data for comparator sites having better biology
     df.comp <- df_data %>%
@@ -274,9 +268,6 @@ getCoOccur <- function(TargetSiteID,
       dplyr::select(all_of(cols))
 
     df.scores <- rbind(df.scores, df.j)
-    # Save tabular scores
-    # utils::write.table(df.j, file = fn.scores, col.names = FALSE,
-    #                    row.names = FALSE, sep = "\t", append = TRUE)
 
     ## Box Plot of Comparator Sites (with better bio)
     scores <- unlist(as.vector(df.j$Sc_Box))
@@ -339,7 +330,7 @@ getCoOccur <- function(TargetSiteID,
       jlabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
     }
     legendtitle <- "Samples"
-    maintitleCO <- "Co-occurrence line of evidence"
+    maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
     subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
     subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
