@@ -108,7 +108,7 @@ if (boo_Shiny == TRUE) {
     wd <- "C://Users//Erik.Leppo//OneDrive - Tetra Tech, Inc//MyDocs_OneDrive//GitHub//CASTfxn//inst//shiny-examples//CAST_SMC"
     dir_data <- file.path(wd, "Data")
     dir_results <- file.path(wd, "Results")
-    printClusterInfo <- TRUE
+    printClusterInfo <- FALSE # Deprecated
     site <- "SMC04134"
     TargetSiteID <- site
     b <- 1
@@ -146,8 +146,6 @@ plot_H <- 6
 plot_W <- 8
 plot_units <- "in"
 
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 03, Select region variables ####
 # Progress, 03
@@ -164,7 +162,6 @@ data_CASTmeta <- data_CASTmeta %>%
 fn.SC.WSvars  <- file.path(localdir, "SelectedStreamCatStressors.csv")
 
 # Required user-designated options
-# subregion        <- as.character(dplyr::select(data_CASTmeta, subregion))
 if (region %in% state.abb) {
   regionName        <- state.name[which(state.abb == region)]
 } else {
@@ -239,8 +236,6 @@ for (b in seq_along(biocommlist)) {
     calcBMIRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcBMIRelAbund))
     bmiModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiModParams), ", "))
     bc_cutoff       <- as.numeric(dplyr::select(data_CASTmeta, bc_cutoff))
-    # bmiCounts       <- as.character(dplyr::select(data_CASTmeta, bmiCounts))
-    # bmiTaxon        <- as.character(dplyr::select(data_CASTmeta, bmiTaxon))
   }
   if (bio == "algae") {
     alg_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_thresholds)
@@ -253,8 +248,6 @@ for (b in seq_along(biocommlist)) {
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
     calcAlgRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcAlgRelAbund))
     algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
-    # algCounts       <- as.character(dplyr::select(data_CASTmeta, algCounts))
-    # algTaxon        <- as.character(dplyr::select(data_CASTmeta, algTaxon))
   }
   if (bio == "fish") {
     fish_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_thresholds)
@@ -266,8 +259,6 @@ for (b in seq_along(biocommlist)) {
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
     calcFishRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcFishRelAbund))
     fishModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishModParams), ", "))
-    # fishCounts       <- as.character(dplyr::select(data_CASTmeta, fishCounts))
-    # fishTaxon        <- as.character(dplyr::select(data_CASTmeta, fishTaxon))
   }
 }
 rm(b, bio, data_CASTmeta)
@@ -825,7 +816,6 @@ for (b in seq_along(biocommlist)) {
     }
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
-    # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
     data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
                                          , df_stress = data_Stress
                                          , biocomm = "BMI"
@@ -1117,7 +1107,6 @@ if (boo_Shiny == TRUE) {
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
   df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
-  # df_targets <- dplyr::filter(df_targets, TargetSiteID %in% c("SMC04134", "402BA0031"))
   msg <- paste0("Number of target sites = ", nrow(df_targets))
   message(msg)
 }
@@ -1210,7 +1199,8 @@ for (site in seq_along(df_targets)) {
                                    dir_sub = "SiteInfo")
   # Returns: list.CompSites$TargetCOMID (Reach on which target site is located)
   #          list.CompSites$comp.sites (vector of unique inside-the-case sites regardless of useBC)
-  #          list.CompSites$comp.reaches (vector of unique inside-the-case reaches having sites on them)
+  #          list.CompSites$comp.reaches (vector of unique inside-the-case reaches having sites on them
+  #               if useAllReaches == FALSE, else all inside-the-case reaches)
   #          list.CompSites$all.sites (vector of unique outside-the-case sites, regardless of useBC)
   #          list.CompSites$all.reaches (vector of unique outside-the-case reaches having sites on them)
   #          list.CompSites$incaseID (inside-the-case identifier, NULL if useBC is TRUE)
@@ -1263,7 +1253,7 @@ for (site in seq_along(df_targets)) {
               dir_sub = "SiteInfo",
               boo_plot = TRUE)
 
-  # Create site map -- TODO: Fix NHD.STATE code (lines 214-217)
+  # Create site map
   getSiteMap(sp_outline = STATE.shp,
              sp_flowline = NHD.STATE, # should already include clusterID
              region = regionName,
@@ -1280,27 +1270,56 @@ for (site in seq_along(df_targets)) {
              dir_map_rmd = dir_rmd)
   # Prints static and leaflet maps (.png and .html)
 
-  # Prepare data sets of all stressors ever detected at the target site
-  siteStressAll <- data_Stress %>%
-    dplyr::select(!c(LogTransf, TransfResult, IQRmethod, SDmethod, Outlier)) %>%
-    dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::filter(!is.na(ResultValue)) %>%
-    tidyr::pivot_wider(names_from = StdParamName,
-                       values_from = ResultValue) %>%
-    dplyr::select_if(not_all_na)
-  siteStressAllTransf <- data_Stress %>%
-    dplyr::select(!c(LogTransf, ResultValue, IQRmethod, SDmethod, Outlier)) %>%
-    dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::filter(!is.na(TransfResult)) %>%
-    tidyr::pivot_wider(names_from = StdParamName,
-                       values_from = TransfResult) %>%
-    dplyr::select_if(not_all_na)
-  siteDetectsAll <- as.vector(colnames(siteStressAll))
-  siteDetectsAll <- siteDetectsAll[!(siteDetectsAll %in%
-                                       c("StationID", "StressSampleID",
-                                         "StressSampleDate"))]
+  msg <- "getSiteInfo, getSiteMap, and writeOutliers are complete."
+  message(msg)
 
-  if (length(siteDetectsAll) == 0) {
+  # 16, getAvailableDataTypes ####
+  # Progress, 17
+  if (boo_Shiny == TRUE) {
+    prog_det <- "getAvailableDataTypes"
+    prog_cnt <- prog_cnt + 1
+    prog_msg <- paste0("Step ", prog_cnt)
+    incProgress(prog_inc, message = prog_msg, detail = prog_det)
+    Sys.sleep(mySleepTime)
+    message(paste(prog_msg, prog_det, sep = "; "))
+  }## IF ~ boo_Shiny ~ END
+  #
+  # Prepare flags for types of stressor and response data to use
+  list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID,
+                                          df_stress = data_Stress,
+                                          df_SampSummary = data_sampSummary,
+                                          measStressSamps = measStressData,
+                                          modStressSamps = modelStressData,
+                                          biocommlist = biocommlist,
+                                          dir_results = dir_results)
+  # Returns: myAvailData <- list(useBMI = useBMI
+  #                              , useAlg = useAlg
+  #                              , useFish = useFish
+  #                              , noStressors = noStressors
+  #                              , noResponses = noResponses)
+  noStressors    <- list.AvailData$noStressors
+  noResponses    <- list.AvailData$noResponses
+  useBMI         <- list.AvailData$useBMI
+  useAlg         <- list.AvailData$useAlg
+  useFish        <- list.AvailData$useFish
+  siteDetectsAll <- list.AvailData$siteDetectsAll
+  rm(list.AvailData)
+
+  if ((noStressors == TRUE) | (noResponses == TRUE)) {
+
+    msg <- ifelse((noStressors == TRUE) & (noResponses == TRUE)
+                  , paste0("No stressor or response data are available for "
+                           , TargetSiteID)
+                  , ifelse(noStressors == TRUE
+                           , paste0("No stressor data are available for "
+                                    , TargetSiteID)
+                           , paste0("No response data are available for "
+                                    , TargetSiteID)))
+    message(msg)
+    next
+
+  } else if (length(siteDetectsAll) == 0) {
+
     msg <- paste("No detected stressors identified for", TargetSiteID)
     message(msg)
 
@@ -1328,7 +1347,9 @@ for (site in seq_along(df_targets)) {
                 , append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
     next()
+
   } ### End no stressors statement GO TO NEXT SITE
+  rm(noStressors, noResponses)
 
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
@@ -1340,53 +1361,6 @@ for (site in seq_along(df_targets)) {
                 allSites = list.CompSites$all.sites,
                 dir_results = dir_results)
   # Writes outliers to data gaps file
-
-  msg <- "getSiteInfo, getSiteMap, and writeOutliers are complete."
-  message(msg)
-
-  # 16, getAvailableDataTypes ####
-  # Progress, 17
-  if (boo_Shiny == TRUE) {
-    prog_det <- "getAvailableDataTypes"
-    prog_cnt <- prog_cnt + 1
-    prog_msg <- paste0("Step ", prog_cnt)
-    incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
-    message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
-  #
-  # Prepare flags for types of stressor and response data to use
-  list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID
-                                          , df_SampSummary = data_sampSummary
-                                          , measStressSamps = measStressData
-                                          , modStressSamps = modelStressData
-                                          , biocommlist = biocommlist
-                                          , dir_results = dir_results)
-  # Returns: myAvailData <- list(useBMI = useBMI
-  #                              , useAlg = useAlg
-  #                              , useFish = useFish
-  #                              , noStressors = noStressors
-  #                              , noResponses = noResponses)
-  noStressors <- list.AvailData$noStressors
-  noResponses <- list.AvailData$noResponses
-  useBMI      <- list.AvailData$useBMI
-  useAlg      <- list.AvailData$useAlg
-  useFish     <- list.AvailData$useFish
-  rm(list.AvailData)
-
-  if ((noStressors == TRUE) | (noResponses == TRUE)) {
-    msg <- ifelse((noStressors == TRUE) & (noResponses == TRUE)
-                  , paste0("No stressor or response data are available for "
-                           , TargetSiteID)
-                  , ifelse(noStressors == TRUE
-                           , paste0("No stressor data are available for "
-                                    , TargetSiteID)
-                           , paste0("No response data are available for "
-                                    , TargetSiteID)))
-    message(msg)
-    next
-  }
-  rm(noStressors, noResponses)
 
   # FOR ~ b ~ START ####
   if (boo.debug == TRUE & debug.person == "Erik") {
@@ -1953,9 +1927,9 @@ for (site in seq_along(df_targets)) {
     report_type     <- "summary"
   }
 
-  strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
-  message(paste0("file = ", strFile_RMD))
-  message(paste0("exists = ", file.exists(strFile_RMD)))
+  # strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
+  # message(paste0("file = ", strFile_RMD))
+  # message(paste0("exists = ", file.exists(strFile_RMD)))
   #
   # Get final report (Executive Summary style)
   # Report (rmd file) is not working, but since it will change, I'm simply commenting
