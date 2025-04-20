@@ -55,7 +55,7 @@ getTimeSeq <- function(TargetSiteID,
     TargetSiteID
     biocomm = bioComm
     bioindex = bioIndex
-    df_stress = siteStressAll
+    df_stress = data_Stress
     df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
     df_stressinfo = df_stressorMetadata
@@ -94,6 +94,7 @@ getTimeSeq <- function(TargetSiteID,
   metrics <- as.vector(unlist(df_respinfo$MetricName))
 
   df_stress <- df_stress %>%
+    tidyr::pivot_wider(names_from = "StdParamName", values_from = "ResultValue") %>%
     dplyr::select(StationID, StressSampleDate, all_of(stressors))
 
   if (any(is.na(df_stress$StressSampleDate))) {
