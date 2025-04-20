@@ -477,7 +477,6 @@ getVerifiedPredictions <- function(TargetSiteID,
                                 ggplot2::aes(group = Label), outliers = TRUE,
                                 outlier.size = 0.5, na.rm = TRUE,
                                 staplewidth = 0.5, linewidth = 0.25, fill = NA) +
-          # ggplot2::ylim(0, NA) +
           ggplot2::coord_flip() +
           ggplot2::facet_wrap(. ~ variable, scales = "free") +
           ggplot2::scale_color_manual(name = legendtitle,
