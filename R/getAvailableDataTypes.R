@@ -29,19 +29,20 @@
 #' @keywords internal
 #'
 #' @export
-getAvailableDataTypes <- function(TargetSiteID
-                                  , df_SampSummary
-                                  , measStressSamps
-                                  , modStressSamps = FALSE
-                                  , biocommlist
-                                  , dir_results = file.path(getwd(), "Results")
-                                  ) {##FUNCTION.START
+getAvailableDataTypes <- function(TargetSiteID,
+                                  df_SampSummary,
+                                  df_stress,
+                                  measStressSamps,
+                                  modStressSamps = FALSE,
+                                  biocommlist,
+                                  dir_results = file.path(getwd(), "Results")) {##FUNCTION.START
 
   boo.DEBUG <- FALSE
 
   if(boo.DEBUG) {
     TargetSiteID = TargetSiteID
     df_SampSummary = data_sampSummary
+    df_stress = data_Stress
     measStressSamps = measStressData
     modStressSamps = modelStressData
     biocommlist = biocommlist
@@ -82,15 +83,28 @@ getAvailableDataTypes <- function(TargetSiteID
 
   if (length(availStressSamps) == 0) {
     noStressors <- TRUE
+    siteDetectsAll <- NULL
   } else {
     noStressors <- FALSE
-    for (m in seq_along(missingStressSamps))
+    for (m in seq_along(missingStressSamps)) {
       missing <- missingStressSamps[m]
-      gap.stress <- cbind.data.frame("general", missing, 0
-                                          , "No data available.")
+      gap.stress <- cbind.data.frame("general", missing, 0, "No data available.")
       colnames(gap.stress) <- c("fxnname", "condition", "result", "comment")
       gaps <- rbind(gaps, gap.stress)
       rm(gap.stress)
+    }
+    # Prepare data sets of all stressors ever detected at the target site
+    siteStressAll <- df_stress %>%
+      dplyr::select(!c(LogTransf, TransfResult, IQRmethod, SDmethod, Outlier)) %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
+      dplyr::filter(!is.na(ResultValue)) %>%
+      tidyr::pivot_wider(names_from = StdParamName,
+                         values_from = ResultValue) %>%
+      dplyr::select_if(not_all_na)
+    siteDetectsAll <- as.vector(colnames(siteStressAll))
+    siteDetectsAll <- siteDetectsAll[!(siteDetectsAll %in%
+                                         c("StationID", "StressSampleID",
+                                           "StressSampleDate"))]
   }
 
   for (b in seq_along(biocommlist)) {
@@ -132,11 +146,11 @@ getAvailableDataTypes <- function(TargetSiteID
 
   if (nrow(gaps) > 0) {
     if (file.exists(fn.gaps)) {
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
     } else {
-      write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
+                  row.names = FALSE, sep = "\t")
     }
   }
 
@@ -155,11 +169,12 @@ getAvailableDataTypes <- function(TargetSiteID
     noResponses <- FALSE
   }
 
-  myAvailData <- list(useBMI = useBMI
-                      , useAlg = useAlg
-                      , useFish = useFish
-                      , noStressors = noStressors
-                      , noResponses = noResponses)
+  myAvailData <- list(useBMI = useBMI,
+                      useAlg = useAlg,
+                      useFish = useFish,
+                      noStressors = noStressors,
+                      noResponses = noResponses,
+                      siteDetectsAll = siteDetectsAll)
 
   return(myAvailData)
 
