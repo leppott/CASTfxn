@@ -1,24 +1,24 @@
 #  Copyright 2020 TetraTech. All rights reserved.
-#  Use, copying, modification, or distribution of this file or any of its contents 
+#  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
 #
 #' @title Report Generation
-#' 
+#'
 #' @description Generate report
-#' 
-#' @details Generates a report based on a Target SiteID in a given directory.  
-#' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
-#' Report format can be "html" (recommended default) or "word" (docx). 
-#' 
-#' Only the "summary" report is active. 
-#' 
-#' dir_data and dir_results should be absolute and not relative paths.  
+#'
+#' @details Generates a report based on a Target SiteID in a given directory.
+#' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.
+#' Report format can be "html" (recommended default) or "word" (docx).
+#'
+#' Only the "summary" report is active.
+#'
+#' dir_data and dir_results should be absolute and not relative paths.
 #' This is because these directories are passed to an RMD file.
-#' Within the RMD each code chunk assumes a relative path based on the RMD location 
+#' Within the RMD each code chunk assumes a relative path based on the RMD location
 #' and not the working directory of the calling function.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
-#' 
+#'
 #' @param TargetSiteID SiteID
 #' @param probsHigh Default = 0.75
 #' @param probsLow Default = 0.25
@@ -35,46 +35,45 @@
 #' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
 #' @param siteQual2Plot Site quality to print.
-#' 
-#' @return A report for the provided SiteID in the provided format (html or word) 
+#'
+#' @return A report for the provided SiteID in the provided format (html or word)
 #' in the results directory.
-#' 
+#'
 #' @examples
 #' TargetSiteID <- "SRCKN001.61"
 #' dir_results <- file.path(getwd(), "Results")
 #' report_type <- "summary"
 #' report_format <- "html"
-#'  
+#'
 #' \dontrun{
 #' # Run Function
 #' getReport(TargetSiteID, dir_results, report_type, report_format)
 #' }
 #
 #' @export
-getReport <- function(TargetSiteID
-                      , probsHigh
-                      , probsLow
-                      , useBMI
-                      , useAlg
-                      , useBC
-                      , removeOutliers
-                      , DOlim
-                      , pHlimLow
-                      , pHlimHigh
-                      , lagdays
-                      , bmiIndex
-                      , algIndex
-                      , dir_data = normalizePath(file.path(".", "Data"))
-                      , dir_results = normalizePath(file.path(".", "Results"))
-                      , report_type = "preliminary"
-                      , report_format = "html"
-                      , dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
-                      , siteQual2Plot = NULL){##FUNCTION.START
+getReport <- function(TargetSiteID,
+                      probsHigh,
+                      probsLow,
+                      useBMI,
+                      useAlg,
+                      useBC,
+                      removeOutliers,
+                      DOlim,
+                      pHlimLow,
+                      pHlimHigh,
+                      lagdays,
+                      bmiIndex,
+                      algIndex,
+                      dir_data = normalizePath(file.path(".", "Data")),
+                      dir_results = normalizePath(file.path(".", "Results")),
+                      report_type = "preliminary",
+                      report_format = "html",
+                      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+                      siteQual2Plot = NULL){##FUNCTION.START
   #
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
   if (boo_DEBUG) {
-    # setwd("C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CASTool_SMC")
     TargetSiteID = TargetSiteID
     probsHigh = probsHigh
     probsLow = probsLow
@@ -102,7 +101,7 @@ getReport <- function(TargetSiteID
     report_format = "html"
     siteQual2Plot = NULL
   }## IF ~ boo_DEBUG ~ END
-  
+
   # Date and Time for output
   myDate <- format(Sys.Date(),"%Y%m%d")
   myTime <- format(Sys.time(),"%H%M%S")
@@ -147,7 +146,7 @@ getReport <- function(TargetSiteID
     # cat(Msg)
     # utils::flush.console()
   }##IF.file.exists.END
-  # 
+  #
   # User Feedback
   message("Task COMPLETE.  Report generated.")
   message(paste0("    User defined parameters: SiteID (", TargetSiteID, "), Report Type ("
