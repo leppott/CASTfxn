@@ -140,7 +140,6 @@ getSiteMap <- function(sp_outline,
 
   # Ensure flowline shapefile contains "ClusterID"
   sp_outline <- sf::st_transform(sp_outline, crs = sf::st_crs(sp_flowline))
-  # sp_flowline <- dplyr::filter(sp_flowline, !is.na(ClusterID))
 
   # Get sites (if datum is specified in the metadata, transform to WGS84,
   # otherwise, assume wGS84)
@@ -254,76 +253,8 @@ getSiteMap <- function(sp_outline,
                   units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  # Graphics parameters for ggplot2
-  # bestdpi <- 600
-  # maptype2 <- paste0(region, " Bioassessment Sites")
-  #
-  # col_outline <- "black"
-  # col_flowline <- "light blue"
-  # col_sites_out <- "dark gray"
-  # col_sites_in  <- "cyan4"
-  # col_sites_ref <- "blue"
-  # col_sites_targ <- "red"
-  #
-  # pch_sites_out  <- 19
-  # pch_sites_in   <- 19
-  # pch_sites_ref  <- 21
-  # pch_sites_targ <- 17
-  #
-  # cex_sites_out  <- 0.5
-  # cex_sites_ref  <- 0.9
-  # cex_sites_in   <- 1
-  # cex_sites_targ <- 1.4
-  #
-  # lwd_outline  <- 1.0
-  # lwd_flowline <- 0.25
-  #
-  # size_legtitle <- 3
-  # size_legelement <- 2.5
-  #
-  # site_map <- ggplot2::ggplot(data = sp_outline, fill = "lightgray",
-  #                             color = col_outline, lwd = lwd_outline) +
-  #   ggplot2::geom_sf(data = sp_flowline, inherit.aes = FALSE,
-  #                    color = col_flowline, lwd = lwd_flowline) +
-  #   ggplot2::geom_sf(data = sp_sites, inherit.aes = FALSE,
-  #                    color = col_sites_all, pch = pch_sites_all,
-  #                    size = cex_sites_all) +
-  #   ggplot2::geom_sf(data = sp_outside, inherit.aes = FALSE,
-  #                    color = col_sites_out, pch = pch_sites_out,
-  #                    size = cex_sites_out) +
-  #   ggplot2::geom_sf(data = sp_inside, inherit.aes = FALSE,
-  #                    color = col_sites_in, pch = pch_sites_in,
-  #                    size = cex_sites_in)
-  #   if (nrow(sp_refsites) > 0) {
-  #     # site_map <- site_map +
-  #     # ggplot2::geom_sf(data = sp_refsites, inherit.aes = FALSE,
-  #     #                  color = col_sites_ref, pch = pch_sites_ref,
-  #     #                  size = cex_sites_ref)
-  #   }
-  #   site_map <- site_map +
-  #     ggplot2::geom_sf(data = sp_target, inherit.aes = FALSE,
-  #                      color = col_sites_targ, pch = pch_sites_targ,
-  #                      size = cex_sites_targ) +
-  #     ggplot2::geom_sf(data = sp_outline, inherit.aes = FALSE, fill = NA,
-  #                      color = col_outline, lwd = lwd_outline) +
-  #     ggplot2::coord_sf(datum = 4326,
-  #                       xlim = c(ggmap_bbox["left"], ggmap_bbox["right"]),
-  #                       ylim = c(ggmap_bbox["bottom"], ggmap_bbox["top"])) +
-  #     ggplot2::theme_bw() +
-  #     ggplot2::labs(x = "Longitude", y = "Latitude", title = TargetSiteID,
-  #                  subtitle = maptype2) +
-  #     ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold",
-  #                                                       hjust = 0),
-  #                    plot.subtitle = ggplot2::element_text(size = 10, hjust = 0),
-  #                    axis.text = ggplot2::element_text(size = 8),
-  #                    axis.title = ggplot2::element_text(size = 10),
-  #                    legend.title = ggplot2::element_text(size = 8))
-  #
-  # ggplot2::ggsave(fn_Map, site_map, width = 7, height = 7, units = "in",
-  #                 dpi = bestdpi)
-
   # TODO
-  # Leaflet Map in Notebook -- FIX THIS!
+  # Leaflet Map in Notebook
   # report_format <- "html"
   # strFile_out_ext <- paste0(".", report_format)
   # strFile_out <- paste0(TargetSiteID, "_MAP_leaflet", strFile_out_ext)
