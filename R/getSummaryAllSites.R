@@ -35,15 +35,14 @@
 #' @keywords internal
 #'
 #' @export
-getSummaryAllSites <- function(biocommlist
-                               , bmiIndex
-                               , algIndex
-                               , fishIndex
-                               , dir_data = file.path(getwd(),"Data")
-                               , dir_results = file.path(getwd(), "Results")
-                               , dir_sub = "WoE"
-                               , df_sites
-                               ) {##FUNCTION.START
+getSummaryAllSites <- function(biocommlist,
+                               bmiIndex,
+                               algIndex,
+                               fishIndex,
+                               dir_data = file.path(getwd(),"Data"),
+                               dir_results = file.path(getwd(), "Results"),
+                               dir_sub = "WoE",
+                               df_sites) {##FUNCTION.START
 
   # define pipe
   `%>%` <- dplyr::`%>%`
