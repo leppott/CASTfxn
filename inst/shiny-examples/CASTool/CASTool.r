@@ -1659,7 +1659,7 @@ for (site in seq_along(df_targets)) {
     getTimeSeq(TargetSiteID,
                biocomm = bioComm,
                bioindex = bioIndexGp,
-               df_stress = siteStressAll,
+               df_stress = data_Stress,
                df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ],
                df_respinfo = bioMetricInfo,
                df_stressinfo = df_stressorMetadata,
