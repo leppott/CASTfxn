@@ -205,7 +205,8 @@ getSiteMap <- function(sp_outline,
   sp_targetsite <- subset(sp_sites, Case == "Target")
 
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
-    tmap::tm_polygons(fill = "grey80") +
+    #tmap::tm_polygons(fill = "grey80") +
+    tmap::tm_polygons(fill = "white") + # LCN changed fill color from grey80
     tmap::tm_shape(sp_flowline) +
     tmap::tm_lines(lwd = 0.5, #palette = mag.vec,
                    col = "ClusterID",
@@ -227,10 +228,11 @@ getSiteMap <- function(sp_outline,
   if (nrow(sp_refsites) > 0) {
     state.map <- state.map +
       tmap::tm_shape(sp_refsites) +
-      tmap::tm_symbols(col = refOutline, fill = "grey40", size = 0.25) +
+      tmap::tm_symbols(col = refOutline, fill = "grey40", fill_alpha = 0, size = 0.4) + # LCN added fill_alpha = 0 and changed size from 0.25
       tmap::tm_add_legend(type = 'symbols',
                           col = c("grey15", "grey15", refOutline, "grey15"),
                           fill = c(outsideFill, insideFill, "grey40", targetFill),
+                          fill_alpha = c(1,1,0,1), # LCN added for consistency with plot
                           shape = c(outsideShape, insideShape, 21, targetShape),
                           labels = c("Outside the case", "Inside the case"
                                        , "Reference", "Target site"),

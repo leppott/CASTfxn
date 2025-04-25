@@ -25,7 +25,7 @@
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 boo_Shiny <- FALSE
-
+library(tidyverse) #LCN added
 # 02, Set up ####
 # Progress, 02
 if (boo_Shiny == TRUE) {
@@ -60,6 +60,13 @@ if (boo_Shiny == TRUE) {
   #
   if (boo.debug == TRUE & debug.person == "Ann") {
     region <- "WA" # Must match column header in file "CASTool_Metadata.xlsx"
+    
+    #LCN file paths
+    # wd <- dirname(dirname(getwd())) 
+    # gitpath <- file.path(wd, "CASTfxn_6.3.6.4" , "CASTfxn", "R") 
+    # dir_rmd <- file.path(wd, "CASTfxn_6.3.6.4",  "CASTfxn", "inst", "rmd") 
+    # localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data") 
+    
     wd <- "C:/Users/ann.lincoln/Documents" # ARL 2025-01-13
     gitpath <- file.path(wd, "GitHub", "CASTfxn", "R") # ARL 2023-05-22
     dir_rmd <- file.path(wd, "GitHub", "CASTfxn", "inst", "rmd") # ARL 2023-05-22
@@ -132,13 +139,13 @@ msg <- paste0("debug = ", boo.debug
 message(msg)
 
 ## Color assignments ####
-# Based on ito_seven from ggpubfigs
+# Based on ito_seven from ggpubfigs 
 data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
                             "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
                             "Shape" = c(24, 21, 25, 21, 25),
                             "Size" = c(1.5, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#009E73"
+refOutline_col <- "#26F7FD"# LCN changed from "#009E73"
 
 ## Other plot variables ####
 plot_dpi <- 600
@@ -283,7 +290,7 @@ if (boo_Shiny == TRUE) {
   outline  <- poly.smc.proj
   flowline <- lines.flowline.proj
 } else {
-  fn.outline <- file.path(localdir, "NHDPlus", "gadm36_USA_1.shp")
+  fn.outline <- file.path(localdir, "NHDPlus", "gadm41_USA_shp", "gadm41_USA_1.shp") # LCN added additional folder and changed to 41
   STATE.shp <- sf::read_sf(fn.outline) %>%
     dplyr::filter(NAME_1 == regionName) %>%
     sf::st_transform(crs = 5070) %>%
@@ -315,8 +322,8 @@ rm(fn.cluster)
 
 ## Get site location info and other metadata (e.g., waterbody name)
 if (basename(fn.Sites.Info) != "NA") {
-  data_Sites <- readCASToolData(fn = fn.Sites.Info
-                                , NAs = c("", "na", "NA", "N/A"))
+  data_Sites <- readCASToolData(fn = fn.Sites.Info,
+                                NAs = c("", "na", "NA", "N/A")) #%>% select(-ClusterID) #LCN temporary fix
 
   data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
 
@@ -415,16 +422,16 @@ if (exists("fn.SC.WSvars")) {
   data_stressorWS <- StreamCatTools::sc_get_data(metric = SCmetrics,
                                                  aoi = 'watershed',
                                                  state = region)
-  data_stressorWS <- as.data.frame(data_stressorWS) %>%
-    dplyr::select(!STATE)
+  # data_stressorWS <- as.data.frame(data_stressorWS) %>% # LCN commented out because state no longer returned
+  #   dplyr::select(!STATE)
 
-  data_stressorWS <- merge(data_cluster, data_stressorWS, by = "COMID", all.x = TRUE)
+  data_stressorWS <- merge(data_cluster, data_stressorWS, by.x = "COMID", by.y = "comid", all.x = TRUE) # need to add by.x and by.y because of names returned by StreamCatTools
   data_stressorWS <- data_stressorWS %>%
     tidyr::pivot_longer(cols = !c(COMID, ClusterID),
                         names_to = "StreamCatVar",
                         values_to = "WatershedValue")
   data_stressorWS <- data_stressorWS %>%
-    dplyr::mutate(StreamCatVar = sub("WS$", "", StreamCatVar),
+    dplyr::mutate(StreamCatVar = sub("ws$", "", StreamCatVar),# LCN this needs to be ws, TODO change names before pivoting
                   StreamCatVar = tolower(StreamCatVar),
                   Year = suppressWarnings(dplyr::case_when(
                     StreamCatVar == "popden2010" ~ NA_integer_,
@@ -690,8 +697,8 @@ for (b in seq_along(biocommlist)) {
                                         , NAs = c("", "na", "NA", "N/A"))
 
       data_BMIcounts <- dplyr::mutate(data_BMIcounts,
-                                      RespSampleDate = lubridate::mdy(RespSampleDate))
-
+                                      RespSampleDate = lubridate::mdy(RespSampleDate)) #, 
+                                      #SRespSampleID = str_replace_all(RespSampleID, "[:punct:]", "_"), StationID = str_replace_all(StationID, "[:punct:]", "_")) # LCN needed to add for provided dataset so RespSampIDs matched
       # TODO: comment this section out if using BioMonTools for data prep
       # Require data_BMIcounts to have both NumIndividuals, and PctIndividuals
       # as well as total sample count
@@ -1130,12 +1137,12 @@ for (site in seq_along(df_targets)) {
   TargetSiteID <- df_targets$TargetSiteID[site]
   if (boo.debug == TRUE & debug.person == "Ann") { # For debugging purposes only
     if (region == "WA") {
-      TargetSiteID <- "BIO06600_BURP15"   # No degraded samples
-      TargetSiteID <- "ERR06600_005995"   # All samples degraded; low pH
-      TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
-      TargetSiteID <- "RSM06600_007971"   # No degraded samples
-      TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
-      TargetSiteID <- "WAM06600_003688"   # One of two samples degraded
+      # TargetSiteID <- "BIO06600_BURP15"   # No degraded samples
+     #  TargetSiteID <- "ERR06600_005995"   # All samples degraded; low pH
+      # TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
+      # TargetSiteID <- "RSM06600_007971"   # No degraded samples
+      # TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
+       TargetSiteID <- "WAM06600_003688"   # One of two samples degraded
     } else if (region == "OR") {
 
     } else {
@@ -1225,8 +1232,8 @@ for (site in seq_along(df_targets)) {
   getSiteInfo(TargetSiteID = TargetSiteID,
               TargetCOMID = list.CompSites$TargetCOMID,
               df_Sites = data_Sites,
-              df_WSData = NULL, # Set to NULL currently since StreamCatTools produces a 503 error
-              df_WSInfo = NULL, # Set to NULL currently since StreamCatTools produces a 503 error
+              df_WSData = data_stressorWS, # Set to NULL currently since StreamCatTools produces a 503 error
+              df_WSInfo = data_stressorinfoWS, # Set to NULL currently since StreamCatTools produces a 503 error
               df_SampSummary = data_sampSummary,
               biocommlist = biocommlist,
               df_BMIMetrics = data_bmiMetrics,
@@ -1898,7 +1905,7 @@ for (site in seq_along(df_targets)) {
 
     df_temp <- as.data.frame(cbind("TargetSiteID" = TargetSiteID
                                    , "Biocomm" = bioComm
-                                   , "NumStressors" = length(stressors)
+                                   , "NumStressors" = length(siteDetectsAll) # length(stressors) # LCN should this be siteDetectsAll
                                    , "NumLoE" = numLoE
                                    , "ElapsedTime" = elapsedsite.time))
 
@@ -1983,6 +1990,16 @@ if (boo_Shiny == TRUE) {
 getSummaryAllSites(biocommlist = c("bmi", "algae")
                    , bmiIndex = "CSCI"
                    , algIndex = "MMIhybrid"
+                   , fishIndex = NULL
+                   , dir_data = dir_data
+                   , dir_results = dir_results
+                   , dir_sub = "WoE"
+                   , df_sites = NULL)
+
+
+getSummaryAllSites(biocommlist = c("bmi")
+                   , bmiIndex = "BIBI100"
+                   , algIndex = NULL
                    , fishIndex = NULL
                    , dir_data = dir_data
                    , dir_results = dir_results

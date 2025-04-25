@@ -51,12 +51,12 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    boo_plot = TRUE) {##FUNCTION.START
 
   # Debugging
-  boo.DEBUG <- FALSE
+  boo.DEBUG <- TRUE
   #
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
     stressors.sstv = stressors.sstv
-    df_stressinfo = list.stressors$stressors
+    df_stressinfo = df_stressorMetadata # list.stressors$stressors
     df_paired = df_PairedSRTransf
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
@@ -162,7 +162,7 @@ getVerifiedPredictions <- function(TargetSiteID,
       df_SSTVtaxa <- df_MasterTaxa %>%
         dplyr::select(TaxonID, all_of(keepMTcol))
 
-      df_SSTVtaxa <- df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ]
+      df_SSTVtaxa <- df_SSTVtaxa %>% filter(if_any(-1, ~ !is.na(.))) # LCN changed from df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ] which fails when there is only one SSTV
 
       df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa, by = "TaxonID")
 
@@ -276,7 +276,7 @@ getVerifiedPredictions <- function(TargetSiteID,
       df_GpLbl <- unique(df_resp.summary[, c("Group", "Label")])
 
       df_tv <- merge(df_stress.sstv, df_resp.summary,
-                     by = c("StationID", "RespSampleID", "RespSampleDate"))
+                     by = c("StationID", "RespSampleID", "RespSampleDate"), all = TRUE)
 
       # Loop - Score SSTVs ####
       for (s in seq_along(stressors.sstv)) {

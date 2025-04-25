@@ -188,7 +188,7 @@ getTimeSeq <- function(TargetSiteID,
       p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampleDate,
                                                     y = as.numeric(Value)))
       p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black",
-                                       linewidth = 0.2, alpha = 0.5)
+                                       linewidth = 0.2, alpha = 0.5, width = 0.5) # LCN added width otherwise fails on some sites
       p_ts <- p_ts + ggrepel::geom_text_repel(ggplot2::aes(label = Value),
                                               nudge_x = 0, nudge_y = minYval,
                                               size = 2, na.rm = TRUE)
