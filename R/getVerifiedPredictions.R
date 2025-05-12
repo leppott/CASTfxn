@@ -56,7 +56,11 @@ getVerifiedPredictions <- function(TargetSiteID,
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
     stressors.sstv = stressors.sstv
+<<<<<<< Updated upstream
     df_stressinfo = df_stressorMetadata # list.stressors$stressors
+=======
+    df_stressinfo = df_stressorMetadata
+>>>>>>> Stashed changes
     df_paired = df_PairedSRTransf
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
@@ -71,7 +75,6 @@ getVerifiedPredictions <- function(TargetSiteID,
     dir_plots = dir_results
     dir_sub = "VerifiedPredictions_SSTVs"
     boo_plot = boo_plot_user
-    tv <- 1
   }##IF.boo.DEBUG.END
 
   # define pipe
@@ -112,6 +115,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
   }
 
+  # Outer loop over stressors with SSTVs
+  # Temporary: if debugging, DO NOT run this
   if (length(stressors.sstv) > 0) {
     ## Subset stressInfo ----
     df_SSTV <- df_stressinfo %>%
@@ -123,9 +128,10 @@ getVerifiedPredictions <- function(TargetSiteID,
     SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
     mtcols <- colnames(df_MasterTaxa)
 
+    if (exists("keepMTcol")) { suppressWarnings(rm(keepMTcol)) }
+
     # Match sstv to master taxa file ----
-    # Check whether master taxa file contains SSTVname (tol vals for that stressor),
-    # if so, add to keepMTcol vector; if not write to data gaps file
+    # Temporary: if debugging, okay to run this loop
     for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
       name <- SSTVnames[n]
       SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
@@ -164,7 +170,7 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       df_SSTVtaxa <- df_SSTVtaxa %>% filter(if_any(-1, ~ !is.na(.))) # LCN changed from df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ] which fails when there is only one SSTV
 
-      df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa, by = "TaxonID")
+      df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa)
 
       boo.continue = TRUE
 
@@ -174,6 +180,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
     }
 
+    # Taxa exist; isolate groups, labels
+    # Temporary: if debugging, DO NOT run this
     if (boo.continue == TRUE) { # Have taxa
 
       # 20190513, remove scores file if exists
@@ -188,15 +196,16 @@ getVerifiedPredictions <- function(TargetSiteID,
                      "not degraded" = "Quality",
                      "better than" = "BetterThan")
 
-      # Filter for outside case sites (but use inside the case sites)
-      # Trim unnecessary columns
+      # Filter for inside case sites & trim unnecessary columns
       df_stress.sstv <- df_paired %>%
-        dplyr::filter(OutcaseYN == 1) %>%
+        dplyr::filter(IncaseYN == 1) %>%
         dplyr::mutate(Quality = forcats::fct_expand(Quality, "Target")) %>%
-        dplyr::select(StationID, IncaseYN, StressSampleID, StressSampleDate,
+        dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
                       RespSampleID, RespSampleDate, BioComm, all_of(colBio),
                       RefSiteFlag, Quality, BetterThan, all_of(stressors.sstv))
+      nTargetSamples <- nrow(df_stress.sstv[df_stress.sstv$StationID == TargetSiteID,])
 
+      # Temporary: if debugging, must run this loop
       for (tv in seq_along(keepMTcol)) { # Obtain one or more sstv columns
 
         sstv <- keepMTcol[tv]
@@ -258,6 +267,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       } ## END for tv
 
+      rm(df_temp)
+
       # Summarize data
       df_resp.summary <- df_resp %>%
         tidyr::pivot_longer(cols = dplyr::contains("Sens"),
@@ -288,41 +299,74 @@ getVerifiedPredictions <- function(TargetSiteID,
         tolval.min <- paste0(tolval, "_SensMin")
         tolval.all <- paste0(tolval, "_SensAll")
 
-        df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} & IncaseYN == 1) %>%
-          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
-                        StressSampleID, StressSampleDate, BioComm, all_of(colBio),
-                        RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
-                        Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
+        # Prep target sample data frame
+        df_tv.target <- dplyr::filter(df_tv, Group == {{tolval}} &
+                                        StationID == TargetSiteID)
+        cols2use <- colnames(df_tv.target)
+
+        # Determine if not all rows expected actually exist (no taxa in a category)
+        if (nrow(df_tv.target) == 0) { # no target samples have any sensitive taxa
+          df_stress.sstv.target <- df_stress.sstv %>%
+            dplyr::filter(StationID == TargetSiteID) %>%
+            dplyr::mutate(NumInds = 0, PctInds = 0,
+                          NumTaxa = 0, PctTaxa = 0,
+                          Group = tolval)
+          df_tv.target <- merge(df_stress.sstv.target, df_GpLbl)
+          df_tv.target <- df_tv.target %>%
+            dplyr::select(all_of(cols2use))
+        } # This creates missing data for all stressor samples (with paired responses)
+
+        # ASSUMPTION: Most sensitive will disappear prior to all sensitive
+        if (nrow(df_tv.target) %% nTargetSamples != 0) {
+          # Identify missing sample
+          df_tv.target.qc1 <- df_tv.target %>%
+            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
+                          StressSampleID, StressSampleDate, BioComm,
+                          all_of(colBio), RefSiteFlag, Quality, BetterThan,
+                          all_of(stressor), Group, Label, NumInds, PctInds,
+                          NumTaxa, PctTaxa) %>%
+            dplyr::group_by(StationID, RespSampleID, RespSampleDate, IncaseCol,
+                            StressSampleID, StressSampleDate, BioComm, Group) %>%
+            dplyr::summarize(n = dplyr::n(), .groups = "drop_last") %>%
+            dplyr::filter(n != 2)
+
+          # Identify missing label
+          df_tv.target.qc2 <- merge(df_tv.target.qc1, df_tv.target)
+          allLabels <- unique(df_tv$Label[df_tv$Group == tolval])
+          currentLabel <- unique(df_tv.target.qc2$Label)
+          newLabel <- setdiff(allLabels, currentLabel)
+
+          df_tv.target.qc2 <- df_tv.target.qc2 %>%
+            dplyr::select(!n) %>%
+            dplyr::mutate(Label = newLabel,
+                          NumInds = 0,
+                          PctInds = 0,
+                          NumTaxa = 0,
+                          PctTaxa = 0) %>%
+            dplyr::select(all_of(cols2use))
+
+          df_tv.target <- rbind(df_tv.target, df_tv.target.qc2)
+
+          rm(df_tv.target.qc1, df_tv.target.qc2)
+        } # End if
+
+        # Prep comparator sample data frame
+        df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} &
+                                        Quality == "Not degraded") %>%
+          dplyr::filter(StationID != TargetSiteID)
+
+        # Rbind target and comparator dataframes
+        df_tv.incase <- rbind(df_tv.target, df_tv.incase)
+        rm(df_tv.target)
+
+        df_tv.incase <- df_tv.incase %>%
+          dplyr::select(all_of(cols2use)) %>%
           dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
                         PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
           tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
                               values_to = "value")
-
-        if (nrow(dplyr::filter(df_tv.incase, StationID == TargetSiteID)) == 0) {
-          # Create dataframe containing response values to include
-          df_tv.target <- df_tv[df_tv$StationID == TargetSiteID, ]
-          # Select only the columns prior to Group
-          df_tv.target <- df_tv.target %>%
-            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
-                          StressSampleID, StressSampleDate, BioComm, all_of(colBio),
-                          RefSiteFlag, Quality, BetterThan, all_of(stressor)) %>%
-            dplyr::mutate(Group := {{tolval}})
-          df_tv.target <- unique(df_tv.target) # Reduce to individual samples
-          # Subset the group/label dataframe to the current tolval group
-          df_GpLbl.tolval <- dplyr::filter(df_GpLbl, Group == {{tolval}})
-          # Merge Label into the dataframe & add NumInds, PctInds, NumTaxa, PctTaxa
-          df_tv.target <- merge(df_tv.target, df_GpLbl.tolval, by = "Group")
-          df_tv.target <- df_tv.target %>%
-            dplyr::mutate(NumInds = 0, PctInds = 0, NumTaxa = 0, PctTaxa = 0) %>%
-            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
-                          StressSampleID, StressSampleDate, BioComm, all_of(colBio),
-                          RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
-                          Label, NumInds, PctInds, NumTaxa, PctTaxa) %>%
-            tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
-                                values_to = "value")
-          # Add target samples back into df_tv.incase
-          df_tv.incase <- rbind(df_tv.incase, df_tv.target)
-        }
+        df_tv.incase <- df_tv.incase %>%
+            dplyr::filter(!is.na(.data[[stressor]]))
 
         ## Scoring ####
         # Get percentiles by most sensitive, all sensitive for each of
@@ -345,7 +389,7 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_tv.incase.summary <- df_tv.incase %>%
           dplyr::distinct(StationID, RespSampleID, RespSampleDate, Quality, BetterThan) %>%
           dplyr::mutate(QualityNum = ifelse(Quality == "Not degraded", 1, 0),
-                        BTNotDeg = ifelse((BetterThan == 1 & Quality == 1), 1, 0)) %>%
+                        BTNotDeg = ifelse((BetterThan == 1 & QualityNum == 1), 1, 0)) %>%
           dplyr::filter(StationID != TargetSiteID) %>% # Do NOT include target site samples
           dplyr::summarise(numSampsBT = sum(BetterThan, na.rm = TRUE),
                            numSampsNotDeg = sum(QualityNum, na.rm = TRUE),
@@ -354,7 +398,7 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         # Assign scores to target site
         df_tbl_scores <- dplyr::filter(df_tv.incase, StationID == TargetSiteID) %>%
-          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseYN,
+          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
                         StressSampleID, StressSampleDate, BioComm, all_of(colBio),
                         RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
                         Label, variable, value, q25, q50, q75) %>%
@@ -458,8 +502,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_VP_SSTV_", stressor, ".png")
 
-        p_tv <- ggplot2::ggplot(NULL, ggplot2::aes(x = Label, y = value,
-                                                   group = Label)) +
+        p_tv <- ggplot2::ggplot(data = df_tv.incase,
+                                ggplot2::aes(x = Label, y = value, group = Label)) +
           ggplot2::geom_boxplot(data = df_tv.incase, outliers = TRUE,
                                 outlier.size = 0.5, na.rm = TRUE,
                                 staplewidth = 0.5, linewidth = 0.25) +
