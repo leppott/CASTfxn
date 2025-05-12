@@ -169,12 +169,10 @@ getCoOccur <- function(TargetSiteID,
 
   # Filter for only not degraded samples plus target samples
   if (onlyNotDeg == TRUE) {
+    df.target <- dplyr::filter(df.comp, StationID == TargetSiteID)
     df.comp <- dplyr::filter(df.comp, Quality == "Not degraded")
-    # Replace Target site if it is considered degraded
-    if (!(TargetSiteID %in% df.comp$StationID)) {
-      df.target <- df_data[df_data$StationID == TargetSiteID, ]
-      df.comp <- rbind(df.target, df.comp)
-    }
+    df.comp <- dplyr::filter(df.comp, StationID != TargetSiteID)
+    df.comp <- rbind(df.target, df.comp)
   }
 
   df.comp <- dplyr::select_if(df.comp, not_all_na)
@@ -428,7 +426,7 @@ getCoOccur <- function(TargetSiteID,
   if (length(notstressors) > 0) {
     for (s in seq_along(notstressors)) {
       notstress <- notstressors[s]
-      msg <- paste0(notstress, " identified as not a stressor for ",
+      msg <- paste0(notstress, " identified as not a candidate cause for ",
                     TargetSiteID," for the ", bioComm, " community.")
       message(msg)
 
@@ -440,11 +438,13 @@ getCoOccur <- function(TargetSiteID,
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
     }
   } ### End no stressors statement
 
   df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
+  return(list(df_stressorMetadata = df.stressorMetadata,
+              notEvaluated = notstressors))
 
 }##FUNCTION.END
