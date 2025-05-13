@@ -30,7 +30,6 @@
 #'                    inside-the-case ID; may include outside-the-case ID.
 #' @param region Region or regulatory organization to which the data apply
 #'               (e.g., AZ, SMC, WA, OR)
-#' @param df_cluster dataframe containing clustered reaches (COMID, ClusterID)
 #' @param df_sites dataframe containing site data, including both "inside the case"
 #'                 and "outside the case" identifiers.
 #' @param allSites a vector of outside-the-case site identifiers
@@ -52,7 +51,6 @@
 getSiteMap <- function(sp_outline,
                        sp_flowline,
                        region,
-                       df_cluster,
                        df_sites,
                        allSites,
                        compSites,
@@ -70,7 +68,6 @@ getSiteMap <- function(sp_outline,
     sp_outline <- STATE.shp
     sp_flowline <- NHD.STATE
     region <- regionName
-    df_cluster <- data_cluster
     df_sites <- data_Sites
     allSites <- list.CompSites$all.sites
     compSites <- list.CompSites$comp.sites
