@@ -25,7 +25,7 @@
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 boo_Shiny <- FALSE
-library(tidyverse) #LCN added
+# library(tidyverse) #LCN added
 # 02, Set up ####
 # Progress, 02
 if (boo_Shiny == TRUE) {
@@ -60,13 +60,13 @@ if (boo_Shiny == TRUE) {
   #
   if (boo.debug == TRUE & debug.person == "Ann") {
     region <- "WA" # Must match column header in file "CASTool_Metadata.xlsx"
-    
+
     #LCN file paths
     # wd <- dirname(dirname(getwd()))
     # gitpath <- file.path(wd, "CASTfxn_6.3.6.4" , "CASTfxn", "R")
     # dir_rmd <- file.path(wd, "CASTfxn_6.3.6.4",  "CASTfxn", "inst", "rmd")
-    # localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data") 
-    
+    # localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data")
+
     wd <- "C:/Users/ann.lincoln/Documents" # ARL 2025-01-13
     gitpath <- file.path(wd, "GitHub", "CASTfxn", "R") # ARL 2023-05-22
     dir_rmd <- file.path(wd, "GitHub", "CASTfxn", "inst", "rmd") # ARL 2023-05-22
@@ -120,8 +120,13 @@ if (boo_Shiny == TRUE) {
     site <- "SMC04134"
     TargetSiteID <- site
     b <- 1
-  } else if (boo.debug == TRUE) {
+  } else if (boo.debug == TRUE & debug.person == "Laura") {
     # This should be an error condition, because Ann & Erik are only people
+    #LCN file paths
+    wd <- dirname(dirname(getwd()))
+    gitpath <- file.path(wd, "CASTfxn_6.3.6.4" , "CASTfxn", "R")
+    dir_rmd <- file.path(wd, "CASTfxn_6.3.6.4",  "CASTfxn", "inst", "rmd")
+    localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data")
   } else {#boo.debug == FALSE
     # Install CASTfxn package
     library(CASTfxn)
@@ -140,13 +145,15 @@ msg <- paste0("debug = ", boo.debug
 message(msg)
 
 ## Color assignments ####
-# Based on ito_seven from ggpubfigs 
+# Based on ito_seven from ggpubfigs
 data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
                             "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
                             "Shape" = c(24, 21, 25, 21, 25),
                             "Size" = c(1.5, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
 refOutline_col <- "#26F7FD"# LCN changed from "#009E73"
+# Note: this change may not be colorblind-friendly
+# check site map using https://www.color-blindness.com/coblis-color-blindness-simulator/
 
 ## Other plot variables ####
 plot_dpi <- 600
@@ -168,28 +175,37 @@ data_CASTmeta <- data_CASTmeta %>%
   tidyr::pivot_wider(names_from = Variable, values_from = all_of(region))
 
 fn.SC.WSvars  <- file.path(localdir, "SelectedStreamCatStressors.csv")
+fn.outline <- file.path(localdir, "NHDPlus", "gadm41_USA_shp", "gadm41_USA_1.shp")
 
-# Required user-designated options # LCN this code only handles if region is a state name or abbreviation
+# Required user-designated options
+# LCN this code only handles if region is a state name or abbreviation
 if (region %in% state.abb) {
   regionName        <- state.name[which(state.abb == region)]
-} else {
+} else if (region %in% state.name) {
   regionName        <- region
   region            <- state.abb[which(state.name == regionName)]
+} else {
+  # region is not a standard, accepted region (e.g., SMC)
+  # this will affect watershed-scale stressors and maps
+  if (region == "SMC") {
+    outline  <- poly.smc.proj
+    flowline <- lines.flowline.proj
+  }
 }
 removeOutliers      <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
 useBC               <- as.logical(dplyr::select(data_CASTmeta, useBC))
 samplim             <- as.integer(dplyr::select(data_CASTmeta, samplim))
-probsHigh           <- as.numeric(dplyr::select(data_CASTmeta, probsHigh))
-probsLow            <- as.numeric(dplyr::select(data_CASTmeta, probsLow))
+# probsHigh           <- as.numeric(dplyr::select(data_CASTmeta, probsHigh))
+# probsLow            <- as.numeric(dplyr::select(data_CASTmeta, probsLow))
 DOlim               <- as.numeric(dplyr::select(data_CASTmeta, DOlim))
 pHlimLow            <- as.numeric(dplyr::select(data_CASTmeta, pHlimLow))
 pHlimHigh           <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
 lagdays             <- as.integer(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
-                                                                       lagdays), ", ")))
+                                                                          lagdays), ", ")))
 biocommlist         <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, biocommlist), ", "))
 siteQual2Plot       <- as.character(dplyr::select(data_CASTmeta, siteQual2Plot))
-printClusterInfo    <- as.logical(dplyr::select(data_CASTmeta, printClusterInfo))
-printBkgdInfo       <- as.logical(dplyr::select(data_CASTmeta, printBkgdInfo))
+# printClusterInfo    <- as.logical(dplyr::select(data_CASTmeta, printClusterInfo))
+# printBkgdInfo       <- as.logical(dplyr::select(data_CASTmeta, printBkgdInfo))
 useAllCompReaches   <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
 useBetter           <- as.logical(dplyr::select(data_CASTmeta, useBetter))
 onlyNotDeg          <- as.logical(dplyr::select(data_CASTmeta, onlyNotDeg))
@@ -217,6 +233,8 @@ fn.fish.raw          <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.fish
 fn.MT.fish           <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.MT.fish))
 fn.bcdist            <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bcdist))
 fn.cluster           <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.cluster))
+fn.WSstressorData    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.WSstressorData))
+fn.WSstressorInfo    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.WSstressorInfo))
 
 # Specify user-defined variables
 # Stressors
@@ -247,11 +265,11 @@ for (b in seq_along(biocommlist)) {
   }
   if (bio == "algae") {
     alg_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_thresholds)
-                                                           , ", ")))
+                                                            , ", ")))
     alg_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_narrative)
-                                                , ", "))
+                                                 , ", "))
     alg_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_thres)
-                                                           , ", ")))
+                                                            , ", ")))
     alg_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_text), ", "))
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
     calcAlgRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcAlgRelAbund))
@@ -259,10 +277,10 @@ for (b in seq_along(biocommlist)) {
   }
   if (bio == "fish") {
     fish_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_thresholds)
-                                                            , ", ")))
+                                                             , ", ")))
     fish_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_narrative), ", "))
     fish_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_thres)
-                                                            , ", ")))
+                                                             , ", ")))
     fish_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_text), ", "))
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
     calcFishRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcFishRelAbund))
@@ -291,7 +309,7 @@ if (boo_Shiny == TRUE) {
   outline  <- poly.smc.proj
   flowline <- lines.flowline.proj
 } else {
-  fn.outline <- file.path(localdir, "NHDPlus", "gadm41_USA_shp", "gadm41_USA_1.shp") # LCN added additional folder and changed to 41
+  # fn.outline moved to the top with other hard-coded file locations
   STATE.shp <- sf::read_sf(fn.outline) %>%
     dplyr::filter(NAME_1 == regionName) %>%
     sf::st_transform(crs = 5070) %>%
@@ -304,7 +322,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 rm(fn.outline)
 
-# Get cluster data
+## Get cluster data ####
 if (basename(fn.cluster) != "NA") {
   data_cluster <- readCASToolData(fn = fn.cluster, NAs = c("", "na", "NA", "N/A"))
 
@@ -321,11 +339,13 @@ if (basename(fn.cluster) != "NA") {
 }
 rm(fn.cluster)
 
-## Get site location info and other metadata (e.g., waterbody name)
+## Get site location ####
 if (basename(fn.Sites.Info) != "NA") {
   data_Sites <- readCASToolData(fn = fn.Sites.Info,
-                                NAs = c("", "na", "NA", "N/A")) %>% #select(-ClusterID) #LCN temporary fix need to comment out for WA_LCN
-
+                                NAs = c("", "na", "NA", "N/A"))
+  if ("ClusterID" %in% colnames(data_Sites)) {
+    data_Sites <- dplyr::select(!ClusterID)
+  }
   data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
 
   # Rename or add OutcaseCol to sites file
@@ -339,18 +359,19 @@ if (basename(fn.Sites.Info) != "NA") {
       data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
     }
   } else {                                 # outside the case is not defined
-    msg <- paste0("Adding 'OutcaseCol' column to site file with values equal to "
-                  , outcaseLabel, ".")
+    msg <- paste0("Adding 'OutcaseCol' column to site file with values equal to ",
+                  outcaseLabel, ".")
     message(msg)
     data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
+    outcaseColName <- "OutcaseCol"
   }
 
   # Rename or add RefSiteFlag to sites file
   if (!is.na(refColName)) {                # reference column name is defined
     data_Sites <- dplyr::rename(data_Sites, RefSiteFlag = all_of(refColName))
   } else {
-    msg <- paste("Adding ", refColName, " column to site file with values equal to 0 (FALSE)."
-                 , "No sites will be depicted as reference.", sep = "\n")
+    msg <- paste("Adding ", refColName, " column to site file with values equal to 0 (FALSE).",
+                 "No sites will be depicted as reference.", sep = "\n")
     message(msg)
     data_Sites <- dplyr::mutate(data_Sites, RefSiteFlag = 0)
   }
@@ -360,7 +381,9 @@ if (basename(fn.Sites.Info) != "NA") {
     data_Sites <- dplyr::rename(data_Sites, IncaseCol = all_of(incaseColName))
   } else {
     if (useBC == TRUE) {
-      message("Either incaseColName must be specified or useBC must be TRUE, and required files provided")
+      msg <- paste0("Either incaseColName must be specified or useBC must be TRUE, ",
+                    "and required files provided")
+      message(msg)
       stop()
     }
   }
@@ -382,80 +405,24 @@ if (basename(fn.Sites.Info) != "NA") {
 }
 rm(fn.Sites.Info, refColName)
 
-# Get background metadata & data (StreamCat)
-if (exists("fn.SC.WSvars")) {
-  data_bkginfo <- readCASToolData(fn = fn.SC.WSvars, NAs = c("", "na", "NA", "N/A"))
-
-  # Get all SC parameter names
-  SCmetrics <- StreamCatTools::sc_get_params(param = "name")
-  data_stressorinfoWS <- data.frame(SCmetrics)
-
-  data_stressorinfoWS <- data_stressorinfoWS %>%
-    dplyr::mutate(Year = suppressWarnings(dplyr::case_when(SCmetrics == "popden2010" ~ NA_integer_,
-                                                           grepl("^\\w*\\d{4}$", SCmetrics) ~
-                                                             as.integer(sub("^\\w*(\\d{4})$",
-                                                                            "\\1", SCmetrics)),
-                                                           grepl("^\\w*\\d{4}slp\\d{2}$", SCmetrics) ~
-                                                             as.integer(sub("^\\w*(\\d{4})slp\\d{2}$",
-                                                                            "\\1", SCmetrics)),
-                                                           TRUE ~ NA_integer_)))
-  data_stressorinfoWS <- data_stressorinfoWS %>%
-    dplyr::mutate(StreamCatVar = suppressWarnings(dplyr::case_when(SCmetrics == "popden2010" ~ "popden2010",                                                                     grepl("\\d{4}slp\\d{2}$", SCmetrics) ~
-                                                                     sub("\\d{4}", "####", SCmetrics),
-                                                                   grepl("\\d{4}$", SCmetrics) ~
-                                                                     sub("\\d{4}", "####", SCmetrics),
-                                                                   TRUE ~ SCmetrics))) %>%
-    dplyr::select(SCmetrics, StreamCatVar, Year)
-
-  # Match metric names in StreamCat to metric names desired
-  data_stressorinfoWS <- merge(data_stressorinfoWS, data_bkginfo,
-                             by.x = "StreamCatVar", by.y = "variable",
-                             all.y = TRUE)
-  data_stressorinfoWS <- data_stressorinfoWS %>%
-    dplyr::mutate(StreamCatVar = sub("####", "", StreamCatVar),
-                  Label = dplyr::case_when(grepl("^NABD", description) ~ description,
-                                           grepl("^NPDES", description) ~ description,
-                                           TRUE ~ stringr::str_to_sentence(description)))
-
-  # Obtain actual data
-  SCmetrics = unlist(unique(data_stressorinfoWS$SCmetrics))
-  SCmetrics = paste(SCmetrics, collapse = ",")
-  data_stressorWS <- StreamCatTools::sc_get_data(metric = SCmetrics,
-                                                 aoi = 'watershed',
-                                                 state = region)
-  # data_stressorWS <- as.data.frame(data_stressorWS) %>% # LCN commented out because state no longer returned
-  #   dplyr::select(!STATE)
-
-  data_stressorWS <- merge(data_cluster, data_stressorWS, by.x = "COMID", by.y = "comid", all.x = TRUE) # need to add by.x and by.y because of names returned by StreamCatTools
-  data_stressorWS <- data_stressorWS %>%
-    tidyr::pivot_longer(cols = !c(COMID, ClusterID),
-                        names_to = "StreamCatVar",
-                        values_to = "WatershedValue")
-  data_stressorWS <- data_stressorWS %>%
-    dplyr::mutate(StreamCatVar = sub("ws$", "", StreamCatVar),# LCN this needs to be ws, TODO change names before pivoting
-                  StreamCatVar = tolower(StreamCatVar),
-                  Year = suppressWarnings(dplyr::case_when(
-                    StreamCatVar == "popden2010" ~ NA_integer_,
-                    grepl("^\\w*\\d{4}slp\\d{2}$", StreamCatVar) ~
-                      as.integer(sub("^\\w*(\\d{4})slp\\d{2}$", "\\1", StreamCatVar)),
-                    grepl("^\\w*\\d{4}$", StreamCatVar) ~
-                      as.integer(sub("^\\w*(\\d{4})$", "\\1", StreamCatVar)),
-                    TRUE ~ NA_integer_)),
-                  StreamCatVar = suppressWarnings(dplyr::case_when(
-                    StreamCatVar == "popden2010" ~ "popden2010",
-                    grepl("\\d{4}slp\\d{2}$", StreamCatVar) ~ sub("\\d{4}", "", StreamCatVar),
-                    grepl("\\d{4}$", StreamCatVar) ~ sub("\\d{4}", "", StreamCatVar),
-                    TRUE ~ StreamCatVar)))
-
-  # Trim data_stressorinfoWS to StreamCatVar and Label only
-  data_stressorinfoWS <- dplyr::distinct(data_stressorinfoWS, StreamCatVar, Label)
-  rm(SCmetrics, data_bkginfo)
-  
+## Get StreamCat data & metadata ----
+if (exists("fn.WSstressorData")) {
+  data_stressorinfoWS <- readCASToolData(fn = fn.WSstressorData,
+                                         NAs = c("", "na", "NA", "N/A"))
 } else {
-  msg <- "fn.SC.WSvars is NA"
+  msg <- "fn.WSstressorData is NA"
   message(msg)
 }
-rm(fn.SC.WSvars)
+rm(fn.WSstressorData)
+
+if (exists("fn.WSstressorInfo")) {
+  data_stressorWS <- readCASToolData(fn = fn.WSstressorInfo,
+                                     NAs = c("", "na", "NA", "N/A"))
+} else {
+  msg <- "fn.WSstressorInfo is NA"
+  message(msg)
+}
+rm(fn.WSstressorInfo)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 05, Measured data and metadata ####
@@ -486,9 +453,11 @@ if (basename(fn.measdata) != "NA") {
 
   ## Average duplicate data
   data_chemAll <- data_chemAll %>%
-    dplyr::mutate(StressSampleDate = lubridate::parse_date_time(StressSampleDate, orders = c("ymd", "mdy", "dmy")) %>% date()) %>% #lubridate::mdy(StressSampleDate)) %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName
-           , ResultValue) %>%
+    dplyr::mutate(StressSampleDate = lubridate::parse_date_time(StressSampleDate,
+                                                                orders = c("ymd", "mdy", "dmy")) %>%
+                    lubridate::date()) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+                  ResultValue) %>%
     dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
     dplyr::summarize(MeanResultValue = mean(ResultValue), .groups = "drop_last") %>%
     dplyr::rename(ResultValue = MeanResultValue) %>%
@@ -510,8 +479,8 @@ if (basename(fn.measdata) != "NA") {
 
   ## Get measured parameter names and separately, algal parameter names
   measParams <- as.vector(unique(data_chemRaw$StdParamName))
-  algParams  <- as.vector(unique(data_chemRaw$StdParamName[grepl("^AFDM|^Chlor_a|^Pheophytin"
-                                                                 , data_chemRaw$StdParamName)]))
+  algParams  <- as.vector(unique(data_chemRaw$StdParamName[grepl("^AFDM|^Chlor_a|^Pheophytin",
+                                                                 data_chemRaw$StdParamName)]))
   measStressData <- TRUE
 
 } else {
@@ -698,9 +667,14 @@ for (b in seq_along(biocommlist)) {
       data_BMIcounts <- readCASToolData(fn = fn.bmi.raw
                                         , NAs = c("", "na", "NA", "N/A"))
 
-      data_BMIcounts <- dplyr::mutate(data_BMIcounts,
-                                      RespSampleDate = parse_date_time(RespSampleDate, orders = c("ymd", "mdy", "dmy")) %>% date()) #lubridate::mdy(RespSampleDate)) #, 
-                                      #SRespSampleID = str_replace_all(RespSampleID, "[:punct:]", "_"), StationID = str_replace_all(StationID, "[:punct:]", "_")) # LCN needed to add for provided dataset so RespSampIDs matched
+      data_BMIcounts <- data_BMIcounts %>%
+        dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date(),
+                      RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                      StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+      # LCN needed to add for provided dataset so RespSampIDs matched
+
       # TODO: comment this section out if using BioMonTools for data prep
       # Require data_BMIcounts to have both NumIndividuals, and PctIndividuals
       # as well as total sample count
@@ -716,7 +690,7 @@ for (b in seq_along(biocommlist)) {
 
       if (calcBMIRelAbund == TRUE) {     # Only write this column if needed
         data_BMIcounts <- data_BMIcounts %>%
-          dplyr::mutate(PctInd = round(NumIndividuals / SampleTotAbund, 5))
+          dplyr::mutate(RelAbund = round(NumIndividuals / SampleTotAbund, 5))
       } # end section to comment out if using BioMonTools for data prep
 
       data_BMIcounts <- data_BMIcounts %>%
@@ -742,8 +716,10 @@ for (b in seq_along(biocommlist)) {
       data_cscicore <- data_cscicore %>%
         dplyr::mutate(date_text = paste(samplemonth, sampleday, sampleyear, sep = "/")
                       , RespSampleID = paste(stationid, date_text, collectionmethodcode
-                                          , fieldreplicate, sep = "_")
-                      , RespSampleDate = lubridate::parse_date_time(date_text, orders = c("ymd", "mdy", "dmy")) %>% date()) %>% #lubridate::mdy(date_text)) %>%
+                                             , fieldreplicate, sep = "_")
+                      , RespSampleDate = lubridate::parse_date_time(date_text,
+                                                                    orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date()) %>%
         dplyr::rename(StationID = stationid, PctAmbigInd = pcnt_ambiguous_individuals
                       , NumIndividuals = count) %>%
         dplyr::select(StationID, RespSampleID, RespSampleDate, NumIndividuals
@@ -756,8 +732,8 @@ for (b in seq_along(biocommlist)) {
 
     # Get BMI master taxa data
     if (!is.na(basename(fn.MT.bmi))) {
-      data_BMIMasterTaxa <- readCASToolData(fn = fn.MT.bmi
-                                            , NAs = c("", "na", "NA", "N/A"))
+      data_BMIMasterTaxa <- readCASToolData(fn = fn.MT.bmi,
+                                            NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.MT.bmi is NA"
       message(msg)
@@ -765,18 +741,20 @@ for (b in seq_along(biocommlist)) {
 
     # Get BMI metric data
     if (basename(fn.bmi.metrics) != "NA") {
-      data_bmiMetrics <- readCASToolData(fn = fn.bmi.metrics
-                                         , NAs = c("", "na", "NA", "N/A"))
+      data_bmiMetrics <- readCASToolData(fn = fn.bmi.metrics,
+                                         NAs = c("", "na", "NA", "N/A"))
 
       data_bmiMetrics <- data_bmiMetrics %>%
         dplyr::select_if(not_all_na) %>%
-        dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate, orders = c("ymd", "mdy", "dmy")) %>% date()) #lubridate::mdy(RespSampleDate))
+        dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date())
 
       data_bmiMetrics <- unique(data_bmiMetrics)
 
-      data_bmiMetrics <- merge(data_bmiMetrics, data_BMISampTotAbund
-                               , by = c("RespSampleID", "RespSampleDate")
-                               , all.x = TRUE)
+      data_bmiMetrics <- merge(data_bmiMetrics, data_BMISampTotAbund,
+                               by = c("RespSampleID", "RespSampleDate"),
+                               all.x = TRUE)
       data_BMITrim <- data_bmiMetrics %>%
         dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
         dplyr::mutate(biocomm = "BMISampleID")
@@ -784,16 +762,16 @@ for (b in seq_along(biocommlist)) {
       rm(data_BMITrim)
 
       if (exists("data_cscicore")) {
-        data_bmiMetrics <- merge(data_bmiMetrics, data_cscicore
-                                 , by = c("StationID", "RespSampleID"
-                                          , "RespSampleDate", "NumIndividuals")
-                                 , all.x = TRUE)
+        data_bmiMetrics <- merge(data_bmiMetrics, data_cscicore,
+                                 by = c("StationID", "RespSampleID",
+                                        "RespSampleDate", "NumIndividuals"),
+                                 all.x = TRUE)
         data_bmiMetrics <- data_bmiMetrics %>%
           dplyr::mutate(BMISampFlag = case_when(count < 250 & PctAmbigInd > 50 ~
-                                                  "Insufficient individuals and large percent ambiguity"
-                                                , count < 250 ~ "Insufficient individuals"
-                                                , PctAmbigInd > 50 ~ "Large percent ambiguity"
-                                                , TRUE ~ NA)) %>%
+                                                  "Insufficient individuals and large percent ambiguity",
+                                                count < 250 ~ "Insufficient individuals",
+                                                PctAmbigInd > 50 ~ "Large percent ambiguity",
+                                                TRUE ~ NA)) %>%
           dplyr::select(!count)
         rm(data_cscicore)
       } else {
@@ -806,31 +784,31 @@ for (b in seq_along(biocommlist)) {
       message(msg)
     }
 
-    # Get BMI metric info and add Quality
+    # Get BMI metric info and add Quality (based on user-supplied data in CASTool_Metadata.xlsx)
     if (basename(fn.bmi.metrics.info) != "NA") {
-      data_bmiMetricsInfo <- readCASToolData(fn = fn.bmi.metrics.info
-                                             , NAs = c("", "na", "NA", "N/A"))
+      data_bmiMetricsInfo <- readCASToolData(fn = fn.bmi.metrics.info,
+                                             NAs = c("", "na", "NA", "N/A"))
       data_bmiMetricsInfo <- data_bmiMetricsInfo %>%
         dplyr::filter(UseYN == "Y") %>%
         dplyr::select(MetricName, MetricLabel, IndexYN, TrendWIncStress,
                       CutoffValue, InclusiveIndicator)
       bmiMetrics <- as.vector(data_bmiMetricsInfo$MetricName)
       bmiIndex <- as.character(data_bmiMetricsInfo$MetricName[data_bmiMetricsInfo$IndexYN == "Yes"])
-      data_bmiMetrics$Quality <- cut(data_bmiMetrics[, bmiIndex]
-                                     , breaks = bmi_deg_thres
-                                     , labels = bmi_deg_text)
+      data_bmiMetrics$Quality <- cut(data_bmiMetrics[, bmiIndex],
+                                     breaks = bmi_deg_thres,
+                                     labels = bmi_deg_text)
     } else {
       msg <- "fn.bmi.metrics.info is NA"
       message(msg)
     }
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
-    data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                         , df_stress = data_Stress
-                                         , biocomm = "BMI"
-                                         , df_resp = data_bmiMetrics
-                                         , index = bmiIndex
-                                         , lagdays = lagdays)
+    data_bmiCoOccur <- getCoOccurDataset(df_sites = data_Sites,
+                                         df_stress = data_Stress,
+                                         biocomm = "BMI",
+                                         df_resp = data_bmiMetrics,
+                                         index = bmiIndex,
+                                         lagdays = lagdays)
     # returns df_coOccur as data_bmiCoOccur
 
     if (!is.na(bmiModParams)) {
@@ -860,8 +838,8 @@ for (b in seq_along(biocommlist)) {
 
     # Get raw algal data
     if (basename(fn.alg.raw) != "NA") {
-      data_algCounts <- readCASToolData(fn = fn.alg.raw
-                                        , NAs = c("", "na", "NA", "N/A"))
+      data_algCounts <- readCASToolData(fn = fn.alg.raw,
+                                        NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.alg.raw is NA"
       message(msg)
@@ -869,8 +847,8 @@ for (b in seq_along(biocommlist)) {
 
     # Get algal master taxa data
     if (basename(fn.MT.alg) != "NA") {
-      data_algMasterTaxa <- readCASToolData(fn = fn.MT.alg
-                                            , NAs = c("", "na", "NA", "N/A"))
+      data_algMasterTaxa <- readCASToolData(fn = fn.MT.alg,
+                                            NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.MT.alg is NA"
       message(msg)
@@ -878,10 +856,12 @@ for (b in seq_along(biocommlist)) {
 
     # Get algal metrics data
     if (basename(fn.alg.metrics) != "NA") {
-      data_algMetrics <- readCASToolData(fn = fn.alg.metrics
-                                         , NAs = c("", "na", "NA", "N/A"))
+      data_algMetrics <- readCASToolData(fn = fn.alg.metrics,
+                                         NAs = c("", "na", "NA", "N/A"))
       data_algMetrics <- data_algMetrics %>%
-        dplyr::mutate(AlgSampDate = lubridate::parse_date_time(AlgSampDate, orders = c("ymd", "mdy", "dmy")) %>% date()) %>%  #lubridate::mdy(AlgSampDate)) %>%
+        dplyr::mutate(AlgSampDate = lubridate::parse_date_time(AlgSampDate,
+                                                               orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date()) %>%
         dplyr::mutate(AlgSampFlag = NA)
 
       data_algTrim <- data_algMetrics %>%
@@ -895,19 +875,19 @@ for (b in seq_along(biocommlist)) {
       message(msg)
     }
 
-    # Get algal metrics metadata
+    # Get algal metrics metadata & Quality (based on user-supplied data in CASTool_Metadata.xlsx)
     if (basename(fn.alg.metrics.info) != "NA") {
-      data_algMetricsInfo <- readCASToolData(fn = fn.alg.metrics.info
-                                             , NAs = c("", "na", "NA", "N/A"))
+      data_algMetricsInfo <- readCASToolData(fn = fn.alg.metrics.info,
+                                             NAs = c("", "na", "NA", "N/A"))
       data_algMetricsInfo <- data_algMetricsInfo %>%
         dplyr::filter(UseYN == "Y") %>%
         dplyr::select(MetricName, MetricLabel, IndexYN, TrendWIncStress,
                       CutoffValue, InclusiveIndicator)
       algMetrics <- as.vector(data_algMetricsInfo$MetricName[data_algMetricsInfo$UseYN == 1])
       algIndex <- as.character(data_algMetricsInfo$MetricName[data_algMetricsInfo$IndexYN == "Yes"])
-      data_algMetrics$Quality <- cut(data_algMetrics[, algIndex]
-                                     , breaks = alg_deg_thres
-                                     , labels = alg_deg_text)
+      data_algMetrics$Quality <- cut(data_algMetrics[, algIndex],
+                                     breaks = alg_deg_thres,
+                                     labels = alg_deg_text)
 
     } else {
       msg <- "fn.alg.metrics.info is NA"
@@ -916,12 +896,12 @@ for (b in seq_along(biocommlist)) {
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
-    data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                         , df_stress = data_Stress
-                                         , biocomm = "Alg"
-                                         , df_resp = data_algMetrics
-                                         , index = algIndex
-                                         , lagdays = lagdays)
+    data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites,
+                                         df_stress = data_Stress,
+                                         biocomm = "Alg",
+                                         df_resp = data_algMetrics,
+                                         index = algIndex,
+                                         lagdays = lagdays)
     # returns df_coOccur as data_algCoOccur
 
     if (!is.na(algModParams)) {
@@ -952,8 +932,8 @@ for (b in seq_along(biocommlist)) {
 
     # Get raw fish data
     if (basename(fn.fish.raw) != "NA") {
-      data_fishCounts <- readCASToolData(fn = fn.fish.raw
-                                         , NAs = c("", "na", "NA", "N/A"))
+      data_fishCounts <- readCASToolData(fn = fn.fish.raw,
+                                         NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.fish.raw is NA"
       message(msg)
@@ -961,19 +941,21 @@ for (b in seq_along(biocommlist)) {
 
     # Get fish master taxa data
     if (basename(fn.MT.fish) != "NA") {
-      data_fishMasterTaxa <- readCASToolData(fn = fn.MT.fish
-                                             , NAs = c("", "na", "NA", "N/A"))
+      data_fishMasterTaxa <- readCASToolData(fn = fn.MT.fish,
+                                             NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.MT.fish is NA"
       message(msg)
     }
 
-    # Get fish metrics data
+    # Get fish metrics data & Quality (based on user-supplied data in CASTool_Metadata.xlsx)
     if (basename(fn.fish.metrics) != "NA") {
-      data_fishMetrics <- readCASToolData(fn = fn.fish.metrics
-                                          , NAs = c("", "na", "NA", "N/A"))
+      data_fishMetrics <- readCASToolData(fn = fn.fish.metrics,
+                                          NAs = c("", "na", "NA", "N/A"))
       data_fishMetrics <- data_fishMetrics %>%
-        dplyr::mutate(FishSampleDate = lubridate::parse_date_time(FishSampDate, orders = c("ymd", "mdy", "dmy")) %>% date()) %>% #lubridate::mdy(FishSampDate)) %>%
+        dplyr::mutate(FishSampleDate = lubridate::parse_date_time(FishSampDate,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date()) %>%
         dplyr::mutate(FishSampFlag = NA)
 
       data_fishTrim <- data_fishMetrics %>%
@@ -989,17 +971,17 @@ for (b in seq_along(biocommlist)) {
 
     # Get fish metrics metadata
     if (basename(fn.fish.metrics.info) != "NA") {
-      data_fishMetricsInfo <- readCASToolData(fn = fn.fish.metrics.info
-                                              , NAs = c("", "na", "NA", "N/A"))
+      data_fishMetricsInfo <- readCASToolData(fn = fn.fish.metrics.info,
+                                              NAs = c("", "na", "NA", "N/A"))
       data_fishMetricsInfo <- data_fishMetricsInfo %>%
         dplyr::filter(UseYN == "Y") %>%
         dplyr::select(MetricName, MetricLabel, IndexYN, TrendWIncStress,
                       CutoffValue, InclusiveIndicator)
       fishMetrics <- as.vector(data_fishMetricsInfo$MetricName[data_fishMetricsInfo$UseYN == 1])
       fishIndex <- as.character(data_fishMetricsInfo$MetricName[data_fishMetricsInfo$IndexYN == "Yes"])
-      data_fishMetrics$Quality <- cut(data_fishMetrics[, fishIndex]
-                                     , breaks = fish_deg_thres
-                                     , labels = fish_deg_text)
+      data_fishMetrics$Quality <- cut(data_fishMetrics[, fishIndex],
+                                      breaks = fish_deg_thres,
+                                      labels = fish_deg_text)
 
     } else {
       msg <- "fn.fish.metrics.info is NA"
@@ -1008,20 +990,20 @@ for (b in seq_along(biocommlist)) {
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
-    data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites
-                                          , df_stress = data_Stress
-                                          , biocomm = "Fish"
-                                          , df_resp = data_fishMetrics
-                                          , index = fishIndex
-                                          , lagdays = lagdays)
+    data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites,
+                                          df_stress = data_Stress,
+                                          biocomm = "Fish",
+                                          df_resp = data_fishMetrics,
+                                          index = fishIndex,
+                                          lagdays = lagdays)
     # returns df_coOccur as data_fishCoOccur
 
     if (!is.na(fishModParams)) {
       # Identify modeled parameters to keep or delete (per client)
       fishModelParamsDEL  <- setdiff(modelParams, fishModParams)
       # modelParams: all modeled Params;
-      # bmiModParams: input data from client re which modeled parameters to use
-      # when evaluating bmi responses
+      # fishModParams: input data from client re which modeled parameters to use
+      # when evaluating fish responses
       data_fishCoOccur <- data_fishCoOccur %>%
         dplyr::select(!all_of(fishModelParamsDEL)) %>%
         dplyr::select_if(not_all_na)
@@ -1115,7 +1097,7 @@ if (boo_Shiny == TRUE) {
                            , "Chosen by" = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
-  df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
+  # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
   msg <- paste0("Number of target sites = ", nrow(df_targets))
   message(msg)
 }
@@ -1134,32 +1116,38 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 #
 # FOR ~ site ~ START ####
-for (site in seq_along(df_targets)) {
-  startsite.time <- Sys.time()
+for (site in seq_along(1:nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
-  if (boo.debug == TRUE & debug.person == "Ann") { # For debugging purposes only # these need to be - in LCN version of files
-    if (region == "WA") {
-      # TargetSiteID <- "BIO06600_BURP15"   # No degraded samples
-      # TargetSiteID <- "ERR06600_005995"   # All samples degraded; low pH
-      # TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
-      # TargetSiteID <- "RSM06600_007971"   # No degraded samples
-       TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
-      # TargetSiteID <- "WAM06600-003688"   # One of two samples degraded # LCN version of files uses - instead of _
-    } else if (region == "OR") {
-
-    } else {
-      # Different state here
-    }
-  }
+  # if (boo.debug == TRUE & debug.person == "Ann") {
+  # For debugging purposes only # these need to be - in LCN version of files
+  # if (region == "WA") {
+  # TargetSiteID <- "BIO06600_BURP15"   # No degraded samples (6 of them)
+  # TargetSiteID <- "ERR06600_005995"   # No clusterID
+  # TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
+  # TargetSiteID <- "RSM06600_007971"   # No degraded samples
+  # TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
+  # TargetSiteID <- "WAM06600_003688"   # One of two samples degraded
+  # TargetSiteID <- "WAM06600-003688"   # One of two samples degraded
+  # LCN version of files uses - instead of _
+  # } else if (region == "OR") {
+  #
+  # } else {
+  # Different state here
+  #   }
+  # }
 
   if (is.na(TargetSiteID)) {
+    next()
+  } else if (is.na(data_Sites$IncaseCol[data_Sites$StationID == TargetSiteID])) {
+    msg <- "No inside-the-case identifier available"
+    message(msg)
     next()
   }
   msg <- paste0("Evaluating site: ", TargetSiteID)
   message(msg)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Biocomm-independent functions
+  ## Biocomm-independent functions ----
 
   # Create high-level results folder structure
   dir_sub2 <- TargetSiteID
@@ -1234,8 +1222,8 @@ for (site in seq_along(df_targets)) {
   getSiteInfo(TargetSiteID = TargetSiteID,
               TargetCOMID = list.CompSites$TargetCOMID,
               df_Sites = data_Sites,
-              df_WSData = NULL, #data_stressorWS, # Set to NULL currently since StreamCatTools produces a 503 error
-              df_WSInfo = NULL, #data_stressorinfoWS, # Set to NULL currently since StreamCatTools produces a 503 error
+              df_WSData = data_stressorinfoWS, # Use results produced by getStreamCatData.R
+              df_WSInfo = data_stressorWS, # Use results produced by getStreamCatData.R
               df_SampSummary = data_sampSummary,
               biocommlist = biocommlist,
               df_BMIMetrics = data_bmiMetrics,
@@ -1264,9 +1252,8 @@ for (site in seq_along(df_targets)) {
 
   # Create site map
   getSiteMap(sp_outline = STATE.shp,
-             sp_flowline = NHD.STATE, # should already include clusterID
+             sp_flowline = NHD.STATE,
              region = regionName,
-             df_cluster = data_cluster,
              df_sites = data_Sites,
              allSites = list.CompSites$all.sites,
              compSites = list.CompSites$comp.sites,
@@ -1277,7 +1264,7 @@ for (site in seq_along(df_targets)) {
              dir_results = dir_results,
              dir_sub = "SiteInfo",
              dir_map_rmd = dir_rmd)
-  # Prints static and leaflet maps (.png and .html)
+  # Prints static map (.png)
 
   msg <- "getSiteInfo, getSiteMap, and writeOutliers are complete."
   message(msg)
@@ -1293,6 +1280,9 @@ for (site in seq_along(df_targets)) {
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
+  # TODO ----
+  # create a site with no detects of anything to test the capture
+  # in getAvailableDataTypes
   # Prepare flags for types of stressor and response data to use
   list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID,
                                           df_stress = data_Stress,
@@ -1335,26 +1325,13 @@ for (site in seq_along(df_targets)) {
     # No identified stressors may be a data gap, but may not be, either
     # gapcomment <- paste0("No potential stressors fall outside the specified "
     #                      , "quantile range (", probsLow, " to ", probsHigh, ").")
-    gaps <- cbind.data.frame("getStressorList", "Number of stressors", 0
-                             , msg)
+    gaps <- cbind.data.frame("getAvailData", "Number of stressors", 0, msg)
     colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
+    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                row.names = FALSE, sep = "\t")
 
-    # Write run-time stats to file
-    endsite.time <- Sys.time()
-    elapsedsite.time <- endsite.time - startsite.time
-
-    df_temp <- as.data.frame(cbind("TargetSiteID" = TargetSiteID
-                                   , "Biocomm" = bioComm
-                                   , "NumStressors" = nrow(list.stressors$stressors)
-                                   , "NumLoE" = 0
-                                   , "ElapsedTime" = elapsedsite.time))
-    write.table(df_temp, file.path(dir_results, fn_runstats)
-                , append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
     next()
 
   } ### End no stressors statement GO TO NEXT SITE
@@ -1585,43 +1562,40 @@ for (site in seq_along(df_targets)) {
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
     #
-    # Get Co-occurrence from comparator samples with better than biology
-    # or all comparator samples
+    # Get Co-occurrence from comparator samples with not degraded samples
     # Answers the question: "Are the observed stressor levels consistent
     # with impairment where and when it occurs"?
     if (TargetSiteID %in% unique(data_bioCoOccur$StationID)) {
       msg <- "Starting Co-occurrence"
       message(msg)
-      df_stressorMetadata <- getCoOccur(TargetSiteID = TargetSiteID,
-                                        df_data = df_PairedSRTransf,
-                                        detects = siteDetectsAll,
-                                        df_stressinfo = data_stressInfo,
-                                        compsites = list.CompSites$comp.sites,
-                                        biocomm = bioComm,
-                                        colBio = bioIndex,
-                                        onlyNotDeg = onlyNotDeg,
-                                        useBetter = useBetter,
-                                        pHlimLow = pHlimLow,
-                                        pHlimHigh = pHlimHigh,
-                                        DOlim = DOlim,
-                                        plotvars = data_plotvars,
-                                        plot_dpi = plot_dpi,
-                                        plot_H = plot_H,
-                                        plot_W = plot_W,
-                                        plot_units = plot_units,
-                                        dir_plots = dir_results,
-                                        dir_sub = "CoOccurrence",
-                                        boo_plot = boo_plot_user)
-    } else {
-      # gapcomment <- "Stressor detected but paired response not available"
-      # gaps <- cbind.data.frame("getStressorList", stressorsNOpairing[s], 0
-      #                          , gapcomment)
-      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      # fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-      #             , row.names = FALSE, sep = "\t")
-    } ### End getCoOccur
+      # TODO: Eliminate "degraded" samples from the legend OR incorporate
+      # "not degraded comparator" into the y-axis title or caption
+      list.StressorMetaData <- getCoOccur(TargetSiteID = TargetSiteID,
+                                          df_data = df_PairedSRTransf,
+                                          detects = siteDetectsAll,
+                                          df_stressinfo = data_stressInfo,
+                                          compsites = list.CompSites$comp.sites,
+                                          biocomm = bioComm,
+                                          colBio = bioIndex,
+                                          onlyNotDeg = onlyNotDeg,
+                                          useBetter = useBetter,
+                                          pHlimLow = pHlimLow,
+                                          pHlimHigh = pHlimHigh,
+                                          DOlim = DOlim,
+                                          plotvars = data_plotvars,
+                                          plot_dpi = plot_dpi,
+                                          plot_H = plot_H,
+                                          plot_W = plot_W,
+                                          plot_units = plot_units,
+                                          dir_plots = dir_results,
+                                          dir_sub = "CoOccurrence",
+                                          boo_plot = boo_plot_user)
+
+      df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
+      notEvaluated <- list.StressorMetaData$notEvaluated
+
+    }
+
     msg <- paste0("getCoOccur for ", bioComm, " is complete.")
     message(msg)
 
@@ -1724,7 +1698,7 @@ for (site in seq_along(df_targets)) {
     message(msg)
 
     dirSRlog <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                       , "Sufficiency")
+                          , "Sufficiency")
     if (dir.exists(dirSRlog) == TRUE) {
       if ((length(list.files(dirSRlog)) > 0) == TRUE) {
         numLoE = numLoE + 1
@@ -1769,7 +1743,7 @@ for (site in seq_along(df_targets)) {
     message(msg)
 
     dirSRLin <- file.path(dir_results, TargetSiteID, toupper(bioComm)
-                       , "StressorResponse")
+                          , "StressorResponse")
     if (dir.exists(dirSRLin) == TRUE) {
       if (length(list.files(dirSRLin)) > 0) {
         numLoE = numLoE + 1
@@ -1800,8 +1774,7 @@ for (site in seq_along(df_targets)) {
     if (length(stressors.ssi) == 0 & length(stressors.sstv) == 0) {
       msg <- "No site stressors have stressor-specific tolerance values or stressor-specific indices."
       message(msg)
-      gapcomment <- paste0("Stressors having stressor-specific tolerance "
-                           , "values are not identified at this site.")
+      gapcomment <- "No site stressors have stressor-specific tolerance values or stressor-specific indices."
       gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0
                                , gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -1901,20 +1874,6 @@ for (site in seq_along(df_targets)) {
     # msg <- paste0("getWoE for ", bioComm, " is complete.")
     # message(msg)
 
-    # Write run-time stats to file
-    endsite.time <- Sys.time()
-    elapsedsite.time <- endsite.time - startsite.time
-
-    df_temp <- as.data.frame(cbind("TargetSiteID" = TargetSiteID
-                                   , "Biocomm" = bioComm
-                                   , "NumStressors" = length(siteDetectsAll) # length(stressors) # LCN should this be siteDetectsAll?
-                                   , "NumLoE" = numLoE
-                                   , "ElapsedTime" = elapsedsite.time))
-
-    write.table(df_temp, file.path(dir_results, fn_runstats)
-                , append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
-
   } ### End biocomm loop
   # FOR ~ b ~ END ####
 
@@ -1963,14 +1922,14 @@ for (site in seq_along(df_targets)) {
   #           , dir_rmd = dir_rmd
   #           , siteQual2Plot = siteQual2Plot)
 
-  dfGaps <- read.table(file.path(dir_results, TargetSiteID
-                                 , paste0(TargetSiteID,"_datagaps.tab"))
-                       , header = TRUE, sep = "\t")
+  dfGaps <- read.table(file.path(dir_results, TargetSiteID,
+                                 paste0(TargetSiteID,"_datagaps.tab")),
+                       header = TRUE, sep = "\t")
   dfGaps <- unique(dfGaps)
-  write.table(dfGaps, file.path(dir_results, TargetSiteID
-                                , paste0(TargetSiteID,"_datagaps.tab"))
-              , append = FALSE, col.names = TRUE, row.names = FALSE
-              , sep = "\t")
+  write.table(dfGaps, file.path(dir_results, TargetSiteID,
+                                paste0(TargetSiteID,"_datagaps.tab")),
+              append = FALSE, col.names = TRUE, row.names = FALSE,
+              sep = "\t")
 
 } ### End TargetSite loop # not used in Shiny
 # FOR ~ site ~ END ####
@@ -1989,27 +1948,27 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 #
 # getSummaryAllSites
-getSummaryAllSites(biocommlist = c("bmi", "algae")
-                   , bmiIndex = "CSCI"
-                   , algIndex = "MMIhybrid"
-                   , fishIndex = NULL
-                   , dir_data = dir_data
-                   , dir_results = dir_results
-                   , dir_sub = "WoE"
-                   , df_sites = NULL)
+# getSummaryAllSites(biocommlist = c("bmi", "algae")
+#                    , bmiIndex = "CSCI"
+#                    , algIndex = "MMIhybrid"
+#                    , fishIndex = NULL
+#                    , dir_data = dir_data
+#                    , dir_results = dir_results
+#                    , dir_sub = "WoE"
+#                    , df_sites = NULL)
 
 
-getSummaryAllSites(biocommlist = c("bmi")
-                   , bmiIndex = "BIBI100"
-                   , algIndex = NULL
-                   , fishIndex = NULL
-                   , dir_data = dir_data
-                   , dir_results = dir_results
-                   , dir_sub = "WoE"
-                   , df_sites = NULL)
+# getSummaryAllSites(biocommlist = c("bmi")
+#                    , bmiIndex = "BIBI100"
+#                    , algIndex = NULL
+#                    , fishIndex = NULL
+#                    , dir_data = dir_data
+#                    , dir_results = dir_results
+#                    , dir_sub = "WoE"
+#                    , df_sites = NULL)
 
-msg <- "getSummaryAllSites is complete."
-message(msg)
+# msg <- "getSummaryAllSites is complete."
+# message(msg)
 
 # rm(list=ls())
 
