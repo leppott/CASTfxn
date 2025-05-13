@@ -428,6 +428,7 @@ getVPSSI <- function(TargetSiteID,
       ### Add quantiles ----
       df_plot1_stats <- df_plot %>%
         dplyr::filter(StationID != TargetSiteID) %>%
+        dplyr::filter(Quality == "Not degraded") %>%
         dplyr::group_by(SSIndex) %>%
         dplyr::summarise(n = dplyr::n(),
                          Min = min(SSIValue, na.rm = TRUE),
@@ -443,7 +444,10 @@ getVPSSI <- function(TargetSiteID,
       # Merge quantiles back into df_plot
       df_plot1 <- merge(df_plot, df_plot1_stats, by = "SSIndex")
       df_plot1_target <- dplyr::filter(df_plot1, StationID == TargetSiteID)
-      df_plot1_nottarget <- dplyr::filter(df_plot1, StationID != TargetSiteID)
+      df_plot1_nottarget <- dplyr::filter(df_plot1, StationID != TargetSiteID) %>%
+        dplyr::filter(Quality == "Not degraded")
+
+      df_plot1 <- rbind(df_plot1_target, df_plot1_nottarget)
 
       ### Score SSI boxplots ----
       if (ssi.dir == "Dec") {##IF~TrendWIncStress == Dec~START
@@ -540,8 +544,8 @@ getVPSSI <- function(TargetSiteID,
       p1 <- ggplot2::ggplot(df_plot1, ggplot2::aes(y = SSIValue,
                                                    x = IncaseCol,
                                                    group = IncaseCol)) +
-        ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
-                              staplewidth = 0.5) +
+        ggplot2::geom_boxplot(data = df_plot1_nottarget, outliers = TRUE,
+                              outlier.size = 0.5, na.rm = TRUE, staplewidth = 0.5) +
         ggplot2::coord_flip() +
         ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
                             lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
