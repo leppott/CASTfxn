@@ -56,11 +56,7 @@ getVerifiedPredictions <- function(TargetSiteID,
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
     stressors.sstv = stressors.sstv
-<<<<<<< Updated upstream
-    df_stressinfo = df_stressorMetadata # list.stressors$stressors
-=======
     df_stressinfo = df_stressorMetadata
->>>>>>> Stashed changes
     df_paired = df_PairedSRTransf
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
@@ -168,7 +164,8 @@ getVerifiedPredictions <- function(TargetSiteID,
       df_SSTVtaxa <- df_MasterTaxa %>%
         dplyr::select(TaxonID, all_of(keepMTcol))
 
-      df_SSTVtaxa <- df_SSTVtaxa %>% filter(if_any(-1, ~ !is.na(.))) # LCN changed from df_SSTVtaxa[rowSums(!is.na(df_SSTVtaxa[, -1])) >= 1, ] which fails when there is only one SSTV
+      df_SSTVtaxa <- df_SSTVtaxa %>%
+        dplyr::filter(dplyr::if_any(-1, ~ !is.na(.)))
 
       df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa)
 
@@ -266,7 +263,6 @@ getVerifiedPredictions <- function(TargetSiteID,
                             sstv.sensmaxLabel, sstv.sensminLabel))
 
       } ## END for tv
-
       rm(df_temp)
 
       # Summarize data
@@ -286,6 +282,7 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       df_GpLbl <- unique(df_resp.summary[, c("Group", "Label")])
 
+      # MASTER dataframe ####
       df_tv <- merge(df_stress.sstv, df_resp.summary,
                      by = c("StationID", "RespSampleID", "RespSampleDate"), all = TRUE)
 
@@ -299,7 +296,7 @@ getVerifiedPredictions <- function(TargetSiteID,
         tolval.min <- paste0(tolval, "_SensMin")
         tolval.all <- paste0(tolval, "_SensAll")
 
-        # Prep target sample data frame
+        ## Prep target sample data frame ####
         df_tv.target <- dplyr::filter(df_tv, Group == {{tolval}} &
                                         StationID == TargetSiteID)
         cols2use <- colnames(df_tv.target)
@@ -335,6 +332,7 @@ getVerifiedPredictions <- function(TargetSiteID,
           allLabels <- unique(df_tv$Label[df_tv$Group == tolval])
           currentLabel <- unique(df_tv.target.qc2$Label)
           newLabel <- setdiff(allLabels, currentLabel)
+          newLabel <- newLabel[!is.na(newLabel)]
 
           df_tv.target.qc2 <- df_tv.target.qc2 %>%
             dplyr::select(!n) %>%
@@ -350,27 +348,28 @@ getVerifiedPredictions <- function(TargetSiteID,
           rm(df_tv.target.qc1, df_tv.target.qc2)
         } # End if
 
-        # Prep comparator sample data frame
-        df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} &
-                                        Quality == "Not degraded") %>%
-          dplyr::filter(StationID != TargetSiteID)
-
-        # Rbind target and comparator dataframes
-        df_tv.incase <- rbind(df_tv.target, df_tv.incase)
-        rm(df_tv.target)
-
-        df_tv.incase <- df_tv.incase %>%
+        df_tv.target <- df_tv.target %>%
+          dplyr::filter(!is.na(.data[[stressor]])) %>% # Exclude samples ND for stressor
           dplyr::select(all_of(cols2use)) %>%
           dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
                         PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
           tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
                               values_to = "value")
-        df_tv.incase <- df_tv.incase %>%
-            dplyr::filter(!is.na(.data[[stressor]]))
 
-        ## Scoring ####
-        # Get percentiles by most sensitive, all sensitive for each of
-        # NumTaxa, %Taxa, NumInds, %Inds over all comparator sites
+        # Prep comparator (EXCLUDING target) sample data frame ####
+        df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} &
+                                        Quality == "Not degraded") %>%
+          dplyr::filter(StationID != TargetSiteID) %>% # Exclude Target Samples
+          dplyr::filter(!is.na(.data[[stressor]])) %>% # Exclude samples ND for stressor
+          dplyr::select(all_of(cols2use)) %>%
+          dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
+                        PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
+          tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
+                              values_to = "value")
+
+        # Scoring ####
+        # Get percentiles for scoring
+        # EXCLUDING Target samples
         df_quantiles.incase <- df_tv.incase %>%
           dplyr::select(Label, variable, value) %>%
           dplyr::group_by(Label, variable) %>%
@@ -380,9 +379,6 @@ getVerifiedPredictions <- function(TargetSiteID,
                            q75 = quantile(value, probs = 0.75, na.rm = TRUE),
                            max = suppressWarnings(max(value, na.rm = TRUE)),
                            .groups = "drop_last")
-
-        df_tv.incase <- merge(df_tv.incase, df_quantiles.incase,
-                              by = c("Label", "variable"))
 
         # Calculate num samples better than, & better than, not degraded
         # Yields 1-row x 3-col df (# samps BT, # samps not deg, # samps BT & not deg)
@@ -396,8 +392,11 @@ getVerifiedPredictions <- function(TargetSiteID,
                            numSampsBTNotDeg = sum(BTNotDeg, na.rm = TRUE),
                            .groups = "drop_last")
 
+        df_tbl_scores <- merge(df_tv.target, df_quantiles.incase,
+                               by = c("Label", "variable"))
+
         # Assign scores to target site
-        df_tbl_scores <- dplyr::filter(df_tv.incase, StationID == TargetSiteID) %>%
+        df_tbl_scores <- df_tbl_scores %>%
           dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
                         StressSampleID, StressSampleDate, BioComm, all_of(colBio),
                         RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
@@ -418,7 +417,6 @@ getVerifiedPredictions <- function(TargetSiteID,
                         Group, Label, Response, ResponseValue, q25, q50, Score,
                         nBetterBio, nBetterBioNotDeg)
 
-        #
         boo_append <- TRUE
         boo_colnames <- FALSE
 
@@ -432,7 +430,11 @@ getVerifiedPredictions <- function(TargetSiteID,
                            col.names = boo_colnames, row.names = FALSE,
                            sep="\t", append = boo_append)
 
-        # Prepare plots ----
+        # Rbind target and comparator dataframes
+        df_tv.incase <- rbind(df_tv.target, df_tv.incase)
+        rm(df_tv.target)
+
+        # Prepare plots ####
         # Boxplots: x = Label [SensMin, SensMax], y = value,
         # Group = variable [NumInds, PctInds, NumTaxa, PctTaxa], df_tv.incase
         # Jitterplots: all incase degraded [grey25, down triangle],
@@ -447,9 +449,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_tv.notTarget <- dplyr::filter(df_tv.incase, StationID != TargetSiteID)
         df_tv.target <- dplyr::filter(df_tv.incase, StationID == TargetSiteID)
 
-        df_sstv.scores <- merge(df_quantiles.incase, df_tbl_scores)
+        str_scores <- merge(df_quantiles.incase, df_tbl_scores)
 
-        str_scores <- df_sstv.scores %>%
+        str_scores <- str_scores %>%
           dplyr::filter(Group == {{tolval}}) %>%
           dplyr::select(Label, variable, max, q25, q50, RespSampleDate, Score) %>%
           dplyr::arrange(Label, variable, max, RespSampleDate) %>%
@@ -471,6 +473,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                            .groups = "drop_last")
 
         str_scores <- merge(str_scores, str_scores_max)
+        rm(str_scores_max)
 
         ## Plot, Variables
         ## Prepare colors, sizes, etc  ----
