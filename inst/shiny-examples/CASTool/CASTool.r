@@ -123,10 +123,40 @@ if (boo_Shiny == TRUE) {
   } else if (boo.debug == TRUE & debug.person == "Laura") {
     # This should be an error condition, because Ann & Erik are only people
     #LCN file paths
+    region <- "WA_LCN"
     wd <- dirname(dirname(getwd()))
     gitpath <- file.path(wd, "CASTfxn_6.3.6.4" , "CASTfxn", "R")
     dir_rmd <- file.path(wd, "CASTfxn_6.3.6.4",  "CASTfxn", "inst", "rmd")
     localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data")
+    dir_data <- file.path(localdir, region, "Data")
+    dir_results <- file.path(localdir, region, "Results")
+    
+    source(file.path(gitpath, "readCASToolData.R"))
+    source(file.path(gitpath, "getOutliers.R"))
+    source(file.path(gitpath, "getCoOccurDataset.R"))
+    source(file.path(gitpath, "getAllSamplesTable.R"))
+    ## Target site & inside/outside case
+    source(file.path(gitpath, "getComparators.R"))
+    source(file.path(gitpath, "getSiteInfo.R"))
+    source(file.path(gitpath, "getSiteMap.R"))
+    source(file.path(gitpath, "writeOutliers.R"))
+    # source(file.path(gitpath, "getClusterInfo.R")) # no longer used
+    source(file.path(gitpath, "getAvailableDataTypes.R"))
+    # source(file.path(gitpath, "getStressorList.R")) # no longer used
+    source(file.path(gitpath, "getQualSites.R"))
+    # source(file.path(gitpath, "getDataSets.R")) # no longer used
+    ### Evaluate lines of evidence
+    source(file.path(gitpath, "getCoOccur.R"))
+    source(file.path(gitpath, "getTimeSeq.R"))
+    source(file.path(gitpath, "getSufficiency.R"))
+    source(file.path(gitpath, "getBioStressorResponses.R"))
+    source(file.path(gitpath, "getVerifiedPredictions.R"))
+    source(file.path(gitpath, "getVPSSI.R"))
+    ### Summarize findings
+    source(file.path(gitpath, "getWoE.R"))
+    source(file.path(gitpath, "getReport.R"))
+    ## Summarize findings for all test sites
+    source(file.path(gitpath, "getSummaryAllSites.R"))
   } else {#boo.debug == FALSE
     # Install CASTfxn package
     library(CASTfxn)
@@ -184,7 +214,9 @@ if (region %in% state.abb) {
 } else if (region %in% state.name) {
   regionName        <- region
   region            <- state.abb[which(state.name == regionName)]
-} else {
+} else if(region == "WA_LCN"){
+    regionName <- "WA"
+  } else {
   # region is not a standard, accepted region (e.g., SMC)
   # this will affect watershed-scale stressors and maps
   if (region == "SMC") {
@@ -235,6 +267,7 @@ fn.bcdist            <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bcdi
 fn.cluster           <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.cluster))
 fn.WSstressorData    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.WSstressorData))
 fn.WSstressorInfo    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.WSstressorInfo))
+
 
 # Specify user-defined variables
 # Stressors
