@@ -151,8 +151,9 @@ getCoOccur <- function(TargetSiteID,
 
   # Create Score Output File ####
   df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID",
-                                  "RespSampleID", colBio, "Quality")],
-                     data.frame(Param_Name = character(), Param_Value = double(),
+                                  "StressSampleDate", "RespSampleID",
+                                  "RespSampleDate", colBio, "Quality")],
+                     data.frame(StressorCode = character(), StressorValue = double(),
                                 n = integer(), q25 = double(), q50 = double(),
                                 q75 = double(), Sc_Box = integer(),
                                 biocomm = character(), Label = character(),
@@ -180,16 +181,16 @@ getCoOccur <- function(TargetSiteID,
 
   df.stats <- df.comp %>%
     dplyr::select(all_of(detects)) %>%
-    tidyr::pivot_longer(cols = everything(), names_to = "Param_Name",
-                        values_to = "Param_Value") %>%
-    dplyr::mutate(NotNA = ifelse(!is.na(Param_Value), 1, 0)) %>%
-    dplyr::group_by(Param_Name) %>%
+    tidyr::pivot_longer(cols = everything(), names_to = "StressorCode",
+                        values_to = "StressorValue") %>%
+    dplyr::mutate(NotNA = ifelse(!is.na(StressorValue), 1, 0)) %>%
+    dplyr::group_by(StressorCode) %>%
     dplyr::summarize(n = sum(NotNA, na.rm = TRUE),
-                     q25 = quantile(Param_Value, probs = 0.25, na.rm = TRUE),
-                     q50 = quantile(Param_Value, probs = 0.50, na.rm = TRUE),
-                     q75 = quantile(Param_Value, probs = 0.75, na.rm = TRUE),
-                     minVal = min(Param_Value, na.rm = TRUE),
-                     maxVal = max(Param_Value, na.rm = TRUE))
+                     q25 = quantile(StressorValue, probs = 0.25, na.rm = TRUE),
+                     q50 = quantile(StressorValue, probs = 0.50, na.rm = TRUE),
+                     q75 = quantile(StressorValue, probs = 0.75, na.rm = TRUE),
+                     minVal = min(StressorValue, na.rm = TRUE),
+                     maxVal = max(StressorValue, na.rm = TRUE))
 
   df.i <- dplyr::filter(df.comp, StationID == TargetSiteID)
   i.Group <- df.i[1, "IncaseCol"]
@@ -205,15 +206,16 @@ getCoOccur <- function(TargetSiteID,
 
     # Select only necessary columns
     df.j <- df.i %>%
-      dplyr::select(StationID, IncaseCol, StressSampleID, RespSampleID,
-                    all_of(colBio), Quality, all_of(stressname)) %>%
-      dplyr::rename(Param_Value = {{stressname}}) %>%
-      dplyr::mutate(Param_Name = stressname) %>%
-      dplyr::mutate(n = df.stats$n[df.stats$Param_Name == stressname],
-                    q25 = df.stats$q25[df.stats$Param_Name == stressname],
-                    q50 = df.stats$q50[df.stats$Param_Name == stressname],
-                    q75 = df.stats$q75[df.stats$Param_Name == stressname]) %>%
-      dplyr::filter(!is.na(Param_Value))
+      dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
+                    RespSampleID, RespSampleDate, all_of(colBio), Quality,
+                    all_of(stressname)) %>%
+      dplyr::rename(StressorValue = {{stressname}}) %>%
+      dplyr::mutate(StressorCode = stressname) %>%
+      dplyr::mutate(n = df.stats$n[df.stats$StressorCode == stressname],
+                    q25 = df.stats$q25[df.stats$StressorCode == stressname],
+                    q50 = df.stats$q50[df.stats$StressorCode == stressname],
+                    q75 = df.stats$q75[df.stats$StressorCode == stressname]) %>%
+      dplyr::filter(!is.na(StressorValue))
 
     # Comp Score for box plot
     colInvScore <- df_stressinfo %>%
@@ -227,34 +229,34 @@ getCoOccur <- function(TargetSiteID,
     if (stressname == "pH_alkEnv") { # pH is a decreaser in alkalkine environments
       # Parameter is pH; need two scores, one for acid environments & one for alkaline
       df.j <- df.j %>%
-        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value < pHlimLow ~ 1,
-                                                Param_Value < q25 ~ 1,
-                                                Param_Value > q50 ~ -1,
+        dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue < pHlimLow ~ 1,
+                                                StressorValue < q25 ~ 1,
+                                                StressorValue > q50 ~ -1,
                                                 TRUE ~ 0))
     } else if (stressname == "pH_acidicEnv") {
       df.j <- df.j %>%
-        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > pHlimHigh ~ 1,
-                                                Param_Value > q75 ~ 1,
-                                                Param_Value < q50 ~ -1,
+        dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue > pHlimHigh ~ 1,
+                                                StressorValue > q75 ~ 1,
+                                                StressorValue < q50 ~ -1,
                                                 TRUE ~ 0))
     } else if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
       #Parameter is DO; If values are < DOlim, then 1 by definition
       df.j <- df.j %>%
-        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value < DOlim ~ 1,
-                                                Param_Value > q50 ~ -1,
-                                                Param_Value < q25 ~ 1,
+        dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue < DOlim ~ 1,
+                                                StressorValue > q50 ~ -1,
+                                                StressorValue < q25 ~ 1,
                                                 TRUE ~0))
     } else if (colInvScore == "Dec") {
       # Inverse Scoring
       df.j <- df.j %>%
-        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > q50 ~ -1,
-                                                Param_Value < q25 ~ 1,
+        dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue > q50 ~ -1,
+                                                StressorValue < q25 ~ 1,
                                                 TRUE ~0))
     } else {
       # Regular Scoring
       df.j <- df.j %>%
-        dplyr::mutate(Sc_Box = dplyr::case_when(Param_Value > q75 ~ 1,
-                                                Param_Value < q50 ~ -1,
+        dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue > q75 ~ 1,
+                                                StressorValue < q50 ~ -1,
                                                 TRUE ~ 0))
     }
 
@@ -288,19 +290,19 @@ getCoOccur <- function(TargetSiteID,
                        " = ", i.Group)
 
     # scoring lines
-    maxVal <- df.stats$maxVal[df.stats$Param_Name == stressname]
-    minVal <- df.stats$minVal[df.stats$Param_Name == stressname]
+    maxVal <- df.stats$maxVal[df.stats$StressorCode == stressname]
+    minVal <- df.stats$minVal[df.stats$StressorCode == stressname]
     if (colInvScore == "Dec") {##IF~j_in_InvSc~START
       # Inverse Scoring
-      box_qHI <- df.stats$q50[df.stats$Param_Name == stressname]
-      box_qLO <- df.stats$q25[df.stats$Param_Name == stressname]
+      box_qHI <- df.stats$q50[df.stats$StressorCode == stressname]
+      box_qLO <- df.stats$q25[df.stats$StressorCode == stressname]
       segNeg <- ((maxVal - box_qHI) / 2) + box_qHI
       segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
       segPos <- ((box_qLO - minVal) / 2) + minVal
     } else {
       # Regular Scoring
-      box_qHI <- df.stats$q75[df.stats$Param_Name == stressname]
-      box_qLO <- df.stats$q50[df.stats$Param_Name == stressname]
+      box_qHI <- df.stats$q75[df.stats$StressorCode == stressname]
+      box_qLO <- df.stats$q50[df.stats$StressorCode == stressname]
       segPos <- ((maxVal - box_qHI) / 2) + box_qHI
       segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
       segNeg <- ((box_qLO - minVal) / 2) + minVal
@@ -347,7 +349,7 @@ getCoOccur <- function(TargetSiteID,
       lab.sub <- stringr::str_to_sentence(paste0("Not degraded ", lab.sub))
     }
 
-    targetvals <- as.numeric(unlist(df.j[, "Param_Value"]))
+    targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
 
     p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[stressname]],
@@ -417,10 +419,10 @@ getCoOccur <- function(TargetSiteID,
   utils::write.table(df.scores, file = fn.scores, col.names = TRUE,
                      row.names = FALSE, sep = "\t", append = FALSE)
 
-  stressors <- unique(df.scores$Param_Name[df.scores$Sc_Box != -1])
-  notstressors <- unique(df.scores$Param_Name[df.scores$Sc_Box == -1])
+  stressors <- unique(df.scores$StressorCode[df.scores$Sc_Box != -1])
+  notstressors <- unique(df.scores$StressorCode[df.scores$Sc_Box == -1])
   notstressors <- setdiff(notstressors, stressors)
-  # prevents a stressor identified by 1 sample fromm appearing in the "notstressors" vector
+  # prevents a stressor identified by 1 sample from appearing in the "notstressors" vector
 
   # if notstressors has more than one row, write data to data gaps
   if (length(notstressors) > 0) {
@@ -443,8 +445,18 @@ getCoOccur <- function(TargetSiteID,
     }
   } ### End no stressors statement
 
+  # Prep df.scores for export to include in df_LoEs
+  df.scores <- dplyr::filter(df.scores, StressorCode %in% stressors) %>%
+    dplyr::rename(bioComm = biocomm, bioIndex = all_of(colBio),
+                  Stressor = Label, Score = Sc_Box) %>%
+    dplyr::mutate(LoE = "CO") %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, bioIndex, Quality,
+                  Stressor, StressorValue, LoE, Score)
+
   df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
   return(list(df_stressorMetadata = df.stressorMetadata,
-              notEvaluated = notstressors))
+              notEvaluated = notstressors,
+              df_COscores = df.scores))
 
 }##FUNCTION.END
