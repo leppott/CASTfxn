@@ -157,17 +157,13 @@ getTimeSeq <- function(TargetSiteID,
         dplyr::rename(SampleDate = RespSampleDate, Value = {{metricname}}) %>%
         dplyr::mutate(type = "Response", Value = signif(Value, digits = 3)) %>%
         dplyr::filter(!is.na(Value))
-      #maxYvalR <- max(df.plotresp$Value)/2 # LCN commented out no longer needed due to geom_label use
 
       df.plotstress <- df_stress %>%
         dplyr::select(StationID, StressSampleDate, all_of(stressname)) %>%
         dplyr::rename(SampleDate = StressSampleDate, Value = {{stressname}}) %>%
         dplyr::mutate(type = "Stressor", Value = signif(Value, digits = 3)) %>%
         dplyr::filter(!is.na(Value))
-      #maxYvalS <- max(df.plotstress$Value)/2 # LCN commented out no longer needed due to geom_label use
 
-     # minYval <- min(maxYvalR, maxYvalS) # LCN commented out no longer needed due to geom_label use
- 
       df.plot <- rbind(df.plotstress, df.plotresp) %>%
         dplyr::mutate(type = factor(type, levels = c("Stressor", "Response"),
                                     labels = c(stressLabel, metricLabel)))
@@ -180,24 +176,25 @@ getTimeSeq <- function(TargetSiteID,
       maxYear <- lubridate::year(maxDate)
       maxDate <- lubridate::ymd(paste0(maxYear, "/12/31"))
 
-      df.plot <- df.plot %>% tidyr::complete(nesting(type), SampleDate = seq(minDate, maxDate, by = "day")) # LCN added to set desired date range from the first ggplot call
-      
+      df.plot <- df.plot %>%
+        tidyr::complete(tidyr::nesting(type),
+                        SampleDate = seq(minDate, maxDate, by = "day"))
+      # LCN added to set desired date range from the first ggplot call
+
       msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") ",
                     stressname, " and ", metricname)
       message(msg)
-      
 
       p_ts <- ggplot2::ggplot(df.plot, ggplot2::aes(x = SampleDate,
                                                     y = as.numeric(Value)))
       p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black",
                                        linewidth = 0.2, alpha = 0.5)
-      p_ts <- p_ts + ggplot2::geom_label(aes(x = SampleDate, y = as.numeric(Value)/2, label = Value)) # LCN switched to geom_label to eliminate potential overlap of ggrepel arrow and geom_col
-      
-      # p_ts <- p_ts + ggrepel::geom_label_repel(ggplot2::aes(label = Value), # LCN commented out 
-      #                                         
-      #                                         nudge_x = 0, #nudge_y = -minYval,
-      #                                         size = 2, na.rm = TRUE)
-      p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y") 
+      p_ts <- p_ts + ggplot2::geom_label(ggplot2::aes(x = SampleDate,
+                                                      y = as.numeric(Value)/2,
+                                                      label = Value))
+      # LCN switched to geom_label to eliminate potential overlap of ggrepel arrow and geom_col
+
+      p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
       p_ts <- p_ts + ggplot2::theme_bw()
       p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
                                                                         hjust = 1,
