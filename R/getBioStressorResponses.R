@@ -67,7 +67,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
   if (boo.DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
-    df_stressinfo = list.stressors$stressors
+    df_stressinfo = df_stressorMetadata
     df_respinfo = bioMetricInfo
     df_respdata = bioMetricData
     df_datapaired = df_PairedSRTransf
@@ -122,7 +122,8 @@ getBioStressorResponses <- function(TargetSiteID,
 
   df_SiteData <- df_datapaired[df_datapaired$StationID == TargetSiteID, ]
   df_CompData <- df_datapaired[df_datapaired$IncaseYN == 1, ]
-  df_AllData <- df_datapaired[df_datapaired$OutcaseYN == 1, ]
+  df_AllData <- df_datapaired[df_datapaired$OutcaseYN == 1 & df_datapaired$IncaseYN == 0, ]
+  df_AllData <- rbind(df_SiteData, df_AllData)
 
   siteQual2Plot <- tolower(siteQual2Plot)
   if (siteQual2Plot == "reference") {
@@ -650,6 +651,7 @@ getBioStressorResponses <- function(TargetSiteID,
                              txt.score_all, ", ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
+
         df.temp2 <- as.data.frame(cbind("StationID" = TargetSiteID,
                                         "biocomm" = biocomm,
                                         "stressName" = stressName,
@@ -668,12 +670,12 @@ getBioStressorResponses <- function(TargetSiteID,
           df.sc.sr <- rbind(df.sc.sr, df.temp2)
         }
 
-        df.sc.sr$SRLin_Score_outside <- ifelse(is.na(df.sc.sr$SRLin_Score_outside),
-                                        "NE",
-                                        as.character(df.sc.sr$SRLin_Score_outside))
-        df.sc.sr$SRLin_Score_inside <- ifelse(is.na(df.sc.sr$SRLin_Score_inside),
-                                            "NE",
-                                            as.character(df.sc.sr$SRLin_Score_inside))
+        df.sc.sr$SRLin_Score_outside <- ifelse(!is.na(df.sc.sr$SRLin_Score_outside),
+                                               as.character(df.sc.sr$SRLin_Score_outside),
+                                               "NE")
+        df.sc.sr$SRLin_Score_inside <- ifelse(!is.na(df.sc.sr$SRLin_Score_inside),
+                                              as.character(df.sc.sr$SRLin_Score_inside),
+                                              "NE")
 
         # Pivot longer site data before merging with df.sc.sr
         df_SiteDataStrLong <- df_SiteData %>%
@@ -683,8 +685,8 @@ getBioStressorResponses <- function(TargetSiteID,
                               names_to = "stressName",
                               values_to = "stressVal")
         df_SiteDataRespLong <- df_SiteData %>%
-          dplyr::select(StationID, StressSampleID, StressSampleDate,
-                        RespSampleID, RespSampleDate, all_of(respName)) %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, all_of(respName), Quality) %>%
           tidyr::pivot_longer(cols = c(all_of(respName)), names_to = "respName",
                               values_to = "respVal")
         df_SiteDataLong <- merge(df_SiteDataStrLong, df_SiteDataRespLong,
@@ -694,11 +696,17 @@ getBioStressorResponses <- function(TargetSiteID,
         rm(df_SiteDataStrLong, df_SiteDataRespLong)
 
         df.sc.sr <- merge(df_SiteDataLong, df.sc.sr,
-                          by = c("StationID", "stressName", "respName"))
-        df.sc.sr <- dplyr::select(df.sc.sr, StationID, StressSampleID,
+                          by = c("StationID", "stressName", "respName"),
+                          all.x = TRUE)
+        df.sc.sr <- df.sc.sr %>%
+          dplyr::mutate(SRLin_Score_inside = ifelse(is.na(stressVal),
+                                                    "NE", SRLin_Score_inside),
+                        SRLin_Score_outside = ifelse(is.na(stressVal),
+                                                    "NE", SRLin_Score_outside)) %>%
+          dplyr::select(StationID, StressSampleID,
                                   StressSampleDate, RespSampleID, RespSampleDate,
                                   biocomm, stressName, stressLabel, stressVal,
-                                  respName, respLabel, respVal, n_site,
+                                  respName, respLabel, respVal, Quality, n_site,
                                   n_comp, SRLin_Score_inside, SRLin_Score_outside)
 
         #if(boo.pryr==TRUE){
@@ -1149,5 +1157,24 @@ getBioStressorResponses <- function(TargetSiteID,
       message(msg.corr)
     } ## END Read corr file
   } ## END create corrplot
+
+  # Scores ----
+  df.scores <- read.delim(fp_scores, header = TRUE, na.strings = c("", "NA"),
+                          strip.white = TRUE, stringsAsFactors = FALSE)
+
+  df.scores <- df.scores %>%
+    dplyr::filter(respName == bioindex) %>%
+    dplyr::rename(bioComm = biocomm, bioIndex = respVal, Stressor = stressLabel,
+                  StressorValue = stressVal) %>%
+    tidyr::pivot_longer(cols = dplyr::starts_with("SR"), names_to = "LoE",
+                        values_to = "Score")  %>%
+    dplyr::mutate(LoE = ifelse(LoE == "SRLin_Score_inside", "Gradient (inside)",
+                               "Gradient (outside)")) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, bioIndex, Quality, Stressor,
+                  StressorValue, LoE, Score)
+
+  return(df.scores)
+
   #
 } ##FUNCTION.END
