@@ -139,8 +139,8 @@ getSufficiency <- function(TargetSiteID,
   # Get dataset
   df_data <- df_data %>%
     dplyr::filter(StationID %in% compSites) %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID
-                  , RespSampleDate, Quality, all_of(colBio), all_of(stressors))
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, Quality, all_of(colBio), all_of(stressors))
 
   df_target <- dplyr::filter(df_data, StationID == TargetSiteID)
 
@@ -151,15 +151,15 @@ getSufficiency <- function(TargetSiteID,
 
   # Create Score Output File # add Bio.Nar just before Quality
   df.scores <- df_data %>%
-    dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio)
-                  , Quality) %>%
-    dplyr::mutate(ParamName     = as.character(NA)
-                  , ParamValue  = as.numeric(NA)
-                  , n           = as.character(NA)
-                  , SRpred_Deg  = as.character(NA)
-                  , Sc_SRlog    = as.character(NA)
-                  , BioComm     = as.character(NA)
-                  , Label       = as.character(NA))
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, all_of(colBio), Quality) %>%
+    dplyr::mutate(StressorCode  = as.character(NA),
+                  StressorValue = as.numeric(NA),
+                  n             = as.character(NA),
+                  SRpred_Deg    = as.character(NA),
+                  Sc_SRlog      = as.character(NA),
+                  BioComm       = as.character(NA),
+                  Label         = as.character(NA))
   # remove all rows
   df.scores <- df.scores[0, ]
 
@@ -184,8 +184,8 @@ getSufficiency <- function(TargetSiteID,
                     RespSampleID, RespSampleDate, Quality, all_of(colBio),
                     all_of(str)) %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName",
-                          values_to = "ParamValue")
+      tidyr::pivot_longer(cols = all_of(str), names_to = "StressorCode",
+                          values_to = "StressorValue")
 
     df.plot <- df_data %>%
       dplyr::select(all_of(colBio), Quality, all_of(str))
@@ -212,9 +212,9 @@ getSufficiency <- function(TargetSiteID,
 
       # Scoring
       j_SR_predict <- stats::predict(fit, newdata = j_values, type = "response")
-      j_SR_score <- cut(j_SR_predict
-                        , breaks = c(0, 0.2, 0.5, 1)
-                        , labels = c(-1, 0, 1))
+      j_SR_score <- cut(j_SR_predict,
+                        breaks = c(0, 0.2, 0.5, 1),
+                        labels = c(-1, 0, 1))
       # plot ####
       # File Names
       fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
@@ -251,14 +251,14 @@ getSufficiency <- function(TargetSiteID,
 
       # Get base info for scores table
       df.score.j <- df.score.j %>%
-        dplyr::mutate(BioComm = biocomm
-                      , Label = jlabel
-                      , n = nrow(df.plot)
-                      , SRpred_Deg = j_SR_predict
-                      , Sc_SRlog = j_SR_score) %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(colBio),
-                      Quality, ParamName, ParamValue, #Log1pValue,
-                      n, SRpred_Deg, Sc_SRlog, BioComm, Label)
+        dplyr::mutate(BioComm = biocomm,
+                      Label = jlabel,
+                      n = nrow(df.plot),
+                      SRpred_Deg = j_SR_predict,
+                      Sc_SRlog = j_SR_score) %>%
+        dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                      RespSampleDate, all_of(colBio), Quality, StressorCode,
+                      StressorValue, n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
@@ -317,11 +317,23 @@ getSufficiency <- function(TargetSiteID,
 
   } ##FOR.j.END
 
-  # Save scores file (append to later)
+  # Save scores file
+  df.scores <- dplyr::mutate(df.scores,
+                             Sc_SRlog = ifelse(is.na(Sc_SRlog), "NE", Sc_SRlog))
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
                                           , "_SRLog_Scores.tab"))
   utils::write.table(df.scores, file = fn.scores, append = FALSE
                      , col.names = TRUE, row.names = FALSE, sep = "\t")
+
+  df_SuffScores <- df.scores %>%
+    dplyr::rename(Stressor = Label, bioComm = BioComm, bioIndex = colBio,
+                  Score = Sc_SRlog) %>%
+    dplyr::mutate(LoE = "Suff") %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, bioIndex, Quality, Stressor,
+                  StressorValue, LoE, Score)
+
+  return(df_SuffScores)
 
 }##FUNCTION.END
 
