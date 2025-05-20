@@ -12,14 +12,14 @@
 #' @result Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv to the local directory 
 #' if the download is successful. If unsuccessful returns NULL. 
 
-getStreamCatData <- function(localdir = "", dir_data = "", state = ""){
+getStreamCatData <- function(localdir = "", dir_data = "", region = "", state = ""){
   
   tryCatch({
   fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
   data_CASTmeta <- readxl::read_excel(fn.CASTmeta, na = "", trim_ws = TRUE)
   data_CASTmeta <- data_CASTmeta %>%
-    dplyr::select(Variable, all_of(state)) %>%
-    tidyr::pivot_wider(names_from = Variable, values_from = all_of(state))
+    dplyr::select(Variable, all_of(region)) %>%
+    tidyr::pivot_wider(names_from = Variable, values_from = all_of(region))
   
   fn.SC.WSvars  <- file.path(localdir, "SelectedStreamCatStressors.csv")
   fn.cluster <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.cluster))
@@ -115,7 +115,7 @@ getStreamCatData <- function(localdir = "", dir_data = "", state = ""){
           TRUE ~ StreamCatVar)))
     
     # Trim data_stressorinfoWS to StreamCatVar and Label only
-    data_stressorinfoWS <- dplyr::distinct(data_stressorinfoWS, StreamCatVar, Label)
+    data_stressorinfoWS <- dplyr::distinct(data_stressorinfoWS, StreamCatVar, SCmetrics, Year, Label)
     
     write.csv(data_stressorWS, file.path(dir_data, paste0("StreamCat_data_", state, ".csv")), row.names = FALSE)
     write.csv(data_stressorinfoWS, file.path(dir_data, paste0("StreamCat_stressor-info_", state, ".csv")), row.names = FALSE)
