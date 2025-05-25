@@ -167,13 +167,13 @@ getVPSSI <- function(TargetSiteID,
 
         notInData <- TRUE
         gapcomment <- paste0(ssi.name, " not in ", biocomm, " metric data.")
-        gaps <- cbind.data.frame("getVPSSI", "No SSI data available", 0
-                                 , gapcomment)
+        gaps <- cbind.data.frame("getVPSSI", "No SSI data available", 0,
+                                 gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
         next
 
       } #END check for ssi in metric data
@@ -259,18 +259,18 @@ getVPSSI <- function(TargetSiteID,
 
         # Create scoring dataframe (empty)
         df.scores.log <- df_plot %>%
-          dplyr::select(StationID, StressSampleID, RespSampleID, SSIndex,
-                        SSIValue, SSIqual) %>%
-          dplyr::mutate(ParamName   = as.character(NA),
-                        ParamValue  = as.numeric(NA),
-                        n           = as.character(NA),
-                        VPpred_Deg  = as.numeric(NA),
-                        Sc_VPlog    = as.character(NA),
-                        BioComm     = as.character(NA),
-                        Label       = as.character(NA)) %>%
-          dplyr::select(StationID, StressSampleID, RespSampleID, BioComm,
-                        ParamName, Label, ParamValue, SSIndex, SSIValue,
-                        SSIqual, n, VPpred_Deg, Sc_VPlog)
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, SSIndex, SSIValue, SSIqual) %>%
+          dplyr::mutate(Stressor       = as.character(NA),
+                        StressorValue  = as.numeric(NA),
+                        n              = as.character(NA),
+                        VPpred_Deg     = as.numeric(NA),
+                        Sc_VPlog       = as.character(NA),
+                        BioComm        = as.character(NA),
+                        Label          = as.character(NA)) %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, BioComm, Stressor, Label, StressorValue,
+                        SSIndex, SSIValue, SSIqual, n, VPpred_Deg, Sc_VPlog)
         cols.scores.log <- colnames(df.scores.log)
 
         # remove all rows
@@ -294,11 +294,11 @@ getVPSSI <- function(TargetSiteID,
           j_values <- data.frame(x = df_plot[[str]][df_plot$StationID == TargetSiteID])
           df_plot.log <- df_plot.log[stats::complete.cases(df_plot.log[, c("x", "y.name")]), ]
 
-          n_cc_df_plot <- nrow(df_plot.log) - nrow(df_plot[df_plot$StationID == TargetSiteID,])
+          n_cc_df_plot <- nrow(df_plot.log) - nrow(df_plot[df_plot$StationID == TargetSiteID, ])
 
           # create data for curve (type "response" gives probabilities)
-          newdat <- data.frame(x = seq(min(df_plot.log$x, na.rm = TRUE)
-                                       , max(df_plot.log$x, na.rm = TRUE), len = 100))
+          newdat <- data.frame(x = seq(min(df_plot.log$x, na.rm = TRUE),
+                                       max(df_plot.log$x, na.rm = TRUE), len = 100))
           newdat$y.name <- stats::predict(fit, newdata = newdat, type = "response")
 
           # Scoring
@@ -308,21 +308,22 @@ getVPSSI <- function(TargetSiteID,
                                labels = c(-1, 0, 1))
 
           j_values_scores <- cbind(j_values, j_VPlog_predict, j_VPlog_score) %>%
-            dplyr::rename(ParamValue = x,
+            dplyr::rename(StressorValue = x,
                           VPpred_Deg = j_VPlog_predict,
                           Sc_VPlog = j_VPlog_score)
 
           df_plot.log_target <- df_plot %>%
             dplyr::filter(StationID == TargetSiteID) %>%
-            dplyr::select(StationID, StressSampleID, RespSampleID, SSIndex,
+            dplyr::select(StationID, StressSampleID, StressSampleDate,
+                          RespSampleID, RespSampleDate, SSIndex,
                           SSIValue, SSIqual, all_of(str))
 
           df_plot.log_target <- merge(df_plot.log_target, j_values_scores,
-                                      by.x = str, by.y = "ParamValue")
+                                      by.x = str, by.y = "StressorValue")
 
           df_plot.log_target <- df_plot.log_target %>%
-            tidyr::pivot_longer(cols = all_of(str), names_to = "ParamName",
-                                values_to = "ParamValue") %>%
+            tidyr::pivot_longer(cols = all_of(str), names_to = "Stressor",
+                                values_to = "StressorValue") %>%
             dplyr::mutate(BioComm = biocomm,
                           n = n_cc_df_plot,
                           Label = slab) %>%
@@ -355,9 +356,9 @@ getVPSSI <- function(TargetSiteID,
           subtitleSR <-"Are stressor-specific index levels sufficient to explain the observed impairment?"
           subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
-          captionSR <- paste(paste0("All comparator samples (n = ", n_cc_df_plot, ").")
-                             , paste0("Score = ", paste(j_VPlog_score, collapse = ", "), ".")
-                             , sep = "\n")
+          captionSR <- paste(paste0("All comparator samples (n = ", n_cc_df_plot, ")."),
+                             paste0("Score = ", paste(j_VPlog_score, collapse = ", "), "."),
+                             sep = "\n")
 
           # Annotation values
           # Score = -1 runs from 0 to 0.20 on the y axis
@@ -367,7 +368,7 @@ getVPSSI <- function(TargetSiteID,
           xmax <- max(df_plot.log$x, na.rm = TRUE)
           xseg <- xmax + (0.02 * xmax)
 
-          target.vals <- unique(df_plot.log_target$ParamValue)
+          target.vals <- unique(df_plot.log_target$StressorValue)
 
           msg <- paste0("printing logistic regression for ", str, " against ", ssi.name)
           message(msg)
@@ -411,10 +412,10 @@ getVPSSI <- function(TargetSiteID,
                               label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
             ggplot2::labs(y = ylabel, x = slab) +
             ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
-                           , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
-            ggplot2::labs(title = maintitleSR, subtitle = subtitleSR
-                          , caption = captionSR)
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+            ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
+                          caption = captionSR)
 
             ggplot2::ggsave(filename = file.path(dir.path, fn_png_p2), plot = p2,
                             dpi = plot_dpi, width = plot_W, height = plot_H,
@@ -457,8 +458,9 @@ getVPSSI <- function(TargetSiteID,
                                                         SSIValue < q25 ~ 1,
                                                         TRUE ~ 0)) %>%
           dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                        RespSampleID, RespSampleDate, BioComm, BIBI100, Quality,
-                        SSIndex, SSIValue, Sc_VPSSI_box, n, Min, q25, q50, q75, Max)
+                        RespSampleID, RespSampleDate, BioComm, all_of(colBio),
+                        Quality, SSIndex, SSIValue, Sc_VPSSI_box, n, Min, q25,
+                        q50, q75, Max)
 
         # Identify the position of score labels relative to the arrow
         # Use first sample only, because otherwise return a list of all samples
@@ -475,8 +477,9 @@ getVPSSI <- function(TargetSiteID,
                                                         SSIValue > q75 ~ 1,
                                                         TRUE ~ 0)) %>%
           dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                        RespSampleID, RespSampleDate, BioComm, BIBI100, Quality,
-                        SSIndex, SSIValue, Sc_VPSSI_box, n, Min, q25, q50, q75, Max)
+                        RespSampleID, RespSampleDate, BioComm, all_of(colBio),
+                        Quality, SSIndex, SSIValue, Sc_VPSSI_box, n, Min, q25,
+                        q50, q75, Max)
 
         # Identify the position of score labels relative to the arrow
         # Use first sample only, because otherwise return a list of all samples
@@ -496,9 +499,9 @@ getVPSSI <- function(TargetSiteID,
                                   "RespSampleID", "RespSampleDate"))
       df.scores.i <- df.scores.i %>%
         dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                      RespSampleID, RespSampleDate, BioComm, BIBI100, Quality,
-                      Stressor, TransfValue, SSIndex, SSIValue, Sc_VPSSI_box,
-                      n, Min, q25, q50, q75, Max)
+                      RespSampleID, RespSampleDate, BioComm, all_of(colBio),
+                      Quality, Stressor, TransfValue, SSIndex, SSIValue,
+                      Sc_VPSSI_box, n, Min, q25, q50, q75, Max)
 
       # Either create or append scores
       if (i == 1) {
@@ -606,9 +609,36 @@ getVPSSI <- function(TargetSiteID,
 
   } ## END SSIs > 0
 
+  # Scores ----
+  df.scores <- merge(df.scores.box, df_stressinfo, by = c("Stressor", "SSIndex"))
 
+  df.scores <- df.scores  %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, BioComm, SSIndex, SSIValue, Label,
+                  TransfValue, Sc_VPSSI_box) %>%
+    dplyr::rename(Stressor = Label, StressorValue = TransfValue,
+                  bioComm = BioComm, bioIndexName = SSIndex,
+                  bioIndex = SSIValue, Score = Sc_VPSSI_box) %>%
+    dplyr::mutate(LoE = "VP_SSIbox", Quality = NA) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                  Stressor, StressorValue, LoE, Score)
 
+  if (exists("df.scores.log")) {
+    df.scores.log <- df.scores.log %>%
+      dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                    RespSampleDate, BioComm, SSIndex, SSIValue, SSIqual, Label,
+                    StressorValue, Sc_VPlog) %>%
+      dplyr::rename(Stressor = Label, Score = Sc_VPlog, bioComm = BioComm,
+                    bioIndex = SSIValue, bioIndexName = SSIndex,
+                    Quality = SSIqual) %>%
+      dplyr::mutate(LoE = "VP_SSIlog") %>%
+      dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                    RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                    Stressor, StressorValue, LoE, Score)
+    df.scores <- rbind(df.scores, df.scores.log)
+  }
 
-
+return(df.scores)
 
 } ##FUNCTION.END
