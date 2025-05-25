@@ -90,7 +90,7 @@ getSufficiency <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     df_data = df_PairedSRTransf
     compSites = list.CompSites$comp.sites
-    df_stressinfo = list.stressors$stressors
+    df_stressinfo = df_stressorMetadata
     biocomm = bioComm
     colBio = bioIndex
     plotvars = data_plotvars
@@ -173,7 +173,7 @@ getSufficiency <- function(TargetSiteID,
     jlabel <- as.character(strInfo$Label[strInfo$Stressor == str])
 
     if (jlog == 1) {
-      jlabel <- paste("Log1p ", jlabel)
+      jlabel <- paste0("Log1p ", jlabel)
     }
 
     message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
@@ -194,7 +194,7 @@ getSufficiency <- function(TargetSiteID,
 
     if (nrow(df.plot) > 0) { # This uses the dataframe with transformed (if necessary) values
       df.plot <- df.plot %>%
-        dplyr::rename(y = eval(colBio), x = all_of(str)) %>%
+        dplyr::rename(y = all_of(colBio), x = all_of(str)) %>%
         dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
         dplyr::select(y, Quality, y.name, x)
       fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
@@ -203,11 +203,11 @@ getSufficiency <- function(TargetSiteID,
       df.plot <- df.plot[stats::complete.cases(df.plot), ]
 
       #  Stressor Response Curve
-      n_cc_df_plot <- nrow(df.plot[stats::complete.cases(df.plot[, c("x", "y")])
-                                   , c("x", "y")])
+      n_cc_df_plot <- nrow(df.plot[stats::complete.cases(df.plot[, c("x", "y")]),
+                                   c("x", "y")])
       # create data for curve (type "response" gives probabilities)
-      newdat <- data.frame(x = seq(min(df.plot$x, na.rm = TRUE)
-                                   , max(df.plot$x, na.rm = TRUE), len = 100))
+      newdat <- data.frame(x = seq(min(df.plot$x, na.rm = TRUE),
+                                   max(df.plot$x, na.rm = TRUE), len = 100))
       newdat$y.name <- stats::predict(fit, newdata = newdat, type = "response")
 
       # Scoring
@@ -237,9 +237,9 @@ getSufficiency <- function(TargetSiteID,
       subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
       subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
-      captionSR <- paste(paste0("All comparator samples (n=", n_cc_df_plot, ").")
-                         , paste0("Score = ", paste(j_SR_score, collapse = ", "), ".")
-                         , sep = "\n")
+      captionSR <- paste(paste0("All comparator samples (n=", n_cc_df_plot, ")."),
+                         paste0("Score = ", paste(j_SR_score, collapse = ", "), "."),
+                         sep = "\n")
 
       # Annotation values
       # Score = -1 runs from 0 to 0.20 on the y axis
@@ -262,23 +262,23 @@ getSufficiency <- function(TargetSiteID,
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
-        ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality
-                                         , fill = Quality)
-                            , alpha = 0.5, size = 2, na.rm = TRUE) +
-        ggplot2::scale_fill_manual(name = legendtitle
-                                   , breaks = c("Degraded", "Not degraded")
-                                   , values = bio_col, drop = FALSE) +
-        ggplot2::scale_color_manual(name = legendtitle
-                                    , breaks = c("Degraded", "Not degraded")
-                                    , values = bio_col, drop = FALSE) +
-        ggplot2::scale_shape_manual(name = legendtitle
-                                    , breaks = c("Degraded", "Not degraded")
-                                    , values = bio_shp, drop = FALSE) +
-        ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col
-                            , lty = targ_line_lty, lwd = targ_line_lwd
-                            , na.rm = TRUE) +
-        ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
-                            , lty = 2, na.rm = TRUE) +
+        ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality,
+                                         fill = Quality),
+                            alpha = 0.5, size = 2, na.rm = TRUE) +
+        ggplot2::scale_fill_manual(name = legendtitle,
+                                   breaks = c("Degraded", "Not degraded"),
+                                   values = bio_col, drop = FALSE) +
+        ggplot2::scale_color_manual(name = legendtitle,
+                                    breaks = c("Degraded", "Not degraded"),
+                                    values = bio_col, drop = FALSE) +
+        ggplot2::scale_shape_manual(name = legendtitle,
+                                    breaks = c("Degraded", "Not degraded"),
+                                    values = bio_shp, drop = FALSE) +
+        ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col,
+                            lty = targ_line_lty, lwd = targ_line_lwd,
+                            na.rm = TRUE) +
+        ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black",
+                            lty = 2, na.rm = TRUE) +
         ggplot2::annotate("segment", y = negStart, yend = negEnd, x = xseg,
                           color = "orange", linewidth = 0.7, alpha = 0.6,
                           arrow = grid::arrow(ends = "both", type = "open",
@@ -294,13 +294,13 @@ getSufficiency <- function(TargetSiteID,
         ggplot2::annotate("text", x = xmax, y = c(midNeg, midZero, midPos),
                           label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
         ggplot2::labs(y = ylabel, x = jlabel) +
-        ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat
-                           , color = "black", lwd = 1, na.rm = TRUE) +
+        ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat,
+                           color = "black", lwd = 1, na.rm = TRUE) +
         ggplot2::theme_bw() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)
-                       , plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
-        ggplot2::labs(title = maintitleSR, subtitle = subtitleSR
-                      , caption = captionSR)
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+        ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
+                      caption = captionSR)
 
       if ((boo_plot) == TRUE) {
         ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
@@ -318,20 +318,25 @@ getSufficiency <- function(TargetSiteID,
   } ##FOR.j.END
 
   # Save scores file
-  df.scores <- dplyr::mutate(df.scores,
-                             Sc_SRlog = ifelse(is.na(Sc_SRlog), "NE", Sc_SRlog))
-  fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm
-                                          , "_SRLog_Scores.tab"))
-  utils::write.table(df.scores, file = fn.scores, append = FALSE
-                     , col.names = TRUE, row.names = FALSE, sep = "\t")
+  df.scores <- df.scores %>%
+    dplyr::mutate(SRpred_Deg = round(SRpred_Deg, 3)) %>%
+    dplyr::select(!StressorCode) %>%
+    dplyr::rename(Stressor = Label) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, BioComm, all_of(colBio), Quality, Stressor,
+                  StressorValue, n, SRpred_Deg, Sc_SRlog)
+
+  fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
+                                          "_SRLog_Scores.tab"))
+  utils::write.table(df.scores, file = fn.scores, append = FALSE,
+                     col.names = TRUE, row.names = FALSE, sep = "\t")
 
   df_SuffScores <- df.scores %>%
-    dplyr::rename(Stressor = Label, bioComm = BioComm, bioIndex = colBio,
-                  Score = Sc_SRlog) %>%
-    dplyr::mutate(LoE = "Suff") %>%
+    dplyr::rename(bioComm = BioComm, bioIndex = all_of(colBio), Score = Sc_SRlog) %>%
+    dplyr::mutate(LoE = "Suff", bioIndexName := {{colBio}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, bioComm, bioIndex, Quality, Stressor,
-                  StressorValue, LoE, Score)
+                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                  Stressor, StressorValue, LoE, Score)
 
   return(df_SuffScores)
 
