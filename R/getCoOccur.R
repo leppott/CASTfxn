@@ -153,20 +153,14 @@ getCoOccur <- function(TargetSiteID,
   df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID",
                                   "StressSampleDate", "RespSampleID",
                                   "RespSampleDate", colBio, "Quality")],
-                     data.frame(StressorCode = character(), StressorValue = double(),
+                     data.frame(Stressor = character(), StressorValue = double(),
                                 n = integer(), q25 = double(), q50 = double(),
                                 q75 = double(), Sc_Box = integer(),
                                 biocomm = character(), Label = character(),
                                 stringsAsFactors = FALSE))
 
-  if (useBetter == TRUE) {
-    # Subset df_data for comparator sites having better biology
-    df.comp <- df_data %>%
-      dplyr::filter(BetterThan == 1)
-  } else {
-    # Subset df_data for comparator sites
-    df.comp <- df_data
-  }
+  # Subset df_data for comparator sites
+  df.comp <- df_data
 
   # Filter for only not degraded samples plus target samples
   if (onlyNotDeg == TRUE) {
@@ -181,10 +175,10 @@ getCoOccur <- function(TargetSiteID,
 
   df.stats <- df.comp %>%
     dplyr::select(all_of(detects)) %>%
-    tidyr::pivot_longer(cols = everything(), names_to = "StressorCode",
+    tidyr::pivot_longer(cols = everything(), names_to = "Stressor",
                         values_to = "StressorValue") %>%
     dplyr::mutate(NotNA = ifelse(!is.na(StressorValue), 1, 0)) %>%
-    dplyr::group_by(StressorCode) %>%
+    dplyr::group_by(Stressor) %>%
     dplyr::summarize(n = sum(NotNA, na.rm = TRUE),
                      q25 = quantile(StressorValue, probs = 0.25, na.rm = TRUE),
                      q50 = quantile(StressorValue, probs = 0.50, na.rm = TRUE),
@@ -201,8 +195,23 @@ getCoOccur <- function(TargetSiteID,
     stressname <- detects[j]
     j.len <- length(detects)
     #
-    message(paste0("Processing stressor (", j, "/", j.len, ") ", stressname, ".\n"))
+    message(paste0("Processing stressor (", j, "/", j.len, ") ",
+                   stressname, ".\n"))
     utils::flush.console()
+
+    # Comp Score for box plot
+    colInvScore <- df_stressinfo %>%
+      dplyr::filter(Stressor == stressname) %>%
+      dplyr::select(DirIncStress)
+    colInvScore <- as.character(colInvScore)
+
+    stresslabel <- df_stressinfo %>%
+      dplyr::filter(Stressor == stressname) %>%
+      dplyr::mutate(stresslabel = ifelse(LogTransf == 1,
+                                         paste0("Log1p ", Label),
+                                         Label)) %>%
+      dplyr::select(stresslabel)
+    stresslabel <- as.character(stresslabel)
 
     # Select only necessary columns
     df.j <- df.i %>%
@@ -210,18 +219,12 @@ getCoOccur <- function(TargetSiteID,
                     RespSampleID, RespSampleDate, all_of(colBio), Quality,
                     all_of(stressname)) %>%
       dplyr::rename(StressorValue = {{stressname}}) %>%
-      dplyr::mutate(StressorCode = stressname) %>%
-      dplyr::mutate(n = df.stats$n[df.stats$StressorCode == stressname],
-                    q25 = df.stats$q25[df.stats$StressorCode == stressname],
-                    q50 = df.stats$q50[df.stats$StressorCode == stressname],
-                    q75 = df.stats$q75[df.stats$StressorCode == stressname]) %>%
+      dplyr::mutate(Stressor := {{stressname}}) %>%
+      dplyr::mutate(n = df.stats$n[df.stats$Stressor == stressname],
+                    q25 = df.stats$q25[df.stats$Stressor == stressname],
+                    q50 = df.stats$q50[df.stats$Stressor == stressname],
+                    q75 = df.stats$q75[df.stats$Stressor == stressname]) %>%
       dplyr::filter(!is.na(StressorValue))
-
-    # Comp Score for box plot
-    colInvScore <- df_stressinfo %>%
-      dplyr::filter(Stressor == stressname) %>%
-      dplyr::select(DirIncStress)
-    colInvScore <- as.character(colInvScore)
 
     # Score samples ####
     ## Use different criteria for some parameters (Specifically pH and DO)
@@ -264,7 +267,7 @@ getCoOccur <- function(TargetSiteID,
     cols <- colnames(df.scores)
     df.j <- df.j %>%
       dplyr::mutate(biocomm = "BMI",
-                    Label = df_stressinfo$Label[df_stressinfo$Stressor == stressname]) %>%
+                    Label = stresslabel) %>%
       dplyr::select(all_of(cols))
 
     df.scores <- rbind(df.scores, df.j)
@@ -290,19 +293,19 @@ getCoOccur <- function(TargetSiteID,
                        " = ", i.Group)
 
     # scoring lines
-    maxVal <- df.stats$maxVal[df.stats$StressorCode == stressname]
-    minVal <- df.stats$minVal[df.stats$StressorCode == stressname]
+    maxVal <- df.stats$maxVal[df.stats$Stressor == stressname]
+    minVal <- df.stats$minVal[df.stats$Stressor == stressname]
     if (colInvScore == "Dec") {##IF~j_in_InvSc~START
       # Inverse Scoring
-      box_qHI <- df.stats$q50[df.stats$StressorCode == stressname]
-      box_qLO <- df.stats$q25[df.stats$StressorCode == stressname]
+      box_qHI <- df.stats$q50[df.stats$Stressor == stressname]
+      box_qLO <- df.stats$q25[df.stats$Stressor == stressname]
       segNeg <- ((maxVal - box_qHI) / 2) + box_qHI
       segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
       segPos <- ((box_qLO - minVal) / 2) + minVal
     } else {
       # Regular Scoring
-      box_qHI <- df.stats$q75[df.stats$StressorCode == stressname]
-      box_qLO <- df.stats$q50[df.stats$StressorCode == stressname]
+      box_qHI <- df.stats$q75[df.stats$Stressor == stressname]
+      box_qLO <- df.stats$q50[df.stats$Stressor == stressname]
       segPos <- ((maxVal - box_qHI) / 2) + box_qHI
       segZero <- ((box_qHI - box_qLO) / 2) + box_qLO
       segNeg <- ((box_qLO - minVal) / 2) + minVal
@@ -321,14 +324,6 @@ getCoOccur <- function(TargetSiteID,
     ## Limit line types (dotted)
     lim_lty <- 3
 
-    # Get wordy label for the y-axis
-    jlog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressname]
-    if (jlog == 1) {
-      jlabel <- paste0("Log1p ",
-                       df_stressinfo$Label[df_stressinfo$Stressor == stressname])
-    } else {
-      jlabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
-    }
     legendtitle <- "Samples"
     maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
     subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
@@ -389,7 +384,7 @@ getCoOccur <- function(TargetSiteID,
                                   breaks = c("Degraded", "Not degraded"),
                                   values = bio_shp, drop = TRUE) +
       ggplot2::labs(title = maintitleCO, subtitle = subtitleCO,
-                    caption = lab.sub, y = jlabel, x = lab_comp) +
+                    caption = lab.sub, y = stresslabel, x = lab_comp) +
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                      plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
@@ -419,8 +414,8 @@ getCoOccur <- function(TargetSiteID,
   utils::write.table(df.scores, file = fn.scores, col.names = TRUE,
                      row.names = FALSE, sep = "\t", append = FALSE)
 
-  stressors <- unique(df.scores$StressorCode[df.scores$Sc_Box != -1])
-  notstressors <- unique(df.scores$StressorCode[df.scores$Sc_Box == -1])
+  stressors <- unique(df.scores$Stressor[df.scores$Sc_Box != -1])
+  notstressors <- unique(df.scores$Stressor[df.scores$Sc_Box == -1])
   notstressors <- setdiff(notstressors, stressors)
   # prevents a stressor identified by 1 sample from appearing in the "notstressors" vector
 
@@ -446,12 +441,13 @@ getCoOccur <- function(TargetSiteID,
   } ### End no stressors statement
 
   # Prep df.scores for export to include in df_LoEs
-  df.scores <- dplyr::filter(df.scores, StressorCode %in% stressors) %>%
-    dplyr::rename(bioComm = biocomm, bioIndex = all_of(colBio),
-                  Stressor = Label, Score = Sc_Box) %>%
-    dplyr::mutate(LoE = "CO") %>%
+  df.scores <- dplyr::filter(df.scores, Stressor %in% stressors) %>%
+    dplyr::select(!Stressor) %>%
+    dplyr::rename(bioComm = biocomm, bioIndex = all_of(colBio), Score = Sc_Box,
+                  Stressor = Label) %>%
+    dplyr::mutate(LoE = "CO", bioIndexName := {{colBio}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, bioComm, bioIndex, Quality,
+                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                   Stressor, StressorValue, LoE, Score)
 
   df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
