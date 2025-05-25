@@ -179,7 +179,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
     if (log.yn == TRUE) {
       stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
-      stressLabel <- paste0("Log 1p ", stressLabel)
+      stressLabel <- paste0("Log1p ", stressLabel)
     } else {
       stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
     }
@@ -448,8 +448,6 @@ getBioStressorResponses <- function(TargetSiteID,
                                          signif(c1S_cl$p.value, 2),
                                          signif(c1S_cl$estimate, 2),
                                          r2_cl))
-          # names(df.corr_cl) <- c("StationID", "biocomm", "stressName"
-          # , "respName", "n", "statistic", "p.value", "estimate", "r2")
           names(df.corr_cl) <- cn_cor_pref
           pval.corr_cl <- signif(c1S_cl$p.value, 2)
           #
@@ -537,8 +535,6 @@ getBioStressorResponses <- function(TargetSiteID,
                                           signif(c1S_all$p.value, 2),
                                           signif(c1S_all$estimate, 2),
                                           r2_all))
-          #names(df.corr_all) <- c("StationID", "biocomm", "stressName"
-          #, "respName", "n", "statistic", "p.value", "estimate", "r2")
           names(df.corr_all) <- cn_cor_pref
           pval.corr_all <- signif(c1S_all$p.value, 2)
           #
@@ -722,7 +718,6 @@ getBioStressorResponses <- function(TargetSiteID,
         }
 
         # Add biocomm, 20190425
-        #df.sc.sr[, "biocomm"] <- biocomm
         utils::write.table(df.sc.sr,
                            fp_scores,
                            sep = "\t", quote = FALSE, row.names = FALSE,
@@ -759,7 +754,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
 
       ## Plot, inputs ####
-      ## Plot, portions
       boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor), ]) > 0,
                                 TRUE, FALSE)
       boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor), ]) > 0,
@@ -774,7 +768,6 @@ getBioStressorResponses <- function(TargetSiteID,
       str_subtitle1.in <- "Is there evidence of a biological gradient from inside the case?\n"
       str_subtitle1.out <- "Is there evidence of a biological gradient from outside the case?\n"
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
-      # str_subtitle <- stringr::str_wrap(paste0(str_subtitle1,str_subtitle2),85)
       str_subtitle.in <- paste0(str_subtitle1.in, str_subtitle2)
       str_subtitle.out <- paste0(str_subtitle1.out, str_subtitle2)
       str_xlab  <- stressLabel
@@ -879,7 +872,6 @@ getBioStressorResponses <- function(TargetSiteID,
       # }# Plot, Variables ~ END
 
       # Plot, outside ####
-      # Plot, Plot
       boo.Plot <- ifelse(nrow(df_plot_site) == 0, FALSE, TRUE)
       # skip plot if no data for target site
       if (boo.Plot == TRUE) { ##IF.boo.Plot.START
@@ -1116,8 +1108,6 @@ getBioStressorResponses <- function(TargetSiteID,
         utils::write.table(df_corr, fp_corr, sep = "\t", quote = FALSE, row.names = FALSE)
       } ##IF~length~END
 
-      # 20190305; shouldn't need mean or unique but just in case, should be complete dups
-      # 20230530; Changed plot type from corrplot (base R) to ggplot2::geom_tile ARL
       df_corr <- unique(df_corr) %>% dplyr::rename(Estimate = estimate)
 
       # Define plot dimensions
@@ -1169,12 +1159,12 @@ getBioStressorResponses <- function(TargetSiteID,
     tidyr::pivot_longer(cols = dplyr::starts_with("SR"), names_to = "LoE",
                         values_to = "Score")  %>%
     dplyr::mutate(LoE = ifelse(LoE == "SRLin_Score_inside", "Gradient (inside)",
-                               "Gradient (outside)")) %>%
+                               "Gradient (outside)"),
+                  bioIndexName := {{bioindex}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, bioComm, bioIndex, Quality, Stressor,
-                  StressorValue, LoE, Score)
+                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                  Stressor, StressorValue, LoE, Score)
 
   return(df.scores)
 
-  #
 } ##FUNCTION.END
