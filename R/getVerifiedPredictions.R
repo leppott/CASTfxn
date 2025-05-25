@@ -284,7 +284,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       # MASTER dataframe ####
       df_tv <- merge(df_stress.sstv, df_resp.summary,
-                     by = c("StationID", "RespSampleID", "RespSampleDate"), all = TRUE)
+                     by = c("StationID", "RespSampleID", "RespSampleDate"),
+                     all = TRUE)
 
       # Loop - Score SSTVs ####
       for (s in seq_along(stressors.sstv)) {
@@ -292,6 +293,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         stressor <- stressors.sstv[s]
         message(paste("Scoring", stressor))
         stressorLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressor]
+        stressLog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressor]
+        stressorLabel <- ifelse(stressLog == 1, paste0("Log1p ", stressorLabel),
+                                stressorLabel)
         tolval <- df_SSTV$SSTVname[df_SSTV$Stressor == stressor]
         tolval.min <- paste0(tolval, "_SensMin")
         tolval.all <- paste0(tolval, "_SensAll")
@@ -397,10 +401,10 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         # Assign scores to target site
         df_tbl_scores <- df_tbl_scores %>%
-          dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
-                        StressSampleID, StressSampleDate, BioComm, all_of(colBio),
-                        RefSiteFlag, Quality, BetterThan, all_of(stressor), Group,
-                        Label, variable, value, q25, q50, q75) %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, IncaseCol, BioComm, all_of(colBio),
+                        Quality, all_of(stressor), Group, Label, variable, value,
+                        q25, q50, q75) %>%
           dplyr::rename(StressorValue = {{stressor}},
                         Response = variable,
                         ResponseValue = value) %>%
@@ -408,14 +412,11 @@ getVerifiedPredictions <- function(TargetSiteID,
                                                  dplyr::between(ResponseValue, q25, q50) ~ 0,
                                                  ResponseValue > q50 ~ -1),
                         StressorLabel = stressorLabel,
-                        Stressor := {{stressor}},
-                        nBetterBio = as.integer(df_tv.incase.summary$numSampsBT),
-                        nBetterBioNotDeg = as.integer(df_tv.incase.summary$numSampsBTNotDeg)) %>%
-          dplyr::select(StationID, RespSampleID, RespSampleDate, StressSampleID,
-                        StressSampleDate, BioComm, all_of(colBio), RefSiteFlag,
-                        Quality, BetterThan, StressorLabel, Stressor, StressorValue,
-                        Group, Label, Response, ResponseValue, q25, q50, Score,
-                        nBetterBio, nBetterBioNotDeg)
+                        Stressor := {{stressor}}) %>%
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, BioComm, all_of(colBio), Quality,
+                        StressorLabel, Stressor, StressorValue, Group, Label,
+                        Response, ResponseValue, q25, q50, Score)
 
         boo_append <- TRUE
         boo_colnames <- FALSE
@@ -587,6 +588,22 @@ getVerifiedPredictions <- function(TargetSiteID,
     }## IF ~ boo_continue ~ END
 
   }## IF ~ SSTV ~ END
+
+  df.scores <- read.delim(fn_scores, header = TRUE, na.strings = c("", "NA"),
+                          strip.white = TRUE, stringsAsFactors = FALSE)
+  df.scores <- df.scores %>%
+    dplyr::group_by(StationID, RespSampleID, RespSampleDate, StressSampleID,
+                    StressSampleDate, BioComm, .data[[colBio]], Quality,
+                    StressorLabel, StressorValue, Group) %>%
+    dplyr::summarise(Score = mean(Score, na.rm = TRUE), .groups = "drop_last") %>%
+    dplyr::rename(bioIndex := {{colBio}}, bioComm = BioComm,
+                  Stressor = StressorLabel) %>%
+    dplyr::mutate(LoE = "VP_SSTV", bioIndexName = colBio) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                  Stressor, StressorValue, LoE, Score)
+
+  return(df.scores)
 
 }##FUNCTION.END
 
