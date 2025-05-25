@@ -202,7 +202,6 @@ getSiteMap <- function(sp_outline,
   sp_targetsite <- subset(sp_sites, Case == "Target")
 
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
-    #tmap::tm_polygons(fill = "grey80") +
     tmap::tm_polygons(fill = "white") + # LCN changed fill color from grey80
     tmap::tm_shape(sp_flowline) +
     tmap::tm_lines(lwd = 0.5, #palette = mag.vec,
