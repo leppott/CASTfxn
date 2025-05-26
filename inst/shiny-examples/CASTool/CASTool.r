@@ -1840,7 +1840,7 @@ for (site in seq_along(1:nrow(df_targets))) {
 
       if (length(stressors.ssi) > 0) { # one or more stressors.ssi
 
-        get_VPSSIscores <- getVPSSI(TargetSiteID = TargetSiteID,
+        df_VPSSIscores <- getVPSSI(TargetSiteID = TargetSiteID,
                                     stressors.ssi = stressors.ssi,
                                     df_stressinfo = df_stressorMetadata,
                                     df_paired = df_PairedSRTransf,
@@ -1858,8 +1858,8 @@ for (site in seq_along(1:nrow(df_targets))) {
                                     dir_sub = "VerifiedPredictions_SSIs",
                                     boo_plot = boo_plot_user)
 
-        if (nrow(get_VPSSIscores != 0)) {
-          df_LoE <- rbind(df_LoE, get_VPSSIscores)
+        if (nrow(df_VPSSIscores != 0)) {
+          df_LoE <- rbind(df_LoE, df_VPSSIscores)
         }
         rm(df_VPSSIscores)
 
@@ -1868,10 +1868,8 @@ for (site in seq_along(1:nrow(df_targets))) {
         msg <- "No site stressors have stressor specific indices"
         message(msg)
 
-        gapcomment <- "No site stressors have stressor-specific indices"
-        gaps <- cbind.data.frame("getVPSSIscores", TargetSiteID, 0
-                                 , gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        gaps <- cbind.data.frame("getVPSSIscores", TargetSiteID, 0, msg)
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
@@ -1895,43 +1893,13 @@ for (site in seq_along(1:nrow(df_targets))) {
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
-    # TODO: Remove this write statement after debugging
-    write.table(df_LoE, file.path(dir_results, TargetSiteID, biocomm,
-                                  paste0(TargetSiteID, "_LoEs.tab")),
-                col.names = TRUE, row.names = FALSE, sep = "\t")
-
-    df_LoE_summary <- df_LoE %>%
-      dplyr::mutate(Score = ifelse(Score == "NE", NA, Score),
-                    Score = suppressWarnings(as.numeric(Score))) %>%
-      dplyr::group_by(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                      RespSampleDate, bioComm, Stressor, StressorValue) %>%
-      dplyr::summarize(NumSupport = sum(Score > 0, na.rm = TRUE),
-                       NumRefute = sum(Score < 0, na.rm = TRUE),
-                       NumIndeterminate = sum(Score == 0, na.rm = TRUE),
-                       NumNotEvaluated = sum(is.na(Score)),
-                       .groups = "drop_last")
-
-    df_LoE <- df_LoE %>%
-      tidyr::pivot_wider(id_cols = !c(Loe, Score), names_from = LoE,
-                         values_from = Score, values_fn = as.character())
-
-
-    # Completely and utterly broken; fix after discussion with EPA
-    # getWoE(TargetSiteID = TargetSiteID
-    #        , outcaseLabel = outcaseLabel
-    #        , biocomm = bioComm
-    #        , index = bioIndex
-    #        , BioResp = bioMetricNames
-    #        , dfQual = list.BioQualSites$dfQuality
-    #        , dfStr = list_MatchBioData$site.b.str
-    #        , dfRank = list.stressors$site.stressor.pctrank
-    #        , dfStressInfo = siteStressInfo
-    #        , df_coOccur = data_bioCoOccur
-    #        , dfLoE = df_LoE
-    #        , dir_results = dir_results
-    #        , dir_WoE = "WoE")
-    # msg <- paste0("getWoE for ", bioComm, " is complete.")
-    # message(msg)
+    getWoE(TargetSiteID = TargetSiteID,
+           biocomm = bioComm,
+           dfLoE = df_LoE,
+           dir_results = dir_results,
+           dir_WoE = "WoE")
+    msg <- paste0("getWoE for ", bioComm, " is complete.")
+    message(msg)
 
   } ### End biocomm loop
   # FOR ~ b ~ END ####
