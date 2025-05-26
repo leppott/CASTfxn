@@ -266,23 +266,23 @@ fn.WSstressorInfo    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.WSst
 
 # Specify user-defined variables
 # Stressors
-datum <- as.character(dplyr::select(data_CASTmeta, datum))
-siteColName <- as.character(dplyr::select(data_CASTmeta, siteColName))
-refColName <- as.character(dplyr::select(data_CASTmeta, refColName))
+datum          <- as.character(dplyr::select(data_CASTmeta, datum))
+siteColName    <- as.character(dplyr::select(data_CASTmeta, siteColName))
+refColName     <- as.character(dplyr::select(data_CASTmeta, refColName))
 outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
-outcaseLabel <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
-incaseColName <- as.character(dplyr::select(data_CASTmeta, incaseColName))
-incaseLabel <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
+outcaseLabel   <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
+incaseColName  <- as.character(dplyr::select(data_CASTmeta, incaseColName))
+incaseLabel    <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
 
 # Bio responses
 for (b in seq_along(biocommlist)) {
   bio <- tolower(biocommlist[b])
   if (bio == "bmi") {
-    bmi_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta
-                                                                          , bmi_thresholds), ", ")))
+    bmi_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
+                                                                          bmi_thresholds), ", ")))
     bmi_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_narrative), ", "))
-    bmi_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_deg_thres)
-                                                            , ", ")))
+    bmi_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_deg_thres),
+                                                            ", ")))
     bmi_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_deg_text), ", "))
     bmiIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiIndexGp), ", "))
     bmiSuffInds     <- as.numeric(dplyr::select(data_CASTmeta, bmiSuffInds))
@@ -292,23 +292,24 @@ for (b in seq_along(biocommlist)) {
     bc_cutoff       <- as.numeric(dplyr::select(data_CASTmeta, bc_cutoff))
   }
   if (bio == "algae") {
-    alg_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_thresholds)
-                                                            , ", ")))
-    alg_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_narrative)
-                                                 , ", "))
-    alg_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_thres)
-                                                            , ", ")))
+    alg_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_thresholds),
+                                                            ", ")))
+    alg_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_narrative),
+                                                 ", "))
+    alg_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_thres),
+                                                            ", ")))
     alg_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_text), ", "))
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
     calcAlgRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcAlgRelAbund))
     algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
   }
   if (bio == "fish") {
-    fish_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_thresholds)
-                                                             , ", ")))
+    fish_thresholds  <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
+                                                                           fish_thresholds),
+                                                             ", ")))
     fish_narrative   <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_narrative), ", "))
-    fish_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_thres)
-                                                             , ", ")))
+    fish_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_thres),
+                                                             ", ")))
     fish_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_text), ", "))
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
     calcFishRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcFishRelAbund))
@@ -379,8 +380,8 @@ if (basename(fn.Sites.Info) != "NA") {
     if (outcaseColName %in% colnames(data_Sites)) {
       data_Sites <- dplyr::rename(data_Sites, OutcaseCol = all_of(outcaseColName))
     } else {
-      msg <- paste0("Replacing ", outcaseColName, " with OutcaseCol with values",
-                    " equal to ", outcaseLabel, ".")
+      msg <- paste0("Replacing ", outcaseColName, " with OutcaseCol with values ",
+                    "equal to ", outcaseLabel, ".")
       message(msg)
       data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
     }
@@ -434,7 +435,7 @@ rm(fn.Sites.Info, refColName)
 ## Get StreamCat data & metadata ----
 if (exists("fn.WSstressorData")) {
   data_stressorWS <- readCASToolData(fn = fn.WSstressorData,
-                                         NAs = c("", "na", "NA", "N/A"))
+                                     NAs = c("", "na", "NA", "N/A"))
 } else {
   msg <- "fn.WSstressorData is NA"
   message(msg)
@@ -443,7 +444,7 @@ rm(fn.WSstressorData)
 
 if (exists("fn.WSstressorInfo")) {
   data_stressorinfoWS <- readCASToolData(fn = fn.WSstressorInfo,
-                                     NAs = c("", "na", "NA", "N/A"))
+                                         NAs = c("", "na", "NA", "N/A"))
 } else {
   msg <- "fn.WSstressorInfo is NA"
   message(msg)
@@ -501,7 +502,7 @@ if (basename(fn.measdata) != "NA") {
   rm(data_pHAcid)
 
   analytes     <- as.character(data_chemInfo$StdParamName)
-  data_chemRaw <- data_chemRaw[data_chemRaw$StdParamName %in% analytes,]
+  data_chemRaw <- data_chemRaw[data_chemRaw$StdParamName %in% analytes, ]
 
   ## Get measured parameter names and separately, algal parameter names
   measParams <- as.vector(unique(data_chemRaw$StdParamName))
@@ -550,8 +551,8 @@ if (basename(fn.modeldata) != "NA") {
   ## Obtain SampleYear -- but SampleDate is all NA, so this is meaningless
   data_modelRaw <- data_modelRaw %>%
     dplyr::mutate(SampYear = NA, SampleDate = NA) %>%
-    dplyr::select(StationID, ChemSampleID, SampDate, StdParamName
-                  , ResultValue, SampleDate)
+    dplyr::select(StationID, ChemSampleID, SampDate, StdParamName,
+                  ResultValue, SampleDate)
 
   modelStressData <- TRUE
   rm(useParams, data_modelAll)
@@ -690,8 +691,8 @@ for (b in seq_along(biocommlist)) {
 
     # Get raw BMI data
     if (basename(fn.bmi.raw) != "NA") {
-      data_BMIcounts <- readCASToolData(fn = fn.bmi.raw
-                                        , NAs = c("", "na", "NA", "N/A"))
+      data_BMIcounts <- readCASToolData(fn = fn.bmi.raw,
+                                        NAs = c("", "na", "NA", "N/A"))
 
       data_BMIcounts <- data_BMIcounts %>%
         dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
@@ -710,9 +711,9 @@ for (b in seq_along(biocommlist)) {
                          SampleTotTaxa = dplyr::n(),
                          .groups = "drop_last")
 
-      data_BMIcounts <- merge(data_BMIcounts, data_BMISampTotAbund
-                              , by = c("RespSampleID", "RespSampleDate")
-                              , all.x = TRUE)
+      data_BMIcounts <- merge(data_BMIcounts, data_BMISampTotAbund,
+                              by = c("RespSampleID", "RespSampleDate"),
+                              all.x = TRUE)
 
       if (calcBMIRelAbund == TRUE) {     # Only write this column if needed
         data_BMIcounts <- data_BMIcounts %>%
@@ -733,23 +734,23 @@ for (b in seq_along(biocommlist)) {
     # Get csci core data -- this should be a file that contains response sample
     # qualifiers, but neither OR nor WA have anything similar
     if (basename(fn.bmi.qualifiers) != "NA") {
-      data_cscicore <- readCASToolData(fn = fn.bmi.qualifiers
-                                       , NAs = c("", "na", "NA", "N/A"))
-      data_cscicore <- data_cscicore[, c("stationid", "samplemonth", "sampleday"
-                                         , "sampleyear", "collectionmethodcode"
-                                         , "fieldreplicate", "count"
-                                         , "pcnt_ambiguous_individuals")]
+      data_cscicore <- readCASToolData(fn = fn.bmi.qualifiers,
+                                       NAs = c("", "na", "NA", "N/A"))
+      data_cscicore <- data_cscicore[, c("stationid", "samplemonth", "sampleday",
+                                         "sampleyear", "collectionmethodcode",
+                                         "fieldreplicate", "count",
+                                         "pcnt_ambiguous_individuals")]
       data_cscicore <- data_cscicore %>%
-        dplyr::mutate(date_text = paste(samplemonth, sampleday, sampleyear, sep = "/")
-                      , RespSampleID = paste(stationid, date_text, collectionmethodcode
-                                             , fieldreplicate, sep = "_")
-                      , RespSampleDate = lubridate::parse_date_time(date_text,
-                                                                    orders = c("ymd", "mdy", "dmy")) %>%
+        dplyr::mutate(date_text = paste(samplemonth, sampleday, sampleyear, sep = "/"),
+                      RespSampleID = paste(stationid, date_text, collectionmethodcode,
+                                           fieldreplicate, sep = "_"),
+                      RespSampleDate = lubridate::parse_date_time(date_text,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
                         lubridate::date()) %>%
-        dplyr::rename(StationID = stationid, PctAmbigInd = pcnt_ambiguous_individuals
-                      , NumIndividuals = count) %>%
-        dplyr::select(StationID, RespSampleID, RespSampleDate, NumIndividuals
-                      , PctAmbigInd)
+        dplyr::rename(StationID = stationid, PctAmbigInd = pcnt_ambiguous_individuals,
+                      NumIndividuals = count) %>%
+        dplyr::select(StationID, RespSampleID, RespSampleDate, NumIndividuals,
+                      PctAmbigInd)
       data_cscicore <- unique(data_cscicore)
     } else {
       msg <- "fn.bmi.qualifiers is NA"
@@ -835,7 +836,6 @@ for (b in seq_along(biocommlist)) {
                                          df_resp = data_bmiMetrics,
                                          index = bmiIndex,
                                          lagdays = lagdays)
-    # returns df_coOccur as data_bmiCoOccur
 
     if (!is.na(bmiModParams)) {
       # Identify modeled parameters to keep or delete (per client)
@@ -921,7 +921,6 @@ for (b in seq_along(biocommlist)) {
     }
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
-    # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
     data_algCoOccur <- getCoOccurDataset(df_sites = data_Sites,
                                          df_stress = data_Stress,
                                          biocomm = "Alg",
@@ -1015,7 +1014,6 @@ for (b in seq_along(biocommlist)) {
     }
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
-    # SMC version writes a co-occur data file to dataDir (Data directory) -- 20230711 Removed dataDir ARL
     data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites,
                                           df_stress = data_Stress,
                                           biocomm = "Fish",
@@ -1036,7 +1034,7 @@ for (b in seq_along(biocommlist)) {
       list.bioParamsDEL <- append(list.bioParamsDEL, list(FISH = fishModelParamsDEL))
 
       rm(algModParams)
-    }  else {
+    } else {
       message("No modeled data, if any, should be excluded from fish evaluations.")
     } ## END delete ModParams not useful for algal eval
 
@@ -1119,8 +1117,8 @@ rm(fn.targets)
 ### Evaluate each target site
 ## Use this for debugging
 if (boo_Shiny == TRUE) {
-  df_targets <- data.frame("TargetSiteID" = input$Station
-                           , "Chosen by" = NA, "Comment" = NA)
+  df_targets <- data.frame("TargetSiteID" = input$Station,
+                           "Chosen by" = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
 } else if (boo.debug == TRUE & debug.person == "Ann") {
   # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
@@ -1316,11 +1314,11 @@ for (site in seq_along(1:nrow(df_targets))) {
                                           modStressSamps = modelStressData,
                                           biocommlist = biocommlist,
                                           dir_results = dir_results)
-  # Returns: myAvailData <- list(useBMI = useBMI
-  #                              , useAlg = useAlg
-  #                              , useFish = useFish
-  #                              , noStressors = noStressors
-  #                              , noResponses = noResponses)
+  # Returns: myAvailData <- list(useBMI = useBMI,
+  #                              useAlg = useAlg,
+  #                              useFish = useFish,
+  #                              noStressors = noStressors,
+  #                              noResponses = noResponses)
   noStressors    <- list.AvailData$noStressors
   noResponses    <- list.AvailData$noResponses
   useBMI         <- list.AvailData$useBMI
@@ -1331,14 +1329,14 @@ for (site in seq_along(1:nrow(df_targets))) {
 
   if ((noStressors == TRUE) | (noResponses == TRUE)) {
 
-    msg <- ifelse((noStressors == TRUE) & (noResponses == TRUE)
-                  , paste0("No stressor or response data are available for "
-                           , TargetSiteID)
-                  , ifelse(noStressors == TRUE
-                           , paste0("No stressor data are available for "
-                                    , TargetSiteID)
-                           , paste0("No response data are available for "
-                                    , TargetSiteID)))
+    msg <- ifelse((noStressors == TRUE) & (noResponses == TRUE),
+                   paste0("No stressor or response data are available for ",
+                          TargetSiteID),
+                   ifelse(noStressors == TRUE,
+                          paste0("No stressor data are available for ",
+                                 TargetSiteID),
+                          paste0("No response data are available for ",
+                                 TargetSiteID)))
     message(msg)
     next
 
@@ -1487,23 +1485,23 @@ for (site in seq_along(1:nrow(df_targets))) {
     # If no paired stressors, write to data gaps file and output to runstats file
     # Proceed to next target site
     if (noPairedSamps == TRUE) {
-      msg <- paste0("No paired stressor-response samples for", TargetSiteID
-                    , " for the ", bioComm, " community within specified lag days.")
+      msg <- paste0("No paired stressor-response samples for", TargetSiteID,
+                    " for the ", bioComm, " community within specified lag days.")
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      gapcomment <- paste0("No stressor samples are available for ", TargetSiteID
-                           , " within ", lagdays[1], " days before, and ", lagdays[2]
-                           , " after the ", biocomm, " sample(s) was(were) obtained.")
+      gapcomment <- paste0("No stressor samples are available for ", TargetSiteID,
+                           " within ", lagdays[1], " days before, and ", lagdays[2],
+                           " after the ", biocomm, " sample(s) was(were) obtained.")
       gaps <- cbind.data.frame("getCoOccurDataset",
                                paste0("Paired stressor-", bioComm, " data"),
                                0, gapcomment)
 
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
 
       rm(dfTarget)
       next()
@@ -1519,7 +1517,7 @@ for (site in seq_along(1:nrow(df_targets))) {
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
-    #
+
     # Run analyses
     # Identify "quality" samples using different definitions
     # These are identified only from paired stressor-response samples
@@ -1538,8 +1536,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                         stressors = siteDetectsAll,
                                         dir_results = dir_results,
                                         dir_sub = "SiteInfo")
-    # Returns: df_PairedStressResp (df_qual) a dataframe with the following columns,
-    # which are used by the function getWoE:
+    # Returns: df_PairedStressResp, a dataframe with the following columns:
     # [1] "StationID"          "IncaseCol"          "OutcaseCol"         "StressSampleDate"
     # [5] "RespSampleDate"     "StressSampleID"     "RespSampleID"       "BioComm"
     # [9] "RefSiteFlag"        "IncaseYN"           "OutcaseYN"          "BetterThan"
@@ -1611,17 +1608,17 @@ for (site in seq_along(1:nrow(df_targets))) {
     }
 
     if (nrow(df_stressorMetadata) == 0) {
-      msg <- paste0("No candidate causes to evaluate further for ", TargetSiteID
-                    , " for the ", bioComm, " community.")
+      msg <- paste0("No candidate causes to evaluate further for ",
+                    TargetSiteID, " for the ", bioComm, " community.")
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       gaps <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
 
       rm(dfTarget)
       next()
@@ -1702,7 +1699,7 @@ for (site in seq_along(1:nrow(df_targets))) {
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
-    #
+
     # Get stressors sufficient to cause biological impairment using all comparator samples
     msg <- "Starting Sufficiency"
     message(msg)
@@ -1740,7 +1737,7 @@ for (site in seq_along(1:nrow(df_targets))) {
       Sys.sleep(mySleepTime)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
-    #
+
     # Get Stressor Responses inside (comparators) and outside (all) the case
     df_gradscores <- getBioStressorResponses(TargetSiteID = TargetSiteID,
                                              df_stressinfo = df_stressorMetadata,
@@ -1794,8 +1791,8 @@ for (site in seq_along(1:nrow(df_targets))) {
       gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
 
     } else {
 
@@ -1833,8 +1830,8 @@ for (site in seq_along(1:nrow(df_targets))) {
         gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
 
       }
 
@@ -1872,8 +1869,8 @@ for (site in seq_along(1:nrow(df_targets))) {
         gaps <- cbind.data.frame("getVPSSIscores", TargetSiteID, 0, msg)
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
 
       }
 
@@ -1917,9 +1914,9 @@ for (site in seq_along(1:nrow(df_targets))) {
   #
   # Shiny add ons
   if (boo_Shiny == TRUE) {
-    report_type     <- "preliminary"
+    report_type <- "preliminary"
   } else {
-    report_type     <- "summary"
+    report_type <- "summary"
   }
 
   # strFile_RMD     <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
@@ -1929,25 +1926,23 @@ for (site in seq_along(1:nrow(df_targets))) {
   # Get final report (Executive Summary style)
   # Report (rmd file) is not working, but since it will change, I'm simply commenting
   # out the code so it doesn't run  --- ARL 2023-05-26
-  # getReport(TargetSiteID
-  #           , probsHigh = probsHigh
-  #           , probsLow = probsLow
-  #           , useBMI = useBMI
-  #           , useAlg = useAlg
-  #           , useBC = useBC
-  #           , removeOutliers = removeOutliers
-  #           , DOlim = DOlim
-  #           , pHlimHigh = pHlimHigh
-  #           , pHlimLow = pHlimLow
-  #           , lagdays = lagdays
-  #           , bmiIndex = bmiIndex
-  #           , algIndex = algIndex
-  #           , dir_data = dir_data
-  #           , dir_results = dir_results
-  #           , report_type = report_type
-  #           , report_format = "html"
-  #           , dir_rmd = dir_rmd
-  #           , siteQual2Plot = siteQual2Plot)
+  # getReport(TargetSiteID,
+  #           useBMI = useBMI,
+  #           useAlg = useAlg,
+  #           useBC = useBC,
+  #           removeOutliers = removeOutliers,
+  #           DOlim = DOlim,
+  #           pHlimHigh = pHlimHigh,
+  #           pHlimLow = pHlimLow
+  #           lagdays = lagdays,
+  #           bmiIndex = bmiIndex,
+  #           algIndex = algIndex,
+  #           dir_data = dir_data,
+  #           dir_results = dir_results,
+  #           report_type = report_type,
+  #           report_format = "html",
+  #           dir_rmd = dir_rmd,
+  #           siteQual2Plot = siteQual2Plot)
 
   dfGaps <- read.table(file.path(dir_results, TargetSiteID,
                                  paste0(TargetSiteID,"_datagaps.tab")),
@@ -1973,26 +1968,15 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(mySleepTime)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-#
-# getSummaryAllSites
-# getSummaryAllSites(biocommlist = c("bmi", "algae")
-#                    , bmiIndex = "CSCI"
-#                    , algIndex = "MMIhybrid"
-#                    , fishIndex = NULL
-#                    , dir_data = dir_data
-#                    , dir_results = dir_results
-#                    , dir_sub = "WoE"
-#                    , df_sites = NULL)
 
-
-# getSummaryAllSites(biocommlist = c("bmi")
-#                    , bmiIndex = "BIBI100"
-#                    , algIndex = NULL
-#                    , fishIndex = NULL
-#                    , dir_data = dir_data
-#                    , dir_results = dir_results
-#                    , dir_sub = "WoE"
-#                    , df_sites = NULL)
+# getSummaryAllSites(biocommlist = biocommlist,
+#                    bmiIndex = bmiIndex,
+#                    algIndex = NULL,
+#                    fishIndex = NULL,
+#                    dir_data = dir_data,
+#                    dir_results = dir_results,
+#                    dir_sub = "WoE",
+#                    df_sites = NULL)
 
 # msg <- "getSummaryAllSites is complete."
 # message(msg)
