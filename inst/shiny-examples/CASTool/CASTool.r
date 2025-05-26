@@ -195,7 +195,6 @@ plot_units <- "in"
 # 03, Select region variables ####
 # Progress, 03
 # region <- "WA" # options: SMC, AZ, WA, OR
-#
 
 # Read CASTool_Metadata.xlsx
 fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
@@ -227,8 +226,6 @@ if (region %in% state.abb) {
 removeOutliers      <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
 useBC               <- as.logical(dplyr::select(data_CASTmeta, useBC))
 samplim             <- as.integer(dplyr::select(data_CASTmeta, samplim))
-# probsHigh           <- as.numeric(dplyr::select(data_CASTmeta, probsHigh))
-# probsLow            <- as.numeric(dplyr::select(data_CASTmeta, probsLow))
 DOlim               <- as.numeric(dplyr::select(data_CASTmeta, DOlim))
 pHlimLow            <- as.numeric(dplyr::select(data_CASTmeta, pHlimLow))
 pHlimHigh           <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
@@ -236,8 +233,6 @@ lagdays             <- as.integer(unlist(stringr::str_split(dplyr::select(data_C
                                                                           lagdays), ", ")))
 biocommlist         <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, biocommlist), ", "))
 siteQual2Plot       <- as.character(dplyr::select(data_CASTmeta, siteQual2Plot))
-# printClusterInfo    <- as.logical(dplyr::select(data_CASTmeta, printClusterInfo))
-# printBkgdInfo       <- as.logical(dplyr::select(data_CASTmeta, printBkgdInfo))
 useAllCompReaches   <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
 useBetter           <- as.logical(dplyr::select(data_CASTmeta, useBetter))
 onlyNotDeg          <- as.logical(dplyr::select(data_CASTmeta, onlyNotDeg))
@@ -358,14 +353,12 @@ rm(fn.outline)
 ## Get cluster data ####
 if (basename(fn.cluster) != "NA") {
   data_cluster <- readCASToolData(fn = fn.cluster, NAs = c("", "na", "NA", "N/A"))
-
   ## Merge clusterID into spatial reach file for map imaging
   NHD.STATE <- dplyr::left_join(NHD.STATE, data_cluster, by = "COMID")
   ## Remove reaches without clusterIDs
   NHD.STATE <- NHD.STATE[!is.na(NHD.STATE$ClusterID), ]
   ## Select only required columns
   NHD.STATE <- dplyr::select(NHD.STATE, COMID, ClusterID, geometry)
-
 } else {
   msg <- "fn.cluster is NA"
   message(msg)
@@ -554,7 +547,7 @@ if (basename(fn.modeldata) != "NA") {
   useParams     <- as.character(data_modelInfo$StdParamName)
   data_modelRaw <- data_modelAll[data_modelAll$StdParamName %in% useParams, ]
 
-  ## Obtain SampleYear -- but SampDate is all NA, so this is meaningless
+  ## Obtain SampleYear -- but SampleDate is all NA, so this is meaningless
   data_modelRaw <- data_modelRaw %>%
     dplyr::mutate(SampYear = NA, SampleDate = NA) %>%
     dplyr::select(StationID, ChemSampleID, SampDate, StdParamName
@@ -1313,8 +1306,7 @@ for (site in seq_along(1:nrow(df_targets))) {
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
-  # TODO ----
-  # create a site with no detects of anything to test the capture
+  # TODO: Create a site with no detects of anything to test the capture
   # in getAvailableDataTypes
   # Prepare flags for types of stressor and response data to use
   list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID,
@@ -1355,9 +1347,6 @@ for (site in seq_along(1:nrow(df_targets))) {
     msg <- paste("No detected stressors identified for", TargetSiteID)
     message(msg)
 
-    # No identified stressors may be a data gap, but may not be, either
-    # gapcomment <- paste0("No potential stressors fall outside the specified "
-    #                      , "quantile range (", probsLow, " to ", probsHigh, ").")
     gaps <- cbind.data.frame("getAvailData", "Number of stressors", 0, msg)
     colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
@@ -1499,10 +1488,11 @@ for (site in seq_along(1:nrow(df_targets))) {
     # Proceed to next target site
     if (noPairedSamps == TRUE) {
       msg <- paste0("No paired stressor-response samples for", TargetSiteID
-                    , " for the ", bioComm, " community.")
+                    , " for the ", bioComm, " community within specified lag days.")
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
+      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       gapcomment <- paste0("No stressor samples are available for ", TargetSiteID
                            , " within ", lagdays[1], " days before, and ", lagdays[2]
                            , " after the ", biocomm, " sample(s) was(were) obtained.")
@@ -1510,23 +1500,9 @@ for (site in seq_along(1:nrow(df_targets))) {
                                paste0("Paired stressor-", bioComm, " data"),
                                0, gapcomment)
 
-      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
-
-      # Write run-time stats to file
-      endsite.time <- Sys.time()
-      elapsedsite.time <- endsite.time - startsite.time
-
-      df_temp <- as.data.frame(cbind("TargetSiteID" = TargetSiteID
-                                     , "Biocomm" = bioComm
-                                     , "NumStressors" = length(stressors)
-                                     , "NumLoE" = numLoE
-                                     , "ElapsedTime" = elapsedsite.time))
-      write.table(df_temp, file.path(dir_results, fn_runstats)
-                  , append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
 
       rm(dfTarget)
@@ -1607,8 +1583,7 @@ for (site in seq_along(1:nrow(df_targets))) {
     if (TargetSiteID %in% unique(data_bioCoOccur$StationID)) {
       msg <- "Starting Co-occurrence"
       message(msg)
-      # TODO: Eliminate "degraded" samples from the legend OR incorporate
-      # "not degraded comparator" into the y-axis title or caption
+
       list.StressorMetaData <- getCoOccur(TargetSiteID = TargetSiteID,
                                           df_data = df_PairedSRTransf,
                                           detects = siteDetectsAll,
@@ -1641,9 +1616,8 @@ for (site in seq_along(1:nrow(df_targets))) {
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
-      gaps <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
-
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      gaps <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
@@ -1687,12 +1661,12 @@ for (site in seq_along(1:nrow(df_targets))) {
                dir_results = dir_results,
                dir_sub = "TimeSequence",
                boo_plot = boo_plot_user)
-
-    # TODO: why are there missing values or values outside the scale range?
+    # TODO: why are there missing values or values outside the scale range in getTimeSeq?
 
     # Create "scores" for Time Sequence LoE
     # TODO: do we want to add this here, for all site detects, or after the fact
-    # for all detects evaluated as candidate causes?
+    # for all detects evaluated as candidate causes? If the latter, use
+    # df_stressorMetadata
     df_TS <- df_PairedSRTransf %>%
       dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::mutate(LoE = "TS", Score = "NE", bioIndexName := {{bioIndex}}) %>%
@@ -1816,19 +1790,14 @@ for (site in seq_along(1:nrow(df_targets))) {
 
       msg <- "No site stressors have stressor-specific tolerance values or stressor-specific indices."
       message(msg)
-      gapcomment <- msg
-      gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0
-                               , gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
 
     } else {
-
-    # } else if ((length(stressors.sstv) > 0) | length(stressors.ssi) > 0) {
-      # one or both sstvs and ssis exist
 
       if (length(stressors.sstv) > 0) { # one or more stressors.sstv
 
@@ -1860,10 +1829,8 @@ for (site in seq_along(1:nrow(df_targets))) {
         msg <- "No site stressors have stressor specific tolerance values"
         message(msg)
 
-        gapcomment <- "No site stressors have stressor-specific tolerance values"
-        gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0
-                                 , gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        gaps <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
@@ -1928,6 +1895,7 @@ for (site in seq_along(1:nrow(df_targets))) {
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
+    # TODO: Remove this write statement after debugging
     write.table(df_LoE, file.path(dir_results, TargetSiteID, biocomm,
                                   paste0(TargetSiteID, "_LoEs.tab")),
                 col.names = TRUE, row.names = FALSE, sep = "\t")
