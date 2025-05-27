@@ -46,7 +46,7 @@
 #' Only a single biological measurement is used. But multiple stressors can be
 #' used.
 #'
-#' Uses the libraries dplyr, tidyr, and ggplot2.
+#' Uses the libraries dplyr, ggplot2, and tidyr.
 #'
 #'
 #' @param TargetSiteID ID of station to be evaluated. May have one or many samples.
@@ -56,6 +56,12 @@
 #' @param df_stressinfo dataframe containing stressor metadata (LogTransf, Label)
 #' @param biocomm Biological community; BMI, algae, or fish  Default = "BMI".
 #' @param colBio df_data column name for the field with biological index value.
+#' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
+#' Defaults to data_plotvars
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
+#' @param plotH Standardized plot height. Defaults to plot_H.
+#' @param plotW Standardized plot width. Defaults to plot_W.
+#' @param plotUnits Standardized plot units. Defaults to plot_units.
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #' @param boo_plot Boolean value indicating whether or not to print the plot.
@@ -75,11 +81,11 @@ getSufficiency <- function(TargetSiteID,
                            df_stressinfo,
                            biocomm,
                            colBio,
-                           plotvars,
-                           plot_dpi,
-                           plot_H,
-                           plot_W,
-                           plot_units,
+                           plotvars = data_plotvars,
+                           plotdpi = plot_dpi,
+                           plotH = plot_H,
+                           plotW = plot_W,
+                           plotUnits = plot_units,
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "Sufficiency",
                            boo_plot = TRUE) {##FUNCTION.START
@@ -94,10 +100,10 @@ getSufficiency <- function(TargetSiteID,
     biocomm = bioComm
     colBio = bioIndex
     plotvars = data_plotvars
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotUnits = plot_units
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
@@ -304,8 +310,8 @@ getSufficiency <- function(TargetSiteID,
 
       if ((boo_plot) == TRUE) {
         ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
-                        dpi = plot_dpi, width = plot_W, height = plot_H,
-                        units = plot_units)
+                        dpi = plotdpi, width = plotW, height = plotH,
+                        units = plotUnits)
       }
 
     } ##IF.PLOT.END
