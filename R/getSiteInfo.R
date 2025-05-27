@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Site Info
 #'
@@ -11,7 +11,7 @@
 #' @details Summary info including lat/long, ref status, cluster membership,
 #' samples from site
 #'
-#' Requires packages dplyr, sf, tidyr
+#' Requires packages dplyr, ggplot2, tidyr
 #'
 #' Required objects:
 #'
@@ -33,18 +33,17 @@
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
 #' @param TargetCOMID common identifier for the reach on which the site is located
 #' @param df_Sites dataframe containing site data, including "inside the case"
-#'                 and "outside the case" identifiers. If useBC == TRUE, "outside
-#'                 the case" will be cluster; if useBC == FALSE, "inside the case"
-#'                 will be cluster.
+#' and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
+#' be cluster; if useBC == FALSE, "inside the case" will be cluster.
 #' @param df_WSData dataframe containing watershed-scale stressor variables from StreamCat
 #' @param df_WSInfo dataframe containing metadata for the variables in df_WSData
 #' @param df_SampSummary dataframe containing sample IDs for samples collected
-#'                       at the target site, organized by sample date (rows)
-#'                       and type (columns)
+#' at the target site, organized by sample date (rows) and type (columns)
+#' @param biocommlist vector of all biological response communities to be evaluated
 #' @param df_BMIMetrics dataframe containing BMI sample index and metric values
 #' @param BMIIndexGp vector containing one or more BMI indices for display purpose only
 #' @param df_ALGMetrics dataframe containing algae sample index and metric values.
-#'                      Default is NULL.
+#' Default is NULL.
 #' @param ALGIndexGp vector containing one or more algal indices for display purpose only
 #' @param df_FishMetrics dataframe containing fish sample index and metric values
 #' @param FishIndexGp vector containing one or more fish indices for display purpose only
@@ -54,10 +53,18 @@
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
 #' @param useAllCompReaches TRUE to use all inside-the-case reaches, even those
-#'                          without sites; FALSE to use only inside-the-case reaches
-#'                          with sites. DEFAULT = FALSE.
+#' without sites; FALSE to use only inside-the-case reaches with sites. DEFAULT = FALSE.
+#' @param plot_vars Colors, fills, shapes, transparencies for each type (target,
+#'                 not degraded, degraded, inside-the-case, outside-the-case).
+#'                 Default = data_plotvars.
+#' @param refSiteCol Default color outline for reference sites, used for standardization.
+#' Default = refOutline_col.
+#' @param plot_dpi Default dpi for plots, used for standardization. Default = plot_dpi.
+#' @param plot_H Default height for plots, used for standardization. Default = plot_H.
+#' @param plot_W Default width for plots, used for standardization. Default = plot_W.
+#' @param plot_units Default units for plots, used for standardization. Default = plot_units.
 #' @param dir_photo directory containing all site photos (for every site in the data set).
-#'                  Default is file.path(getwd(), "Data", "Photos").
+#' Default is file.path(getwd(), "Data", "Photos").
 #' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results").
 #' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo".
 #' @param boo_plot Boolean value to save plots. Default = TRUE.
@@ -75,50 +82,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' TargetSiteID <- "SRCKN001.61"
-#' dir_results <- file.path(getwd(), "Results")
-#'
-#' # Data
-#' # data import, example
-#' #data_Sites <- read.delim(paste(myDir.Data,"data_Sites.tab",sep=""))
-#' #data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
-#' #                               , na.strings = c(""," "))
-#' #data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
-#' #data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#'
-#' # Data getSiteInfo
-#' # data, example included with package
-#' data_Sites <- data_Sites
-#' data.SampSummary   <- data_SampSummary
-#' data.bmi.metrics   <- data_BMIMetrics
-#' data.algae.metrics <- data_AlgMetrics
-#'
-#' dir_sub <- "SiteInfo"
-#'
-#' # Run getSiteInfo
-#' list.SiteSummary <- getSiteInfo(TargetSiteID,
-#'                                 TargetCOMID,
-#'                                 df_Sites,
-#'                                 df_WSData,
-#'                                 df_WSInfo,
-#'                                 df_SampSummary,
-#'                                 df_BMIMetrics = NULL,
-#'                                 BMIIndexGp = NULL,
-#'                                 df_ALGMetrics = NULL,
-#'                                 ALGIndexGp = NULL,
-#'                                 df_FishMetrics = NULL,
-#'                                 FishIndexGp = NULL,
-#'                                 comp.sites,
-#'                                 comp.reaches,
-#'                                 all.sites,
-#'                                 IncaseLabel = NULL,
-#'                                 OutcaseLabel = NULL,
-#'                                 useBC = FALSE,
-#'                                 useAllCompReaches = FALSE,
-#'                                 dir_photo = file.path(getwd(), "Data", "Photos"),
-#'                                 dir_results = file.path(getwd(), "Results"),
-#'                                 dir_sub = "SiteInfo",
-#'                                 boo_plot = TRUE)
 #' }
 #' @export
 getSiteInfo <- function(TargetSiteID,
@@ -143,10 +106,10 @@ getSiteInfo <- function(TargetSiteID,
                         useAllCompReaches = FALSE,
                         plot_vars = data_plotvars,
                         refSiteCol = refOutline_col,
-                        plot_dpi,
-                        plot_H,
-                        plot_W,
-                        plot_units,
+                        plot_dpi = plot_dpi,
+                        plot_H = plot_H,
+                        plot_W = plot_W,
+                        plot_units = plot_units,
                         dir_photo = file.path(getwd(), "Data", "Photos"),
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
