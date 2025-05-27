@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Get Available Data
 #'
@@ -21,10 +21,10 @@
 #' @param measStressSamps boolean indicating if measured stressor data are expected..
 #' @param modStressSamps boolean indicating if modeled stressor data are expected.
 #' @param biocommlist vector of biocommunity data expected.
-#' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results")
+#' @param dir_results Directory containing all results.
 #'
 #' @return A list containing five boolean values 1) useBMI, 2) useAlg, 3) useFish,
-#'         4) noStressors, and 5) noResponses.
+#'         4) noStressors, 5) noResponses, and 6) siteDetectsAll.
 #'
 #' @keywords internal
 #'
@@ -35,7 +35,7 @@ getAvailableDataTypes <- function(TargetSiteID,
                                   measStressSamps,
                                   modStressSamps = FALSE,
                                   biocommlist,
-                                  dir_results = file.path(getwd(), "Results")) {##FUNCTION.START
+                                  dir_results) {##FUNCTION.START
 
   boo.DEBUG <- FALSE
 
@@ -54,9 +54,9 @@ getAvailableDataTypes <- function(TargetSiteID,
   not_all_na <- function(x) {!all(is.na(x))}
 
   # Check for directory, if not existing, create
-  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE
-         , dir.create(file.path(dir_results, TargetSiteID))
-         , FALSE)
+  ifelse(!dir.exists(file.path(dir_results, TargetSiteID)) == TRUE,
+         dir.create(file.path(dir_results, TargetSiteID)),
+         FALSE)
 
   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
@@ -113,8 +113,7 @@ getAvailableDataTypes <- function(TargetSiteID,
       msg <- paste("No detected stressors identified for", TargetSiteID)
       message(msg)
 
-      gaps <- cbind.data.frame("getAvailData", "Number of detects", 0
-                               , msg)
+      gaps <- cbind.data.frame("getAvailData", "Number of detects", 0, msg)
       colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
