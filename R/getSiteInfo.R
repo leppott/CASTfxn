@@ -15,8 +15,7 @@
 #'
 #' Required objects:
 #'
-#' * data_Sites; StationID, FinalLatitude, FinalLongitude
-#' , WaterbodyName, GIS_County, CARefSite_2017, COMID
+#' * data_Sites; StationID, COMID, FinalLatitude, FinalLongitude
 #'
 #' * data.SampSummary; StationID, CollDate, ChemSampleID, PhabSampID
 #' , BMI.Metrics.SampID, Algae.Metrics.SampID
@@ -35,8 +34,6 @@
 #' @param df_Sites dataframe containing site data, including "inside the case"
 #' and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
 #' be cluster; if useBC == FALSE, "inside the case" will be cluster.
-#' @param df_WSData dataframe containing watershed-scale stressor variables from StreamCat
-#' @param df_WSInfo dataframe containing metadata for the variables in df_WSData
 #' @param df_SampSummary dataframe containing sample IDs for samples collected
 #' at the target site, organized by sample date (rows) and type (columns)
 #' @param biocommlist vector of all biological response communities to be evaluated
@@ -52,8 +49,6 @@
 #' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
-#' @param useAllCompReaches TRUE to use all inside-the-case reaches, even those
-#' without sites; FALSE to use only inside-the-case reaches with sites. DEFAULT = FALSE.
 #' @param plot_vars Colors, fills, shapes, transparencies for each type (target,
 #'                 not degraded, degraded, inside-the-case, outside-the-case).
 #'                 Default = data_plotvars.
@@ -87,8 +82,6 @@
 getSiteInfo <- function(TargetSiteID,
                         TargetCOMID,
                         df_Sites,
-                        df_WSData,
-                        df_WSInfo,
                         df_SampSummary,
                         biocommlist,
                         df_BMIMetrics = NULL,
@@ -98,12 +91,10 @@ getSiteInfo <- function(TargetSiteID,
                         df_FishMetrics = NULL,
                         FishIndexGp = NULL,
                         comp.sites,
-                        comp.reaches,
                         all.sites,
                         IncaseLabel = NULL,
                         OutcaseLabel = NULL,
                         useBC = FALSE,
-                        useAllCompReaches = FALSE,
                         plot_vars = data_plotvars,
                         refSiteCol = refOutline_col,
                         plot_dpi = plot_dpi,
@@ -122,8 +113,6 @@ getSiteInfo <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     TargetCOMID = list.CompSites$TargetCOMID
     df_Sites = data_Sites
-    df_WSData = data_stressorWS
-    df_WSInfo = data_stressorinfoWS
     df_SampSummary = data_sampSummary
     biocommlist = biocommlist
     df_BMIMetrics = data_bmiMetrics
@@ -133,12 +122,10 @@ getSiteInfo <- function(TargetSiteID,
     df_FishMetrics = data_fishMetrics
     FishIndexGp = fishIndexGp
     comp.sites = list.CompSites$comp.sites
-    comp.reaches = list.CompSites$comp.reaches
     all.sites = list.CompSites$all.sites
     OutcaseLabel = outcaseLabel
     IncaseLabel = incaseLabel
     useBC = FALSE
-    useAllCompReaches = FALSE
     plot_vars = data_plotvars
     plot_dpi = plot_dpi
     plot_H = plot_H
@@ -173,12 +160,33 @@ getSiteInfo <- function(TargetSiteID,
   }
 
   ## Plot colors, sizes, etc  ----
-  # bio_types   <- unlist(plot_vars$Type)
-  # bio_fill    <- unlist(plot_vars$Fill)
-  # bio_shape   <- unlist(plot_vars$Shape)
-  # bio_size    <- unlist(plot_vars$Size)
-  # bio_alpha   <- unlist(plot_vars$Alpha)
-  # refSiteCol is reference site outline color
+  # Switched around to account for showing reference ND & D with 2 boxes for
+  # inside-the-case and outside-the-case (for fill, col, & alpha)
+  bio_shp <- c(plot_vars$Shape[plot_vars$Type == "target"],
+               plot_vars$Shape[plot_vars$Type == "insideND"],
+               plot_vars$Shape[plot_vars$Type == "insideD"],
+               plot_vars$Shape[plot_vars$Type == "outsideND"],
+               plot_vars$Shape[plot_vars$Type == "outsideD"])
+  bio_fill <- c(plot_vars$Fill[plot_vars$Type == "target"],
+                plot_vars$Fill[plot_vars$Type == "insideND"],
+                plot_vars$Fill[plot_vars$Type == "outsideD"],
+                plot_vars$Fill[plot_vars$Type == "outsideND"],
+                plot_vars$Fill[plot_vars$Type == "insideD"])
+  bio_alpha <- c(plot_vars$Alpha[plot_vars$Type == "target"],
+                 plot_vars$Alpha[plot_vars$Type == "insideND"],
+                 1,
+                 plot_vars$Alpha[plot_vars$Type == "outsideND"],
+                 plot_vars$Alpha[plot_vars$Type == "outsideD"])
+  bio_size <- c(plot_vars$Size[plot_vars$Type == "target"]*2.25,
+                plot_vars$Size[plot_vars$Type == "insideND"]*1.5,
+                plot_vars$Size[plot_vars$Type == "insideD"]+0.2,
+                plot_vars$Size[plot_vars$Type == "outsideND"],
+                plot_vars$Size[plot_vars$Type == "outsideD"])
+  bio_col <- c(plot_vars$Fill[plot_vars$Type == "target"],
+               plot_vars$Fill[plot_vars$Type == "outsideND"],
+               plot_vars$Fill[plot_vars$Type == "outsideD"],
+               plot_vars$Fill[plot_vars$Type == "insideND"],
+               plot_vars$Fill[plot_vars$Type == "insideD"])
 
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
@@ -306,19 +314,6 @@ getSiteInfo <- function(TargetSiteID,
                       (nrow(compBMImetrics) - nrow(myBMISamps)),
                       " from ", (length(comp.sites) - 1), " sites)")
 
-    # Specify symbology for target, reference not degraded, reference degraded,
-    # not degraded, and degraded in that order
-    # Outline color
-    bio_col <- c("red", "blue", "blue", "steelblue2", "gray25")
-    # Fill color
-    bio_fill <- c("red", "steelblue2", "gray25", "steelblue2", "gray25")
-    # Shape (triangle, circle, down triangle, circle, down triangle)
-    bio_shp <- c(17, 21, 25, 21, 25)
-    # Transparency
-    bio_alpha <- c(1, 0.5, 0.3, 0.5, 0.3)
-    # Size
-    bio_size <- c(1.5, 1, 1, 1, 1)
-
     str_title <- "Benthic macroinvertebrate index scores"
     str_ylab  <- "Score"
 
@@ -445,19 +440,6 @@ getSiteInfo <- function(TargetSiteID,
     lab.sub <- paste0("Comparator samples (n = ",
                       (nrow(compALGmetrics) - nrow(myALGSamps)),
                       " from ", (length(comp.sites) - 1), " sites)")
-
-    # Specify symbology for target, reference not degraded, reference degraded,
-    # not degraded, and degraded in that order
-    # Outline color
-    bio_col <- c("red", "blue", "blue", "steelblue2", "gray25")
-    # Fill color
-    bio_fill <- c("red", "steelblue2", "gray25", "steelblue2", "gray25")
-    # Shape (triangle, circle, down triangle, circle, down triangle)
-    bio_shp <- c(17, 21, 25, 21, 25)
-    # Transparency
-    bio_alpha <- c(1, 0.5, 0.3, 0.5, 0.3)
-    # Size
-    bio_size <- c(1.5, 1, 1, 1, 1)
 
     str_title <- "Algal index scores"
     str_ylab  <- "Score"
@@ -587,19 +569,6 @@ getSiteInfo <- function(TargetSiteID,
                       (nrow(compFISHmetrics) - nrow(myFISHSamps)),
                       " from ", (length(comp.sites) - 1), " sites)")
 
-    # Specify symbology for target, reference not degraded, reference degraded,
-    # not degraded, and degraded in that order
-    # Outline color
-    bio_col <- c("red", "blue", "blue", "steelblue2", "gray25")
-    # Fill color
-    bio_fill <- c("red", "steelblue2", "gray25", "steelblue2", "gray25")
-    # Shape (triangle, circle, down triangle, circle, down triangle)
-    bio_shp <- c(17, 21, 25, 21, 25)
-    # Transparency
-    bio_alpha <- c(1, 0.5, 0.3, 0.5, 0.3)
-    # Size
-    bio_size <- c(1.5, 1, 1, 1, 1)
-
     str_title <- "Benthic macroinvertebrate index scores"
     str_ylab  <- "Score"
 
@@ -685,185 +654,6 @@ getSiteInfo <- function(TargetSiteID,
 
   message("Completed transferring any available site files.")
 
-  # WS-scale stressors ----
-  if (!is.null(df_WSData)) {
-    # Get background data from df_WSData; use COMID to select single reach
-    data_compbkgd <- dplyr::filter(df_WSData, COMID %in% comp.reaches)
-    data_sitebkgdata <- dplyr::filter(data_compbkgd, COMID == TargetCOMID)
-    naVars.site <- unique(data_sitebkgdata$StreamCatVar[is.na(data_sitebkgdata$WatershedValue)])
-    data_sitebkgdata <- dplyr::filter(data_sitebkgdata, !is.na(WatershedValue))
-    vars.site <- unique(data_sitebkgdata$StreamCatVar[!is.na(data_sitebkgdata$WatershedValue)])
-
-    if (length(naVars.site) > 0) { # if any NA values, then missing data for site
-      # Missing one or more values in StreamCat for the target reach.
-      naVars.site <- paste(naVars.site, collapse = "; ")
-      gapcomment <- paste0("Missing background data for site ",
-                           TargetSiteID, "on reach with COMID = ", TargetCOMID)
-      gaps <- cbind.data.frame("getSiteInfo", "Background Data", naVars.site,
-                               gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
-    }
-
-    if (length(vars.site) > 0) { # Wastershed-scale stressor data exists
-
-      # If EPA wants to use all comparator reaches, make sure to set
-      # useAllCompReaches to TRUE in the CASTool_Metadata.xlsx file.
-      if (useAllCompReaches) { # use all comparator reaches, even those not having sites
-        if (useBC == TRUE) {
-          # If useAllCompReaches == T & useBC == T, this means use all
-          # outside-the-case reaches because filtering happens on a site basis,
-          # meaning that inside the case is by definition reaches having sites.
-          outcaseID <- mySiteInfo$OutcaseCol
-          data_compbkgd <- df_WSData[df_WSData$ClusterID == outcaseID, ]
-        } else { # useBC == FALSE; cluster ID is the inside the case ID
-          incaseID <- mySiteInfo$IncaseCol # this represents cluster ID
-          data_compbkgd <- df_WSData[df_WSData$ClusterID == incaseID, ]
-        }
-        str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
-                              "distribution of values for all comparator reaches")
-      } else { # use only comparator reaches having sites
-        data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches, ]
-        str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
-                              "distribution of values for all comparator sites' reaches")
-      }
-
-      ## Draw boxplots ----
-      # Prepare boxplot main elements
-      str_title <- paste0(TargetSiteID, ": Site watershed-scale stressors")
-
-      for (i in seq_along(vars.site)) { # StreamCatVar (no year--Metric includes year)
-        print(paste0("Prepping ", vars.site[i]))
-        plotvar <- vars.site[i]
-        fn.bkgplot <- file.path(dir_path, paste0(TargetSiteID, "_WSstress_",
-                                                 plotvar, ".png"))
-        if (plotvar == "wsareasqkm") {
-          str_sub <- "Watershed area, km2"
-        } else {
-          str_sub <- unique(df_WSInfo$Label[df_WSInfo$StreamCatVar == plotvar])
-        }
-
-        df.plot.comp <- dplyr::filter(data_compbkgd, StreamCatVar == plotvar) %>%
-          dplyr::filter(!is.na(WatershedValue))
-        dataYears <- sort(unique(df.plot.comp$Year))
-
-        if (length(dataYears) > 0) { # Plot data with years
-
-          xmin <- min(df.plot.comp$Year) - min(df.plot.comp$Year) %% 10
-          xmax <- lubridate::year(Sys.Date())
-          numYears <- xmax - xmin
-          xmindate <- lubridate::ymd(paste(xmin, "-01-01"))
-          xmaxdate <- lubridate::ymd(paste(xmax, "-01-01"))
-          numTypes <- length(allRespSampTypes)
-
-          # Boxplots with years ----
-          p.box <- ggplot2::ggplot(data = df.plot.comp,
-                                   ggplot2::aes(x = Year, y = WatershedValue,
-                                                group = Year)) +
-            ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.75, na.rm = TRUE,
-                                  staplewidth = 0.5, linewidth = 0.1) +
-            ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0,
-                                 ggplot2::aes(x = Year, y = WatershedValue),
-                                 size = 0.25, na.rm = TRUE, color = "cyan4") +
-            ggplot2::scale_x_continuous(limits = c(xmin, xmax),
-                                        breaks = scales::breaks_width(1)) +
-            ggplot2::labs(title = str_title, subtitle = str_sub) +
-            ggplot2::ylab("Watershed Value") +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
-                           plot.caption = ggplot2::element_text(size = 5)) +
-            ggplot2::theme(axis.text.x = ggplot2::element_text(color = "black",
-                                                               size = 6,
-                                                               angle = 90,
-                                                               vjust = 0.6,
-                                                               hjust = 0.5),
-                           axis.text.y = ggplot2::element_text(color = "black",
-                                                               size = 6),
-                           axis.title.x = ggplot2::element_blank(),
-                           axis.title.y = ggplot2::element_text(color = "black",
-                                                                size = 8),
-                           legend.position = "none")
-
-          p.box <- p.box +
-            ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                                ggplot2::aes(x = Year, y = WatershedValue, group = Year),
-                                color = "red", shape = 17) +
-            ggplot2::geom_text(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                               ggplot2::aes(x = Year, y = WatershedValue,
-                                            group = Year,
-                                            label = formatC(WatershedValue,
-                                                            format = "fg",
-                                                            digits = 3)),
-                               size = 2.1, color = "red", nudge_x = 0.75,
-                               nudge_y = 0.75)
-
-          p.boxtime <- p.box +
-            ggplot2::geom_point(data = myRespSampDates, inherit.aes = FALSE,
-                                ggplot2::aes(x = lubridate::decimal_date(SampleDate),
-                                             y = yLoc), size = 1) #+
-          for (l in 1:numTypes) {
-            p.boxtime <- p.boxtime +
-              ggplot2::geom_hline(color = "black", yintercept = -5 * l,
-                                  linewidth = 0.2) +
-              ggplot2::geom_text(x = xmin, y = -5 * l, label = allRespSampTypes[l],
-                                 size = 2, hjust = -2)
-          }
-
-          if (boo_plot) {
-            ggplot2::ggsave(fn.bkgplot, p.boxtime, dpi = plot_dpi, width = plot_W,
-                            height = 1.5 * plot_H, units = plot_units)
-          }## IF ~ boo_plot ~ END
-
-        } else { # no years to consider
-          p.box <- ggplot2::ggplot(data = df.plot.comp,
-                                   ggplot2::aes(x = StreamCatVar, y = WatershedValue)) +
-            ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.75, na.rm = TRUE,
-                                  staplewidth = 0.5, linewidth = 0.1) +
-            ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0,
-                                 ggplot2::aes(x = StreamCatVar, y = WatershedValue),
-                                 size = 0.25, na.rm = TRUE, color = "cyan4") +
-            ggplot2::labs(title = str_title, subtitle = str_sub,
-                          caption = str_caption) +
-            ggplot2::ylab("Watershed Value")
-
-          p.box <- p.box +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
-                           plot.caption = ggplot2::element_text(size = 5)) +
-            ggplot2::theme(axis.text.x = ggplot2::element_blank(),
-                           axis.text.y = ggplot2::element_text(color = "black",
-                                                               size = 6),
-                           axis.title.x = ggplot2::element_blank(),
-                           axis.title.y = ggplot2::element_text(color = "black",
-                                                                size = 8),
-                           legend.position = "none")
-
-          p.box <- p.box +
-            ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                                ggplot2::aes(x = StreamCatVar, y = WatershedValue),
-                                color = "red", shape = 17) +
-            ggplot2::geom_text(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                               ggplot2::aes(x = StreamCatVar, y = WatershedValue,
-                                            label = formatC(WatershedValue,
-                                                            format = "fg",
-                                                            digits = 3)),
-                               size = 2.3, color = "red", nudge_x = 0.15,
-                               nudge_y = 0.15)
-          if(boo_plot){
-            ggplot2::ggsave(fn.bkgplot, p.box, dpi = plot_dpi, width = plot_W,
-                            height = plot_H, units = plot_units)
-          }## IF ~ boo_plot ~ END
-        }## If/else for graphs ends
-      }## for loop over variables ends
-    }  # End background data portion
-  }
-
-  #
   # nothing returned; only graphics written to "SiteInfo" folder
 
 }
