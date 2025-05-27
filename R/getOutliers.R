@@ -15,7 +15,7 @@
 #'          for transformed stressors when transformation is specified in the
 #'          stressor metadata.
 #'
-#' Uses the library dplyr.
+#' Uses the libraries dplyr and ggplot2.
 #'
 #' @param df_data dataframe containing all stressor data values
 #' @param df_meta dataframe containing stressor metadata
