@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Identifies Stressor Outliers
 #'
@@ -88,8 +88,8 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
       ggplot2::ggtitle(paste0("Histogram of ", paramName, " observations")) +
       ggplot2::xlab(paramName) +
       ggplot2::theme_bw()
-    ggplot2::ggsave(file.path(dir_plots, fn), p1, width = 6, height = 4
-                    , units = "in")
+    ggplot2::ggsave(file.path(dir_plots, fn), p1, width = 6, height = 4,
+                    units = "in")
 
     if (unique(df_sub$LogTransf) == 1) {
       p2 <- ggplot2::ggplot(df_sub, ggplot2::aes(x = TransfResult)) +
@@ -98,8 +98,8 @@ getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
                                 " observations")) +
         ggplot2::xlab(paramName) +
         ggplot2::theme_bw()
-      ggplot2::ggsave(file.path(dir_plots, fn2), p2, width = 6, height = 4
-                      , units = "in")
+      ggplot2::ggsave(file.path(dir_plots, fn2), p2, width = 6, height = 4,
+                      units = "in")
     }
 
     # 3*IQR method for identifying outliers
