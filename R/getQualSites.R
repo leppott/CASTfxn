@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Get Quality Sites
 #'
@@ -55,7 +55,7 @@ getQualSites <- function(TargetSiteID,
                          allSites,
                          refSites,
                          stressors,
-                         dir_results = file.path(getwd(), "Results"),
+                         dir_results = dir_results,
                          dir_sub = "SiteInfo") {##FUNCTION.START
 
   # For QC purposes
