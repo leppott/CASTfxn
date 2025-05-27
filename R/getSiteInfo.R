@@ -50,8 +50,7 @@
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
 #' @param plot_vars Colors, fills, shapes, transparencies for each type (target,
-#'                 not degraded, degraded, inside-the-case, outside-the-case).
-#'                 Default = data_plotvars.
+#' not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.
 #' @param refSiteCol Default color outline for reference sites, used for standardization.
 #' Default = refOutline_col.
 #' @param plot_dpi Default dpi for plots, used for standardization. Default = plot_dpi.
@@ -177,7 +176,7 @@ getSiteInfo <- function(TargetSiteID,
                  1,
                  plot_vars$Alpha[plot_vars$Type == "outsideND"],
                  plot_vars$Alpha[plot_vars$Type == "outsideD"])
-  bio_size <- c(plot_vars$Size[plot_vars$Type == "target"]*2.25,
+  bio_size <- c(plot_vars$Size[plot_vars$Type == "target"]*1.8,
                 plot_vars$Size[plot_vars$Type == "insideND"]*1.5,
                 plot_vars$Size[plot_vars$Type == "insideD"]+0.2,
                 plot_vars$Size[plot_vars$Type == "outsideND"],
@@ -234,14 +233,45 @@ getSiteInfo <- function(TargetSiteID,
                       " ", myIncaseID)
   }
 
-  if (!is.null(df_BMIMetrics)) {
+  for (b in seq_along(biocommlist)) { # Only tested for BMI
+
+    # Define biocomm data
+    bioComm <- tolower(biocommlist[b])
+    if (bioComm == "bmi") {
+      bioIndex <- bmiIndex
+      bioIndexGp <- BMIIndexGp
+      bioMetricData <- df_BMIMetrics
+      colBio <- bmiIndex
+      bioSampleID <- "BMISampleID"
+    } else if (bioComm == "algae") {
+      bioIndex <- algIndex
+      bioIndexGp <- algIndexGp
+      bioMetricData <- df_algMetrics
+      colBio <- algIndex
+      bioSampleID <- "AlgSampleID"
+    } else if (bioComm == "fish") {
+      bioIndex <- fishIndex
+      bioIndexGp <- fishIndexGp
+      bioMetricData <- df_fishMetrics
+      colBio <- fishIndex
+      bioSampleID <- "FishSampleID"
+    } else {
+      msg <- paste0(bioComm, " is not a valid biological community.")
+      message(msg)
+      next()
+    }
 
     # Prep BMI data for plotting
-    allBMImetrics <- df_BMIMetrics %>%
+    targetBioMetrics <- dplyr::filter(bioMetricData, StationID == TargetSiteID)
+    allBioMetrics <- bioMetricData %>%
+      dplyr::filter(!(StationID %in% comp.sites))
+    allBioMetrics <- rbind(targetBioMetrics, allBioMetrics)
+
+    allBioMetrics <- allBioMetrics %>%
       dplyr::mutate(Quality = as.character(Quality),
                     Case = "Outside the case")
-    allBMImetrics <- allBMImetrics %>%
-      tidyr::pivot_longer(cols = all_of(BMIIndexGp), names_to = "Index",
+    allBioMetrics <- allBioMetrics %>%
+      tidyr::pivot_longer(cols = all_of(bioIndexGp), names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
                     Quality = factor(Quality, levels = c("Target",
@@ -250,26 +280,26 @@ getSiteInfo <- function(TargetSiteID,
                     Index = factor(Index),
                     Case = "Outside the case",
                     RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
+                    Samples = dplyr::case_when(Quality == "Target" ~ "Target",
                                                   !is.na(RefSite) ~
                                                     paste0(RefSite, ", ", tolower(Quality)),
                                                   TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
+                    Samples = factor(Samples, levels = c("Target",
                                                                "Reference, not degraded",
                                                                "Reference, degraded",
                                                                "Not degraded",
                                                                "Degraded"))) %>%
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
+                    Score, Case, Samples)
 
-    compBMImetrics <- df_BMIMetrics %>%
+    compBioMetrics <- bioMetricData %>%
       dplyr::filter(StationID %in% comp.sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(BMIIndexGp),
+      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
                     Quality) %>%
       dplyr::mutate(Quality = as.character(Quality))
 
-    compBMImetrics <- compBMImetrics %>%
-      tidyr::pivot_longer(cols = all_of(BMIIndexGp), names_to = "Index",
+    compBioMetrics <- compBioMetrics %>%
+      tidyr::pivot_longer(cols = all_of(bioIndexGp), names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
                     Quality = factor(Quality, levels = c("Target",
@@ -278,30 +308,30 @@ getSiteInfo <- function(TargetSiteID,
                     Index = factor(Index),
                     Case = "Inside the case",
                     RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
+                    Samples = dplyr::case_when(Quality == "Target" ~ "Target",
                                                   !is.na(RefSite) ~
                                                     paste0(RefSite, ", ", tolower(Quality)),
                                                   TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
+                    Samples = factor(Samples, levels = c("Target",
                                                                "Reference, not degraded",
                                                                "Reference, degraded",
                                                                "Not degraded",
                                                                "Degraded"))) %>%
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
+                    Score, Case, Samples)
 
-    goodBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Not degraded")
-    badBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Degraded")
-    myBMImetrics <- dplyr::filter(compBMImetrics, Quality=="Target")
+    goodBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Not degraded")
+    badBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Degraded")
+    myBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Target")
 
-    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBMImetrics),
+    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBioMetrics),
                                  "Not degraded comparator samples available.")
     colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
-    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBMImetrics),
+    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBioMetrics),
                                 "Degraded comparator samples available.")
     colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
     gap.comps <- rbind(gap.good, gap.bad)
-    rm(gap.good, gap.bad, goodBMImetrics, badBMImetrics)
+    rm(gap.good, gap.bad, goodBioMetrics, badBioMetrics)
 
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
@@ -309,35 +339,35 @@ getSiteInfo <- function(TargetSiteID,
                 row.names = FALSE, sep = "\t")
 
     # ## Plot, Variables, Strings, other Aesthetics
-    myBMISamps <- dplyr::filter(mySamps, !is.na(BMISampleID))
+    myBioSamps <- dplyr::filter(mySamps, !is.na(bioSampleID))
     lab.sub <- paste0("Comparator samples (n = ",
-                      (nrow(compBMImetrics) - nrow(myBMISamps)),
+                      (nrow(compBioMetrics) - nrow(myBioSamps)),
                       " from ", (length(comp.sites) - 1), " sites)")
 
     str_title <- "Benthic macroinvertebrate index scores"
     str_ylab  <- "Score"
 
     ## Plot, BMI data by case ----
-    allsamplesByCase <- rbind(compBMImetrics, allBMImetrics)
+    allsamplesByCase <- rbind(compBioMetrics, allBioMetrics)
     allsamplesByCase <- dplyr::filter(allsamplesByCase, !is.na(Score))
     targetSamples <- dplyr::filter(allsamplesByCase, StationID == TargetSiteID)
     allsamplesByCase <- dplyr::filter(allsamplesByCase, StationID != TargetSiteID)
 
-    fn_bmiscoresByCase <- paste0(TargetSiteID, "_BMI_IndexBoxplotsByCase.png")
-    fn_bmiscoresByCase <- file.path(dir_path, fn_bmiscoresByCase)
-    pBMIbyCase <- ggplot2::ggplot(allsamplesByCase,
+    fn_bioscoresByCase <- paste0(TargetSiteID, "_", biocommlist[b], "_IndexBoxplotsByCase.png")
+    fn_bioscoresByCase <- file.path(dir_path, fn_bioscoresByCase)
+    pBiobyCase <- ggplot2::ggplot(allsamplesByCase,
                                   ggplot2::aes(y = round(Score, 3), x = Case,
                                                group = Case)) +
       ggplot2::geom_boxplot(na.rm = TRUE, staplewidth = 0.5) +
       ggplot2::geom_jitter(width = 0.2, height = 0.05, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef))
-    pBMIbyCase <- pBMIbyCase +
+                           ggplot2::aes(color = Samples, fill = Samples,
+                                        shape = Samples, alpha = Samples,
+                                        size = Samples))
+    pBiobyCase <- pBiobyCase +
       ggplot2::geom_jitter(data = targetSamples, width = 0.2, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef)) +
+                           ggplot2::aes(color = Samples, fill = Samples,
+                                        shape = Samples, alpha = Samples,
+                                        size = Samples)) +
       ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
       ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
@@ -349,273 +379,19 @@ getSiteInfo <- function(TargetSiteID,
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
                                                         size = ggplot2::rel(0.8)),
                      plot.subtitle = ggplot2::element_text(hjust = 0.5,
-                                                           size = ggplot2::rel(0.5))) +
+                                                           size = ggplot2::rel(0.5)),
+                     plot.caption = ggplot2::element_text(size = ggplot2::rel(0.6)),
+                     legend.title = ggplot2::element_text(size = ggplot2::rel(0.6)),
+                     legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))) +
       ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black"),
                      axis.ticks.y = ggplot2::element_blank(),
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {
-      ggplot2::ggsave(fn_bmiscoresByCase, pBMIbyCase, width = plot_W,
+      ggplot2::ggsave(fn_bioscoresByCase, pBiobyCase, width = plot_W,
                       height = plot_H, units = plot_units, dpi = plot_dpi)
     }## IF ~ boo_plot_by_case ~ END
 
-  } else {
-    myBMIMetrics <- NULL
-  } ## IF ~ BMI_by_case ~ END
-
-  if (!is.null(df_ALGMetrics)) {
-    # Prep Alg data for plotting
-    allALGmetrics <- df_ALGMetrics %>%
-      dplyr::mutate(Quality = as.character(Quality),
-                    Case = "Outside the case")
-    allALGmetrics <- allALGmetrics %>%
-      tidyr::pivot_longer(cols = all_of(ALGIndexGp), names_to = "Index",
-                          values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
-                    Quality = factor(Quality, levels = c("Target",
-                                                         "Not degraded",
-                                                         "Degraded")),
-                    Index = factor(Index),
-                    Case = "Outside the case",
-                    RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
-
-    compALGmetrics <- df_ALGMetrics %>%
-      dplyr::filter(StationID %in% comp.sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(ALGIndexGp),
-                    Quality) %>%
-      dplyr::mutate(Quality = as.character(Quality))
-
-    compALGmetrics <- compALGmetrics %>%
-      tidyr::pivot_longer(cols = all_of(ALGIndexGp), names_to = "Index",
-                          values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
-                    Quality = factor(Quality, levels = c("Target",
-                                                         "Not degraded",
-                                                         "Degraded")),
-                    Index = factor(Index),
-                    Case = "Inside the case",
-                    RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
-
-    goodALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Not degraded")
-    badALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Degraded")
-    myALGmetrics <- dplyr::filter(compALGmetrics, Quality=="Target")
-
-    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodALGmetrics),
-                                 "Not degraded comparator samples available.")
-    colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
-    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badALGmetrics),
-                                "Degraded comparator samples available.")
-    colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
-    gap.comps <- rbind(gap.good, gap.bad)
-    rm(gap.good, gap.bad, goodALGmetrics, badALGmetrics)
-
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
-
-    # ## Plot, Variables, Strings, other Aesthetics
-    myALGSamps <- dplyr::filter(mySamps, !is.na(ALGSampleID))
-    lab.sub <- paste0("Comparator samples (n = ",
-                      (nrow(compALGmetrics) - nrow(myALGSamps)),
-                      " from ", (length(comp.sites) - 1), " sites)")
-
-    str_title <- "Algal index scores"
-    str_ylab  <- "Score"
-
-    ## Plot, Alg data by case ----
-    allsamplesByCase <- rbind(compALGmetrics, allALGmetrics)
-    allsamplesByCase <- dplyr::filter(allsamplesByCase, !is.na(Score))
-    targetSamples <- dplyr::filter(allsamplesByCase, StationID == TargetSiteID)
-    allsamplesByCase <- dplyr::filter(allsamplesByCase, StationID != TargetSiteID)
-
-    fn_algscoresByCase <- paste0(TargetSiteID, "_ALG_IndexBoxplotsByCase.png")
-    fn_algscoresByCase <- file.path(dir_path, fn_algscoresByCase)
-    pALGbyCase <- ggplot2::ggplot(allsamplesByCase,
-                                  ggplot2::aes(y = round(Score, 3), x = Case,
-                                               group = Case)) +
-      ggplot2::geom_boxplot(na.rm = TRUE, staplewidth = 0.5) +
-      ggplot2::geom_jitter(width = 0.2, height = 0.05, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef))
-    pALGbyCase <- pALGbyCase +
-      ggplot2::geom_jitter(data = targetSamples, width = 0.2, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef)) +
-      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
-      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
-      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
-      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
-      ggplot2::scale_size_manual(values = bio_size, drop = FALSE) +
-      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub,
-                    y = str_ylab) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
-                                                        size = ggplot2::rel(0.8)),
-                     plot.subtitle = ggplot2::element_text(hjust = 0.5,
-                                                           size = ggplot2::rel(0.5))) +
-      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black"),
-                     axis.ticks.y = ggplot2::element_blank(),
-                     axis.title.x = ggplot2::element_blank())
-    if (boo_plot) {
-      ggplot2::ggsave(fn_algscoresByCase, pALGbyCase, width = plot_W,
-                      height = plot_H, units = plot_units, dpi = plot_dpi)
-    }## IF ~ boo_plot_by_case ~ END
-
-  } else {
-    myALGmetrics <- NULL
-  } ## IF ~ alg_by_case ~ END
-
-  # TODO: adapt for fish
-  if (!is.null(df_FishMetrics)) {
-    # Prep Fish data for plotting
-    allFISHmetrics <- df_FISHMetrics %>%
-      dplyr::mutate(Quality = as.character(Quality),
-                    Case = "Outside the case")
-    allFISHmetrics <- allFISHmetrics %>%
-      tidyr::pivot_longer(cols = all_of(FISHIndexGp), names_to = "Index",
-                          values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
-                    Quality = factor(Quality, levels = c("Target",
-                                                         "Not degraded",
-                                                         "Degraded")),
-                    Index = factor(Index),
-                    Case = "Outside the case",
-                    RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
-
-    compFISHmetrics <- df_FISHMetrics %>%
-      dplyr::filter(StationID %in% comp.sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(FISHIndexGp),
-                    Quality) %>%
-      dplyr::mutate(Quality = as.character(Quality))
-
-    compFISHmetrics <- compFISHmetrics %>%
-      tidyr::pivot_longer(cols = all_of(FISHIndexGp), names_to = "Index",
-                          values_to = "Score") %>%
-      dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
-                    Quality = factor(Quality, levels = c("Target",
-                                                         "Not degraded",
-                                                         "Degraded")),
-                    Index = factor(Index),
-                    Case = "Inside the case",
-                    RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
-                    QualityRef = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
-                    QualityRef = factor(QualityRef, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
-                    Score, Case, QualityRef)
-
-    goodFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Not degraded")
-    badFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Degraded")
-    myFISHmetrics <- dplyr::filter(compFISHmetrics, Quality=="Target")
-
-    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodFISHmetrics),
-                                 "Not degraded comparator samples available.")
-    colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
-    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badFISHmetrics),
-                                "Degraded comparator samples available.")
-    colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
-    gap.comps <- rbind(gap.good, gap.bad)
-    rm(gap.good, gap.bad, goodFISHmetrics, badFISHmetrics)
-
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
-
-    # ## Plot, Variables, Strings, other Aesthetics
-    myFISHSamps <- dplyr::filter(mySamps, !is.na(FISHSampleID))
-    lab.sub <- paste0("Comparator samples (n = ",
-                      (nrow(compFISHmetrics) - nrow(myFISHSamps)),
-                      " from ", (length(comp.sites) - 1), " sites)")
-
-    str_title <- "Benthic macroinvertebrate index scores"
-    str_ylab  <- "Score"
-
-    ## Plot, Fish data by case ----
-    allsamplesByCase <- rbind(compFISHmetrics, allFISHmetrics)
-    allsamplesByCase <- dplyr::filter(allsamplesByCase, !is.na(Score))
-    targetSamples <- dplyr::filter(allsamplesByCase, StationID == TargetSiteID)
-    allsamplesByCase <- dplyr::filter(allsamplesByCase, StationID != TargetSiteID)
-
-    fn_FISHscoresByCase <- paste0(TargetSiteID, "_FISH_IndexBoxplotsByCase.png")
-    fn_FISHscoresByCase <- file.path(dir_path, fn_FISHscoresByCase)
-    pFISHbyCase <- ggplot2::ggplot(allsamplesByCase,
-                                  ggplot2::aes(y = round(Score, 3), x = Case,
-                                               group = Case)) +
-      ggplot2::geom_boxplot(na.rm = TRUE, staplewidth = 0.5) +
-      ggplot2::geom_jitter(width = 0.2, height = 0.05, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef))
-    pFISHbyCase <- pFISHbyCase +
-      ggplot2::geom_jitter(data = targetSamples, width = 0.2, na.rm = TRUE,
-                           ggplot2::aes(color = QualityRef, fill = QualityRef,
-                                        shape = QualityRef, alpha = QualityRef,
-                                        size = QualityRef)) +
-      ggplot2::scale_color_manual(values = bio_col, drop = FALSE) +
-      ggplot2::scale_fill_manual(values = bio_col, drop = FALSE) +
-      ggplot2::scale_shape_manual(values = bio_shp, drop = FALSE) +
-      ggplot2::scale_alpha_manual(values = bio_alpha, drop = FALSE) +
-      ggplot2::scale_size_manual(values = bio_size, drop = FALSE) +
-      ggplot2::labs(title = str_title, subtitle = str_sub, caption = lab.sub,
-                    y = str_ylab) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
-                                                        size = ggplot2::rel(0.8)),
-                     plot.subtitle = ggplot2::element_text(hjust = 0.5,
-                                                           size = ggplot2::rel(0.5))) +
-      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black"),
-                     axis.ticks.y = ggplot2::element_blank(),
-                     axis.title.x = ggplot2::element_blank())
-    if (boo_plot) {
-      ggplot2::ggsave(fn_FISHscoresByCase, pFISHbyCase, width = plot_W,
-                      height = plot_H, units = plot_units, dpi = plot_dpi)
-    }## IF ~ boo_plot_by_case ~ END
-
-  } else {
-    myFISHmetrics <- NULL
-  } ## IF ~ fish_by_case ~ END
+  } # End loop over biocomms
 
   # Site photos ----
   # Check for presence of Photos in data directory. If not present, skip.
