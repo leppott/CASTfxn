@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Biological Stressor-Response Gradient Lines of Evidence
 #'
@@ -26,17 +26,20 @@
 #'                     Default = 0.05
 #' @param r2_cutoff r2 value below which the relationship has too much variance
 #'                  Default = 0.1
-#' @param dir_plots Directory to save plots.  Default = working directory and Results.
-#' @param dir_sub Subdirectory for outputs from this function.  Default = "StressorResponse"
-#' @param boo_pred_warn Should warnings for prediction be suppressed.  Default = TRUE.
-#' @param boo_plot Boolean value to save plots.  Default = TRUE.
-# @param LogTransf Value for if stressor variables should be log1p transformed; 1=TRUE, 0=FALSE.
+#' @param plotvars colors, shapes, fills, and transparencies for each type (target,
+#'                 not degraded, degraded, inside-the-case, and outside-the-case)
+#' @param refoutline_col color of the reference sites outline
+#' @param plot_dpi standardized dpi for all plots
+#' @param plot_H standardized height for all plots
+#' @param plot_W standardized width for all plots
+#' @param dir_plots Directory to save plots. Default = working directory and Results.
+#' @param dir_sub Subdirectory for outputs from this function. Default = "StressorResponse"
+#' @param boo_pred_warn Should warnings for prediction be suppressed. Default = TRUE.
+#' @param boo_plot Boolean value to save plots. Default = TRUE.
 #'
 #' @return One or more graphics depicting stressor-response relationships,
 #'         a correlation tile plot, and two tab-delimited text files;
 #'         stressor correlations and scores.
-#'
-# @importFrom pryr "%<a-%"
 #'
 #' @examples
 #' \dontrun{}
@@ -53,17 +56,17 @@ getBioStressorResponses <- function(TargetSiteID,
                                     p.val_cutoff = 0.05,
                                     r2_cutoff = 0.1,
                                     plotvars,
+                                    refOutline_col,
                                     plot_dpi,
                                     plot_H,
                                     plot_W,
                                     plot_units,
-                                    dir_plots = file.path(getwd(), "Results"),
+                                    dir_plots,
                                     dir_sub = "StressorResponse",
                                     boo_pred_warn = TRUE,
                                     boo_plot = TRUE) {##FUNCTION.START
-  # DEBUG
+
   boo.DEBUG <- FALSE
-  ## Trigger DEBUG actions below for when debugging.
 
   if (boo.DEBUG == TRUE) {
     TargetSiteID = TargetSiteID
@@ -78,6 +81,7 @@ getBioStressorResponses <- function(TargetSiteID,
     p.val_cutoff = 0.05
     r2_cutoff = 0.2
     plotvars = data_plotvars
+    refOutline_col = refOutline_col
     plot_dpi = plot_dpi
     plot_H = plot_H
     plot_W = plot_W
@@ -129,7 +133,7 @@ getBioStressorResponses <- function(TargetSiteID,
   if (siteQual2Plot == "reference") {
     df_CompRef <- df_CompData[df_CompData$RefSiteFlag == 1, ]
     df_AllRef <- df_AllData[df_AllData$RefSiteFlag == 1, ]
-  } else if (siteQual2Plot == "better than"){
+  } else if (siteQual2Plot == "better than") {
     df_CompBT <- df_CompData[df_CompData$BetterThan == 1, ]
     df_AllBT <- df_AllData[df_AllData$BetterThan == 1, ]
   } else { # Only option remaining is "not degraded
@@ -165,7 +169,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
   # Capture each plot in a list for the PDF
   plots.pq <- vector(q.len * p.len, mode = "list")
-  ppi<-300
   varFileOut <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_BioGrad_"))
 
   # FOR.p ####
@@ -320,8 +323,7 @@ getBioStressorResponses <- function(TargetSiteID,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_all_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for ",
-                             siteQual2Plot,
+        gapcomment <- paste0("No stressor data available for ", siteQual2Plot,
                              " sites in the outside-the-case dataset")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
@@ -342,8 +344,8 @@ getBioStressorResponses <- function(TargetSiteID,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_cl_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for ",
-                             siteQual2Plot, " inside-the-case sites.")
+        gapcomment <- paste0("No stressor data available for ", siteQual2Plot,
+                             " inside-the-case sites.")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -451,7 +453,6 @@ getBioStressorResponses <- function(TargetSiteID,
           names(df.corr_cl) <- cn_cor_pref
           pval.corr_cl <- signif(c1S_cl$p.value, 2)
           #
-          # 20180621, scoring
           slope.dir_cl <- sign(slope_cl) # 1 = positive, -1 = negative
           #
         } # End std dev If eval
@@ -699,11 +700,10 @@ getBioStressorResponses <- function(TargetSiteID,
                                                     "NE", SRLin_Score_inside),
                         SRLin_Score_outside = ifelse(is.na(stressVal),
                                                     "NE", SRLin_Score_outside)) %>%
-          dplyr::select(StationID, StressSampleID,
-                                  StressSampleDate, RespSampleID, RespSampleDate,
-                                  biocomm, stressName, stressLabel, stressVal,
-                                  respName, respLabel, respVal, Quality, n_site,
-                                  n_comp, SRLin_Score_inside, SRLin_Score_outside)
+          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                        RespSampleDate, biocomm, stressName, stressLabel, stressVal,
+                        respName, respLabel, respVal, Quality, n_site, n_comp,
+                        SRLin_Score_inside, SRLin_Score_outside)
 
         #if(boo.pryr==TRUE){
         fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
@@ -718,8 +718,7 @@ getBioStressorResponses <- function(TargetSiteID,
         }
 
         # Add biocomm, 20190425
-        utils::write.table(df.sc.sr,
-                           fp_scores,
+        utils::write.table(df.sc.sr, fp_scores,
                            sep = "\t", quote = FALSE, row.names = FALSE,
                            col.names = boo.col.names, append = boo.Append)
         #}
@@ -744,11 +743,11 @@ getBioStressorResponses <- function(TargetSiteID,
       model_all_val <- dplyr::rename(model_all_val, Stressor = {{stressName}},
                                      Response = {{respName}})
       df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
-                                   Response = {{respName}})
+                                  Response = {{respName}})
       df_plot_cl_ref <- dplyr::rename(df_plot_cl_ref, Stressor = {{stressName}},
-                                       Response = {{respName}})
+                                      Response = {{respName}})
       model_cl_val <- dplyr::rename(model_cl_val, Stressor = {{stressName}},
-                                     Response = {{respName}})
+                                    Response = {{respName}})
       df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
                                     Response = {{respName}})
 
@@ -781,7 +780,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                 paste0("p-value = ", pval.corr_cl),
                                 paste0("n = ", n_str_cl),
                                 paste0("score = ", sr.score_cl),
-                                sep=" ~ ")
+                                sep = " ~ ")
       } else {
         str_caption_cl <- paste0("Regression (comparators, inside the case): ",
                                  "Less than 3 data points in comparator set.")
@@ -795,7 +794,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  paste0("p-value = ", pval.corr_all),
                                  paste0("n = ", n_str_all),
                                  paste0("score = ", sr.score_all),
-                                 sep=" ~ ")
+                                 sep = " ~ ")
       } else {
         str_caption_all <- "Regression (outside-the-case):  Less than 3 data points."
       } ##IF.equation.END
@@ -825,13 +824,13 @@ getBioStressorResponses <- function(TargetSiteID,
       }
 
       ## Plot, Variables, Colors
-      col_sites_all     <- "gray45"
-      col_sites_all_ref <- "blue"
-      col_sites_cl      <- "cyan4"
-      col_sites_cl_ref  <- col_sites_all_ref
-      col_sites_targ    <- "red"
-      col_line_cl       <- "cyan4"
-      col_line_all      <- "gray20"
+      col_sites_all      <- "gray45"
+      col_sites_all_ref  <- "blue"
+      col_sites_cl       <- "cyan4"
+      col_sites_cl_ref   <- col_sites_all_ref
+      col_sites_targ     <- "red"
+      col_line_cl        <- "cyan4"
+      col_line_all       <- "gray20"
 
       ## Plot, Variables, Fill
       fill_sites_all     <- col_sites_all
@@ -841,26 +840,26 @@ getBioStressorResponses <- function(TargetSiteID,
       fill_sites_targ    <- col_sites_targ
 
       ## Plot, Variables, Points
-      pch_sites_all     <- 21 # solid circle
-      pch_sites_all_ref <- 21 # circle outline
-      pch_sites_cl      <- 21 # solid circle
-      pch_sites_cl_ref  <- 21 # circle outline
-      pch_sites_targ    <- 17 # triangle
+      pch_sites_all      <- 21 # solid circle
+      pch_sites_all_ref  <- 21 # circle outline
+      pch_sites_cl       <- 21 # solid circle
+      pch_sites_cl_ref   <- 21 # circle outline
+      pch_sites_targ     <- 17 # triangle
 
       ## Plot, Variables, Sizes
       cex_mod <- 2
-      cex_sites_all     <- cex_mod * 0.5
-      cex_sites_all_ref <- cex_sites_all
-      cex_sites_cl      <- cex_mod * 0.7
-      cex_sites_cl_ref  <- cex_sites_cl
-      cex_sites_targ    <- cex_mod * 0.9
+      cex_sites_all      <- cex_mod * 0.5
+      cex_sites_all_ref  <- cex_sites_all
+      cex_sites_cl       <- cex_mod * 0.7
+      cex_sites_cl_ref   <- cex_sites_cl
+      cex_sites_targ     <- cex_mod * 0.9
 
       ## Plot, Variables, Alpha
       alpha_lm_all <- 0.5
       alpha_lm_cl  <- 0.25
 
       ## Plot, Variables, Legend
-      leg_name   <- "Samples"
+      leg_name       <- "Samples"
       leg_labels_all <- c("all", leg_all_ref, "target")
       leg_shape_all  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_targ)
       leg_col_all    <- c(col_sites_all, col_sites_all_ref, col_sites_targ)
@@ -906,8 +905,7 @@ getBioStressorResponses <- function(TargetSiteID,
           p_SR_all <- p_SR_all +
             ggplot2::geom_point(data=df_plot_site,
                                 ggplot2::aes(x = Stressor, y = Response,
-                                             color = "target",
-                                             shape = "target",
+                                             color = "target", shape = "target",
                                              fill = "target"),
                                 size = cex_sites_targ, na.rm = TRUE)
         } else {
@@ -942,7 +940,6 @@ getBioStressorResponses <- function(TargetSiteID,
                                color = col_line_all,
                                linetype = "dashed",
                                show.legend = FALSE,
-                               # , linewidth = 1.25
                                na.rm = TRUE)
           p_SR_all <- p_SR_all +
             ggplot2::geom_line(data = model_all_val,
@@ -950,7 +947,6 @@ getBioStressorResponses <- function(TargetSiteID,
                                color = col_line_all,
                                linetype = "dashed",
                                show.legend = FALSE,
-                               # , linewidth = 1.25
                                na.rm = TRUE)
         } ## End regression, all
 
@@ -1011,8 +1007,7 @@ getBioStressorResponses <- function(TargetSiteID,
           p_SR_cl <- p_SR_cl +
             ggplot2::geom_point(data=df_plot_site,
                                 ggplot2::aes(x = Stressor, y = Response,
-                                             color = "target",
-                                             shape = "target",
+                                             color = "target", shape = "target",
                                              fill = "target"),
                                 size = cex_sites_targ, na.rm = TRUE)
         } else {
