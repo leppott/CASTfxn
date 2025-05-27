@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Co-Occurrence and Sufficiency Lines of Evidence
 #'
@@ -43,22 +43,31 @@
 #' @param TargetSiteID ID of station/sample(s) to plot
 #' @param df_data data frame with paired stressor/response data, where stressor
 #'                data are transformed.
-#' @param incaseLabel A label describing the inside-the-case samples.
+#' @param detects all stressors detected in any samples from the target site
+#' @param df_stressinfo dataframe containing stressor metadata (e.g., Label,
+#'                      DirIncStress, and other columns from the stressor
+#'                      information metadata file).
+#' @param compsites vector of comparator sites. Defaults to list.CompSites$comp.sites
 #' @param biocomm Biological community; fish, algae, or BMI.  Default = "BMI".
 #' @param colBio df_data column with biological index numeric value.
+#' @param onlyNotDeg use only not degraded sites. Default = TRUE.
 #' @param useBetter Boolean flag for whether or not to use samples scoring better
 #'                  than the maximum degraded target sample or the minimum not
 #'                  degraded sample, if none of the target samples are degraded.
 #'                  Defaults to FALSE.
-#' @param df_stressinfo dataframe containing stressor metadata (e.g., Label,
-#'                      DirIncStress, and other columns from the stressor
-#'                      information metadata file).
 #' @param pHlimLow The lower limit of pH considered to be supportive of a
 #'                 biological community. Defaults to pH of 6.5.
 #' @param pHlimHigh The upper limit of pH considered to be supportive of a
 #'                  biological community. Defaults to pH of 9.
 #' @param DOlim The lower limit of DO in mg/L considered to be supportive of a
 #'              biological community. Defaults to 7 mg/L
+#' @param plotvars Colors, fills, shapes, transparencies for each type (target,
+#'                 not degraded, degraded, inside-the-case, outside-the-case).
+#'                 Default = data_plotvars.
+#' @param plot_dpi DPI for plots for standardization. Default = plot_dpi.
+#' @param plot_H Plot height for standardization. Default = plot_H.
+#' @param plot_W Plot width for standardization. Default = plot_W.
+#' @param plot_units Plot units for standardization. Default = plot_units.
 #' @param dir_plots Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
 #' @param boo_plot Boolean value to save plots.  Default = TRUE.
@@ -83,12 +92,12 @@ getCoOccur <- function(TargetSiteID,
                        pHlimLow = 5,
                        pHlimHigh = 9,
                        DOlim = 6,
-                       plotvars,
-                       plot_dpi,
-                       plot_H,
-                       plot_W,
-                       plot_units,
-                       dir_plots = file.path(getwd(), "Results"),
+                       plotvars = data_plotvars,
+                       plot_dpi = plot_dpi,
+                       plot_H = plot_H,
+                       plot_W = plot_W,
+                       plot_units = plot_units,
+                       dir_plots = dir_results,
                        dir_sub = "CoOccurrence",
                        boo_plot = TRUE) {##FUNCTION.START
 
