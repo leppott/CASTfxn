@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #  You can contact the authors at
 #  Ann.RoseberryLincoln@tetratech.com
@@ -11,7 +11,7 @@
 #  library(devtools)
 #  install_github("ALincolnTt/RPPTool")
 #
-#  requires dplyr, ggplot2, purrr, rmarkdown, sf, tmap
+#  requires dplyr, ggplot2, purrr, rmarkdown, sf, tmap, viridis
 #
 #  Add Shiny code for use in Shiny App
 #  2020-09-10, Erik
@@ -36,6 +36,8 @@
 #' @param compSites a vector of inside-the-case site identifiers
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE"
+#' @param plotvars Standardized plot sizes, fills, transparencies, and shapes by type
+#' @param refOutline Standardized reference site outline color
 #' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results")
 #' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo".
 #' @param dir_map_rmd Directory containing the leaflet map template.
