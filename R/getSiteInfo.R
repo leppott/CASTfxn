@@ -49,14 +49,14 @@
 #' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
-#' @param plot_vars Colors, fills, shapes, transparencies for each type (target,
+#' @param plotvars Colors, fills, shapes, transparencies for each type (target,
 #' not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.
 #' @param refSiteCol Default color outline for reference sites, used for standardization.
 #' Default = refOutline_col.
-#' @param plot_dpi Default dpi for plots, used for standardization. Default = plot_dpi.
-#' @param plot_H Default height for plots, used for standardization. Default = plot_H.
-#' @param plot_W Default width for plots, used for standardization. Default = plot_W.
-#' @param plot_units Default units for plots, used for standardization. Default = plot_units.
+#' @param plotdpi Default dpi for plots, used for standardization. Default = plot_dpi.
+#' @param plotH Default height for plots, used for standardization. Default = plot_H.
+#' @param plotW Default width for plots, used for standardization. Default = plot_W.
+#' @param plotunits Default units for plots, used for standardization. Default = plot_units.
 #' @param dir_photo directory containing all site photos (for every site in the data set).
 #' Default is file.path(getwd(), "Data", "Photos").
 #' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results").
@@ -94,12 +94,12 @@ getSiteInfo <- function(TargetSiteID,
                         IncaseLabel = NULL,
                         OutcaseLabel = NULL,
                         useBC = FALSE,
-                        plot_vars = data_plotvars,
+                        plotvars = data_plotvars,
                         refSiteCol = refOutline_col,
-                        plot_dpi = plot_dpi,
-                        plot_H = plot_H,
-                        plot_W = plot_W,
-                        plot_units = plot_units,
+                        plotdpi = plot_dpi,
+                        plotH = plot_H,
+                        plotW = plot_W,
+                        plotunits = plot_units,
                         dir_photo = file.path(getwd(), "Data", "Photos"),
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
@@ -125,11 +125,11 @@ getSiteInfo <- function(TargetSiteID,
     OutcaseLabel = outcaseLabel
     IncaseLabel = incaseLabel
     useBC = FALSE
-    plot_vars = data_plotvars
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotvars = data_plotvars
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     refSiteCol = refOutline_col
     dir_photo = file.path(dir_data, "Photos")
     dir_results = dir_results
@@ -161,31 +161,31 @@ getSiteInfo <- function(TargetSiteID,
   ## Plot colors, sizes, etc  ----
   # Switched around to account for showing reference ND & D with 2 boxes for
   # inside-the-case and outside-the-case (for fill, col, & alpha)
-  bio_shp <- c(plot_vars$Shape[plot_vars$Type == "target"],
-               plot_vars$Shape[plot_vars$Type == "insideND"],
-               plot_vars$Shape[plot_vars$Type == "insideD"],
-               plot_vars$Shape[plot_vars$Type == "outsideND"],
-               plot_vars$Shape[plot_vars$Type == "outsideD"])
-  bio_fill <- c(plot_vars$Fill[plot_vars$Type == "target"],
-                plot_vars$Fill[plot_vars$Type == "insideND"],
-                plot_vars$Fill[plot_vars$Type == "outsideD"],
-                plot_vars$Fill[plot_vars$Type == "outsideND"],
-                plot_vars$Fill[plot_vars$Type == "insideD"])
-  bio_alpha <- c(plot_vars$Alpha[plot_vars$Type == "target"],
-                 plot_vars$Alpha[plot_vars$Type == "insideND"],
+  bio_shp <- c(plotvars$Shape[plotvars$Type == "target"],
+               plotvars$Shape[plotvars$Type == "insideND"],
+               plotvars$Shape[plotvars$Type == "insideD"],
+               plotvars$Shape[plotvars$Type == "outsideND"],
+               plotvars$Shape[plotvars$Type == "outsideD"])
+  bio_fill <- c(plotvars$Fill[plotvars$Type == "target"],
+                plotvars$Fill[plotvars$Type == "insideND"],
+                plotvars$Fill[plotvars$Type == "outsideD"],
+                plotvars$Fill[plotvars$Type == "outsideND"],
+                plotvars$Fill[plotvars$Type == "insideD"])
+  bio_alpha <- c(plotvars$Alpha[plotvars$Type == "target"],
+                 plotvars$Alpha[plotvars$Type == "insideND"],
                  1,
-                 plot_vars$Alpha[plot_vars$Type == "outsideND"],
-                 plot_vars$Alpha[plot_vars$Type == "outsideD"])
-  bio_size <- c(plot_vars$Size[plot_vars$Type == "target"]*1.8,
-                plot_vars$Size[plot_vars$Type == "insideND"]*1.5,
-                plot_vars$Size[plot_vars$Type == "insideD"]+0.2,
-                plot_vars$Size[plot_vars$Type == "outsideND"],
-                plot_vars$Size[plot_vars$Type == "outsideD"])
-  bio_col <- c(plot_vars$Fill[plot_vars$Type == "target"],
-               plot_vars$Fill[plot_vars$Type == "outsideND"],
-               plot_vars$Fill[plot_vars$Type == "outsideD"],
-               plot_vars$Fill[plot_vars$Type == "insideND"],
-               plot_vars$Fill[plot_vars$Type == "insideD"])
+                 plotvars$Alpha[plotvars$Type == "outsideND"],
+                 plotvars$Alpha[plotvars$Type == "outsideD"])
+  bio_size <- c(plotvars$Size[plotvars$Type == "target"]*1.8,
+                plotvars$Size[plotvars$Type == "insideND"]*1.5,
+                plotvars$Size[plotvars$Type == "insideD"]+0.2,
+                plotvars$Size[plotvars$Type == "outsideND"],
+                plotvars$Size[plotvars$Type == "outsideD"])
+  bio_col <- c(plotvars$Fill[plotvars$Type == "target"],
+               plotvars$Fill[plotvars$Type == "outsideND"],
+               plotvars$Fill[plotvars$Type == "outsideD"],
+               plotvars$Fill[plotvars$Type == "insideND"],
+               plotvars$Fill[plotvars$Type == "insideD"])
 
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
@@ -387,8 +387,8 @@ getSiteInfo <- function(TargetSiteID,
                      axis.ticks.y = ggplot2::element_blank(),
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {
-      ggplot2::ggsave(fn_bioscoresByCase, pBiobyCase, width = plot_W,
-                      height = plot_H, units = plot_units, dpi = plot_dpi)
+      ggplot2::ggsave(fn_bioscoresByCase, pBiobyCase, width = plotW,
+                      height = plotH, units = plotunits, dpi = plotdpi)
     }## IF ~ boo_plot_by_case ~ END
 
   } # End loop over biocomms
