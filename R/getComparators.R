@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Get Comparator Sites
 #'
@@ -17,6 +17,7 @@
 #'
 #' @param TargetSiteID Site ID for the site being evaluated
 #' @param df_sites Sites table with cluster membership. Default = "data_Sites".
+#' @param df_cluster Dataframe containing reach IDs and their associated clusters
 #' @param df_bioCoOccur Dataframe containing paired stressor/response sample data
 #' @param bioIndex Character vector corresponding to the biological index column name.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = "FALSE".
@@ -32,6 +33,8 @@
 #'                    Examples include "Cluster" or "Sites with expected biologic
 #'                    similarity from cluster x" where x refers to the cluster
 #'                    membership of the target site.
+#' @param useAllCompReaches Whether all comparator reaches should be used (FALSE)
+#'                          or only those with sites on them (TRUE).
 #' @param df_bcdist Dataframe containing the biological dissimilarity distance matrix.
 #'                  Default = NULL. Must be defined if incaseColName is not.
 #' @param bc_cutoff Cutoff value below which will be considered similar to the
@@ -61,7 +64,7 @@ getComparators<- function(TargetSiteID,
                           useAllCompReaches = FALSE,
                           df_bcdist = NULL,
                           bc_cutoff = 0.05,
-                          dir_results = file.path(getwd(), "Results"),
+                          dir_results,
                           dir_sub = "SiteInfo") {##FUNCTION.START
 
   # For QC purposes
@@ -151,16 +154,16 @@ getComparators<- function(TargetSiteID,
       gap.statement <- cbind.data.frame("getComparators",
                                         paste0("bc.dist <= ", bc_cutoff),
                                         num.good,
-                                        paste("max bc.dist for",
+                                        paste("max bc.dist for ",
                                               nrow(df_bcdist.temp) - 1,
-                                              "comparators =",
+                                              "comparators = ",
                                               max(df_bcdist.temp[, TargetColName])))
       colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     } else {
       gap.statement <- cbind.data.frame("getComparators",
                                         paste0("bc.dist <= ", bc_cutoff),
                                         num.good,
-                                        paste("max bc.dist =",
+                                        paste("max bc.dist = ",
                                               round(max(df_bcdist.temp[, TargetColName]), 4)))
       colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     }
