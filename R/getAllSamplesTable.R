@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Sample Summary
 #'
@@ -32,11 +32,13 @@
 #' @param df.stress dataframe containing stressor data for all sites, including
 #'                  measured or observed quantitative water chemistry and quality,
 #'                  physical habitat data, and modeled data.
-#' @param df.respTrim dataframe containing all response samples obtained from a site,
-#'                    including the station ID, sample ID, sample date, and biological
-#'                    community sampled
+#' @param df.stressInfo dataframe containing stressor metadata, including stressor
+#'                      names, labels, whether the stressor should be evaluated, if
+#'                      it should be log-transformed, and whether or not there are
+#'                      associated stressor-specific tolerance values or indices.
+#' @param df.resp dataframe containing all response samples obtained from a site,
+#'                including multiple biological communities, if sampled.
 #' @param df.sites dataframe containing StationID, COMID, IncaseCol, and OutcaseCol
-#' @param out.dir directory path to which an output file can be written
 #'
 #' @return A dataframe of site sample information sorted by StationID and SampleDate
 #'         (both ascending), along with COMID, OutcaseCol, IncaseCol, and identifiers
@@ -118,12 +120,13 @@ getAllSamplesTable <- function(df.stress,
 
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
-      dplyr::select(StationID, SampleDate, all_of(chemsamptypes), ModeledSampleID,
-                    all_of(respsamptypes))
+      dplyr::select(StationID, SampleDate, all_of(chemsamptypes),
+                    ModeledSampleID, all_of(respsamptypes))
   } else {
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
-      dplyr::select(StationID, SampleDate, all_of(chemsamptypes), all_of(respsamptypes))
+      dplyr::select(StationID, SampleDate, all_of(chemsamptypes),
+                    all_of(respsamptypes))
   }
 
   if (is.na(incaseColName)) {
@@ -138,18 +141,19 @@ getAllSamplesTable <- function(df.stress,
   }
 
   # Update blank COMID, IncaseCol, OutcaseCol (add labels when writing table)
-  df.siteTrim <- unique(df.sites[, c("StationID", "COMID", "OutcaseCol", "IncaseCol")])
+  df.siteTrim <- unique(df.sites[, c("StationID", "COMID", "OutcaseCol",
+                                     "IncaseCol")])
 
   df.sampSummary <- df.sampSummary %>%
     dplyr::mutate(COMID = suppressWarnings(ifelse(is.na(COMID),
-                                 df.siteTrim$COMID[df.siteTrim$StationID == StationID],
-                                 COMID)),
+                            df.siteTrim$COMID[df.siteTrim$StationID == StationID],
+                            COMID)),
                   OutcaseCol = suppressWarnings(ifelse(is.na(OutcaseCol),
-                                 df.siteTrim$OutcaseCol[df.siteTrim$StationID == StationID],
-                                 OutcaseCol)),
+                            df.siteTrim$OutcaseCol[df.siteTrim$StationID == StationID],
+                            OutcaseCol)),
                   IncaseCol = suppressWarnings(ifelse(is.na(IncaseCol),
-                                 df.siteTrim$IncaseCol[df.siteTrim$StationID == StationID],
-                                 IncaseCol)))
+                            df.siteTrim$IncaseCol[df.siteTrim$StationID == StationID],
+                            IncaseCol)))
 
   return(df.sampSummary)
 
