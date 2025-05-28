@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Stressor Sufficiency Line of Evidence
 #'
@@ -46,8 +46,7 @@
 #' Only a single biological measurement is used. But multiple stressors can be
 #' used.
 #'
-#' Uses the libraries dplyr, ggplot2, and tidyr.
-#'
+#' Uses the libraries dplyr, ggplot2, grid, stringr, and tidyr.
 #'
 #' @param TargetSiteID ID of station to be evaluated. May have one or many samples.
 #' @param df_data dataframe containing matched stressor-response data for the
@@ -57,11 +56,11 @@
 #' @param biocomm Biological community; BMI, algae, or fish  Default = "BMI".
 #' @param colBio df_data column name for the field with biological index value.
 #' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
-#' Defaults to data_plotvars
+#'                 Defaults to data_plotvars
 #' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
 #' @param plotH Standardized plot height. Defaults to plot_H.
 #' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotUnits Standardized plot units. Defaults to plot_units.
+#' @param plotunits Standardized plot units. Defaults to plot_units.
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #' @param boo_plot Boolean value indicating whether or not to print the plot.
@@ -85,7 +84,7 @@ getSufficiency <- function(TargetSiteID,
                            plotdpi = plot_dpi,
                            plotH = plot_H,
                            plotW = plot_W,
-                           plotUnits = plot_units,
+                           plotunits = plot_units,
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "Sufficiency",
                            boo_plot = TRUE) {##FUNCTION.START
@@ -103,7 +102,7 @@ getSufficiency <- function(TargetSiteID,
     plotdpi = plot_dpi
     plotH = plot_H
     plotW = plot_W
-    plotUnits = plot_units
+    plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "Sufficiency"
     boo_plot = boo_plot_user
@@ -113,19 +112,6 @@ getSufficiency <- function(TargetSiteID,
   `%>%` <- dplyr::`%>%`
   biocomm <- toupper(biocomm)
   stressors <- as.vector(df_stressinfo$Stressor)
-
-  # define scoring limits
-  negStart <- 0
-  negEnd   <- 0.2  # same as zeroStart
-  zeroEnd  <- 0.5  # same as posStart
-  posEnd   <- 1
-  midNeg   <- ((negEnd - negStart) / 2) + negStart
-  midZero  <- ((zeroEnd - negEnd) / 2) + negEnd
-  midPos   <- ((posEnd - zeroEnd) / 2) + zeroEnd
-  # arrow labels
-  aLabNeg  <- "-1"
-  aLabZero <- "0"
-  aLabPos  <- "1"
 
   # Write results directory ----
   out.dir <- dirname(dir_plots)
@@ -141,6 +127,42 @@ getSufficiency <- function(TargetSiteID,
       dir.create(dir_path)
     }
   }
+
+  # define scoring limits
+  negStart <- 0
+  negEnd   <- 0.2  # same as zeroStart
+  zeroEnd  <- 0.5  # same as posStart
+  posEnd   <- 1
+  midNeg   <- ((negEnd - negStart) / 2) + negStart
+  midZero  <- ((zeroEnd - negEnd) / 2) + negEnd
+  midPos   <- ((posEnd - zeroEnd) / 2) + zeroEnd
+  # arrow labels
+  aLabNeg  <- "-1"
+  aLabZero <- "0"
+  aLabPos  <- "1"
+
+  # Create (ggplot)
+  # bio_col <- c("gray25", "steelblue2")
+  # bio_shp <- c(25, 21) # down triangle and circle
+  # bio_size <- c(3, 3)
+
+  ## Plot, Variables, Target Site Line
+  # targ_line_col <- "red"
+  # targ_line_lty <- 2
+  # targ_line_lwd <- 1
+
+  ## Plot, Variables
+  ## Prepare colors, sizes, etc  ----
+  plotvarsIn  <- plotvars %>%
+    dplyr::filter(Type %in% c("insideND", "insideD"))
+  bio_col     <- rev(unlist(plotvarsIn$Fill)) # Degraded, Not degraded
+  bio_fill    <- rev(unlist(plotvarsIn$Fill)) # Degraded, Not degraded
+  bio_shape   <- rev(unlist(plotvarsIn$Shape)) # down triangle, circle
+  bio_size    <- rev(unlist(plotvarsIn$Size)) # Degraded, Not degraded
+  bio_alpha   <- rev(unlist(plotvarsIn$Alpha)) # Degraded, Not degraded
+  targ_line_col <- plotvars$Fill[plotvars$Type == "target"]
+  targ_line_lty <- 2
+  targ_line_lwd <- 1
 
   # Get dataset
   df_data <- df_data %>%
@@ -224,17 +246,17 @@ getSufficiency <- function(TargetSiteID,
       # plot ####
       # File Names
       fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
-      ppi       <- 300
-
-      # Create (ggplot)
-      bio_col <- c("gray25", "steelblue2")
-      bio_shp <- c(25, 21) # down triangle and circle
-      bio_size <- c(3, 3)
-
-      ## Plot, Variables, Target Site Line
-      targ_line_col <- "red"
-      targ_line_lty <- 2
-      targ_line_lwd <- 1
+      # ppi       <- 300
+      #
+      # # Create (ggplot)
+      # bio_col <- c("gray25", "steelblue2")
+      # bio_shp <- c(25, 21) # down triangle and circle
+      # bio_size <- c(3, 3)
+      #
+      # ## Plot, Variables, Target Site Line
+      # targ_line_col <- "red"
+      # targ_line_lty <- 2
+      # targ_line_lwd <- 1
       targ_vals <- as.numeric(unlist(j_values))
 
       legendtitle <- "Samples"
@@ -279,7 +301,7 @@ getSufficiency <- function(TargetSiteID,
                                     values = bio_col, drop = FALSE) +
         ggplot2::scale_shape_manual(name = legendtitle,
                                     breaks = c("Degraded", "Not degraded"),
-                                    values = bio_shp, drop = FALSE) +
+                                    values = bio_shape, drop = FALSE) +
         ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col,
                             lty = targ_line_lty, lwd = targ_line_lwd,
                             na.rm = TRUE) +
@@ -311,7 +333,7 @@ getSufficiency <- function(TargetSiteID,
       if ((boo_plot) == TRUE) {
         ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
                         dpi = plotdpi, width = plotW, height = plotH,
-                        units = plotUnits)
+                        units = plotunits)
       }
 
     } ##IF.PLOT.END
