@@ -27,7 +27,9 @@
 #' @keywords internal
 #'
 #' @export
-getOutliers <- function(df_data, df_meta, dir_plots) {##FUNCTION.START
+getOutliers <- function(df_data,
+                        df_meta,
+                        dir_plots = file.path(getwd(), "Results")) {##FUNCTION.START
 
   # Debug
   boo_DEBUG <- FALSE
