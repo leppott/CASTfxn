@@ -1,7 +1,8 @@
 #  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.3
 #
 #' @title Verified Predictions
 #'
@@ -9,7 +10,7 @@
 #'
 #' @details
 #'
-#' Required packages: dplyr, ggplot2, stringr, tidyr
+#' Required packages: dplyr, ggplot2, grid, stringr, tidyr
 #'
 #' @param TargetSiteID Site ID
 #' @param stressors.ssi vector of stressors identified as candidate causes with SSIs
@@ -18,17 +19,15 @@
 #' @param biocomm default = "bmi"
 #' @param df_bioMetricData dataframe of raw metric data
 #' @param df_bioMetricInfo dataframe of metric metadata
-#' @param useBetter boolean flag of whether or not to restrict the analysis to
-#'                  only samples "better than" the target samples
 #' @param colBio column containing the overall biological index score
-#' @param plot_vars dataframe containing the default plotting variables (color,
+#' @param plotvars dataframe containing the default plotting variables (color,
 #'                  fill, alpha, shape for target, inside the case not degraded,
 #'                  inside the case degraded, outside the case not degraded, and
 #'                  outside the case degraded)
-#' @param plot_dpi standardized plot dpi
-#' @param plot_H standardized plot height
-#' @param plot_W standardized plot width
-#' @param plot_units units for plot height and width
+#' @param plotdpi standardized plot dpi
+#' @param plotH standardized plot height
+#' @param plotW standardized plot width
+#' @param plotunits units for plot height and width
 #' @param dir_plots default = file.path(getwd(), "Results")
 #' @param dir_sub default = "VerifiedPredictions"
 #' @param boo_plot = TRUE
@@ -50,13 +49,12 @@ getVPSSI <- function(TargetSiteID,
                      biocomm,
                      df_bioMetricData,
                      df_bioMetricInfo,
-                     useBetter = FALSE,
                      colBio,
-                     plot_vars = data_plotvars,
-                     plot_dpi,
-                     plot_H,
-                     plot_W,
-                     plot_units,
+                     plotvars = data_plotvars,
+                     plotdpi = plot_dpi,
+                     plotH = plot_H,
+                     plotW = plot_W,
+                     plotunits = plot_units,
                      dir_plots = file.path(getwd(), "Results"),
                      dir_sub = "VerifiedPredictions_SSIs",
                      boo_plot = TRUE) {##FUNCTION.START
@@ -72,13 +70,12 @@ getVPSSI <- function(TargetSiteID,
     biocomm = bioComm
     df_bioMetricData = bioMetricData
     df_bioMetricInfo = bioMetricInfo
-    useBetter = FALSE
     colBio = bioIndex
-    plot_vars = data_plotvars
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotvars = data_plotvars
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "VerifiedPredictions_SSIs"
     boo_plot = boo_plot_user
@@ -119,13 +116,13 @@ getVPSSI <- function(TargetSiteID,
   } else {
 
     # Prepare generic plot variables ----
-    plot_vars  <- plot_vars %>%
+    plotvars  <- plotvars %>%
       dplyr::filter(Type %in% c("target", "insideND", "insideD"))
-    bio_col     <- unlist(plot_vars$Fill)
-    bio_fill    <- unlist(plot_vars$Fill)
-    bio_shape   <- unlist(plot_vars$Shape)
-    bio_size    <- unlist(plot_vars$Size)
-    bio_alpha   <- unlist(plot_vars$Alpha)
+    bio_col     <- unlist(plotvars$Fill)
+    bio_fill    <- unlist(plotvars$Fill)
+    bio_shape   <- unlist(plotvars$Shape)
+    bio_size    <- unlist(plotvars$Size)
+    bio_alpha   <- unlist(plotvars$Alpha)
 
     ## Plot, Variables, Target Site Line
     targ_line_col <- bio_col[1]
@@ -179,17 +176,6 @@ getVPSSI <- function(TargetSiteID,
       } #END check for ssi in metric data
 
       # Create data set for use
-      if (useBetter == TRUE) {
-        # Subset df_data for comparator sites having better biology
-        df.compBT <- df_paired %>%
-          dplyr::filter(IncaseYN == 1 & BetterThan == 1)
-        df.data <- merge(df.compBT, df_bioMetricData,
-                         by = c("StationID", "RespSampleID", "RespSampleDate",
-                                colBio, "Quality"))
-        str_comp <- "comparator samples with better biology"
-        rm(df.compBT)
-      } else {
-        # Subset df_data for comparator sites
         df.comp <- df_paired %>%
           dplyr::filter(IncaseYN == 1)
         df.data <- merge(df.comp, df_bioMetricData,
@@ -197,7 +183,6 @@ getVPSSI <- function(TargetSiteID,
                                 colBio, "Quality"))
         str_comp <- "comparator samples"
         rm(df.comp)
-      }
 
       # Prep data for plots ----
       df_plot <- dplyr::mutate(df.data, BioComm = {{biocomm}},
@@ -418,8 +403,8 @@ getVPSSI <- function(TargetSiteID,
                           caption = captionSR)
 
             ggplot2::ggsave(filename = file.path(dir.path, fn_png_p2), plot = p2,
-                            dpi = plot_dpi, width = plot_W, height = plot_H,
-                            units = plot_units)
+                            dpi = plotdpi, width = plotW, height = plotH,
+                            units = plotunits)
 
         }
 
@@ -590,8 +575,8 @@ getVPSSI <- function(TargetSiteID,
                        axis.ticks.y = ggplot2::element_blank())
 
       ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p1,
-                      dpi = plot_dpi, width = plot_W, height = plot_H,
-                      units = plot_units)
+                      dpi = plotdpi, width = plotW, height = plotH,
+                      units = plotunits)
 
     } ##FOR.SSI END
 
