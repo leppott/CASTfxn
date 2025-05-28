@@ -50,11 +50,6 @@
 #' @param compsites vector of comparator sites. Defaults to list.CompSites$comp.sites
 #' @param biocomm Biological community; fish, algae, or BMI.  Default = "BMI".
 #' @param colBio df_data column with biological index numeric value.
-#' @param onlyNotDeg use only not degraded sites. Default = TRUE.
-#' @param useBetter Boolean flag for whether or not to use samples scoring better
-#'                  than the maximum degraded target sample or the minimum not
-#'                  degraded sample, if none of the target samples are degraded.
-#'                  Defaults to FALSE.
 #' @param pHlimLow The lower limit of pH considered to be supportive of a
 #'                 biological community. Defaults to pH of 6.5.
 #' @param pHlimHigh The upper limit of pH considered to be supportive of a
@@ -64,17 +59,21 @@
 #' @param plotvars Colors, fills, shapes, transparencies for each type (target,
 #'                 not degraded, degraded, inside-the-case, outside-the-case).
 #'                 Default = data_plotvars.
-#' @param plot_dpi DPI for plots for standardization. Default = plot_dpi.
-#' @param plot_H Plot height for standardization. Default = plot_H.
-#' @param plot_W Plot width for standardization. Default = plot_W.
-#' @param plot_units Plot units for standardization. Default = plot_units.
+#' @param plotdpi DPI for plots for standardization. Default = plot_dpi.
+#' @param plotH Plot height for standardization. Default = plot_H.
+#' @param plotW Plot width for standardization. Default = plot_W.
+#' @param plotunits Plot units for standardization. Default = plot_units.
 #' @param dir_plots Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
 #' @param boo_plot Boolean value to save plots.  Default = TRUE.
 #'
 #' @return Writes individual plots as pngs, and a tab-delimited text file with
 #'         scores for each line of evidence (co-occurrence & sufficiency) to a
-#'         "Results/TargetSiteID/BioComm/CoOccurrence" directory.
+#'         "Results/TargetSiteID/BioComm/CoOccurrence" directory. Returns a list
+#'         containing 3 elements: a dataframe of stressor metadata corresponding
+#'         with stressors continuing forward in the analysis, a vector of
+#'         stressors not continuing forward in the analysis, and a dataframe
+#'         of all the scores continuing forward.
 #'
 #' @examples
 #' \dontrun{
@@ -87,16 +86,14 @@ getCoOccur <- function(TargetSiteID,
                        compsites = list.CompSites$comp.sites,
                        biocomm,
                        colBio,
-                       onlyNotDeg = TRUE,
-                       useBetter = FALSE,
                        pHlimLow = 5,
                        pHlimHigh = 9,
                        DOlim = 6,
                        plotvars = data_plotvars,
-                       plot_dpi = plot_dpi,
-                       plot_H = plot_H,
-                       plot_W = plot_W,
-                       plot_units = plot_units,
+                       plotdpi = plot_dpi,
+                       plotH = plot_H,
+                       plotW = plot_W,
+                       plotunits = plot_units,
                        dir_plots = dir_results,
                        dir_sub = "CoOccurrence",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -111,16 +108,14 @@ getCoOccur <- function(TargetSiteID,
     compsites = list.CompSites$comp.sites
     biocomm = bioComm
     colBio = bioIndex
-    onlyNotDeg = onlyNotDeg
-    useBetter = useBetter
     pHlimLow = pHlimLow
     pHlimHigh = pHlimHigh
     DOlim = DOlim
     plotvars = data_plotvars
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "CoOccurrence"
     boo_plot = TRUE
@@ -146,6 +141,30 @@ getCoOccur <- function(TargetSiteID,
     }
   }
 
+  ## Plot, Variables
+  # Define generic plot variables ----
+  plotvars  <- plotvars %>%
+    dplyr::filter(Type %in% c("target", "insideND", "insideD"))
+  bio_col     <- unlist(plotvars$Fill)
+  bio_fill    <- unlist(plotvars$Fill)
+  bio_shape   <- unlist(plotvars$Shape)
+  bio_size    <- unlist(plotvars$Size)
+  bio_alpha   <- unlist(plotvars$Alpha)
+
+  ## Plot, Variables, Target Site Line
+  targ_line_col <- bio_col[1]
+  targ_line_lty <- 2
+  targ_line_lwd <- 1
+
+  # arrow labels
+  aLabPos <- "1"
+  aLabZero <- "0"
+  aLabNeg <- "-1"
+
+  ## Limit line types (dotted)
+  lim_lty <- 3
+
+  # Start evaluation ----
   # Prep metadata, 20250330 --
   df_stressinfo <- dplyr::rename(df_stressinfo, Stressor = StdParamName) %>%
     dplyr::filter(Stressor %in% detects)
@@ -158,7 +177,7 @@ getCoOccur <- function(TargetSiteID,
                            all_of(detects)) %>%
     dplyr::filter(StationID %in% c(TargetSiteID, compsites))
 
-  # Create Score Output File ####
+  ## Create Score Output File ####
   df.scores <- cbind(df_data[0, c("StationID", "IncaseCol", "StressSampleID",
                                   "StressSampleDate", "RespSampleID",
                                   "RespSampleDate", colBio, "Quality")],
@@ -168,16 +187,11 @@ getCoOccur <- function(TargetSiteID,
                                 biocomm = character(), Label = character(),
                                 stringsAsFactors = FALSE))
 
-  # Subset df_data for comparator sites
-  df.comp <- df_data
-
   # Filter for only not degraded samples plus target samples
-  if (onlyNotDeg == TRUE) {
-    df.target <- dplyr::filter(df.comp, StationID == TargetSiteID)
-    df.comp <- dplyr::filter(df.comp, Quality == "Not degraded")
-    df.comp <- dplyr::filter(df.comp, StationID != TargetSiteID)
-    df.comp <- rbind(df.target, df.comp)
-  }
+  df.target <- dplyr::filter(df_data, StationID == TargetSiteID)
+  df.comp <- dplyr::filter(df_data, Quality == "Not degraded")
+  df.comp <- dplyr::filter(df.comp, StationID != TargetSiteID)
+  df.comp <- rbind(df.target, df.comp)
 
   df.comp <- dplyr::select_if(df.comp, not_all_na)
   detects <- intersect(detects, colnames(df.comp))
@@ -198,7 +212,7 @@ getCoOccur <- function(TargetSiteID,
   df.i <- dplyr::filter(df.comp, StationID == TargetSiteID)
   i.Group <- df.i[1, "IncaseCol"]
 
-  # Loop, j, calc quantiles ####
+  # Loop over detects quantiles ####
   for (j in seq_along(detects)) {##FOR.j.START
     #
     stressname <- detects[j]
@@ -235,7 +249,7 @@ getCoOccur <- function(TargetSiteID,
                     q75 = df.stats$q75[df.stats$Stressor == stressname]) %>%
       dplyr::filter(!is.na(StressorValue))
 
-    # Score samples ####
+    ## Score samples ####
     ## Use different criteria for some parameters (Specifically pH and DO)
     ## Score pH in both directions
     if (stressname == "pH_alkEnv") { # pH is a decreaser in alkalkine environments
@@ -281,23 +295,16 @@ getCoOccur <- function(TargetSiteID,
 
     df.scores <- rbind(df.scores, df.j)
 
-    ## Box Plot of Comparator Sites (with better bio)
+    ## Box Plot of Not Degraded Comparator sites
     scores <- unlist(as.vector(df.j$Sc_Box))
-    # scores <- unlist(as.vector(df.i.n[, "Sc_Box"]))
     lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
-    # lab.N     <- paste0("n = ", unique(df.i[, paste0("n_", stressname)][1]))
     lab.N <- paste0("n = ", unique(df.j$n))
 
-    # plots ####
     # File Names
     fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_",
                         make.names(stressname), ".png")
-    ppi       <- 300
 
     # Create (ggplot)
-    bio_col <- c("gray25", "steelblue2")
-    bio_shp <- c(25, 21) # down triangle and circle
-    bio_size <- c(5, 2)
     lab_comp <- paste0("Comparator samples selected from ", incaseLabel,
                        " = ", i.Group)
 
@@ -320,38 +327,16 @@ getCoOccur <- function(TargetSiteID,
       segNeg <- ((box_qLO - minVal) / 2) + minVal
     }##IF~j_in_InvSc~END
 
-    # arrow labels
-    aLabPos <- "1"
-    aLabZero <- "0"
-    aLabNeg <- "-1"
-
-    ## Plot, Variables, Target Site Line
-    targ_line_col <- "red"
-    targ_line_lty <- 2
-    targ_line_lwd <- 1
-
-    ## Limit line types (dotted)
-    lim_lty <- 3
-
     legendtitle <- "Samples"
     maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
     subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
     subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
     # plot1, ggplot ####
-    if (useBetter) {
-      df.plot <- df.compBT
-      lab.sub <- paste0("Comparator samples with paired stressor/response samples and ",
-                        "higher response scores (", lab.N, ").\n", lab.Score, ".")
-    } else {
-      df.plot <- df.comp
-      lab.sub <- paste0("Comparator samples with paired stressor/response samples",
-                        " (", lab.N, ").\n", lab.Score, ".")
-    }
-
-    if (onlyNotDeg) {
-      lab.sub <- stringr::str_to_sentence(paste0("Not degraded ", lab.sub))
-    }
+    df.plot <- df.comp
+    lab.sub <- paste0("Comparator samples with paired stressor/response samples",
+                      " (", lab.N, ").\n", lab.Score, ".")
+    lab.sub <- stringr::str_to_sentence(paste0("Not degraded ", lab.sub))
 
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
@@ -366,7 +351,7 @@ getCoOccur <- function(TargetSiteID,
                           lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
       ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
                           lty = 2, na.rm = TRUE) +
-      ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality,
+      ggplot2::geom_jitter(ggplot2::aes(color = Quality, shape = Quality,
                                            fill = Quality), alpha = 0.5,
                               na.rm = TRUE, width = 0.25, height = 0.01) +
       ggplot2::annotate("segment", y = minVal, yend = box_qLO, x = c(xseg, xseg),
@@ -400,20 +385,19 @@ getCoOccur <- function(TargetSiteID,
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                      axis.ticks.y = ggplot2::element_blank())
 
-    # if (stressname == "pH_alkEnv") {
-    #   p1 + ggplot2::geom_hline(yintercept = pHlimLow, color = "black",
-    #                            lty = lim_lty)
-    # }
-    # if (stressname == "pH_acidicEnv") {
-    #   p1 + ggplot2::geom_hline(yintercept = pHlimHigh, color = "black",
-    #                            lty = lim_lty)
-    # }
-    # if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
-    #   p1 + ggplot2::geom_hline(yintercept = DOlim, color = "black", lty = lim_lty)
-    # }
+    if (grepl("^pH_a", stressname, perl = TRUE, ignore.case = FALSE)) {
+      p1 + ggplot2::geom_hline(yintercept = pHlimHigh, color = "burlywood4",
+                               lty = lim_lty) +
+        ggplot2::geom_hline(yintercept = pHlimLow, color = "burlywood4",
+                            lty = lim_lty)
+    }
+    if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
+      p1 + ggplot2::geom_hline(yintercept = DOlim, color = "burlywood4",
+                               lty = lim_lty)
+    }
 
-      ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
-                      dpi = ppi, width = 8, height = 6, units = "in")
+    ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
+                    dpi = plotdpi, width = plotW, height = plotH, units = plotunits)
 
   }##FOR.j.END
 
