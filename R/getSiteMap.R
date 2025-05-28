@@ -8,9 +8,6 @@
 #  Ann.RoseberryLincoln@tetratech.com
 #  Erik.Leppo@tetratech.com
 #
-#  library(devtools)
-#  install_github("ALincolnTt/RPPTool")
-#
 #  requires dplyr, ggplot2, purrr, rmarkdown, sf, tmap, viridis
 #
 #  Add Shiny code for use in Shiny App
@@ -44,8 +41,7 @@
 #'
 #' @return A png map to a subdirectory "SiteInfo" in the folder named by the SiteID
 #' in the user supplied dir_results folder (default is "Results" folder in the
-#' working directory).  Also produced is a summary list; SiteInfo, Samps,
-#' BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+#' working directory).
 #
 # no examples
 #
