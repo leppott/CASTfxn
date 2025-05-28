@@ -1,7 +1,8 @@
 #  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.3
 #
 #' @title Verified Predictions
 #'
@@ -9,20 +10,22 @@
 #'
 #' @details
 #'
-#' Required packages: dplyr, ggplot2, stringr, tidyr
+#' Required packages: dplyr, forcats, ggplot2, grid, stringr, tidyr
 #'
 #' @param TargetSiteID Site ID
-#' @param stressors vector of stressors identified as candidate causes
+#' @param stressors.sstv vector of stressors with stressor-specific tolerance values
 #' @param df_stressinfo dataframe of stressor metadata
-#' @param SSTVanalytes vector containing Stressors for stressors with stressor-specific tolerance values
-#' @param df_paired list_MatchBioData
+#' @param df_paired dataframe of paired stressor-response samples
 #' @param biocomm default = "bmi"
-#' @param colBioSample column name for the response sample ID
 #' @param df_bioTaxaData dataframe of raw response data (counts or relative abundance)
 #' @param df_MasterTaxa dataframe of master taxa with SSTV values determined for individual taxa
 #' @param colBio default = "IBI"
-#' @param BioIndex_Nar default = "Quality"
-#' @param BioIndex_Nar_Deg default = "Degraded"
+#' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
+#' Defaults to data_plotvars
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
+#' @param plotH Standardized plot height. Defaults to plot_H.
+#' @param plotW Standardized plot width. Defaults to plot_W.
+#' @param plotUnits Standardized plot units. Defaults to plot_units.
 #' @param dir_plots default = file.path(getwd(), "Results")
 #' @param dir_sub default = "VerifiedPredictions"
 #' @param boo_plot = TRUE
@@ -39,13 +42,12 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    biocomm,
                                    df_bioTaxaData,
                                    df_MasterTaxa,
-                                   siteQual2Plot,
                                    colBio,
-                                   plot_vars,
-                                   plot_dpi,
-                                   plot_H,
-                                   plot_W,
-                                   plot_units,
+                                   plotvars = data_plotvars,
+                                   plotdpi = plot_dpi,
+                                   plotH = plot_H,
+                                   plotW = plot_W,
+                                   plotunits = plot_units,
                                    dir_plots = file.path(getwd(), "Results"),
                                    dir_sub = "VerifiedPredictions_SSTVs",
                                    boo_plot = TRUE) {##FUNCTION.START
@@ -63,11 +65,11 @@ getVerifiedPredictions <- function(TargetSiteID,
     df_MasterTaxa = bioMasterTaxa
     siteQual2Plot = siteQual2Plot
     colBio = bioIndex
-    plot_vars = data_plotvars
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotvars = data_plotvars
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "VerifiedPredictions_SSTVs"
     boo_plot = boo_plot_user
@@ -185,13 +187,6 @@ getVerifiedPredictions <- function(TargetSiteID,
       fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm
                                                , "_VP_SSTV_Scores.tab"))
       if (file.exists(fn_scores)) { file.remove(fn_scores) }
-
-      # Obtain relevant data from df_paired
-      ## Prep stressor data ----
-      qual <- switch(tolower(siteQual2Plot),
-                     "reference" = "RefSiteFlag",
-                     "not degraded" = "Quality",
-                     "better than" = "BetterThan")
 
       # Filter for inside case sites & trim unnecessary columns
       df_stress.sstv <- df_paired %>%
@@ -478,12 +473,12 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         ## Plot, Variables
         ## Prepare colors, sizes, etc  ----
-        plot_vars  <- plot_vars %>%
+        plotvars  <- plotvars %>%
           dplyr::filter(Type %in% c("target", "insideND", "insideD"))
-        bio_fill    <- rev(unlist(plot_vars$Fill)) # Degraded, Not degraded, Target
-        bio_shape   <- rev(unlist(plot_vars$Shape)) # down triangle, circle, and triangle
-        bio_size    <- rev(unlist(plot_vars$Size)) # Degraded, Not degraded, Target
-        bio_alpha   <- rev(unlist(plot_vars$Alpha)) # Degraded, Not degraded, Target
+        bio_fill    <- rev(unlist(plotvars$Fill)) # Degraded, Not degraded, Target
+        bio_shape   <- rev(unlist(plotvars$Shape)) # down triangle, circle, and triangle
+        bio_size    <- rev(unlist(plotvars$Size)) # Degraded, Not degraded, Target
+        bio_alpha   <- rev(unlist(plotvars$Alpha)) # Degraded, Not degraded, Target
 
         # Prepare labels
         str_title <- paste0(TargetSiteID, ": Verified prediction "
@@ -579,8 +574,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         if (boo_plot) {
           ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p_tv,
-                          dpi = plot_dpi, width = plot_W, height = plot_H,
-                          units = plot_units)
+                          dpi = plotdpi, width = plotW, height = plotH,
+                          units = plotunits)
         }## IF ~ boo_plot ~ END
 
       }## FOR SSTV ~ END
