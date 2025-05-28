@@ -15,7 +15,7 @@
 #'
 #' Improvements: Add BioDegLab and BioNarLab?
 #'
-#' Uses the libraries dplyr and tidyr.
+#' Uses the libraries dplyr, fuzzyjoin, and tidyr.
 #'
 #' @param df_sites Dataframe containing site data for all sites.
 #' @param df_stress Dataframe containing measured or modeled stressor data
