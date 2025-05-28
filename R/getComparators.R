@@ -13,7 +13,7 @@
 #'          based on a biological dissimilarity distance matrix (Bray-Curtis)
 #'          at the specified level of dissimilarity.
 #'
-#' Uses the library dplyr
+#' Uses the library dplyr, stringr
 #'
 #' @param TargetSiteID Site ID for the site being evaluated
 #' @param df_sites Sites table with cluster membership. Default = "data_Sites".
