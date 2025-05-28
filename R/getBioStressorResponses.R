@@ -11,6 +11,8 @@
 #'
 #' @details Biological (BMI, Algae, or Fish) stressor linear regressions.
 #'
+#' Requires packages dplyr, ggplot2, stringr, tidyr
+#'
 #' @param TargetSiteID Site ID
 #' @param df_stressinfo stressor metadata for stressors considered candidate
 #'                      causes of impairment at the target site
