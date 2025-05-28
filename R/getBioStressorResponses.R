@@ -17,7 +17,6 @@
 #' @param df_respinfo Bio metric metadata
 #' @param df_respdata Biological metric data for all response samples
 #' @param df_datapaired dataframe of matched biological response and stressor data.
-#' @param siteQual2Plot site quality to plot
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param bioindex Name of the biological index column
 #' @param min_cases Minimum number of paired samples; samplim from CASTool_Metadata
@@ -28,18 +27,19 @@
 #'                  Default = 0.1
 #' @param plotvars colors, shapes, fills, and transparencies for each type (target,
 #'                 not degraded, degraded, inside-the-case, and outside-the-case)
-#' @param refoutline_col color of the reference sites outline
-#' @param plot_dpi standardized dpi for all plots
-#' @param plot_H standardized height for all plots
-#' @param plot_W standardized width for all plots
+#' @param refOutline color of the reference sites outline
+#' @param plotdpi standardized dpi for all plots
+#' @param plotH standardized height for all plots
+#' @param plotW standardized width for all plots
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed. Default = TRUE.
 #' @param boo_plot Boolean value to save plots. Default = TRUE.
 #'
-#' @return One or more graphics depicting stressor-response relationships,
+#' @return Writes one or more graphics depicting stressor-response relationships,
 #'         a correlation tile plot, and two tab-delimited text files;
-#'         stressor correlations and scores.
+#'         stressor correlations and scores. Returns a dataframe containing
+#'         target site scores for inside-the-case and outside-the-case.
 #'
 #' @examples
 #' \dontrun{}
@@ -49,18 +49,17 @@ getBioStressorResponses <- function(TargetSiteID,
                                     df_respinfo,
                                     df_respdata,
                                     df_datapaired,
-                                    siteQual2Plot,
                                     biocomm,
                                     bioindex,
                                     min_cases = 20,
                                     p.val_cutoff = 0.05,
                                     r2_cutoff = 0.1,
-                                    plotvars,
-                                    refOutline_col,
-                                    plot_dpi,
-                                    plot_H,
-                                    plot_W,
-                                    plot_units,
+                                    plotvars = data_plotvars,
+                                    refOutline = refOutline_col,
+                                    plotdpi,
+                                    plotH,
+                                    plotW,
+                                    plotunits,
                                     dir_plots,
                                     dir_sub = "StressorResponse",
                                     boo_pred_warn = TRUE,
@@ -74,18 +73,17 @@ getBioStressorResponses <- function(TargetSiteID,
     df_respinfo = bioMetricInfo
     df_respdata = bioMetricData
     df_datapaired = df_PairedSRTransf
-    siteQual2Plot = siteQual2Plot
     biocomm = bioComm
     bioindex = bioIndex
     min_cases = samplim
     p.val_cutoff = 0.05
     r2_cutoff = 0.2
     plotvars = data_plotvars
-    refOutline_col = refOutline_col
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    refOutline = refOutline_col
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "StressorResponse"
     boo_pred_warn = TRUE
@@ -117,6 +115,22 @@ getBioStressorResponses <- function(TargetSiteID,
     }
   }
 
+  # Plot vars, inside-the-case
+  plotvarsIn  <- plotvars %>%
+    dplyr::filter(Type %in% c("target", "insideND", "insideD"))
+  bio_fill_in    <- rev(unlist(plotvarsIn$Fill)) # Degraded, Not degraded, Target
+  bio_shape_in   <- rev(unlist(plotvarsIn$Shape)) # down triangle, circle, triangle
+  bio_size_in    <- rev(unlist(plotvarsIn$Size)) # Degraded, Not degraded, Target
+  bio_alpha_in   <- rev(unlist(plotvarsIn$Alpha)) # Degraded, Not degraded, Target
+
+  # Plot vars, outside-the-case
+  plotvarsOut  <- plotvars %>%
+    dplyr::filter(Type %in% c("target", "outsideND", "outsideD"))
+  bio_fill_out    <- rev(unlist(plotvarsOut$Fill)) # Degraded, Not degraded, Target
+  bio_shape_out   <- rev(unlist(plotvarsOut$Shape)) # down triangle, circle, triangle
+  bio_size_out    <- rev(unlist(plotvarsOut$Size)) # Degraded, Not degraded, Target
+  bio_alpha_out   <- rev(unlist(plotvarsOut$Alpha)) # Degraded, Not degraded, Target
+
   # Merge other metrics into paired dataset with transformed stressor values
   df_datapaired <- merge(df_datapaired, df_respdata,
                        by = c("StationID", "RespSampleID", "RespSampleDate",
@@ -127,19 +141,10 @@ getBioStressorResponses <- function(TargetSiteID,
   df_SiteData <- df_datapaired[df_datapaired$StationID == TargetSiteID, ]
   df_CompData <- df_datapaired[df_datapaired$IncaseYN == 1, ]
   df_AllData <- df_datapaired[df_datapaired$OutcaseYN == 1 & df_datapaired$IncaseYN == 0, ]
-  df_AllData <- rbind(df_SiteData, df_AllData)
+  df_AllData <- unique(rbind(df_SiteData, df_AllData))
 
-  siteQual2Plot <- tolower(siteQual2Plot)
-  if (siteQual2Plot == "reference") {
-    df_CompRef <- df_CompData[df_CompData$RefSiteFlag == 1, ]
-    df_AllRef <- df_AllData[df_AllData$RefSiteFlag == 1, ]
-  } else if (siteQual2Plot == "better than") {
-    df_CompBT <- df_CompData[df_CompData$BetterThan == 1, ]
-    df_AllBT <- df_AllData[df_AllData$BetterThan == 1, ]
-  } else { # Only option remaining is "not degraded
-    df_CompNotDeg <- df_CompData[df_CompData$Quality == "Not degraded", ]
-    df_AllNotDeg <- df_AllData[df_AllData$Quality == "Not degraded", ]
-  }
+  df_CompNotDeg <- df_CompData[df_CompData$Quality == "Not degraded", ]
+  df_AllNotDeg <- df_AllData[df_AllData$Quality == "Not degraded", ]
 
   # Get stressors and responses for looping over
   stressors <- as.vector(unlist(df_stressinfo$Stressor))
@@ -237,8 +242,8 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Create df_plot_all & QC
       df_plot_all <- df_AllData %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(stressName),
-                      all_of(respName))
+        dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
+                      RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_all <- df_plot_all[stats::complete.cases(df_plot_all), ]
 
       # QC
@@ -279,36 +284,33 @@ getBioStressorResponses <- function(TargetSiteID,
         next
       }
 
-      # get df_plot_all_ref which includes the siteQual2Plot data only
-      df_plot_all_SQ2P <- switch(tolower(siteQual2Plot),
-                                 "reference" = df_AllRef,
-                                 "not degraded" = df_AllNotDeg,
-                                 "better than" = df_AllBT)
-      df_plot_all_ref <- df_plot_all_SQ2P %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(stressName),
-                      all_of(respName))
+      df_plot_all_ref <- df_plot_all %>%
+        dplyr::filter(RefSiteFlag == 1) %>%
+        dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
+                      RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_all_ref <- df_plot_all_ref[stats::complete.cases(df_plot_all_ref), ]
 
       #get all cluster data to plot
       df_plot_cl <- df_CompData %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(stressName),
-                      all_of(respName))
+        dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
+                      RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_cl <- df_plot_cl[stats::complete.cases(df_plot_cl), ]
 
       #get all cluster siteQual2Plot data
-      df_plot_cl_SQ2P <- switch(tolower(siteQual2Plot),
-                                 "reference" = df_CompRef,
-                                 "not degraded" = df_CompNotDeg,
-                                 "better than" = df_CompBT)
-      df_plot_cl_ref <- df_plot_cl_SQ2P %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(stressName),
-                      all_of(respName))
+      # df_plot_cl_SQ2P <- switch(tolower(siteQual2Plot),
+      #                            "reference" = df_CompRef,
+      #                            "not degraded" = df_CompNotDeg,
+      #                            "better than" = df_CompBT)
+      df_plot_cl_ref <- df_plot_cl %>%
+        dplyr::filter(RefSiteFlag == 1) %>%
+        dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
+                      RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_cl_ref <- df_plot_cl_ref[stats::complete.cases(df_plot_cl_ref), ]
 
       #get target site data to plot
       df_plot_site <- df_SiteData %>%
-        dplyr::select(StationID, StressSampleID, RespSampleID, all_of(stressName),
-                      all_of(respName))
+        dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
+                      RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_site <- df_plot_site[stats::complete.cases(df_plot_site), ]
 
       # Check for missing data and write to data gaps file
@@ -560,7 +562,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
       }##IF~nrow(df_plot_all)~END
 
-
       # Corr table output ####
       # # Create results data frame
       # ~~~ Check QC of Corr Table at end of code ~~~~
@@ -737,19 +738,27 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Rename columns to generic "Stressor" and "Response" for easier plotting
       df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
-                                   Response = {{respName}})
+                                   Response = {{respName}}) %>%
+        # dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, Target, Quality))
+        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
       df_plot_all_ref <- dplyr::rename(df_plot_all_ref, Stressor = {{stressName}},
-                                       Response = {{respName}})
+                                       Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
       model_all_val <- dplyr::rename(model_all_val, Stressor = {{stressName}},
-                                     Response = {{respName}})
+                                     Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
       df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
-                                  Response = {{respName}})
+                                  Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
       df_plot_cl_ref <- dplyr::rename(df_plot_cl_ref, Stressor = {{stressName}},
-                                      Response = {{respName}})
+                                      Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
       model_cl_val <- dplyr::rename(model_cl_val, Stressor = {{stressName}},
-                                    Response = {{respName}})
+                                    Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
       df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
-                                    Response = {{respName}})
+                                    Response = {{respName}}) %>%
+        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
 
 
       ## Plot, inputs ####
@@ -799,156 +808,91 @@ getBioStressorResponses <- function(TargetSiteID,
         str_caption_all <- "Regression (outside-the-case):  Less than 3 data points."
       } ##IF.equation.END
       #
-      if (siteQual2Plot == "not degraded") {
-        qualtext <- "not degraded*"
-        str_caption_qual <- "*Samples rated not degraded."
-        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
-        leg_all_ref <- qualtext
-        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
-        leg_cl_ref <- paste0("comparator ", qualtext)
-      } else if (siteQual2Plot == "better than") {
-        qualtext <- "better quality*"
-        str_caption_qual <- paste0("*Samples with biological quality better than ",
-                                   "the maximum degraded or the minimum not ",
-                                   "degraded target site quality.")
-        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
-        leg_all_ref <- qualtext
-        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
-        leg_cl_ref <- paste0("comparator ", qualtext)
-      } else {
-        qualtext <- "all ref"
-        str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
-        leg_all_ref <- "reference"
-        str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
-        leg_cl_ref <- "reference"
-      }
-
-      ## Plot, Variables, Colors
-      col_sites_all      <- "gray45"
-      col_sites_all_ref  <- "blue"
-      col_sites_cl       <- "cyan4"
-      col_sites_cl_ref   <- col_sites_all_ref
-      col_sites_targ     <- "red"
-      col_line_cl        <- "cyan4"
-      col_line_all       <- "gray20"
-
-      ## Plot, Variables, Fill
-      fill_sites_all     <- col_sites_all
-      fill_sites_all_ref <- fill_sites_all
-      fill_sites_cl      <- col_sites_cl
-      fill_sites_cl_ref  <- fill_sites_cl
-      fill_sites_targ    <- col_sites_targ
-
-      ## Plot, Variables, Points
-      pch_sites_all      <- 21 # solid circle
-      pch_sites_all_ref  <- 21 # circle outline
-      pch_sites_cl       <- 21 # solid circle
-      pch_sites_cl_ref   <- 21 # circle outline
-      pch_sites_targ     <- 17 # triangle
-
-      ## Plot, Variables, Sizes
-      cex_mod <- 2
-      cex_sites_all      <- cex_mod * 0.5
-      cex_sites_all_ref  <- cex_sites_all
-      cex_sites_cl       <- cex_mod * 0.7
-      cex_sites_cl_ref   <- cex_sites_cl
-      cex_sites_targ     <- cex_mod * 0.9
-
-      ## Plot, Variables, Alpha
-      alpha_lm_all <- 0.5
-      alpha_lm_cl  <- 0.25
+      qualtext <- "not degraded*"
+      str_caption_qual <- "*Samples rated not degraded."
+      str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
+      leg_all_ref <- qualtext
+      str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
+      leg_cl_ref <- paste0("comparator ", qualtext)
 
       ## Plot, Variables, Legend
       leg_name       <- "Samples"
       leg_labels_all <- c("all", leg_all_ref, "target")
-      leg_shape_all  <- c(pch_sites_all, pch_sites_all_ref, pch_sites_targ)
-      leg_col_all    <- c(col_sites_all, col_sites_all_ref, col_sites_targ)
-      leg_fill_all   <- c(fill_sites_all, fill_sites_all_ref, fill_sites_targ)
       leg_labels_cl  <- c("comparator", leg_cl_ref, "target")
-      leg_shape_cl   <- c(pch_sites_cl, pch_sites_cl_ref, pch_sites_targ)
-      leg_col_cl     <- c(col_sites_cl, col_sites_cl_ref, col_sites_targ)
-      leg_fill_cl    <- c(fill_sites_cl, fill_sites_cl_ref, fill_sites_targ)
-      # }# Plot, Variables ~ END
 
-      # Plot, outside ####
+      ## Plot, outside ####
       boo.Plot <- ifelse(nrow(df_plot_site) == 0, FALSE, TRUE)
       # skip plot if no data for target site
       if (boo.Plot == TRUE) { ##IF.boo.Plot.START
         # ggplot, main
-        p_SR_all <- ggplot2::ggplot(df_plot_all,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "all",
-                                             shape = "all",
-                                             fill = "all"),
-                                size = cex_sites_all, na.rm = TRUE) +
-          ggplot2::geom_point(na.rm = TRUE)
-        #
-        # ggplot, point subsets
-        # Add points if exist, otherwise plot dummy values
-        if (boo_plot_ref == TRUE) { ##IF~boo_plot_ref~START
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_point(data = df_plot_all_ref,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "all ref",
-                                             shape = "all ref",
-                                             fill = "all ref"),
-                                size = cex_sites_all_ref,
-                                na.rm = TRUE)
-        } else {
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_blank(ggplot2::aes(color = "all ref",
-                                             shape = "all ref",
-                                             fill = "all ref"))
-        } ##IF~boo_plot_ref~END
-        #
-        if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_point(data=df_plot_site,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "target", shape = "target",
-                                             fill = "target"),
-                                size = cex_sites_targ, na.rm = TRUE)
-        } else {
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_blank(ggplot2::aes(color = "target", shape = "target",
-                                             fill = "target"))
-        } ##IF~boo_plot_targ~END
-        #
-        # Add rest of plot
-        p_SR_all <- p_SR_all +
-          ggplot2::scale_shape_manual(name = leg_name, labels = leg_labels_all,
-                                      values = leg_shape_all)  +
-          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels_all,
-                                      values = leg_col_all) +
-          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels_all,
-                                     values = leg_fill_all)
-        # Regression, all
-        if (exists("model_all_val")) {
+        if (exists("model_all_val") & exists("df_plot_all")) {
           # Linear model (all data)
-          p_SR_all <- p_SR_all +
-            ggplot2::stat_smooth(data = df_plot_all,
+          p_SR_all <- ggplot2::ggplot() +
+            ggplot2::geom_smooth(data = model_all_val,
+                                 ggplot2::aes(x = Stressor, y = Response),
                                  method = lm,
-                                 color = col_line_all,
-                                 fill = fill_sites_all,
-                                 alpha = alpha_lm_all,
+                                 color = "black",
+                                 fill = "black",
+                                 alpha = 0.2,
                                  formula = y ~ x, # Added to avoid message
                                  show.legend = FALSE,
                                  na.rm = TRUE)
           p_SR_all <- p_SR_all +
             ggplot2::geom_line(data = model_all_val,
-                               ggplot2::aes(y = lwr),
-                               color = col_line_all,
+                               ggplot2::aes(x = Stressor, y = lwr),
+                               color = "black",
                                linetype = "dashed",
                                show.legend = FALSE,
                                na.rm = TRUE)
           p_SR_all <- p_SR_all +
             ggplot2::geom_line(data = model_all_val,
-                               ggplot2::aes(y = upr),
-                               color = col_line_all,
+                               ggplot2::aes(x = Stressor, y = upr),
+                               color = "black",
                                linetype = "dashed",
                                show.legend = FALSE,
                                na.rm = TRUE)
-        } ## End regression, all
+          p_SR_all <- p_SR_all +
+            ggplot2::geom_point(data = df_plot_all,
+                                ggplot2::aes(x = Stressor, y = Response,
+                                             color = Quality, fill = Quality,
+                                             shape = Quality), alpha = 0.5,
+                                na.rm = TRUE) +
+            ggplot2::scale_fill_manual(name = "Quality",
+                                       breaks = c("Degraded", "Not degraded"),
+                                       values = bio_fill_out, drop = FALSE) +
+            ggplot2::scale_color_manual(name = "Quality",
+                                        breaks = c("Degraded", "Not degraded"),
+                                        values = bio_fill_out, drop = FALSE) +
+            ggplot2::scale_shape_manual(name = "Quality",
+                                        breaks = c("Degraded", "Not degraded"),
+                                        values = bio_shape_out, drop = FALSE)
+        } #END regression and points
+
+        # ggplot, point subsets
+        # if (boo_plot_ref == TRUE) { ##IF~boo_plot_ref~START
+        #   p_SR_all <- p_SR_all +
+        #     ggplot2::geom_point(data = df_plot_all_ref,
+        #                         ggplot2::aes(x = Stressor, y = Response,
+        #                                      fill = Quality, shape = Quality),
+        #                         color = refOutline, alpha = 0.5, na.rm = TRUE)
+        # } else {
+        #   p_SR_all <- p_SR_all +
+        #     ggplot2::geom_blank(ggplot2::aes(color = ref_Outline))
+        # } ##IF~boo_plot_ref~END
+        #
+        if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
+          p_SR_all <- p_SR_all +
+            ggplot2::geom_point(data=df_plot_site,
+                                ggplot2::aes(x = Stressor, y = Response),
+                                color = "black", shape = bio_shape_out[3],
+                                fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
+                                na.rm = TRUE)
+        } else {
+          p_SR_all <- p_SR_all +
+            ggplot2::geom_blank(ggplot2::aes(color = bio_fill_out[3],
+                                             shape = bio_shape_out[3],
+                                             fill = bio_fill_out[3]))
+        } ##IF~boo_plot_targ~END
 
         # other
         p_SR_all <- p_SR_all +
@@ -966,119 +910,111 @@ getBioStressorResponses <- function(TargetSiteID,
         fn_png_out <- paste0(varFileOut, make.names(stressName), "_",
                              make.names(respName), "_Outside.png")
         if (boo_plot) {
-          ggplot2::ggsave(fn_png_out, p_SR_all, width = plot_W, height = plot_H,
-                          units = plot_units, dpi = plot_dpi)
+          ggplot2::ggsave(fn_png_out, p_SR_all, width = plotW, height = plotH,
+                          units = plotunits, dpi = plotdpi)
         } ## IF ~ boo_plot ~ END
         #
 
-        # Plot, inside ####
+        ## Plot, inside ####
         if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
-          p_SR_cl <- ggplot2::ggplot(df_plot_cl,
-                                     ggplot2::aes(x = Stressor, y = Response,
-                                                  color = "cluster",
-                                                  shape = "cluster",
-                                                  fill = "cluster"),
-                                     size = cex_sites_cl, na.rm = TRUE) +
-            ggplot2::geom_point(na.rm = TRUE)
-        } else {
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_blank(ggplot2::aes(color = "cluster",
-                                             shape = "cluster",
-                                             fill = "cluster"))
-        } ##IF~boo_plot_cl~END
-        #
-        if (boo_plot_cl_ref == TRUE) { ##IF~boo_plot_cl_ref~START
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_point(data = df_plot_cl_ref,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "cluster ref",
-                                             shape = "cluster ref",
-                                             fill = "cluster ref"),
-                                size = cex_sites_cl_ref, na.rm = TRUE)
-        } else {
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_blank(ggplot2::aes(color = "cluster ref",
-                                             shape = "cluster ref",
-                                             fill = "cluster ref"))
-        } ##IF~boo_plot_cl_ref~END
-        #
-        #
-        if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_point(data=df_plot_site,
-                                ggplot2::aes(x = Stressor, y = Response,
-                                             color = "target", shape = "target",
-                                             fill = "target"),
-                                size = cex_sites_targ, na.rm = TRUE)
-        } else {
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_blank(ggplot2::aes(color = "target", shape = "target",
-                                             fill = "target"))
-        } ##IF~boo_plot_targ~END
-        #
-        # Add rest of plot
-        p_SR_cl <- p_SR_cl +
-          ggplot2::scale_shape_manual(name = leg_name, labels = leg_labels_cl,
-                                      values = leg_shape_cl)  +
-          ggplot2::scale_color_manual(name = leg_name, labels = leg_labels_cl,
-                                      values = leg_col_cl) +
-          ggplot2::scale_fill_manual(name = leg_name, labels = leg_labels_cl,
-                                     values = leg_fill_cl)
-        # Regression, cluster
-        if (exists("model_cl_val")) {
-          # Linear model (cluster)
-          p_SR_cl <- p_SR_cl +
-            ggplot2::stat_smooth(data = df_plot_cl,
-                                 method = lm,
-                                 color = col_line_cl,
-                                 fill = col_line_cl,
-                                 alpha = alpha_lm_cl,
-                                 formula = y ~ x,
+          # Regression, cluster
+          if (exists("model_cl_val") & exists("df_plot_cl")) {
+            # Linear model (cluster)
+            p_SR_cl <- ggplot2::ggplot() +
+              ggplot2::geom_smooth(data = model_cl_val,
+                                   ggplot2::aes(x = Stressor, y = Response),
+                                   method = lm,
+                                   color = "black",
+                                   fill = "black",
+                                   alpha = 0.2,
+                                   formula = y ~ x, # Added to avoid message
+                                   show.legend = FALSE,
+                                   na.rm = TRUE)
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_line(data = model_cl_val,
+                                 ggplot2::aes(x = Stressor, y = lwr),
+                                 color = "black",
+                                 linetype = "dashed",
                                  show.legend = FALSE,
                                  na.rm = TRUE)
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_line(data = model_cl_val,
-                               ggplot2::aes(y = lwr),
-                               color = col_line_cl,
-                               linetype = "dashed",
-                               show.legend = FALSE,
-                               na.rm = TRUE)
-          p_SR_cl <- p_SR_cl +
-            ggplot2::geom_line(data = model_cl_val,
-                               ggplot2::aes(y = upr),
-                               color = col_line_cl,
-                               linetype = "dashed",
-                               show.legend = FALSE,
-                               na.rm = TRUE)
-        } ## END regression, cluster
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_line(data = model_cl_val,
+                                 ggplot2::aes(x = Stressor, y = upr),
+                                 color = "black",
+                                 linetype = "dashed",
+                                 show.legend = FALSE,
+                                 na.rm = TRUE)
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_point(data = df_plot_cl,
+                                  ggplot2::aes(x = Stressor, y = Response,
+                                               color = Quality, fill = Quality,
+                                               shape = Quality), alpha = 0.5,
+                                  na.rm = TRUE) +
+              ggplot2::scale_fill_manual(name = "Quality",
+                                         breaks = c("Degraded", "Not degraded"),
+                                         values = bio_fill_in, drop = FALSE) +
+              ggplot2::scale_color_manual(name = "Quality",
+                                          breaks = c("Degraded", "Not degraded"),
+                                          values = bio_fill_in, drop = FALSE) +
+              ggplot2::scale_shape_manual(name = "Quality",
+                                          breaks = c("Degraded", "Not degraded"),
+                                          values = bio_shape_in, drop = FALSE)
+          } #END regression and points
+          #
+          # if (boo_plot_cl_ref == TRUE) { ##IF~boo_plot_cl_ref~START
+          #   p_SR_cl <- p_SR_cl +
+          #     ggplot2::geom_point(data = df_plot_cl_ref,
+          #                         ggplot2::aes(x = Stressor, y = Response,
+          #                                      fill = Quality, shape = Quality),
+          #                         color = refOutline, alpha = 0.5, na.rm = TRUE)
+          # } else {
+          #   p_SR_cl <- p_SR_cl +
+          #     ggplot2::geom_blank(ggplot2::aes(color = ref_Outline))
+          # } ##IF~boo_plot_cl_ref~END
+          #
+          if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_point(data=df_plot_site,
+                                  ggplot2::aes(x = Stressor, y = Response),
+                                  color = "black", shape = bio_shape_in[3],
+                                  fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
+                                  na.rm = TRUE)
+          } else {
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_blank(ggplot2::aes(color = "black",
+                                               shape = bio_shape_in[3],
+                                               fill = bio_fill_in[3]))
+          } ##IF~boo_plot_targ~END
 
-        # other
-        p_SR_cl <- p_SR_cl +
-          ggplot2::theme_bw() +
-          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
-                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
-                         plot.caption = ggplot2::element_text(size = 6),
-                         legend.title = ggplot2::element_text(size = 8),
-                         legend.text = ggplot2::element_text(size = 6),
-                         axis.title = ggplot2::element_text(size = 8)) +
-          ggplot2::labs(title = str_title, subtitle = str_subtitle.in,
-                        caption = str_caption_cl, x = str_xlab, y = str_ylab)
-        #
-        # Write biological gradient for all sites
-        fn_png_in <- paste0(varFileOut, make.names(stressName), "_",
-                            make.names(respName), "_Inside.png")
-        if (boo_plot) {
-          ggplot2::ggsave(fn_png_in, p_SR_cl, width = plot_W, height = plot_H,
-                          units = plot_units, dpi = plot_dpi)
-          ngraph = ngraph + 1
-        } ## IF ~ boo_plot ~ END
-        #
-      } ##IF.boo.Plot.END
+          # other
+          p_SR_cl <- p_SR_cl +
+            ggplot2::theme_bw() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
+                           plot.caption = ggplot2::element_text(size = 6),
+                           legend.title = ggplot2::element_text(size = 8),
+                           legend.text = ggplot2::element_text(size = 6),
+                           axis.title = ggplot2::element_text(size = 8)) +
+            ggplot2::labs(title = str_title, subtitle = str_subtitle.in,
+                          caption = str_caption_cl, x = str_xlab, y = str_ylab)
+          #
+          # Write biological gradient for all sites
+          fn_png_in <- paste0(varFileOut, make.names(stressName), "_",
+                              make.names(respName), "_Inside.png")
+          if (boo_plot) {
+            ggplot2::ggsave(fn_png_in, p_SR_cl, width = plotW, height = plotH,
+                            units = plotunits, dpi = plotdpi)
+            ngraph = ngraph + 1
+          } ## IF ~ boo_plot ~ END
+          #
+        } ##IF.boo.Plot.END
+
+      } ##IF.boo.plot.TRUE.END
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
       varFlag <- 0
       varFlag.b <- 0 # Set varFlag.b to zero
+
     } ##FOR.q.END
 
   } ##FOR.p.END
@@ -1105,9 +1041,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
       df_corr <- unique(df_corr) %>% dplyr::rename(Estimate = estimate)
 
-      # Define plot dimensions
-      plot_H <- 6
-      plot_W <- 8
       # Plot, Variables, Strings
       str_title <- paste0(TargetSiteID, ": Stressor-Response Correlations")
       str_ylab  <- "Stressors"
@@ -1135,8 +1068,8 @@ getBioStressorResponses <- function(TargetSiteID,
       # Save correlation plot
       fn_png_cp <- file.path(dir_path,
                              paste0(TargetSiteID, "_", biocomm, "_CorrPlot.png"))
-      ggplot2::ggsave(fn_png_cp, p_cp, width = plot_H, height = plot_W,
-                      units = plot_units, dpi = plot_dpi)
+      ggplot2::ggsave(fn_png_cp, p_cp, width = plotH, height = plotW,
+                      units = plotunits, dpi = plotdpi)
 
       msg.corr <- "Printing correlation plot."
       message(msg.corr)
