@@ -1,7 +1,8 @@
-#  Copyright 2024 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
-#
+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  R v4.4.3
 #
 #' @title Weight-of-Evidence summary
 #'
@@ -16,8 +17,9 @@
 #'
 #' @param TargetSiteID Site ID
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
-#' @param dir_results Directory to save plots.  Default = working directory and Results.
-#' @param dfLoE data frame, LoE
+#' @param dfLoE Dataframe containing the lines of evidence scores for each
+#'              stressor and sample in long form.
+#' @param dir_results Directory to save tables. Default = working directory and Results.
 #'
 #' @return Two tab-delimited tables containing weight of evidence information:
 #'         one detailed, and one summary. The detailed table includes stressors
@@ -77,7 +79,8 @@ getWoE <- function(TargetSiteID,
                      NumRefute = sum(Score < 0, na.rm = TRUE),
                      NumIndeterminate = sum(Score == 0, na.rm = TRUE),
                      NumNotEvaluated = sum(is.na(Score)),
-                     .groups = "drop_last")
+                     .groups = "drop_last") %>%
+    dplyr::arrange(StationID, Stressor, StressSampleDate)
 
   write.table(dfLoE_summary,
               file.path(dir.path, paste0(TargetSiteID, "_LoESummary.tab")),
@@ -95,7 +98,8 @@ getWoE <- function(TargetSiteID,
                                    StressSampleDate, RespSampleID,
                                    RespSampleDate, bioComm,
                                    Stressor, StressorValue),
-                       names_from = LoE, values_from = Score)
+                       names_from = LoE, values_from = Score) %>%
+    dplyr::arrange(StationID, Stressor, StressSampleDate)
 
   write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
               col.names = TRUE, row.names = FALSE, sep = "\t")
