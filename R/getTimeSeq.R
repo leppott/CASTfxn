@@ -2,7 +2,7 @@
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  R v4.4.2
+#  R v4.4.3
 #
 #' @title Time Sequence Line of Evidence (Graphics only)
 #'
@@ -12,7 +12,7 @@
 #' atop the other). All stressor/response data are graphed.
 #' Improvements: Add scoring.
 #'
-#' Uses the packages dplyr, tidyr, ggplot2
+#' Uses the packages dplyr, ggplot2, lubridate, tidyr
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
 #' @param biocomm biological response community (bmi, algae, or fish)
@@ -22,6 +22,10 @@
 #' index and metric values, regardless of matching status
 #' @param df_respinfo dataframe containing response metadata, specifically "Label"
 #' @param df_stressinfo dataframe containing stressor metadata, specifically "Label"
+#' @param plotdpi Standardized dpi value for graphics. Default = plot_dpi.
+#' @param plotH Standardized height value for graphics. Default = plot_H.
+#' @param plotW Standardized width value for graphics. Default = plot_W.
+#' @param plotunits Standardized units for graphics. Default = plot_units.
 #' @param dir_results Directory containing all results. Default = file.path(getwd(),"Results").
 #' NOTE: the code adds a middle directory, BioComm, between the Results and the subdirectory.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "TimeSequence"
@@ -40,10 +44,10 @@ getTimeSeq <- function(TargetSiteID,
                        df_resp,
                        df_respinfo,
                        df_stressinfo,
-                       plot_dpi,
-                       plot_H,
-                       plot_W,
-                       plot_units,
+                       plotdpi = plot_dpi,
+                       plotH = plot_H,
+                       plotW = plot_W,
+                       plotunits = plot_units,
                        dir_results = file.path(getwd(),"Results"),
                        dir_sub = "TimeSequence",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -59,10 +63,10 @@ getTimeSeq <- function(TargetSiteID,
     df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
     df_stressinfo = df_stressorMetadata
-    plot_dpi = plot_dpi
-    plot_H = plot_H
-    plot_W = plot_W
-    plot_units = plot_units
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
     dir_results = dir_results
     dir_sub = "TimeSequence"
   }
@@ -207,8 +211,8 @@ getTimeSeq <- function(TargetSiteID,
                                                  "Stressor/Response Time Series"),
                                    x = "Sample Date", y = "Value")
       if(boo_plot){
-        ggplot2::ggsave(filename = fpath, p_ts, dpi = plot_dpi, width = plot_W
-                        , height = plot_H, units = plot_units)
+        ggplot2::ggsave(filename = fpath, p_ts, dpi = plotdpi, width = plotW,
+                        height = plotH, units = plotunits)
       }## IF ~ boo_plot ~ END
       count = count + 1
 
