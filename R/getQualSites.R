@@ -21,7 +21,7 @@
 #' Improvements: Add data gap analysis. In particular, how many samples are
 #' better than the min target sample score, and is that enough?
 #'
-#' Uses the library dplyr.
+#' Uses the library dplyr, stringr, tibbly, and tidyr.
 #'
 #' @param TargetSiteID Site ID
 #' @param biocomm Biological community; fish, algae or BMI.  Default = "BMI".
