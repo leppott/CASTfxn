@@ -11,23 +11,7 @@
 #' @details Summary info including lat/long, ref status, cluster membership,
 #' samples from site
 #'
-#' Requires packages dplyr, ggplot2, tidyr
-#'
-#' Required objects:
-#'
-#' * data_Sites; StationID, COMID, FinalLatitude, FinalLongitude
-#'
-#' * data.SampSummary; StationID, CollDate, ChemSampleID, PhabSampID
-#' , BMI.Metrics.SampID, Algae.Metrics.SampID
-#'
-#' * data.bmi.metrics; StationID, CollDate, CSCI, O_E, MMI_Score
-#'
-#' * data.algae.metrics; StationCode, SampleDate, H20, D18, S2
-#'
-#' * data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
-#'
-#' Will create output folder dir_results if it doesn't already exist.  The default is "Results".
-#' A subdirectory is created for each SiteID.
+#' Requires packages dplyr, ggplot2, lubridate, tidyr
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
 #' @param TargetCOMID common identifier for the reach on which the site is located
@@ -46,8 +30,8 @@
 #' @param FishIndexGp vector containing one or more fish indices for display purpose only
 #' @param comp.sites vector containing inside-the-case (comparator) site IDs
 #' @param all.sites vector containing all outside-the-case site IDs
-#' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
 #' @param IncaseLabel Label for the "inside the case" identifier. Default = NULL.
+#' @param OutcaseLabel Label for the "outside the case" identifier. Default = NULL.
 #' @param useBC TRUE to use biological similarity; FALSE to not use. Default = FALSE.
 #' @param plotvars Colors, fills, shapes, transparencies for each type (target,
 #' not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.
@@ -187,6 +171,7 @@ getSiteInfo <- function(TargetSiteID,
                plotvars$Fill[plotvars$Type == "insideND"],
                plotvars$Fill[plotvars$Type == "insideD"])
 
+  # Details about the site (Lat, Long, RefSiteFlag, COMID, OutcaseCol, IncaseCol)
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::select(FinalLatitude, FinalLongitude, RefSiteFlag, COMID,
