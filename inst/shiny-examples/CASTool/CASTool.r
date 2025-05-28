@@ -2,7 +2,7 @@
 # Use, copying, modification, or distribution of this file or any of its contents
 # is expressly prohibited without prior written permission of TetraTech.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R v4.4.2
+# R v4.4.3
 #
 # CASTfxn
 # Erik.Leppo@tetratech.com, 20180710
@@ -89,6 +89,7 @@ if (boo_Shiny == TRUE) {
     ## Target site & inside/outside case
     source(file.path(gitpath, "getComparators.R"))
     source(file.path(gitpath, "getSiteInfo.R"))
+    source(file.path(gitpath, "getWSStressorFigs.R"))
     source(file.path(gitpath, "getSiteMap.R"))
     source(file.path(gitpath, "writeOutliers.R"))
     # source(file.path(gitpath, "getClusterInfo.R")) # no longer used
@@ -1246,8 +1247,6 @@ for (site in seq_along(1:nrow(df_targets))) {
   getSiteInfo(TargetSiteID = TargetSiteID,
               TargetCOMID = list.CompSites$TargetCOMID,
               df_Sites = data_Sites,
-              df_WSData = data_stressorWS, # Use results produced by getStreamCatData.R
-              df_WSInfo = data_stressorinfoWS, # Use results produced by getStreamCatData.R
               df_SampSummary = data_sampSummary,
               biocommlist = biocommlist,
               df_BMIMetrics = data_bmiMetrics,
@@ -1257,22 +1256,29 @@ for (site in seq_along(1:nrow(df_targets))) {
               df_FishMetrics = data_fishMetrics,
               FishIndexGp = fishIndexGp,
               comp.sites = list.CompSites$comp.sites,
-              comp.reaches = list.CompSites$comp.reaches,
               all.sites = list.CompSites$all.sites,
               OutcaseLabel = outcaseLabel,
               IncaseLabel = incaseLabel,
               useBC = useBC,
-              useAllCompReaches = useAllCompReaches,
-              plot_vars = data_plotvars,
+              plotvars = data_plotvars,
               refSiteCol = refOutline_col,
-              plot_dpi = plot_dpi,
-              plot_H = plot_H,
-              plot_W = plot_W,
-              plot_units = plot_units,
+              plotdpi = plot_dpi,
+              plotH = plot_H,
+              plotW = plot_W,
+              plotunits = plot_units,
               dir_photo = file.path(dir_data, "Photos"),
               dir_results = dir_results,
               dir_sub = "SiteInfo",
               boo_plot = TRUE)
+
+  getWSStressorFigs(df_WSData = data_stressorWS,
+                    df_WSInfo = data_stressorinfoWS,
+                    comp.reaches = list.CompSites$comp.reaches,
+                    TargetCOMID = list.CompSites$TargetCOMID,
+                    dir_sub = "SiteInfo",
+                    df_SampSummary = data_sampSummary,
+                    biocommlist = biocommlist,
+                    boo_plot = TRUE)
 
   # Create site map
   getSiteMap(sp_outline = STATE.shp,
@@ -1588,16 +1594,14 @@ for (site in seq_along(1:nrow(df_targets))) {
                                           compsites = list.CompSites$comp.sites,
                                           biocomm = bioComm,
                                           colBio = bioIndex,
-                                          onlyNotDeg = onlyNotDeg,
-                                          useBetter = useBetter,
                                           pHlimLow = pHlimLow,
                                           pHlimHigh = pHlimHigh,
                                           DOlim = DOlim,
                                           plotvars = data_plotvars,
-                                          plot_dpi = plot_dpi,
-                                          plot_H = plot_H,
-                                          plot_W = plot_W,
-                                          plot_units = plot_units,
+                                          plotdpi = plot_dpi,
+                                          plotH = plot_H,
+                                          plotW = plot_W,
+                                          plotunits = plot_units,
                                           dir_plots = dir_results,
                                           dir_sub = "CoOccurrence",
                                           boo_plot = boo_plot_user)
@@ -1711,10 +1715,10 @@ for (site in seq_along(1:nrow(df_targets))) {
                                     biocomm = bioComm,
                                     colBio = bioIndex,
                                     plotvars = data_plotvars,
-                                    plot_dpi = plot_dpi,
-                                    plot_H = plot_H,
-                                    plot_W = plot_W,
-                                    plot_units = plot_units,
+                                    plotdpi = plot_dpi,
+                                    plotH = plot_H,
+                                    plotW = plot_W,
+                                    plotunits = plot_units,
                                     dir_plots = dir_results,
                                     dir_sub = "Sufficiency",
                                     boo_plot = boo_plot_user)
@@ -1744,21 +1748,24 @@ for (site in seq_along(1:nrow(df_targets))) {
                                              df_respinfo = bioMetricInfo,
                                              df_respdata = bioMetricData,
                                              df_datapaired = df_PairedSRTransf,
-                                             siteQual2Plot = siteQual2Plot,
                                              biocomm = bioComm,
                                              bioindex = bioIndex,
                                              min_cases = samplim,
                                              p.val_cutoff = 0.05,
                                              r2_cutoff = 0.25,
                                              plotvars = data_plotvars,
-                                             plot_dpi = plot_dpi,
-                                             plot_H = plot_H,
-                                             plot_W = plot_W,
-                                             plot_units = plot_units,
+                                             refOutline = refOutline_col,
+                                             plotdpi = plot_dpi,
+                                             plotH = plot_H,
+                                             plotW = plot_W,
+                                             plotunits = plot_units,
                                              dir_plots = dir_results,
                                              dir_sub = "StressorResponse",
                                              boo_pred_warn = TRUE,
                                              boo_plot = boo_plot_user)
+
+
+
 
     if (nrow(df_gradscores != 0)) {
       df_LoE <- rbind(df_LoE, df_gradscores)
@@ -1805,13 +1812,12 @@ for (site in seq_along(1:nrow(df_targets))) {
                                               biocomm = bioComm,
                                               df_bioTaxaData = bioTaxaData,
                                               df_MasterTaxa = bioMasterTaxa,
-                                              siteQual2Plot = siteQual2Plot,
                                               colBio = bioIndex,
-                                              plot_vars = data_plotvars,
-                                              plot_dpi = plot_dpi,
-                                              plot_H = plot_H,
-                                              plot_W = plot_W,
-                                              plot_units = plot_units,
+                                              plotvars = data_plotvars,
+                                              plotdpi = plot_dpi,
+                                              plotH = plot_H,
+                                              plotW = plot_W,
+                                              plotunits = plot_units,
                                               dir_plots = dir_results,
                                               dir_sub = "VerifiedPredictions_SSTVs",
                                               boo_plot = boo_plot_user)
@@ -1844,13 +1850,13 @@ for (site in seq_along(1:nrow(df_targets))) {
                                     biocomm = bioComm,
                                     df_bioMetricData = bioMetricData,
                                     df_bioMetricInfo = bioMetricInfo,
-                                    useBetter = FALSE,
+                                    # useBetter = FALSE,
                                     colBio = bioIndex,
-                                    plot_vars = data_plotvars,
-                                    plot_dpi = plot_dpi,
-                                    plot_H = plot_H,
-                                    plot_W = plot_W,
-                                    plot_units = plot_units,
+                                    plotvars = data_plotvars,
+                                    plotdpi = plot_dpi,
+                                    plotH = plot_H,
+                                    plotW = plot_W,
+                                    plotunits = plot_units,
                                     dir_plots = dir_results,
                                     dir_sub = "VerifiedPredictions_SSIs",
                                     boo_plot = boo_plot_user)
