@@ -38,7 +38,7 @@
 #' Multiple stressors can be used. Stressors for which all target samples are
 #' scored -1 are not included in further lines of evidence evaluation.
 #'
-#' Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
+#' Uses the libraries dplyr, ggplot2, grid, stringr.
 #'
 #' @param TargetSiteID ID of station/sample(s) to plot
 #' @param df_data data frame with paired stressor/response data, where stressor
