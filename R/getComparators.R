@@ -111,7 +111,7 @@ getComparators<- function(TargetSiteID,
 
   TargetCOMID <- df_sites$COMID[df_sites$StationID == TargetSiteID]
 
-  if (useBC == TRUE) { # UseBC == TRUE not tested ----
+  if (useBC == TRUE) { # UseBC == TRUE (not tested) ----
 
     # TODO: revisit this when another state using a biological filter wants
     # to use the CASTool for its water quality program
@@ -175,6 +175,8 @@ getComparators<- function(TargetSiteID,
                                       paste0("OutCase_LTEQ", bc_cutofftxt),
                                       paste0("OutCase_GT", bc_cutofftxt))
 
+    # Write comparators table (station id, sample id, sample date, index value,
+    # quality, BC dissimilarity distance)
     df_bioCoOccurTrim <- df_bioCoOccur[, c("StationID", "RespSampID",
                                            bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
@@ -232,12 +234,22 @@ getComparators<- function(TargetSiteID,
                                       paste(statement))
     colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
 
+    # Write comparators table (station id, sample id, sample date, index value,
+    # and quality)
+    comp.samps <- dplyr::filter(df_bioCoOccur, StationID %in% comp.sites) %>%
+      dplyr::filter(StationID != TargetSiteID) %>%
+      dplyr::distinct(StationID, RespSampleID, RespSampleDate, all_of(bioIndex),
+                      Quality)
+    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+                row.names = FALSE, sep = "\t")
+
   }
 
   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
   write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
               row.names = FALSE, sep = "\t")
+
 
   CompMsg2 <- paste("Using final number of comparators =", length(comp.sites) - 1)
   message(CompMsg2)
