@@ -334,9 +334,8 @@ getCoOccur <- function(TargetSiteID,
 
     # plot1, ggplot ####
     df.plot <- df.comp
-    lab.sub <- paste0("Comparator samples with paired stressor/response samples",
-                      " (", lab.N, ").\n", lab.Score, ".")
-    lab.sub <- stringr::str_to_sentence(paste0("Not degraded ", lab.sub))
+    lab.sub <- paste0("Paired stressor/response samples considered not degraded ",
+                      "from inside-the-case (", lab.N, ").\n", lab.Score, ".")
 
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
@@ -427,10 +426,15 @@ getCoOccur <- function(TargetSiteID,
 
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
     }
+    df.NE <- as.data.frame(notstressors)
+    names(df.NE) <- paste0(biocomm, "_NotEvaluated")
+    fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
+                                        "_DetectsNotEvalFurther.tab"))
+    write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
   } ### End no stressors statement
 
   # Prep df.scores for export to include in df_LoEs
