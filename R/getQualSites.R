@@ -21,7 +21,7 @@
 #' Improvements: Add data gap analysis. In particular, how many samples are
 #' better than the min target sample score, and is that enough?
 #'
-#' Uses the library dplyr, stringr, tibbly, and tidyr.
+#' Uses the library dplyr, stringr, tibble, and tidyr.
 #'
 #' @param TargetSiteID Site ID
 #' @param biocomm Biological community; fish, algae or BMI.  Default = "BMI".
@@ -110,51 +110,49 @@ getQualSites <- function(TargetSiteID,
 
   # Create dataframe for all possible cases
   df_qualstats <- df_qual %>%
+    dplyr::filter(StationID != TargetSiteID) %>%
     dplyr::mutate(IncaseSamples = ifelse(IncaseYN == 1, 1, 0),
                   IncaseGood = ifelse((IncaseYN == 1) & (Quality == "Not degraded"),
                                       1, 0),
                   IncaseBad = ifelse((IncaseYN == 1) & (Quality == "Degraded"),
                                      1, 0),
-                  IncaseBT = ifelse((IncaseYN == 1) & (BetterThan == 1), 1, 0),
-                  IncaseBTGood = ifelse((IncaseBT == 1) & (Quality == "Not degraded"),
-                                        1, 0),
-                  IncaseBTBad = ifelse((IncaseBT == 1) & (Quality == "Degraded"),
-                                       1, 0),
+                  # IncaseBT = ifelse((IncaseYN == 1) & (BetterThan == 1), 1, 0),
+                  # IncaseBTGood = ifelse((IncaseBT == 1) & (Quality == "Not degraded"),
+                  #                       1, 0),
+                  # IncaseBTBad = ifelse((IncaseBT == 1) & (Quality == "Degraded"),
+                  #                      1, 0),
                   OutcaseSamples = ifelse((OutcaseYN == 1), 1, 0),
                   OutcaseGood = ifelse((OutcaseYN == 1) & (Quality == "Not degraded"),
                                        1, 0),
                   OutcaseBad = ifelse((OutcaseYN == 1) & (Quality == "Degraded"),
                                       1, 0),
-                  OutcaseBT = ifelse((OutcaseYN == 1) & (BetterThan == 1), 1, 0),
-                  OutcaseBTGood = ifelse((OutcaseBT == 1) & (Quality == "Not degraded"),
-                                         1, 0),
-                  OutcaseBTBad = ifelse((OutcaseBT == 1) & (Quality == "Degraded"),
-                                        1, 0),
-                  AllSamples = 1,
-                  AllSamplesGood = ifelse(Quality == "Not degraded", 1, 0),
-                  AllSamplesBad = ifelse(Quality == "Degraded", 1, 0),
-                  AllSamplesBT = ifelse(BetterThan == 1, 1, 0),
-                  AllSamplesBTGood = ifelse((AllSamplesBT == 1) & (Quality == "Not degraded"),
-                                            1, 0),
-                  AllSamplesBTBad = ifelse((AllSamplesBT == 1) & (Quality == "Degraded"),
-                                           1, 0),
+                  # OutcaseBT = ifelse((OutcaseYN == 1) & (BetterThan == 1), 1, 0),
+                  # OutcaseBTGood = ifelse((OutcaseBT == 1) & (Quality == "Not degraded"),
+                  #                        1, 0),
+                  # OutcaseBTBad = ifelse((OutcaseBT == 1) & (Quality == "Degraded"),
+                  #                       1, 0),
+                  TotalSamples = 1,
+                  TotalSamplesGood = ifelse(Quality == "Not degraded", 1, 0),
+                  TotalSamplesBad = ifelse(Quality == "Degraded", 1, 0),
+                  # TotalSamplesBT = ifelse(BetterThan == 1, 1, 0),
+                  # TotalSamplesBTGood = ifelse((AllSamplesBT == 1) & (Quality == "Not degraded"),
+                  #                           1, 0),
+                  # TotalSamplesBTBad = ifelse((AllSamplesBT == 1) & (Quality == "Degraded"),
+                  #                          1, 0),
                   RefSamples = ifelse(RefSiteFlag == 1, 1, 0),
                   RefSamplesGood = ifelse((RefSiteFlag == 1) & (Quality == "Not degraded"),
                                           1, 0),
                   RefSamplesBad = ifelse((RefSiteFlag == 1) & (Quality == "Degraded"),
-                                         1, 0),
-                  RefSamplesBT = ifelse((RefSiteFlag == 1) & (BetterThan == 1),
-                                        1, 0),
-                  RefSamplesBTGood = ifelse((RefSamplesBT == 1) & (Quality == "Not degraded"),
-                                            1, 0),
-                  RefSamplesBTBad = ifelse((RefSamplesBT == 1) & (Quality == "Degraded"),
-                                           1, 0)) %>%
-    dplyr::select(IncaseSamples, IncaseGood, IncaseBad, IncaseBT, IncaseBTGood,
-                  IncaseBTBad, OutcaseSamples, OutcaseGood, OutcaseBad, OutcaseBT,
-                  OutcaseBTGood, OutcaseBTBad, AllSamples, AllSamplesGood,
-                  AllSamplesBad, AllSamplesBT, AllSamplesBTGood, AllSamplesBTBad,
-                  RefSamples, RefSamplesGood, RefSamplesBad, RefSamplesBT,
-                  RefSamplesBTGood, RefSamplesBTBad)
+                                         1, 0)) %>% # ,
+                  # RefSamplesBT = ifelse((RefSiteFlag == 1) & (BetterThan == 1),
+                  #                       1, 0),
+                  # RefSamplesBTGood = ifelse((RefSamplesBT == 1) & (Quality == "Not degraded"),
+                  #                           1, 0),
+                  # RefSamplesBTBad = ifelse((RefSamplesBT == 1) & (Quality == "Degraded"),
+                  #                          1, 0)) %>%
+    dplyr::select(IncaseSamples, IncaseGood, IncaseBad, OutcaseSamples, OutcaseGood,
+                  OutcaseBad, TotalSamples, TotalSamplesGood, TotalSamplesBad,
+                  RefSamples, RefSamplesGood, RefSamplesBad)
 
   df_qualstats <- df_qualstats %>%
     dplyr::summarise(across(where(is.numeric), sum)) %>%
@@ -165,8 +163,8 @@ getQualSites <- function(TargetSiteID,
   df_qualstats <- df_qualstats %>%
     dplyr::mutate(Quality = dplyr::case_when(stringr::str_detect(Label, "Good") ~ "Not degraded",
                                              stringr::str_detect(Label, "Bad") ~ "Degraded",
-                                             TRUE ~ "All qualities"),
-                  Group = ifelse(stringr::str_detect(Label, "BT"), "Better than", "All"),
+                                             TRUE ~ "Total"),
+                  # Group = ifelse(stringr::str_detect(Label, "BT"), "Better than", "Total"),
                   Samples = dplyr::case_when(stringr::str_detect(Label, "Ref") ~ "ReferenceSamples",
                                              stringr::str_detect(Label, "Incase") ~ "InsideCaseSamples",
                                              stringr::str_detect(Label, "Outcase") ~ "OutsideCaseSamples",
@@ -175,11 +173,11 @@ getQualSites <- function(TargetSiteID,
 
   df_qualstats <- df_qualstats %>%
     dplyr::select(-Label) %>%
-    dplyr::group_by(BioComm, Group, Quality) %>%
+    dplyr::group_by(BioComm, Quality) %>%
     tidyr::pivot_wider(names_from = "Samples", values_from = "Count") %>%
-    dplyr::select(BioComm, Group, Quality, InsideCaseSamples, OutsideCaseSamples,
-                  ReferenceSamples, AllSamples) %>%
-    dplyr::arrange(Group, Quality)
+    dplyr::select(BioComm, Quality, InsideCaseSamples, OutsideCaseSamples,
+                  AllSamples, ReferenceSamples) %>%
+    dplyr::arrange(Quality)
 
   dirSiteInfo <- file.path(dir_results, TargetSiteID, dir_sub)
   fnQualStats <- paste0(TargetSiteID, "_", toupper(biocomm), "_SiteQualities.tab")
@@ -187,6 +185,7 @@ getQualSites <- function(TargetSiteID,
               append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
 
   numcompsfinal <- as.numeric(df_qualstats[1, "InsideCaseSamples"])
+
   if (numcompsfinal < length(compSites)) {
     gapcomment <- paste0("Inside case sites do not have paired ",
                          "stressor-response data for comparison.")
