@@ -299,10 +299,6 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_cl <- df_plot_cl[stats::complete.cases(df_plot_cl), ]
 
       #get all cluster siteQual2Plot data
-      # df_plot_cl_SQ2P <- switch(tolower(siteQual2Plot),
-      #                            "reference" = df_CompRef,
-      #                            "not degraded" = df_CompNotDeg,
-      #                            "better than" = df_CompBT)
       df_plot_cl_ref <- df_plot_cl %>%
         dplyr::filter(RefSiteFlag == 1) %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
@@ -785,7 +781,7 @@ getBioStressorResponses <- function(TargetSiteID,
       # if then for equation
       if (sum(!is.na(df_plot_cl$Stressor)) > 2 || sum(!is.na(df_plot_cl$Response)) > 2) {
         ##IF.equation.START
-        str_caption_cl <- paste(paste0("Regression (comparators, inside the case): ",
+        str_caption_cl <- paste(paste0("Regression (inside-the-case samples): ",
                                        "y = ", slope_cl, " x + ", intercept_cl),
                                 paste0("r2 = ", r2_cl),
                                 paste0("p-value = ", pval.corr_cl),
@@ -793,13 +789,13 @@ getBioStressorResponses <- function(TargetSiteID,
                                 paste0("score = ", sr.score_cl),
                                 sep = " ~ ")
       } else {
-        str_caption_cl <- paste0("Regression (comparators, inside the case): ",
-                                 "Less than 3 data points in comparator set.")
+        str_caption_cl <- paste0("Regression (inside-the-case samples): ",
+                                 "Less than 3 samples.")
       }##IF.equation.END
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {
         ##IF.equation.START
-        str_caption_all <- paste(paste0("Regression (outside the case): ",
+        str_caption_all <- paste(paste0("Regression (outside-the-case samples): ",
                                         "y = ", slope_all, " x + ", intercept_all),
                                  paste0("r2 = ", r2_all),
                                  paste0("p-value = ", pval.corr_all),
@@ -807,20 +803,15 @@ getBioStressorResponses <- function(TargetSiteID,
                                  paste0("score = ", sr.score_all),
                                  sep = " ~ ")
       } else {
-        str_caption_all <- "Regression (outside-the-case):  Less than 3 data points."
+        str_caption_all <- "Regression (outside-the-case): Less than 3 samples."
       } ##IF.equation.END
       #
       qualtext <- "not degraded*"
       str_caption_qual <- "*Samples rated not degraded."
       str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
-      leg_all_ref <- qualtext
+      leg_all_ref <- paste0("outside-the-case", qualtext)
       str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
-      leg_cl_ref <- paste0("comparator ", qualtext)
-
-      ## Plot, Variables, Legend
-      leg_name       <- "Samples"
-      leg_labels_all <- c("all", leg_all_ref, "target")
-      leg_labels_cl  <- c("comparator", leg_cl_ref, "target")
+      leg_cl_ref <- paste0("inside-the-case ", qualtext)
 
       ## Plot, outside ####
       boo.Plot <- ifelse(nrow(df_plot_site) == 0, FALSE, TRUE)
