@@ -151,7 +151,6 @@ getVPSSI <- function(TargetSiteID,
       ssi.cutoff <- info.ssi$CutoffValue[i]
       ssi.inclind <- info.ssi$InclusiveIndicator[i]
       ssi.stressors <- info.stress$Stressor[info.stress$SSIndex == ssi.name]
-      # ssi.stressorLabel <- info.stress$Label[info.stress$SSIndex == ssi.name]
       df.targetdata <- df_paired %>%
         dplyr::filter(StationID == TargetSiteID) %>%
         dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
@@ -321,8 +320,8 @@ getVPSSI <- function(TargetSiteID,
           }
 
           # define filename for logistic regression plot
-          fn_png_p2 <- paste0(paste(TargetSiteID, biocomm, "VPSSIlog", str,
-                             ssi.name, sep = "_"), ".png")
+          fn_png_p2 <- paste0(paste(TargetSiteID, biocomm, "VPSSIlog",
+                             ssi.name, str, sep = "_"), ".png")
 
           # Identify plot vars for logistic plots
           negStart <- 0
