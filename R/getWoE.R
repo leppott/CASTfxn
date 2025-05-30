@@ -87,18 +87,14 @@ getWoE <- function(TargetSiteID,
               col.names = TRUE, row.names = FALSE, sep = "\t")
 
   dfLoE <- dfLoE %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate,
-                  RespSampleID, RespSampleDate, bioComm,
-                  Stressor, StressorValue, LoE, Score) %>%
-    dplyr::mutate(Score = ifelse(Score == "NE", NA, Score),
-                  Score = suppressWarnings(as.numeric(Score)),
-                  StressorValue = round(StressorValue, 3),
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, bioComm, Stressor, StressorValue, LoE, Score) %>%
+    dplyr::mutate(StressorValue = round(StressorValue, 3),
                   bioComm = toupper(bioComm)) %>%
-    tidyr::pivot_wider(id_cols = c(StationID, StressSampleID,
-                                   StressSampleDate, RespSampleID,
-                                   RespSampleDate, bioComm,
-                                   Stressor, StressorValue),
-                       names_from = LoE, values_from = Score) %>%
+    tidyr::pivot_wider(id_cols = c(StationID, StressSampleID, StressSampleDate,
+                                   RespSampleID, RespSampleDate, bioComm,
+                                   Stressor, StressorValue), names_from = LoE,
+                       values_from = Score, values_fill = "NE") %>%
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
   write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
