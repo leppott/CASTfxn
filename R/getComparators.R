@@ -238,8 +238,9 @@ getComparators<- function(TargetSiteID,
     # and quality)
     comp.samps <- dplyr::filter(df_bioCoOccur, StationID %in% comp.sites) %>%
       dplyr::filter(StationID != TargetSiteID) %>%
-      dplyr::distinct(StationID, RespSampleID, RespSampleDate, all_of(bioIndex),
-                      Quality)
+      dplyr::select(StationID, RespSampleID, RespSampleDate,
+                      dplyr::all_of(bioIndex), Quality)
+    comp.samps <- unique(comp.samps)
     write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
                 row.names = FALSE, sep = "\t")
 
