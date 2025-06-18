@@ -174,15 +174,14 @@ getSiteInfo <- function(TargetSiteID,
   # Details about the site (Lat, Long, RefSiteFlag, COMID, OutcaseCol, IncaseCol)
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::select(FinalLatitude, FinalLongitude, RefSiteFlag, COMID,
-                  OutcaseCol, IncaseCol)
+    dplyr::select(Latitude, Longitude, RefSiteFlag, COMID, OutcaseCol, IncaseCol)
   myIncaseID = as.vector(unlist(mySiteInfo$IncaseCol))
   myOutcaseID = as.vector(unlist(mySiteInfo$OutcaseCol))
 
   data_refSites <- df_Sites %>%
     dplyr::filter(RefSiteFlag == 1) %>%
-    dplyr::select(StationID, FinalLatitude, FinalLongitude, RefSiteFlag,
-                  COMID, OutcaseCol, IncaseCol)
+    dplyr::select(StationID, Latitude, Longitude, RefSiteFlag, COMID,
+                  OutcaseCol, IncaseCol)
   myRefSites <- unique(as.vector(unlist(data_refSites$StationID)))
 
   # get sampling info (dates of samples)
