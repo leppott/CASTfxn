@@ -56,7 +56,7 @@ getVPSSI <- function(TargetSiteID,
                      plotW = plot_W,
                      plotunits = plot_units,
                      dir_plots = file.path(getwd(), "Results"),
-                     dir_sub = "VerifiedPredictions_SSIs",
+                     dir_sub = "_WoE",
                      boo_plot = TRUE) {##FUNCTION.START
 
   # Debugging
@@ -77,7 +77,7 @@ getVPSSI <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_plots = dir_results
-    dir_sub = "VerifiedPredictions_SSIs"
+    dir_sub = "_WoE"
     boo_plot = boo_plot_user
   }##IF.boo.DEBUG.END
 
@@ -175,13 +175,13 @@ getVPSSI <- function(TargetSiteID,
       } #END check for ssi in metric data
 
       # Create data set for use
-        df.comp <- df_paired %>%
-          dplyr::filter(IncaseYN == 1)
-        df.data <- merge(df.comp, df_bioMetricData,
-                         by = c("StationID", "RespSampleID", "RespSampleDate",
-                                colBio, "Quality"))
-        str_comp <- "comparator samples"
-        rm(df.comp)
+      df.comp <- df_paired %>%
+        dplyr::filter(IncaseYN == 1)
+      df.data <- merge(df.comp, df_bioMetricData,
+                       by = c("StationID", "RespSampleID", "RespSampleDate",
+                              colBio, "Quality"))
+      str_comp <- "comparator samples"
+      rm(df.comp)
 
       # Prep data for plots ----
       df_plot <- dplyr::mutate(df.data, BioComm = {{biocomm}},
@@ -270,6 +270,21 @@ getVPSSI <- function(TargetSiteID,
             slab <- paste0("Log1p ", slab)
           }
 
+          # Write graphics directory ----
+          out.dir <- dirname(dir_plots)
+          out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, str)
+
+          for (d in 1:length(out.folders)) {
+            if (d == 1) {
+              dir_path_stress <- file.path(out.folders[d])
+            } else {
+              dir_path_stress <- file.path(dir_path_stress, out.folders[d])
+            }
+            if (dir.exists(dir_path_stress) == FALSE) {
+              dir.create(dir_path_stress)
+            }
+          }
+
           df_plot.log <- df_plot %>%
             dplyr::rename(y = SSIndex, x = {{str}}) %>%
             dplyr::mutate(y.name = ifelse(SSIqual == "Degraded", 1, 0)) %>%
@@ -321,7 +336,7 @@ getVPSSI <- function(TargetSiteID,
 
           # define filename for logistic regression plot
           fn_png_p2 <- paste0(paste(TargetSiteID, biocomm, "VPSSIlog",
-                             ssi.name, str, sep = "_"), ".png")
+                                    ssi.name, str, sep = "_"), ".png")
 
           # Identify plot vars for logistic plots
           negStart <- 0
@@ -401,9 +416,12 @@ getVPSSI <- function(TargetSiteID,
             ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
                           caption = captionSR)
 
-            ggplot2::ggsave(filename = file.path(dir.path, fn_png_p2), plot = p2,
-                            dpi = plotdpi, width = plotW, height = plotH,
-                            units = plotunits)
+          ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p2),
+                          plot = p2, dpi = plotdpi, width = plotW,
+                          height = plotH, units = plotunits)
+
+          # plotname <- paste0(str, "_", biocomm, "_VPSSIlog")
+          # suppressWarnings(assign(plotname, p2))
 
         }
 
@@ -491,7 +509,7 @@ getVPSSI <- function(TargetSiteID,
       if (i == 1) {
         df.scores.box <- df.scores.i
       } else {
-        df.scores.box <- rbind(df.scores, df.scores.i)
+        df.scores.box <- rbind(df.scores.box, df.scores.i)
       }
 
       ### Create boxplot ----
@@ -573,9 +591,32 @@ getVPSSI <- function(TargetSiteID,
         ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                        axis.ticks.y = ggplot2::element_blank())
 
-      ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p1,
-                      dpi = plotdpi, width = plotW, height = plotH,
-                      units = plotunits)
+      for (j in seq_along(ssi.stressors)) {
+
+        str <- ssi.stressors[j]
+
+        # Write graphics directory ----
+        out.dir <- dirname(dir_plots)
+        out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, str)
+
+        for (i in 1:length(out.folders)) {
+          if (i == 1) {
+            dir_path_stress <- file.path(out.folders[i])
+          } else {
+            dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+          }
+          if (dir.exists(dir_path_stress) == FALSE) {
+            dir.create(dir_path_stress)
+          }
+        }
+
+        fn_png_p1 <- paste(TargetSiteID, biocomm, "VPSSIbox", ssi.name, str,
+                           sep = "_")
+        fn_png_p1 <- paste0(fn_png_p1, ".png")
+        ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),
+                        plot = p1, dpi = plotdpi, width = plotW, height = plotH,
+                        units = plotunits)
+      } #End loop over stressors
 
     } ##FOR.SSI END
 
@@ -623,6 +664,6 @@ getVPSSI <- function(TargetSiteID,
     df.scores <- rbind(df.scores, df.scores.log)
   }
 
-return(df.scores)
+  return(df.scores)
 
 } ##FUNCTION.END
