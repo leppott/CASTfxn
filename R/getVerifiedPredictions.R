@@ -49,7 +49,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    plotW = plot_W,
                                    plotunits = plot_units,
                                    dir_plots = file.path(getwd(), "Results"),
-                                   dir_sub = "VerifiedPredictions_SSTVs",
+                                   dir_sub = "_WoE",
                                    boo_plot = TRUE) {##FUNCTION.START
 
   # Debugging
@@ -63,7 +63,6 @@ getVerifiedPredictions <- function(TargetSiteID,
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
     df_MasterTaxa = bioMasterTaxa
-    siteQual2Plot = siteQual2Plot
     colBio = bioIndex
     plotvars = data_plotvars
     plotdpi = plot_dpi
@@ -71,7 +70,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_plots = dir_results
-    dir_sub = "VerifiedPredictions_SSTVs"
+    dir_sub = "_WoE"
     boo_plot = boo_plot_user
   }##IF.boo.DEBUG.END
 
@@ -101,7 +100,6 @@ getVerifiedPredictions <- function(TargetSiteID,
 
   # SSTV data gaps ----
   if (length(stressors.sstv) == 0) {
-
       gapcomment <- paste0("No stressor-specific tolerance values.")
       gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data", 0
                                , gapcomment)
@@ -110,11 +108,9 @@ getVerifiedPredictions <- function(TargetSiteID,
       fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                   , row.names = FALSE, sep = "\t")
-
   }
 
   # Outer loop over stressors with SSTVs
-  # Temporary: if debugging, DO NOT run this
   if (length(stressors.sstv) > 0) {
     ## Subset stressInfo ----
     df_SSTV <- df_stressinfo %>%
@@ -129,7 +125,6 @@ getVerifiedPredictions <- function(TargetSiteID,
     if (exists("keepMTcol")) { suppressWarnings(rm(keepMTcol)) }
 
     # Match sstv to master taxa file ----
-    # Temporary: if debugging, okay to run this loop
     for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
       name <- SSTVnames[n]
       SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
@@ -161,7 +156,6 @@ getVerifiedPredictions <- function(TargetSiteID,
 
     # Create taxa file for SSTVs ----
     if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
-
       # Merge biotaxa results with master taxa file ----
       df_SSTVtaxa <- df_MasterTaxa %>%
         dplyr::select(TaxonID, all_of(keepMTcol))
@@ -172,15 +166,11 @@ getVerifiedPredictions <- function(TargetSiteID,
       df_bioTaxaData <- merge(df_bioTaxaData, df_SSTVtaxa)
 
       boo.continue = TRUE
-
     } else {
-
       boo.continue = FALSE
-
     }
 
     # Taxa exist; isolate groups, labels
-    # Temporary: if debugging, DO NOT run this
     if (boo.continue == TRUE) { # Have taxa
 
       # 20190513, remove scores file if exists
@@ -197,7 +187,6 @@ getVerifiedPredictions <- function(TargetSiteID,
                       RefSiteFlag, Quality, BetterThan, all_of(stressors.sstv))
       nTargetSamples <- nrow(df_stress.sstv[df_stress.sstv$StationID == TargetSiteID,])
 
-      # Temporary: if debugging, must run this loop
       for (tv in seq_along(keepMTcol)) { # Obtain one or more sstv columns
 
         sstv <- keepMTcol[tv]
@@ -294,6 +283,21 @@ getVerifiedPredictions <- function(TargetSiteID,
         tolval <- df_SSTV$SSTVname[df_SSTV$Stressor == stressor]
         tolval.min <- paste0(tolval, "_SensMin")
         tolval.all <- paste0(tolval, "_SensAll")
+
+        # Write graphics directory ----
+        out.dir <- dirname(dir_plots)
+        out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, stressor)
+
+        for (i in 1:length(out.folders)) {
+          if (i == 1) {
+            dir_path_stress <- file.path(out.folders[i])
+          } else {
+            dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+          }
+          if (dir.exists(dir_path_stress) == FALSE) {
+            dir.create(dir_path_stress)
+          }
+        }
 
         ## Prep target sample data frame ####
         df_tv.target <- dplyr::filter(df_tv, Group == {{tolval}} &
@@ -433,8 +437,6 @@ getVerifiedPredictions <- function(TargetSiteID,
         # Prepare plots ####
         # Boxplots: x = Label [SensMin, SensMax], y = value,
         # Group = variable [NumInds, PctInds, NumTaxa, PctTaxa], df_tv.incase
-        # Jitterplots: all incase degraded [grey25, down triangle],
-        # not degraded [steelblue, round], target [red triangle]
         df_tv.incase <- df_tv.incase %>%
           dplyr::mutate(Quality = as.character(Quality),
                         Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
@@ -573,9 +575,9 @@ getVerifiedPredictions <- function(TargetSiteID,
           #                                 color = "orange"))
 
         if (boo_plot) {
-          ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1), plot = p_tv,
-                          dpi = plotdpi, width = plotW, height = plotH,
-                          units = plotunits)
+          ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),
+                          plot = p_tv, dpi = plotdpi, width = plotW,
+                          height = plotH, units = plotunits)
         }## IF ~ boo_plot ~ END
 
       }## FOR SSTV ~ END
