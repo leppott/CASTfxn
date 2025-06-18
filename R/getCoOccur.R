@@ -95,7 +95,7 @@ getCoOccur <- function(TargetSiteID,
                        plotW = plot_W,
                        plotunits = plot_units,
                        dir_plots = dir_results,
-                       dir_sub = "CoOccurrence",
+                       dir_sub = "_WoE",
                        boo_plot = TRUE) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
@@ -117,7 +117,7 @@ getCoOccur <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_plots = dir_results
-    dir_sub = "CoOccurrence"
+    dir_sub = "_WoE"
     boo_plot = TRUE
   }
 
@@ -218,6 +218,22 @@ getCoOccur <- function(TargetSiteID,
     #
     stressname <- detects[j]
     j.len <- length(detects)
+
+    # Write graphics directory ----
+    out.dir <- dirname(dir_plots)
+    out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, stressname)
+
+    for (i in 1:length(out.folders)) {
+      if (i == 1) {
+        dir_path_stress <- file.path(out.folders[i])
+      } else {
+        dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+      }
+      if (dir.exists(dir_path_stress) == FALSE) {
+        dir.create(dir_path_stress)
+      }
+    }
+
     #
     message(paste0("Processing stressor (", j, "/", j.len, ") ",
                    stressname, ".\n"))
@@ -406,13 +422,13 @@ getCoOccur <- function(TargetSiteID,
                                      lty = 3)
     }
 
-    ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
+    ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1), plot = p1,
                     dpi = plotdpi, width = plotW, height = plotH, units = plotunits)
 
-    if (sum(scores) != -(length(scores))) {
-      plotname <- paste0(stressname, "_", biocomm, "_CO")
-      suppressWarnings(assign(plotname, p1))
-    }
+    # if (sum(scores) != -(length(scores))) {
+    #   plotname <- paste0(stressname, "_", biocomm, "_CO")
+    #   suppressWarnings(assign(plotname, p1))
+    # }
 
   }##FOR.j.END
 
