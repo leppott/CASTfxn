@@ -183,12 +183,13 @@ getCoOccur <- function(TargetSiteID,
                                   "RespSampleDate", colBio, "Quality")],
                      data.frame(Stressor = character(), StressorValue = double(),
                                 n = integer(), q25 = double(), q50 = double(),
-                                q75 = double(), Sc_Box = integer(),
+                                q75 = double(), Sc_Box = character(),
                                 biocomm = character(), Label = character(),
                                 stringsAsFactors = FALSE))
 
   # Filter for only not degraded samples plus target samples
   df.target <- dplyr::filter(df_data, StationID == TargetSiteID)
+  n.target.samps <- nrow(df.target)
   df.comp <- dplyr::filter(df_data, Quality == "Not degraded")
   df.comp <- dplyr::filter(df.comp, StationID != TargetSiteID)
   df.comp <- rbind(df.target, df.comp)
@@ -252,7 +253,7 @@ getCoOccur <- function(TargetSiteID,
     ## Score samples ####
     ## Use different criteria for some parameters (Specifically pH and DO)
     ## Score pH in both directions
-    if (stressname == "pH_alkEnv") { # pH is a decreaser in alkalkine environments
+    if (stressname == "pH_alkEnv") { # pH is a decreaser in alkaline environments
       # Parameter is pH; need two scores, one for acid environments & one for alkaline
       df.j <- df.j %>%
         dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue < pHlimLow ~ 1,
@@ -297,8 +298,9 @@ getCoOccur <- function(TargetSiteID,
 
     ## Box Plot of Not Degraded Comparator sites
     scores <- unlist(as.vector(df.j$Sc_Box))
-    lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
-    lab.N <- paste0("n = ", unique(df.j$n))
+    scores.text <- tidyr::replace_na(scores, "NE")
+    lab.Score <- paste0("Score = ", paste0(scores.text, collapse = ", "))
+    lab.N <- paste0("n = ", unique(df.j$n) - n.target.samps)
 
     # File Names
     fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_",
@@ -329,7 +331,8 @@ getCoOccur <- function(TargetSiteID,
 
     legendtitle <- "Samples"
     maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
-    subtitleCO <-"Are the observed stressor levels consistent with impairment where and when it occurs?"
+    subtitleCO <- paste0("Are the observed stressor levels consistent with ",
+                         "impairment where and when it occurs?")
     subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
     # plot1, ggplot ####
@@ -369,13 +372,13 @@ getCoOccur <- function(TargetSiteID,
                         label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
       ggplot2::scale_color_manual(name = legendtitle,
                                   breaks = c("Degraded", "Not degraded"),
-                                  values = bio_col, drop = TRUE) +
+                                  values = bio_fill, drop = TRUE) +
       ggplot2::scale_fill_manual(name = legendtitle,
                                  breaks = c("Degraded", "Not degraded"),
-                                 values = bio_col, drop = TRUE) +
+                                 values = bio_fill, drop = TRUE) +
       ggplot2::scale_shape_manual(name = legendtitle,
                                   breaks = c("Degraded", "Not degraded"),
-                                  values = bio_shp, drop = TRUE) +
+                                  values = bio_shape, drop = TRUE) +
       ggplot2::labs(title = maintitleCO, subtitle = subtitleCO,
                     caption = lab.sub, y = stresslabel, x = lab_comp) +
       ggplot2::theme_bw() +
@@ -384,19 +387,32 @@ getCoOccur <- function(TargetSiteID,
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                      axis.ticks.y = ggplot2::element_blank())
 
-    if (grepl("^pH_a", stressname, perl = TRUE, ignore.case = FALSE)) {
-      p1 + ggplot2::geom_hline(yintercept = pHlimHigh, color = "burlywood4",
-                               lty = lim_lty) +
-        ggplot2::geom_hline(yintercept = pHlimLow, color = "burlywood4",
-                            lty = lim_lty)
+    if (grepl("^pH_a", stressname)) {
+      if (pHlimLow >= minVal) {
+        p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
+                                                    linetype = "pH lower limit"),
+                                       color = "black", lty = 3) +
+          ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
+      }
+      if (pHlimHigh <= maxVal) {
+        p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
+                                                    linetype = "pH upper limit"),
+                                       color = "black", lty = 3) +
+          ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
+      }
     }
-    if (grepl("^DO", stressname, perl = TRUE, ignore.case = FALSE) == TRUE) {
-      p1 + ggplot2::geom_hline(yintercept = DOlim, color = "burlywood4",
-                               lty = lim_lty)
+    if (grepl("^DO", stressname) & (DOlim >= minVal)) {
+      p1 <- p1 + ggplot2::geom_hline(yintercept = DOlim, color = "black",
+                                     lty = 3)
     }
 
     ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
                     dpi = plotdpi, width = plotW, height = plotH, units = plotunits)
+
+    if (sum(scores) != -(length(scores))) {
+      plotname <- paste0(stressname, "_", biocomm, "_CO")
+      suppressWarnings(assign(plotname, p1))
+    }
 
   }##FOR.j.END
 
@@ -409,7 +425,8 @@ getCoOccur <- function(TargetSiteID,
   stressors <- unique(df.scores$Stressor[df.scores$Sc_Box != -1])
   notstressors <- unique(df.scores$Stressor[df.scores$Sc_Box == -1])
   notstressors <- setdiff(notstressors, stressors)
-  # prevents a stressor identified by 1 sample from appearing in the "notstressors" vector
+  # prevents a stressor identified by 1 sample from appearing in the
+  # "notstressors" vector
 
   # if notstressors has more than one row, write data to data gaps
   if (length(notstressors) > 0) {
@@ -448,6 +465,7 @@ getCoOccur <- function(TargetSiteID,
                   Stressor, StressorValue, LoE, Score)
 
   df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
+
   return(list(df_stressorMetadata = df.stressorMetadata,
               notEvaluated = notstressors,
               df_COscores = df.scores))
