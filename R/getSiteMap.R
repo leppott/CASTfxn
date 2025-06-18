@@ -150,26 +150,32 @@ getSiteMap <- function(sp_outline,
                   Case = factor(Case, levels = c("Outside the case",
                                                  "Inside the case",
                                                  "Target")))
-  if (is.na(datum)) {
-    message("Datum assumed to be WGS84.")
+  if (datum == "WGS84") {
     sp_sites <- sf::st_as_sf(df_sites, crs = 4326,
-                             coords = c("Longitude", "Latitude"))
+                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
+                    lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD27") {
-    sp_sites <- sf::st_as_sf(df_sites, crs = 4267,
-                             coords = c("FinalLongitude", "FinalLatitude"))
-    sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
+    sp_sites <- sf::st_as_sf(df_sites, crs = 5069,
+                             coords = c("FinalLongitude", "FinalLatitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD83") {
-    sp_sites <- sf::st_as_sf(df_sites, crs = 4268,
-                             coords = c("FinalLongitude", "FinalLatitude"))
-    sp_sites <- sf::st_transform(sp_sites, crs = 4326) %>%
+    sp_sites <- sf::st_as_sf(df_sites, crs = 5070,
+                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
+                    lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+  } else if (grepl("\\d*", datum)) {
+    sp_sites <- sf::st_as_sf(df_sites, crs = datum,
+                             coords = c("FinalLongitude", "FinalLatitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else {
-    message("CRS is not identified")
+    message("CRS is not identified. Assumed to be WGS84.")
     sp_sites <- sf::st_as_sf(df_sites, crs = 4326,
-                             coords = c("FinalLongitude", "FinalLatitude"))
+                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
+                    lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   }
   sp_sites <- sf::st_transform(sp_sites, crs = sf::st_crs(sp_flowline))
 
