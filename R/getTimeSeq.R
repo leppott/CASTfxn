@@ -196,8 +196,6 @@ getTimeSeq <- function(TargetSiteID,
       p_ts <- p_ts + ggplot2::geom_label(ggplot2::aes(x = SampleDate,
                                                       y = as.numeric(Value)/2,
                                                       label = Value))
-      # LCN switched to geom_label to eliminate potential overlap of ggrepel arrow and geom_col
-
       p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
       p_ts <- p_ts + ggplot2::theme_bw()
       p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
@@ -214,6 +212,11 @@ getTimeSeq <- function(TargetSiteID,
         ggplot2::ggsave(filename = fpath, p_ts, dpi = plotdpi, width = plotW,
                         height = plotH, units = plotunits)
       }## IF ~ boo_plot ~ END
+
+      if (metricname == bioindex) {
+        plotname <- paste0(stressname, "_", biocomm, "_TS")
+        suppressWarnings(assign(plotname, p_ts))
+      }
       count = count + 1
 
     } # END loop over responses & graphics
