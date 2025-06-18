@@ -49,6 +49,7 @@
 getSiteMap <- function(sp_outline,
                        sp_flowline,
                        region,
+                       datum,
                        df_sites,
                        allSites,
                        compSites,
@@ -66,6 +67,7 @@ getSiteMap <- function(sp_outline,
     sp_outline <- STATE.shp
     sp_flowline <- NHD.STATE
     region <- regionName
+    datum <- datum
     df_sites <- data_Sites
     allSites <- list.CompSites$all.sites
     compSites <- list.CompSites$comp.sites
@@ -140,9 +142,8 @@ getSiteMap <- function(sp_outline,
   # otherwise, assume wGS84)
   # Subset ref sites, outside case sites, inside case sites, and target site
   df_sites <- df_sites %>%
-    dplyr::select(StationID, FinalLongitude, FinalLatitude, RefSiteFlag, COMID,
+    dplyr::select(StationID, Longitude, Latitude, RefSiteFlag, COMID,
                   IncaseCol, OutcaseCol) %>%
-    dplyr::rename(Latitude = FinalLatitude, Longitude = FinalLongitude) %>%
     dplyr::mutate(Case = dplyr::case_when(StationID == TargetSiteID ~ "Target",
                                           StationID %in% compSites ~ "Inside the case",
                                           StationID %in% allSites ~ "Outside the case",
@@ -150,32 +151,33 @@ getSiteMap <- function(sp_outline,
                   Case = factor(Case, levels = c("Outside the case",
                                                  "Inside the case",
                                                  "Target")))
-  if (datum == "WGS84") {
+  if (is.na(datum)) {
+    message("CRS is not identified. Assumed to be WGS84.")
     sp_sites <- sf::st_as_sf(df_sites, crs = 4326,
-                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+                             coords = c("Longitude", "Latitude"))
+  } else if (datum == "WGS84") {
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4326,
+                             coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD27") {
     sp_sites <- sf::st_as_sf(df_sites, crs = 5069,
-                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+                             coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD83") {
     sp_sites <- sf::st_as_sf(df_sites, crs = 5070,
-                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+                             coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (grepl("\\d*", datum)) {
     sp_sites <- sf::st_as_sf(df_sites, crs = datum,
-                             coords = c("FinalLongitude", "FinalLatitude")) %>%
+                             coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else {
-    message("CRS is not identified. Assumed to be WGS84.")
-    sp_sites <- sf::st_as_sf(df_sites, crs = 4326,
-                             coords = c("FinalLongitude", "FinalLatitude")) %>%
-      dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
-                    lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
+    message("Datum does not match any of the allowed values.")
+    stop()
   }
   sp_sites <- sf::st_transform(sp_sites, crs = sf::st_crs(sp_flowline))
 
@@ -218,12 +220,7 @@ getSiteMap <- function(sp_outline,
                      size = outsideSize) +
     tmap::tm_shape(sp_inside) +
     tmap::tm_symbols(fill = insideFill, col = "grey15", shape = insideShape,
-                     size = insideSize) +
-    tmap::tm_shape(sp_targetsite) +
-    tmap::tm_symbols(fill = targetFill, col = "grey15", shape = targetShape,
-                     size = targetSize) +
-    tmap::tm_shape(sp_outline) +
-    tmap::tm_borders(col = "black", lwd = 1)
+                     size = insideSize)
 
   if (nrow(sp_refsites) > 0) {
     state.map <- state.map +
@@ -247,11 +244,17 @@ getSiteMap <- function(sp_outline,
                           labels = c("Outside case ", "Inside case", "Target site"),
                           reverse = TRUE)
   }
-  state.map <- state.map +
+  state.map <- state.map  +
+    tmap::tm_shape(sp_targetsite) +
+    tmap::tm_symbols(fill = targetFill, col = "grey15", shape = targetShape,
+                     size = targetSize) +
+    tmap::tm_shape(sp_outline) +
+    tmap::tm_borders(col = "black", lwd = 1) +
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.text.size = 0.5,
                     legend.title.size = 0.8, legend.stack = "horizontal",
                     legend.outside = TRUE, legend.outside.position = "bottom") +
     tmap::tm_title(regionName)
+
   tmap::tmap_save(state.map, fn_Map, , width = map.width, height = map.height,
                   units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
