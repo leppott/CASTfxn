@@ -86,7 +86,7 @@ getSufficiency <- function(TargetSiteID,
                            plotW = plot_W,
                            plotunits = plot_units,
                            dir_plots = file.path(getwd(), "Results"),
-                           dir_sub = "Sufficiency",
+                           dir_sub = "_WoE",
                            boo_plot = TRUE) {##FUNCTION.START
 
   boo_DEBUG <- FALSE
@@ -104,7 +104,7 @@ getSufficiency <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_plots = dir_results
-    dir_sub = "Sufficiency"
+    dir_sub = "_WoE"
     boo_plot = boo_plot_user
   }
 
@@ -192,6 +192,21 @@ getSufficiency <- function(TargetSiteID,
 
     if (jlog == 1) {
       jlabel <- paste0("Log1p ", jlabel)
+    }
+
+    # Write graphics directory ----
+    out.dir <- dirname(dir_plots)
+    out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, str)
+
+    for (i in 1:length(out.folders)) {
+      if (i == 1) {
+        dir_path_stress <- file.path(out.folders[i])
+      } else {
+        dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+      }
+      if (dir.exists(dir_path_stress) == FALSE) {
+        dir.create(dir_path_stress)
+      }
     }
 
     message(paste0("Processing item (", j, "/", j.len, "); ", str, "\n"))
@@ -331,13 +346,13 @@ getSufficiency <- function(TargetSiteID,
                       caption = captionSR)
 
       if ((boo_plot) == TRUE) {
-        ggplot2::ggsave(filename = file.path(dir_path, fn_png_p1), plot = p1,
-                        dpi = plotdpi, width = plotW, height = plotH,
+        ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),
+                        plot = p1, dpi = plotdpi, width = plotW, height = plotH,
                         units = plotunits)
       }
 
-      plotname <- paste0(str, "_", biocomm, "_SU")
-      suppressWarnings(assign(plotname, p1))
+      # plotname <- paste0(str, "_", biocomm, "_SU")
+      # suppressWarnings(assign(plotname, p1))
 
     } ##IF.PLOT.END
 
@@ -358,7 +373,7 @@ getSufficiency <- function(TargetSiteID,
                   StressorValue, n, SRpred_Deg, Sc_SRlog)
 
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                          "_SRLog_Scores.tab"))
+                                          "_Suff_Scores.tab"))
   utils::write.table(df.scores, file = fn.scores, append = FALSE,
                      col.names = TRUE, row.names = FALSE, sep = "\t")
 
