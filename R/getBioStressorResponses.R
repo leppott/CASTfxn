@@ -63,7 +63,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                     plotW,
                                     plotunits,
                                     dir_plots,
-                                    dir_sub = "StressorResponse",
+                                    dir_sub = "_WoE",
                                     boo_pred_warn = TRUE,
                                     boo_plot = TRUE) {##FUNCTION.START
 
@@ -87,7 +87,7 @@ getBioStressorResponses <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_plots = dir_results
-    dir_sub = "StressorResponse"
+    dir_sub = "_WoE"
     boo_pred_warn = TRUE
     boo_plot = TRUE
   }
@@ -174,10 +174,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
   # boo.pryr <- FALSE
 
-  # Capture each plot in a list for the PDF
-  plots.pq <- vector(q.len * p.len, mode = "list")
-  varFileOut <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm, "_BioGrad_"))
-
   # FOR.p ####
   for (p in 1:length(stressors)) {
 
@@ -193,6 +189,23 @@ getBioStressorResponses <- function(TargetSiteID,
     } else {
       stressLabel <- as.character(df_stressinfo$Label[df_stressinfo$Stressor == stressName])
     }
+
+    # Write graphics directory ----
+    out.dir <- dirname(dir_plots)
+    out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, stressName)
+
+    for (i in 1:length(out.folders)) {
+      if (i == 1) {
+        dir_path_stress <- file.path(out.folders[i])
+      } else {
+        dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+      }
+      if (dir.exists(dir_path_stress) == FALSE) {
+        dir.create(dir_path_stress)
+      }
+    }
+    varFileOut <- file.path(dir_path_stress, paste0(TargetSiteID, "_", biocomm,
+                                                    "_BioGrad_"))
 
     # DEBUG
     if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
@@ -576,7 +589,7 @@ getBioStressorResponses <- function(TargetSiteID,
           boo.col.names <- !boo.col.names
         } ##IF~pq~END
 
-        fn_corr <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Corrs.tab")
+        fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.tab")
         utils::write.table(df.CorrTable,
                            file.path(dir_path, fn_corr),
                            sep = "\t", quote = FALSE, row.names = FALSE,
@@ -705,7 +718,7 @@ getBioStressorResponses <- function(TargetSiteID,
                         SRLin_Score_inside, SRLin_Score_outside)
 
         #if(boo.pryr==TRUE){
-        fn_scores <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Scores.tab")
+        fn_scores <- paste0(TargetSiteID, "_", biocomm, "_BG_Scores.tab")
         fp_scores <- file.path(dir_path, fn_scores)
 
         boo.Append    <- TRUE
@@ -932,10 +945,10 @@ getBioStressorResponses <- function(TargetSiteID,
                           units = plotunits, dpi = plotdpi)
         } ## IF ~ boo_plot ~ END
 
-        if (respName == bioindex) {
-          plotname <- paste0(stressName, "_", biocomm, "_GO")
-          suppressWarnings(assign(plotname, p_SR_all))
-        }
+        # if (respName == bioindex) {
+        #   plotname <- paste0(stressName, "_", biocomm, "_GO")
+        #   suppressWarnings(assign(plotname, p_SR_all))
+        # }
 
         ## Plot, inside ####
         if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
@@ -1048,10 +1061,10 @@ getBioStressorResponses <- function(TargetSiteID,
             ngraph = ngraph + 1
           } ## IF ~ boo_plot ~ END
           #
-          if (respName == bioindex) {
-            plotname <- paste0(stressName, "_", biocomm, "_GI")
-            suppressWarnings(assign(plotname, p_SR_cl))
-          }
+          # if (respName == bioindex) {
+          #   plotname <- paste0(stressName, "_", biocomm, "_GI")
+          #   suppressWarnings(assign(plotname, p_SR_cl))
+          # }
 
         } ##IF.boo.Plot.END
 
@@ -1070,7 +1083,7 @@ getBioStressorResponses <- function(TargetSiteID,
   # CorrPlot ####
   ## read
   if (boo_corr==TRUE) {
-    fn_corr <- paste0(TargetSiteID, "_", biocomm, "_SRLin_Corrs.tab")
+    fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.tab")
     fp_corr <- file.path(dir_path, fn_corr)
 
     if (file.exists(fp_corr)==TRUE) {
@@ -1113,7 +1126,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Save correlation plot
       fn_png_cp <- file.path(dir_path,
-                             paste0(TargetSiteID, "_", biocomm, "_CorrPlot.png"))
+                             paste0(TargetSiteID, "_", biocomm, "_InsideCorrPlot.png"))
       ggplot2::ggsave(fn_png_cp, p_cp, width = plotH, height = plotW,
                       units = plotunits, dpi = plotdpi)
 
