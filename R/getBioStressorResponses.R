@@ -22,7 +22,7 @@
 #' @param biocomm Biological community; algae or BMI.  Default = "BMI".
 #' @param bioindex Name of the biological index column
 #' @param min_cases Minimum number of paired samples; samplim from CASTool_Metadata
-#'                  Default = 20.
+#'                  Default = samplim.
 #' @param p.val_cutoff p-value cutoff above which the slope is not considered significant
 #'                     Default = 0.05
 #' @param r2_cutoff r2 value below which the relationship has too much variance
@@ -53,7 +53,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                     df_datapaired,
                                     biocomm,
                                     bioindex,
-                                    min_cases = 20,
+                                    min_cases = samplim,
                                     p.val_cutoff = 0.05,
                                     r2_cutoff = 0.1,
                                     plotvars = data_plotvars,
@@ -298,7 +298,7 @@ getBioStressorResponses <- function(TargetSiteID,
                       RefSiteFlag, all_of(stressName), all_of(respName))
       df_plot_cl <- df_plot_cl[stats::complete.cases(df_plot_cl), ]
 
-      #get all cluster siteQual2Plot data
+      #get all cluster reference data
       df_plot_cl_ref <- df_plot_cl %>%
         dplyr::filter(RefSiteFlag == 1) %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
@@ -323,7 +323,7 @@ getBioStressorResponses <- function(TargetSiteID,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_all_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for ", siteQual2Plot,
+        gapcomment <- paste0("No stressor data available for reference",
                              " sites in the outside-the-case dataset")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
@@ -344,7 +344,7 @@ getBioStressorResponses <- function(TargetSiteID,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_cl_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for ", siteQual2Plot,
+        gapcomment <- paste0("No stressor data available for reference",
                              " inside-the-case sites.")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
@@ -506,7 +506,7 @@ getBioStressorResponses <- function(TargetSiteID,
           # 20190228, QC for no data
           boo_all <- TRUE
           model_all <- stats::lm(df_plot_all[, respName] ~ df_plot_all[, stressName],
-                                 na.action = na.exclude) #cluster only
+                                 na.action = na.exclude) # outside the case
           if(boo_pred_warn == TRUE){
             suppressWarnings(model_all_pred <- stats::predict(model_all,
                                                               interval = "prediction",
@@ -515,7 +515,7 @@ getBioStressorResponses <- function(TargetSiteID,
             model_all_pred <- stats::predict(model_all, interval = "prediction",
                                              level = 0.75)
           }
-          model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for all cluster values
+          model_all_val  <- cbind(df_plot_all, model_all_pred) #predictions for outside the case
           #
           slope_all <- signif(summary(model_all)$coefficients[[2]], 3)
           intercept_all <- signif(summary(model_all)$coefficients[[1]], 3)
@@ -585,10 +585,10 @@ getBioStressorResponses <- function(TargetSiteID,
       }##IF~boo_corr~END
       #
 
-      # Scoring, Cluster ####
+      # Scoring, Inside the Case ####
       if (nrow(df_plot_site) > 0) { ##IF~nrow(df_plot_site)~END
         for (f in 1:nrow(df_plot_site)) { ##FOR~f~START
-          # Score, cluster
+          # Score, inside the case
           # Generate scores based on slope, significance value, and r2
           if (boo_corr == TRUE) { # Cluster data should be scored
             if ((nrow(df_plot_cl) >= min_cases) &&
@@ -643,8 +643,8 @@ getBioStressorResponses <- function(TargetSiteID,
         #if (boo.pryr==TRUE) {##IF.boo.pryr.START
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
                              " (", p, "/", p.len, "), ", respName, " (",
-                             q, "/", q.len, "); score (outside, inside) = ",
-                             txt.score_all, ", ", txt.score_cl)
+                             q, "/", q.len, "); score (outside; inside) = ",
+                             txt.score_all, "; ", txt.score_cl)
         message(msg.status)
         #}##IF.boo.pryr.START
 
@@ -723,13 +723,15 @@ getBioStressorResponses <- function(TargetSiteID,
         #}
         # Moved from inside FOR.f
       } else {
-        sr.score_all <- "NE"
-        sr.score_cl <- "NE"
-        txt.score <- "No Data"
+        txt.score_all <- "NE"
+        txt.score_cl <- "NE"
+        sr.score_all <- NA
+        sr.score_cl <- NA
+        # txt.score <- "No Data"
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
                              " (", p, "/", p.len, "), ", respName, " (",
-                             q, "/", q.len, "); score (all, cluster) = ",
-                             txt.score)
+                             q, "/", q.len, "); score (all; cluster) = ",
+                             txt.score_all, "; ", txt.score_cl)
         message(msg.status)
       } ##IF~nrow(df_plot_site)~END
       #
@@ -739,6 +741,8 @@ getBioStressorResponses <- function(TargetSiteID,
                                    Response = {{respName}}) %>%
         # dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, Target, Quality))
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+      xmin_all <- unique(min(df_plot_all$Stressor))
+      xmax_all <- unique(max(df_plot_all$Stressor))
       df_plot_all_ref <- dplyr::rename(df_plot_all_ref, Stressor = {{stressName}},
                                        Response = {{respName}}) %>%
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
@@ -748,6 +752,8 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
                                   Response = {{respName}}) %>%
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+      xmin_cl <- unique(min(df_plot_cl$Stressor))
+      xmax_cl <- unique(max(df_plot_cl$Stressor))
       df_plot_cl_ref <- dplyr::rename(df_plot_cl_ref, Stressor = {{stressName}},
                                       Response = {{respName}}) %>%
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
@@ -786,11 +792,11 @@ getBioStressorResponses <- function(TargetSiteID,
                                 paste0("r2 = ", r2_cl),
                                 paste0("p-value = ", pval.corr_cl),
                                 paste0("n = ", n_str_cl),
-                                paste0("score = ", sr.score_cl),
+                                paste0("score = ", txt.score_cl),
                                 sep = " ~ ")
       } else {
         str_caption_cl <- paste0("Regression (inside-the-case samples): ",
-                                 "Less than 3 samples.")
+                                 "Fewer than 3 samples.")
       }##IF.equation.END
       #
       if (sum(!is.na(df_plot_all$Stressor)) > 2 || sum(!is.na(df_plot_all$Response)) > 2) {
@@ -800,10 +806,10 @@ getBioStressorResponses <- function(TargetSiteID,
                                  paste0("r2 = ", r2_all),
                                  paste0("p-value = ", pval.corr_all),
                                  paste0("n = ", n_str_all),
-                                 paste0("score = ", sr.score_all),
+                                 paste0("score = ", txt.score_all),
                                  sep = " ~ ")
       } else {
-        str_caption_all <- "Regression (outside-the-case): Less than 3 samples."
+        str_caption_all <- "Regression (outside-the-case): Fewer than 3 samples."
       } ##IF.equation.END
       #
       qualtext <- "not degraded*"
@@ -887,6 +893,25 @@ getBioStressorResponses <- function(TargetSiteID,
                                              fill = bio_fill_out[3]))
         } ##IF~boo_plot_targ~END
 
+        if (grepl("^pH_a", stressName)) {
+          if (pHlimLow >= xmin_all) {
+            p_SR_all <- p_SR_all +
+              ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+                                               linetype = "pH lower limit"),
+                                  color = "black", lty = 3)
+          }
+          if (pHlimHigh <= xmax_all) {
+            p_SR_all <- p_SR_all +
+              ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimHigh,
+                                               linetype = "pH upper limit"),
+                                  color = "black", lty = 3)
+          }
+        }
+        if (grepl("^DO", stressName) & (DOlim >= xmin_all)) {
+          p_SR_all <- p_SR_all +
+            ggplot2::geom_vline(xintercept = DOlim, color = "black", lty = 3)
+        }
+
         # other
         p_SR_all <- p_SR_all +
           ggplot2::theme_bw() +
@@ -906,7 +931,11 @@ getBioStressorResponses <- function(TargetSiteID,
           ggplot2::ggsave(fn_png_out, p_SR_all, width = plotW, height = plotH,
                           units = plotunits, dpi = plotdpi)
         } ## IF ~ boo_plot ~ END
-        #
+
+        if (respName == bioindex) {
+          plotname <- paste0(stressName, "_", biocomm, "_GO")
+          suppressWarnings(assign(plotname, p_SR_all))
+        }
 
         ## Plot, inside ####
         if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
@@ -979,6 +1008,25 @@ getBioStressorResponses <- function(TargetSiteID,
                                                fill = bio_fill_in[3]))
           } ##IF~boo_plot_targ~END
 
+          if (grepl("^pH_a", stressName)) {
+            if (pHlimLow >= xmin_cl) {
+              p_SR_cl <- p_SR_cl +
+                ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+                                                 linetype = "pH lower limit"),
+                                    color = "black", lty = 3)
+            }
+            if (pHlimHigh <= xmax_cl) {
+              p_SR_cl <- p_SR_cl +
+                ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimHigh,
+                                                 linetype = "pH upper limit"),
+                                    color = "black", lty = 3)
+            }
+          }
+          if (grepl("^DO", stressName) & (DOlim >= xmin_cl)) {
+            p_SR_cl <- p_SR_cl +
+              ggplot2::geom_vline(xintercept = DOlim, color = "black", lty = 3)
+          }
+
           # other
           p_SR_cl <- p_SR_cl +
             ggplot2::theme_bw() +
@@ -1000,6 +1048,11 @@ getBioStressorResponses <- function(TargetSiteID,
             ngraph = ngraph + 1
           } ## IF ~ boo_plot ~ END
           #
+          if (respName == bioindex) {
+            plotname <- paste0(stressName, "_", biocomm, "_GI")
+            suppressWarnings(assign(plotname, p_SR_cl))
+          }
+
         } ##IF.boo.Plot.END
 
       } ##IF.boo.plot.TRUE.END
