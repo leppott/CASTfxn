@@ -49,7 +49,7 @@ getTimeSeq <- function(TargetSiteID,
                        plotW = plot_W,
                        plotunits = plot_units,
                        dir_results = file.path(getwd(),"Results"),
-                       dir_sub = "TimeSequence",
+                       dir_sub = "_WoE",
                        boo_plot = TRUE) {##FUNCTION.START
 
   # Debug
@@ -68,7 +68,7 @@ getTimeSeq <- function(TargetSiteID,
     plotW = plot_W
     plotunits = plot_units
     dir_results = dir_results
-    dir_sub = "TimeSequence"
+    dir_sub = "_WoE"
   }
 
   # Define pipe
@@ -145,6 +145,21 @@ getTimeSeq <- function(TargetSiteID,
     stressname <- stressors[s]
     stressLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
 
+    # Write graphics directory ----
+    out.dir <- dirname(dir_results)
+    out.folders <- c(out.dir, basename(dir_results), TargetSiteID, biocomm, stressname)
+
+    for (i in 1:length(out.folders)) {
+      if (i == 1) {
+        dir_path_stress <- file.path(out.folders[i])
+      } else {
+        dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+      }
+      if (dir.exists(dir_path_stress) == FALSE) {
+        dir.create(dir_path_stress)
+      }
+    }
+
     # Loop over responses
     for (r in seq_along(metricData)) {
       metricname <- metricData[r]
@@ -153,7 +168,7 @@ getTimeSeq <- function(TargetSiteID,
       # Create filename for graphic
       fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressname, "_",
                   metricname, ".png")
-      fpath = file.path(path, fn)
+      fpath = file.path(dir_path_stress, fn)
 
       # subset dataframe for dates and stressor/response values
       df.plotresp <- df_resp %>%
@@ -213,11 +228,11 @@ getTimeSeq <- function(TargetSiteID,
                         height = plotH, units = plotunits)
       }## IF ~ boo_plot ~ END
 
-      if (metricname == bioindex) {
-        plotname <- paste0(stressname, "_", biocomm, "_TS")
-        suppressWarnings(assign(plotname, p_ts))
-      }
-      count = count + 1
+      # if (metricname == bioindex) {
+      #   plotname <- paste0(stressname, "_", biocomm, "_TS")
+      #   suppressWarnings(assign(plotname, p_ts))
+      # }
+      # count = count + 1
 
     } # END loop over responses & graphics
 
