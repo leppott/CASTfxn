@@ -141,16 +141,6 @@ getSufficiency <- function(TargetSiteID,
   aLabZero <- "0"
   aLabPos  <- "1"
 
-  # Create (ggplot)
-  # bio_col <- c("gray25", "steelblue2")
-  # bio_shp <- c(25, 21) # down triangle and circle
-  # bio_size <- c(3, 3)
-
-  ## Plot, Variables, Target Site Line
-  # targ_line_col <- "red"
-  # targ_line_lty <- 2
-  # targ_line_lwd <- 1
-
   ## Plot, Variables
   ## Prepare colors, sizes, etc  ----
   plotvarsIn  <- plotvars %>%
@@ -243,20 +233,10 @@ getSufficiency <- function(TargetSiteID,
       j_SR_score <- cut(j_SR_predict,
                         breaks = c(0, 0.2, 0.5, 1),
                         labels = c(-1, 0, 1))
+
       # plot ####
       # File Names
       fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
-      # ppi       <- 300
-      #
-      # # Create (ggplot)
-      # bio_col <- c("gray25", "steelblue2")
-      # bio_shp <- c(25, 21) # down triangle and circle
-      # bio_size <- c(3, 3)
-      #
-      # ## Plot, Variables, Target Site Line
-      # targ_line_col <- "red"
-      # targ_line_lty <- 2
-      # targ_line_lwd <- 1
       targ_vals <- as.numeric(unlist(j_values))
 
       legendtitle <- "Samples"
@@ -323,8 +303,28 @@ getSufficiency <- function(TargetSiteID,
                           label = c(aLabNeg, aLabZero, aLabPos), color = "orange") +
         ggplot2::labs(y = ylabel, x = jlabel) +
         ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat,
-                           color = "black", lwd = 1, na.rm = TRUE) +
-        ggplot2::theme_bw() +
+                           color = "black", lwd = 1, na.rm = TRUE)
+
+      if (grepl("^pH_a", str)) {
+        if (pHlimLow >= xmin) {
+          p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+                                                      linetype = "pH lower limit"),
+                                         color = "black", lty = 3) +
+            ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
+        }
+        if (pHlimHigh <= xmax) {
+          p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+                                                      linetype = "pH upper limit"),
+                                         color = "black", lty = 3) +
+            ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
+        }
+      }
+      if (grepl("^DO", str) & (DOlim >= xmin)) {
+        p1 <- p1 + ggplot2::geom_vline(xintercept = DOlim, color = "black",
+                                       lty = 3)
+      }
+
+      p1 <- p1 + ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
         ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
@@ -335,6 +335,9 @@ getSufficiency <- function(TargetSiteID,
                         dpi = plotdpi, width = plotW, height = plotH,
                         units = plotunits)
       }
+
+      plotname <- paste0(str, "_", biocomm, "_SU")
+      suppressWarnings(assign(plotname, p1))
 
     } ##IF.PLOT.END
 
