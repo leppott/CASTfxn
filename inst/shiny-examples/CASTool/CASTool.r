@@ -180,7 +180,7 @@ message(msg)
 data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
                             "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
                             "Shape" = c(24, 21, 25, 21, 25),
-                            "Size" = c(1.5, 0.8, 1, 0.8, 1),
+                            "Size" = c(1.75, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
 refOutline_col <- "#26F7FD" # LCN changed from "#009E73"
 # Note: this change may not be colorblind-friendly
@@ -1682,44 +1682,27 @@ for (site in seq_along(1:nrow(df_targets))) {
     #
     # Create time sequence graphics for ONLY target site
     # Uses all site stressor and response data, but not necessarily paired
-    getTimeSeq(TargetSiteID,
-               biocomm = bioComm,
-               bioindex = bioIndexGp,
-               df_stress = data_Stress,
-               df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ],
-               df_respinfo = bioMetricInfo,
-               df_stressinfo = df_stressorMetadata,
-               plotdpi = plot_dpi,
-               plotH = plot_H,
-               plotW = plot_W,
-               plotunits = plot_units,
-               dir_results = dir_results,
-               dir_sub = "_WoE",
-               boo_plot = boo_plot_user)
+    df_TS_scores <- getTimeSeq(TargetSiteID,
+                               biocomm = bioComm,
+                               bioindex = bioIndexGp,
+                               df_stress = data_Stress,
+                               df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ],
+                               df_respinfo = bioMetricInfo,
+                               df_stressinfo = df_stressorMetadata,
+                               plotdpi = plot_dpi,
+                               plotH = plot_H,
+                               plotW = plot_W,
+                               plotunits = plot_units,
+                               dir_results = dir_results,
+                               dir_sub = "_WoE",
+                               boo_plot = boo_plot_user)
     # TODO: why are there missing values or values outside the scale range in getTimeSeq?
-    # Getting many warnings (50+)
+    # Getting many warnings (45 for site WAM06600_000586)
 
-    df_TS <- df_PairedSRTransf %>%
-      dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::mutate(LoE = "TS", Score = "NE", bioIndexName := {{bioIndex}}) %>%
-      dplyr::rename(bioComm = BioComm, bioIndex := {{colBio}}) %>%
-      tidyr::pivot_longer(col = all_of(siteDetectsAll), names_to = "Stressor",
-                          values_to = "StressorValue")
-    stress.unique <- unique(df_TS$Stressor)
-    df_TSnames <- dplyr::filter(df_stressorMetadata, Stressor %in% stress.unique) %>%
-      dplyr::mutate(Label = ifelse(LogTransf == 1, paste0("Log1p ", Label), Label)) %>%
-      dplyr::select(Stressor, Label)
-
-    df_TS <- merge(df_TS, df_TSnames) %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                    RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
-                    Label, StressorValue, LoE, Score) %>%
-      dplyr::rename(Stressor = Label)
-
-    if (nrow(df_TS != 0)) {
-      df_LoE <- rbind(df_LoE, df_TS)
+    if (nrow(df_TS_scores != 0)) {
+      df_LoE <- rbind(df_LoE, df_TS_scores)
     }
-    rm(df_TS, stress.unique, df_TSnames)
+    rm(df_TS_scores)
 
     msg <- paste0("getTimeSeq for ", bioComm, " is complete.")
     message(msg)
@@ -1932,7 +1915,7 @@ for (site in seq_along(1:nrow(df_targets))) {
            dfLoE = df_LoE,
            dfStress = df_stressorMetadata,
            dir_results = dir_results,
-           dir_WoE = "WoE")
+           dir_WoE = "_WoE")
     msg <- paste0("getWoE for ", bioComm, " is complete.")
     message(msg)
 
