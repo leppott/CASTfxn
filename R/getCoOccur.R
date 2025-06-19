@@ -154,7 +154,7 @@ getCoOccur <- function(TargetSiteID,
   ## Plot, Variables, Target Site Line
   targ_line_col <- bio_col[1]
   targ_line_lty <- 2
-  targ_line_lwd <- 1
+  targ_line_lwd <- 0.5
 
   # arrow labels
   aLabPos <- "1"
