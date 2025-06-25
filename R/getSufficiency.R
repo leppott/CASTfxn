@@ -251,7 +251,8 @@ getSufficiency <- function(TargetSiteID,
 
       # plot ####
       # File Names
-      fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_SRInLog_", str, ".png")
+      fn_png_p1 <- paste0(TargetSiteID, "_", make.names(str), "_",
+                          biocomm, "_", colBio, "_SU.png")
       targ_vals <- as.numeric(unlist(j_values))
 
       legendtitle <- "Samples"
