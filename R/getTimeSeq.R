@@ -166,8 +166,8 @@ getTimeSeq <- function(TargetSiteID,
       metricLabel <- df_respinfo$MetricLabel[df_respinfo$MetricName == metricname]
 
       # Create filename for graphic
-      fn = paste0(TargetSiteID, "_", biocomm, "_TS_", stressname, "_",
-                  metricname, ".png")
+      fn = paste0(TargetSiteID, "_", make.names(stressname), "_",
+                  biocomm, "_", make.names(metricname), "_TS.png")
       fpath = file.path(dir_path_stress, fn)
 
       # subset dataframe for dates and stressor/response values
@@ -223,16 +223,11 @@ getTimeSeq <- function(TargetSiteID,
       p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID,
                                                  "Stressor/Response Time Series"),
                                    x = "Sample Date", y = "Value")
+
       if(boo_plot){
         ggplot2::ggsave(filename = fpath, p_ts, dpi = plotdpi, width = plotW,
                         height = plotH, units = plotunits)
       }## IF ~ boo_plot ~ END
-
-      # if (metricname == bioindex) {
-      #   plotname <- paste0(stressname, "_", biocomm, "_TS")
-      #   suppressWarnings(assign(plotname, p_ts))
-      # }
-      # count = count + 1
 
     } # END loop over responses & graphics
 
