@@ -1,0 +1,779 @@
+---
+title: "CASTool"
+subtitle: "Full Report"
+author: "`r Sys.getenv('USERNAME')`"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+output:
+  pdf_document:
+    toc: true
+  word_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+# params:
+#   TargetSiteID: "TargetSiteID"
+#   regionName: "regionName"
+#   biocommlist: "bmi, alg, fish"
+#   useBMI: "useBMI"
+#   useAlg: "useAlg"
+#   useBC: "useBC"
+#   removeOutliers: "removeOutliers"
+#   samplim: "20"
+#   lagdays: "30, 30"
+#   DOlim: "4"
+#   pHlimLow: "5"
+#   pHlimHigh: "9"
+#   bmiIndex: "CSCI"
+#   algIndex: "MMI Hybrid"
+#   clusterfile: "BlahBlah"
+#   dir_results: "dir_results"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<!-- #  Copyright 2025 TetraTech. All rights reserved. -->
+
+<!-- #  Use, copying, modification, or distribution of this file or any of its contents  -->
+
+<!-- #  is expressly prohibited without prior written permission of TetraTech. -->
+
+<!-- # Embed logo -->
+
+<img src="CASTool.svg" style="position:absolute; top:0px; right:0px; padding:10px;"/>
+
+<!-- # Add css for vertical alignment of table header cells -->
+
+<head>
+
+```{=html}
+<style type="text/css">
+    <!-- .dt-left {horizontal-align: left;} -->
+    <!-- .dt-center {horizontal-align: center;} -->
+    <!-- .dt-right {horizontal- align: right;} -->
+    .dt-top {vertical-align: top;}
+    .dt-middle {vertical-align: middle;}
+    .dt-bottom {vertical-align: bottom;}
+  </style>
+```
+
+</head>
+
+```{r setup, include = FALSE, echo = FALSE}
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, warning = FALSE)
+# Debugging
+# boo.DEBUG <- TRUE
+# DEBUG.CaseNumber <- 1
+#
+# Define pipe and not_all_na
+`%>%` <- dplyr::`%>%`
+not_all_na <- function(x) {!all(is.na(x))}
+
+#
+# if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
+#   if (DEBUG.CaseNumber == 1) {##IF.DEBUG.CaseNumber.START
+#     TargetSiteID <- "WAM06600_003688"
+#     dir_data <- dir_data
+#     dir_results <- dir_results
+#   }##IF.DEBUG.CaseNumber.END
+# }##IF.boo.DEBUG.END
+
+```
+
+# **DISCLAIMER**
+
+The Causal Assessment Screening Tool (CASTool) is designed to assess
+causes of biological impairment. CASTool is a data-driven tool that
+relies on the quality and completeness of the biological response and
+candidate stressor data provided by the user. It is most appropriately
+used to identify candidate causes which merit additional evaluation. The
+conceptual framework for the CASTool is the U.S. Environmental
+Protection Agency’s Causal Analysis/Diagnosis Decision Information
+System (CADDIS), which can be consulted for additional information on
+causal assessment.
+
+# **Target Site: `r TargetSiteID`**
+## **Region: `r regionName`**
+
+## **Parameterization**
+
+```{r report_date, echo = FALSE}
+
+  biocomms <- tolower(biocommlist)
+  if (length(biocommlist) > 1) {
+    biocomms <- toString(biocommlist[1:length(biocommlist) - 1])
+    biocomms <- paste(biocomms, biocommlist[length(biocommlist)],
+                      sep = " and ")
+  }
+  biocomms <- sub("bmi", "benthic macroinvertebrates", biocomms)
+  biocomms <- sub("alg", "algae", biocomms)
+  
+  lagdays <- paste(lagdays, collapse = ", ")
+
+  cat(paste("**Biological communities evaluated:** ", biocomms, "\n\n", sep = ""))
+  # cat(paste("**Primary biological indices used for degraded/not degraded determination:** ", 
+  #           primeIndex, "\n\n", sep = ""))
+  # cat(paste("\t**Secondary biological indices used to generate supplemental figures: **", 
+  #           bioIndex, "\n", sep = ""))
+  cat(paste("**Remove outliers:** ", removeOutliers, "\n\n", sep = ""))
+  cat(paste("**Use expected biological similarity filter:** ", useBC, "\n\n", sep = ""))
+  cat(paste("**Minimum number of samples to identify candidate causes:** ", samplim, 
+            "\n\n", sep = ""))
+  cat(paste("**Number of allowable lag days between stressor and response measurements:** -",
+            lagdays, "\n\n", sep = ""))
+  # cat(paste("**Cluster assignment file:** ", fn.cluster, "\n", sep = ""))
+
+```
+
+## **Target site information**
+
+### *Site map*
+
+```{r map, out.width = "80%", echo = FALSE}
+
+dir.sub <- "SiteInfo"
+myMAP <- paste0(TargetSiteID,"_map.png")
+fn_img <- file.path(dir_results, TargetSiteID, dir.sub, myMAP)
+
+if (file.exists(fn_img) == TRUE) {
+  knitr::include_graphics(fn_img)
+} else {
+  cat("No file exists; map.\n")
+}
+
+```
+
+### *Site photo(s)*
+
+```{r photos, out.width = "50%", out.extra = 'style = "padding:10px"', echo = FALSE}
+dir.sub <- "SiteInfo"
+dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub, "Photos")
+fn_all  <- list.files(path = dir_SiteID, full.names = TRUE,
+                      pattern = ".jpg|.png|.mp4")
+
+txt_grp_msg <- "media"
+#
+if (length(fn_all) > 0) {##IF.boo.pdf.START
+  msg_files <- paste0("All ", txt_grp_msg," files are in the '",
+                      paste0("Results/", TargetSiteID, "/", dir.sub, "/Photos"), 
+                      "' folder.\n", "Images are shown here.\n\n")
+  cat(msg_files)
+  
+  fn_Photos_jpg <- fn_all[grep(".jpg", fn_all)]
+  
+  if (length(fn_Photos_jpg) == 0) {
+    txt_NoFile <- "No site photos exist.\n"
+    cat(txt_NoFile)
+  } else {
+    #
+    for (p in seq_along(1:length(fn_Photos_jpg))) {
+      fn_img <- fn_Photos_jpg[p]
+      knitr::include_graphics(fn_img)
+    }
+    #
+  }
+  
+} else {
+  msg_files <- paste0("No ", txt_grp_msg," files exist.\n")
+  cat(msg_files)
+}##IF.boo.pdf.START
+
+```
+
+### *Target site sample summary*
+
+The table below lists any samples collected from `r TargetSiteID` over
+time. Index scores are followed by their biological quality for benthic
+macroinvertebrates (`r ifelse(!is.null(bmiIndex), bmiIndex, "N/A")`),
+algae (`r ifelse(!is.null(algIndex), algIndex, "N/A")`), or fish
+(`r ifelse(!is.null(fishIndex), fishIndex, "N/A")`).
+
+```{r sampsummary, echo = FALSE}
+
+# Read file summarizing the sample data and provide it in summary form
+dfSamps <- data_sampSummary[data_sampSummary$StationID == TargetSiteID, ]
+TScomid <- unique(dfSamps$COMID)
+TScluster <- ifelse(useBC == TRUE, 
+                    unique(dfSamps$OutcaseCol), 
+                    unique(dfSamps$IncaseCol))
+
+row.names(dfSamps) <- NULL
+
+# Get sample data
+if (nrow(dfSamps) > 0) {# Samples exist for target site
+  
+  dfSamps <- dplyr::select(dfSamps, !c(StationID, COMID, OutcaseCol, IncaseCol)) %>%
+    tidyr::pivot_longer(cols = -SampleDate, names_to = "ColName", values_to = "Content") %>%
+    dplyr::mutate(ColName = dplyr::case_when(ColName == "ChemistrySampleID" ~
+                                               "Chemistry Sample ID",
+                                             ColName == "HabitatSampleID" ~
+                                               "Habitat Sample ID",
+                                             ColName == "FieldSampleID" ~
+                                               "Field Sample ID",
+                                             ColName == "ModeledSampleID" ~
+                                               "Modeled Sample ID",
+                                             ColName == "BMISampleID" ~
+                                               "BMI Sample ID",
+                                             ColName == "AlgSampleID" ~
+                                               "Algae Sample ID",
+                                             ColName == "FishSampleID" ~
+                                               "Fish Sample ID",
+                                             TRUE ~ "Undefined Sample ID")) %>%
+    tidyr::pivot_wider(id_cols = SampleDate, names_from = ColName, values_from = Content)
+  
+  # Get response data
+  if (!is.null(data_bmiMetrics)) {
+    origcol <- which(colnames(dfSamps) == "BMI Sample ID")
+    dfbmi <- dplyr::filter(data_bmiMetrics, StationID == TargetSiteID) %>%
+      dplyr::select(RespSampleID, all_of(bmiIndex), Quality)
+    dfSamps <- merge(dfSamps, dfbmi, by.x = "BMI Sample ID", by.y = "RespSampleID",
+                     all.x = TRUE)
+    dfSamps <- dplyr::rename(dfSamps, `BMI Quality` = Quality)
+    dfSamps <- dfSamps[, c(2:(origcol), 1, (origcol + 1):ncol(dfSamps))]
+  }
+  if (!is.null(data_algMetrics)) {
+    origcol <- which(colnames(dfSamps) == "Algae Sample ID")
+    dfalg <- dplyr::filter(data_algMetrics, StationID == TargetSiteID) %>%
+      dplyr::select(RespSampleID, all_of(algIndex), Quality)
+    dfSamps <- merge(dfSamps, dfalg, by.x = "Algae Sample ID", by.y = "RespSampleID",
+                     all.x = TRUE)
+    dfSamps <- dplyr::rename(dfSamps, `Algae Quality` = Quality)
+    dfSamps <- dfSamps[, c(2:(origcol), 1, (origcol + 1):ncol(dfSamps))]
+  }
+  if (!is.null(data_fishMetrics)) {
+    origcol <- which(colnames(dfSamps) == "Fish Sample ID")
+    dffish <- dplyr::filter(data_fishMetrics, StationID == TargetSiteID) %>%
+      dplyr::select(RespSampleID, all_of(fishIndex), Quality)
+    dfSamps <- merge(dfSamps, dffish, by.x = "Fish Sample ID", by.y = "RespSampleID",
+                     all.x = TRUE)
+    dfSamps <- dplyr::rename(dfSamps, `Fish Quality` = Quality)
+    dfSamps <- dfSamps[, c(2:(origcol), 1, (origcol + 1):ncol(dfSamps))]
+  }
+  
+  tblColNames <- colnames(dfSamps)
+  
+  if (report_format == "html") {
+    
+    tblCaption <- paste0("Samples collected from ", TargetSiteID,".")
+
+    DT::datatable(dfSamps,
+                  extensions = 'FixedColumns',
+                  # caption = tblCaption,
+                  options = list(layout = list(top1 = list(id = 'cellID',
+                                                          className = 'cellClass',
+                                                          features = list(
+                                                            # div = list(
+                                                              text = tblCaption)
+                                                            # )
+                                                          ),
+                                               topStart = 'pageLength',
+                                               topEnd = 'search',
+                                               bottomStart = 'info',
+                                               bottomEnd = 'paging'),
+                                 pageLength = 10,
+                                 menu = ifelse(nrow(dfSamps) > 10,
+                                               c(10, 25, 50, 100), 10),
+                                 bSort = FALSE,
+                                 scrollX = TRUE,
+                                 fixedColumns = TRUE,
+                                 columnDefs = list(list(className = 'dt-center',
+                                                        targets = '_all'),
+                                                   list(className = 'dt-bottom',
+                                                        targets = '_all'))),
+                  colnames = tblColNames,
+                  class = 'striped hover row-border',
+                  filter = 'none',
+                  rownames = FALSE) %>%
+      DT::formatStyle(columns = colnames(dfSamps), fontSize = '85%') 
+    
+  } else {
+    
+    msg <- "Not displayed in non-html format."
+    cat(msg)
+    
+  }
+
+} else {
+  
+  cat(paste0("No sample data for ", TargetSiteID))
+  
+}
+
+```
+
+### *Comparator sites*
+
+Comparator sites will depend upon several factors:
+
+-   which version of the regional clustering file is used
+-   whether or not an alternate method is used to assign comparator
+    sites
+-   whether or not a Bray-Curtis dissimilarity distance matrix is
+    included in the evaluation
+
+Comparator samples have a quality associated with them, that differs
+based on the biological community index used. For these, please see the
+biological community comparator samples section.
+
+### *Watershed stressor summaries*
+
+The downloadable zip file contains figures summarizing watershed
+attributes of the target site compared to all reaches inside the case.
+These figures may provide additional insight into causes of stream
+impairment. For example, if nitrogen species were not measured and
+provided to the CASTool, a relatively high (NNI var) may indicate that
+nitrogen pollution merits additional scrutiny as a potential candidate
+cause of impairment.
+
+## **Benthic macroinvertebrate results**
+
+### *Index summary*
+
+```{r bmiIdxGraph, out.width = "80%", out.extra = 'style = "padding:10px"', echo = FALSE}
+dir.sub3 <- "SiteInfo"
+fn_bmiIndexGraphic <- file.path(dir_results, TargetSiteID, dir.sub3, 
+                                paste0(TargetSiteID, 
+                                       "_BMI_IndexBoxPlotsByCase.png"))
+#
+if ("bmi" %in% biocommlist) {
+  
+  if (file.exists(fn_bmiIndexGraphic)) {##IF.boo.pdf.START
+    msg_files <- paste0("This image file is in the '",
+                        paste0("Results/", dir.sub3, "' folder.\n\n"))
+    cat(msg_files)
+  
+    knitr::include_graphics(fn_bmiIndexGraphic)  
+  } else {
+  
+    msg_files <- "The BMI summary image file is not accessible."
+    cat(msg_files)
+  
+  }
+  
+} else {
+  
+  cat("Benthic macroinvertebrate data were not evaluated.")
+}
+
+
+```
+
+### *Comparator sample summary*
+
+Comparator samples are also called "inside-the-case" samples. In
+contrast, "outside-the-case" samples may be all the samples in the
+region or a subset thereof. The following table includes sample quality,
+which may differ between biological communities.
+
+```{r bmicompsitesummtab, echo = FALSE, out.extra = 'style = "padding:10px"'}
+# Read file summarizing the comparator data and provide it in summary form
+
+if ("bmi" %in% biocommlist) {
+  dir.sub3 <- "SiteInfo"
+  mycomps <- paste0(TargetSiteID, "_BMI_SiteQualities.tab")
+  fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
+  msg_info <- paste0("Comparator site information, including a list ",
+                     "of comparator sites, can be found in the '",
+                     paste0(paste0("Results/", TargetSiteID, "/", dir.sub3),
+                            "' folder."), "\n\n")
+
+  if (file.exists(fn_comps) == TRUE) {
+    
+    dfcomps <- read.delim(fn_comps, header = TRUE, sep = "\t")
+    dfcomps <- dplyr::select(dfcomps, -BioComm) %>%
+      dplyr::rename(`Inside-the-case samples` = InsideCaseSamples,
+                    `Outside-the-case samples` = OutsideCaseSamples,
+                    `Reference samples` = ReferenceSamples,
+                    `Total samples` = AllSamples)
+    
+    cat(msg_info)
+    
+    tcomps <- knitr::kable(dfcomps, format = report_format,
+                           colnames = colnames(dfcomps))
+    tcomps <- kableExtra::kable_styling(tcomps,
+                                        bootstrap_options = "condensed",
+                                        font_size = 12, full_width = FALSE,
+                                        position = "left")
+    tcomps
+  } else {
+    cat(paste0("The file ", mycomps, " is not accessible.\n"))
+  }
+} else {
+    cat(paste0("No benthic macroinvertebrate data are available for ", TargetSiteID,".\n"))
+}
+
+```
+
+### *Candidate causes*
+
+#### User-specified thresholds:
+
+-   DO lower limit that automatically triggers further evaluation \<=
+    `r DOlim`
+-   pH lower limit that automatically triggers further evaluation \<=
+    `r pHlimLow`
+-   pH upper limit that automatically triggers further evaluation \>=
+    `r pHlimHigh`
+
+#### Stressor(s) initially evaluated:
+
+Stressors identified for initial evaluation include any that are
+detected in the target site *and* marked as "use in stressor id" in the
+stressor metadata.
+
+```{r bmi_stressordetects, echo = FALSE}
+
+  siteDetects <- data_stressInfo %>%
+    dplyr::filter(StdParamName %in% siteDetectsAll) %>%
+    dplyr::select(Label)
+  siteDetects <- unlist(siteDetects)
+  bullet <- "\U2022"
+
+  if (length(siteDetects) > 0) {
+    for (s in siteDetects) {
+      cat(paste0(bullet, " ", s, "\n\n"))
+    }
+  } else {
+    cat("No stressors were detected in any samples from the target site.")
+  }
+
+```
+
+#### Stressor(s) eliminated by comparison of target and comparator site values:
+
+```{r bmi_stressorNE, echo = FALSE}
+
+if ("bmi" %in% biocommlist) {
+  dir.sub3 <- "_WoE"
+  fnNE <- paste0(TargetSiteID, "_BMI_DetectsNotEvalFurther.tab")
+  fnNE <- file.path(dir_results, TargetSiteID, "BMI", dir.sub3, fnNE)
+  
+  if (file.exists(fnNE)) {
+    notEvaluated <- read.table(fnNE, header = TRUE, sep = "\t")
+    NE <- merge(notEvaluated, data_stressInfo, by.x = "BMI_NotEvaluated", 
+                by.y = "StdParamName", all.x = TRUE) %>%
+      dplyr::select(Label)
+    NE <- unlist(NE)
+    bullet <- "\U2022"
+  
+    if (length(NE) > 0) {
+      for (s in NE) {
+        cat(paste0(bullet, " ", s, "\n\n"))
+      }
+    } else {
+      cat("No stressors were eliminated from the evaluation.")
+    }
+    
+  } else {
+    cat(paste("The file", fnNE, "is not accessible."))
+  }
+} else {
+  cat("Benthic macroinvertebrates were not evaluated.")
+}
+
+```
+
+### **Weight of evidence**
+
+#### *Detailed lines of evidence scores*
+
+The table below displays the scores for each line of evidence by
+stressor. Scores should be interpreted as described below for all lines
+of evidence *except* for verified predictions using stressor-specific
+tolerance values. This line of evidence relies on 8 components, and are
+thus averaged.
+
+-   1 (or a positive value) indicates that the line of evidence supports
+    the stressor as a cause of impairment
+-   -1 (or a negative value) indicates that the line of evidence refutes
+    the stressor as a cause of impairment
+-   0 indicates that the the line of evidence is indeterminate for the
+    stressor as a cause of impairment
+-   NE indicates that the line of evidence was not evaluated for the
+    stressor
+
+A note of caution:
+
+-   Biological gradient assumes a linear relationship between stressor
+    and response. A nonlinear relationship may be scored as
+    indeterminate, even if it provides evidence for the candidate cause.
+    We recommend viewing the biological gradient figures to corroborate
+    the automated scoring.
+
+```{r bmi_loe_bystressor, echo = FALSE}
+
+if ("bmi" %in% biocommlist) { # BMI were evaluated
+  
+  fnLoEbyStressor <- paste0(TargetSiteID, "_LoEs.tab")
+  fnLoEbyStressor <- file.path(dir_results, TargetSiteID, "BMI", "_WoE", 
+                               fnLoEbyStressor)
+  
+  if (!file.exists(fnLoEbyStressor)) {# No WoE file
+    
+    txt_NoFile <- "No stressor-specific weight of evidence file is accessable.\n"
+    cat(txt_NoFile)      
+    
+  } else {# WoE file exists
+    
+    dfLoEbyStressor <- read.table(fnLoEbyStressor, sep = "\t", na.strings = "NA",
+                                  header = TRUE, strip.white = TRUE,
+                                  stringsAsFactors = FALSE)
+    dfLoEbyStressor <- dfLoEbyStressor %>%
+      dplyr::mutate(Blank1 = NA) %>%
+      dplyr::rename(BioGradIn = Gradient..inside., 
+                    BioGradOut = Gradient..outside.) %>%
+      dplyr::select(Stressor, StressSampleID, StressSampleDate, CO, Suff, 
+                    BioGradIn, TS, VP_SSTV, VP_SSIbox, VP_SSIlog, Blank1, 
+                    BioGradOut) %>%
+      dplyr::arrange(Stressor, StressSampleDate)
+    
+    if (report_format == "html") {
+      
+      tblCaption <- paste0("Detailed weight-of-evidence for each stressor ",
+                           "and sample.")
+
+      sketch <- htmltools::withTags(table(
+        class = 'display',
+        thead(
+          tr(
+            th(rowspan = 3, 'Stressor'),
+            th(rowspan = 3, 'Sample ID'),
+            th(rowspan = 3, 'Sample Date'),
+            th(colspan = 7, 'Inside-the-Case'),
+            th(rowspan = 3, ''),
+            th(rowspan = 1, 'Outside the Case')
+          ),
+          tr(
+            th(rowspan = 2, 'Co-Occurrence'),
+            th(rowspan = 2, 'Sufficiency'),
+            th(rowspan = 2, 'Biological Gradient'),
+            th(rowspan = 2, 'Time Sequence'),
+            th(colspan = 3, 'Verified Prediction'),
+            th(rowspan = 2, 'Biological Gradient')
+          ),
+          tr(
+            lapply(c('SSTolVals', 'SSI Co-Occurrence', 'SSI Sufficiency'), th)
+          )
+        )
+      ))
+
+      DT::datatable(dfLoEbyStressor,
+                    caption = tblCaption,
+                    container = sketch,
+                    extensions = 'FixedColumns',
+                    class = 'striped hover row-border',
+                    filter = 'none',
+                    rownames = FALSE,
+                    escape = FALSE,
+                    options = list(layout = list(topStart = 'pageLength',
+                                                 topEnd = 'search',
+                                                 bottomStart = 'info',
+                                                 bottomEne = 'paging'),
+                                   caption = list(captionSide = 'top',
+                                                  padding = '10px',
+                                                  fontWeight = 'bold'),
+                                   pageLength = 10,
+                                   bSort = FALSE,
+                                   scrollX = TRUE,
+                                   fixedColumns = list(leftColumns = 1),
+                                   autoWidth = TRUE,
+                                   menu = ifelse(nrow(dfLoEbyStressor) > 10,
+                                                 c(10, 25, 50, 100), 10),
+                                   columnDefs = list(#list(width = '280px',
+                                                     #      targets = 0),
+                                                     # list(width = '140px',
+                                                     #      targets = 1),
+                                                     # list(className = 'dt-left',
+                                                     #      targets = 1:2),
+                                                     # list(className = 'dt-head-center',
+                                                     #      targets = 4:ncol(dfLoEbyStressor)),
+                                                     # list(className = 'dt-center',
+                                                     #      targets = 3:12),
+                                                     list(className = 'dt-bottom',
+                                                          targets = "_all")))) %>%
+        DT::formatStyle(columns = colnames(dfLoEbyStressor), fontSize = '80%') %>%
+        DT::formatStyle("StressSampleID", "white-space" = "nowrap")
+      
+    } else {
+      
+      msg <- "Not displayed in non-html format."
+      cat(msg)
+      
+    }
+    
+  }
+  
+} else {
+  cat("No benthic macroinvertebrate data.")
+}
+
+```
+
+#### *Lines of evidence summary*
+
+This table provides an indication of the consistency of the evidence for
+a candidate cause. The strength of the evidence must also be considered.
+For example, how well candidate causes explain biological responses in
+the stressor-response analyses should also be evaluated.
+
+```{r bmi_loecounts_bystressor, echo = FALSE}
+
+if ("bmi" %in% biocommlist) { # BMI were evaluated
+  
+  fnLoESummary <- paste0(TargetSiteID, "_LoESummary.tab")
+  fnLoESummary <- file.path(dir_results, TargetSiteID, "BMI", "_WoE", fnLoESummary)
+  
+  if (!file.exists(fnLoESummary)) {# No WoE file
+    
+    txt_NoFile <- "No stressor-specific weight of evidence file is accessable.\n"
+    cat(txt_NoFile)      
+    
+  } else {# WoE file exists
+    
+    dfLoESummary <- read.table(fnLoESummary, sep = "\t", na.strings = "NA",
+                                  header = TRUE, strip.white = TRUE,
+                                  stringsAsFactors = FALSE)
+    dfLoESummary <- dfLoESummary %>%
+      dplyr::select(Stressor, StressSampleID, StressSampleDate, NumSupport,
+                    NumRefute, NumIndeterminate, NumNotEvaluated) %>%
+      dplyr::arrange(Stressor, StressSampleDate)
+    
+    if (report_format == "html") {
+      
+      tblCaption <- paste0("Detailed weight-of-evidence for each stressor ",
+                           "and sample.")
+      # cat(tblCaption)
+      
+      sketch <- htmltools::withTags(table(
+        class = 'display',
+        thead(
+          tr(
+            th('Stressor'),
+            th('Sample ID'),
+            th('Sample Date'),
+            th('Supporting (>0)'),
+            th('Refuting (<0)'),
+            th('Indeterminate (=0)'),
+            th('Not evaluated')
+          )
+        )
+      ))
+
+      DT::datatable(dfLoESummary,
+                    caption = tblCaption,
+                    container = sketch,
+                    extensions = 'FixedColumns',
+                    class = 'striped hover row-border',
+                    filter = 'none',
+                    rownames = FALSE,
+                    escape = FALSE,
+                    options = list(layout = list(topStart = 'pageLength',
+                                                 topEnd = 'search',
+                                                 bottomStart = 'info',
+                                                 bottomEne = 'paging'),
+                                   caption = list(captionSide = 'top',
+                                                  padding = '10px',
+                                                  fontWeight = 'bold'),
+                                   pageLength = 10,
+                                   bSort = FALSE,
+                                   scrollX = TRUE,
+                                   fixedColumns = list(leftColumns = 1),
+                                   autoWidth = TRUE,
+                                   menu = ifelse(nrow(dfLoESummary) > 10,
+                                                 c(10, 25, 50, 100), 10),
+                                   columnDefs = list(#list(width = '140px',
+                                                     #      targets = 1),
+                                                     # list(width = '140px',
+                                                     #      targets = 2),
+                                                     # list(className = 'dt-left',
+                                                     #      targets = 1:2),
+                                                     # list(className = 'dt-head-center',
+                                                     #      targets = 4:ncol(dfLoESummary)),
+                                                     # list(className = 'dt-center',
+                                                     #      targets = 3:12),
+                                                     list(className = 'dt-bottom',
+                                                          targets = "_all")))) %>%
+        DT::formatStyle(columns = colnames(dfLoESummary), fontSize = '80%') %>%
+        DT::formatStyle("StressSampleID", "white-space" = "nowrap")
+      
+    } else {
+      
+      msg <- "Not displayed in non-html format."
+      cat(msg)
+      
+    }
+    
+  }
+  
+} else {
+  cat("No benthic macroinvertebrate data.")
+}
+
+```
+
+### *Visuals for candidate causes*
+
+The following images are lines of evidence graphics grouped by candidate
+cause. Only the figures generated for the primary biotic index and
+stressor-specific indices and tolerance values specified for inclusion
+are displayed below. Figures for other indices are available in the
+downloadable zip folder.
+
+```{r stressor.graphics, echo = FALSE, out.width = "75%", fig.align = "left"}
+
+stressors <- setdiff(siteDetects, NE)
+paramName <- data_stressInfo$StdParamName[data_stressInfo$Label %in% stressors]
+df.SSINames <- data_stressInfo[data_stressInfo$Label %in% stressors, ] %>%
+  dplyr::filter(!is.na(SSIndex)) %>%
+  dplyr::select(StdParamName, SSIndex)
+
+dir.biocomm <- file.path(dir_results, TargetSiteID, "BMI")
+
+msg_files <- paste0("All stressor graphics are in the '",
+                    paste0(dir.biocomm, "/{stressor}"), "' folder.\n",
+                    "Selected images are shown here.\n\n")
+cat(msg_files)
+
+for (s in seq_along(paramName)) {
+  
+  stressLabel <- stressors[s]
+  stressName <- paramName[s]
+  
+  cat("#### ", stressLabel, "\n")
+  cat("\n")
+  
+  all.img <- list.files(file.path(dir.biocomm, stressName), full.names = TRUE)
+  
+  if (length(all.img) > 0) {
+    
+    # fn_Plots_png <- all.img[grep(".png", all.img)]
+    fn_img_CO <- all.img[grep(paste0("BMI_", bioIndex, "_CO.png"), all.img)]
+    fn_img_SU <- all.img[grep(paste0("BMI_", bioIndex, "_SU.png"), all.img)]
+    
+    # ![text here](file.path(filename))
+    knitr::include_graphics(fn_img_CO)
+    knitr::include_graphics(fn_img_SU)
+    
+    # if (length(fn_Plots_png) == 0) {
+    #   txt_NoFile <- "No stressor plots exist.\n"
+    #   cat(txt_NoFile)
+    # } else {
+    #   #
+    #   for (p in seq_along(1:length(fn_Plots_png))) {
+    #     fn_img <- fn_Plots_png[p]
+    #     knitr::include_graphics(fn_img_CO, fn_img_SU)
+    #   }
+    #   #
+    # }
+    
+  } else {
+    msg_files <- paste0("No ", txt_grp_msg, " files exist.\n")
+    cat(msg_files)
+  }##IF.boo.pdf.START
+  
+  # knitr::include_graphics(all.img)
+  
+}
+```
