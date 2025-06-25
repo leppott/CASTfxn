@@ -319,8 +319,8 @@ getCoOccur <- function(TargetSiteID,
     lab.N <- paste0("n = ", unique(df.j$n) - n.target.samps)
 
     # File Names
-    fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_CoOccur_",
-                        make.names(stressname), ".png")
+    fn_png_p1 <- paste0(TargetSiteID, "_", make.names(stressname), "_",
+                        biocomm, "_", colBio, "_CO.png")
 
     # Create (ggplot)
     lab_comp <- paste0("Comparator samples selected from ", incaseLabel,
@@ -453,9 +453,9 @@ getCoOccur <- function(TargetSiteID,
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
-      gaps <- cbind.data.frame("getCoOccur", paste0(notstress, " score for ",
-                                                    bioComm, " refutes"),
-                               -1, msg)
+      gaps <- cbind.data.frame("getCoOccur",
+                               paste0(notstress, " score for ", bioComm,
+                                      " refutes"), -1, msg)
 
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
