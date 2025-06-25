@@ -172,8 +172,6 @@ getBioStressorResponses <- function(TargetSiteID,
   #q
   q.len <- length(BioResp)
 
-  # boo.pryr <- FALSE
-
   # FOR.p ####
   for (p in 1:length(stressors)) {
 
@@ -194,18 +192,16 @@ getBioStressorResponses <- function(TargetSiteID,
     out.dir <- dirname(dir_plots)
     out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, stressName)
 
-    for (i in 1:length(out.folders)) {
-      if (i == 1) {
-        dir_path_stress <- file.path(out.folders[i])
+    for (f in 1:length(out.folders)) {
+      if (f == 1) {
+        dir_path_stress <- file.path(out.folders[f])
       } else {
-        dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+        dir_path_stress <- file.path(dir_path_stress, out.folders[f])
       }
       if (dir.exists(dir_path_stress) == FALSE) {
         dir.create(dir_path_stress)
       }
     }
-    varFileOut <- file.path(dir_path_stress, paste0(TargetSiteID, "_", biocomm,
-                                                    "_BioGrad_"))
 
     # DEBUG
     if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
@@ -551,10 +547,9 @@ getBioStressorResponses <- function(TargetSiteID,
                                           r2_all))
           names(df.corr_all) <- cn_cor_pref
           pval.corr_all <- signif(c1S_all$p.value, 2)
-          #
-          # 20180621, scoring
+
           slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
-          #
+
         } # End std dev If eval statement
 
       } else { # <=2 samples
@@ -747,7 +742,6 @@ getBioStressorResponses <- function(TargetSiteID,
                              txt.score_all, "; ", txt.score_cl)
         message(msg.status)
       } ##IF~nrow(df_plot_site)~END
-      #
 
       # Rename columns to generic "Stressor" and "Response" for easier plotting
       df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
@@ -776,7 +770,6 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
                                     Response = {{respName}}) %>%
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-
 
       ## Plot, inputs ####
       boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor), ]) > 0,
@@ -938,17 +931,14 @@ getBioStressorResponses <- function(TargetSiteID,
                         caption = str_caption_all, x = str_xlab, y = str_ylab)
 
         # Write biological gradient for all sites
-        fn_png_out <- paste0(varFileOut, make.names(stressName), "_",
-                             make.names(respName), "_Outside.png")
+        fn_png_out <- paste0(TargetSiteID, "_", make.names(stressName), "_",
+                             biocomm, "_", make.names(respName), "_GO.png")
+        fn_png_out <- file.path(dir_path_stress, fn_png_out)
+
         if (boo_plot) {
           ggplot2::ggsave(fn_png_out, p_SR_all, width = plotW, height = plotH,
                           units = plotunits, dpi = plotdpi)
         } ## IF ~ boo_plot ~ END
-
-        # if (respName == bioindex) {
-        #   plotname <- paste0(stressName, "_", biocomm, "_GO")
-        #   suppressWarnings(assign(plotname, p_SR_all))
-        # }
 
         ## Plot, inside ####
         if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
@@ -1053,18 +1043,15 @@ getBioStressorResponses <- function(TargetSiteID,
                           caption = str_caption_cl, x = str_xlab, y = str_ylab)
           #
           # Write biological gradient for all sites
-          fn_png_in <- paste0(varFileOut, make.names(stressName), "_",
-                              make.names(respName), "_Inside.png")
+          fn_png_in <- paste0(TargetSiteID, "_", make.names(stressName), "_",
+                               biocomm, "_", make.names(respName), "_GI.png")
+          fn_png_in <- file.path(dir_path_stress, fn_png_in)
+
           if (boo_plot) {
             ggplot2::ggsave(fn_png_in, p_SR_cl, width = plotW, height = plotH,
                             units = plotunits, dpi = plotdpi)
             ngraph = ngraph + 1
           } ## IF ~ boo_plot ~ END
-          #
-          # if (respName == bioindex) {
-          #   plotname <- paste0(stressName, "_", biocomm, "_GI")
-          #   suppressWarnings(assign(plotname, p_SR_cl))
-          # }
 
         } ##IF.boo.Plot.END
 
