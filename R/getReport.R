@@ -1,4 +1,4 @@
-#  Copyright 2020 TetraTech. All rights reserved.
+#  Copyright 2025 TetraTech. All rights reserved.
 #  Use, copying, modification, or distribution of this file or any of its contents
 #  is expressly prohibited without prior written permission of TetraTech.
 #
@@ -8,7 +8,8 @@
 #' @description Generate report
 #'
 #' @details Generates a report based on a Target SiteID in a given directory.
-#' The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.
+#' The output from other `CASTfxn` functions are stored in a "Results" folder
+#' with the provided Target SiteID as a subdirectory.
 #' Report format can be "html" (recommended default) or "word" (docx).
 #'
 #' Only the "summary" report is active.
@@ -26,9 +27,10 @@
 #' @param useAlg boolean to use Algae.
 #' @param useBC Default = TRUE
 #' @param removeOutliers Default = TRUE
-#' @param lagdays Default = 10
-#' @param bmiIndex Default = "CSCI".
-#' @param algIndex Default = "MMIhybrid"
+#' @param lagdays Default = 10, 10
+#' @param bmiIndex Default = bmiIndex
+#' @param algIndex Default = algIndex
+#' @param fishIndex Default = fishIndex
 #' @param dir_data Absolute path to data.  Default = /Data
 #' @param dir_results Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
@@ -52,44 +54,50 @@
 #
 #' @export
 getReport <- function(TargetSiteID,
-                      probsHigh,
-                      probsLow,
-                      useBMI,
-                      useAlg,
-                      useBC,
+                      # probsHigh,
+                      # probsLow,
+                      biocomms,
+                      primeIndex = bmiIndex,
                       removeOutliers,
+                      samplim,
+                      useBC,
+                      lagdays,
                       DOlim,
                       pHlimLow,
                       pHlimHigh,
-                      lagdays,
                       bmiIndex,
+                      useBMI,
+                      useAlg,
                       algIndex,
                       dir_data = normalizePath(file.path(".", "Data")),
                       dir_results = normalizePath(file.path(".", "Results")),
-                      report_type = "preliminary",
+                      report_type = "full",
                       report_format = "html",
-                      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
-                      siteQual2Plot = NULL){##FUNCTION.START
+                      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+                      ) { ##FUNCTION.START
   #
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
   if (boo_DEBUG) {
     TargetSiteID = TargetSiteID
-    probsHigh = probsHigh
-    probsLow = probsLow
+    biocomms = biocommlist
+    # primeIndex = bmiIndex
     useBMI = useBMI
     useAlg = useAlg
     useBC = useBC
     removeOutliers = removeOutliers
+    samplim = samplim
     lagdays = lagdays
     DOlim = DOlim
     pHlimLow = pHlimLow
     pHlimHigh = pHlimHigh
     bmiIndex = bmiIndex
-    algIndex = algIndex
+    # algIndex = algIndex
+    report_type = "full"
+    report_format = "html"
     if (DEBUG_person == "Ann") {
-      dir_data = dir_data_abs
-      dir_results = dir_results_abs
+      dir_data = dir_data
+      dir_results = dir_results
       dir_rmd = file.path("C:", "Users", "ann.lincoln", "Documents", "GitHub"
                           , "CASTfxn", "inst", "rmd")
     } else {
@@ -97,9 +105,7 @@ getReport <- function(TargetSiteID,
       dir_results = normalizePath(file.path(".", "Results"))
       dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
     }
-    report_type = "summary"
-    report_format = "html"
-    siteQual2Plot = NULL
+    # siteQual2Plot = NULL
   }## IF ~ boo_DEBUG ~ END
 
   # Date and Time for output
@@ -111,28 +117,74 @@ getReport <- function(TargetSiteID,
   report_format <- tolower(report_format)
   #
   # 20181205
-  report_type_valid <- c("summary", "overall", "preliminary")
-  if (!(tolower(report_type) %in% report_type_valid)) {
-    Msg <- "Only the 'summary' report_type is active."
-    stop(Msg)
-  }
+  # rmd_type_valid <- c("summary", "overall", "preliminary")
+  # if (!(tolower(report_type) %in% rmd_type_valid)) {
+  #   Msg <- "Only the 'summary' report_type is active."
+  #   stop(Msg)
+  # }
+  # qmd_type_valid <- c("full")
+  # if (!(tolower(report_type) %in% qmd_type_valid)) {
+  #   Msg <- "Only the 'summary' report_type is active."
+  #   stop(Msg)
+  # }
   #
   # Report parts
   strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
+  # strFile_RMD <- NULL
   strFile_out_ext <- paste0(".", ifelse(report_format == "word", "docx", report_format)) #".docx" # ".html"
-  strFile_out <- paste0(paste(TargetSiteID, "Results", stringr::str_to_sentence(report_type)
-                              , myDate, myTime, sep = "_"), strFile_out_ext)
+  strFile_out_RMD <- paste0(paste(TargetSiteID, "Results", myDate, myTime,
+                                  "FromRMD", sep = "_"), strFile_out_ext)
+
+  strFile_QMD <- file.path(dir_rmd, "CASToolFullReport", "CASToolFullReport.qmd")
+  strFile_out_QMD <- paste0(paste(TargetSiteID, "FullReport", myDate, myTime,
+                                  "FromQMD", sep = "_"), strFile_out_ext)
   #
     # Generate Report
   # Test if RMD file exists
-  if (file.exists(strFile_RMD)) {##IF.file.exists.START
-    #suppressWarnings(
-    rmarkdown::render(strFile_RMD
-                      , output_format = paste0(report_format,"_document")
-                      , output_file = strFile_out
-                      , output_dir = file.path(dir_results, TargetSiteID)
-                      , quiet = TRUE)
-    #)
+  if (!is.null(strFile_RMD)) {##IF.file.exists.START
+
+    rmarkdown::render(strFile_RMD,
+                      output_format = paste0(report_format, "_document"),
+                      output_file = file.path(dir_results, TargetSiteID, strFile_out_RMD),
+                      params = list(TargetSiteID = TargetSiteID,
+                                    regionName = regionName,
+                                    biocommlist = biocommlist,
+                                    useBMI = useBMI,
+                                    useAlg = useAlg,
+                                    useBC = useBC,
+                                    removeOutliers = removeOutliers,
+                                    samplim = samplim,
+                                    lagdays = lagdays,
+                                    DOlim = DOlim,
+                                    pHlimLow = pHlimLow,
+                                    pHlimHigh = pHlimHigh,
+                                    bmiIndex = bmiIndex,
+                                    algIndex = algIndex,
+                                    clusterfile = basename(fn.cluster),
+                                    dir_results = dir_results),
+                      quiet = TRUE)
+
+  } else if (file.exists(strFile_QMD)) {
+    quarto::quarto_render(strFile_QMD,
+                          output_format = "html",
+                          output_file = strFile_out_QMD,
+                          execute_params = list(TargetSiteID = TargetSiteID,
+                                                regionName = regionName,
+                                                biocommlist = biocommlist,
+                                                useBMI = useBMI,
+                                                useAlg = useAlg,
+                                                useBC = useBC,
+                                                removeOutliers = removeOutliers,
+                                                samplim = samplim,
+                                                lagdays = lagdays,
+                                                DOlim = DOlim,
+                                                pHlimLow = pHlimLow,
+                                                pHlimHigh = pHlimHigh,
+                                                bmiIndex = bmiIndex,
+                                                algIndex = algIndex,
+                                                clusterfile = basename(fn.cluster),
+                                                dir_results = dir_results),
+                          quiet = FALSE)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
     Msg.Line1 <- "Provided report template file directory does not include the necessary RMD file to generate the report.  So no report will be generated."
