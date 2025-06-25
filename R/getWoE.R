@@ -33,8 +33,9 @@
 getWoE <- function(TargetSiteID,
                    biocomm,
                    dfLoE,
+                   dfStress = df_stressorMetadata,
                    dir_results = file.path(getwd(), "Results"),
-                   dir_WoE = "WoE") {##FUNCTION.START
+                   dir_WoE = "_WoE") {##FUNCTION.START
 
   # QC data
   boo_DEBUG <- FALSE
@@ -43,8 +44,9 @@ getWoE <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     biocomm = bioComm
     dfLoE = df_LoE
+    dfStress = df_stressorMetadata
     dir_results = dir_results
-    dir_WoE = "WoE"
+    dir_WoE = "_WoE"
   }
 
   # define pipe
@@ -100,6 +102,5 @@ getWoE <- function(TargetSiteID,
   write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
               col.names = TRUE, row.names = FALSE, sep = "\t")
 
-  #
 }
 
