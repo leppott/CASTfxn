@@ -288,11 +288,11 @@ getVerifiedPredictions <- function(TargetSiteID,
         out.dir <- dirname(dir_plots)
         out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, stressor)
 
-        for (i in 1:length(out.folders)) {
-          if (i == 1) {
-            dir_path_stress <- file.path(out.folders[i])
+        for (f in 1:length(out.folders)) {
+          if (f == 1) {
+            dir_path_stress <- file.path(out.folders[f])
           } else {
-            dir_path_stress <- file.path(dir_path_stress, out.folders[i])
+            dir_path_stress <- file.path(dir_path_stress, out.folders[f])
           }
           if (dir.exists(dir_path_stress) == FALSE) {
             dir.create(dir_path_stress)
@@ -501,7 +501,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         ##PLOT VARIABLES ~ END
 
-        fn_png_p1 <- paste0(TargetSiteID, "_", biocomm, "_VP_SSTV_", stressor, ".png")
+        fn_png_p1 <- paste0(TargetSiteID, "_", make.names(stressor), "_",
+                            biocomm, "_", colBio, "_VPSSTV.png")
 
         p_tv <- ggplot2::ggplot(data = df_tv.incase,
                                 ggplot2::aes(x = Label, y = value, group = Label)) +
