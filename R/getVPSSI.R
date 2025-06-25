@@ -335,8 +335,8 @@ getVPSSI <- function(TargetSiteID,
           }
 
           # define filename for logistic regression plot
-          fn_png_p2 <- paste0(paste(TargetSiteID, biocomm, "VPSSIlog",
-                                    ssi.name, str, sep = "_"), ".png")
+          fn_png_p2 <- paste0(TargetSiteID, str, "_", biocomm, "_", ssi.name,
+                              "_VIreg.png")
 
           # Identify plot vars for logistic plots
           negStart <- 0
@@ -543,9 +543,6 @@ getVPSSI <- function(TargetSiteID,
                          " = ", i.Group)
       xseg <- i.Group + 0.5
 
-      fn_png_p1 <- paste(TargetSiteID, biocomm, "VPSSIbox", ssi.name, sep = "_")
-      fn_png_p1 <- paste0(fn_png_p1, ".png")
-
       p1 <- ggplot2::ggplot(df_plot1, ggplot2::aes(y = SSIValue,
                                                    x = IncaseCol,
                                                    group = IncaseCol)) +
@@ -610,9 +607,9 @@ getVPSSI <- function(TargetSiteID,
           }
         }
 
-        fn_png_p1 <- paste(TargetSiteID, biocomm, "VPSSIbox", ssi.name, str,
-                           sep = "_")
-        fn_png_p1 <- paste0(fn_png_p1, ".png")
+        fn_png_p1 <- paste0(TargetSiteID, "_", str, "_", biocomm, "_", ssi.name,
+                            "_VIbox.png")
+
         ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),
                         plot = p1, dpi = plotdpi, width = plotW, height = plotH,
                         units = plotunits)
