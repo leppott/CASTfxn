@@ -64,8 +64,7 @@ getCoOccurDataset <- function(df_sites,
   # Read data files (stressor and response)
   if (biocomm == "bmi") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
-                           index, "Quality", "BMISampFlag")] %>%
-      dplyr::rename(RespSampFlag = BMISampFlag)
+                           index, "Quality")]
   } else if (biocomm == "alg") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
                            index, "Quality", "AlgSampFlag")] %>%
