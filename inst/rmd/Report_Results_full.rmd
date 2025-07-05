@@ -147,7 +147,8 @@ if (file.exists(fn_img) == TRUE) {
 
 ### *Site photo(s)*
 
-```{r photos, out.width = "50%", out.extra = 'style = "padding:10px"', echo = FALSE}
+```{r photos, out.width = "50%", echo = FALSE}
+
 dir.sub <- "SiteInfo"
 dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub, "Photos")
 fn_all  <- list.files(path = dir_SiteID, full.names = TRUE,
@@ -155,30 +156,25 @@ fn_all  <- list.files(path = dir_SiteID, full.names = TRUE,
 
 txt_grp_msg <- "media"
 #
-if (length(fn_all) > 0) {##IF.boo.pdf.START
-  msg_files <- paste0("All ", txt_grp_msg," files are in the '",
+if (length(fn_all) > 0) {##IF.Media
+  msg_files <- paste0("All media ", txt_grp_msg," files are in the '",
                       paste0("Results/", TargetSiteID, "/", dir.sub, "/Photos"), 
-                      "' folder.\n", "Images are shown here.\n\n")
+                      "' folder.\n", "Static photos are shown here.\n\n")
   cat(msg_files)
   
-  fn_Photos_jpg <- fn_all[grep(".jpg", fn_all)]
+  fn_Photos_jpg <- fn_all[grep("[.jpg|.png]", fn_all)]
   
-  if (length(fn_Photos_jpg) == 0) {
-    txt_NoFile <- "No site photos exist.\n"
-    cat(txt_NoFile)
-  } else {
-    #
-    for (p in seq_along(1:length(fn_Photos_jpg))) {
-      fn_img <- fn_Photos_jpg[p]
-      knitr::include_graphics(fn_img)
-    }
-    #
+  for (p in seq_along(fn_Photos_jpg)) {
+    fn <- fn_Photos_jpg[p]
+    cat(paste0("<img src = ", fn, " />"))
   }
   
 } else {
+  
   msg_files <- paste0("No ", txt_grp_msg," files exist.\n")
   cat(msg_files)
-}##IF.boo.pdf.START
+  
+}##IF.Media.END
 
 ```
 
@@ -331,7 +327,7 @@ cause of impairment.
 
 ### *Index summary*
 
-```{r bmiIdxGraph, out.width = "80%", out.extra = 'style = "padding:10px"', echo = FALSE}
+```{r bmiIdxGraph, out.width = "75%", echo = FALSE}
 dir.sub3 <- "SiteInfo"
 fn_bmiIndexGraphic <- file.path(dir_results, TargetSiteID, dir.sub3, 
                                 paste0(TargetSiteID, 
@@ -367,7 +363,7 @@ contrast, "outside-the-case" samples may be all the samples in the
 region or a subset thereof. The following table includes sample quality,
 which may differ between biological communities.
 
-```{r bmicompsitesummtab, echo = FALSE, out.extra = 'style = "padding:10px"'}
+```{r bmi_compsites, echo = FALSE, out.extra = 'style = "padding:10px"'}
 # Read file summarizing the comparator data and provide it in summary form
 
 if ("bmi" %in% biocommlist) {
@@ -721,7 +717,7 @@ stressor-specific indices and tolerance values specified for inclusion
 are displayed below. Figures for other indices are available in the
 downloadable zip folder.
 
-```{r stressor.graphics, echo = FALSE, out.width = "75%", fig.align = "left"}
+```{r bmi.LoE.graphics, echo = FALSE, out.width = "75%", fig.align = "left"}
 
 stressors <- setdiff(siteDetects, NE)
 paramName <- data_stressInfo$StdParamName[data_stressInfo$Label %in% stressors]
@@ -740,40 +736,80 @@ for (s in seq_along(paramName)) {
   
   stressLabel <- stressors[s]
   stressName <- paramName[s]
+  stressLabel <- sub("(mg/l)", "mg/L", stressLabel)
+  stressLabel <- sub("(PCT)", "%", stressLabel)
+  stressLabel <- sub("(u)g/m3", htmltools::HTML("\u00b5"), stressLabel)
   
-  cat("#### ", stressLabel, "\n")
-  cat("\n")
-  
-  all.img <- list.files(file.path(dir.biocomm, stressName), full.names = TRUE)
+  all.img <- list.files(file.path(dir.biocomm, stressName), pattern = ".png",
+                        full.names = TRUE)
+
+  cat(paste0("<br><h4><strong><u>", stressLabel, "</u></strong></h4><br>"))
   
   if (length(all.img) > 0) {
     
-    # fn_Plots_png <- all.img[grep(".png", all.img)]
-    fn_img_CO <- all.img[grep(paste0("BMI_", bioIndex, "_CO.png"), all.img)]
-    fn_img_SU <- all.img[grep(paste0("BMI_", bioIndex, "_SU.png"), all.img)]
+    if (length(all.img[grepl("CO.png$", all.img)]) == 1) {
+      fn <- all.img[grep("CO.png$", all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nCo-occurrence image is not available.\n")
+    }
     
-    # ![text here](file.path(filename))
-    knitr::include_graphics(fn_img_CO)
-    knitr::include_graphics(fn_img_SU)
+    if (length(all.img[grepl("SU.png$", all.img)]) == 1) {
+      fn <- all.img[grep("SU.png$", all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nSufficiency image is not available.\n")
+    }
     
-    # if (length(fn_Plots_png) == 0) {
-    #   txt_NoFile <- "No stressor plots exist.\n"
-    #   cat(txt_NoFile)
+    if (length(all.img[grepl(paste0(bioIndex, "_GI.png$"), all.img)]) == 1) {
+      fn <- all.img[grep(paste0(bioIndex, "_GI.png$"), all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nBiological gradient inside-the-case image is not available.\n")
+    }
+    
+    if (length(all.img[grepl(paste0(bioIndex, "_GO.png$"), all.img)]) == 1) {
+      fn <- all.img[grep(paste0(bioIndex, "_GO.png$"), all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nBiological gradient outside-the-case image is not available.\n")
+    }
+    
+    # if (all.img[grepl("TS.png$", all.img)] == 1) {
+    #   fn <- all.img[grep("TS.png$", all.img)]
+    #   cat(paste0("<img src=", fn, ">"))
     # } else {
-    #   #
-    #   for (p in seq_along(1:length(fn_Plots_png))) {
-    #     fn_img <- fn_Plots_png[p]
-    #     knitr::include_graphics(fn_img_CO, fn_img_SU)
-    #   }
-    #   #
+    #   cat("Time sequency image is not available.\n")
     # }
     
+    if (length(all.img[grepl("VPSSTV.png$", all.img)]) == 1) {
+      fn <- all.img[grep("VPSSTV.png$", all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nVerified predictions using stressor-specific tolerance values image is not available.\n")
+    }
+    
+    if (length(all.img[grepl("VIbox.png$", all.img)]) == 1) {
+      fn <- all.img[grep("VIbox.png$", all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nVerified predictions using stressor-specific indices box plot image is not available.\n")
+    }
+    
+    if (length(all.img[grepl("VIreg.png$", all.img)]) == 1) {
+      fn <- all.img[grep("VIreg.png$", all.img)]
+      cat(paste0("<img src = ", fn, " />"))
+    } else {
+      cat("\nVerified predictions using stressor-specific indices logistic regression image is not available.\n")
+    }
+    
+    cat("<br>")
+    
   } else {
-    msg_files <- paste0("No ", txt_grp_msg, " files exist.\n")
+    msg_files <- paste0("No supporting image files exist for this stressor.\n")
     cat(msg_files)
-  }##IF.boo.pdf.START
+  }##IF.img.length.START
   
-  # knitr::include_graphics(all.img)
-  
-}
+}##FOR.stressors.loop
+
 ```
