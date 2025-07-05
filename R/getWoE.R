@@ -96,7 +96,17 @@ getWoE <- function(TargetSiteID,
     tidyr::pivot_wider(id_cols = c(StationID, StressSampleID, StressSampleDate,
                                    RespSampleID, RespSampleDate, bioComm,
                                    Stressor, StressorValue), names_from = LoE,
-                       values_from = Score, values_fill = "NE") %>%
+                       values_from = Score) %>%
+    # dplyr::mutate(CO = tidyr::replace_na(CO, "NE"),
+    #               Suff = tidyr::replace_na(Suff, "NE"),
+    #               `Gradient (inside)` = tidyr::replace_na(`Gradient (inside)`,
+    #                                                       "NE"),
+    #               VP_SSTV = tidyr::replace_na(VP_SSTV, "NE"),
+    #               VP_SSIbox = tidyr::replace_na(VP_SSIbox, "NE"),
+    #               VP_SSIlog = tidyr::replace_na(VP_SSIlog, "NE"),
+    #               TS = tidyr::replace_na(TS, "NE"),
+    #               `Gradient (outside)` = tidyr::replace_na(`Gradient (outside)`,
+    #                                                        "NE"))
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
   write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
