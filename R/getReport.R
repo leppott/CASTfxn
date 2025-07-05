@@ -54,8 +54,6 @@
 #
 #' @export
 getReport <- function(TargetSiteID,
-                      # probsHigh,
-                      # probsLow,
                       biocomms,
                       primeIndex = bmiIndex,
                       removeOutliers,
@@ -66,9 +64,11 @@ getReport <- function(TargetSiteID,
                       pHlimLow,
                       pHlimHigh,
                       bmiIndex,
+                      algIndex,
+                      fishIndex,
                       useBMI,
                       useAlg,
-                      algIndex,
+                      useFish,
                       dir_data = normalizePath(file.path(".", "Data")),
                       dir_results = normalizePath(file.path(".", "Results")),
                       report_type = "full",
@@ -81,9 +81,9 @@ getReport <- function(TargetSiteID,
   if (boo_DEBUG) {
     TargetSiteID = TargetSiteID
     biocomms = biocommlist
-    # primeIndex = bmiIndex
     useBMI = useBMI
     useAlg = useAlg
+    useFish = useFish
     useBC = useBC
     removeOutliers = removeOutliers
     samplim = samplim
@@ -92,7 +92,8 @@ getReport <- function(TargetSiteID,
     pHlimLow = pHlimLow
     pHlimHigh = pHlimHigh
     bmiIndex = bmiIndex
-    # algIndex = algIndex
+    algIndex = algIndex
+    fishIndex = fishIndex
     report_type = "full"
     report_format = "html"
     if (DEBUG_person == "Ann") {
@@ -116,18 +117,6 @@ getReport <- function(TargetSiteID,
   report_type   <- tolower(report_type)
   report_format <- tolower(report_format)
   #
-  # 20181205
-  # rmd_type_valid <- c("summary", "overall", "preliminary")
-  # if (!(tolower(report_type) %in% rmd_type_valid)) {
-  #   Msg <- "Only the 'summary' report_type is active."
-  #   stop(Msg)
-  # }
-  # qmd_type_valid <- c("full")
-  # if (!(tolower(report_type) %in% qmd_type_valid)) {
-  #   Msg <- "Only the 'summary' report_type is active."
-  #   stop(Msg)
-  # }
-  #
   # Report parts
   strFile_RMD <- file.path(dir_rmd, paste0("Report_Results_", report_type, ".rmd"))
   # strFile_RMD <- NULL
@@ -139,7 +128,7 @@ getReport <- function(TargetSiteID,
   strFile_out_QMD <- paste0(paste(TargetSiteID, "FullReport", myDate, myTime,
                                   "FromQMD", sep = "_"), strFile_out_ext)
   #
-    # Generate Report
+  # Generate Report
   # Test if RMD file exists
   if (!is.null(strFile_RMD)) {##IF.file.exists.START
 
@@ -151,6 +140,7 @@ getReport <- function(TargetSiteID,
                                     biocommlist = biocommlist,
                                     useBMI = useBMI,
                                     useAlg = useAlg,
+                                    useFish = useFish,
                                     useBC = useBC,
                                     removeOutliers = removeOutliers,
                                     samplim = samplim,
@@ -160,6 +150,7 @@ getReport <- function(TargetSiteID,
                                     pHlimHigh = pHlimHigh,
                                     bmiIndex = bmiIndex,
                                     algIndex = algIndex,
+                                    fishIndex = fishIndex,
                                     clusterfile = basename(fn.cluster),
                                     dir_results = dir_results),
                       quiet = TRUE)
@@ -173,6 +164,7 @@ getReport <- function(TargetSiteID,
                                                 biocommlist = biocommlist,
                                                 useBMI = useBMI,
                                                 useAlg = useAlg,
+                                                useFish = useFish,
                                                 useBC = useBC,
                                                 removeOutliers = removeOutliers,
                                                 samplim = samplim,
@@ -182,6 +174,7 @@ getReport <- function(TargetSiteID,
                                                 pHlimHigh = pHlimHigh,
                                                 bmiIndex = bmiIndex,
                                                 algIndex = algIndex,
+                                                fishIndex = fishIndex,
                                                 clusterfile = basename(fn.cluster),
                                                 dir_results = dir_results),
                           quiet = FALSE)
