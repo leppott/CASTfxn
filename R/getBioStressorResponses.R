@@ -400,8 +400,8 @@ getBioStressorResponses <- function(TargetSiteID,
         if (stats::sd(df_plot_cl[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_corr <- FALSE
 
-          gapcomment <- paste0("Stressor data in the comparator set have ",
-                               "a standard deviation of zero: ",
+          gapcomment <- paste0("Stressor data in the inside-the-case sample set ",
+                               "have a standard deviation of zero: ",
                                "all values are equal.")
           gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                    gapcomment)
@@ -414,8 +414,8 @@ getBioStressorResponses <- function(TargetSiteID,
         } else if (stats::sd(df_plot_cl[, respName], na.rm = TRUE) == 0) { # Horizontal line
           boo_corr <- FALSE
 
-          gapcomment <- paste0("Response data in the comparator set have ",
-                               "a standard deviation of zero: ",
+          gapcomment <- paste0("Response data in the inside-the-case sample set ",
+                               "have a standard deviation of zero: ",
                                "all values are equal.")
           gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                    gapcomment)
@@ -471,7 +471,7 @@ getBioStressorResponses <- function(TargetSiteID,
         n_str_cl <- nrow(df_plot_cl)
 
         gapcomment <- paste0("Only two paired stressor-response samples ",
-                             "are available for the comparator set.")
+                             "are available for the inside-the-case sample set.")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -490,8 +490,8 @@ getBioStressorResponses <- function(TargetSiteID,
         if(stats::sd(df_plot_all[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_all <- FALSE
           gapcomment <- paste0("Stressor data across all sites in the ",
-                               "outside-the-case set have a standard deviation ",
-                               "of zero: all values are equal.")
+                               "outside-the-case sample set have a standard ",
+                               "deviation of zero: all values are equal.")
           gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -502,8 +502,8 @@ getBioStressorResponses <- function(TargetSiteID,
         } else if(stats::sd(df_plot_all[, respName], na.rm = TRUE) == 0) {
           boo_all <- FALSE
           gapcomment <- paste0("Response data across all sites in the ",
-                               "outside-the-case set have a standard deviation ",
-                               "of zero: all values are equal.")
+                               "outside-the-case sample set have a standard ",
+                               "deviation of zero: all values are equal.")
           gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -557,7 +557,8 @@ getBioStressorResponses <- function(TargetSiteID,
         n_str_all <- nrow(df_plot_all)
 
         gapcomment <- paste0("Only two or fewer paired stressor-response samples ",
-                             "are available for all sites in the outside-the-case dataset.")
+                             "are available for all sites in the outside-the-case ",
+                             "sample set.")
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -746,7 +747,6 @@ getBioStressorResponses <- function(TargetSiteID,
       # Rename columns to generic "Stressor" and "Response" for easier plotting
       df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
                                    Response = {{respName}}) %>%
-        # dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, Target, Quality))
         dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
       xmin_all <- unique(min(df_plot_all$Stressor))
       xmax_all <- unique(max(df_plot_all$Stressor))
@@ -782,7 +782,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                 TRUE, FALSE)
 
       ## Plot, Variables, Strings
-      str_title <- paste0(TargetSiteID, ": Stressor-Response (linear regression) line of evidence")
+      str_title <- paste0(TargetSiteID, ": Stressor-response (linear regression) line of evidence")
       str_subtitle1.in <- "Is there evidence of a biological gradient from inside the case?\n"
       str_subtitle1.out <- "Is there evidence of a biological gradient from outside the case?\n"
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
@@ -819,10 +819,10 @@ getBioStressorResponses <- function(TargetSiteID,
       } ##IF.equation.END
       #
       qualtext <- "not degraded*"
-      str_caption_qual <- "*Samples rated not degraded."
-      str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
+      # str_caption_qual <- "*Samples rated not degraded."
+      # str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
       leg_all_ref <- paste0("outside-the-case", qualtext)
-      str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
+      # str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
       leg_cl_ref <- paste0("inside-the-case ", qualtext)
 
       ## Plot, outside ####
@@ -921,12 +921,12 @@ getBioStressorResponses <- function(TargetSiteID,
         # other
         p_SR_all <- p_SR_all +
           ggplot2::theme_bw() +
-          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
-                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
-                         plot.caption = ggplot2::element_text(size = 6),
-                         legend.title = ggplot2::element_text(size = 8),
-                         legend.text = ggplot2::element_text(size = 6),
-                         axis.title = ggplot2::element_text(size = 8)) +
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
+                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10),
+                         plot.caption = ggplot2::element_text(size = 8),
+                         legend.title = ggplot2::element_text(size = 10),
+                         legend.text = ggplot2::element_text(size = 8),
+                         axis.title = ggplot2::element_text(size = 10)) +
           ggplot2::labs(title = str_title, subtitle = str_subtitle.out,
                         caption = str_caption_all, x = str_xlab, y = str_ylab)
 
@@ -1033,12 +1033,12 @@ getBioStressorResponses <- function(TargetSiteID,
           # other
           p_SR_cl <- p_SR_cl +
             ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 10),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8),
-                           plot.caption = ggplot2::element_text(size = 6),
-                           legend.title = ggplot2::element_text(size = 8),
-                           legend.text = ggplot2::element_text(size = 6),
-                           axis.title = ggplot2::element_text(size = 8)) +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10),
+                           plot.caption = ggplot2::element_text(size = 8),
+                           legend.title = ggplot2::element_text(size = 10),
+                           legend.text = ggplot2::element_text(size = 8),
+                           axis.title = ggplot2::element_text(size = 10)) +
             ggplot2::labs(title = str_title, subtitle = str_subtitle.in,
                           caption = str_caption_cl, x = str_xlab, y = str_ylab)
           #
