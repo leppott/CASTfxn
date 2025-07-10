@@ -81,10 +81,12 @@ getAllSamplesTable <- function(df.stress,
                                          "StdParamName", "StressSampleDate")])
     df.sampSummary <- merge(df.sampSummary, df.stressInfo, by = "StdParamName")
     df.sampSummary <- df.sampSummary %>%
-      dplyr::select(StationID, StressSampleID, GroupName, StdParamName,
+      dplyr::select(StationID, StressSampleID, SourceGroup, StdParamName,
                     StressSampleDate, Label) %>%
-      dplyr::mutate(Type = dplyr::case_when(GroupName == "Habitat" ~ "HabitatSampleID",
-                                            grepl("Field-measured", Label) == TRUE ~ "FieldSampleID",
+      dplyr::mutate(Type = dplyr::case_when(SourceGroup == "Habitat Metrics" ~
+                                              "HabitatSampleID",
+                                            SourceGroup == "Freshwater Sediment" ~
+                                              "SedimentSampleID",
                                             TRUE ~ "ChemistrySampleID"))
     df.sampSummary <- unique(df.sampSummary[, c("StationID", "StressSampleID",
                                                 "StressSampleDate", "Type")])
