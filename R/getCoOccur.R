@@ -323,7 +323,7 @@ getCoOccur <- function(TargetSiteID,
                         biocomm, "_", colBio, "_CO.png")
 
     # Create (ggplot)
-    lab_comp <- paste0("Comparator samples selected from ", incaseLabel,
+    lab_comp <- paste0("Inside-the-case samples selected from ", incaseLabel,
                        " = ", i.Group)
 
     # scoring lines
@@ -354,7 +354,7 @@ getCoOccur <- function(TargetSiteID,
     # plot1, ggplot ####
     df.plot <- df.comp
     lab.sub <- paste0("Paired stressor/response samples considered not degraded ",
-                      "from inside-the-case (", lab.N, ").\n", lab.Score, ".")
+                      "from inside the case (", lab.N, ").\n", lab.Score, ".")
 
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
@@ -425,11 +425,6 @@ getCoOccur <- function(TargetSiteID,
     ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1), plot = p1,
                     dpi = plotdpi, width = plotW, height = plotH, units = plotunits)
 
-    # if (sum(scores) != -(length(scores))) {
-    #   plotname <- paste0(stressname, "_", biocomm, "_CO")
-    #   suppressWarnings(assign(plotname, p1))
-    # }
-
   }##FOR.j.END
 
   # Identify stressors ####
@@ -480,7 +475,14 @@ getCoOccur <- function(TargetSiteID,
                   RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                   Stressor, StressorValue, LoE, Score)
 
-  df.stressorMetadata <- dplyr::filter(df_stressinfo, Stressor %in% stressors)
+  sstv.name <- paste0("SSTVname.", tolower(biocomm))
+  sens.max <- paste0("SensMax.", tolower(biocomm))
+  sens.min <- paste0("SensMin.", tolower(biocomm))
+
+  df.stressorMetadata <- df_stressinfo %>%
+    dplyr::filter(Stressor %in% stressors) %>%
+    dplyr::select(Stressor, LogTransf, DirIncStress, Label, SSIndex,
+                  all_of(sstv.name), all_of(sens.max), all_of(sens.min))
 
   return(list(df_stressorMetadata = df.stressorMetadata,
               notEvaluated = notstressors,
