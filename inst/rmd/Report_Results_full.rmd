@@ -527,8 +527,9 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
     
     if (report_format == "html") {
       
-      tblCaption <- paste0("Detailed weight-of-evidence for each stressor ",
-                           "and sample.")
+      tblCaption <- paste0("<h5><strong>Detailed weight-of-evidence for each ",
+                           "stressor and sample.</strong></h5>")
+      cat(tblCaption)
 
       sketch <- htmltools::withTags(table(
         class = 'display',
@@ -556,7 +557,7 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
       ))
 
       DT::datatable(dfLoEbyStressor,
-                    caption = tblCaption,
+                    # caption = tblCaption,
                     container = sketch,
                     extensions = 'FixedColumns',
                     class = 'striped hover row-border',
@@ -567,9 +568,9 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
                                                  topEnd = 'search',
                                                  bottomStart = 'info',
                                                  bottomEne = 'paging'),
-                                   caption = list(captionSide = 'top',
-                                                  padding = '10px',
-                                                  fontWeight = 'bold'),
+                                   # caption = list(captionSide = 'top',
+                                   #                padding = '12px',
+                                   #                fontWeight = 'bold'),
                                    pageLength = 10,
                                    bSort = FALSE,
                                    scrollX = TRUE,
@@ -638,9 +639,9 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
     
     if (report_format == "html") {
       
-      tblCaption <- paste0("Detailed weight-of-evidence for each stressor ",
-                           "and sample.")
-      # cat(tblCaption)
+      tblCaption <- paste0("<h5><strong>Summary weight-of-evidence for each ",
+                           "stressor and sample.</strong></h5>")
+      cat(tblCaption)
       
       sketch <- htmltools::withTags(table(
         class = 'display',
@@ -658,7 +659,7 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
       ))
 
       DT::datatable(dfLoESummary,
-                    caption = tblCaption,
+                    # caption = tblCaption,
                     container = sketch,
                     extensions = 'FixedColumns',
                     class = 'striped hover row-border',
@@ -669,9 +670,9 @@ if ("bmi" %in% biocommlist) { # BMI were evaluated
                                                  topEnd = 'search',
                                                  bottomStart = 'info',
                                                  bottomEne = 'paging'),
-                                   caption = list(captionSide = 'top',
-                                                  padding = '10px',
-                                                  fontWeight = 'bold'),
+                                   # caption = list(captionSide = 'top',
+                                   #                padding = '12px',
+                                   #                fontWeight = 'bold'),
                                    pageLength = 10,
                                    bSort = FALSE,
                                    scrollX = TRUE,
@@ -743,70 +744,70 @@ for (s in seq_along(paramName)) {
   all.img <- list.files(file.path(dir.biocomm, stressName), pattern = ".png",
                         full.names = TRUE)
 
-  cat(paste0("<br><h4><strong><u>", stressLabel, "</u></strong></h4><br>"))
+  cat(paste0("<br><h3><strong><em>", stressLabel, "</em></strong></h3>"))
   
   if (length(all.img) > 0) {
     
     if (length(all.img[grepl("CO.png$", all.img)]) == 1) {
       fn <- all.img[grep("CO.png$", all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nCo-occurrence image is not available.\n")
+      cat("\nCo-occurrence image is not available.\n\n")
     }
     
     if (length(all.img[grepl("SU.png$", all.img)]) == 1) {
       fn <- all.img[grep("SU.png$", all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nSufficiency image is not available.\n")
+      cat("\nSufficiency image is not available.\n\n")
     }
     
     if (length(all.img[grepl(paste0(bioIndex, "_GI.png$"), all.img)]) == 1) {
       fn <- all.img[grep(paste0(bioIndex, "_GI.png$"), all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nBiological gradient inside-the-case image is not available.\n")
+      cat("\nBiological gradient inside-the-case image is not available.\n\n")
     }
     
     if (length(all.img[grepl(paste0(bioIndex, "_GO.png$"), all.img)]) == 1) {
       fn <- all.img[grep(paste0(bioIndex, "_GO.png$"), all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nBiological gradient outside-the-case image is not available.\n")
+      cat("\nBiological gradient outside-the-case image is not available.\n\n")
     }
     
-    # if (all.img[grepl("TS.png$", all.img)] == 1) {
-    #   fn <- all.img[grep("TS.png$", all.img)]
-    #   cat(paste0("<img src=", fn, ">"))
+    # if (length(all.img[grepl(paste0(bioIndex, "_TS.png$"), all.img)]) == 1) {
+    #   fn <- all.img[grep(paste0(bioIndex, "_TS.png$"), all.img)]
+    #   cat(paste0("<img src=", fn, "><br>"))
     # } else {
-    #   cat("Time sequency image is not available.\n")
+    #   cat("Time sequence image is not available.\n\n")
     # }
     
     if (length(all.img[grepl("VPSSTV.png$", all.img)]) == 1) {
       fn <- all.img[grep("VPSSTV.png$", all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nVerified predictions using stressor-specific tolerance values image is not available.\n")
+      cat("\nVerified predictions using stressor-specific tolerance values image is not available.\n\n")
     }
     
     if (length(all.img[grepl("VIbox.png$", all.img)]) == 1) {
       fn <- all.img[grep("VIbox.png$", all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nVerified predictions using stressor-specific indices box plot image is not available.\n")
+      cat("\nVerified predictions using stressor-specific indices box plot image is not available.\n\n")
     }
     
     if (length(all.img[grepl("VIreg.png$", all.img)]) == 1) {
       fn <- all.img[grep("VIreg.png$", all.img)]
-      cat(paste0("<img src = ", fn, " />"))
+      cat(paste0("<img src = ", fn, " /><br>"))
     } else {
-      cat("\nVerified predictions using stressor-specific indices logistic regression image is not available.\n")
+      cat("\nVerified predictions using stressor-specific indices logistic regression image is not available.\n\n")
     }
     
     cat("<br>")
     
   } else {
-    msg_files <- paste0("No supporting image files exist for this stressor.\n")
+    msg_files <- paste0("No supporting image files exist for this stressor.\n\n")
     cat(msg_files)
   }##IF.img.length.START
   
