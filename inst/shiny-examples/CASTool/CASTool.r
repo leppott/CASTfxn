@@ -280,14 +280,12 @@ for (b in seq_along(biocommlist)) {
     bmiModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiModParams), ", "))
     bmiSuffInds     <- as.numeric(dplyr::select(data_CASTmeta, bmiSuffInds))
     bmiPctAmbInds   <- as.numeric(dplyr::select(data_CASTmeta, bmiPctAmbInds))
-    # calcBMIRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcBMIRelAbund))
   }
   if (bio == "algae") {
     alg_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_thres),
                                                             ", ")))
     alg_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_text), ", "))
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
-    # calcAlgRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcAlgRelAbund))
     algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
   }
   if (bio == "fish") {
@@ -295,7 +293,6 @@ for (b in seq_along(biocommlist)) {
                                                              ", ")))
     fish_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_text), ", "))
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
-    # calcFishRelAbund <- as.logical(dplyr::select(data_CASTmeta, calcFishRelAbund))
     fishModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishModParams), ", "))
   }
 }
@@ -352,7 +349,7 @@ if (basename(fn.cluster) != "NA") {
 ## Get site location ####
 if (basename(fn.Sites.Info) != "NA") {
   data_Sites <- readCASToolData(fn = fn.Sites.Info, NAs = c("", "na", "NA", "N/A"))
-  if ("ClusterID" %in% colnames(data_Sites)) {
+  if ("ClusterID" %in% colnames(data_Sites)) { # Replace existing clusterID to ensure match
     data_Sites <- dplyr::select(!ClusterID)
   }
   data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
@@ -362,14 +359,14 @@ if (basename(fn.Sites.Info) != "NA") {
     if (outcaseColName %in% colnames(data_Sites)) {
       data_Sites <- dplyr::rename(data_Sites, OutcaseCol = all_of(outcaseColName))
     } else {
-      msg <- paste0("Replacing ", outcaseColName, " with OutcaseCol with values ",
-                    "equal to ", outcaseLabel, ".")
+      msg <- paste0("Replacing ", outcaseColName, " with 'OutcaseCol' having ",
+                    "values equal to '", outcaseLabel, "'.")
       message(msg)
-      data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
+      data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseColName)
     }
   } else {                                 # outside the case is not defined
-    msg <- paste0("Adding 'OutcaseCol' column to site file with values equal to ",
-                  outcaseLabel, ".")
+    msg <- paste0("Adding 'OutcaseCol' column to site file with values equal to '",
+                  outcaseLabel, "'.")
     message(msg)
     data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
     outcaseColName <- "OutcaseCol"
@@ -380,6 +377,9 @@ if (basename(fn.Sites.Info) != "NA") {
     data_Sites <- dplyr::rename(data_Sites, IncaseCol = all_of(incaseColName))
   } else {
     if (useBC == TRUE) {
+      msg <- paste0("Bray-Curtis dissimilarity distance matrix must be available.")
+      message(msg)
+    } else {
       msg <- paste0("Either incaseColName must be specified or useBC must be TRUE, ",
                     "and required files provided")
       message(msg)
