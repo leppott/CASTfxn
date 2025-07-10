@@ -152,7 +152,7 @@ getSufficiency <- function(TargetSiteID,
   bio_alpha   <- rev(unlist(plotvarsIn$Alpha)) # Degraded, Not degraded
   targ_line_col <- plotvars$Fill[plotvars$Type == "target"]
   targ_line_lty <- 2
-  targ_line_lwd <- 1
+  targ_line_lwd <- 0.5
 
   # Get dataset
   df_data <- df_data %>%
@@ -261,7 +261,7 @@ getSufficiency <- function(TargetSiteID,
       subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
       subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
-      captionSR <- paste(paste0("All comparator samples (n=", n_cc_df_plot, ")."),
+      captionSR <- paste(paste0("All inside-the-case samples (n=", n_cc_df_plot, ")."),
                          paste0("Score = ", paste(j_SR_score, collapse = ", "), "."),
                          sep = "\n")
 
@@ -351,9 +351,6 @@ getSufficiency <- function(TargetSiteID,
                         plot = p1, dpi = plotdpi, width = plotW, height = plotH,
                         units = plotunits)
       }
-
-      # plotname <- paste0(str, "_", biocomm, "_SU")
-      # suppressWarnings(assign(plotname, p1))
 
     } ##IF.PLOT.END
 
