@@ -113,10 +113,15 @@ getVerifiedPredictions <- function(TargetSiteID,
   # Outer loop over stressors with SSTVs
   if (length(stressors.sstv) > 0) {
     ## Subset stressInfo ----
+    sstv.name <- paste0("SSTVname.", tolower(biocomm))
+    sstv.sens.max <- paste0("SensMax.", tolower(biocomm))
+    sstv.sens.min <- paste0("SensMin.", tolower(biocomm))
     df_SSTV <- df_stressinfo %>%
+      dplyr::rename(SSTVname := {{sstv.name}},
+                    SensMin := {{sstv.sens.min}},
+                    SensMax := {{sstv.sens.max}}) %>%
       dplyr::filter(Stressor %in% stressors.sstv) %>%
-      dplyr::select(Stressor, LogTransf, SSTVname, SensMin, SensMax, TolMin,
-                    TolMax, Label)
+      dplyr::select(Stressor, LogTransf, SSTVname, SensMin, SensMax, Label)
     df_SSTV <- unique(df_SSTV)
 
     SSTVnames <- as.vector(unique(df_SSTV$SSTVname))
@@ -486,18 +491,13 @@ getVerifiedPredictions <- function(TargetSiteID,
         str_title <- paste0(TargetSiteID, ": Verified prediction "
                             ,"line of evidence for ", stressorLabel)
         str_title <- stringr::str_wrap(str_title, 100)
-        str_subtitle <- paste0("Do the data support the prediction that",
-                               " the abundance and richness of sensitive",
-                               " taxa will be lower than that observed at",
-                               " comparator sites?")
+        str_subtitle <- paste0("Do the data support the prediction that ",
+                               "the abundance and richness of sensitive ",
+                               "taxa will be lower than that observed in ",
+                               "not degraded inside-the-case samples?")
         str_subtitle <- stringr::str_wrap(str_subtitle, 100)
         legendtitle <- "Samples"
         str_xlab  <- ""
-
-        # Arrow labels
-        # aLabPos <- "1"
-        # aLabZero <- "0"
-        # aLabNeg <- "-1"
 
         ##PLOT VARIABLES ~ END
 
@@ -539,12 +539,12 @@ getVerifiedPredictions <- function(TargetSiteID,
                                       values = bio_alpha, drop = TRUE) +
           ggplot2::labs(title = str_title, subtitle = str_subtitle) +
           ggplot2::theme_bw() +
-          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 8),
-                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 6)) +
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
+                         plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)) +
           ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                         axis.text.x = ggplot2::element_text(size = 6),
+                         axis.text.x = ggplot2::element_text(size = 8),
                          axis.title.y = ggplot2::element_blank(),
-                         axis.text.y = ggplot2::element_text(size = 6),
+                         axis.text.y = ggplot2::element_text(size = 8),
                          axis.ticks.y = ggplot2::element_blank())
 
         p_tv <- p_tv +
