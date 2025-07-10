@@ -127,7 +127,7 @@ getVPSSI <- function(TargetSiteID,
     ## Plot, Variables, Target Site Line
     targ_line_col <- bio_col[1]
     targ_line_lty <- 2
-    targ_line_lwd <- 1
+    targ_line_lwd <- 0.5
 
     ## Plot, arrow labels
     aLabPos <- "1"
@@ -180,7 +180,7 @@ getVPSSI <- function(TargetSiteID,
       df.data <- merge(df.comp, df_bioMetricData,
                        by = c("StationID", "RespSampleID", "RespSampleDate",
                               colBio, "Quality"))
-      str_comp <- "comparator samples"
+      str_comp <- "inside-the-case samples"
       rm(df.comp)
 
       # Prep data for plots ----
@@ -355,7 +355,7 @@ getVPSSI <- function(TargetSiteID,
           subtitleSR <-"Are stressor-specific index levels sufficient to explain the observed impairment?"
           subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
-          captionSR <- paste(paste0("All comparator samples (n = ", n_cc_df_plot, ")."),
+          captionSR <- paste(paste0("All inside-the-case samples (n = ", n_cc_df_plot, ")."),
                              paste0("Score = ", paste(j_VPlog_score, collapse = ", "), "."),
                              sep = "\n")
 
@@ -530,16 +530,16 @@ getVPSSI <- function(TargetSiteID,
       str_xlab  <- ssi.name
       lab.N <- paste0("n = ", unique(df.scores.i$n))
 
-      str_caption <- paste0("Comparator samples with paired stressor/response samples",
-                            " (", lab.N, ").\n", lab.Score, ".\n*Samples rated ",
-                            "not degraded or degraded based on overall biological index.")
+      str_caption <- paste0("Inside-the-case samples with paired stressor/response ",
+                            "samples (", lab.N, ").\n", lab.Score, ".\n*Sample ",
+                            "quality rated based on overall biological index.")
 
       msg <- paste0("printing boxplot for ", ssi.name)
       message(msg)
 
       targetvals <- as.numeric(unlist(df.scores.i[, "SSIValue"]))
       i.Group <- as.numeric(unique(df.scores.i$IncaseCol))
-      str_ylab <- paste0("Comparator samples selected from ", incaseLabel,
+      str_ylab <- paste0("Inside-the-case samples selected from ", incaseLabel,
                          " = ", i.Group)
       xseg <- i.Group + 0.5
 
