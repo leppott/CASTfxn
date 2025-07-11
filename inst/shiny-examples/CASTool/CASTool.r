@@ -349,10 +349,9 @@ if (basename(fn.cluster) != "NA") {
 ## Get site location ####
 if (basename(fn.Sites.Info) != "NA") {
   data_Sites <- readCASToolData(fn = fn.Sites.Info, NAs = c("", "na", "NA", "N/A"))
-  if ("ClusterID" %in% colnames(data_Sites)) { # Replace existing clusterID to ensure match
-    data_Sites <- dplyr::select(!ClusterID)
+  if (!("ClusterID" %in% colnames(data_Sites))) {
+    data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
   }
-  data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
 
   # Rename or add OutcaseCol to sites file
   if (!is.na(outcaseColName)) {             # outside the case is defined
