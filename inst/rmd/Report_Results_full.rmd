@@ -18,6 +18,7 @@ output:
 #   biocommlist: "bmi, alg, fish"
 #   useBMI: "useBMI"
 #   useAlg: "useAlg"
+#   useFish: "useFish"
 #   useBC: "useBC"
 #   removeOutliers: "removeOutliers"
 #   samplim: "20"
@@ -25,8 +26,9 @@ output:
 #   DOlim: "4"
 #   pHlimLow: "5"
 #   pHlimHigh: "9"
-#   bmiIndex: "CSCI"
+#   bmiIndex: "BIBI100"
 #   algIndex: "MMI Hybrid"
+#   fishIndex: "FIBI"
 #   clusterfile: "BlahBlah"
 #   dir_results: "dir_results"
 editor_options: 
@@ -331,7 +333,7 @@ cause of impairment.
 dir.sub3 <- "SiteInfo"
 fn_bmiIndexGraphic <- file.path(dir_results, TargetSiteID, dir.sub3, 
                                 paste0(TargetSiteID, 
-                                       "_BMI_IndexBoxPlotsByCase.png"))
+                                       "_BMI_IndexBoxplotsByCase.png"))
 #
 if ("bmi" %in% biocommlist) {
   
@@ -750,56 +752,56 @@ for (s in seq_along(paramName)) {
     
     if (length(all.img[grepl("CO.png$", all.img)]) == 1) {
       fn <- all.img[grep("CO.png$", all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nCo-occurrence image is not available.\n\n")
     }
     
     if (length(all.img[grepl("SU.png$", all.img)]) == 1) {
       fn <- all.img[grep("SU.png$", all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nSufficiency image is not available.\n\n")
     }
     
     if (length(all.img[grepl(paste0(bioIndex, "_GI.png$"), all.img)]) == 1) {
       fn <- all.img[grep(paste0(bioIndex, "_GI.png$"), all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nBiological gradient inside-the-case image is not available.\n\n")
     }
     
     if (length(all.img[grepl(paste0(bioIndex, "_GO.png$"), all.img)]) == 1) {
       fn <- all.img[grep(paste0(bioIndex, "_GO.png$"), all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nBiological gradient outside-the-case image is not available.\n\n")
     }
     
     # if (length(all.img[grepl(paste0(bioIndex, "_TS.png$"), all.img)]) == 1) {
     #   fn <- all.img[grep(paste0(bioIndex, "_TS.png$"), all.img)]
-    #   cat(paste0("<img src=", fn, "><br>"))
+    #   cat(paste0("<img src='", fn, "'><br>"))
     # } else {
     #   cat("Time sequence image is not available.\n\n")
     # }
     
     if (length(all.img[grepl("VPSSTV.png$", all.img)]) == 1) {
       fn <- all.img[grep("VPSSTV.png$", all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nVerified predictions using stressor-specific tolerance values image is not available.\n\n")
     }
     
     if (length(all.img[grepl("VIbox.png$", all.img)]) == 1) {
       fn <- all.img[grep("VIbox.png$", all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nVerified predictions using stressor-specific indices box plot image is not available.\n\n")
     }
     
     if (length(all.img[grepl("VIreg.png$", all.img)]) == 1) {
       fn <- all.img[grep("VIreg.png$", all.img)]
-      cat(paste0("<img src = ", fn, " /><br>"))
+      cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nVerified predictions using stressor-specific indices logistic regression image is not available.\n\n")
     }
