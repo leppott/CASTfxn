@@ -141,6 +141,7 @@ getTimeSeq <- function(TargetSiteID,
   totplots <- length(stressors) * length(metricData)
 
   # Loop over stressors
+  msgNum <- 0
   for (s in seq_along(stressors)) {
     stressname <- stressors[s]
     stressLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
@@ -164,6 +165,7 @@ getTimeSeq <- function(TargetSiteID,
     for (r in seq_along(metricData)) {
       metricname <- metricData[r]
       metricLabel <- df_respinfo$MetricLabel[df_respinfo$MetricName == metricname]
+      msgNum <- msgNum + 1
 
       # Create filename for graphic
       fn = paste0(TargetSiteID, "_", make.names(stressname), "_",
@@ -200,7 +202,7 @@ getTimeSeq <- function(TargetSiteID,
                         SampleDate = seq(minDate, maxDate, by = "day"))
       # LCN added to set desired date range from the first ggplot call
 
-      msg <- paste0("Plotting bar graphs (", count, "/", totplots, ") ",
+      msg <- paste0("Plotting bar graphs (", msgNum, "/", totplots, ") ",
                     stressname, " and ", metricname)
       message(msg)
 
