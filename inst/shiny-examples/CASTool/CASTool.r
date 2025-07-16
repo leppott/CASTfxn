@@ -197,7 +197,8 @@ plot_units <- "in"
 # region <- "WA" # options: SMC, AZ, WA, OR
 
 # Read CASTool_Metadata.xlsx
-fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
+#fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
+fn.CASTmeta   <- file.path(dir_data, "CASTool_Metadata.xlsx")
 data_CASTmeta <- readxl::read_excel(fn.CASTmeta, na = "", trim_ws = TRUE)
 data_CASTmeta <- data_CASTmeta %>%
   dplyr::select(Variable, all_of(region)) %>%
@@ -244,7 +245,6 @@ fn.meas.data         <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.meas
 fn.model.info        <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.model.info))
 fn.model.data        <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.model.data))
 fn.bmi.metrics       <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bmi.metrics))
-fn.bmi.qualifiers    <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bmi.qualifiers))
 fn.bmi.metrics.info  <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bmi.metrics.info))
 fn.bmi.raw           <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bmi.raw))
 fn.bmi.MT            <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.bmi.MT))
@@ -1271,7 +1271,7 @@ for (site in seq_along(1:nrow(df_targets))) {
     message(msg)
 
     gaps <- cbind.data.frame("getAvailData", "Number detects/responses", 0, msg)
-    colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
+    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
