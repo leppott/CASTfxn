@@ -367,8 +367,8 @@ getCoOccur <- function(TargetSiteID,
       ggplot2::coord_flip() +
       ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
                           lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
-      ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
-                          lty = 2, na.rm = TRUE) +
+      # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
+      #                     lty = 2, na.rm = TRUE) +
       ggplot2::geom_jitter(ggplot2::aes(color = Quality, shape = Quality,
                                            fill = Quality), alpha = 0.5,
                               na.rm = TRUE, width = 0.25, height = 0.01) +
