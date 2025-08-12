@@ -32,21 +32,17 @@
 getAvailableDataTypes <- function(TargetSiteID,
                                   df_SampSummary,
                                   df_stress,
-                                  measStressSamps,
-                                  modStressSamps = FALSE,
                                   biocommlist,
                                   dir_results) {##FUNCTION.START
 
   boo.DEBUG <- FALSE
 
   if(boo.DEBUG) {
-    TargetSiteID = TargetSiteID
-    df_SampSummary = data_sampSummary
-    df_stress = data_Stress
-    measStressSamps = measStressData
-    modStressSamps = modelStressData
-    biocommlist = biocommlist
-    dir_results = dir_results
+    TargetSiteID <- TargetSiteID
+    df_SampSummary <- dplyr::mutate(data_sampSummary, ModeledSampleID = NA)
+    df_stress <- data_Stress
+    biocommlist <- biocommlist
+    dir_results <- dir_results
   }
 
   # define pipe and not_all_na function
@@ -63,39 +59,36 @@ getAvailableDataTypes <- function(TargetSiteID,
   gapsCols <- c("fxnname", "condition", "result", "comment")
   gaps <- as.data.frame(matrix(ncol = 4, nrow = 0, dimnames = list(NULL, gapsCols)))
 
-  avail.data <- data_sampSummary %>%
+  # ID stressor samples ----
+  avail.data <- df_SampSummary %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::select(ends_with("SampleID")) %>%
     dplyr::select_if(not_all_na)
   samptypes <- names(avail.data)
 
-  poss.stressSamps <- c("ChemistrySampleID", "FieldSampleID", "HabitatSampleID",
-                        "ModeledSampleID")
+  core.resp.colnames <- c("StationID", "COMID", "OutcaseCol", "IncaseCol",
+                          "SampleDate", "BMISampleID", "AlgSampleID", "FishSampleID")
 
-  if (measStressSamps & modStressSamps) {
-    stressSamps <- c("ChemistrySampleID", "FieldSampleID", "HabitatSampleID",
-                     "ModeledSampleID")
-  } else if (measStressSamps) {
-    stressSamps <- c("ChemistrySampleID", "FieldSampleID", "HabitatSampleID")
-  } else {
-    stressSamps <- "ModeledSampleID"
+  availStressSamps <- setdiff(samptypes, core.resp.colnames)
+  missingStressSamps <- setdiff(colnames(df_SampSummary), availStressSamps)
+  missingStressSamps <- setdiff(missingStressSamps, core.resp.colnames)
+
+  if (length(missingStressSamps) > 0) {
+    # Write missing stressors as data gaps (if any)
+    for (m in seq_along(missingStressSamps)) {
+      missing <- missingStressSamps[m]
+      gap.missing <- cbind.data.frame("general", missing, 0, "No samples available.")
+      colnames(gap.missing) <- c("fxnname", "condition", "result", "comment")
+      gaps <- rbind(gaps, gap.missing)
+      rm(gap.missing)
+    }
   }
-
-  availStressSamps <- intersect(samptypes, poss.stressSamps)
-  missingStressSamps <- setdiff(poss.stressSamps, samptypes)
 
   if (length(availStressSamps) == 0) {
     noStressors <- TRUE
     siteDetectsAll <- NULL
   } else {
     noStressors <- FALSE
-    for (m in seq_along(missingStressSamps)) {
-      missing <- missingStressSamps[m]
-      gap.stress <- cbind.data.frame("general", missing, 0, "No samples available.")
-      colnames(gap.stress) <- c("fxnname", "condition", "result", "comment")
-      gaps <- rbind(gaps, gap.stress)
-      rm(gap.stress)
-    }
     # Prepare data sets of all stressors ever detected at the target site
     siteStressAll <- df_stress %>%
       dplyr::select(!c(LogTransf, TransfResult, IQRmethod, SDmethod, Outlier)) %>%
@@ -104,7 +97,9 @@ getAvailableDataTypes <- function(TargetSiteID,
       tidyr::pivot_wider(names_from = StdParamName,
                          values_from = ResultValue) %>%
       dplyr::select_if(not_all_na)
+
     siteDetectsAll <- as.vector(colnames(siteStressAll))
+
     if (length(siteDetectsAll) != 0) {
       siteDetectsAll <- siteDetectsAll[!(siteDetectsAll %in%
                                            c("StationID", "StressSampleID",
@@ -113,16 +108,14 @@ getAvailableDataTypes <- function(TargetSiteID,
       msg <- paste("No detected stressors identified for", TargetSiteID)
       message(msg)
 
-      gaps <- cbind.data.frame("getAvailData", "Number of detects", 0, msg)
-      colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      gaps.stress <- cbind.data.frame("getAvailData", "Number of detects", 0, msg)
+      colnames(gaps.stress) <- c("fxnname", "condition", "result", "comment")
+      gaps <- rbind(gaps, gaps.stress)
       noStressors <- TRUE
     }
   }
 
+  # ID response samples ----
   for (b in seq_along(biocommlist)) {
     bio <- tolower(biocommlist[b])
     if (bio == "bmi") {
@@ -161,6 +154,8 @@ getAvailableDataTypes <- function(TargetSiteID,
   }
 
   if (nrow(gaps) > 0) {
+    fn.gaps <- file.path(dir_results, TargetSiteID,
+                         paste0(TargetSiteID, "_datagaps.tab"))
     if (file.exists(fn.gaps)) {
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
