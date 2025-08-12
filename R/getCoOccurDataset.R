@@ -113,12 +113,11 @@ getCoOccurDataset <- function(df_sites,
       dplyr::filter(!is.na(ResultValue)) %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate,
                     StdParamName, ResultValue) %>%
-      dplyr::group_by(StationID, StressSampleID, StressSampleDate,
-                      StdParamName) %>%
-      dplyr::summarise(meanResult = mean(ResultValue, na.rm = TRUE),
-                        .groups = "drop_last") %>%
-      dplyr::rename(ResultValue = meanResult) %>%
-      tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
+      dplyr::group_by(StationID, StressSampleID, StdParamName) %>%
+      dplyr::summarise(StressSampleDate = min(StressSampleDate),
+                       meanResult = mean(ResultValue, na.rm = TRUE),
+                       .groups = "drop_last") %>%
+      tidyr::pivot_wider(names_from = StdParamName, values_from = meanResult)
     measColnames <- names(df_meas)
     measColnames <- measColnames[!(measColnames %in% c("StationID",
                                                        "StressSampleID",
@@ -134,13 +133,13 @@ getCoOccurDataset <- function(df_sites,
                                               by = c("StationID" = "StationID",
                                                      "RespSampleDate" = "StressSampleDate"),
                                               match_fun = list(`==`, function(x, y)
-                                                (x - y >= 0 & x - y <= lagdays[1]) |
-                                                  abs(x - y) <= lagdays[2])) %>%
+                                                (y - x >= -lagdays[1] &
+                                                   y - x <= lagdays[2]))) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
       dplyr::rename(StationID = StationID.x)
 
     # Select the minimum diffDays match only (avoids more than 1 match)
-    df_coOccur3 <- unique(df_coOccur2) %>%
+    df_coOccur <- unique(df_coOccur2) %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate,
                     StressSampleID) %>%
       dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
@@ -148,30 +147,36 @@ getCoOccurDataset <- function(df_sites,
       dplyr::filter(mindiff == abs(diff)) %>%
       dplyr::distinct(StationID, StressSampleDate, RespSampleDate, StressSampleID)
 
-    df_coOccur <- unique(merge(df_coOccur3, df_modresp,
+    df_coOccur <- unique(merge(df_coOccur, df_modresp,
                                by = c("StationID", "RespSampleDate"),
                                all.x = TRUE))
     df_coOccur <- unique(merge(df_coOccur, df_meas,
                                by = c("StationID", "StressSampleDate",
                                       "StressSampleID"),
                                all.x = TRUE))
-    rm(df_coOccur2, df_coOccur3)
+    rm(df_coOccur2)
   } else if (exists("df_meas")) {
-    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_resp, df_meas,
+    df_coOccur <- fuzzyjoin::fuzzy_left_join(df_resp, df_meas,
                                               by = c("StationID" = "StationID",
                                                      "RespSampleDate" = "StressSampleDate"),
                                               match_fun = list(`==`, function(x, y)
-                                                (x - y >= 0 & x - y <= lagdays[1]) |
-                                                  abs(x - y) <= lagdays[2])) %>%
+                                                (y - x >= -lagdays[1] &
+                                                   y - x <= lagdays[2]))) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
       dplyr::rename(StationID = StationID.x)
     # Select the minimum diffDays match only (avoids more than 1 match)
-    df_coOccur <- df_coOccur2 %>%
-      dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
-      dplyr::mutate(mindiff = min(abs(diff))) %>%
-      dplyr::filter(mindiff == abs(diff)) %>%
-      dplyr::select(!c(`StationID.y`, diff, mindiff))
-    rm(df_coOccur2)
+    # Should no longer be necessary -- 20250804 ARL
+    # df_coOccur2 <- df_coOccur %>%
+    #   dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+    #                 RespSampleDate) %>%
+    #   dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
+    #   dplyr::group_by(StationID, StressSampleID, RespSampleID) %>%
+    #   dplyr::summarize(mindiff = min(abs(diff)), .groups = "drop_last") %>%
+    #   dplyr::filter(mindiff == abs(diff)) %>%
+    #   dplyr::select(!c(`StationID.y`, diff, mindiff))
+    #
+    # df_coOccur <- merge(df_CoOccur, df_coOccur2)
+    # rm(df_coOccur2)
   } else {
     df_coOccur <- df_modresp
   }
@@ -194,13 +199,6 @@ getCoOccurDataset <- function(df_sites,
                     RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)) %>%
       dplyr::select_if(not_all_na)
   }
-
-  # Add field RespSampFlag, then rearrange field order
-  # For San Diego data, RespSampFlag does appear in the dataframe
-  # if (!("RespSampFlag" %in% colnames(df_coOccur))) {
-  #   df_coOccur$RespSampFlag <- NA
-  #   df_coOccur <- df_coOccur[, c(1:8, ncol(df_coOccur), 9:(ncol(df_coOccur) - 1))]
-  # }
 
   df_sites <- dplyr::select(df_sites, StationID, ends_with("caseCol"))
   df_coOccur <- merge(df_sites, df_coOccur)
