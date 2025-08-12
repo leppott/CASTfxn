@@ -158,26 +158,32 @@ getBioStressorResponses <- function(TargetSiteID,
 
   ngraph <- 0
 
-  #QC
-  if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
-    # p
-    p <- 1
-    #q
-    q <- 1
-  } ##IF.boo.DEBUG.END
-
-  # move from plotting section
   #p
   p.len <- length(stressors)
   #q
   q.len <- length(BioResp)
+
+  # Create scores dataframe ####
+  fn_scores <- paste0(TargetSiteID, "_", biocomm, "_BG_Scores.tab")
+  fp_scores <- file.path(dir_path, fn_scores)
+
+  df.sc.sr <- as.data.frame(cbind("StationID" = as.character(),
+                                  "biocomm" = as.character(),
+                                  "stressName" = as.character(),
+                                  "stressLabel" = as.character(),
+                                  "respName" = as.character(),
+                                  "respLabel" = as.character(),
+                                  "n_site" = as.numeric(),
+                                  "n_comp" = as.numeric(),
+                                  "SRLin_Score_inside" = as.numeric(),
+                                  "n_out" = as.numeric(),
+                                  "SRLin_Score_outside" = as.numeric()))
 
   # FOR.p ####
   for (p in 1:length(stressors)) {
 
     stressName <- stressors[p]
     varFlag <- 1
-    varFlag.b <- 1
 
     log.yn <- as.logical(df_stressinfo$LogTransf[df_stressinfo$Stressor == stressName])
 
@@ -203,17 +209,10 @@ getBioStressorResponses <- function(TargetSiteID,
       }
     }
 
-    # DEBUG
-    if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
-      message(paste0("p; ", p, "; ", stressors[p]))
-      flush.console()
-    } ##IF.boo.DEBUG.END
-
     # FOR.q ####
     for (q in 1:length(BioResp)) {
 
       varFlag <- 1
-      varFlag.b <- 1
       boo_corr <- TRUE
       boo_all <- TRUE
       respName <- BioResp[q]
@@ -243,13 +242,6 @@ getBioStressorResponses <- function(TargetSiteID,
         # higher than good values; slope should be negative
         exp.dir <- -1
       }
-
-      # QC
-      if (boo.DEBUG == TRUE) { ##IF.boo.DEBUG.START
-        message(paste0("Item (", pq, "/", pq.len, ")"))
-        message(paste0("q; ", q, "; ", respName))
-        flush.console()
-      } ##IF.boo.DEBUG.END
 
       # Create df_plot_all & QC
       df_plot_all <- df_AllData %>%
@@ -375,7 +367,6 @@ getBioStressorResponses <- function(TargetSiteID,
       }
 
       # QC for NA/NAN/Inf
-      # 20190606, log1p of 0 or negative gives errors for linear model (lm) below.
       if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
         df_plot_all[!is.finite(df_plot_all[, stressName]), stressName]         <- NA
       }
@@ -394,7 +385,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Cluster
       # LM and Corr, Cluster ####
-      # ~~~ Check QC of Corr Table at end of code ~~~~
       if (nrow(df_plot_cl[complete.cases(df_plot_cl), ]) > 2) { ##IF~nrow(df_plot_cl)~START
 
         if (stats::sd(df_plot_cl[, stressName], na.rm = TRUE) == 0) { # Vertical line
@@ -484,7 +474,6 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # ALL
       # LM and Corr, All ####
-      # ~~~ Check QC of Corr Table at end of code ~~~~
       if(nrow(df_plot_all[complete.cases(df_plot_all), ]) > 2) { ##IF~nrow(df_plot_cl)~START
 
         if(stats::sd(df_plot_all[, stressName], na.rm = TRUE) == 0) { # Vertical line
@@ -548,7 +537,7 @@ getBioStressorResponses <- function(TargetSiteID,
           names(df.corr_all) <- cn_cor_pref
           pval.corr_all <- signif(c1S_all$p.value, 2)
 
-          slope.dir_all <- sign(slope_all) #1 = positive, -1 = negative
+          slope.dir_all <- sign(slope_all) # 1 = positive, -1 = negative
 
         } # End std dev If eval statement
 
@@ -641,7 +630,6 @@ getBioStressorResponses <- function(TargetSiteID,
               txt.score_all <- "0"
               sr.score_all = 0
             }##IF~length~START
-
           } else { # boo_all == FALSE
             txt.score_all <- "NE"
             sr.score_all = NA
@@ -669,74 +657,17 @@ getBioStressorResponses <- function(TargetSiteID,
                                         "n_out" = n_str_all,
                                         "SRLin_Score_outside" = sr.score_all))
 
-        if (varFlag.b == 1) { # First time through this loop
+        if (p*q == 1) { # First time through this loop
           df.sc.sr <- df.temp2
         } else {
           df.sc.sr <- rbind(df.sc.sr, df.temp2)
         }
 
-        df.sc.sr$SRLin_Score_outside <- ifelse(!is.na(df.sc.sr$SRLin_Score_outside),
-                                               as.character(df.sc.sr$SRLin_Score_outside),
-                                               "NE")
-        df.sc.sr$SRLin_Score_inside <- ifelse(!is.na(df.sc.sr$SRLin_Score_inside),
-                                              as.character(df.sc.sr$SRLin_Score_inside),
-                                              "NE")
-
-        # Pivot longer site data before merging with df.sc.sr
-        df_SiteDataStrLong <- df_SiteData %>%
-          dplyr::select(StationID, StressSampleID, StressSampleDate,
-                        RespSampleID, RespSampleDate, all_of(stressName)) %>%
-          tidyr::pivot_longer(cols = c(all_of(stressName)),
-                              names_to = "stressName",
-                              values_to = "stressVal")
-        df_SiteDataRespLong <- df_SiteData %>%
-          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                        RespSampleDate, all_of(respName), Quality) %>%
-          tidyr::pivot_longer(cols = c(all_of(respName)), names_to = "respName",
-                              values_to = "respVal")
-        df_SiteDataLong <- merge(df_SiteDataStrLong, df_SiteDataRespLong,
-                                 by = c("StationID", "StressSampleID",
-                                        "StressSampleDate", "RespSampleID",
-                                        "RespSampleDate"))
-        rm(df_SiteDataStrLong, df_SiteDataRespLong)
-
-        df.sc.sr <- merge(df_SiteDataLong, df.sc.sr,
-                          by = c("StationID", "stressName", "respName"),
-                          all.x = TRUE)
-        df.sc.sr <- df.sc.sr %>%
-          dplyr::mutate(SRLin_Score_inside = ifelse(is.na(stressVal),
-                                                    "NE", SRLin_Score_inside),
-                        SRLin_Score_outside = ifelse(is.na(stressVal),
-                                                    "NE", SRLin_Score_outside)) %>%
-          dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                        RespSampleDate, biocomm, stressName, stressLabel, stressVal,
-                        respName, respLabel, respVal, Quality, n_site, n_comp,
-                        SRLin_Score_inside, SRLin_Score_outside)
-
-        #if(boo.pryr==TRUE){
-        fn_scores <- paste0(TargetSiteID, "_", biocomm, "_BG_Scores.tab")
-        fp_scores <- file.path(dir_path, fn_scores)
-
-        boo.Append    <- TRUE
-        boo.col.names <- FALSE
-        if (file.exists(fp_scores) == FALSE) {
-          # can't rely on pq==1 as that may not have data
-          boo.Append    <- !boo.Append
-          boo.col.names <- !boo.col.names
-        }
-
-        # Add biocomm, 20190425
-        utils::write.table(df.sc.sr, fp_scores,
-                           sep = "\t", quote = FALSE, row.names = FALSE,
-                           col.names = boo.col.names, append = boo.Append)
-        #}
-        # Moved from inside FOR.f
       } else {
         txt.score_all <- "NE"
         txt.score_cl <- "NE"
         sr.score_all <- NA
         sr.score_cl <- NA
-        # txt.score <- "No Data"
         msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
                              " (", p, "/", p.len, "), ", respName, " (",
                              q, "/", q.len, "); score (all; cluster) = ",
@@ -1059,11 +990,55 @@ getBioStressorResponses <- function(TargetSiteID,
 
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       varFlag <- 0
-      varFlag.b <- 0 # Set varFlag.b to zero
 
     } ##FOR.q.END
 
   } ##FOR.p.END
+
+  ## Finalize scores dataframe ####
+  # Change NA values to "NE"
+  df.sc.sr$SRLin_Score_outside <- ifelse(!is.na(df.sc.sr$SRLin_Score_outside),
+                                         as.character(df.sc.sr$SRLin_Score_outside),
+                                         "NE")
+  df.sc.sr$SRLin_Score_inside <- ifelse(!is.na(df.sc.sr$SRLin_Score_inside),
+                                        as.character(df.sc.sr$SRLin_Score_inside),
+                                        "NE")
+
+  # Pivot longer site data before merging with df.sc.sr
+  df_SiteDataStrLong <- df_SiteData %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate,
+                  RespSampleID, RespSampleDate, all_of(stressors)) %>%
+    tidyr::pivot_longer(cols = c(all_of(stressors)),
+                        names_to = "stressName",
+                        values_to = "stressVal")
+  df_SiteDataRespLong <- df_SiteData %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, all_of(BioResp), Quality) %>%
+    tidyr::pivot_longer(cols = c(all_of(BioResp)), names_to = "respName",
+                        values_to = "respVal")
+  df_SiteDataLong <- merge(df_SiteDataStrLong, df_SiteDataRespLong,
+                           by = c("StationID", "StressSampleID",
+                                  "StressSampleDate", "RespSampleID",
+                                  "RespSampleDate"))
+  rm(df_SiteDataStrLong, df_SiteDataRespLong)
+
+  # Merge site data with df.sc.sr
+  df.sc.sr <- merge(df_SiteDataLong, df.sc.sr,
+                    by = c("StationID", "stressName", "respName"),
+                    all.x = TRUE)
+  df.sc.sr <- df.sc.sr %>%
+    # dplyr::mutate(SRLin_Score_inside = ifelse(is.na(stressVal),
+    #                                           "NE", SRLin_Score_inside),
+    #               SRLin_Score_outside = ifelse(is.na(stressVal),
+    #                                            "NE", SRLin_Score_outside)) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                  RespSampleDate, biocomm, stressName, stressLabel, stressVal,
+                  respName, respLabel, respVal, Quality, n_site, n_comp,
+                  SRLin_Score_inside, SRLin_Score_outside)
+
+  ## Write Scores ####
+  utils::write.table(df.sc.sr, fp_scores, sep = "\t", quote = FALSE,
+                     row.names = FALSE, col.names = TRUE, append = FALSE)
 
   ## END LR plots ####
   #
@@ -1123,10 +1098,10 @@ getBioStressorResponses <- function(TargetSiteID,
   } ## END create corrplot
 
   # Scores ----
-  df.scores <- read.delim(fp_scores, header = TRUE, na.strings = c("", "NA"),
-                          strip.white = TRUE, stringsAsFactors = FALSE)
-
-  df.scores <- df.scores %>%
+  # df.scores <- read.delim(fp_scores, header = TRUE, na.strings = c("", "NA"),
+  #                         strip.white = TRUE, stringsAsFactors = FALSE)
+  #
+  df.scores <- df.sc.sr %>%
     dplyr::filter(respName == bioindex) %>%
     dplyr::rename(bioComm = biocomm, bioIndex = respVal, Stressor = stressLabel,
                   StressorValue = stressVal) %>%
