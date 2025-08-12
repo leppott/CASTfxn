@@ -72,10 +72,12 @@ getAllSamplesTable <- function(df.stress,
   `%>%` <- dplyr::`%>%`
 
   # Prepare stressor data
-  # Identify field, lab, and phab stressor types
+  # Identify dated stressor types
   df.meas <- dplyr::filter(df.stress, !is.na(StressSampleDate))
-  # Identify modeled stressor types
+  # Identify undated stressor types
   df.model <- dplyr::filter(df.stress, is.na(StressSampleDate))
+
+  # Obtain dated stressor sample IDs ----
   if (nrow(df.meas) > 0) {
     df.sampSummary <- unique(df.meas[, c("StationID", "StressSampleID",
                                          "StdParamName", "StressSampleDate")])
@@ -83,11 +85,8 @@ getAllSamplesTable <- function(df.stress,
     df.sampSummary <- df.sampSummary %>%
       dplyr::select(StationID, StressSampleID, SourceGroup, StdParamName,
                     StressSampleDate, Label) %>%
-      dplyr::mutate(Type = dplyr::case_when(SourceGroup == "Habitat Metrics" ~
-                                              "HabitatSampleID",
-                                            SourceGroup == "Freshwater Sediment" ~
-                                              "SedimentSampleID",
-                                            TRUE ~ "ChemistrySampleID"))
+      dplyr::mutate(Type = paste0(gsub(" ", "", stringr::str_to_title(SourceGroup)),
+                                  "SampleID"))
     df.sampSummary <- unique(df.sampSummary[, c("StationID", "StressSampleID",
                                                 "StressSampleDate", "Type")])
     df.sampSummary <- df.sampSummary %>%
@@ -96,7 +95,7 @@ getAllSamplesTable <- function(df.stress,
     chemsamptypes <- colnames(dplyr::select(df.sampSummary, dplyr::ends_with("SampleID")))
   }
 
-  # # Identify response samples
+  # Identify response samples ----
   df.resp <- df.resp %>%
     tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm,
                        values_from = RespSampleID, values_fill = NA)
@@ -110,7 +109,7 @@ getAllSamplesTable <- function(df.stress,
                           all = TRUE)
   rm(df.resp)
 
-  # Add modeled data, if they exist
+  # Add undated stressor data ----
   if (nrow(df.model) > 0) {
     df.modelTrim <- as.data.frame(df.model) %>%
       dplyr::distinct(StationID, StressSampleID) %>%
@@ -133,29 +132,14 @@ getAllSamplesTable <- function(df.stress,
 
   if (is.na(incaseColName)) {
     df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol")],
-                            df.sampSummary, by = "StationID", all = TRUE)
+                            df.sampSummary, by = "StationID", all.y = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   } else {
     df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol",
                                          "IncaseCol")], df.sampSummary,
-                            by = "StationID", all = TRUE)
+                            by = "StationID", all.y = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   }
-
-  # Update blank COMID, IncaseCol, OutcaseCol (add labels when writing table)
-  df.siteTrim <- unique(df.sites[, c("StationID", "COMID", "OutcaseCol",
-                                     "IncaseCol")])
-
-  df.sampSummary <- df.sampSummary %>%
-    dplyr::mutate(COMID = suppressWarnings(ifelse(is.na(COMID),
-                            df.siteTrim$COMID[df.siteTrim$StationID == StationID],
-                            COMID)),
-                  OutcaseCol = suppressWarnings(ifelse(is.na(OutcaseCol),
-                            df.siteTrim$OutcaseCol[df.siteTrim$StationID == StationID],
-                            OutcaseCol)),
-                  IncaseCol = suppressWarnings(ifelse(is.na(IncaseCol),
-                            df.siteTrim$IncaseCol[df.siteTrim$StationID == StationID],
-                            IncaseCol)))
 
   return(df.sampSummary)
 
