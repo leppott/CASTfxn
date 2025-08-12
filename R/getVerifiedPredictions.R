@@ -53,7 +53,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    boo_plot = TRUE) {##FUNCTION.START
 
   # Debugging
-  boo.DEBUG <- TRUE
+  boo.DEBUG <- FALSE
   #
   if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
     TargetSiteID = TargetSiteID
@@ -101,13 +101,13 @@ getVerifiedPredictions <- function(TargetSiteID,
   # SSTV data gaps ----
   if (length(stressors.sstv) == 0) {
       gapcomment <- paste0("No stressor-specific tolerance values.")
-      gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data", 0
-                               , gapcomment)
+      gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data",
+                               0, gapcomment)
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                  , row.names = FALSE, sep = "\t")
+      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                  row.names = FALSE, sep = "\t")
   }
 
   # Outer loop over stressors with SSTVs
@@ -130,6 +130,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     if (exists("keepMTcol")) { suppressWarnings(rm(keepMTcol)) }
 
     # Match sstv to master taxa file ----
+    # If debugging, run this loop
     for (n in seq_along(SSTVnames)) {  # If more than one SSTV, then must iterate
       name <- SSTVnames[n]
       SSTVlabel <- as.character(df_SSTV$Label[df_SSTV$SSTVname == name])
@@ -142,14 +143,14 @@ getVerifiedPredictions <- function(TargetSiteID,
         }
       } else {
         # no taxa in MT taxa are assigned tol values for this stressor
-        gapcomment <- paste0("No ", biocomm, " taxa have tolerance "
-                             , "values available for this SSTV.")
+        gapcomment <- paste0("No ", biocomm, " taxa have tolerance ",
+                             "values available for this SSTV.")
         gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                    , row.names = FALSE, sep = "\t")
+        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+                    row.names = FALSE, sep = "\t")
         if (exists("deleteSSTVname")) {
           deleteSSTVnames <- c(deleteSSTVnames, name)
         } else {
@@ -160,6 +161,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     }
 
     # Create taxa file for SSTVs ----
+    # if debugging, run this
     if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
       # Merge biotaxa results with master taxa file ----
       df_SSTVtaxa <- df_MasterTaxa %>%
@@ -179,8 +181,8 @@ getVerifiedPredictions <- function(TargetSiteID,
     if (boo.continue == TRUE) { # Have taxa
 
       # 20190513, remove scores file if exists
-      fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm
-                                               , "_VP_SSTV_Scores.tab"))
+      fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm,
+                                               "_VP_SSTV_Scores.tab"))
       if (file.exists(fn_scores)) { file.remove(fn_scores) }
 
       # Filter for inside case sites & trim unnecessary columns
@@ -203,12 +205,15 @@ getVerifiedPredictions <- function(TargetSiteID,
         sstv.label   <- sstv.label[!is.na(sstv.label)]
 
         # Modify taxon count data to identify sensmin and sensmin through sensmax
-        if (grepl("^\\d*$", sstv.sensmin) && grepl("^\\d*$", sstv.sensmax)) { # tv is numeric
+        if (grepl("^\\d*.?\\d*$", sstv.sensmin) && grepl("^\\d*.?\\d*$", sstv.sensmax)) { # tv is numeric
           # convert to numeric
           sstv.sensmin <- as.numeric(sstv.sensmin)
           sstv.sensmax <- as.numeric(sstv.sensmax)
 
-          sstv.sensall <- seq(from = sstv.sensmin, to = sstv.sensmax, by = 1)
+          sstv.sensall <- as.numeric(unique(df_bioTaxaData[[sstv]]))
+          sstv.sensall <- sstv.sensall[!is.na(sstv.sensall)]
+          sstv.sensall <- sstv.sensall[sstv.sensall >= sstv.sensmin &
+                                         sstv.sensall <= sstv.sensmax]
           sstv.sensall.gp <- paste0(sstv.sensall, collapse = ", ")
 
           # Generate Labels to be used as groups
@@ -240,10 +245,9 @@ getVerifiedPredictions <- function(TargetSiteID,
           df_resp <- df_temp
         } else {
           df_resp <- merge(df_resp, df_temp,
-                           by = c("TaxonID", "StationID", "RespSampleID",
-                                  "RespSampleDate", "BMISampFlag", "NumIndividuals",
-                                  "PctInd", "SampleTotAbund", "SampleTotTaxa",
-                                  "PctTaxa", keepMTcol))
+                           by = c("StationID", "RespSampleID", "RespSampleDate",
+                                  "TaxonID", "NumInd", "PctInd", "PctTaxa",
+                                  "SampleTotTaxa", keepMTcol))
         }
 
         # Remove sstv variables, labels
@@ -261,7 +265,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                             values_ptypes = character(),
                             values_drop_na = TRUE) %>%
         dplyr::group_by(StationID, RespSampleID, RespSampleDate, Group, Label) %>%
-        dplyr::summarise(NumInds = sum(NumIndividuals, na.rm = TRUE),
+        dplyr::summarise(NumInds = sum(NumInd, na.rm = TRUE),
                          PctInds = sum(PctInd, na.rm = TRUE),
                          NumTaxa = dplyr::n(),
                          PctTaxa = sum(PctTaxa, na.rm = TRUE),
@@ -274,7 +278,7 @@ getVerifiedPredictions <- function(TargetSiteID,
       # MASTER dataframe ####
       df_tv <- merge(df_stress.sstv, df_resp.summary,
                      by = c("StationID", "RespSampleID", "RespSampleDate"),
-                     all = TRUE)
+                     all.x = TRUE)
 
       # Loop - Score SSTVs ####
       for (s in seq_along(stressors.sstv)) {
@@ -381,23 +385,11 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_quantiles.incase <- df_tv.incase %>%
           dplyr::select(Label, variable, value) %>%
           dplyr::group_by(Label, variable) %>%
-          dplyr::summarise(min = suppressWarnings(min(value, na.rm = TRUE)),
+          dplyr::summarise(Min = suppressWarnings(min(value, na.rm = TRUE)),
                            q25 = quantile(value, probs = 0.25, na.rm = TRUE),
                            q50 = quantile(value, probs = 0.50, na.rm = TRUE),
                            q75 = quantile(value, probs = 0.75, na.rm = TRUE),
-                           max = suppressWarnings(max(value, na.rm = TRUE)),
-                           .groups = "drop_last")
-
-        # Calculate num samples better than, & better than, not degraded
-        # Yields 1-row x 3-col df (# samps BT, # samps not deg, # samps BT & not deg)
-        df_tv.incase.summary <- df_tv.incase %>%
-          dplyr::distinct(StationID, RespSampleID, RespSampleDate, Quality, BetterThan) %>%
-          dplyr::mutate(QualityNum = ifelse(Quality == "Not degraded", 1, 0),
-                        BTNotDeg = ifelse((BetterThan == 1 & QualityNum == 1), 1, 0)) %>%
-          dplyr::filter(StationID != TargetSiteID) %>% # Do NOT include target site samples
-          dplyr::summarise(numSampsBT = sum(BetterThan, na.rm = TRUE),
-                           numSampsNotDeg = sum(QualityNum, na.rm = TRUE),
-                           numSampsBTNotDeg = sum(BTNotDeg, na.rm = TRUE),
+                           Max = suppressWarnings(max(value, na.rm = TRUE)),
                            .groups = "drop_last")
 
         df_tbl_scores <- merge(df_tv.target, df_quantiles.incase,
@@ -408,7 +400,7 @@ getVerifiedPredictions <- function(TargetSiteID,
           dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                         RespSampleDate, IncaseCol, BioComm, all_of(colBio),
                         Quality, all_of(stressor), Group, Label, variable, value,
-                        q25, q50, q75) %>%
+                        Min, q25, q50, q75, Max) %>%
           dplyr::rename(StressorValue = {{stressor}},
                         Response = variable,
                         ResponseValue = value) %>%
@@ -420,20 +412,26 @@ getVerifiedPredictions <- function(TargetSiteID,
           dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                         RespSampleDate, BioComm, all_of(colBio), Quality,
                         StressorLabel, Stressor, StressorValue, Group, Label,
-                        Response, ResponseValue, q25, q50, Score)
+                        Response, ResponseValue, Min, q25, q50, q75, Max, Score)
 
-        boo_append <- TRUE
-        boo_colnames <- FALSE
+        # boo_append <- TRUE
+        # boo_colnames <- FALSE
 
-        if (file.exists(fn_scores) == FALSE) {##IF~file.exists(fn_scores)~START
-          # invert for 1st instance
-          boo_append <- !boo_append
-          boo_colnames <- !boo_colnames
-        }##IF~file.exists(fn_scores)~END
+        if (s == 1) {
+          df.scores <- df_tbl_scores
+        } else {
+          df.scores <- rbind(df.scores, df_tbl_scores)
+        }
 
-        utils::write.table(df_tbl_scores, file = fn_scores,
-                           col.names = boo_colnames, row.names = FALSE,
-                           sep="\t", append = boo_append)
+        # if (file.exists(fn_scores) == FALSE) {##IF~file.exists(fn_scores)~START
+        #   # invert for 1st instance
+        #   boo_append <- !boo_append
+        #   boo_colnames <- !boo_colnames
+        # }##IF~file.exists(fn_scores)~END
+        #
+        # utils::write.table(df_tbl_scores, file = fn_scores,
+        #                    col.names = boo_colnames, row.names = FALSE,
+        #                    sep="\t", append = boo_append)
 
         # Rbind target and comparator dataframes
         df_tv.incase <- rbind(df_tv.target, df_tv.incase)
@@ -452,27 +450,26 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_tv.notTarget <- dplyr::filter(df_tv.incase, StationID != TargetSiteID)
         df_tv.target <- dplyr::filter(df_tv.incase, StationID == TargetSiteID)
 
-        str_scores <- merge(df_quantiles.incase, df_tbl_scores)
-
-        str_scores <- str_scores %>%
+        str_scores <- df_tbl_scores %>%
           dplyr::filter(Group == {{tolval}}) %>%
-          dplyr::select(Label, variable, max, q25, q50, RespSampleDate, Score) %>%
-          dplyr::arrange(Label, variable, max, RespSampleDate) %>%
-          dplyr::group_by(Label, variable, max, q25, q50) %>%
+          dplyr::rename(variable = Response) %>%
+          dplyr::select(Label, variable, Min, Max, q25, q50, RespSampleDate, Score) %>%
+          dplyr::arrange(Label, variable, Min, Max, RespSampleDate) %>%
+          dplyr::group_by(Label, variable, Min, Max, q25, q50) %>%
           dplyr::summarise(Scores = toString(Score),
                            .groups = "drop_last") %>%
-          dplyr::mutate(min = -10,
-                        segNeg = ((q25 - min) / 2) + min,
+          dplyr::mutate(#min = -10,
+                        segNeg = ((q25 - Min) / 2) + Min,
                         aLabNeg = -1,
                         segZero = ((q50 - q25) / 2) + q25,
                         aLabZero = 0,
-                        segPos = ((max - q50) / 2) + q50,
+                        segPos = ((Max - q50) / 2) + q50,
                         aLabPos = 1,
                         Scores = paste0("Scores = ", Scores))
 
         str_scores_max <- str_scores %>%
           dplyr::group_by(variable) %>%
-          dplyr::summarise(OverallMax = max(max, na.rm = TRUE),
+          dplyr::summarise(OverallMax = max(Max, na.rm = TRUE),
                            .groups = "drop_last")
 
         str_scores <- merge(str_scores, str_scores_max)
@@ -583,23 +580,25 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       }## FOR SSTV ~ END
 
+      df.scores <- df.scores %>%
+        dplyr::group_by(StationID, RespSampleID, RespSampleDate, StressSampleID,
+                        StressSampleDate, BioComm, .data[[colBio]], Quality,
+                        StressorLabel, StressorValue, Group) %>%
+        dplyr::summarise(Score = mean(Score, na.rm = TRUE), .groups = "drop_last") %>%
+        dplyr::rename(bioIndex := {{colBio}}, bioComm = BioComm,
+                      Stressor = StressorLabel) %>%
+        dplyr::mutate(LoE = "VP_SSTV", bioIndexName = colBio) %>%
+        dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
+                      RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
+                      Stressor, StressorValue, LoE, Score)
+
+
+      write.table(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
+                  sep = "\t", append = FALSE)
+
     }## IF ~ boo_continue ~ END
 
   }## IF ~ SSTV ~ END
-
-  df.scores <- read.delim(fn_scores, header = TRUE, na.strings = c("", "NA"),
-                          strip.white = TRUE, stringsAsFactors = FALSE)
-  df.scores <- df.scores %>%
-    dplyr::group_by(StationID, RespSampleID, RespSampleDate, StressSampleID,
-                    StressSampleDate, BioComm, .data[[colBio]], Quality,
-                    StressorLabel, StressorValue, Group) %>%
-    dplyr::summarise(Score = mean(Score, na.rm = TRUE), .groups = "drop_last") %>%
-    dplyr::rename(bioIndex := {{colBio}}, bioComm = BioComm,
-                  Stressor = StressorLabel) %>%
-    dplyr::mutate(LoE = "VP_SSTV", bioIndexName = colBio) %>%
-    dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
-                  Stressor, StressorValue, LoE, Score)
 
   return(df.scores)
 
