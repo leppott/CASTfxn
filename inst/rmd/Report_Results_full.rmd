@@ -12,25 +12,6 @@ output:
     toc: yes
     toc_depth: 3
     toc_float: yes
-# params:
-#   TargetSiteID: "TargetSiteID"
-#   regionName: "regionName"
-#   biocommlist: "bmi, alg, fish"
-#   useBMI: "useBMI"
-#   useAlg: "useAlg"
-#   useFish: "useFish"
-#   useBC: "useBC"
-#   removeOutliers: "removeOutliers"
-#   samplim: "20"
-#   lagdays: "30, 30"
-#   DOlim: "4"
-#   pHlimLow: "5"
-#   pHlimHigh: "9"
-#   bmiIndex: "BIBI100"
-#   algIndex: "MMI Hybrid"
-#   fishIndex: "FIBI"
-#   clusterfile: "BlahBlah"
-#   dir_results: "dir_results"
 editor_options: 
   markdown: 
     wrap: 72
@@ -125,7 +106,9 @@ causal assessment.
             "\n\n", sep = ""))
   cat(paste("**Number of allowable lag days between stressor and response measurements:** -",
             lagdays, "\n\n", sep = ""))
-  # cat(paste("**Cluster assignment file:** ", fn.cluster, "\n", sep = ""))
+  cat(paste("**R2 cutoff:** ", r2_cutoff, "\n\n", sep = ""))
+  cat(paste("**p-value cutoff:** ", p.val_cutoff, "\n\n", sep = ""))
+  cat(paste("**Cluster assignment file:** ", basename(fn.cluster), "\n", sep = ""))
 
 ```
 
@@ -199,26 +182,34 @@ TScluster <- ifelse(useBC == TRUE,
 
 row.names(dfSamps) <- NULL
 
+camelCaseToTitleCase <- function(camelCaseString) {
+  # Insert spaces before uppercase letters (except the first character)
+  tempString <- gsub("([A-Z])", " \\1", camelCaseString)
+  
+  # Capitalize the first letter of each word and convert the rest to lowercase
+  # This handles the case where the original string starts with an uppercase
+  # letter and ensures subsequent words are correctly capitalized.
+  titleCaseString <- tools::toTitleCase(tempString)
+  
+  # Remove any leading spaces that might have been introduced if the original
+  # string started with an uppercase letter
+  titleCaseString <- trimws(titleCaseString)
+  
+  # Join "I D" to recreate "ID"
+  titleCaseString <- sub("(I D)", "ID", titleCaseString)
+  
+  # Join "B M I" to recreate "BMI"
+  titleCaseString <- sub("(B M I)", "BMI", titleCaseString)
+  
+  return(titleCaseString)
+}
+
 # Get sample data
 if (nrow(dfSamps) > 0) {# Samples exist for target site
   
   dfSamps <- dplyr::select(dfSamps, !c(StationID, COMID, OutcaseCol, IncaseCol)) %>%
     tidyr::pivot_longer(cols = -SampleDate, names_to = "ColName", values_to = "Content") %>%
-    dplyr::mutate(ColName = dplyr::case_when(ColName == "ChemistrySampleID" ~
-                                               "Chemistry Sample ID",
-                                             ColName == "HabitatSampleID" ~
-                                               "Habitat Sample ID",
-                                             ColName == "FieldSampleID" ~
-                                               "Field Sample ID",
-                                             ColName == "ModeledSampleID" ~
-                                               "Modeled Sample ID",
-                                             ColName == "BMISampleID" ~
-                                               "BMI Sample ID",
-                                             ColName == "AlgSampleID" ~
-                                               "Algae Sample ID",
-                                             ColName == "FishSampleID" ~
-                                               "Fish Sample ID",
-                                             TRUE ~ "Undefined Sample ID")) %>%
+    dplyr::mutate(ColName = camelCaseToTitleCase(ColName)) %>%
     tidyr::pivot_wider(id_cols = SampleDate, names_from = ColName, values_from = Content)
   
   # Get response data
