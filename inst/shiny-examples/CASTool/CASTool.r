@@ -224,10 +224,13 @@ if (region %in% state.abb) {
     flowline <- lines.flowline.proj
   }
 }
-removeOutliers      <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
 useBC               <- as.logical(dplyr::select(data_CASTmeta, useBC))
 bc_cutoff           <- as.numeric(dplyr::select(data_CASTmeta, bc_cutoff))
+calcRelAbund        <- as.logical(dplyr::select(data_CASTmeta, calcRelAbund))
+removeOutliers      <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
 samplim             <- as.integer(dplyr::select(data_CASTmeta, samplim))
+r2_cutoff           <- as.numeric(dplyr::select(data_CASTmeta, r2_cutoff))
+p.val_cutoff        <- as.numeric(dplyr::select(data_CASTmeta, p.val_cutoff))
 DOlim               <- as.numeric(dplyr::select(data_CASTmeta, DOlim))
 pHlimLow            <- as.numeric(dplyr::select(data_CASTmeta, pHlimLow))
 pHlimHigh           <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
@@ -277,23 +280,23 @@ for (b in seq_along(biocommlist)) {
                                                             ", ")))
     bmi_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_deg_text), ", "))
     bmiIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiIndexGp), ", "))
-    bmiModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiModParams), ", "))
-    bmiSuffInds     <- as.numeric(dplyr::select(data_CASTmeta, bmiSuffInds))
-    bmiPctAmbInds   <- as.numeric(dplyr::select(data_CASTmeta, bmiPctAmbInds))
+    # bmiModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiModParams), ", "))
+    # bmiSuffInds     <- as.numeric(dplyr::select(data_CASTmeta, bmiSuffInds))
+    # bmiPctAmbInds   <- as.numeric(dplyr::select(data_CASTmeta, bmiPctAmbInds))
   }
   if (bio == "algae") {
     alg_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_thres),
                                                             ", ")))
     alg_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_text), ", "))
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
-    algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
+    # algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
   }
   if (bio == "fish") {
     fish_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_thres),
                                                              ", ")))
     fish_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_text), ", "))
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
-    fishModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishModParams), ", "))
+    # fishModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishModParams), ", "))
   }
 }
 rm(b, bio, data_CASTmeta)
@@ -310,7 +313,7 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
-## Get GIS files ####
+# Get GIS files ####
 message("Loading GIS files.")
 if (boo_Shiny == TRUE) {
   # 2020-09-09, use RDA saved version
@@ -433,6 +436,7 @@ if (basename(fn.meas.info) != "NA") {
   data_chemInfo   <- data_chemInfo %>%
     dplyr::filter(UseInStressorID == 1)
 } else {
+  data_chemInfo <- NULL
   msg <- "fn.meas.info is NA"
   message(msg)
 }
@@ -504,6 +508,7 @@ if (basename(fn.model.info) != "NA") {
   data_modelInfo   <- data_modelInfo %>%
     dplyr::filter(UseInStressorID == 1)
 } else {
+  data_modelInfo <- NULL
   msg <- "fn.model.info is NA"
   message(msg)
 }
@@ -545,7 +550,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 # Combine metadata for all stressors into one datafile
-if (exists("data_chemInfo") & exists("data_modelInfo")) {
+if (!is.null(data_chemInfo) & !is.null(data_modelInfo)) {
   chemMetaNames  <- colnames(data_chemInfo)
   modelMetaNames <- colnames(data_modelInfo)
   extraNames     <- chemMetaNames[!(chemMetaNames %in% modelMetaNames)]
@@ -557,10 +562,10 @@ if (exists("data_chemInfo") & exists("data_modelInfo")) {
   data_stressInfo <- rbind(data_chemInfo, data_modelInfo)
   rm(data_chemInfo, data_modelInfo)
   rm(chemMetaNames, modelMetaNames, extraNames, newCol, e)
-} else if (exists("data_chemInfo")) {
+} else if (!is.null(data_chemInfo)) {
   data_stressInfo <- data_chemInfo
   rm(data_chemInfo)
-} else if (exists("data_modelInfo")) {
+} else if (!is.null(data_modelInfo)) {
   data_stressInfo <- data_modelInfo
   rm(data_modelInfo)
 } else {
@@ -577,17 +582,17 @@ data_stressInfo <- dplyr::distinct(data_stressInfo, StdParamName, Label,
                                    SSIndex, SourceGroup)
 
 # Combine raw data for all stressors into one datafile
-if (exists("data_chemRaw") & exists("data_modelRaw")) {
+if (!is.null("data_chemRaw") & !is.null("data_modelRaw")) {
   data_Stress <- rbind(data_chemRaw, data_modelRaw)
   rm(data_chemRaw, data_modelRaw)
-} else if (exists("data_chemRaw")) {
+} else if (!is.null("data_chemRaw")) {
   data_Stress <- data_chemRaw
   rm(data_chemRaw)
-} else if (exists("data_modelRaw")) {
+} else if (!is.null("data_modelRaw")) {
   data_Stress <- data_modelRaw
   rm(data_modelRaw)
 } else {
-  msg <- "Neither measured nor modeled metadata are available"
+  msg <- "Neither measured nor modeled data are available"
   message(msg)
 }
 
@@ -672,29 +677,41 @@ for (b in seq_along(biocommlist)) {
                       StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
       # LCN needed to add for provided dataset so RespSampIDs matched
 
-      # TODO: comment this section out if using BioMonTools for data prep
-      # Require data_bmiCounts to have both NumIndividuals, and PctIndividuals
-      # as well as total sample count
-      data_BMISampTotAbund <- data_bmiCounts %>%
-        dplyr::group_by(RespSampleID, RespSampleDate) %>%
-        dplyr::summarize(SampleTotAbund = sum(NumIndividuals, na.rm = TRUE),
-                         SampleTotTaxa = dplyr::n(),
-                         .groups = "drop_last")
+      if (calcRelAbund == TRUE) {     # Only write this column if needed
+        data_BMISampTotAbund <- data_bmiCounts %>%
+          dplyr::group_by(RespSampleID, RespSampleDate) %>%
+          dplyr::summarize(SampleTotAbund = sum(NumInd, na.rm = TRUE),
+                           SampleTotTaxa = dplyr::n(),
+                           .groups = "drop_last")
 
-      data_bmiCounts <- merge(data_bmiCounts, data_BMISampTotAbund,
-                              by = c("RespSampleID", "RespSampleDate"),
-                              all.x = TRUE)
+        data_bmiCounts <- merge(data_bmiCounts, data_BMISampTotAbund,
+                                by = c("RespSampleID", "RespSampleDate"),
+                                all.x = TRUE)
 
-      # if (calcBMIRelAbund == TRUE) {     # Only write this column if needed
-      #   data_bmiCounts <- data_bmiCounts %>%
-      #     dplyr::mutate(PctInd = round(NumIndividuals / SampleTotAbund, 5))
-      # } # end section to comment out if using BioMonTools for data prep
+        data_bmiCounts <- data_bmiCounts %>%
+          dplyr::mutate(PctInd = round(NumInd / SampleTotAbund, 5),
+                        PctTaxa = round(1 / SampleTotTaxa, 5))
 
-      data_bmiCounts <- data_bmiCounts %>%
-        dplyr::rename(PctInd = RelAbund) %>%
-        dplyr::mutate(PctTaxa = round(1/SampleTotTaxa, 5),
-                      BMISampFlag = ifelse(SampleTotAbund < bmiSuffInds,
-                                           "Insufficient individuals", NA))
+      } else {
+        data_bmiCounts <- data_bmiCounts %>%
+          dplyr::rename(PctInd = RelAbund)
+
+        data_BMISampTotTaxa <- data_bmiCounts %>%
+          dplyr::group_by(RespSampleID, RespSampleDate) %>%
+          dplyr::summarize(SampleTotTaxa = dplyr::n())
+
+        data_bmiCounts <- merge(data_bmiCounts, data_BMISampTotTaxa,
+                                by = c("RespSampleID", "RespSampleDate"),
+                                all.x = TRUE)
+
+        data_bmiCounts <- data_bmiCounts %>%
+          dplyr::mutate(PctInd = round(NumInd / SampleTotAbund, 5),
+                        PctTaxa = round(1 / SampleTotTaxa, 5))
+
+      } # end if calcRelAbund == TRUE
+      data_bmiCounts <- dplyr::select(data_bmiCounts, StationID, RespSampleID,
+                                      RespSampleDate, TaxonID, NumInd, PctInd,
+                                      PctTaxa, SampleTotTaxa)
 
     } else {
       msg <- "fn.bmi.raw is NA"
@@ -759,21 +776,6 @@ for (b in seq_along(biocommlist)) {
                                          index = bmiIndex,
                                          lagdays = lagdays)
 
-    if (!is.na(bmiModParams)) {
-      # Identify modeled parameters to keep or delete (per client)
-      bmiModelParamsDEL  <- setdiff(modelParams, bmiModParams)
-      # modelParams: all modeled Params;
-      # bmiModParams: input data from client re which modeled parameters to use
-      # when evaluating bmi responses
-      data_bmiCoOccur <- data_bmiCoOccur %>%
-        dplyr::select(!all_of(bmiModelParamsDEL)) %>%
-        dplyr::select_if(not_all_na)
-      list.bioParamsDEL <- append(list.bioParamsDEL, list(BMI = bmiModelParamsDEL))
-
-      rm(bmiModParams)
-    } else {
-      message("No modeled data, if any, should be excluded from BMI evaluations.")
-    } ## END delete ModParams not useful for bmi eval
   } else { # NO BMI data
     message("No BMI data available")
   }
@@ -783,23 +785,56 @@ for (b in seq_along(biocommlist)) {
     message("Reading Algae data files")
     boo.alg <- TRUE
 
-    # Get raw algal data
+    # Get raw Algae data
     if (basename(fn.alg.raw) != "NA") {
       data_algCounts <- readCASToolData(fn = fn.alg.raw,
                                         NAs = c("", "na", "NA", "N/A"))
+
+      data_algCounts <- data_algCounts %>%
+        dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date(),
+                      RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                      StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+      # LCN needed to add for provided dataset so RespSampIDs matched
+
+      if (calcRelAbund == TRUE) {     # Only write this column if needed
+        data_algSampTotAbund <- data_algCounts %>%
+          dplyr::group_by(RespSampleID, RespSampleDate) %>%
+          dplyr::summarize(SampleTotAbund = sum(NumInd, na.rm = TRUE),
+                           SampleTotTaxa = dplyr::n(),
+                           .groups = "drop_last")
+
+        data_algCounts <- merge(data_algCounts, data_algSampTotAbund,
+                                by = c("RespSampleID", "RespSampleDate"),
+                                all.x = TRUE)
+
+        data_algCounts <- data_algCounts %>%
+          dplyr::mutate(PctInd = round(NumInd / SampleTotAbund, 5))
+
+        data_algCounts <- data_algCounts %>%
+          dplyr::mutate(PctTaxa = round(1/SampleTotTaxa, 5))
+
+      } else {
+        data_algCounts <- data_algCounts %>%
+          dplyr::rename(PctInd = RelAbund)
+      } # end section to comment out if using BioMonTools for data prep
+
     } else {
       msg <- "fn.alg.raw is NA"
       message(msg)
     }
+    rm(fn.alg.raw)
 
-    # Get algal master taxa data
-    if (basename(fn.alg.MT) != "NA") {
+    # Get BMI master taxa data
+    if (!is.na(basename(fn.alg.MT))) {
       data_algMasterTaxa <- readCASToolData(fn = fn.alg.MT,
                                             NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.alg.MT is NA"
       message(msg)
     }
+    rm(fn.alg.MT)
 
     # Get algal metrics data
     if (basename(fn.alg.metrics) != "NA") {
@@ -850,21 +885,6 @@ for (b in seq_along(biocommlist)) {
                                          lagdays = lagdays)
     # returns df_coOccur as data_algCoOccur
 
-    if (!is.na(algModParams)) {
-      # Identify modeled parameters to keep or delete (per client)
-      algModelParamsDEL  <- setdiff(modelParams, algModParams)
-      # modelParams: all modeled Params;
-      # bmiModParams: input data from client re which modeled parameters to use
-      # when evaluating bmi responses
-      data_algCoOccur <- data_algCoOccur %>%
-        dplyr::select(!all_of(algModelParamsDEL)) %>%
-        dplyr::select_if(not_all_na)
-      list.bioParamsDEL <- append(list.bioParamsDEL, list(ALG = algModelParamsDEL))
-
-      rm(algModParams)
-    }  else {
-      message("No modeled data, if any, should be excluded from algal evaluations.")
-    } ## END delete ModParams not useful for algal eval
   } else { # NO algae data
     message("No algae data available")
   }
@@ -872,26 +892,59 @@ for (b in seq_along(biocommlist)) {
   # Read fish data
   if ((bio == "fish") & !boo.fish) {
     # Read alg data files
-    message("Reading Algae data files")
+    message("Reading fish data files")
     boo.fish <- TRUE
 
-    # Get raw fish data
+    # Get raw Algae data
     if (basename(fn.fish.raw) != "NA") {
       data_fishCounts <- readCASToolData(fn = fn.fish.raw,
                                          NAs = c("", "na", "NA", "N/A"))
+
+      data_fishCounts <- data_fishCounts %>%
+        dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
+                                                                  orders = c("ymd", "mdy", "dmy")) %>%
+                        lubridate::date(),
+                      RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                      StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+      # LCN needed to add for provided dataset so RespSampIDs matched
+
+      if (calcRelAbund == TRUE) {     # Only write this column if needed
+        data_fishSampTotAbund <- data_fishCounts %>%
+          dplyr::group_by(RespSampleID, RespSampleDate) %>%
+          dplyr::summarize(SampleTotAbund = sum(NumInd, na.rm = TRUE),
+                           SampleTotTaxa = dplyr::n(),
+                           .groups = "drop_last")
+
+        data_fishCounts <- merge(data_fishCounts, data_algSampTotAbund,
+                                 by = c("RespSampleID", "RespSampleDate"),
+                                 all.x = TRUE)
+
+        data_fishCounts <- data_fishCounts %>%
+          dplyr::mutate(PctInd = round(NumInd / SampleTotAbund, 5))
+
+        data_fishCounts <- data_fishCounts %>%
+          dplyr::mutate(PctTaxa = round(1/SampleTotTaxa, 5))
+
+      } else {
+        data_fishCounts <- data_fishCounts %>%
+          dplyr::rename(PctInd = RelAbund)
+      } # end section to comment out if using BioMonTools for data prep
+
     } else {
       msg <- "fn.fish.raw is NA"
       message(msg)
     }
+    rm(fn.fish.raw)
 
     # Get fish master taxa data
-    if (basename(fn.fish.MT) != "NA") {
+    if (!is.na(basename(fn.fish.MT))) {
       data_fishMasterTaxa <- readCASToolData(fn = fn.fish.MT,
                                              NAs = c("", "na", "NA", "N/A"))
     } else {
       msg <- "fn.fish.MT is NA"
       message(msg)
     }
+    rm(fn.fish.MT)
 
     # Get fish metrics data & Quality (based on user-supplied data in CASTool_Metadata.xlsx)
     if (basename(fn.fish.metrics) != "NA") {
@@ -942,21 +995,6 @@ for (b in seq_along(biocommlist)) {
                                           lagdays = lagdays)
     # returns df_coOccur as data_fishCoOccur
 
-    if (!is.na(fishModParams)) {
-      # Identify modeled parameters to keep or delete (per client)
-      fishModelParamsDEL  <- setdiff(modelParams, fishModParams)
-      # modelParams: all modeled Params;
-      # fishModParams: input data from client re which modeled parameters to use
-      # when evaluating fish responses
-      data_fishCoOccur <- data_fishCoOccur %>%
-        dplyr::select(!all_of(fishModelParamsDEL)) %>%
-        dplyr::select_if(not_all_na)
-      list.bioParamsDEL <- append(list.bioParamsDEL, list(FISH = fishModelParamsDEL))
-
-      rm(fishModParams)
-    } else {
-      message("No modeled data, if any, should be excluded from fish evaluations.")
-    } ## END delete ModParams not useful for algal eval
   } else { # NO fish data
     message("No fish data available")
   }
@@ -991,7 +1029,7 @@ if (boo.fish == FALSE) {
 }
 # Clean up
 rm(b, bio, boo.bmi, boo.alg, boo.fish)
-rm(fn.bmi.raw, fn.bmi.metrics, fn.bmi.metrics.info, fn.bmi.MT, fn.bmi.qualifiers)
+rm(fn.bmi.raw, fn.bmi.metrics, fn.bmi.metrics.info, fn.bmi.MT)
 rm(fn.alg.raw, fn.alg.metrics, fn.alg.metrics.info, fn.alg.MT)
 rm(fn.fish.raw, fn.fish.metrics, fn.fish.metrics.info, fn.fish.MT)
 
@@ -1072,6 +1110,9 @@ for (site in seq_along(1:nrow(df_targets))) {
   # TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
   # TargetSiteID <- "RSM06600_007971"   # No degraded samples
   # TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
+  # TargetSiteID <- "WAM06600_012453"   # Two of two samples degraded; extremely low DO
+  # TargetSiteID <- "WAM06600_005424"   # One sample, degraded, response sample date > stress sample date
+  # TargetSiteID <- "WAM06600_034707"   # One sample, degraded, stress sample date > response sample date
   # TargetSiteID <- "WAM06600_003688"   # One of two samples degraded
   # TargetSiteID <- "WAM06600-003688"   # One of two samples degraded
   # LCN version of files uses - instead of _
@@ -1241,8 +1282,6 @@ for (site in seq_along(1:nrow(df_targets))) {
   list.AvailData <- getAvailableDataTypes(TargetSiteID = TargetSiteID,
                                           df_stress = data_Stress,
                                           df_SampSummary = data_sampSummary,
-                                          measStressSamps = measStressData,
-                                          modStressSamps = modelStressData,
                                           biocommlist = biocommlist,
                                           dir_results = dir_results)
   # Returns: myAvailData <- list(useBMI = useBMI,
@@ -1398,7 +1437,6 @@ for (site in seq_along(1:nrow(df_targets))) {
     if (noPairedSamps == TRUE) {
       msg <- paste0("No paired stressor-response samples for", TargetSiteID,
                     " for the ", bioComm, " community within specified lag days.")
-      message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -1413,6 +1451,10 @@ for (site in seq_along(1:nrow(df_targets))) {
       fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
       write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
+
+      msg <- paste0(msg, "\nProceeding to next response community or site, ",
+                    "as appropriate.")
+      message(msg)
 
       next
     } ### End no stressors statement
@@ -1853,6 +1895,8 @@ for (site in seq_along(1:nrow(df_targets))) {
             primeIndex = bmiIndex,
             removeOutliers = removeOutliers,
             samplim,
+            r2_cutoff = 0.2,
+            p.val_cutoff = 0.05,
             useBC = useBC,
             lagdays = lagdays,
             DOlim = DOlim,
