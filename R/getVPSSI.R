@@ -420,9 +420,6 @@ getVPSSI <- function(TargetSiteID,
                           plot = p2, dpi = plotdpi, width = plotW,
                           height = plotH, units = plotunits)
 
-          # plotname <- paste0(str, "_", biocomm, "_VPSSIlog")
-          # suppressWarnings(assign(plotname, p2))
-
         }
 
       } # Completed logistic regression plot
@@ -551,8 +548,8 @@ getVPSSI <- function(TargetSiteID,
         ggplot2::coord_flip() +
         ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
                             lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
-        ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
-                            lty = 2, na.rm = TRUE) +
+        # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
+        #                     lty = 2, na.rm = TRUE) +
         ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality,
                                           fill = Quality), alpha = 0.5,
                              na.rm = TRUE, width = 0.25, height = 0.01) +
