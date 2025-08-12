@@ -280,7 +280,6 @@ for (b in seq_along(biocommlist)) {
                                                             ", ")))
     bmi_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmi_deg_text), ", "))
     bmiIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiIndexGp), ", "))
-    # bmiModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiModParams), ", "))
     # bmiSuffInds     <- as.numeric(dplyr::select(data_CASTmeta, bmiSuffInds))
     # bmiPctAmbInds   <- as.numeric(dplyr::select(data_CASTmeta, bmiPctAmbInds))
   }
@@ -289,14 +288,12 @@ for (b in seq_along(biocommlist)) {
                                                             ", ")))
     alg_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, alg_deg_text), ", "))
     algIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
-    # algModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algModParams), ", "))
   }
   if (bio == "fish") {
     fish_deg_thres   <- as.numeric(unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_thres),
                                                              ", ")))
     fish_deg_text    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fish_deg_text), ", "))
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
-    # fishModParams    <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishModParams), ", "))
   }
 }
 rm(b, bio, data_CASTmeta)
@@ -352,6 +349,9 @@ if (basename(fn.cluster) != "NA") {
 ## Get site location ####
 if (basename(fn.Sites.Info) != "NA") {
   data_Sites <- readCASToolData(fn = fn.Sites.Info, NAs = c("", "na", "NA", "N/A"))
+  data_Sites <- data_Sites %>%
+    dplyr::mutate(StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+
   if (!("ClusterID" %in% colnames(data_Sites))) {
     data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
   }
@@ -451,7 +451,9 @@ if (basename(fn.meas.data) != "NA") {
   data_chemAll <- data_chemAll %>%
     dplyr::mutate(StressSampleDate = lubridate::parse_date_time(StressSampleDate,
                                                                 orders = c("ymd", "mdy", "dmy")) %>%
-                    lubridate::date()) %>%
+                    lubridate::date(),
+                  StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
+                  StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
                   ResultValue) %>%
     dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
@@ -523,8 +525,10 @@ if (basename(fn.model.data) != "NA") {
 
   ## Obtain SampleYear -- but SampleDate is all NA, so this is meaningless
   data_modelRaw <- data_modelRaw %>%
-    dplyr::mutate(SampYear = NA, SampleDate = NA) %>%
-    dplyr::select(StationID, ChemSampleID, SampDate, StdParamName,
+    dplyr::mutate(SampYear = NA, SampleDate = NA,
+                  StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
+                  StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
+    dplyr::select(StationID, StressSampleID, SampDate, StdParamName,
                   ResultValue, SampleDate)
 
   modelStressData <- TRUE
@@ -843,8 +847,9 @@ for (b in seq_along(biocommlist)) {
       data_algMetrics <- data_algMetrics %>%
         dplyr::mutate(AlgSampDate = lubridate::parse_date_time(AlgSampDate,
                                                                orders = c("ymd", "mdy", "dmy")) %>%
-                        lubridate::date()) %>%
-        dplyr::mutate(AlgSampFlag = NA)
+                        lubridate::date(),
+                      RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                      StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
 
       data_algTrim <- data_algMetrics %>%
         dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
@@ -953,8 +958,9 @@ for (b in seq_along(biocommlist)) {
       data_fishMetrics <- data_fishMetrics %>%
         dplyr::mutate(FishSampleDate = lubridate::parse_date_time(FishSampDate,
                                                                   orders = c("ymd", "mdy", "dmy")) %>%
-                        lubridate::date()) %>%
-        dplyr::mutate(FishSampFlag = NA)
+                        lubridate::date(),
+                      RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                      StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
 
       data_fishTrim <- data_fishMetrics %>%
         dplyr::select(StationID , RespSampleID, RespSampleDate) %>%
@@ -1717,8 +1723,8 @@ for (site in seq_along(1:nrow(df_targets))) {
                                              biocomm = bioComm,
                                              bioindex = bioIndex,
                                              min_cases = samplim,
-                                             p.val_cutoff = 0.05,
-                                             r2_cutoff = 0.25,
+                                             p.val_cutoff = p.val_cutoff,
+                                             r2_cutoff = r2_cutoff,
                                              plotvars = data_plotvars,
                                              refOutline = refOutline_col,
                                              plotdpi = plot_dpi,
