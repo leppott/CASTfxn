@@ -129,7 +129,6 @@ getComparators<- function(TargetSiteID,
 
     # Subset the BC file for sites in rows = cluster sites; target site is 2nd column
     # If site ids start with a number, prepend an X so they can match colnames
-    ## NOTE: might need to change this for OR/WA site ids! ####
     if (grepl("^\\d+\\w*$", TargetSiteID) == TRUE) {
       TargetColName <- paste0("X", TargetSiteID)
     } else if (grepl("-", TargetSiteID)) {
@@ -209,8 +208,9 @@ getComparators<- function(TargetSiteID,
 
     # Get cluster sites also having paired stressor/response samples
     eligsites <- as.vector(unique(df_bioCoOccur$StationID))
-    outcaseSites <- outcaseSites[outcaseSites %in% eligsites]
     incaseSites <- incaseSites[incaseSites %in% eligsites]
+    outcaseSites <- outcaseSites[outcaseSites %in% eligsites]
+    outcaseSites <- outcaseSites[!(outcaseSites %in% incaseSites)] # exclude comparators
 
     comp.sites <- unique(incaseSites)
     if (useAllCompReaches == FALSE) { # use only comparator reaches having sites
