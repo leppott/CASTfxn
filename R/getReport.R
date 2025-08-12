@@ -58,6 +58,8 @@ getReport <- function(TargetSiteID,
                       primeIndex = bmiIndex,
                       removeOutliers,
                       samplim,
+                      r2_cutoff,
+                      p.val_cutoff,
                       useBC,
                       lagdays,
                       DOlim,
@@ -87,6 +89,8 @@ getReport <- function(TargetSiteID,
     useBC = useBC
     removeOutliers = removeOutliers
     samplim = samplim
+    r2_cutoff = r2_cutoff
+    p.val_cutoff = p.val_cutoff
     lagdays = lagdays
     DOlim = DOlim
     pHlimLow = pHlimLow
@@ -144,6 +148,8 @@ getReport <- function(TargetSiteID,
                                     useBC = useBC,
                                     removeOutliers = removeOutliers,
                                     samplim = samplim,
+                                    r2_cutoff = r2_cutoff,
+                                    p.val_cutoff = p.val_cutoff,
                                     lagdays = lagdays,
                                     DOlim = DOlim,
                                     pHlimLow = pHlimLow,
