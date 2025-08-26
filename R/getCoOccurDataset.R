@@ -109,15 +109,22 @@ getCoOccurDataset <- function(df_sites,
   # Clean up measured data and convert to wide format ----
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
   if (nrow(df_meas) > 0) {
+    params <- unique(as.character(df_meas$StdParamName))
     df_meas <- as.data.frame(df_meas) %>%
       dplyr::filter(!is.na(ResultValue)) %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate,
-                    StdParamName, ResultValue) %>%
-      dplyr::group_by(StationID, StressSampleID, StdParamName) %>%
-      dplyr::summarise(StressSampleDate = min(StressSampleDate),
-                       meanResult = mean(ResultValue, na.rm = TRUE),
+                    StdParamName, TransfResult) %>%
+      tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult) %>%
+      dplyr::group_by(StationID, StressSampleID) %>%
+      dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
+      dplyr::ungroup() %>%
+      tidyr::pivot_longer(cols = all_of(params), names_to = "StdParamName",
+                          values_to = "TransfResult", values_drop_na = TRUE) %>%
+      dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
+      dplyr::summarise(TransfResult = mean(TransfResult, na.rm = TRUE),
                        .groups = "drop_last") %>%
-      tidyr::pivot_wider(names_from = StdParamName, values_from = meanResult)
+      tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
+
     measColnames <- names(df_meas)
     measColnames <- measColnames[!(measColnames %in% c("StationID",
                                                        "StressSampleID",
