@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-04 12:10:52.874235
+    #> Last Update: 2025-09-04 12:46:51.498096
 
 <img src="man/figures/hex_CAST.png" align="left" height="139" />
 <img src="man/figures/hex_RPP.png" align="center" height="139" />
@@ -88,6 +88,11 @@ By those using the CAST and familiar with causal assessment.
 
 The code is intended to be run from the Shiny application but can also
 be run in the R console.
+
+## Shiny Apps
+
+As of 2025-09-04 the Shiny applications were moved to their own
+repository; <https://github.com/leppott/CAST_Shiny>
 
 ## Documentation
 

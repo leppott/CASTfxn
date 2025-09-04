@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9001 (2025-09-04)
+
+* refactor: Move Shiny apps to their own repo, CAST_Shiny
+* docs: Update README section on Shiny
+
 ## Changes in version 0.2.1.9003 (2025-09-04)
 
 * docs: Update DESCRIPTION
