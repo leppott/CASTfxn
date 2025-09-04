@@ -6,16 +6,11 @@
 \usage{
 getWoE(
   TargetSiteID,
-  biocomm = "bmi",
-  index = "CSCI",
-  dir_results = dir_results,
-  dfLoE = df_LoE,
-  dfQual = list.BioQualSites$dfQuality,
-  dfStr = list_MatchBioData$site.b.str,
-  dfRank = list.stressors$site.stressor.pctrank,
-  dfStressInfo = siteStressInfo,
-  df_coOccur = data_bioCoOccur,
-  BioResp = bioMetricNames
+  biocomm,
+  dfLoE,
+  dfStress = df_stressorMetadata,
+  dir_results = file.path(getwd(), "Results"),
+  dir_WoE = "_WoE"
 )
 }
 \arguments{
@@ -23,35 +18,17 @@ getWoE(
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
-\item{index}{Index name (IBI, CSCI, ASCI, etc.) Default = "IBI".}
+\item{dfLoE}{Dataframe containing the lines of evidence scores for each
+stressor and sample in long form.}
 
-\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
-
-\item{dfLoE}{data frame, LoE}
-
-\item{dfQual}{data frame, Qual}
-
-\item{dfRank}{Percent rank of each stressor in the distribution of comparator sites.}
-
-\item{dfStressInfo}{data frame, StressInfo}
-
-\item{df_coOccur}{CoOccur dataframe corresponding with stressors and specified biocomm}
-
-\item{BioResp}{BioResp}
+\item{dir_results}{Directory to save tables. Default = working directory and Results.}
 }
 \value{
-Four tab-delimited tables containing weight of evidence information:
-        summary of the site results by stressor; more detailed review of 
-        each site sample by stressor and each line of evidence; weight of evidence
-        for metrics evaluated for stressor-response lines of evidence;
-        lookup table describing the short line of evidence code.
-
-Lines of evidence evaluated (if possible):
-CO: Spatial/temporal co-occurrence 
-SR: Stressor-response relationships from the field
-VP: Verified predictions
-SR: Stressor-response relationships from other field studies
-SSD: Stressor-response relationships from laboratory studies
+Two tab-delimited tables containing weight of evidence information:
+        one detailed, and one summary. The detailed table includes stressors
+        and the lines of evidence for or against them. The summary table
+        includes the number of lines that support, refute, are equivalent,
+        or were not evaluated.
 }
 \description{
 Summarize weight of evidence using scores from other functions.
@@ -59,9 +36,9 @@ Summarize weight of evidence using scores from other functions.
 \details{
 Stressor-based weight of evidence for the stressor as a cause of impairment
          for the specified biological community. Combines information from
-         the co-occurrence, stressor-response using data from or outside the 
+         the co-occurrence, stressor-response using data from or outside the
          case, verified predictions, and stressor-response from laboratory data.
 
-Uses the libraries dplyr and tidyr.
+Uses the packages dplyr and tidyr.
 }
 \keyword{internal}

@@ -7,40 +7,60 @@
 getSiteMap(
   sp_outline,
   sp_flowline,
+  region,
+  datum,
+  df_sites,
   allSites,
+  compSites,
   TargetSiteID,
-  dir_results,
-  dir_sub,
+  useBC = FALSE,
+  plotvars,
+  refOutline,
+  dir_results = file.path(getwd(), "Results"),
+  dir_sub = "SiteInfo",
   dir_map_rmd
 )
 }
 \arguments{
-\item{sp_outline}{Outline for map, typically State border.}
+\item{sp_outline}{Spatial dataframe representing region (or subregion) boundary.}
 
-\item{sp_flowline}{ypically NHD+ flowline.}
+\item{sp_flowline}{Spatial dataframe representing stream reaches *MUST* include
+inside-the-case ID; may include outside-the-case ID.}
 
-\item{allSites}{allSites}
+\item{region}{Region or regulatory organization to which the data apply
+(e.g., AZ, SMC, WA, OR)}
 
-\item{TargetSiteID}{SiteID}
+\item{df_sites}{dataframe containing site data, including both "inside the case"
+and "outside the case" identifiers.}
 
-\item{dir_results}{Directory for results.  Default = "Results".}
+\item{allSites}{a vector of outside-the-case site identifiers}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+\item{compSites}{a vector of inside-the-case site identifiers}
 
-\item{dir_map_rmd}{Directory with Map_Leaflet.RMD.  Default = package RMD.}
+\item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
+
+\item{useBC}{TRUE to use biological similarity; FALSE to not use. Default = "FALSE"}
+
+\item{plotvars}{Standardized plot sizes, fills, transparencies, and shapes by type}
+
+\item{refOutline}{Standardized reference site outline color}
+
+\item{dir_results}{Directory containing all results. Default is file.path(getwd(),"Results")}
+
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo".}
+
+\item{dir_map_rmd}{Directory containing the leaflet map template.}
 }
 \value{
-A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
-in the user supplied dir_results folder (default is "Results" folder in the 
-working directory).  Also produced is a summary list; SiteInfo, Samps, 
-BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+A png map to a subdirectory "SiteInfo" in the folder named by the SiteID
+in the user supplied dir_results folder (default is "Results" folder in the
+working directory).
 }
 \description{
 Plot site map of provided TargetSite.
 }
 \details{
-Plots a map of the region, indicating the target site in red, cluster sites
-in teal, reference sites in dark blue, cluster reference sites in teal outlined
-in blue, and the rest of the sites (not same cluster as target & not reference)
-in grey.
+Plots a map of the region, indicating the target site in red,
+inside-the-case (comparator) sites in teal, outside-the-case sites in grey,
+and both inside/outside the case reference sites outlined in dark blue.
 }

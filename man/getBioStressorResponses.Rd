@@ -2,20 +2,27 @@
 % Please edit documentation in R/getBioStressorResponses.R
 \name{getBioStressorResponses}
 \alias{getBioStressorResponses}
-\title{Biological Stressor Responses}
+\title{Biological Stressor-Response Gradient Lines of Evidence}
 \usage{
 getBioStressorResponses(
   TargetSiteID,
-  stressors,
-  stressorInfo = siteStressInfo,
-  BioResp,
-  BioInfo,
-  list.MatchBioData,
-  ref.sites,
-  siteQual2Plot,
-  biocomm = "bmi",
-  dir_results = file.path(getwd(), "Results"),
-  dir_sub = "StressorResponse",
+  df_stressinfo,
+  df_respinfo,
+  df_respdata,
+  df_datapaired,
+  biocomm,
+  bioindex,
+  min_cases = samplim,
+  p.val_cutoff = 0.05,
+  r2_cutoff = 0.1,
+  plotvars = data_plotvars,
+  refOutline = refOutline_col,
+  plotdpi,
+  plotH,
+  plotW,
+  plotunits,
+  dir_plots,
+  dir_sub = "_WoE",
   boo_pred_warn = TRUE,
   boo_plot = TRUE
 )
@@ -23,254 +30,62 @@ getBioStressorResponses(
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{stressors}{stressors}
+\item{df_stressinfo}{stressor metadata for stressors considered candidate
+causes of impairment at the target site}
 
-\item{stressorInfo}{stressor info}
+\item{df_respinfo}{Bio metric metadata}
 
-\item{BioResp}{Biological response variables.  For example, BMI metrics or Algae metrics.}
+\item{df_respdata}{Biological metric data for all response samples}
 
-\item{BioInfo}{Bio info}
-
-\item{list.MatchBioData}{list of matched biological (BMI or algae) and stressor data.}
-
-\item{ref.sites}{Reference sites.}
-
-\item{siteQual2Plot}{site quality to plot}
+\item{df_datapaired}{dataframe of matched biological response and stressor data.}
 
 \item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
 
-\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
+\item{bioindex}{Name of the biological index column}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "StressorResponse"}
+\item{min_cases}{Minimum number of paired samples; samplim from CASTool_Metadata
+Default = samplim.}
 
-\item{boo_pred_warn}{Should warnings for prediction be suppressed.  Default = TRUE.}
+\item{p.val_cutoff}{p-value cutoff above which the slope is not considered significant
+Default = 0.05}
 
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+\item{r2_cutoff}{r2 value below which the relationship has too much variance
+Default = 0.1}
+
+\item{plotvars}{colors, shapes, fills, and transparencies for each type (target,
+not degraded, degraded, inside-the-case, and outside-the-case)}
+
+\item{refOutline}{color of the reference sites outline}
+
+\item{plotdpi}{standardized dpi for all plots}
+
+\item{plotH}{standardized height for all plots}
+
+\item{plotW}{standardized width for all plots}
+
+\item{dir_plots}{Directory to save plots. Default = working directory and Results.}
+
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "StressorResponse"}
+
+\item{boo_pred_warn}{Should warnings for prediction be suppressed. Default = TRUE.}
+
+\item{boo_plot}{Boolean value to save plots. Default = TRUE.}
 }
 \value{
-A jpg in SiteID subfolder of the "Results" folder of working directory.  
-And two tab-delimited text files; stressor correlations and scores.
+Writes one or more graphics depicting stressor-response relationships,
+        a correlation tile plot, and two tab-delimited text files;
+        stressor correlations and scores. Returns a dataframe containing
+        target site scores for inside-the-case and outside-the-case.
 }
 \description{
-Get Biological (Algae or BMI) stressor responses.
+Use linear regression to evaluate stressor-response gradients
+             inside the case or outside the case.
 }
 \details{
-Biological (Algae or BMI) stressor regressions.
+Biological (BMI, Algae, or Fish) stressor linear regressions.
+
+Requires packages dplyr, ggplot2, stringr, tidyr
 }
 \examples{
-\dontrun{
-# Example 1, BMI
-TargetSiteID <- "SRCKN001.61"
-dir_results <- file.path(getwd(), "Results")
-biocomm <- "bmi"
-
-# datasets getSiteInfo
-# data, example included with package
-data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
-data.SampSummary   <- data_SampSummary
-data.303d.ComID    <- data_303d
-data.bmi.metrics   <- data_BMIMetrics
-data.algae.metrics <- data_AlgMetrics
-data.mod           <- data_ReachMod
-
-# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                    , "ElevCategory"])
-if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
-} else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
-}
-
-# Map data
-# San Diego
-#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-# AZ
-map_flowline  <- data_GIS_Flow_HI
-map_flowline2 <- data_GIS_Flow_LO
-if(elev_cat=="HI"){
-   map_flowline <- data_GIS_Flow_HI
-} else if(elev_cat=="LO") {
-   map_flowline <- data_GIS_Flow_LO
-}
-map_outline   <- data_GIS_AZ_Outline
-# Project site data to USGS Albers Equal Area
-usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-# projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
-           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-map_proj <- my.aea
-#
-dir_sub <- "SiteInfo"
-
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-                                , data.SampSummary, data.303d.ComID
-                                , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline
-                                , dir_sub=dir_sub)
-
-# Data getChemDataSubsets
-# data import, example 
-# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
-# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-# data, example included with package
-data.chem.raw <- data_Chem
-data.chem.info <- data_ChemInfo
-
-# Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
-
-# Data getStressorList
-chem.info <- list.data$chem.info
-cluster.chem <- list.data$cluster.chem
-cluster.samps <- list.data$cluster.samps
-ref.sites <- list.data$ref.sites
-site.chem <- list.data$site.chem
-dir_sub <- "CandidateCauses"
-
-# set cutoff for possible stressor identification
-probsLow <- 0.10
-probsHigh <- 0.90 
-
-# Run getStressorList
-list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                                 , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow, biocomm, dir_results
-                                 , dir_sub)
-                                 
-# Data getBioMatches, BMI
-## remove "none"
-stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
-stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
-LogTransf <- stressors_logtransf
-data.bio.metrics <- data_BMIMetrics
-
-# Run getBioMatches
-list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
-                                   , data.chem.raw, data.bio.metrics, biocomm)
-  
-# Data getBioStressorResponses, BMI 
-BioResp <- c("IBI", "TotalTaxSPL_Sc", "DipTaxSPL_Sc"
-             , "IntolTaxSPL_Sc", "HBISPL_Sc", "PlecoPct_Sc", "ScrapPctSPL_Sc"
-             , "TrichTax_Sc", "EphemTax_Sc", "EphemPct_Sc", "Dom01PctSPL_Sc") 
-dir_sub <- "StressorResponse"
-             
-# Run getBioStressorResponses, BMI               
-getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                        , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Example 2, Algae
-TargetSiteID <- "LCBEN002.57"
-dir_results <- file.path(getwd(), "Results")
-biocomm <- "algae"
-
-# datasets getSiteInfo
-# data, example included with package
-data.Stations.Info <- data_Sites       # need for getSiteInfo and getChemDataSubsets
-data.SampSummary   <- data_SampSummary
-data.303d.ComID    <- data_303d
-data.bmi.metrics   <- data_BMIMetrics
-data.algae.metrics <- data_AlgMetrics
-data.mod           <- data_ReachMod
-
-#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                    , "ElevCategory"])
-if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
-} else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
-}
-
-# Map data
-# San Diego
-#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-# AZ
-map_flowline  <- data_GIS_Flow_HI
-map_flowline2 <- data_GIS_Flow_LO
-if(elev_cat=="HI"){
-   map_flowline <- data_GIS_Flow_HI
-} else if(elev_cat=="LO") {
-   map_flowline <- data_GIS_Flow_LO
-}
-map_outline   <- data_GIS_AZ_Outline
-# Project site data to USGS Albers Equal Area
-usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-# projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
-           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-map_proj <- my.aea
-#
-dir_sub <- "SiteInfo"
-
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-                                , data.SampSummary, data.303d.ComID
-                                , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline
-                                , dir_sub=dir_sub)
-
-# Data getChemDataSubsets
-# data, example included with package
-data.chem.raw <- data_Chem
-data.chem.info <- data_ChemInfo
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-dir_sub <- "CandidateCauses"
-
-# Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
-
-# Data getStressorList
-chem.info <- list.data$chem.info
-cluster.chem <- list.data$cluster.chem
-cluster.samps <- list.data$cluster.samps
-ref.sites <- list.data$ref.sites
-site.chem <- list.data$site.chem
-
-# set cutoff for possible stressor identification
-probsLow <- 0.10
-probsHigh <- 0.90 
-biocomm <- "algae"
-
-# Run getStressorList
-list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                                 , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow, biocomm, dir_results)
-                                 
-# Data getBioMatches, Algae
-## remove "none"
-stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
-stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
-LogTransf <- stressors_logtransf
-data.bio.metrics <- data_AlgMetrics
-
-# Run getBioMatches, Algae
-list.MatchBioData <- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
-                                  , data.chem.raw, data.bio.metrics, biocomm)
-
-# Data getBioStressorResponses, Algae
-BioResp <- colnames(data.bio.metrics[6:52])
-dir_sub <- "StressorResponse"
-
-# Run getBioStressorResponses, Algae
-getBioStressorResponses(TargetSiteID, stressors, BioResp, list.MatchBioData
-                       , LogTransf, ref.sites, biocomm, dir_results, dir_sub)
-}
+\dontrun{}
 }

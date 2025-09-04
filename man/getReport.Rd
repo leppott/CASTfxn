@@ -6,46 +6,48 @@
 \usage{
 getReport(
   TargetSiteID,
-  probsHigh,
-  probsLow,
-  useBMI,
-  useAlg,
-  useBC,
+  biocomms,
+  primeIndex = bmiIndex,
   removeOutliers,
+  samplim,
+  r2_cutoff,
+  p.val_cutoff,
+  useBC,
+  lagdays,
   DOlim,
   pHlimLow,
   pHlimHigh,
-  lagdays,
   bmiIndex,
   algIndex,
+  fishIndex,
+  useBMI,
+  useAlg,
+  useFish,
   dir_data = normalizePath(file.path(".", "Data")),
   dir_results = normalizePath(file.path(".", "Results")),
-  report_type = "preliminary",
+  report_type = "full",
   report_format = "html",
-  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
-  siteQual2Plot = NULL
+  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
 )
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
-\item{probsHigh}{Default = 0.75}
+\item{removeOutliers}{Default = TRUE}
 
-\item{probsLow}{Default = 0.25}
+\item{useBC}{Default = TRUE}
+
+\item{lagdays}{Default = 10, 10}
+
+\item{bmiIndex}{Default = bmiIndex}
+
+\item{algIndex}{Default = algIndex}
+
+\item{fishIndex}{Default = fishIndex}
 
 \item{useBMI}{boolean to use Benthic Macroinvertebrates.}
 
 \item{useAlg}{boolean to use Algae.}
-
-\item{useBC}{Default = TRUE}
-
-\item{removeOutliers}{Default = TRUE}
-
-\item{lagdays}{Default = 10}
-
-\item{bmiIndex}{Default = "CSCI".}
-
-\item{algIndex}{Default = "MMIhybrid"}
 
 \item{dir_data}{Absolute path to data.  Default = /Data}
 
@@ -57,25 +59,30 @@ getReport(
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
 
+\item{probsHigh}{Default = 0.75}
+
+\item{probsLow}{Default = 0.25}
+
 \item{siteQual2Plot}{Site quality to print.}
 }
 \value{
-A report for the provided SiteID in the provided format (html or word) 
+A report for the provided SiteID in the provided format (html or word)
 in the results directory.
 }
 \description{
 Generate report
 }
 \details{
-Generates a report based on a Target SiteID in a given directory.  
-The output from other `CASTfxn` functions are stored in a "Results" folder with the provided Target SiteID as a subdirectory.  
-Report format can be "html" (recommended default) or "word" (docx). 
+Generates a report based on a Target SiteID in a given directory.
+The output from other `CASTfxn` functions are stored in a "Results" folder
+with the provided Target SiteID as a subdirectory.
+Report format can be "html" (recommended default) or "word" (docx).
 
-Only the "summary" report is active. 
+Only the "summary" report is active.
 
-dir_data and dir_results should be absolute and not relative paths.  
+dir_data and dir_results should be absolute and not relative paths.
 This is because these directories are passed to an RMD file.
-Within the RMD each code chunk assumes a relative path based on the RMD location 
+Within the RMD each code chunk assumes a relative path based on the RMD location
 and not the working directory of the calling function.
 The function `normalizePath` can be used to convert from relative to absolute path.
 }
@@ -84,7 +91,7 @@ TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 report_type <- "summary"
 report_format <- "html"
- 
+
 \dontrun{
 # Run Function
 getReport(TargetSiteID, dir_results, report_type, report_format)

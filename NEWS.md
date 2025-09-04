@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-04 12:47:32.288168
+    #> Last Update: 2025-09-04 12:57:31.551192
 
 # Planned Updates
 
@@ -24,6 +24,12 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9002 (2025-09-04)
+
+- docs: Remove deprecated packages from DESCRIPTION imports
+  - Needed for older Shiny apps
+    - maptools, rgdal, rgeos
 
 ## Changes in version 0.2.2.9001 (2025-09-04)
 

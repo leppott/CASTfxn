@@ -6,67 +6,83 @@
 \usage{
 getStressorList(
   TargetSiteID,
-  siteCluster,
-  chemInfo,
-  clusterChem,
-  siteQual2Plot,
-  refSamps,
+  outcaseLabel,
+  outcaseID,
+  outcaseSites,
+  incaseSites,
   refSites,
   siteChem,
-  probsHigh,
-  probsLow,
+  df_Stress,
+  chemInfo,
+  samplim = 10,
+  probsHigh = 0.75,
+  probsLow = 0.25,
   DOlim = 7,
   pHlimLow = 6.5,
   pHlimHigh = 9,
-  biocomm = "bmi",
-  bioParmsDEL,
+  biocommlist,
+  listbioParamsDEL,
+  plotVars,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "CandidateCauses",
-  boo_plot = TRUE
+  dir_sub = "CandidateCauses"
 )
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{siteQual2Plot}{Site quality to plot.}
+\item{outcaseLabel}{Label for the "outside the case" identifier}
 
-\item{refSamps}{reference samples}
+\item{outcaseID}{Name of column in sites file that indicates the "outside
+the case" id}
 
-\item{refSites}{reference sites}
+\item{outcaseSites}{Vector containing "outside the case" site IDs}
 
-\item{siteChem}{Chem sites}
+\item{incaseSites}{Vector containing "inside the case" site IDs (comparators)}
 
-\item{probsHigh}{probabilities, high}
+\item{refSites}{all reference sites}
 
-\item{probsLow}{probabilities, low}
+\item{siteChem}{dataframe containing any detected stressor data from target
+site samples at any time}
 
-\item{DOlim}{Dissolved Oxygen limit, default = 7}
+\item{df_Stress}{dataframe containing stressor data}
 
-\item{pHlimLow}{pH limit, low, default = 6.5}
+\item{samplim}{minimum number of samples required to id stressors as
+candidate causes. Defaults to 10.}
 
-\item{pHlimHigh}{pH limit, high, default = 9}
+\item{probsHigh}{probabilities, high. Defaults to 0.75. For stressors considered
+to be increasers (stress increases with increasing concentration),
+values above this are considered to be candidate causes.}
 
-\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+\item{probsLow}{probabilities, low, Defaults to 0.25.For stressors considered
+to be decreasers (stress increases with decreasing concentration),
+values above this are considered to be candidate causes.}
 
-\item{bioParmsDEL}{bio parameters delete.}
+\item{DOlim}{Dissolved Oxygen limit, default = 7. Used to exclude values
+< probsLow if they are also > 7 mg/L.}
 
-\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
+\item{pHlimLow}{pH limit, low, default = 6.5. Used to exclude values
+< probsLow if they are also between 6.5 and 9 pH units.}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+\item{pHlimHigh}{pH limit, high, default = 9. Used to exclude values
+> probsHigh if they are also between 6.5 and 9 pH units.}
 
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+\item{biocommlist}{vector of each biological response community available
+("bmi", "alg", or "fish")}
 
-\item{site.Cluster}{Clusters}
+\item{listbioParamsDEL}{list of vectors corresponding to biocommlist of
+stressors not considered relevant for evaluation}
 
-\item{chem.info}{chem information}
+\item{dir_results}{Directory to save plots. Default = file.path(getwd(), "Results").}
 
-\item{cluster.chem}{chem data cluster.}
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo"}
 
-\item{cluster.samps}{sample cluster.}
+\item{cheminfo}{dataframe containing stressor metadata, specifically "Label",
+"DirIncStress", and "LogTransformYN"}
 }
 \value{
-A jpeg in the "Results" subdirectory of the working directory with box plots.
-Also returns a list of stressors; stressors and site.stressor.pctrank.
+One or more png files containing normalized stressor boxplots by stressor
+group; a correlation matrix representing stressor correlations; a file of stressors
+evaluated; a file of stressors excluded; stressor values and site.stressor.pctrank.
 }
 \description{
 Get stressor list.
@@ -76,93 +92,11 @@ Box plots of each stressor, grouped by category.
 
 Required objects:  all specified as inputs.
 
+Required packages: dplyr, ggplot2, stringr, tidyr
+
 chem.info need to include DirIncStress.  Valid values are 'inc' or 'dec'.
 }
 \examples{
-TargetSiteID <- "SRCKN001.61"
-dir_results <- file.path(getwd(), "Results")
-
-# Data getSiteInfo
-# data, example included with package
-data.Stations.Info <- data_Sites        # need for getSiteInfo and getChemDataSubsets
-data.SampSummary   <- data_SampSummary
-data.303d.ComID    <- data_303d
-data.bmi.metrics   <- data_BMIMetrics
-data.algae.metrics <- data_AlgMetrics
-data.mod           <- data_ReachMod
-
-# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                    , "ElevCategory"])
-if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
-} else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
+\dontrun{
 }
-
-# Map data
-# San Diego
-#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-# AZ
-map_flowline  <- data_GIS_Flow_HI
-map_flowline2 <- data_GIS_Flow_LO
-if(elev_cat=="HI"){
-   map_flowline <- data_GIS_Flow_HI
-} else if(elev_cat=="LO") {
-   map_flowline <- data_GIS_Flow_LO
-}
-map_outline   <- data_GIS_AZ_Outline
-# Project site data to USGS Albers Equal Area
-usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-# projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
-           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-map_proj <- my.aea
-#
-dir_sub <- "SiteInfo"
-
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-                                , data.SampSummary, data.303d.ComID
-                                , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline
-                                , dir_sub=dir_sub)
-
-# Data getChemDataSubsets
-# data import, example 
-# data.chem.raw <- read.delim(paste(myDir.Data,"data.chem.raw.tab",sep=""),na.strings = c(""," "))
-# data.chem.info <- read.delim(paste(myDir.Data,"data.chem.info.tab",sep=""))
-# data, example included with package
-site.COMID <- list.SiteSummary$COMID
-site.Clusters <- list.SiteSummary$ClustIDs
-data.chem.raw <- data_Chem
-data.chem.info <- data_ChemInfo
-
-# Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-                                , data.chem.raw=data.chem.raw, data.chem.info=data.chem.info)
-
-# datasets getStressorList
-chem.info <- list.data$chem.info
-cluster.chem <- list.data$cluster.chem
-cluster.samps <- list.data$cluster.samps
-ref.sites <- list.data$ref.sites
-siteChem <- list.data$siteChem
-dir_sub <- "CandidateCauses"
-
-# set cutoff for possible stressor identification
-probsLow <- 0.10
-probsHigh <- 0.90 
-biocomm <- "bmi"
-
-# Run getStressorList
-list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                                 , cluster.samps, ref.sites, siteChem
-                                 , probsHigh, probsLow, biocomm, dir_results
-                                 , dir_sub)
 }

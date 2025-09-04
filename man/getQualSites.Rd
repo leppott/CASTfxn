@@ -6,78 +6,66 @@
 \usage{
 getQualSites(
   TargetSiteID,
-  df_sites = data_Sites,
-  biocomm = "bmi",
-  df_qual = data_bmiCoOccur,
-  colBio = "CSCI",
-  colBioSample = "RespSampID",
-  colStressSample = "StressSampID",
-  comp_sites = NULL,
-  useBC = FALSE,
-  BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2),
-  BioNarLab = c("very likely altered", "likely altered", "possibly altered",
-    "likely intact"),
-  BioDegBrk = c(-2, 0.799, 2),
-  BioDegLab = c("Yes", "No"),
-  dir_results = file.path(getwd(), "Results")
+  biocomm,
+  df_qual,
+  colBio,
+  compSites,
+  allSites,
+  refSites,
+  stressors,
+  dir_results = dir_results,
+  dir_sub = "SiteInfo"
 )
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{df_sites}{Sites table containing site ids and reference flags. 
-Default = "data_Sites".}
+\item{biocomm}{Biological community; fish, algae or BMI.  Default = "BMI".}
 
-\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+\item{df_qual}{Biological index data for the specified biocomm.}
 
-\item{df_qual}{Biological index and metrics data for the specified biocomm. 
-Default = "data.bmi.metrics".}
+\item{colBio}{Name of the column for the biological response index measure.}
 
-\item{colBio}{Name of the column for the biological response index measure; Default = "CSCI".}
+\item{compSites}{Vector containing "inside the case" site identifiers.}
 
-\item{colBioSample}{Column name for biological sample; Default = "RespSampID"}
+\item{allSites}{Vector containing "outside the case" site identifiers.}
 
-\item{comp_sites}{Vector containing comparator site identifiers.}
+\item{refSites}{Vector containing all reference site identifiers.}
 
-\item{useBC}{Boolean for using Bray Curtis model.  Default = FALSE}
+\item{stressors}{Vector containing}
 
-\item{BioNarBrk}{Breaks for cut function for biological index.  CA CSCI Default is =
-c(-2, 0.62, 0.799, 0.919, 2)}
+\item{dir_results}{directory for results; Default = file.path(getwd(), "Results").}
 
-\item{BioNarLab}{Labels for biological index.  CA CSCI Default =  c("very likely altered"
-, "likely altered", "possibly altered", "likely intact")}
-
-\item{BioDegBrk}{Biological assessment degraded status, cut function breaks. 
-Should be in order from bad (low) to good (high). 
-Default = c(-2, 0.799, 2)}
-
-\item{BioDegLab}{Biological assessment degraded status, cut function labels. 
-Should be in order from bad (low) to good (high).
-Defaults are referenced in the code so if change the code will break. 
-Default = c("Yes", "No").}
-
-\item{dir_results}{directory for results; Default = ./Results}
-
-\item{ColStressSample}{Column name for Stress sample ID; Default = StressSampID}
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo".}
 }
 \value{
-A list with vectors containing all sites or comparator sites that are
-reference, not degraded ("good"), or having samples with index scores better 
-than the minimum target site index score. Also, vectors containing similar 
-data for reaches, and all samples or comparator samples with better index scores.
+A dataframe containing the columns StationID, IncaseCol, OutcaseCol,
+        StressSampleDate, RespSampleDate, StressSampleID, RespSampleID, BioComm,
+        RefSiteFlag (0 or 1), IncaseYN (0 or 1), OutcaseYN (0 or 1), BetterThan
+        (0 or 1), BioIndex, Quality (not degraded or degraded), all_of(stressors)
+        where stressors represent candidate causes from the target site.
+
+        Better than is defined as all samples having a biological index
+        value >= the maximum degraded target site sample (if any) or the
+        minumum not degraded target site sample.
 }
 \description{
 Get quality sites where quality is defined in any of three ways:
 reference, not degraded, or having better biology than the worst target site sample.
 }
 \details{
-Generates a vector for each measure of quality for sites and reaches
-in the entire data set and separately in the comparator data set, and also 
-vectors for the samples having better biology in the entire data set and 
-separately in the comparatory data set.
-Inprovements: Add data gap analysis. In particular, how many samples are 
+Modify existing dataframe with stressor-response paired data and
+having columns StationID, IncaseCol, OutcaseCol, StressSampleDate,
+RespSampleDate, StressSampleID, RespSampleID, BioComm, BioIndex, Quality,
+and all_of(stressors).
+The output dataframe inserts RefSiteFlag, IncaseYN, OutcaseYN, and BetterThan
+betwee BioCom and BioIndex. It retains all the existing columns from the
+input dataframe. By incorporating boolean columns, it becomes easier to
+subset the dataframe according to the requirements of each evaluation.
+
+Improvements: Add data gap analysis. In particular, how many samples are
 better than the min target sample score, and is that enough?
 
-Uses the library dplyr.
+Uses the library dplyr, stringr, tibble, and tidyr.
 }
 \keyword{internal}

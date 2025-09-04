@@ -7,45 +7,58 @@
 getDataSets(
   TargetSiteID,
   compSites,
-  df_coOccur = data_bmiCoOccur,
-  measParams = measParams,
-  modelParams = modelParams,
-  biocomm = "bmi",
-  bioIndex = "CSCI",
-  colBioSample = "BMISampID",
-  colBioSampDate = "BMISampDate",
-  df_biometrics = data_bmiMetrics,
-  df_stressinfo = data_stressInfo
+  allSites,
+  df_coOccur,
+  siteStressors,
+  bioParmsDEL = NULL,
+  df_biometrics,
+  df_stressinfo
 )
 }
 \arguments{
-\item{TargetSiteID}{Site ID}
+\item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
 
-\item{compSites}{Vector of stressors.}
+\item{compSites}{vector containing comparator site IDs}
 
-\item{biocomm}{Biological community; algae or BMI. Default = "BMI".}
+\item{allSites}{vector containing all "outside the case" site IDs}
 
-\item{df_biometrics}{Response metrics values for the specified biocomm.}
+\item{df_coOccur}{dataframe of matched stressor response samples for the
+desired biological community}
 
-\item{df_stressinfo}{Metadata about the stressors.}
+\item{siteStressors}{Vector containing stressors identified as candidate causes
+for the target site}
 
-\item{stresstype}{Type of stressor (measured or modeled). Default = "meas".
-Valid options are "meas" for measured data or "mod" for modeled data.}
+\item{df_biometrics}{dataframe containing the biological response samples'
+index and metric values}
 
-\item{df_stress}{Stressor values.}
+\item{bioParamsDEL}{vector of modeled parameters to delete based on lack of
+applicability to the biological response community}
+
+\item{colBioSample}{column name for the column containing the response sample ID}
+
+\item{colBioSampDate}{column name for the column containing the response sample date}
+
+\item{df_stressInfo}{dataframe containing stressor metadata, specifically "Label".}
 }
 \value{
-One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the 
-       "Results" folder of working directory. No scores are currently generated.
+List containing six dataframes: 1) stressor data from all samples
+        (outside the case), 2) stressor data from comparator samples (inside
+        the case), 3) stressor data from only the target samples, 4) response
+        data from all samples (outside the case), 5) response data from
+        comparator samples (inside the case), and 6) response data from only
+        the target samples.
 }
 \description{
-Get Data Sets identifies stressor-response paired samples with
-a lag time that is provided as a passed parameter.
+Subsets a dataframe of matched stressor-response data for
+             a single target site (with one or more matched samples),
+             comparator samples (inside the case), and all samples (outside
+             the case)
 }
 \details{
-This function applies fuzzyjoin using a lag time in days, where the 
-stressor sample must have been collected between lag time days before or 
-on the same day as the response sample. 
+Subsets the data frame output by the function getCoOccurDataset
+         first for stressors detected at the target site (in any sample),
+         then produces multiple subsets: two for the target site samples,
+         two for comparator site samples, and two for all site samples.
 
 Uses the libraries dplyr, tidyr, and fuzzyjoin.
 }

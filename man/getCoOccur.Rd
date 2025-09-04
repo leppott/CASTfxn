@@ -2,211 +2,120 @@
 % Please edit documentation in R/getCoOccur.R
 \name{getCoOccur}
 \alias{getCoOccur}
-\title{Co-Occurrence Plots}
+\title{Co-Occurrence and Sufficiency Lines of Evidence}
 \usage{
 getCoOccur(
+  TargetSiteID,
   df_data,
-  TargetSiteID = NULL,
-  col_ID,
-  colStressSamp,
-  colRespSamp,
-  colGroup,
-  colBio,
-  colStressors,
+  detects,
   df_stressinfo,
-  BioNarBrk = c(-2, 0.62, 0.799, 0.919, 2),
-  BioNarLab = c("very likely altered", "likely altered", "possibly altered ",
-    "likely intact"),
-  BioDegBrk = c(-2, 0.799, 2),
-  BioDegLab = c("Yes", "No"),
-  biocomm = "bmi",
-  dir_plots = file.path(getwd(), "Results"),
-  dir_sub = "CoOccurrence",
-  col_StressInvScore = c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk",
-    "DO_uf_mg_L", "pH", "pH_SU"),
+  compsites = list.CompSites$comp.sites,
+  biocomm,
+  colBio,
+  pHlimLow = 5,
+  pHlimHigh = 9,
+  DOlim = 6,
+  plotvars = data_plotvars,
+  plotdpi = plot_dpi,
+  plotH = plot_H,
+  plotW = plot_W,
+  plotunits = plot_units,
+  dir_plots = dir_results,
+  dir_sub = "_WoE",
   boo_plot = TRUE
 )
 }
 \arguments{
-\item{df_data}{data frame with data.}
+\item{TargetSiteID}{ID of station/sample(s) to plot}
 
-\item{TargetSiteID}{ID of station/sample to plot; can be single or multiple.
-Default is first entry in df_data[, col_ID]}
+\item{df_data}{data frame with paired stressor/response data, where stressor
+data are transformed.}
 
-\item{col_ID}{df_data column with unique Station/Sample identifier.}
+\item{detects}{all stressors detected in any samples from the target site}
 
-\item{colGroup}{df_data column with grouping variable.}
+\item{df_stressinfo}{dataframe containing stressor metadata (e.g., Label,
+DirIncStress, and other columns from the stressor
+information metadata file).}
 
-\item{colBio}{df_data column with biological numeric value.}
+\item{compsites}{vector of comparator sites. Defaults to list.CompSites$comp.sites}
 
-\item{colStressors}{df_data column(s) with stressor variable(s); can be 
-single or multiple.}
+\item{biocomm}{Biological community; fish, algae, or BMI.  Default = "BMI".}
 
-\item{BioNarBrk}{Biological assessment narrative, cut function breaks.
-Should be in order from bad (low) to good (high). 
-Default = c(-2, 0.62, 0.799, 0.919, 2)}
+\item{colBio}{df_data column with biological index numeric value.}
 
-\item{BioNarLab}{Biological assessment narrative, cut function labels.
-Should be in order from bad (low) to good (high).  
-Default = c("very likely altered", "likely altered", "possibly altered ", 
-"likely intact")}
+\item{pHlimLow}{The lower limit of pH considered to be supportive of a
+biological community. Defaults to pH of 6.5.}
 
-\item{BioDegBrk}{Biological assessment degraded status, cut function breaks. 
-Should be in order from bad (low) to good (high). 
-Default = c(-2, 0.799, 2)}
+\item{pHlimHigh}{The upper limit of pH considered to be supportive of a
+biological community. Defaults to pH of 9.}
 
-\item{BioDegLab}{Biological assessment degraded status, cut function labels. 
-Should be in order from bad (low) to good (high).
-Defaults are referenced in the code so if change the code will break. 
-Default = c("Yes", "No").}
+\item{DOlim}{The lower limit of DO in mg/L considered to be supportive of a
+biological community. Defaults to 7 mg/L}
 
-\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+\item{plotvars}{Colors, fills, shapes, transparencies for each type (target,
+not degraded, degraded, inside-the-case, outside-the-case).
+Default = data_plotvars.}
+
+\item{plotdpi}{DPI for plots for standardization. Default = plot_dpi.}
+
+\item{plotH}{Plot height for standardization. Default = plot_H.}
+
+\item{plotW}{Plot width for standardization. Default = plot_W.}
+
+\item{plotunits}{Plot units for standardization. Default = plot_units.}
 
 \item{dir_plots}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
 
 \item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
-
-\item{col.Stressor.InvSc}{Stressors as columns of df_data that have inverse scoring for box plots.
-Default = pH and DO; c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_."
-, "DOSat_f_unk", "DO_uf_mg_L", "pH", "pH_SU")}
 }
 \value{
-Saves a single PDF of all plots, individual plots as pngs, and a 
-scores files (tab separated text file) to a user defined 'Results' directory 
-in a 'CoOccurrence subdirectory.  A sub-directory is created under 'Results' 
-for each SiteID in TargetSiteID.
+Writes individual plots as pngs, and a tab-delimited text file with
+        scores for each line of evidence (co-occurrence & sufficiency) to a
+        "Results/TargetSiteID/BioComm/CoOccurrence" directory. Returns a list
+        containing 3 elements: a dataframe of stressor metadata corresponding
+        with stressors continuing forward in the analysis, a vector of
+        stressors not continuing forward in the analysis, and a dataframe
+        of all the scores continuing forward.
 }
 \description{
-Generates a box plots and stressor response plots (individually as png 
-and together as a PDF) as well as scores for co-occurence.
+Generates box plots and and logistic regressions to answer the
+             questions: 1) are the observed stressor levels consistent with
+             impairment where and when it occurs? and 2) are stressor levels
+             sufficient to explain the observed impairment? Also writes a
+             tab-delimited text file containing scores for these two lines of
+             evidence.
 }
 \details{
-\strong{Derive evidence fo spatial/temporal co-occurrence.}
+\strong{Derive evidence for spatial/temporal co-occurrence.}
 
-Are higher levels of the stressor observed where and when the biological 
-effect occurs?
+Stressor-response from field observational studies: Are higher levels of the
+stressor observed where and when the biological effect occurs?
 
-Box plots are used to show the distribution of the stressor levels at compartor 
-sites with better biological condition.  If a site has multiple biological 
+Box plots are used to show the distribution of the stressor levels at comparator
+sites with better biological condition.  If a site has multiple biological
 condition scores the lowest score is used to determine "better" sites.
 
 Samples are scored:
 
-1. Supports the case for candidate cause.  Stressor levels at the test sites 
-are above the 75th percentile of comparator sites having higher biological 
+1. Supports the case for candidate cause.  Stressor levels at the test sites
+are above the 75th percentile of comparator sites having higher biological
 quality.
 
-0. Indeterminate.  Stressor levels at the test site are below the 50th 
+0. Indeterminate.  Stressor levels at the test site are below the 50th
 percentile of comparator sites having higher biological quality.
 
--1. Weakens the case for the candidate cause.  Stressor levels at the test 
-sites are between the 50th and 75th percentile of comparator sites having 
+-1. Weakens the case for the candidate cause.  Stressor levels at the test
+sites are between the 50th and 75th percentile of comparator sites having
 higher biological quality.
 
-\strong{Derive Evidence for Stressor-Response Relationships from Field Observational 
-Studies.}
+Multiple stressors can be used. Stressors for which all target samples are
+scored -1 are not included in further lines of evidence evaluation.
 
-Stressor-response from field observational studies:  Is the level of the 
-stressor sufficient to explain the level of biological effect observed at the
- site?  
-
-Using all comparator sites, fit logistical regression curve of the probability 
-of poor condition (i.e., poor California index score) as a function of 
-stressor level.  Compare stressor levels from test site to levels 
-corresponding to median (50%) and low (20%) probabilities of observing poor 
-condition.
-
-1. Supports the case for the candidate cause.  Stressor levels at the test 
-site are above the lower confidence limit  (LCL) corresponding to 50% 
-probability of observing poor condition 
-
-0. Indeterminate.  Stressor levels at the test site are between the LCL 
-corresponding to 50% probability of observing poor condition and the UCL 
-corresponding to 20% probability of observing poor condition. 
-
--1. Weakens the case for the candidate cause.  Stressor levels at the test 
-site are below the upper confidence limit (UCL) corresponding to 20% 
-probability of observing poor condition. 
-
-Cut function is used to assign narrative categories and degraded status based 
-on provided biological score.
-Ensures criteria are applied the same across all sites.
-
-The BioDegLab has to remain as the default values of Yes and No.  
-Other values will break the code.
-
-Only a single biological measurement is used.  But multiple stressors can be
- used.
-
-Uses the libraries dplyr, wrapr, ggplot2, and gridExtra.
+Uses the libraries dplyr, ggplot2, grid, stringr.
 }
 \examples{
-# Example #1, CA data (multiple sites)
-#
-#Load Data
-df_data <- data_CoOccur_CA
-#
-colGroup     <- "Group"
-colBio       <- "CSCI"
-colStressors <- c("DO_uf_mg_L", "TN_uf_mg_L", "TP_mg_L")
-col_ID        <- "StationID_Master"
-#
-BioNarBrk <- c(-2, 0.62, 0.799, 0.919, 2)
-BioNarLab <- c("very likely altered", "likely altered"
-                , "possibly altered ", "likely intact")
-BioDegBrk <- c(-2, 0.799, 2)
-BioDegLab <- c("Yes", "No")
-biocomm <- "bmi"
-dir_plots <- file.path(getwd(), "Results")
-dir_sub <- "CoOccurrence"
-#
-TargetSiteID <- c("SMC08335", "901SJSJC9", "911TCAM01", "403STC004")
-#
-# Specify stressors by name
-col_StressInvScore <- c("DO_uf_mg_L", "pH")
-
-#
-getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
-        , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab 
-        , biocomm, dir_plots, dir_sub, col_StressInvScore
-        )
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Example #2, AZ data (single site)
-#
-TargetSiteID <- c("SRCKN001.61")
-#
-# comparator Data based on elevation category
-boo_Lo <- TargetSiteID \%in\% data_CoOccur_AZ_Lo$StationID_Master
-if(boo_Lo==TRUE){
-   df_data <- data_CoOccur_AZ_Lo
-} else {
-   df_data <- data_CoOccur_AZ_Hi
+\dontrun{
 }
-#
-colGroup     <- "Group"
-colBio       <- "IBI"
-colStressors <- c("Calcium_uf_mg_L", "Copper_uf_ug_L", "DO_f_mg_L", "SpecCond_umhos_cm")
-col_ID        <- "StationID_Master"
-#
-BioNarBrk <- c(0, 45, 52, 100)
-BioNarLab <- c("Most Disturbed", "Intermediate", "Least Disturbed")
-BioDegBrk <- c(0, 45, 100)
-BioDegLab <- c("Yes", "No")
-biocomm <- "bmi"
-dir_plots <- file.path(getwd(), "Results")
-dir_sub <- "CoOccurrence"
-
-# Specify stressors by name
-#col_StressInvScore <- c("DO_f_.", "DO_f_mg_L", "DO_f_unk", "DOSat_f_.", "DOSat_f_unk", "pH_SU")
-# Get stressors from chem.info
-col_StressInvScore <- data_ChemInfo[data_ChemInfo[, "DirIncStress"] == "Dec", "StdParamName"] 
-
-#
-getCoOccur(df_data, TargetSiteID, col_ID, colGroup, colBio, colStressors
-        , BioNarBrk, BioNarLab, BioDegBrk, BioDegLab
-        , biocomm, dir_plots, dir_sub, col_StressInvScore
-        )
-
 }

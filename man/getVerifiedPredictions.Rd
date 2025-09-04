@@ -6,197 +6,64 @@
 \usage{
 getVerifiedPredictions(
   TargetSiteID,
-  SSTVanalytes,
-  colBioSample,
-  stressors,
-  stressorInfo,
-  dataBioTaxa,
-  dataMasterTaxa,
-  matchedData,
-  BioIndex_Val = "IBI",
-  BioIndex_Nar = "NarRat",
-  BioIndex_Nar_Deg = "Violates",
-  dir_results = file.path(getwd(), "Results"),
-  dir_sub = "VerifiedPredictions",
-  biocomm = "bmi",
+  stressors.sstv,
+  df_stressinfo,
+  df_paired,
+  biocomm,
+  df_bioTaxaData,
+  df_MasterTaxa,
+  colBio,
+  plotvars = data_plotvars,
+  plotdpi = plot_dpi,
+  plotH = plot_H,
+  plotW = plot_W,
+  plotunits = plot_units,
+  dir_plots = file.path(getwd(), "Results"),
+  dir_sub = "_WoE",
   boo_plot = TRUE
 )
 }
 \arguments{
 \item{TargetSiteID}{Site ID}
 
-\item{dataBioTaxa}{x}
+\item{stressors.sstv}{vector of stressors with stressor-specific tolerance values}
 
-\item{dataMasterTaxa}{Master Taxa list for biological data}
+\item{df_stressinfo}{dataframe of stressor metadata}
 
-\item{matchedData}{matched biological and chemical stressor data.}
+\item{df_paired}{dataframe of paired stressor-response samples}
 
-\item{BioIndex_Val}{Column name for biological index value; list.MatchBioData$site.b.rsp}
+\item{biocomm}{default = "bmi"}
 
-\item{BioIndex_Nar}{Column name for biological index narrative rating; list.MatchBioData$site.b.rsp}
+\item{df_bioTaxaData}{dataframe of raw response data (counts or relative abundance)}
 
-\item{BioIndex_Nar_Deg}{Biological index degraded narrative text; list.MatchBioData$site.b.rsp}
+\item{df_MasterTaxa}{dataframe of master taxa with SSTV values determined for individual taxa}
 
-\item{dir_results}{Directory to save plots.  Default = working directory and Results.}
+\item{colBio}{default = "IBI"}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "VerifiedPredictions"}
+\item{plotvars}{Standardized sizes, fills, shapes, and transparencies for plots.
+Defaults to data_plotvars}
 
-\item{biocomm}{Biological community; algae or BMI.  Default = "BMI".}
+\item{plotdpi}{Standardized plot dpi. Defaults to plot_dpi.}
 
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+\item{plotH}{Standardized plot height. Defaults to plot_H.}
 
-\item{data.SampSummary}{x}
+\item{plotW}{Standardized plot width. Defaults to plot_W.}
 
-\item{data_stressInfo}{x}
+\item{dir_plots}{default = file.path(getwd(), "Results")}
 
-\item{data.SSTV.totabund}{x}
+\item{dir_sub}{default = "VerifiedPredictions"}
 
-\item{ref.sites}{Vector of reference sites IDs.}
+\item{boo_plot}{= TRUE}
+
+\item{plotUnits}{Standardized plot units. Defaults to plot_units.}
 }
 \value{
-Results text file and jpeg files to "Results" "VerifiedPredictions" folder 
-in working directory of box plots and a single PDF of all plots.
+Results text file and png files to "Results" "VerifiedPredictions" folder
+in working directory of box plots
 }
 \description{
 Get verified predictions.
 }
 \details{
-Required objects:
-
-* data.SampSummary; StationID_Master, CollDate, StressSampID, PhabSampID, BMI.Metrics.SampID, Algae.Metrics.SampID
-
-* dataBioTaxa; BMISampID
-
-* data_stressInfo; SSTV, Analyte, SSTV, SensMin, SensMax, TolMin, TolMax
-
-* data.SSTV.totabund; BMISampID, StationID_Master, StressSampID, SSTV.analyte
-, SensRelAbund, TolRelAbund, SensTaxa, SampleAbundance, TolTaxa
-
-* TargetSiteID
-}
-\examples{
-TargetSiteID <- "SRCKN001.61"
-dir_results  <- file.path(getwd(), "Results")
-
-# Data getSiteInfo
-# data, example included with package
-data.Stations.Info <- data_Sites          # need for getSiteInfo and getChemDataSubsets
-data.SampSummary   <- data_SampSummary
-data.303d.ComID    <- data_303d
-data.bmi.metrics   <- data_BMIMetrics
-data.algae.metrics <- data_AlgMetrics
-data.mod           <- data_ReachMod
-dataMasterTaxa        <- data_BMIMasterTaxa
-
-# Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
-                    , "ElevCategory"])
-if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
-} else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
-}
-
-# Map data
-# San Diego
-#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-# AZ
-map_flowline  <- data_GIS_Flow_HI
-map_flowline2 <- data_GIS_Flow_LO
-if(elev_cat=="HI"){
-   map_flowline <- data_GIS_Flow_HI
-} else if(elev_cat=="LO") {
-   map_flowline <- data_GIS_Flow_LO
-}
-map_outline   <- data_GIS_AZ_Outline
-# Project site data to USGS Albers Equal Area
-usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-# projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
-           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-map_proj <- my.aea
-# 
-dir_sub <- "SiteInfo"
-
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
-                                , data.SampSummary, data.303d.ComID
-                                , data.bmi.metrics, data.algae.metrics
-                                , data.cluster, data.mod
-                                , map_proj, map_outline, map_flowline
-                                , dir_sub=dir_sub)
-
-# Data getChemDataSubsets
-# data, example included with package
-data.chem.raw  <- data_Chem
-data_stressInfo <- data_ChemInfo
-site.COMID     <- list.SiteSummary$COMID
-site.Clusters  <- list.SiteSummary$ClustIDs
-
-# Run getChemDataSubsets
-list.data <- getChemDataSubsets(TargetSiteID, comid=site.COMID, cluster=site.Clusters
-                                , data.cluster=data.cluster, data.Stations.Info=data.Stations.Info
-                                , data.chem.raw=data.chem.raw, data_stressInfo=data_stressInfo)
-
-# Data getStressorList
-chem.info     <- list.data$chem.info
-cluster.chem  <- list.data$cluster.chem
-cluster.samps <- list.data$cluster.samps
-ref.sites     <- list.data$ref.sites
-site.chem     <- list.data$site.chem
-dir_sub <- "CandidateCauses"
-
-# set cutoff for possible stressor identification
-probsLow  <- 0.10
-probsHigh <- 0.90 
-biocomm <- "bmi"
-
-# Run getStressorList
-list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluster.chem
-                                 , cluster.samps, ref.sites, site.chem
-                                 , probsHigh, probsLow, biocomm, dir_results
-                                 , dir_sub)
-                                 
-# Data getBMIMatches
-## remove "none"
-stressors <- list.stressors$stressors[list.stressors$stressors != "none"]
-stressors_logtransf <- list.stressors$stressors_LogTransf[list.stressors$stressors != "none"]
-
-# Run getBioMatches
-biocomm <- "BMI"
-data.bio.metrics <- data_BMIMetrics
-list.MatchBioData<- getBioMatches(stressors, list.data, list.SiteSummary, data.SampSummary
-                                  , data.chem.raw, data.bio.metrics, biocomm)
-  
-# Data getVerifiedPredictions
-# data import, example
-# dataBioTaxa  <- read.delim(paste(myDir.Data,"data.bmi.taxa.raw.tab",sep=""))
-# data.SSTV.totabund <- read.delim(paste(myDir.Data,"data.totabund.bySample.tab",sep=""))
-#
-# data, example included with package
-dataBioTaxa  <- data_BMIcounts
-data.SSTV.totabund <- data_BMIRelAbund
-BioIndex_Val       <- "IBI"
-BioIndex_Nar       <- "NarRat"
-BioIndex_Nar_Deg   <- "Violates"
-dir_sub            <- "VerifiedPredictions"
-biocomm <- "bmi"
-
-# Run getVerifiedPredictions
-getVerifiedPredictions(TargetSiteID
-                       , data.SampSummary
-                       , dataBioTaxa
-                       , data_stressInfo
-                       , data.SSTV.totabund
-                       , dataMasterTaxa
-                       , list.MatchBioData
-                       , ref.sites
-                       , BioIndex_Val
-                       , BioIndex_Nar
-                       , BioIndex_Nar_Deg
-                       , dir_results
-                       , dir_sub)
+Required packages: dplyr, forcats, ggplot2, grid, stringr, tidyr
 }

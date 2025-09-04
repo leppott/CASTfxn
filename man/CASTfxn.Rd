@@ -2,6 +2,7 @@
 % Please edit documentation in R/CASTfxn.R
 \docType{package}
 \name{CASTfxn}
+\alias{CASTfxn-package}
 \alias{CASTfxn}
 \title{CASTfxn: functions for Causal Assessment Screening Tool (CAST)}
 \description{
@@ -35,3 +36,10 @@ getStressorList
 getStressorSpecificRegressions
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/leppott/CASTfxn}
+}
+
+}

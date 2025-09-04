@@ -6,160 +6,115 @@
 \usage{
 getSiteInfo(
   TargetSiteID,
-  data_Sites,
-  data_bkgdata,
-  data_bkginfo,
-  data_SampSummary,
-  data_303d = NULL,
-  data_bmiMetrics = NULL,
-  bmiIndexGp = "IBI",
-  data_algMetrics = NULL,
-  algIndexGp = "IBI",
-  comp_sites = NULL,
-  data_cluster,
-  data_mods = NULL,
-  dir_photo = file.path(dir_data, "Photos"),
-  dir_results = dir_results,
+  TargetCOMID,
+  df_Sites,
+  df_SampSummary,
+  biocommlist,
+  df_BMIMetrics = NULL,
+  BMIIndexGp = NULL,
+  df_ALGMetrics = NULL,
+  ALGIndexGp = NULL,
+  df_FishMetrics = NULL,
+  FishIndexGp = NULL,
+  comp.sites,
+  all.sites,
+  IncaseLabel = NULL,
+  OutcaseLabel = NULL,
+  useBC = FALSE,
+  plotvars = data_plotvars,
+  refSiteCol = refOutline_col,
+  plotdpi = plot_dpi,
+  plotH = plot_H,
+  plotW = plot_W,
+  plotunits = plot_units,
+  dir_photo = file.path(getwd(), "Data", "Photos"),
+  dir_results = file.path(getwd(), "Results"),
   dir_sub = "SiteInfo",
   boo_plot = TRUE
 )
 }
 \arguments{
-\item{TargetSiteID}{SiteID}
+\item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
 
-\item{data_Sites}{data_Sites}
+\item{TargetCOMID}{common identifier for the reach on which the site is located}
 
-\item{data_SampSummary}{data_SampSummary}
+\item{df_Sites}{dataframe containing site data, including "inside the case"
+and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
+be cluster; if useBC == FALSE, "inside the case" will be cluster.}
 
-\item{data_303d}{data_303d}
+\item{df_SampSummary}{dataframe containing sample IDs for samples collected
+at the target site, organized by sample date (rows) and type (columns)}
 
-\item{data_bmiMetrics}{data_bmiMetrics}
+\item{biocommlist}{vector of all biological response communities to be evaluated}
 
-\item{data_algMetrics}{data_algMetrics}
+\item{df_BMIMetrics}{dataframe containing BMI sample index and metric values}
 
-\item{data_cluster}{data_cluster}
+\item{BMIIndexGp}{vector containing one or more BMI indices for display purpose only}
 
-\item{data_mods}{data_mods}
+\item{df_ALGMetrics}{dataframe containing algae sample index and metric values.
+Default is NULL.}
 
-\item{dir_results}{Directory for results.  Default = "Results".}
+\item{ALGIndexGp}{vector containing one or more algal indices for display purpose only}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+\item{df_FishMetrics}{dataframe containing fish sample index and metric values}
 
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+\item{FishIndexGp}{vector containing one or more fish indices for display purpose only}
 
-\item{map_proj}{Map projection.  If no projection is provided an unprojected map is created without flowlines.}
+\item{comp.sites}{vector containing inside-the-case (comparator) site IDs}
 
-\item{map_outline}{Outline for map, typically State border.}
+\item{all.sites}{vector containing all outside-the-case site IDs}
 
-\item{map_flowline}{Typically NHD+ flowline.}
+\item{IncaseLabel}{Label for the "inside the case" identifier. Default = NULL.}
 
-\item{map_flowline2}{Typically NHD+ flowline.  Can be more than one but plotted the same.}
+\item{OutcaseLabel}{Label for the "outside the case" identifier. Default = NULL.}
 
-\item{dir_map_rmd}{Directory with Map_Leaflet.RMD.  Default = package RMD.}
+\item{useBC}{TRUE to use biological similarity; FALSE to not use. Default = FALSE.}
+
+\item{plotvars}{Colors, fills, shapes, transparencies for each type (target,
+not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.}
+
+\item{refSiteCol}{Default color outline for reference sites, used for standardization.
+Default = refOutline_col.}
+
+\item{plotdpi}{Default dpi for plots, used for standardization. Default = plot_dpi.}
+
+\item{plotH}{Default height for plots, used for standardization. Default = plot_H.}
+
+\item{plotW}{Default width for plots, used for standardization. Default = plot_W.}
+
+\item{plotunits}{Default units for plots, used for standardization. Default = plot_units.}
+
+\item{dir_photo}{directory containing all site photos (for every site in the data set).
+Default is file.path(getwd(), "Data", "Photos").}
+
+\item{dir_results}{Directory containing all results. Default is file.path(getwd(),"Results").}
+
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo".}
+
+\item{boo_plot}{Boolean value to save plots. Default = TRUE.}
 }
 \value{
-A jpg map to a subdirectory "SiteInfo" in the folder named by the SiteID 
-in the user supplied dir_results folder (default is "Results" folder in the 
-working directory).  Also produced is a summary list; SiteInfo, Samps, 
-BMImetrics, AlgMetrics, ReachInfo, COMID, ClustIDs, impair, and mods.
+A list containing a dataframe of site information (site ID, geographic
+        coordinates, waterbody name, county name, reach identifier, cluster
+        identifier, and reference site flag); a dataframe of any samples obtained
+        from the site location by sample date; a dataframe of bmi response
+        indices and metric values; a dataframe of algae response indices and
+        metric values; the reach identifier for the target site location; the
+        cluster identifier for the target site; and a vector of reference reaches.
+        Also outputs graphics depicting background variables by category,
+        response indices, and tabular site background data. Creates a subfolder
+        for site photos within the directory "~/Results/TargetSiteID/SiteInfo".
 }
 \description{
 Get site info of provided siteID.
 }
 \details{
-Summary info including lat/long, ref status, cluster membership, samps from site, maps
+Summary info including lat/long, ref status, cluster membership,
+samples from site
 
-Requires package rgdal. 
-
-Required objects:
-
-* data_Sites; StationID_Master, FinalLatitude, FinalLongitude
-, WaterbodyName, GIS_County, CARefSite_2017, COMID
-
-* data.SampSummary; StationID_Master, CollDate, ChemSampleID, PhabSampID
-, BMI.Metrics.SampID, Algae.Metrics.SampID
-
-* data.303d.ComID; ComID, WATER.BODY.NAME, POLLUTANT, FINAL.LISTING.DECISION
-
-* data.bmi.metrics; StationID_Master, CollDate, CSCI, O_E, MMI_Score
-
-* data.algae.metrics; StationCode, SampleDate, H20, D18, S2
-
-* data.cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs
-
-* data.mod; COMID, ReachModStatus, ModReason
-
-Will create output folder dir_results if it doesn't already exist.  The default is "Results".  
-A subdirectory is created for each SiteID.
+Requires packages dplyr, ggplot2, lubridate, tidyr
 }
 \examples{
-TargetSiteID <- "SRCKN001.61"
-dir_results <- file.path(getwd(), "Results")
-
-# Data
-# data import, example
-#data_Sites <- read.delim(paste(myDir.Data,"data_Sites.tab",sep=""))
-#data.SampSummary <- read.delim(paste(myDir.Data,"data.SampSummary.tab",sep="")
-#                               , na.strings = c(""," "))
-#data.303d.ComID <- readRDS(paste0(myDir.Data,"data.303dcomid.RDS"))
-#data.bmi.metrics <- read.delim(paste(myDir.Data,"data.bmi.metrics.tab",sep=""))
-#data.algae.metrics <- read.delim(paste(myDir.Data,"data.algae.metrics.tab",sep=""))
-#data.cluster <- read.delim(paste(myDir.Data,"data.all.clust.tab",sep=""))
-#data.mod <- read.delim(paste(myDir.Data,"data.ModPerStatus.tab",sep=""))
-
-# Data getSiteInfo
-# data, example included with package
-data_Sites <- data_Sites
-data.SampSummary   <- data_SampSummary
-data.303d.ComID    <- data_303d
-data.bmi.metrics   <- data_BMIMetrics
-data.algae.metrics <- data_AlgMetrics
-data.mod           <- data_ReachMod
-
-#' # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data_Sites[data_Sites[,"StationID_Master"]==TargetSiteID, "ElevCategory"])
-if(elev_cat=="HI"){
-   data.cluster <- data_Cluster_Hi
-} else if(elev_cat=="LO") {
-   data.cluster <- data_Cluster_Lo
+\dontrun{
 }
-
-# Map data
-# San Diego
-#flowline <- rgdal::readOGR(dsn = "data_gis/NHDv2_Flowline_Ecoreg85", layer = "NHDv2_eco85_Project")
-#outline <- rgdal::readOGR(dsn = "data_gis/Eco85", layer = "Ecoregion85")
-# AZ
-map_flowline  <- data_GIS_Flow_HI
-map_flowline2 <- data_GIS_Flow_LO
-if(elev_cat=="HI"){
-   map_flowline <- data_GIS_Flow_HI
-} else if(elev_cat=="LO") {
-   map_flowline <- data_GIS_Flow_LO
-}
-map_outline   <- data_GIS_AZ_Outline
-# Project site data to USGS Albers Equal Area
-usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
-              +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
-              +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-# projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
-           +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-map_proj <- my.aea
-# 
-dir_sub <- "SiteInfo"
-
-# Run getSiteInfo
-list.SiteSummary <- getSiteInfo(TargetSiteID
-                                , dir_results
-                                , data_Sites
-                                , data.SampSummary
-                                , data.303d.ComID
-                                , data.bmi.metrics
-                                , data.algae.metrics
-                                , data.cluster
-                                , data.mod
-                                , map_proj
-                                , map_outline
-                                , map_flowline
-                                , dir_sub=dir_sub)
 }

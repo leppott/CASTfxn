@@ -2,40 +2,32 @@
 % Please edit documentation in R/getOutliers.R
 \name{getOutliers}
 \alias{getOutliers}
-\title{Time Sequence Graphics}
+\title{Identifies Stressor Outliers}
 \usage{
-getOutliers(df_data, df_meta)
+getOutliers(df_data, df_meta, dir_plots = file.path(getwd(), "Results"))
 }
 \arguments{
-\item{dataDir}{Directory containing all data}
+\item{df_data}{dataframe containing all stressor data values}
 
-\item{dir_results}{Directory containing all results. Default = "file.path(getwd(),"Results")"}
+\item{df_meta}{dataframe containing stressor metadata}
 
-\item{stressors}{stressors}
-
-\item{biocomm}{Biological community; algae or BMI. Default = "BMI".}
-
-\item{BioResp}{Biological response variable names. For example, BMI metrics
-or Algae metrics.}
-
-\item{df_stress}{Stressor values.}
-
-\item{df_resp}{Response values for the specified biological community and metrics.}
-
-\item{colname.SampID}{Name of the column for the response sample identifier.}
+\item{dir_plots}{directory to which to write stressor histograms}
 }
 \value{
-One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the
-       "Results" folder of working directory. No scores are currently generated.
+Dataframe containing sample ID, stressor name, stressor value,
+        IQR method flag, SD method flag, Outlier flag
 }
 \description{
-Graph time-specific stressor-response values.
+Flags stressor outliers using two methods: 3 times IQR and
+             6 times sd. If both suggest a given value as an outlier, the
+             value is identified as an outlier.
 }
 \details{
-Generates faceted time sequence graphics (stressor/response, one
-atop the other). All stressor/response data are graphed.
-Improvements: Add scoring.
+In addition to flagging likely outliers (by both 3x IQR and 6X sd),
+         this function writes histograms of all untransformed stressors and
+         for transformed stressors when transformation is specified in the
+         stressor metadata.
 
-Uses the libraries dplyr, tidyr, ggplot2, and ggrepel.
+Uses the libraries dplyr and ggplot2.
 }
 \keyword{internal}

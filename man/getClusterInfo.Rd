@@ -9,11 +9,11 @@ getClusterInfo(
   siteCOMID,
   siteCluster,
   refSiteCOMIDs,
+  subregion = NULL,
   data_cluster,
   data_clusterInfo,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "ClusterInfo",
-  boo_plot = TRUE
+  dir_sub = "ClusterInfo"
 )
 }
 \arguments{
@@ -32,8 +32,6 @@ getClusterInfo(
 \item{dir_results}{Directory to save plots.  Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "ClusterInfo"}
-
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
 }
 \value{
 A jpeg in the "Results" "ClusterInfo" subdirectory of the working directory.
@@ -43,15 +41,9 @@ Get cluster information.
 }
 \details{
 Summary cluster information
-
-Required objects:
-
-* TargetSiteID
-
-* data_cluster; COMID, H6_noland, H6_land, ElevWs, WsAreaSqKm, PrecipWs, TmeanWs, W___AGRIC, W___URBAN, W___FOREST
 }
 \examples{
-
+\dontrun{
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 
@@ -65,7 +57,7 @@ data.algae.metrics <- data_AlgMetrics
 data.mod           <- data_ReachMod
 
 # Cluster based on elevation category  # need for getSiteInfo and getChemDataSubsets
-elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID_Master"]==TargetSiteID
+elev_cat <- toupper(data.Stations.Info[data.Stations.Info[,"StationID"]==TargetSiteID
                    , "ElevCategory"])
 if(elev_cat=="HI"){
    data_cluster <- data_Cluster_Hi
@@ -91,10 +83,10 @@ usgs.aea <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23
               +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83
               +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 # projection for outline
-my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 
+my.aea <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0
            +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
 map_proj <- my.aea
-# 
+#
 dir_sub <- "SiteInfo"
 
 # Run getSiteInfo
@@ -104,7 +96,7 @@ list.SiteSummary <- getSiteInfo(TargetSiteID, dir_results, data.Stations.Info
                                 , data_cluster, data.mod
                                 , map_proj, map_outline, map_flowline
                                 , dir_sub=dir_sub)
- 
+
 # Data getChemDataSubsets
 # data, example included with package
 data.chem.raw <- data_Chem
@@ -124,7 +116,7 @@ refSiteCOMIDs <- list.data$ref.reaches
 dir_sub <- "ClusterInfo"
 
 # Run getClusterInfo
-getClusterInfo(TargetSiteID, site.COMID, siteCluster, ref.reaches, 
+getClusterInfo(TargetSiteID, site.COMID, siteCluster, ref.reaches,
                data_cluster, dir_results, dir_sub)
-
+}
 }

@@ -5,13 +5,14 @@
 \title{Get summary of all sites in results directory}
 \usage{
 getSummaryAllSites(
-  biocommlist = c("bmi", "algae"),
-  bmiIndex = "CSCI",
-  algIndex = "MMIhybrid",
+  biocommlist,
+  bmiIndex,
+  algIndex,
+  fishIndex,
   dir_data = file.path(getwd(), "Data"),
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "WoE",
-  df_sites = NULL
+  df_sites
 )
 }
 \arguments{
@@ -19,13 +20,13 @@ getSummaryAllSites(
 
 \item{algIndex}{Algae index name; Default = "MMIhybrid"}
 
-\item{dir_data}{Directory containing original data. 
+\item{dir_data}{Directory containing original data.
 Default = "file.path(getwd(),"Data")"}
 
-\item{dir_results}{Directory containing all results. 
+\item{dir_results}{Directory containing all results.
 Default = "file.path(getwd(),"Results")"}
 
-\item{dir_sub}{Subdirectory for weight of evidence (WoE) outputs used by this function. 
+\item{dir_sub}{Subdirectory for weight of evidence (WoE) outputs used by this function.
 Default = "WoE"}
 
 \item{df_sites}{Data frame of sites.  Default = NULL}
@@ -34,20 +35,20 @@ Default = "WoE"}
 }
 \value{
 Tab-delimited text summary data file containing site id, latitude,
-longitude, cluster, response (bio index), response value (index score), 
+longitude, cluster, response (bio index), response value (index score),
 degraded flag (Y/N), stressor sampleID, stressor name, stressor value,
-stressor percent rank among comparators, number of paired samples, and 
+stressor percent rank among comparators, number of paired samples, and
 final weight of evidence.
 }
 \description{
 Pull relevant information from the final Weight of Evidence
-file and combine it with the Sites data file to generate a mappable
+file and combine it with the Sites data file to generate a usable
 result file.
 }
 \details{
 The final, overall summary file lies at the root of the results
 directory and contains site ID, latitude, longitude, sample name, biological
-index score, stressor name, stressor value, and overal weight of evidence.
+index score, stressor name, stressor value, and overall weight of evidence.
 
 Uses the libraries dplyr, tidyr, ggplot2, and ggthemes.
 }

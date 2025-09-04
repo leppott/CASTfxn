@@ -2,48 +2,59 @@
 % Please edit documentation in R/getTimeSeq.R
 \name{getTimeSeq}
 \alias{getTimeSeq}
-\title{Time Sequence Graphics}
+\title{Time Sequence Line of Evidence (Graphics only)}
 \usage{
 getTimeSeq(
   TargetSiteID,
-  biocomm = "BMI",
-  BioResp,
-  stressors,
+  biocomm,
+  bioindex,
   df_stress,
   df_resp,
-  df_stressinfo,
   df_respinfo,
+  df_stressinfo,
+  plotdpi = plot_dpi,
+  plotH = plot_H,
+  plotW = plot_W,
+  plotunits = plot_units,
   dir_results = file.path(getwd(), "Results"),
-  dir_sub = "TimeSequence",
+  dir_sub = "_WoE",
   boo_plot = TRUE
 )
 }
 \arguments{
-\item{TargetSiteID}{Site ID}
+\item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
 
-\item{biocomm}{Biological community; algae or BMI. Default = "BMI".}
+\item{biocomm}{biological response community (bmi, algae, or fish)}
 
-\item{BioResp}{Biological response variable names. For example, BMI metrics or Algae metrics.}
+\item{bioindex}{the column name containing the biological index value}
 
-\item{stressors}{stressors}
+\item{df_stress}{dataframe containing all target site stressors, regardless of matching status.}
 
-\item{df_stress}{Stressor values.}
+\item{df_resp}{dataframe containing the target site biological response samples'
+index and metric values, regardless of matching status}
 
-\item{df_resp}{Response values for the specified biological community and metrics.}
+\item{df_respinfo}{dataframe containing response metadata, specifically "Label"}
 
-\item{df_stressinfo}{data frame, stress info}
+\item{df_stressinfo}{dataframe containing stressor metadata, specifically "Label"}
 
-\item{df_respinfo}{data frame, response info}
+\item{plotdpi}{Standardized dpi value for graphics. Default = plot_dpi.}
 
-\item{dir_results}{Directory containing all results. Default = "file.path(getwd(),"Results")"}
+\item{plotH}{Standardized height value for graphics. Default = plot_H.}
+
+\item{plotW}{Standardized width value for graphics. Default = plot_W.}
+
+\item{plotunits}{Standardized units for graphics. Default = plot_units.}
+
+\item{dir_results}{Directory containing all results. Default = file.path(getwd(),"Results").
+NOTE: the code adds a middle directory, BioComm, between the Results and the subdirectory.}
 
 \item{dir_sub}{Subdirectory for outputs from this function. Default = "TimeSequence"}
 
-\item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+\item{boo_plot}{Flag declaring whether the plots should be saved or not. Default = TRUE.}
 }
 \value{
-One or more jpgs in SiteID/TemporalSequence/Biocomm subfolder of the
-       "Results" folder of working directory. No scores are currently generated.
+One or more pngs in SiteID/Biocomm/TemporalSequence subfolder of the
+       "Results" folder. No scores are currently generated.
 }
 \description{
 Graph time-specific stressor-response values.
@@ -53,6 +64,6 @@ Generates faceted time sequence graphics (stressor/response, one
 atop the other). All stressor/response data are graphed.
 Improvements: Add scoring.
 
-Uses the libraries dplyr, tidyr, ggplot2, and ggrepel.
+Uses the packages dplyr, ggplot2, lubridate, tidyr
 }
 \keyword{internal}

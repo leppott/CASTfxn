@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9002 (2025-09-04)
+
+* docs: Remove deprecated packages from DESCRIPTION imports
+    + Needed for older Shiny apps
+        - maptools, rgdal, rgeos
+
 ## Changes in version 0.2.2.9001 (2025-09-04)
 
 * refactor: Move Shiny apps to their own repo, CAST_Shiny

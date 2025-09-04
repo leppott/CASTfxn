@@ -2,64 +2,49 @@
 % Please edit documentation in R/getCoOccurDataset.R
 \name{getCoOccurDataset}
 \alias{getCoOccurDataset}
-\title{Get CoOccurrence Data}
+\title{Get Matching Stressor-Response Data}
 \usage{
 getCoOccurDataset(
-  dataDir = file.path(getwd(), "Data"),
-  df_sites = data_Sites,
-  df_model = data_modelRaw,
-  df_meas = data_chemRaw,
-  biocomm = "BMI",
-  df_resp = data_bmiMetrics,
-  index = "CSCI",
-  lagdays = 0,
-  removeOutliers = TRUE
+  df_sites,
+  df_stress,
+  biocomm,
+  df_resp,
+  index,
+  lagdays = c(0, 0)
 )
 }
 \arguments{
-\item{dataDir}{Directory containing the CAST dataset for analysis.}
+\item{df_sites}{Dataframe containing site data for all sites.}
 
-\item{df_sites}{Dataframe containing site data for all sites. 
-Default = "data_Sites".}
+\item{df_stress}{Dataframe containing measured or modeled stressor data
+for all sites that have them.}
 
-\item{df_meas}{Dataframe containing measured stressor data for all sites that 
-have them. Default = "data.chem.raw".}
+\item{biocomm}{Biological community; algae or BMI.}
 
-\item{biocomm}{Biological community; algae or BMI. Default = "BMI".}
+\item{df_resp}{Dataframe containing biological response metrics.}
 
-\item{df_resp}{Dataframe containing biological response metrics. 
-Default = "data.bmi.metrics".}
+\item{index}{Name of the response index column.}
 
-\item{index}{Name of the response index column. Default = "CSCI".}
-
-\item{lagdays}{The number of days allowed between the stressor sample date
-and the response sample date, where stressor must always be sampled prior to 
-the response sample collection. Default = 0 (same day).}
-
-\item{removeOutliers}{Boolean value on whether to remove outliers.  Default = TRUE.}
-
-\item{df_mod}{Dataframe containing modeled stressor data for all sites that 
-have it. Default = "data.model.raw".}
-
-\item{respColnames}{Names of the core response columns (date, sample ID, 
-quality, and index score). Default = c("BMISampDate", "BMISampID", 
-"Quality", index).}
+\item{lagdays}{c(before, after). The number of days allowed between the
+stressor sample date and the response sample date, before and after.
+Default = c(0, 0) (same day).}
 }
 \value{
-A dataframe containing matched stressor response data based on 
-same-day matching.
-Improvements: Add flexible matching to account for lag time.
-Improvements: Add algae capability.
+A dataframe containing matched stressor response data based on
+a stressor sample obtained between lagdays before and lagdays after the
+response sample was obtained. Result values are *not* transformed.
 }
 \description{
 Prepare matched stressor/response data as a single dataframe
 }
 \details{
-Generates a dataframe and a table that pairs stressor and response
+Generates a dataframe and writes a table with stressor and response
 data for all stressor and response samples obtained within a specified time
-of each other. User specified lag time between stressor sample (prior) and 
+of each other. User specified lag time between stressor sample (prior) and
 response sample (after) may be employed, with a default of same day samples.
 
-Uses the libraries dplyr and tidyr.
+Improvements: Add BioDegLab and BioNarLab?
+
+Uses the libraries dplyr, fuzzyjoin, and tidyr.
 }
 \keyword{internal}

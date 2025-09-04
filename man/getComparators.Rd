@@ -6,46 +6,80 @@
 \usage{
 getComparators(
   TargetSiteID,
-  df_sites = data_Sites,
-  df_bioCoOccur = data_bmiCoOccur,
-  bioIndex = bmiIndex,
+  df_sites,
+  df_cluster,
+  df_bioCoOccur,
+  bioIndex,
   useBC = FALSE,
-  df_bcdist = data.BCdist,
+  outcaseColName = NULL,
+  outcaseLabel = outcaseLabel,
+  incaseColName = NULL,
+  incaseLabel = incaseLabel,
+  useAllCompReaches = FALSE,
+  df_bcdist = NULL,
   bc_cutoff = 0.05,
-  dir_results = file.path(getwd(), "Results"),
+  dir_results,
   dir_sub = "SiteInfo"
 )
 }
 \arguments{
-\item{TargetSiteID}{Site ID}
+\item{TargetSiteID}{Site ID for the site being evaluated}
 
 \item{df_sites}{Sites table with cluster membership. Default = "data_Sites".}
 
-\item{useBC}{TRUE to use biological similarity; FALSE to not use. Default = "TRUE".}
+\item{df_cluster}{Dataframe containing reach IDs and their associated clusters}
 
-\item{df_bcdist}{Dataframe containing the biological dissimilarity distance matrix. Default = "data_BCdist".}
+\item{df_bioCoOccur}{Dataframe containing paired stressor/response sample data}
 
-\item{bc_cutoff}{Cutoff value below which will be considered similar to the target site. Default = "0.05".}
+\item{bioIndex}{Character vector corresponding to the biological index column name.}
+
+\item{useBC}{TRUE to use biological similarity; FALSE to not use. Default = "FALSE".}
+
+\item{outcaseColName}{If useBC == FALSE, all the sites in the sites file (NULL).
+If useBC == TRUE, the name of the column that indicates
+the "outside the case". Default = NULL.}
+
+\item{outcaseLabel}{A label used to describe the "outside the case" region.
+Examples include "Entire state" or "Omernik Level 3 Ecoregion."}
+
+\item{incaseColName}{If useBC == FALSE, the name of the column in the sites
+file that indicates "inside the case". Default = NULL.
+If NULL, df_bcdist and bc_cutoff must be defined.}
+
+\item{incaseLabel}{A label used to describe the "inside the case" region.
+Examples include "Cluster" or "Sites with expected biologic
+similarity from cluster x" where x refers to the cluster
+membership of the target site.}
+
+\item{useAllCompReaches}{Whether all comparator reaches should be used (FALSE)
+or only those with sites on them (TRUE).}
+
+\item{df_bcdist}{Dataframe containing the biological dissimilarity distance matrix.
+Default = NULL. Must be defined if incaseColName is not.}
+
+\item{bc_cutoff}{Cutoff value below which will be considered similar to the
+target site. Default = "0.05".}
 
 \item{dir_results}{Directory containing all results. Default = "file.path(getwd(),"Results")"}
 
-\item{dir_sub}{Subdirectory for outputs from this function.  Default = "SiteInfo"}
+\item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo"}
 }
 \value{
-A list containing a vector of comparator site identifiers (comp.sites) 
-        and a dataframe of containing the function name, condition, result, and 
-        comment. Also a tab-delimited text file containing the list of comparator
-        sites with additional information relating to how they were chosen.
+A list containing 1) a vector of comparator site identifiers (comp.sites),
+        2) a vector of all sites representing "outside the case", and 3) a dataframe
+        containing gap details (function name, condition, result, and comment);
+        and a tab-delimited text file containing the list of comparator sites with
+        additional information relating to their similarity to the target site.
 }
 \description{
 Generates a list of comparator sites for the target site.
 }
 \details{
-Obtains the cluster members for the cluster containing the target site
-         and, if useBC = TRUE (default is FALSE), subsets the cluster
+Obtains the cluster members for the cluster containing the target
+         site and, if useBC = TRUE (default is FALSE), subsets the cluster
          based on a biological dissimilarity distance matrix (Bray-Curtis)
          at the specified level of dissimilarity.
 
-Uses the library dplyr
+Uses the library dplyr, stringr
 }
 \keyword{internal}
