@@ -37,6 +37,19 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.1.9003 (2025-09-04)
+
+* docs: Update DESCRIPTION
+    + Add Laura Naslund as contributor
+    + Update version number
+* docs: Update NEWS and README as RMD in repo
+* docs: Update README with install code snippets for potential install issues
+
+
+
+
+
+
 ## Changes in version 0.1.1.9004 (2021-05-28)
 
 * docs: Minor spelling fixes, devtools::spell_check()

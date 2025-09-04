@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-05-28 13:08:13
+    #> Last Update: 2025-09-04 12:10:52.874235
 
 <img src="man/figures/hex_CAST.png" align="left" height="139" />
 <img src="man/figures/hex_RPP.png" align="center" height="139" />
@@ -39,7 +39,7 @@ Requires the use of `remotes` (or another package) to install from
 GitHub.
 
 Vignettes are also not installed by default. The additional parameters
-in install\_github are used to ensure the install happens if there is an
+in install_github are used to ensure the install happens if there is an
 existing install and to install the vignettes.
 
 ``` r
@@ -54,6 +54,25 @@ properly. <https://github.com/r-lib/devtools/issues/1939>
 Sys.setenv("TAR" = "internal")
 ```
 
+If having issues with install (e.g., ‘cannot open URL’) it could be a
+latency issue with GitHub. Use the code below before retrying the above
+install commands.
+
+``` r
+options(timeout=400)
+```
+
+If installing from a private repo will need a PAT and a modifed install
+command.
+
+``` r
+# save the PAT to your system environment
+Sys.setenv(GITHUB_PAT = "your_personal_access_token_here")
+
+# install from GitHub with the PAT
+remotes::install_github("username/repo", auth_token = Sys.getenv("GITHUB_PAT"))
+```
+
 ## Purpose
 
 Functions to aid the data analysis and drive the functionality of the
@@ -66,6 +85,9 @@ In development.
 ## Usage
 
 By those using the CAST and familiar with causal assessment.
+
+The code is intended to be run from the Shiny application but can also
+be run in the R console.
 
 ## Documentation
 
