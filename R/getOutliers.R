@@ -77,9 +77,7 @@ getOutliers <- function(df_data,
     message(msg)
 
     df_sub <- df_data %>%  # Subset for just one parameter at a time
-      dplyr::filter(StdParamName == paramName) %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate,
-                    StdParamName, LogTransf, ResultValue, TransfResult)
+      dplyr::filter(StdParamName == paramName)
 
     fn <- paste0(paramName, ".png")
     fn2 <- paste0(paramName, "_transf.png")
@@ -133,7 +131,8 @@ getOutliers <- function(df_data,
                     SDmethod = ifelse(!is.na(SDmethod), SDmethod, "NE")) %>%
       dplyr::mutate(Outlier = dplyr::case_when((IQRmethod == "Good") & (SDmethod == "Good") ~ "Good",
                                                (IQRmethod == "NE") | (SDmethod == "NE") ~ "NE",
-                                               grepl("Outlier", IQRmethod) & (SDmethod == "Outlier") ~ "Outlier",
+                                               grepl("Outlier", IQRmethod) & (SDmethod == "Outlier") ~
+                                                 "Outlier",
                                                TRUE ~ "Good"))
 
     if (a == 1) {
@@ -143,10 +142,8 @@ getOutliers <- function(df_data,
     }
   } # End parameter iteration
 
-  df_temp <- dplyr::select(df_temp, StressSampleID, StdParamName, ResultValue,
-                           TransfResult, LogTransf, IQRmethod, SDmethod, Outlier)
-
-  # Return what?
   myOutliers <- df_temp
+
+  return(myOutliers)
 
 }
