@@ -59,7 +59,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     stressors.sstv = stressors.sstv
     df_stressinfo = df_stressorMetadata
-    df_paired = df_PairedSRTransf
+    df_paired = df_PairedStressResp
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
     df_MasterTaxa = bioMasterTaxa
@@ -227,7 +227,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                           {{sstv.sensallLabel}} := ifelse(.data[[sstv]] %in% sstv.sensall,
                                                           "All sensitive",
                                                           NA))
-        } else { # tv is character
+        } else { # tv is character or vector
           sstv.sensminLabel <- paste(sstv, "SensMin", sep = "_")
           sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
           sstv.sensall.gp   <- paste0(sstv.sensmin, ", ", sstv.sensmax)
