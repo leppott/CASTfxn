@@ -66,7 +66,7 @@ getVPSSI <- function(TargetSiteID,
     TargetSiteID = TargetSiteID
     stressors.ssi = stressors.ssi
     df_stressinfo = df_stressorMetadata
-    df_paired = df_PairedSRTransf
+    df_paired = df_PairedStressResp
     biocomm = bioComm
     df_bioMetricData = bioMetricData
     df_bioMetricInfo = bioMetricInfo
