@@ -40,12 +40,11 @@ if (boo_Shiny == TRUE) {
 boo.debug <- TRUE
 debug.person <- "Ann"
 if (boo_Shiny == TRUE) {
-  gitpath <- file.path(".", "external", "R")  # used in getReport
-  dir_rmd <- file.path(".", "external", "rmd")
-  wd <- file.path(".")
-  dir_data <- file.path(wd, "Data")
+  gitpath     <- file.path(".", "external", "R")  # used in getReport
+  dir_rmd     <- file.path(".", "external", "rmd")
+  wd          <- file.path(".")
+  dir_data    <- file.path(wd, "Data")
   dir_results <- file.path(wd, "Results")
-  printClusterInfo <- TRUE
 } else {# Not using shiny app
   #
   # in global in shiny
@@ -116,7 +115,6 @@ if (boo_Shiny == TRUE) {
     wd <- "C://Users//Erik.Leppo//OneDrive - Tetra Tech, Inc//MyDocs_OneDrive//GitHub//CASTfxn//inst//shiny-examples//CAST_SMC"
     dir_data <- file.path(wd, "Data")
     dir_results <- file.path(wd, "Results")
-    printClusterInfo <- FALSE # Deprecated
     site <- "SMC04134"
     TargetSiteID <- site
     b <- 1
@@ -447,7 +445,36 @@ if (basename(fn.meas.data) != "NA") {
   data_chemAll <- readCASToolData(fn = fn.meas.data,
                                   NAs = c("", "na", "NA", "N/A"))
 
-  ## Average duplicate data
+  params2use <- data_chemInfo$StdParamName[data_chemInfo$UseInStressorID == 1]
+
+  data_chemAll <- dplyr::filter(data_chemAll, StdParamName %in% params2use)
+
+  ## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
+  ## IQRmethod, SDmethod, Outlier
+  data_measOutliers <- getOutliers(df_data = data_chemAll,
+                                   df_meta = data_chemInfo,
+                                   dir_plots = file.path(dir_results, "Histograms"))
+  ## Merge outlier flags with raw data by sample ID
+  data_chemAll <- merge(data_chemAll, data_measOutliers,
+                       by.x = c("StationID", "StressSampleID", "StressSampleDate",
+                                "StdParamName", "ResultValue"),
+                       by.y = c("StationID", "StressSampleID", "StressSampleDate",
+                                "StdParamName", "ResultValue"),
+                       all.x = TRUE)
+  data_chemAll <- data_chemAll %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+                  TransfResult, IQRmethod, SDmethod, Outlier)
+  # Clean up
+  rm(data_measOutliers, params2use)
+
+  ## Average duplicate data -- remove outliers first, if desired
+  if (removeOutliers) {
+    data_measoutliers <- data_chemAll %>%
+      dplyr::filter(!(Outlier %in% c("Good", "NE")))
+    data_chemAll <- data_chemAll %>%
+      dplyr::filter(Outlier %in% c("Good", "NE"))
+  }
+
   data_chemAll <- data_chemAll %>%
     dplyr::mutate(StressSampleDate = lubridate::parse_date_time(StressSampleDate,
                                                                 orders = c("ymd", "mdy", "dmy")) %>%
@@ -455,11 +482,10 @@ if (basename(fn.meas.data) != "NA") {
                   StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
                   StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
-                  ResultValue) %>%
+                  TransfResult) %>%
     dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
-    dplyr::summarize(MeanResultValue = mean(ResultValue), .groups = "drop_last") %>%
-    dplyr::rename(ResultValue = MeanResultValue) %>%
-    dplyr::filter(!is.na(ResultValue))
+    dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE)) %>%
+    dplyr::filter(!is.na(TransfResult))
   data_chemAll <- unique(data_chemAll) # should be unique, long-form sample/analyte
 
   # Duplicate all pH values, one to use for alkaline environments (higher is better)
@@ -468,14 +494,26 @@ if (basename(fn.meas.data) != "NA") {
     dplyr::filter(StdParamName == "pH") %>%
     dplyr::mutate(StdParamName = "pH_acidicEnv")
   data_chemAll <- data_chemAll %>%
-    dplyr::mutate(StdParamName = ifelse(StdParamName == "pH",
-                                        "pH_alkEnv",
+    dplyr::mutate(StdParamName = ifelse(StdParamName == "pH", "pH_alkEnv",
                                         StdParamName))
   data_chemRaw <- rbind(data_chemAll, data_pHAcid)
   rm(data_pHAcid)
 
-  analytes     <- as.character(data_chemInfo$StdParamName)
-  data_chemRaw <- data_chemRaw[data_chemRaw$StdParamName %in% analytes, ]
+  # Adjust dates for samples collected on multiple dates with the same ID
+  analytes <- unique(as.character(data_chemRaw$StdParamName))
+  data_chemRaw <- as.data.frame(data_chemRaw) %>%
+    dplyr::filter(!is.na(TransfResult)) %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate,
+                  StdParamName, TransfResult) %>%
+    tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
+  data_chemRaw <- data_chemRaw %>%
+    dplyr::group_by(StationID, StressSampleID) %>%
+    dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
+    dplyr::ungroup()
+  data_chemRaw <- data_chemRaw %>%
+    tidyr::pivot_longer(cols = all_of(analytes), names_to = "StdParamName",
+                        values_to = "TransfResult")
+  data_chemRaw <- dplyr::filter(data_chemRaw, !is.na(TransfResult))
 
   ## Get measured parameter names and separately, algal parameter names
   measParams <- as.vector(unique(data_chemRaw$StdParamName))
@@ -487,6 +525,7 @@ if (basename(fn.meas.data) != "NA") {
   msg <- "fn.meas.data is NA"
   message(msg)
   data_chemRaw <- NULL
+  data_measoutliers <- NULL
   measStressData <- FALSE
 }
 rm(fn.meas.data, analytes, data_chemAll)
@@ -520,16 +559,45 @@ rm(fn.model.info)
 if (basename(fn.model.data) != "NA") {
   data_modelAll <- readCASToolData(fn = fn.model.data,
                                    NAs = c("", "na", "NA", "N/A"))
-  useParams     <- as.character(data_modelInfo$StdParamName)
-  data_modelRaw <- data_modelAll[data_modelAll$StdParamName %in% useParams, ]
+  useParams     <- data_modelInfo$StdParamName[data_modelInfo$UseInStressorID == 1]
+  data_modelAll <- data_modelAll[data_modelAll$StdParamName %in% useParams, ]
 
-  ## Obtain SampleYear -- but SampleDate is all NA, so this is meaningless
-  data_modelRaw <- data_modelRaw %>%
-    dplyr::mutate(SampYear = NA, SampleDate = NA,
+  ## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
+  ## IQRmethod, SDmethod, Outlier
+  data_modOutliers <- getOutliers(df_data = data_modelAll,
+                                  df_meta = data_modelInfo,
+                                  dir_plots = file.path(dir_results, "Histograms"))
+  ## Merge outlier flags with raw data by sample ID
+  data_modelAll <- merge(data_modelAll, data_modOutliers,
+                         by.x = c("StationID", "StressSampleID", "StressSampleDate",
+                                  "StdParamName", "ResultValue"),
+                         by.y = c("StationID", "StressSampleID", "StressSampleDate",
+                                  "StdParamName", "ResultValue"),
+                         all.x = TRUE)
+  data_modelAll <- data_modelAll %>%
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+                  TransfResult, IQRmethod, SDmethod, Outlier)
+  # Clean up
+  rm(data_modOutliers, useParams)
+
+  ## Average duplicate data -- remove outliers first, if desired
+  if (removeOutliers) {
+    data_modOutliers <- data_modelAll %>%
+      dplyr::filter(!(Outlier %in% c("Good", "NE")))
+    data_modelAll <- data_modelAll %>%
+      dplyr::filter(Outlier %in% c("Good", "NE"))
+  }
+
+  data_modelRaw <- data_modelAll %>%
+    dplyr::mutate(StressSampleDate = NA,
                   StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
                   StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
-    dplyr::select(StationID, StressSampleID, SampDate, StdParamName,
-                  ResultValue, SampleDate)
+    dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+                  TransfResult) %>%
+    dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
+    dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE)) %>%
+    dplyr::filter(!is.na(TransfResult))
+  data_modelAll <- unique(data_modelAll) # should be unique, long-form sample/analyte
 
   modelStressData <- TRUE
   rm(useParams, data_modelAll)
@@ -537,6 +605,7 @@ if (basename(fn.model.data) != "NA") {
   msg <- "fn.model.data is NA"
   message(msg)
   data_modelRaw <- NULL
+  data_modOutliers <- NULL
   modelStressData <- FALSE
 }
 rm(fn.model.data)
@@ -554,7 +623,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 # Combine metadata for all stressors into one datafile
-if (!is.null(data_chemInfo) & !is.null(data_modelInfo)) {
+if (!is.null(data_chemInfo) & (!is.null(data_modelInfo) | !exists("data_modelInfo"))) {
   chemMetaNames  <- colnames(data_chemInfo)
   modelMetaNames <- colnames(data_modelInfo)
   extraNames     <- chemMetaNames[!(chemMetaNames %in% modelMetaNames)]
@@ -566,12 +635,12 @@ if (!is.null(data_chemInfo) & !is.null(data_modelInfo)) {
   data_stressInfo <- rbind(data_chemInfo, data_modelInfo)
   rm(data_chemInfo, data_modelInfo)
   rm(chemMetaNames, modelMetaNames, extraNames, newCol, e)
-} else if (!is.null(data_chemInfo)) {
+} else if (!is.null(data_chemInfo) | !exists("data_chemInfo")) {
   data_stressInfo <- data_chemInfo
-  rm(data_chemInfo)
-} else if (!is.null(data_modelInfo)) {
+  rm(data_chemInfo, data_modelInfo)
+} else if (!is.null(data_modelInfo) | !exists("data_modelInfo")) {
   data_stressInfo <- data_modelInfo
-  rm(data_modelInfo)
+  rm(data_chemInfo, data_modelInfo)
 } else {
   msg <- "Neither measured nor modeled metadata are available"
   message(msg)
@@ -586,47 +655,33 @@ data_stressInfo <- dplyr::distinct(data_stressInfo, StdParamName, Label,
                                    SSIndex, SourceGroup)
 
 # Combine raw data for all stressors into one datafile
-if (!is.null("data_chemRaw") & !is.null("data_modelRaw")) {
+if (!is.null(data_chemRaw) & (!is.null(data_modelRaw) | !exists("data_modelRaw"))) {
   data_Stress <- rbind(data_chemRaw, data_modelRaw)
   rm(data_chemRaw, data_modelRaw)
-} else if (!is.null("data_chemRaw")) {
+} else if (!is.null(data_chemRaw) | !exists("data_chemRaw")) {
   data_Stress <- data_chemRaw
-  rm(data_chemRaw)
-} else if (!is.null("data_modelRaw")) {
+  rm(data_chemRaw, data_modelRaw)
+} else if (!is.null(data_modelRaw) | !exists("data_modelRaw")) {
   data_Stress <- data_modelRaw
-  rm(data_modelRaw)
+  rm(data_chemRaw, data_modelRaw)
 } else {
   msg <- "Neither measured nor modeled data are available"
   message(msg)
 }
 
-## getOutliers returns a dataframe with ChemSampleID, StdParamName, ResultValue,
-## IQRmethod, SDmethod, Outlier
-## Nonsensical values are flagged as possible data entry errors
-data_StressOutliers <- getOutliers(df_data = data_Stress,
-                                   df_meta = data_stressInfo,
-                                   dir_plots = file.path(dir_results, "Histograms"))
-## Merge outlier flags with raw data by sample ID
-data_Stress <- merge(data_Stress, data_StressOutliers,
-                     by.x = c("StressSampleID", "StdParamName", "ResultValue"),
-                     by.y = c("StressSampleID", "StdParamName", "ResultValue"),
-                     all.x = TRUE)
-data_Stress <- data_Stress %>%
-  dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName, LogTransf,
-                ResultValue, TransfResult, IQRmethod, SDmethod, Outlier) %>%
-  dplyr::mutate(Outlier = ifelse(is.na(Outlier), "Possible data entry error",
-                                 Outlier))
-# Clean up
-rm(data_StressOutliers)
-
-# Remove measured outliers here!
-if (removeOutliers) {
-  data_stressoutliers <- data_Stress %>%
-    dplyr::filter(!(Outlier %in% c("Good", "NE")))
-  data_Stress <- data_Stress %>%
-    dplyr::filter(Outlier %in% c("Good", "NE"))
+# Combine outlier data for all stressors into one datafile
+if (!is.null(data_measoutliers) & (!is.null(data_modOutliers) | !exists("data_modOutliers"))) {
+  data_stressoutliers <- rbind(data_measoutliers, data_modOutliers)
+  rm(data_measoutliers, data_modOutliers)
+} else if (!is.null(data_measoutliers) | !exists("data_measoutliers")) {
+  data_stressoutliers <- data_measoutliers
+  rm(data_measoutliers, data_modOutliers)
+} else if (!is.null(data_modOutliers) | !exists("data_modOutliers")) {
+  data_stressoutliers <- data_modOutliers
+  rm(data_measoutliers, data_modOutliers)
 } else {
-  # don't do anything differently
+  msg <- "Neither measured nor modeled data are available"
+  message(msg)
 }
 
 # Bio responses
@@ -1538,24 +1593,24 @@ for (site in seq_along(1:nrow(df_targets))) {
       } #End loop over stressors
     } #End if
 
-    df_PairedSRTransf <- df_PairedStressResp %>%
-      dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleDate,
-                    RespSampleDate, StressSampleID, RespSampleID, BioComm,
-                    RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, all_of(colBio),
-                    Quality)
-
-    df_StressTrim <- data_Stress %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
-                    TransfResult) %>%
-      dplyr::filter(StdParamName %in% siteDetectsAll) %>%
-      tidyr::pivot_wider(names_from = StdParamName, values_from = "TransfResult")
-
-    df_PairedSRTransf <- merge(df_PairedSRTransf, df_StressTrim,
-                               by = c("StationID", "StressSampleID", "StressSampleDate"),
-                               all.x = TRUE)
-
-
-    rm(df_StressTrim)
+    # df_PairedSRTransf <- df_PairedStressResp %>%
+    #   dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleDate,
+    #                 RespSampleDate, StressSampleID, RespSampleID, BioComm,
+    #                 RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, all_of(colBio),
+    #                 Quality)
+    #
+    # df_StressTrim <- data_Stress %>%
+    #   dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
+    #                 TransfResult) %>%
+    #   dplyr::filter(StdParamName %in% siteDetectsAll) %>%
+    #   tidyr::pivot_wider(names_from = StdParamName, values_from = "TransfResult")
+    #
+    # df_PairedSRTransf <- merge(df_PairedSRTransf, df_StressTrim,
+    #                            by = c("StationID", "StressSampleID", "StressSampleDate"),
+    #                            all.x = TRUE)
+    #
+    #
+    # rm(df_StressTrim)
     msg <- paste0("getQualSites is complete for ", bioComm, ".")
     message(msg)
 
@@ -1578,7 +1633,8 @@ for (site in seq_along(1:nrow(df_targets))) {
       message(msg)
 
       list.StressorMetaData <- getCoOccur(TargetSiteID = TargetSiteID,
-                                          df_data = df_PairedSRTransf,
+                                          # df_data = df_PairedSRTransf,
+                                          df_data = df_PairedStressResp,
                                           detects = siteDetectsAll,
                                           df_stressinfo = data_stressInfo,
                                           compsites = list.CompSites$comp.sites,
@@ -1679,7 +1735,7 @@ for (site in seq_along(1:nrow(df_targets))) {
     message(msg)
 
     df_SuffScores <- getSufficiency(TargetSiteID = TargetSiteID,
-                                    df_data = df_PairedSRTransf,
+                                    df_data = df_PairedStressResp,
                                     compSites = list.CompSites$comp.sites,
                                     df_stressinfo = df_stressorMetadata,
                                     biocomm = bioComm,
@@ -1719,7 +1775,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                              df_stressinfo = df_stressorMetadata,
                                              df_respinfo = bioMetricInfo,
                                              df_respdata = bioMetricData,
-                                             df_datapaired = df_PairedSRTransf,
+                                             df_datapaired = df_PairedStressResp,
                                              biocomm = bioComm,
                                              bioindex = bioIndex,
                                              min_cases = samplim,
@@ -1779,7 +1835,7 @@ for (site in seq_along(1:nrow(df_targets))) {
         df_VPscores <- getVerifiedPredictions(TargetSiteID = TargetSiteID,
                                               stressors.sstv = stressors.sstv,
                                               df_stressinfo = df_stressorMetadata,
-                                              df_paired = df_PairedSRTransf,
+                                              df_paired = df_PairedStressResp,
                                               biocomm = bioComm,
                                               df_bioTaxaData = bioTaxaData,
                                               df_MasterTaxa = bioMasterTaxa,
@@ -1817,7 +1873,7 @@ for (site in seq_along(1:nrow(df_targets))) {
         df_VPSSIscores <- getVPSSI(TargetSiteID = TargetSiteID,
                                    stressors.ssi = stressors.ssi,
                                    df_stressinfo = df_stressorMetadata,
-                                   df_paired = df_PairedSRTransf,
+                                   df_paired = df_PairedStressResp,
                                    biocomm = bioComm,
                                    df_bioMetricData = bioMetricData,
                                    df_bioMetricInfo = bioMetricInfo,
