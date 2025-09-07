@@ -83,7 +83,7 @@ getCoOccur <- function(TargetSiteID,
                        df_data,
                        detects,
                        df_stressinfo,
-                       compsites = list.CompSites$comp.sites,
+                       compsites,
                        biocomm,
                        colBio,
                        pHlimLow = 5,
@@ -102,7 +102,7 @@ getCoOccur <- function(TargetSiteID,
 
   if (boo_DEBUG==TRUE) {
     TargetSiteID = TargetSiteID
-    df_data = df_PairedSRTransf
+    df_data = df_PairedStressResp
     detects = siteDetectsAll
     df_stressinfo = data_stressInfo
     compsites = list.CompSites$comp.sites
