@@ -91,11 +91,9 @@ getAvailableDataTypes <- function(TargetSiteID,
     noStressors <- FALSE
     # Prepare data sets of all stressors ever detected at the target site
     siteStressAll <- df_stress %>%
-      dplyr::select(!c(LogTransf, TransfResult, IQRmethod, SDmethod, Outlier)) %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::filter(!is.na(ResultValue)) %>%
       tidyr::pivot_wider(names_from = StdParamName,
-                         values_from = ResultValue) %>%
+                         values_from = TransfResult) %>%
       dplyr::select_if(not_all_na)
 
     siteDetectsAll <- as.vector(colnames(siteStressAll))
