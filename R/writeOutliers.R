@@ -55,26 +55,26 @@ writeOutliers <- function(TargetSiteID,
                                 by = "StdParamName", all.x =  TRUE)
   siteOutliers <- data_OutliersLabeled %>%
     dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::filter(!is.na(ResultValue)) %>%
+    dplyr::filter(!is.na(TransfResult)) %>%
     dplyr::filter(Outlier == "Outlier")
   compOutliers <- data_OutliersLabeled %>%
     dplyr::filter(StationID %in% compSites) %>%
     dplyr::filter(StationID != TargetSiteID) %>%
     dplyr::filter(StdParamName %in% siteDetectsAll) %>%
-    dplyr::filter(!is.na(ResultValue)) %>%
+    dplyr::filter(!is.na(TransfResult)) %>%
     dplyr::filter(Outlier == "Outlier")
   allOutliers <- data_OutliersLabeled %>%
     dplyr::filter(StationID %in% allSites) %>%
     dplyr::filter(StationID != TargetSiteID) %>%
     dplyr::filter(StdParamName %in% siteDetectsAll) %>%
-    dplyr::filter(!is.na(ResultValue)) %>%
+    dplyr::filter(!is.na(TransfResult)) %>%
     dplyr::filter(Outlier == "Outlier")
 
   if (nrow(siteOutliers) > 0) {
     for (r in 1:nrow(siteOutliers)) {
       stressor <- siteOutliers$StdParamName[r]
       strLabel <- siteOutliers$Label[r]
-      result <- siteOutliers$ResultValue[r]
+      result <- siteOutliers$TransfResult[r]
       status <- siteOutliers$Outlier[r]
       statusMsg <- ifelse(status == "Outlier",
                           paste0("n ", tolower(status)),
@@ -98,7 +98,7 @@ writeOutliers <- function(TargetSiteID,
     for (r in 1:nrow(compOutliers)) {
       stressor <- compOutliers$StdParamName[r]
       strLabel <- compOutliers$Label[r]
-      result <- compOutliers$ResultValue[r]
+      result <- compOutliers$TransfResult[r]
       status <- compOutliers$Outlier[r]
       statusMsg <- ifelse(status == "Outlier",
                           paste0("n ", tolower(status)),
@@ -124,7 +124,7 @@ writeOutliers <- function(TargetSiteID,
     for (r in 1:nrow(allOutliers)) {
       stressor <- allOutliers$StdParamName[r]
       strLabel <- allOutliers$Label[r]
-      result <- allOutliers$ResultValue[r]
+      result <- allOutliers$TransfResult[r]
       status <- allOutliers$Outlier[r]
       statusMsg <- ifelse(status == "Outlier",
                           paste0("n ", tolower(status)),
