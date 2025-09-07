@@ -93,7 +93,7 @@ getSufficiency <- function(TargetSiteID,
 
   if (boo_DEBUG==TRUE) {
     TargetSiteID = TargetSiteID
-    df_data = df_PairedSRTransf
+    df_data = df_PairedStressResp
     compSites = list.CompSites$comp.sites
     df_stressinfo = df_stressorMetadata
     biocomm = bioComm
