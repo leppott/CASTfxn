@@ -197,44 +197,74 @@ getVerifiedPredictions <- function(TargetSiteID,
       for (tv in seq_along(keepMTcol)) { # Obtain one or more sstv columns
 
         sstv <- keepMTcol[tv]
-        sstv.sensmin <- df_stressinfo$SensMin[df_stressinfo$SSTVname == sstv]
-        sstv.sensmin <- sstv.sensmin[!is.na(sstv.sensmin)]
-        sstv.sensmax <- df_stressinfo$SensMax[df_stressinfo$SSTVname == sstv]
-        sstv.sensmax <- sstv.sensmax[!is.na(sstv.sensmax)]
-        sstv.label   <- df_stressinfo$Label[df_stressinfo$SSTVname == sstv]
+        # subset stressInfo for specific SSTV
+        df_sstvInfo <- dplyr::filter(df_SSTV, SSTVname == sstv)
+        sstv.label   <- df_sstvInfo$Label
         sstv.label   <- sstv.label[!is.na(sstv.label)]
+        # assume SensMin is a vector, either character or numeric
+        sstv.sensmin <- unlist(stringr::str_split(dplyr::select(df_sstvInfo, SensMin), ","))
+        sstv.sensmin <- sstv.sensmin[!is.na(sstv.sensmin)]
+        if (suppressWarnings(!is.na(as.numeric(sstv.sensmin[1])))) {
+          sstv.sensmin <- as.numeric(sstv.sensmin)
+        }
+        # assume SensMax is a vector, either character or numeric
+        sstv.sensmax <- unlist(stringr::str_split(dplyr::select(df_sstvInfo, SensMax),
+                                                  ","))
+        sstv.sensmax <- sstv.sensmax[!is.na(sstv.sensmax)]
+        if (suppressWarnings(!is.na(as.numeric(sstv.sensmax[1])))) {
+          sstv.sensmax <- as.numeric(sstv.sensmax)
+        }
 
         # Modify taxon count data to identify sensmin and sensmin through sensmax
-        if (grepl("^\\d*.?\\d*$", sstv.sensmin) && grepl("^\\d*.?\\d*$", sstv.sensmax)) { # tv is numeric
-          # convert to numeric
-          sstv.sensmin <- as.numeric(sstv.sensmin)
-          sstv.sensmax <- as.numeric(sstv.sensmax)
+        if (is.numeric(sstv.sensmin) && is.numeric(sstv.sensmax)) { # tv is numeric
 
-          sstv.sensall <- as.numeric(unique(df_bioTaxaData[[sstv]]))
-          sstv.sensall <- sstv.sensall[!is.na(sstv.sensall)]
-          sstv.sensall <- sstv.sensall[sstv.sensall >= sstv.sensmin &
-                                         sstv.sensall <= sstv.sensmax]
-          sstv.sensall.gp <- paste0(sstv.sensall, collapse = ", ")
+          if (length(sstv.sensmin) > 1) {
+            # Handle case where sensmin defines endpoints of a range
+            sstv.sensmin.gp <- df_bioTaxaData %>%
+              dplyr::select(all_of(sstv)) %>%
+              dplyr::filter(dplyr::between(.data[[sstv]], sstv.sensmin[1],
+                                           sstv.sensmin[2]))
+            sstv.sensmin.gp <- unique(sstv.sensmin.gp)
+            sstv.sensmin.gp <- sort(as.numeric(unlist(sstv.sensmin.gp)))
+          } else { # only one value for sensmin
+            sstv.sensmin.gp <- sstv.sensmin
+          }
+
+          if (length(sstv.sensmax) > 1) {
+            # Handle case where sensmax defines endpoints of a range
+            sstv.sensmax.gp <- df_bioTaxaData %>%
+              dplyr::select(all_of(sstv)) %>%
+              dplyr::filter(dplyr::between(.data[[sstv]], sstv.sensmax[1],
+                                           sstv.sensmax[2]))
+            sstv.sensmax.gp <- unique(sstv.sensmax.gp)
+            sstv.sensmax.gp <- sort(as.numeric(unlist(sstv.sensmax.gp)))
+          } else { # only one value for sensmin
+            sstv.sensmax.gp <- sstv.sensmax
+          }
+
+          sstv.sensall.gp <- union(sstv.sensmin.gp, sstv.sensmax.gp)
 
           # Generate Labels to be used as groups
           sstv.sensminLabel <- paste(sstv, "SensMin", sep = "_")
           sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
 
           df_temp <- df_bioTaxaData %>%
-            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] == sstv.sensmin,
+            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] %in% sstv.sensmin.gp,
                                                           "Most sensitive",
                                                           NA),
-                          {{sstv.sensallLabel}} := ifelse(.data[[sstv]] %in% sstv.sensall,
+                          {{sstv.sensallLabel}} := ifelse(.data[[sstv]] %in% sstv.sensall.gp,
                                                           "All sensitive",
                                                           NA))
         } else { # tv is character or vector
           sstv.sensminLabel <- paste(sstv, "SensMin", sep = "_")
+          sstv.sensmin.gp   <- paste0(sstv.sensmin, collapse = ", ")
+          sstv.sensmax.gp   <- paste0(sstv.sensmax, collapse = ", ")
           sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
-          sstv.sensall.gp   <- paste0(sstv.sensmin, ", ", sstv.sensmax)
+          sstv.sensall.gp   <- paste0(sstv.sensmin.gp, ", ", sstv.sensmax.gp)
 
           df_temp <- df_bioTaxaData %>%
             dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] == sstv.sensmin,
-                                                          sstv.sensmin, NA),
+                                                          sstv.sensmin.gp, NA),
                           {{sstv.sensallLabel}} := dplyr::case_when(.data[[sstv]] %in%
                                                                       c(sstv.sensmin, sstv.sensmax) ~
                                                                       sstv.sensall.gp,
@@ -591,7 +621,6 @@ getVerifiedPredictions <- function(TargetSiteID,
         dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                       RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                       Stressor, StressorValue, LoE, Score)
-
 
       write.table(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
                   sep = "\t", append = FALSE)
