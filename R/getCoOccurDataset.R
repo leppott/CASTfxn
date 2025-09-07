@@ -82,8 +82,8 @@ getCoOccurDataset <- function(df_sites,
   # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
   if (nrow(df_model) > 0) {
     df_model <- df_model %>%
-      dplyr::select(StationID, StdParamName, ResultValue) %>%
-      tidyr::pivot_wider(names_from = StdParamName, values_from = ResultValue)
+      dplyr::select(StationID, StdParamName, TransfResult) %>%
+      tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
     modColnames <- names(df_model)
     modColnames <- modColnames[!(modColnames %in% "StationID")]
 
@@ -107,24 +107,13 @@ getCoOccurDataset <- function(df_sites,
   }
 
   # Clean up measured data and convert to wide format ----
-  # Changed tidyr::spread to newer tidyr::pivot_wider ARL 2023-05-25
+  # Removed mean(ResultValue) (Did this during data prep, before transforming)
+  # Might need to remove this entire piece, because it might already be done
+  # during data prep.
   if (nrow(df_meas) > 0) {
     params <- unique(as.character(df_meas$StdParamName))
     df_meas <- as.data.frame(df_meas) %>%
-      dplyr::filter(!is.na(ResultValue)) %>%
-      dplyr::select(StationID, StressSampleID, StressSampleDate,
-                    StdParamName, TransfResult) %>%
-      tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult) %>%
-      dplyr::group_by(StationID, StressSampleID) %>%
-      dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
-      dplyr::ungroup() %>%
-      tidyr::pivot_longer(cols = all_of(params), names_to = "StdParamName",
-                          values_to = "TransfResult", values_drop_na = TRUE) %>%
-      dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
-      dplyr::summarise(TransfResult = mean(TransfResult, na.rm = TRUE),
-                       .groups = "drop_last") %>%
       tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
-
     measColnames <- names(df_meas)
     measColnames <- measColnames[!(measColnames %in% c("StationID",
                                                        "StressSampleID",
@@ -210,7 +199,9 @@ getCoOccurDataset <- function(df_sites,
   df_sites <- dplyr::select(df_sites, StationID, ends_with("caseCol"))
   df_coOccur <- merge(df_sites, df_coOccur)
 
-  return(df_coOccur)
+  myCoOccurData <- df_coOccur
+
+  return(myCoOccurData)
 
 }
 
