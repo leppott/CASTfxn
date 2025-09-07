@@ -99,7 +99,7 @@ getTimeSeq <- function(TargetSiteID,
 
   df_stress <- df_stress %>%
     dplyr::filter(StationID == TargetSiteID) %>%
-    tidyr::pivot_wider(names_from = "StdParamName", values_from = "ResultValue") %>%
+    tidyr::pivot_wider(names_from = "StdParamName", values_from = "TransfResult") %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, all_of(stressors))
 
   if (any(is.na(df_stress$StressSampleDate))) {
@@ -145,6 +145,10 @@ getTimeSeq <- function(TargetSiteID,
   for (s in seq_along(stressors)) {
     stressname <- stressors[s]
     stressLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressname]
+    stressLogYN <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressname]
+    if (stressLogYN == 1) {
+      stressLabel <- paste0("Log1p ", stressLabel)
+    }
 
     # Write graphics directory ----
     out.dir <- dirname(dir_results)
