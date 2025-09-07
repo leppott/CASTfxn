@@ -74,7 +74,7 @@ getBioStressorResponses <- function(TargetSiteID,
     df_stressinfo = df_stressorMetadata
     df_respinfo = bioMetricInfo
     df_respdata = bioMetricData
-    df_datapaired = df_PairedSRTransf
+    df_datapaired = df_PairedStressResp
     biocomm = bioComm
     bioindex = bioIndex
     min_cases = samplim
