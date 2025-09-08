@@ -403,24 +403,24 @@ getCoOccur <- function(TargetSiteID,
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                      axis.ticks.y = ggplot2::element_blank())
 
-    if (grepl("^pH_a", stressname)) {
-      if (pHlimLow >= minVal) {
-        p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
-                                                    linetype = "pH lower limit"),
-                                       color = "black", lty = 3) +
-          ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
-      }
-      if (pHlimHigh <= maxVal) {
-        p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
-                                                    linetype = "pH upper limit"),
-                                       color = "black", lty = 3) +
-          ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
-      }
-    }
-    if (grepl("^DO", stressname) & (DOlim >= minVal)) {
-      p1 <- p1 + ggplot2::geom_hline(yintercept = DOlim, color = "black",
-                                     lty = 3)
-    }
+    # if (grepl("^pH_a", stressname)) {
+    #   if (pHlimLow >= minVal) {
+    #     p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
+    #                                                 linetype = "pH lower limit"),
+    #                                    color = "black", lty = 3) +
+    #       ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
+    #   }
+    #   if (pHlimHigh <= maxVal) {
+    #     p1 <- p1 + ggplot2::geom_hline(ggplot2::aes(yintercept = pHlimLow,
+    #                                                 linetype = "pH upper limit"),
+    #                                    color = "black", lty = 3) +
+    #       ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
+    #   }
+    # }
+    # if (grepl("^DO", stressname) & (DOlim >= minVal)) {
+    #   p1 <- p1 + ggplot2::geom_hline(yintercept = DOlim, color = "black",
+    #                                  lty = 3)
+    # }
 
     ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1), plot = p1,
                     dpi = plotdpi, width = plotW, height = plotH, units = plotunits)
