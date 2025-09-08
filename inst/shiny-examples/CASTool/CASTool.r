@@ -651,7 +651,7 @@ data_stressInfo <- dplyr::distinct(data_stressInfo, StdParamName, Label,
                                    LogTransf, UseInStressorID, DirIncStress,
                                    SSTVname.bmi, SensMax.bmi, SensMin.bmi,
                                    SSTVname.alg, SensMax.alg, SensMin.alg,
-                                   SSTVname.fish, SensMax.fish, SensMin.alg,
+                                   SSTVname.fish, SensMax.fish, SensMin.fish,
                                    SSIndex, SourceGroup)
 
 # Combine raw data for all stressors into one datafile
@@ -1574,6 +1574,8 @@ for (site in seq_along(1:nrow(df_targets))) {
     df_PairedStressResp <- df_PairedStressResp %>%
       dplyr::select(!all_of(insuffSamples))
 
+    rm(df_PairedStressResp.stats)
+
     # Write these to data gaps file
     if (length(insuffSamples) == 0) {
       for (i in seq_along(insuffSamples)) {
@@ -1593,24 +1595,6 @@ for (site in seq_along(1:nrow(df_targets))) {
       } #End loop over stressors
     } #End if
 
-    # df_PairedSRTransf <- df_PairedStressResp %>%
-    #   dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleDate,
-    #                 RespSampleDate, StressSampleID, RespSampleID, BioComm,
-    #                 RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, all_of(colBio),
-    #                 Quality)
-    #
-    # df_StressTrim <- data_Stress %>%
-    #   dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
-    #                 TransfResult) %>%
-    #   dplyr::filter(StdParamName %in% siteDetectsAll) %>%
-    #   tidyr::pivot_wider(names_from = StdParamName, values_from = "TransfResult")
-    #
-    # df_PairedSRTransf <- merge(df_PairedSRTransf, df_StressTrim,
-    #                            by = c("StationID", "StressSampleID", "StressSampleDate"),
-    #                            all.x = TRUE)
-    #
-    #
-    # rm(df_StressTrim)
     msg <- paste0("getQualSites is complete for ", bioComm, ".")
     message(msg)
 
@@ -1651,8 +1635,6 @@ for (site in seq_along(1:nrow(df_targets))) {
                                           dir_plots = dir_results,
                                           dir_sub = "_WoE",
                                           boo_plot = boo_plot_user)
-      # TODO: add labels or legend for dotted lines (pHlimLow, pHlimHigh, DOlim)
-      # TODO: Capture NA scores and replace with NE -- added line 307 to getCoOccur
 
       df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
       notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
@@ -1748,8 +1730,6 @@ for (site in seq_along(1:nrow(df_targets))) {
                                     dir_plots = dir_results,
                                     dir_sub = "_WoE",
                                     boo_plot = boo_plot_user)
-    # TODO: add labels or legend for dotted lines (pHlimLow, pHlimHigh, DOlim)
-    # TODO: Capture NA scores and replace with NE -- added line 240 & removed
 
     if (nrow(df_SuffScores) != 0) {
       df_LoE <- rbind(df_LoE, df_SuffScores)
@@ -1791,7 +1771,6 @@ for (site in seq_along(1:nrow(df_targets))) {
                                              dir_sub = "_WoE",
                                              boo_pred_warn = TRUE,
                                              boo_plot = boo_plot_user)
-    # TODO: Capture NA scores and replace with NE -- fixed in multiple places, esp. lines 795 & 809
 
     if (nrow(df_gradscores != 0)) {
       df_LoE <- rbind(df_LoE, df_gradscores)
