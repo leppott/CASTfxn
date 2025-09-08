@@ -830,24 +830,24 @@ getBioStressorResponses <- function(TargetSiteID,
                                              fill = bio_fill_out[3]))
         } ##IF~boo_plot_targ~END
 
-        if (grepl("^pH_a", stressName)) {
-          if (pHlimLow >= xmin_all) {
-            p_SR_all <- p_SR_all +
-              ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
-                                               linetype = "pH lower limit"),
-                                  color = "black", lty = 3)
-          }
-          if (pHlimHigh <= xmax_all) {
-            p_SR_all <- p_SR_all +
-              ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimHigh,
-                                               linetype = "pH upper limit"),
-                                  color = "black", lty = 3)
-          }
-        }
-        if (grepl("^DO", stressName) & (DOlim >= xmin_all)) {
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_vline(xintercept = DOlim, color = "black", lty = 3)
-        }
+        # if (grepl("^pH_a", stressName)) {
+        #   if (pHlimLow >= xmin_all) {
+        #     p_SR_all <- p_SR_all +
+        #       ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+        #                                        linetype = "pH lower limit"),
+        #                           color = "black", lty = 3)
+        #   }
+        #   if (pHlimHigh <= xmax_all) {
+        #     p_SR_all <- p_SR_all +
+        #       ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimHigh,
+        #                                        linetype = "pH upper limit"),
+        #                           color = "black", lty = 3)
+        #   }
+        # }
+        # if (grepl("^DO", stressName) & (DOlim >= xmin_all)) {
+        #   p_SR_all <- p_SR_all +
+        #     ggplot2::geom_vline(xintercept = DOlim, color = "black", lty = 3)
+        # }
 
         # other
         p_SR_all <- p_SR_all +
