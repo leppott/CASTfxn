@@ -309,8 +309,11 @@ provided to the CASTool, a relatively high (NNI var) may indicate that
 nitrogen pollution merits additional scrutiny as a potential candidate
 cause of impairment.
 
-``` {r, child=if ("bmi" %in% biocommlist) 'BMI.rmd' else 'No BMI results'}
+``` {r BMIresults, child=if ("bmi" %in% biocommlist) 'BMI.rmd'}
 ```
 
-# END CHILD DOCUMENT
+``` {r ALGresults, child=if ("alg" %in% biocommlist) 'ALG.rmd'}
+```
 
+``` {r FISHresults, child=if ("fish" %in% biocommlist) 'FISH.rmd'}
+```
