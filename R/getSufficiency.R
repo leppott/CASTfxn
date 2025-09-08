@@ -321,24 +321,24 @@ getSufficiency <- function(TargetSiteID,
         ggplot2::geom_line(ggplot2::aes(y = y.name, x = x), data = newdat,
                            color = "black", lwd = 1, na.rm = TRUE)
 
-      if (grepl("^pH_a", str)) {
-        if (pHlimLow >= xmin) {
-          p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
-                                                      linetype = "pH lower limit"),
-                                         color = "black", lty = 3) +
-            ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
-        }
-        if (pHlimHigh <= xmax) {
-          p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
-                                                      linetype = "pH upper limit"),
-                                         color = "black", lty = 3) +
-            ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
-        }
-      }
-      if (grepl("^DO", str) & (DOlim >= xmin)) {
-        p1 <- p1 + ggplot2::geom_vline(xintercept = DOlim, color = "black",
-                                       lty = 3)
-      }
+      # if (grepl("^pH_a", str)) {
+      #   if (pHlimLow >= xmin) {
+      #     p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+      #                                                 linetype = "pH lower limit"),
+      #                                    color = "black", lty = 3) +
+      #       ggplot2::scale_linetype_manual(name = "pH lower limit", values = 3)
+      #   }
+      #   if (pHlimHigh <= xmax) {
+      #     p1 <- p1 + ggplot2::geom_vline(ggplot2::aes(xintercept = pHlimLow,
+      #                                                 linetype = "pH upper limit"),
+      #                                    color = "black", lty = 3) +
+      #       ggplot2::scale_linetype_manual(name = "pH upper limit", values = 3)
+      #   }
+      # }
+      # if (grepl("^DO", str) & (DOlim >= xmin)) {
+      #   p1 <- p1 + ggplot2::geom_vline(xintercept = DOlim, color = "black",
+      #                                  lty = 3)
+      # }
 
       p1 <- p1 + ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
