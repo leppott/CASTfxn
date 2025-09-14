@@ -252,7 +252,7 @@ getComparators<- function(TargetSiteID,
               row.names = FALSE, sep = "\t")
 
 
-  CompMsg2 <- paste("Using final number of comparators =", length(comp.sites) - 1)
+  CompMsg2 <- paste("Using final number of comparators = ", length(comp.sites) - 1)
   message(CompMsg2)
 
   myCompSites <- list(TargetCOMID = TargetCOMID,
