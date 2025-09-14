@@ -24,7 +24,7 @@
 #' @return Dataframe containing sample ID, stressor name, stressor value,
 #'         IQR method flag, SD method flag, Outlier flag
 #'
-#' @keywords internal
+#' @keywords
 #'
 #' @export
 getOutliers <- function(df_data,
@@ -36,19 +36,26 @@ getOutliers <- function(df_data,
   if (boo_DEBUG == TRUE) {
     df_data = data_Stress
     df_meta = data_stressInfo
-    dir_plots = file.path(dir_results, "Histograms")
+    dir_plots = file.path(out.dir, sub_dir)
   }
 
   # Define pipe
   `%>%` <- dplyr::`%>%`
   # not_all_na <- function(x) {!all(is.na(x))}
 
-  ifelse(!dir.exists(dir_results) == TRUE,
-         dir.create(dir_results),
-         FALSE)
-  ifelse(!dir.exists(dir_plots) == TRUE,
-         dir.create(dir_plots),
-         FALSE)
+  # Write results directory ----
+  out.folders <- c(out.dir, sub.dir)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
 
   # Ensure uniqueness of df_meta
   df_meta <- df_meta %>%
@@ -109,9 +116,11 @@ getOutliers <- function(df_data,
     outhilim <- iqr[2] + iqr1.5
 
     df_sub <- df_sub %>%
-      dplyr::mutate(IQRmethod = dplyr::case_when(TransfResult < outlowlim ~ "Outlier low",
+      dplyr::mutate(IQRmethod = dplyr::case_when(dplyr::between(TransfResult,
+                                                          outlowlim, outhilim) ~ "Good",
+                                                 TransfResult < outlowlim ~ "Outlier low",
                                                  TransfResult > outhilim ~ "Outlier high",
-                                                 TRUE ~ "Good"))
+                                                 TRUE ~ "NE"))
 
     # 6*sd method for identifying outliers
     paramMean <- mean(df_sub$TransfResult[is.finite(df_sub$TransfResult)],
@@ -119,8 +128,10 @@ getOutliers <- function(df_data,
     paramSD <- stats::sd(df_sub$TransfResult[is.finite(df_sub$TransfResult)],
                          na.rm = TRUE)
     df_sub <- df_sub %>%
-      dplyr::mutate(SDmethod = ifelse((abs(TransfResult - paramMean) >
-                                         (6 * paramSD)), "Outlier", "Good"))
+      dplyr::mutate(SDmethod = dplyr:::case_when((abs(TransfResult - paramMean) >
+                                                    (6 * paramSD)) ~ "Outlier",
+                                                 paramSD == 0 ~ "NE",
+                                                 TRUE ~ "Good"))
 
     # Combine the findings
     # If both IQR & SD methods agree on "Good", then mark as "Good"
