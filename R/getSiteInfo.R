@@ -14,7 +14,6 @@
 #' Requires packages dplyr, ggplot2, lubridate, tidyr
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
-#' @param TargetCOMID common identifier for the reach on which the site is located
 #' @param df_Sites dataframe containing site data, including "inside the case"
 #' and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
 #' be cluster; if useBC == FALSE, "inside the case" will be cluster.
@@ -93,32 +92,32 @@ getSiteInfo <- function(TargetSiteID,
   boo_DEBUG <- FALSE
   #
   if (boo_DEBUG == TRUE) {
-    TargetSiteID = TargetSiteID
-    TargetCOMID = list.CompSites$TargetCOMID
-    df_Sites = data_Sites
+    TargetSiteID   = TargetSiteID
+    TargetCOMID    = list.CompSites$TargetCOMID
+    df_Sites       = data_Sites
     df_SampSummary = data_sampSummary
-    biocommlist = biocommlist
-    df_BMIMetrics = data_bmiMetrics
-    BMIIndexGp = bmiIndexGp
-    df_ALGMetrics = data_algMetrics
-    ALGIndexGp = algIndexGp
+    biocommlist    = biocommlist
+    df_BMIMetrics  = data_bmiMetrics
+    BMIIndexGp     = bmiIndexGp
+    df_ALGMetrics  = data_algMetrics
+    ALGIndexGp     = algIndexGp
     df_FishMetrics = data_fishMetrics
-    FishIndexGp = fishIndexGp
-    comp.sites = list.CompSites$comp.sites
-    all.sites = list.CompSites$all.sites
-    OutcaseLabel = outcaseLabel
-    IncaseLabel = incaseLabel
-    useBC = FALSE
-    plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
-    refSiteCol = refOutline_col
-    dir_photo = file.path(dir_data, "Photos")
-    dir_results = dir_results
-    dir_sub = "SiteInfo"
-    boo_plot = TRUE
+    FishIndexGp    = fishIndexGp
+    comp.sites     = list.CompSites$comp.sites
+    all.sites      = list.CompSites$all.sites
+    OutcaseLabel   = outcaseLabel
+    IncaseLabel    = incaseLabel
+    useBC          = FALSE
+    plotvars       = data_plotvars
+    plotdpi        = plot_dpi
+    plotH          = plot_H
+    plotW          = plot_W
+    plotunits      = plot_units
+    refSiteCol     = refOutline_col
+    dir_photo      = file.path(in.dir, region, "Photos")
+    dir_results    = dir_results
+    dir_sub        = "SiteInfo"
+    boo_plot       = TRUE
   }
 
   # define pipe
@@ -175,8 +174,8 @@ getSiteInfo <- function(TargetSiteID,
   mySiteInfo <- df_Sites %>%
     dplyr::filter(StationID == TargetSiteID) %>%
     dplyr::select(Latitude, Longitude, RefSiteFlag, COMID, OutcaseCol, IncaseCol)
-  myIncaseID = as.vector(unlist(mySiteInfo$IncaseCol))
-  myOutcaseID = as.vector(unlist(mySiteInfo$OutcaseCol))
+  myIncaseID  <- as.vector(unlist(mySiteInfo$IncaseCol))
+  myOutcaseID <- as.vector(unlist(mySiteInfo$OutcaseCol))
 
   data_refSites <- df_Sites %>%
     dplyr::filter(RefSiteFlag == 1) %>%
@@ -222,22 +221,16 @@ getSiteInfo <- function(TargetSiteID,
     # Define biocomm data
     bioComm <- tolower(biocommlist[b])
     if (bioComm == "bmi") {
-      bioIndex <- bmiIndex
       bioIndexGp <- BMIIndexGp
       bioMetricData <- df_BMIMetrics
-      colBio <- bmiIndex
       bioSampleID <- "BMISampleID"
     } else if (bioComm == "algae") {
-      bioIndex <- algIndex
       bioIndexGp <- algIndexGp
       bioMetricData <- df_algMetrics
-      colBio <- algIndex
       bioSampleID <- "AlgSampleID"
     } else if (bioComm == "fish") {
-      bioIndex <- fishIndex
       bioIndexGp <- fishIndexGp
       bioMetricData <- df_fishMetrics
-      colBio <- fishIndex
       bioSampleID <- "FishSampleID"
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
@@ -245,7 +238,7 @@ getSiteInfo <- function(TargetSiteID,
       next()
     }
 
-    # Prep BMI data for plotting
+    # Prep bio data for plotting
     targetBioMetrics <- dplyr::filter(bioMetricData, StationID == TargetSiteID)
     allBioMetrics <- bioMetricData %>%
       dplyr::filter(!(StationID %in% comp.sites))
@@ -265,14 +258,14 @@ getSiteInfo <- function(TargetSiteID,
                     Case = "Outside the case",
                     RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
                     Samples = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
+                                               !is.na(RefSite) ~
+                                                 paste0(RefSite, ", ", tolower(Quality)),
+                                               TRUE ~ Quality),
                     Samples = factor(Samples, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
+                                                         "Reference, not degraded",
+                                                         "Reference, degraded",
+                                                         "Not degraded",
+                                                         "Degraded"))) %>%
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
                     Score, Case, Samples)
 
@@ -293,14 +286,14 @@ getSiteInfo <- function(TargetSiteID,
                     Case = "Inside the case",
                     RefSite = ifelse(StationID %in% myRefSites, "Reference", NA),
                     Samples = dplyr::case_when(Quality == "Target" ~ "Target",
-                                                  !is.na(RefSite) ~
-                                                    paste0(RefSite, ", ", tolower(Quality)),
-                                                  TRUE ~ Quality),
+                                               !is.na(RefSite) ~
+                                                 paste0(RefSite, ", ", tolower(Quality)),
+                                               TRUE ~ Quality),
                     Samples = factor(Samples, levels = c("Target",
-                                                               "Reference, not degraded",
-                                                               "Reference, degraded",
-                                                               "Not degraded",
-                                                               "Degraded"))) %>%
+                                                         "Reference, not degraded",
+                                                         "Reference, degraded",
+                                                         "Not degraded",
+                                                         "Degraded"))) %>%
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
                     Score, Case, Samples)
 
