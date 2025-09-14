@@ -25,7 +25,8 @@
 #
 #' @export
 #'
-prepMeasStressorData <- function(out.dir,
+prepMeasStressorData <- function(in.dir,
+                                 out.dir,
                                  fn.data,
                                  fn.meta,
                                  removeOutliers,
@@ -36,24 +37,41 @@ prepMeasStressorData <- function(out.dir,
     sub.dir = "_Histograms"
   }
 
+  # Create output folder
+  out.folders <- c(out.dir, sub.dir)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
+
+  out.dir <- dir.path
+
+
   # Load RDS files
-  data_chemInfo <- readRDS(file.path(out.dir, fn.meta))
-  data_chemAll <- readRDS(file.path(out.dir, fn.data))
+  data_chemInfo   <- readRDS(file.path(in.dir, fn.meta))
+  data_chemAll    <- readRDS(file.path(in.dir, fn.data))
 
   ## Get metadata for all measured stressors
   data_chemInfo   <- data_chemInfo %>%
     dplyr::filter(UseInStressorID == 1)
 
   ## Get measured stressor values to use in the stressor id
-  params2use <- as.character(data_chemInfo$StdParamName)
-  data_chemAll <- dplyr::filter(data_chemAll, StdParamName %in% params2use)
+  params2use      <- as.character(data_chemInfo$StdParamName)
+  data_chemAll    <- dplyr::filter(data_chemAll, StdParamName %in% params2use)
 
   ## getOutliers ----
   ## returns a dataframe with ChemSampleID, StdParamName, TransfResult,
   ## IQRmethod, SDmethod, Outlier
-  data_measOutliers <- getOutliers(df_data = data_chemAll,
-                                   df_meta = data_chemInfo,
-                                   dir_plots = file.path(out.dir, sub.dir))
+  data_measOutliers <- getOutliers(df_data   = data_chemAll,
+                                   df_meta   = data_chemInfo,
+                                   dir_plots = out.dir)
   ## Merge outlier flags with raw data by sample ID
   data_chemAll <- merge(data_chemAll, data_measOutliers,
                         by.x = c("StationID", "StressSampleID", "StressSampleDate",
@@ -106,13 +124,15 @@ prepMeasStressorData <- function(out.dir,
     dplyr::filter(!is.na(TransfResult)) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate,
                   StdParamName, TransfResult) %>%
-    tidyr::pivot_wider(names_from = StdParamName, values_from = TransfResult)
+    tidyr::pivot_wider(names_from = StdParamName,
+                       values_from = TransfResult)
   data_chemRaw <- data_chemRaw %>%
     dplyr::group_by(StationID, StressSampleID) %>%
     dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
     dplyr::ungroup()
   data_chemRaw <- data_chemRaw %>%
-    tidyr::pivot_longer(cols = all_of(analytes), names_to = "StdParamName",
+    tidyr::pivot_longer(cols = all_of(analytes),
+                        names_to = "StdParamName",
                         values_to = "TransfResult")
   data_chemRaw <- dplyr::filter(data_chemRaw, !is.na(TransfResult))
 

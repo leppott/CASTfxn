@@ -25,7 +25,8 @@
 #
 #' @export
 #'
-prepModStressorData <- function(out.dir,
+prepModStressorData <- function(in.dir,
+                                out.dir,
                                 fn.data,
                                 fn.meta,
                                 removeOutliers,
@@ -36,23 +37,38 @@ prepModStressorData <- function(out.dir,
     sub.dir = "_Histograms"
   }
 
+  # Create output folder
+  out.folders <- c(out.dir, sub.dir)
+
+  for (i in 1:length(out.folders)) {
+    if (i == 1) {
+      dir.path <- file.path(out.folders[i])
+    } else {
+      dir.path <- file.path(dir.path, out.folders[i])
+    }
+    if (dir.exists(dir.path) == FALSE) {
+      dir.create(dir.path)
+    }
+  }
+  out.dir <- dir.path
+
   # Load RDS files
-  data_modelInfo <- readRDS(file.path(out.dir, fn.meta))
-  data_modelAll <- readRDS(file.path(out.dir, fn.data))
+  data_modelInfo <- readRDS(file.path(in.dir, fn.meta))
+  data_modelAll  <- readRDS(file.path(in.dir, fn.data))
 
   ## Get metadata for all measured stressors
   data_modelInfo   <- data_modelInfo %>%
     dplyr::filter(UseInStressorID == 1)
 
   ## Get measured stressor values to use in the stressor id
-  params2use <- as.character(data_modelInfo$StdParamName)
+  params2use    <- as.character(data_modelInfo$StdParamName)
   data_modelAll <- dplyr::filter(data_modelAll, StdParamName %in% params2use)
 
   ## getOutliers returns a dataframe with modelSampleID, StdParamName, TransfResult,
   ## IQRmethod, SDmethod, Outlier
-  data_modelOutliers <- getOutliers(df_data = data_modelAll,
-                                    df_meta = data_modelInfo,
-                                    dir_plots = file.path(out.dir, sub.dir))
+  data_modelOutliers <- getOutliers(df_data   = data_modelAll,
+                                    df_meta   = data_modelInfo,
+                                    dir_plots = out.dir)
   ## Merge outlier flags with raw data by sample ID
   data_modelAll <- merge(data_modelAll, data_measOutliers,
                         by.x = c("StationID", "StressSampleID", "StressSampleDate",
@@ -85,8 +101,8 @@ prepModStressorData <- function(out.dir,
   data_model_all_dups <- data_model_all[duplicated(data_modelAll),]
   data_modelAll <- unique(data_modelAll) # should be unique, long-form sample/analyte
 
-  mymodelData <- list(data_modelInfo = data_modelInfo,
-                     data_modelRaw = data_modelAll,
+  mymodelData <- list(data_modelInfo    = data_modelInfo,
+                     data_modelRaw      = data_modelAll,
                      data_modeloutliers = data_modeloutliers)
 
   return(mymodelData)
