@@ -30,7 +30,7 @@ prepRespData <- function(out.dir,
                         loaded,
                         list.bio.vars) {
 
-  boo.debug <- TRUE
+  boo.debug <- FALSE
   if (boo.debug) {
     bio <- "bmi"
     loaded <- loaded
@@ -46,6 +46,8 @@ prepRespData <- function(out.dir,
     }
     if (list.bio.vars$useBC == TRUE) {
       data_BCdist       <- readRDS(file.path(out.dir, "data_BCdist.rds"))
+    } else {
+      data_BCdist       <- NULL
     }
   }
   if (bio == "alg") {
