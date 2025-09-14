@@ -277,7 +277,7 @@ getVerifiedPredictions <- function(TargetSiteID,
           df_resp <- merge(df_resp, df_temp,
                            by = c("StationID", "RespSampleID", "RespSampleDate",
                                   "TaxonID", "NumInd", "PctInd", "PctTaxa",
-                                  "SampleTotTaxa", keepMTcol))
+                                  "NumTaxa", keepMTcol))
         }
 
         # Remove sstv variables, labels
@@ -452,16 +452,6 @@ getVerifiedPredictions <- function(TargetSiteID,
         } else {
           df.scores <- rbind(df.scores, df_tbl_scores)
         }
-
-        # if (file.exists(fn_scores) == FALSE) {##IF~file.exists(fn_scores)~START
-        #   # invert for 1st instance
-        #   boo_append <- !boo_append
-        #   boo_colnames <- !boo_colnames
-        # }##IF~file.exists(fn_scores)~END
-        #
-        # utils::write.table(df_tbl_scores, file = fn_scores,
-        #                    col.names = boo_colnames, row.names = FALSE,
-        #                    sep="\t", append = boo_append)
 
         # Rbind target and comparator dataframes
         df_tv.incase <- rbind(df_tv.target, df_tv.incase)
