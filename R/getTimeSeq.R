@@ -243,7 +243,7 @@ getTimeSeq <- function(TargetSiteID,
     tidyr::pivot_longer(cols = all_of(stressors), names_to = "Stressor",
                         values_to = "StressorValue", values_drop_na = TRUE)
   df_resp <- dplyr::select(df_resp, StationID, RespSampleID, RespSampleDate,
-                           all_of(bioIndex), Quality)
+                           all_of(bioIndexGp), Quality)
 
   df_TS_scores <- merge(df_stress, df_resp,
                         by.x = c("StationID", "StressSampleDate"),
