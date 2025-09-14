@@ -26,41 +26,43 @@
 #' @export
 #'
 prepRespData <- function(out.dir,
-                        bio,
-                        loaded,
-                        list.bio.vars) {
+                         bio,
+                         loaded,
+                         useBC,
+                         bioIndex) {
 
   boo.debug <- FALSE
   if (boo.debug) {
-    bio <- "bmi"
-    loaded <- loaded
-    list.bio.vars <- list.bmi.vars
+    bio      <- "bmi"
+    loaded   <- loaded
+    useBC    <- useBC
+    bioIndex <- bioIndexGp
   }
 
   if (bio == "bmi") {
-    data_bioMetrics     <- readRDS(file.path(out.dir, "data_bmiMetrics.rds"))
-    data_bioMetricsInfo <- readRDS(file.path(out.dir, "data_bmiMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out.dir, "data_bmiMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_bmiMetricsInfo.rds"))
     if (("data_bmiMasterTaxa" %in% loaded) && ("data_bmiCounts" %in% loaded)) {
       data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_bmiMasterTaxa.rds"))
       data_bioCounts      <- readRDS(file.path(out.dir, "data_bmiCounts.rds"))
     }
-    if (list.bio.vars$useBC == TRUE) {
-      data_BCdist       <- readRDS(file.path(out.dir, "data_BCdist.rds"))
+    if (useBC == TRUE) {
+      data_BCdist         <- readRDS(file.path(out.dir, "data_BCdist.rds"))
     } else {
-      data_BCdist       <- NULL
+      data_BCdist         <- NULL
     }
   }
   if (bio == "alg") {
-    data_bioMetrics     <- readRDS(file.path(out.dir, "data_algMetrics.rds"))
-    data_bioMetricsInfo <- readRDS(file.path(out.dir, "data_algMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out.dir, "data_algMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_algMetricsInfo.rds"))
     if (("data_algMasterTaxa" %in% loaded) && ("data_algCounts" %in% loaded)) {
       data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_algMasterTaxa.rds"))
       data_bioCounts      <- readRDS(file.path(out.dir, "data_algCounts.rds"))
     }
   }
   if (bio == "fish") {
-    data_bioMetrics     <- readRDS(file.path(out.dir, "data_fishMetrics.rds"))
-    data_bioMetricsInfo <- readRDS(file.path(out.dir, "data_fishMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out.dir, "data_fishMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_fishMetricsInfo.rds"))
     if (("data_fishMasterTaxa" %in% loaded) && ("data_fishCounts" %in% loaded)) {
       data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_fishMasterTaxa.rds"))
       data_bioCounts      <- readRDS(file.path(out.dir, "data_fishCounts.rds"))
@@ -83,8 +85,6 @@ prepRespData <- function(out.dir,
     dplyr::filter(UseYN == "Y") %>%
     dplyr::select(MetricName, MetricLabel, IndexYN, TrendWIncStress,
                   CutoffValue, InclusiveIndicator)
-  bioMetrics <- as.vector(data_bioMetricsInfo$MetricName)
-  bioIndex <- list.bio.vars$index
   bioIndex.cutval <- data_bioMetricsInfo$CutoffValue[data_bioMetricsInfo$MetricName == bioIndex]
   bioIndex.dir <- data_bioMetricsInfo$TrendWIncStress[data_bioMetricsInfo$MetricName == bioIndex]
   bioIndex.Inc <- data_bioMetricsInfo$InclusiveIndicator[data_bioMetricsInfo$MetricName == bioIndex]
