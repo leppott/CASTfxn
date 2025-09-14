@@ -34,9 +34,6 @@ checkInputs <- function(dir.uploaded,
   if (debug) {
     # Uploaded files
     dir.uploaded <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/UploadedData_Test"
-    # Checks
-    fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
-    fn.metadata <- file.path(dir.uploaded, "_CASTool_Metadata.xlsx")
     # Included functions
     dir.git <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     source(file.path(dir.git, "readCASToolData.R"))
@@ -1324,8 +1321,7 @@ checkInputs <- function(dir.uploaded,
 
   # Write results directory ----
   region <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "region"])
-  out.folders <- c(dir.out, region, "Results",
-                   "_CheckedInputs")
+  out.folders <- c(dir.out, region, "Results", "_CheckedInputs")
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
@@ -1351,7 +1347,7 @@ checkInputs <- function(dir.uploaded,
     saveRDS(get(objName), file.path(dir.out, fn))
   }
 
-  myTables <- list(TableOne <- df.TableOne, TableTwo = df.TableTwo)
+  myTables <- list(TableOne = df.TableOne, TableTwo = df.TableTwo)
   return(myTables)
 
 }
