@@ -36,7 +36,7 @@ getOutliers <- function(df_data,
   if (boo_DEBUG == TRUE) {
     df_data = data_Stress
     df_meta = data_stressInfo
-    dir_plots = file.path(out.dir, sub_dir)
+    dir_plots = file.path(out.dir, "_Histograms")
   }
 
   # Define pipe
@@ -44,7 +44,7 @@ getOutliers <- function(df_data,
   # not_all_na <- function(x) {!all(is.na(x))}
 
   # Write results directory ----
-  out.folders <- c(out.dir, sub.dir)
+  out.folders <- c(out.dir, "_Histograms")
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
