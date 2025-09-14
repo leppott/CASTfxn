@@ -1,23 +1,26 @@
-getWSStressorFigs <- function(df_WSData = NULL,
+getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
+                              df_WSData = NULL,
                               df_WSInfo = NULL,
-                              comp.reaches =  list.CompSites$comp.reaches,
+                              comp.reaches = list.CompSites$comp.reaches,
                               TargetCOMID = list.CompSites$TargetCOMID,
+                              useAllCompReaches = useAllCompReaches,
                               dir_sub = "SiteInfo",
                               df_SampSummary = data_sampSummary,
                               biocommlist = biocommlist,
                               boo_plot = TRUE) { # FUN: Start
 
   boo.debug <- FALSE
-
   if (boo.debug) {
-    df_WSData <- data_stressorWS
-    df_WSInfo <- data_stressorinfoWS
-    comp.reaches <-  list.CompSites$comp.reaches
-    TargetCOMID <- list.CompSites$TargetCOMID
-    dir_sub <- "SiteInfo"
-    df_SampSummary <- data_sampSummary
-    biocommlist <- biocommlist
-    boo_plot <- TRUE
+    TargetSiteID      <- TargetSiteID
+    df_WSData         <- data_stressorWS
+    df_WSInfo         <- data_stressorinfoWS
+    comp.reaches      <- list.CompSites$comp.reaches
+    TargetCOMID       <- list.CompSites$TargetCOMID
+    useAllCompReaches <- useAllCompReaches
+    dir_sub           <- "SiteInfo"
+    df_SampSummary    <- data_sampSummary
+    biocommlist       <- biocommlist
+    boo_plot          <- TRUE
   }
 
   biocommlist <- toupper(biocommlist)
@@ -52,14 +55,6 @@ getWSStressorFigs <- function(df_WSData = NULL,
   myRespSampDates$yLoc <- NA_real_
 
   allRespSampTypes <- unique(myRespSampDates$SampleType)
-
-  # for (t in seq_along(allRespSampTypes)) {
-  #   type <- allRespSampTypes[t]
-  #   myRespSampDates <- myRespSampDates %>%
-  #     dplyr::mutate(yLoc = ifelse(SampleType == type, -5*t, yLoc))
-  # to get better timelines, this is what you need to alter and probably
-  # put it after reading in the date range
-  # }
 
   if (!is.null(df_WSData)) {
     # Get background data from df_WSData; use COMID to select single reach
