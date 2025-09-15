@@ -63,7 +63,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     biocomm = bioComm
     df_bioTaxaData = bioTaxaData
     df_MasterTaxa = bioMasterTaxa
-    colBio = bioIndex
+    colBio = bioIndexGp
     plotvars = data_plotvars
     plotdpi = plot_dpi
     plotH = plot_H
@@ -71,7 +71,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     plotunits = plot_units
     dir_plots = dir_results
     dir_sub = "_WoE"
-    boo_plot = boo_plot_user
+    boo_plot = boo.plot.user
   }##IF.boo.DEBUG.END
 
   # define pipe
@@ -317,7 +317,8 @@ getVerifiedPredictions <- function(TargetSiteID,
         message(paste("Scoring", stressor))
         stressorLabel <- df_stressinfo$Label[df_stressinfo$Stressor == stressor]
         stressLog <- df_stressinfo$LogTransf[df_stressinfo$Stressor == stressor]
-        stressorLabel <- ifelse(stressLog == 1, paste0("Log1p ", stressorLabel),
+        stressorLabel <- ifelse(stressLog == 1,
+                                paste0("Log1p ", stressorLabel),
                                 stressorLabel)
         tolval <- df_SSTV$SSTVname[df_SSTV$Stressor == stressor]
         tolval.min <- paste0(tolval, "_SensMin")
