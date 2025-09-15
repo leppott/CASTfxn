@@ -66,7 +66,7 @@ System (CADDIS), which can be consulted for additional information on
 causal assessment.
 
 # **Target Site: `r TargetSiteID`**
-## **Region: `r regionName`**
+## **Region: `r region`**
 
 ## **Parameterization**
 
@@ -84,10 +84,6 @@ causal assessment.
   lagdays <- paste(lagdays, collapse = ", ")
 
   cat(paste("**Biological communities evaluated:** ", biocomms, "\n\n", sep = ""))
-  # cat(paste("**Primary biological indices used for degraded/not degraded determination:** ", 
-  #           primeIndex, "\n\n", sep = ""))
-  # cat(paste("\t**Secondary biological indices used to generate supplemental figures: **", 
-  #           bioIndex, "\n", sep = ""))
   cat(paste("**Remove outliers:** ", removeOutliers, "\n\n", sep = ""))
   cat(paste("**Use expected biological similarity filter:** ", useBC, "\n\n", sep = ""))
   cat(paste("**Minimum number of samples to identify candidate causes:** ", samplim, 
@@ -96,7 +92,7 @@ causal assessment.
             lagdays, "\n\n", sep = ""))
   cat(paste("**R2 cutoff:** ", r2_cutoff, "\n\n", sep = ""))
   cat(paste("**p-value cutoff:** ", p.val_cutoff, "\n\n", sep = ""))
-  cat(paste("**Cluster assignment file:** ", basename(fn.cluster), "\n", sep = ""))
+  # cat(paste("**Cluster assignment file:** ", basename(fn.cluster), "\n", sep = ""))
 
 ```
 
@@ -160,9 +156,9 @@ if (length(fn_all) > 0) {##IF.Media
 
 The table below lists any samples collected from `r TargetSiteID` over
 time. Index scores are followed by their biological quality for benthic
-macroinvertebrates (`r ifelse(!is.null(bmiIndex), bmiIndex, "N/A")`),
-algae (`r ifelse(!is.null(algIndex), algIndex, "N/A")`), or fish
-(`r ifelse(!is.null(fishIndex), fishIndex, "N/A")`).
+macroinvertebrates (`r ifelse(!is.null(bmiIndexGp), bmiIndexGp, "N/A")`),
+algae (`r ifelse(!is.null(algIndexGp), algIndexGp, "N/A")`), or fish
+(`r ifelse(!is.null(fishIndexGp), fishIndexGp, "N/A")`).
 
 ```{r sampsummary, echo = FALSE}
 
@@ -209,7 +205,7 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
   if (!is.null(data_bmiMetrics)) {
     origcol <- which(colnames(dfSamps) == "BMI Sample ID")
     dfbmi <- dplyr::filter(data_bmiMetrics, StationID == TargetSiteID) %>%
-      dplyr::select(RespSampleID, all_of(bmiIndex), Quality)
+      dplyr::select(RespSampleID, all_of(bmiIndexGp), Quality)
     dfSamps <- merge(dfSamps, dfbmi, by.x = "BMI Sample ID", by.y = "RespSampleID",
                      all.x = TRUE)
     dfSamps <- dplyr::rename(dfSamps, `BMI Quality` = Quality)
