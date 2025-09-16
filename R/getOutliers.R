@@ -142,7 +142,7 @@ getOutliers <- function(df_data,
                     SDmethod = ifelse(!is.na(SDmethod), SDmethod, "NE")) %>%
       dplyr::mutate(Outlier = dplyr::case_when((IQRmethod == "Good") & (SDmethod == "Good") ~ "Good",
                                                (IQRmethod == "NE") | (SDmethod == "NE") ~ "NE",
-                                               grepl("Outlier", IQRmethod) & (SDmethod == "Outlier") ~
+                                               grepl("Outlier", IQRmethod) | (SDmethod == "Outlier") ~ # LCN changed 20250916 to make function match description
                                                  "Outlier",
                                                TRUE ~ "Good"))
 

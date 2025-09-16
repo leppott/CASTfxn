@@ -38,7 +38,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 #
 boo.debug <- TRUE
-debug.person <- "Ann"
+debug.person <- "Laura"
 if (boo_Shiny == TRUE) {
   gitpath     <- file.path(".", "external", "R")  # used in getReport
   dir_rmd     <- file.path(".", "external", "rmd")
@@ -107,21 +107,27 @@ if (boo_Shiny == TRUE) {
   } else if (boo.debug == TRUE & debug.person == "Laura") {
     # This should be an error condition, because Ann & Erik are only people
     #LCN file paths
-    region <- "WA_LCN"
-    wd <- dirname(dirname(getwd()))
-    gitpath <- file.path(wd, "CASTfxn_6.3.6.4" , "CASTfxn", "R")
-    dir_rmd <- file.path(wd, "CASTfxn_6.3.6.4",  "CASTfxn", "inst", "rmd")
-    localdir <- file.path(wd, "CASTfxn_6.3.6.4", "CASTool_Data")
-    dir_data <- file.path(localdir, region, "Data")
-    dir_results <- file.path(localdir, region, "Results")
+    region <- "WA"
+    wd <-  "C:/Users/lnaslund/Documents"
+    gitpath <- file.path(wd, "CASTfxn_AnnFinal" , "R")
+    dir_rmd <- file.path(wd, "CASTfxn_AnnFinal",  "inst", "rmd")
+    localdir <- file.path(wd, "CASTool_Data", "20250711_FinalInputDataFormat")
+    dir_data <- file.path(localdir, "Data")
+    dir_results <- file.path(localdir, "Results")
 
     source(file.path(gitpath, "readCASToolData.R"))
+    source(file.path(gitpath, "checkInputs.R"))
+    source(file.path(gitpath, "prepSiteData.R"))
+    source(file.path(gitpath, "prepMeasStressorData.R"))
+    source(file.path(gitpath, "prepModStressorData.R"))
     source(file.path(gitpath, "getOutliers.R"))
+    source(file.path(gitpath, "prepRespData.R"))
     source(file.path(gitpath, "getCoOccurDataset.R"))
     source(file.path(gitpath, "getAllSamplesTable.R"))
     ## Target site & inside/outside case
     source(file.path(gitpath, "getComparators.R"))
     source(file.path(gitpath, "getSiteInfo.R"))
+    source(file.path(gitpath, "getWSStressorFigs.R"))
     source(file.path(gitpath, "getSiteMap.R"))
     source(file.path(gitpath, "writeOutliers.R"))
     # source(file.path(gitpath, "getClusterInfo.R")) # no longer used
@@ -139,8 +145,6 @@ if (boo_Shiny == TRUE) {
     ### Summarize findings
     source(file.path(gitpath, "getWoE.R"))
     source(file.path(gitpath, "getReport.R"))
-    ## Summarize findings for all test sites
-    source(file.path(gitpath, "getSummaryAllSites.R"))
   } else {#boo.debug == FALSE
     # Install CASTfxn package
     library(CASTfxn)
@@ -149,6 +153,8 @@ if (boo_Shiny == TRUE) {
     dir_data <- file.path(wd, "Data")
     dir_results <- file.path(wd, "Results")
     boo.plot.user <- TRUE
+    
+    #C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data
   }
   #
 }## IF ~ boo_Shiny ~ END
@@ -1180,6 +1186,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                df_resp       = bioMetricData[bioMetricData$StationID == TargetSiteID, ],
                                df_respinfo   = bioMetricInfo,
                                df_stressinfo = df_stressorMetadata,
+                               df_paired     = df_PairedStressResp,
                                plotdpi       = plot_dpi,
                                plotH         = plot_H,
                                plotW         = plot_W,

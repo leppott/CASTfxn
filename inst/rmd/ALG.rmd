@@ -272,6 +272,16 @@ This table provides an indication of the consistency of the evidence for a candi
    dfLoESummary <- read.table(fnLoESummary, sep = "\t", na.strings = "NA",
                                  header = TRUE, strip.white = TRUE,
                                  stringsAsFactors = FALSE)
+   if(!"VP_SSTV" %in% names(dfLoEbyStressor)){ # added LCN 20250916, otherwise report fails in no SSTVS or SSIs
+      dfLoEbyStressor$VP_SSTV <- NA
+    }
+    if(!"VP_SSIbox" %in% names(dfLoEbyStressor)){
+      dfLoEbyStressor$VP_SSIbox <- NA
+    }
+    if(!"VP_SSIlog" %in% names(dfLoEbyStressor)){
+      dfLoEbyStressor$VP_SSIlog <- NA
+    }
+   
    dfLoESummary <- dfLoESummary %>%
      dplyr::select(Stressor, StressSampleID, StressSampleDate, NumSupport,
                    NumRefute, NumIndeterminate, NumNotEvaluated) %>%

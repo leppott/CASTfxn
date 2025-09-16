@@ -60,7 +60,7 @@ getCoOccurDataset <- function(df_sites,
 
   df_model <- dplyr::filter(df_stress, is.na(StressSampleDate))
   df_meas <- dplyr::filter(df_stress, !is.na(StressSampleDate))
-
+  
   # Read data files (stressor and response)
   if (biocomm == "bmi") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
@@ -96,7 +96,7 @@ getCoOccurDataset <- function(df_sites,
                     RespSampleID,
                     Quality,
                     all_of(index),
-                    RespSampleFlag,
+                    #RespSampleFlag, # LCN removed 20250916
                     all_of(modColnames))
 
     rm(df_model, df_resp)
@@ -125,32 +125,39 @@ getCoOccurDataset <- function(df_sites,
 
   # Merge site/bmi data with measured data by station & date
   if (exists("df_modresp") & exists("df_meas")) {
-    df_coOccur2 <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas,
+    df_coOccur <- fuzzyjoin::fuzzy_left_join(df_modresp, df_meas,
                                               by = c("StationID" = "StationID",
                                                      "RespSampleDate" = "StressSampleDate"),
                                               match_fun = list(`==`, function(x, y)
                                                 (y - x >= -lagdays[1] &
                                                    y - x <= lagdays[2]))) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
-      dplyr::rename(StationID = StationID.x)
+      dplyr::rename(StationID = StationID.x) %>% 
+      dplyr::mutate(DateDiff = abs(as.numeric(RespSampleDate - StressSampleDate))) %>% # LCN addded 20250916
+      dplyr::group_by(RespSampleID) %>% 
+      dplyr::arrange(DateDiff) %>% 
+      dplyr::slice(1) %>% 
+      dplyr::select(-DateDiff) %>% 
+      dplyr::ungroup()
 
-    # Select the minimum diffDays match only (avoids more than 1 match)
-    df_coOccur <- unique(df_coOccur2) %>%
-      dplyr::select(StationID, StressSampleDate, RespSampleDate,
-                    StressSampleID) %>%
-      dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
-      dplyr::mutate(mindiff = min(abs(diff))) %>%
-      dplyr::filter(mindiff == abs(diff)) %>%
-      dplyr::distinct(StationID, StressSampleDate, RespSampleDate, StressSampleID)
-
-    df_coOccur <- unique(merge(df_coOccur, df_modresp,
-                               by = c("StationID", "RespSampleDate"),
-                               all.x = TRUE))
-    df_coOccur <- unique(merge(df_coOccur, df_meas,
-                               by = c("StationID", "StressSampleDate",
-                                      "StressSampleID"),
-                               all.x = TRUE))
-    rm(df_coOccur2)
+    # LCN 20250916, this is an incorrect way to select minimum date difference. Selects only observations with date difference = 0, the min abs date difference. 
+    # # Select the minimum diffDays match only (avoids more than 1 match)
+    # df_coOccur <- unique(df_coOccur2) %>%
+    #   dplyr::select(StationID, StressSampleDate, RespSampleDate,
+    #                 StressSampleID) %>%
+    #   dplyr::mutate(diff = as.numeric(RespSampleDate - StressSampleDate)) %>%
+    #   dplyr::mutate(mindiff = min(abs(diff))) %>%
+    #   dplyr::filter(mindiff == abs(diff)) %>%
+    #   dplyr::distinct(StationID, StressSampleDate, RespSampleDate, StressSampleID)
+    # 
+    # df_coOccur <- unique(merge(df_coOccur, df_modresp,
+    #                            by = c("StationID", "RespSampleDate"),
+    #                            all.x = TRUE))
+    # df_coOccur <- unique(merge(df_coOccur, df_meas,
+    #                            by = c("StationID", "StressSampleDate",
+    #                                   "StressSampleID"),
+    #                            all.x = TRUE))
+    # rm(df_coOccur2)
   } else if (exists("df_meas")) {
     df_coOccur <- fuzzyjoin::fuzzy_left_join(df_resp, df_meas,
                                               by = c("StationID" = "StationID",
@@ -159,9 +166,17 @@ getCoOccurDataset <- function(df_sites,
                                                 (y - x >= -lagdays[1] &
                                                    y - x <= lagdays[2]))) %>%
       dplyr::filter(!is.na(StationID.y)) %>%
-      dplyr::rename(StationID = StationID.x)
+      dplyr::rename(StationID = StationID.x) %>% 
+      dplyr::mutate(DateDiff = abs(as.numeric(RespSampleDate - StressSampleDate))) %>% # LCN addded 20250916
+      dplyr::group_by(RespSampleID) %>% 
+      dplyr::arrange(DateDiff) %>% 
+      dplyr::slice(1) %>% 
+      dplyr::select(-DateDiff) %>% 
+      dplyr::ungroup()
+    
+    
     # Select the minimum diffDays match only (avoids more than 1 match)
-    # Should no longer be necessary -- 20250804 ARL
+    # Should no longer be necessary -- 20250804 ARL # It remains necessary, without selecting mindiff, multiple observations with the same RespSampleID persist LCN 20250916
     # df_coOccur2 <- df_coOccur %>%
     #   dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
     #                 RespSampleDate) %>%

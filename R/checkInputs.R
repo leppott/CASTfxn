@@ -101,7 +101,7 @@ checkInputs <- function(dir.uploaded,
             {
               df.obj <- df.obj |>
                 dplyr::mutate({{col}} := lubridate::parse_date_time(.data[[col]],
-                                         orders = c("ymd", "mdy", "dmy")) |>
+                                         orders = c("ymd", "mdy", "dmy")) |> # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date. 
                             lubridate::date())
             },
             error = function(e) {
@@ -153,7 +153,8 @@ checkInputs <- function(dir.uploaded,
     CASTmetadata <- readCASToolData(fn = fn.metadata, NAs = c("", "NA"))
     pf.cols.CASTmeta <- compare.colnames(c("Variable", "Value"),
                                          colnames(CASTmetadata))
-    if (length(pf.cols.CASTmeta) == 0) {
+    #if (length(pf.cols.CASTmeta) == 0) { # LCN removed 20250916
+    if(length(setdiff(c("Variable", "Value"), colnames(CASTmetadata))) != 0){
       stop(pf.cols.CASTmeta)
     } else {
       CASTmetadata <- dplyr::select(CASTmetadata, Variable, Value)
@@ -797,6 +798,7 @@ checkInputs <- function(dir.uploaded,
     nunq.bmi.data.sites  <- length(unq.bmi.data.sites)
     nunq.bmi.data.sites  <- paste(nunq.bmi.data.sites, "StationIDs")
     data_bmiMetrics.long <- data_bmiMetrics |>
+      dplyr::select(-any_of(c("Study_ID", "Latitude", "Longitude"))) %>% # LCN added 20250916
       tidyr::pivot_longer(cols = !c(StationID, RespSampleID, RespSampleDate),
                           names_to = "MetricName", values_to = "Value",
                           values_transform = list(Value = as.character))
