@@ -105,6 +105,8 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
       # Prepare boxplot main elements
       str_title <- paste0(TargetSiteID, ": Site watershed-scale stressors")
 
+      high_stress <- NULL # LCN added 20250918
+      
       for (i in seq_along(vars.site)) { # StreamCatVar (no year--Metric includes year)
         print(paste0("Prepping ", vars.site[i]))
         plotvar <- vars.site[i]
@@ -119,6 +121,24 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
         df.plot.comp <- dplyr::filter(data_compbkgd, StreamCatVar == plotvar) %>%
           dplyr::filter(!is.na(WatershedValue))
         dataYears <- sort(unique(df.plot.comp$Year))
+        
+        # LCN added 20250918
+        target_val <- df.plot.comp %>% 
+          dplyr::filter(COMID == TargetCOMID) %>%
+          dplyr::rename("TargetValue" = "WatershedValue") %>%
+          dplyr::select(TargetValue, Year)
+        
+        options(dplyr.summarise.inform = FALSE)
+        
+        median_temp <- df.plot.comp %>% 
+          dplyr::group_by(StreamCatVar, Year) %>% 
+          dplyr::summarize(WatershedValueMedian = median(WatershedValue))  %>%
+          dplyr::ungroup() %>%
+          dplyr::full_join(target_val, by = "Year") %>%
+          dplyr::mutate(TargetAboveMedian = TargetValue > WatershedValueMedian)
+        
+        high_stress <- high_stress %>% dplyr::bind_rows(median_temp)
+        
 
         if (length(dataYears) > 0) { # Plot data with years
 
@@ -255,4 +275,15 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
       }## for loop over variables ends
     } # End background data portion
   } # End WS data check
+  
+  high_stress <- high_stress %>%
+    dplyr::bind_rows(median_temp) %>% 
+    dplyr::left_join(df_WSInfo, by = "StreamCatVar") %>% 
+    dplyr::select(Label, Year, WatershedValueMedian, TargetValue, TargetAboveMedian) %>% 
+    dplyr::rename("Watershed Stressor" = "Label", "Comparator Median" = "WatershedValueMedian", "Target Site Value" = "TargetValue") %>%
+    dplyr::filter(TargetAboveMedian == TRUE) %>% 
+    dplyr::select(-TargetAboveMedian)
+  
+  write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
+    
 } # End FUN

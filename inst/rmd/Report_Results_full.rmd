@@ -301,9 +301,54 @@ The downloadable zip file contains figures summarizing watershed
 attributes of the target site compared to all reaches inside the case.
 These figures may provide additional insight into causes of stream
 impairment. For example, if nitrogen species were not measured and
-provided to the CASTool, a relatively high (NNI var) may indicate that
+provided to the CASTool, a relatively high agricultural surplus of nitrogen may indicate that
 nitrogen pollution merits additional scrutiny as a potential candidate
-cause of impairment.
+cause of impairment.The variables for which the targe site value exceeded the median 
+of comparator sites are outlined below. 
+
+```{r ws stressor, echo = FALSE}
+fn_WSStressorSum <- file.path(dir_results, TargetSiteID, "SiteInfo", paste0(TargetSiteID, "WSStressHigh.csv"))
+
+WSStressorSum <- read.csv(fn_WSStressorSum) %>% 
+  dplyr::mutate(Comparator.Median = round(Comparator.Median, 3), Target.Site.Value = round(Target.Site.Value, 3)) %>% 
+  dplyr::rename("Watershed Stressor" = "Watershed.Stressor",
+                "Comparator Median" = "Comparator.Median",
+                "Target Site Value" = "Target.Site.Value")
+
+tblCaption <- paste0("Target site", TargetSiteID," reach watershed stressors greater than median of comparator reaches")
+ 
+tblColNames <- colnames(WSStressorSum)
+
+ DT::datatable(WSStressorSum,
+               extensions = 'FixedColumns',
+               # caption = tblCaption,
+               options = list(layout = list(top1 = list(id = 'cellID',
+                                                        className = 'cellClass',
+                                                        features = list(
+                                                          # div = list(
+                                                          text = tblCaption)
+                                                        # )
+                                                        ),
+                                            topStart = 'pageLength',
+                                            topEnd = 'search',
+                                            bottomStart = 'info',
+                                            bottomEnd = 'paging'),
+                              pageLength = 10,
+                              menu = ifelse(nrow(WSStressorSum) > 10,
+                                            c(10, 25, 50, 100), 10),
+                              bSort = TRUE,
+                              scrollX = TRUE,
+                              fixedColumns = TRUE,
+                              columnDefs = list(list(className = 'dt-center',
+                                                     targets = '_all'),
+                                                list(className = 'dt-bottom',
+                                                     targets = '_all'))),
+               colnames = tblColNames,
+               class = 'striped hover row-border',
+               filter = 'none',
+               rownames = FALSE) %>%
+   DT::formatStyle(columns = colnames(WSStressorSum), fontSize = '85%')
+```
 
 ``` {r BMIresults, child=if ("bmi" %in% biocommlist) 'BMI.rmd'}
 ```
