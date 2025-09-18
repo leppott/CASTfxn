@@ -125,9 +125,10 @@ getTimeSeq <- function(TargetSiteID,
                 row.names = FALSE, sep = "\t")
   } # End modeled data write to data gaps
 
-  data_paired <- df_paired %>% filter(StationID == TargetSiteID) %>% 
-    select(StationID, StressSampleDate, RespSampleDate, StressSampleID, RespSampleID, Quality, all_of(stressors)) %>% 
-    left_join(df_resp %>% select(StationID, RespSampleID, RespSampleDate, all_of(metrics)), by = c("StationID", "RespSampleID", "RespSampleDate"))
+  data_paired <- df_paired %>% 
+    dplyr::filter(StationID == TargetSiteID) %>% 
+    dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID, RespSampleID, Quality, all_of(stressors)) %>% 
+    dplyr::left_join(df_resp %>% dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(metrics)), by = c("StationID", "RespSampleID", "RespSampleDate"))
   # LCN 20250916 not doing anything with modeled stressors. I'm fine if they are included, they just won't be informative plots.
   
   # df_stress <- df_stress %>%
@@ -281,16 +282,16 @@ getTimeSeq <- function(TargetSiteID,
   # 
   
   df_TS_scores <- data_paired %>% 
-    pivot_longer(cols = all_of(stressors), names_to = "Stressor", values_to = "StressorValue") %>% 
-    pivot_longer(cols = all_of(metrics), names_to = "bioIndexName", values_to = "bioIndex") %>% 
-    filter(bioIndexName == bioindex, !is.na(StressorValue)) %>% 
-    mutate(bioComm = biocomm, LoE = "TS", Score = "NE") %>% 
-    left_join(df_stressinfo %>% select(Stressor, LogTransf, Label), by = "Stressor") %>% 
-    mutate(Label = ifelse(LogTransf == 1,
+    tidyr::pivot_longer(cols = all_of(stressors), names_to = "Stressor", values_to = "StressorValue") %>% 
+    tidyr::pivot_longer(cols = all_of(metrics), names_to = "bioIndexName", values_to = "bioIndex") %>% 
+    dplyr::filter(bioIndexName == bioindex, !is.na(StressorValue)) %>% 
+    dplyr::mutate(bioComm = biocomm, LoE = "TS", Score = "NE") %>% 
+    dplyr::left_join(df_stressinfo %>% dplyr::select(Stressor, LogTransf, Label), by = "Stressor") %>% 
+    dplyr::mutate(Label = ifelse(LogTransf == 1,
                           paste0("Log1p ", Label),
                           Label)) %>% 
-    select(-Stressor, -LogTransf) %>% 
-    rename(Stressor = Label)
+    dplyr::select(-Stressor, -LogTransf) %>% 
+    dplyr::rename(Stressor = Label)
 
   return(df_TS_scores)
 

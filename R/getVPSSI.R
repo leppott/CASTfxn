@@ -141,6 +141,10 @@ getVPSSI <- function(TargetSiteID,
 
     info.ssi <- df_bioMetricInfo %>%
       dplyr::filter(MetricName %in% unique(info.stress$SSIndex))
+    
+    if(nrow(info.ssi)==0){
+      return(data.frame())
+    }
 
     # Loop over SSIndices ----
     for (i in nrow(info.ssi)) { # QC for nrow == 0?
@@ -309,7 +313,8 @@ getVPSSI <- function(TargetSiteID,
           j_values_scores <- cbind(j_values, j_VPlog_predict, j_VPlog_score) %>%
             dplyr::rename(StressorValue = x,
                           VPpred_Deg = j_VPlog_predict,
-                          Sc_VPlog = j_VPlog_score)
+                          Sc_VPlog = j_VPlog_score) %>% 
+            dplyr::distinct() # LCN added 20250917. If there are multiple observations with the same stressor value, it will result in an expansion of the merged dataframe with duplicate observations.
 
           df_plot.log_target <- df_plot %>%
             dplyr::filter(StationID == TargetSiteID) %>%

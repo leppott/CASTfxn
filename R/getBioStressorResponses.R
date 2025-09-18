@@ -263,7 +263,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps) # LCN changed 20250917 to accomodate change in file structure
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         next
@@ -281,7 +281,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         next
@@ -319,7 +319,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
@@ -330,7 +330,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
@@ -340,7 +340,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
@@ -351,7 +351,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
@@ -361,7 +361,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  0, gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
@@ -397,7 +397,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
 
@@ -411,7 +411,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else {  # SD <> 0 along vertical and horizontal
@@ -466,7 +466,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
 
@@ -485,7 +485,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else if(stats::sd(df_plot_all[, respName], na.rm = TRUE) == 0) {
@@ -497,7 +497,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                    gapcomment)
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+          fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
           write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else {  # SD <> 0
@@ -552,7 +552,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(wd, "Results", TargetSiteID, fn.gaps)
+        fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
 

@@ -66,7 +66,7 @@ getSiteMap <- function(sp_outline,
   if (boo_DEBUG == TRUE) {
     sp_outline <- STATE.shp
     sp_flowline <- NHD.STATE
-    region <- regionName
+    region <- region
     datum <- datum
     df_sites <- data_Sites
     allSites <- list.CompSites$all.sites
@@ -171,6 +171,10 @@ getSiteMap <- function(sp_outline,
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (grepl("\\d*", datum)) {
+    if(class(datum)=="character"){
+      datum <- as.numeric(datum)
+    }
+    
     sp_sites <- sf::st_as_sf(df_sites, crs = datum,
                              coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
@@ -253,7 +257,7 @@ getSiteMap <- function(sp_outline,
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.text.size = 0.5,
                     legend.title.size = 0.8, legend.stack = "horizontal",
                     legend.outside = TRUE, legend.outside.position = "bottom") +
-    tmap::tm_title(regionName)
+    tmap::tm_title(region)
 
   tmap::tmap_save(state.map, fn_Map, , width = map.width, height = map.height,
                   units = "in", dpi = 600)

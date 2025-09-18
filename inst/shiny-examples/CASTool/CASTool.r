@@ -107,7 +107,7 @@ if (boo_Shiny == TRUE) {
   } else if (boo.debug == TRUE & debug.person == "Laura") {
     # This should be an error condition, because Ann & Erik are only people
     #LCN file paths
-    region <- "WA"
+    # region <- "WA"
     wd <-  "C:/Users/lnaslund/Documents"
     gitpath <- file.path(wd, "CASTfxn_AnnFinal" , "R")
     dir_rmd <- file.path(wd, "CASTfxn_AnnFinal",  "inst", "rmd")
@@ -709,6 +709,9 @@ for (site in seq_along(1:nrow(df_targets))) {
 
   if (is.na(TargetSiteID)) {
     next
+  } else if(data_Sites %>% dplyr::filter(StationID == TargetSiteID) %>% nrow() == 0){ # LCN added 20250917
+    msg <- "TargetSiteID not found in the sites file. Skipping to the next TargetSiteID."
+    next
   } else if (is.na(data_Sites$IncaseCol[data_Sites$StationID == TargetSiteID])) {
     msg <- "No inside-the-case identifier available"
     message(msg)
@@ -823,20 +826,60 @@ for (site in seq_along(1:nrow(df_targets))) {
               dir_sub        = "SiteInfo",
               boo_plot       = TRUE)
 
-  if (boo.WS) {
-    getWSStressorFigs(TargetSiteID      = TargetSiteID,
-                      df_WSData         = data_stressorWS,
-                      df_WSInfo         = data_stressorinfoWS,
-                      comp.reaches      = list.CompSites$comp.reaches,
-                      TargetCOMID       = list.CompSites$TargetCOMID,
-                      useAllCompReaches = useAllCompReaches,
-                      dir_sub           = "SiteInfo",
-                      df_SampSummary    = data_sampSummary,
-                      biocommlist       = biocommlist,
-                      boo_plot          = TRUE)
-  }
+  # if (boo.WS) {
+  #   getWSStressorFigs(TargetSiteID      = TargetSiteID,
+  #                     df_WSData         = data_stressorWS,
+  #                     df_WSInfo         = data_stressorinfoWS,
+  #                     comp.reaches      = list.CompSites$comp.reaches,
+  #                     TargetCOMID       = list.CompSites$TargetCOMID,
+  #                     useAllCompReaches = useAllCompReaches,
+  #                     dir_sub           = "SiteInfo",
+  #                     df_SampSummary    = data_sampSummary,
+  #                     biocommlist       = biocommlist,
+  #                     boo_plot          = TRUE)
+  # }
 
+  
   # Create site map
+  if(debug.person == "Laura"){
+    if(require(CASToolClusterPckg)!=TRUE){
+      if(require(pak)!=TRUE){
+        install.packages("pak")
+      }
+      pak::pak("laura-naslund/CASToolClusterPckg")
+    }
+    
+    library(CASToolClusterPckg)
+    
+    STATE.shp <- retrieve_boundary(region)
+    
+    NHD.STATE <- nhdplusTools::get_nhdplus(AOI = STATE.shp) %>%
+          dplyr::filter(ftype %in% c("StreamRiver", "ArtificialPath", "Connector",
+                                     "CanalDitch", "Drainageway")) %>%
+          dplyr::select(comid, geometry) %>%
+          dplyr::rename(COMID = comid)
+      NHD.STATE <- dplyr::left_join(NHD.STATE, data_cluster, by = "COMID")
+      ## Remove reaches without clusterIDs
+      NHD.STATE <- NHD.STATE[!is.na(NHD.STATE$ClusterID), ]
+      ## Select only required columns
+      NHD.STATE <- dplyr::select(NHD.STATE, COMID, ClusterID, geometry)
+
+      getSiteMap(sp_outline   = STATE.shp,
+                 sp_flowline  = NHD.STATE,
+                 region       = region,
+                 datum        = datum,
+                 df_sites     = data_Sites,
+                 allSites     = list.CompSites$all.sites,
+                 compSites    = list.CompSites$comp.sites,
+                 TargetSiteID = TargetSiteID,
+                 useBC        = useBC,
+                 plotvars     = data_plotvars,
+                 refOutline   = refOutline_col,
+                 dir_results  = dir_results,
+                 dir_sub      = "SiteInfo",
+                 dir_map_rmd  = dir_rmd)
+  }
+  
   # getSiteMap(sp_outline   = STATE.shp,
   #            sp_flowline  = NHD.STATE,
   #            region       = regionName,
@@ -910,6 +953,19 @@ for (site in seq_along(1:nrow(df_targets))) {
   } ### End no stressors statement GO TO NEXT SITE
   rm(noStressors, noResponses)
 
+  if (boo.WS) {
+    getWSStressorFigs(TargetSiteID      = TargetSiteID,
+                      df_WSData         = data_stressorWS,
+                      df_WSInfo         = data_stressorinfoWS,
+                      comp.reaches      = list.CompSites$comp.reaches,
+                      TargetCOMID       = list.CompSites$TargetCOMID,
+                      useAllCompReaches = useAllCompReaches,
+                      dir_sub           = "SiteInfo",
+                      df_SampSummary    = data_sampSummary,
+                      biocommlist       = biocommlist,
+                      boo_plot          = TRUE)
+  }
+  
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
   writeOutliers(TargetSiteID  = TargetSiteID,
@@ -1332,7 +1388,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                               dir_sub        = "_WoE",
                                               boo_plot       = boo.plot.user)
 
-        if (nrow(df_VPscores != 0)) {
+        if (nrow(df_VPscores)!= 0) { # LCN changed 20250917
           df_LoE <- rbind(df_LoE, df_VPscores)
         }
         rm(df_VPscores)
@@ -1368,9 +1424,9 @@ for (site in seq_along(1:nrow(df_targets))) {
                                    plotunits        = plot_units,
                                    dir_plots        = dir_results,
                                    dir_sub          = "_WoE",
-                                   boo_plot         = boo_plot_user)
+                                   boo_plot         = boo.plot.user) 
 
-        if (nrow(df_VPSSIscores != 0)) {
+        if (nrow(df_VPSSIscores) != 0) { # LCN changed 20250917
           df_LoE <- rbind(df_LoE, df_VPSSIscores)
         }
         rm(df_VPSSIscores)
