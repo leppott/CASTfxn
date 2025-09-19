@@ -25,6 +25,8 @@ getClusterInfo(
 
 \item{refSiteCOMIDs}{reference site COMIDs}
 
+\item{subregion}{x}
+
 \item{data_cluster}{The StreamCat data for each reach with cluster assignments.}
 
 \item{data_clusterInfo}{data file for cluster info.}

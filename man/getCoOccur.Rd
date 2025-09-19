@@ -116,6 +116,5 @@ scored -1 are not included in further lines of evidence evaluation.
 Uses the libraries dplyr, ggplot2, grid, stringr.
 }
 \examples{
-\dontrun{
-}
+# None at this time
 }

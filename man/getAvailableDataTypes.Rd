@@ -19,13 +19,11 @@ getAvailableDataTypes(
 at the target site, organized by sample date (rows) and
 type (columns)}
 
+\item{df_stress}{}
+
 \item{biocommlist}{vector of biocommunity data expected.}
 
 \item{dir_results}{Directory containing all results.}
-
-\item{measStressSamps}{boolean indicating if measured stressor data are expected..}
-
-\item{modStressSamps}{boolean indicating if modeled stressor data are expected.}
 }
 \value{
 A list containing five boolean values 1) useBMI, 2) useAlg, 3) useFish,

@@ -63,6 +63,8 @@ not degraded, degraded, inside-the-case, and outside-the-case)}
 
 \item{plotW}{standardized width for all plots}
 
+\item{plotunits}{stardardized units for all plots}
+
 \item{dir_plots}{Directory to save plots. Default = working directory and Results.}
 
 \item{dir_sub}{Subdirectory for outputs from this function. Default = "StressorResponse"}
@@ -87,5 +89,5 @@ Biological (BMI, Algae, or Fish) stressor linear regressions.
 Requires packages dplyr, ggplot2, stringr, tidyr
 }
 \examples{
-\dontrun{}
+# None at this time 
 }

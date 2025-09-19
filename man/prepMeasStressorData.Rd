@@ -14,12 +14,20 @@ prepMeasStressorData(
 )
 }
 \arguments{
+\item{in.dir}{x}
+
 \item{out.dir}{directory where all rds files are stored}
+
+\item{fn.data}{x}
+
+\item{fn.meta}{x}
+
+\item{removeOutliers}{x}
+
+\item{sub.dir}{x}
 }
 \value{
 A list containing data_Sites and data_cluster to be used in the CASTool.
-
-\dontrun{}
 }
 \description{
 Prepare measured stressor data for CASTool

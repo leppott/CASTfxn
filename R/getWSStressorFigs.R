@@ -22,6 +22,9 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     biocommlist       <- biocommlist
     boo_plot          <- TRUE
   }
+  
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   biocommlist <- toupper(biocommlist)
 
@@ -74,7 +77,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
     }
 
@@ -132,7 +135,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
         
         median_temp <- df.plot.comp %>% 
           dplyr::group_by(StreamCatVar, Year) %>% 
-          dplyr::summarize(WatershedValueMedian = median(WatershedValue))  %>%
+          dplyr::summarize(WatershedValueMedian = stats::median(WatershedValue))  %>%
           dplyr::ungroup() %>%
           dplyr::full_join(target_val, by = "Year") %>%
           dplyr::mutate(TargetAboveMedian = TargetValue > WatershedValueMedian)
@@ -284,6 +287,6 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     dplyr::filter(TargetAboveMedian == TRUE) %>% 
     dplyr::select(-TargetAboveMedian)
   
-  write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
+  utils::write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
     
 } # End FUN

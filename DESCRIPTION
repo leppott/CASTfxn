@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
 Description: Functions and other tools associated with the Causal Assessment 
     Screening Tool.  Used to more quickly assess stressors to a list of sites.
-Version: 0.2.2.9004
+Version: 0.2.2.9005
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),
@@ -20,38 +20,47 @@ LazyData: true
 VignetteBuilder: knitr
 URL: https://github.com/leppott/CASTfxn
 Depends: R (>= 2.10)
-Imports: corrplot,
+Imports: 
   dplyr,
-  DT,
   elevatr,
   fuzzyjoin,
-  ggplot2,
-  ggthemes,
-  ggrepel, 
-  graphics, 
-  grDevices, 
-  gridExtra, 
-  knitr,
-  leaflet,
+  ggplot2, 
   lubridate,
-  maps,
   psych,
-  raster, 
   rmarkdown, 
-  RColorBrewer,
-  reshape,
   reshape2,
   shiny, 
-  shinyFiles,
-  shinyjs,
   sp,
   stats,
   stringr,
   tidyr, 
   utils, 
-  wrapr 
+  StreamCatTools,
+  forcats,
+  purrr, 
+  scales, 
+  sf,
+  tibble, 
+  tmap,
+  viridis
 Suggests: 
-    imager,
-    readxl, 
-    testthat
+  imager,
+  readxl, 
+  testthat,
+  DT,
+  RColorBrewer,
+  corrplot,
+  ggrepel,
+  ggthemes,
+  grDevices,
+  graphics,
+  gridExtra,
+  knitr,
+  leaflet,
+  maps,
+  raster,
+  reshape,
+  shinyFiles,
+  shinyjs,
+  wrapr
 RoxygenNote: 7.3.3

@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-19 12:30:07.556718
+    #> Last Update: 2025-09-19 14:46:10.330949
 
 <img src="man/figures/hex_CAST.png" align="left" height="139" />
 <img src="man/figures/hex_RPP.png" align="center" height="139" />
@@ -24,7 +24,7 @@ license](https://img.shields.io/github/license/leppott/CASTfxn.svg)](https://git
 
 [![R-CMD-check](https://github.com/leppott/CASTfxn/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/leppott/CASTfxn/actions/workflows/R-CMD-check.yaml)
 [![CodeFactor](https://www.codefactor.io/repository/github/leppott/CASTfxn/badge)](https://www.codefactor.io/repository/github/leppott/CASTfxn)
-[![CodeFactor](https://www.codefactor.io/repository/github/leppott/CASTfxn/badge)](https://www.codefactor.io/repository/github/leppott/CASTfxn)
+[![](https://codecov.io/gh/leppott/CASTfxn/branch/master/graph/badge.svg)](https://codecov.io/gh/leppott/CASTfxn)
 [![R build
 status](https://github.com/leppott/CASTfxn/workflows/R-CMD-check/badge.svg)](https://github.com/leppott/CASTfxn/actions)
 

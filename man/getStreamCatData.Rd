@@ -9,11 +9,13 @@ getStreamCatData(localdir = "", dir_data = "", region = "", state = "")
 \arguments{
 \item{localdir}{Directory containing CASTool metadata}
 
+\item{dir_data}{Directory containing cluster data}
+
+\item{region}{x}
+
 \item{state}{Two letter state abbreviation of region of interest
 
 Will need to change this function if extrapolating to a region beyond a state}
-
-\item{dir_results}{Directory containing cluster data}
 }
 \value{
 Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv

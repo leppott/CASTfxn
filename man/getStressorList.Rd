@@ -46,6 +46,9 @@ site samples at any time}
 
 \item{df_Stress}{dataframe containing stressor data}
 
+\item{chemInfo}{dataframe containing stressor metadata, specifically "Label",
+"DirIncStress", and "LogTransformYN"}
+
 \item{samplim}{minimum number of samples required to id stressors as
 candidate causes. Defaults to 10.}
 
@@ -72,12 +75,11 @@ values above this are considered to be candidate causes.}
 \item{listbioParamsDEL}{list of vectors corresponding to biocommlist of
 stressors not considered relevant for evaluation}
 
+\item{plotVars}{x}
+
 \item{dir_results}{Directory to save plots. Default = file.path(getwd(), "Results").}
 
 \item{dir_sub}{Subdirectory for outputs from this function. Default = "SiteInfo"}
-
-\item{cheminfo}{dataframe containing stressor metadata, specifically "Label",
-"DirIncStress", and "LogTransformYN"}
 }
 \value{
 One or more png files containing normalized stressor boxplots by stressor
@@ -97,6 +99,5 @@ Required packages: dplyr, ggplot2, stringr, tidyr
 chem.info need to include DirIncStress.  Valid values are 'inc' or 'dec'.
 }
 \examples{
-\dontrun{
-}
+# None at this time
 }

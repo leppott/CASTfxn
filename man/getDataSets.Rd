@@ -34,10 +34,6 @@ index and metric values}
 \item{bioParamsDEL}{vector of modeled parameters to delete based on lack of
 applicability to the biological response community}
 
-\item{colBioSample}{column name for the column containing the response sample ID}
-
-\item{colBioSampDate}{column name for the column containing the response sample date}
-
 \item{df_stressInfo}{dataframe containing stressor metadata, specifically "Label".}
 }
 \value{

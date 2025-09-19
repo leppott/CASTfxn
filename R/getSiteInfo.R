@@ -14,6 +14,7 @@
 #' Requires packages dplyr, ggplot2, lubridate, tidyr
 #'
 #' @param TargetSiteID site identifier for the site being evaluated (the Target Site)
+#' @param TargetCOMID x
 #' @param df_Sites dataframe containing site data, including "inside the case"
 #' and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
 #' be cluster; if useBC == FALSE, "inside the case" will be cluster.
@@ -58,8 +59,7 @@
 #'         for site photos within the directory "~/Results/TargetSiteID/SiteInfo".
 #'
 #' @examples
-#' \dontrun{
-#' }
+#' # None at this time
 #' @export
 getSiteInfo <- function(TargetSiteID,
                         TargetCOMID,
@@ -312,7 +312,7 @@ getSiteInfo <- function(TargetSiteID,
 
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
+    utils::write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
                 row.names = FALSE, sep = "\t")
 
     # ## Plot, Variables, Strings, other Aesthetics
@@ -401,7 +401,7 @@ getSiteInfo <- function(TargetSiteID,
 
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
+    utils::write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
                 row.names = FALSE, sep = "\t")
   }## IF ~ !have.photos ~ END
 

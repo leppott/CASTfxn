@@ -21,22 +21,32 @@
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
 #' @param TargetSiteID SiteID
-#' @param probsHigh Default = 0.75
-#' @param probsLow Default = 0.25
-#' @param useBMI boolean to use Benthic Macroinvertebrates.
-#' @param useAlg boolean to use Algae.
-#' @param useBC Default = TRUE
+#' @param biocomms x
+#' @param primeIndex x
 #' @param removeOutliers Default = TRUE
+#' @param samplim x
+#' @param r2_cutoff x
+#' @param p.val_cutoff x
+#' @param useBC Default = TRUE
 #' @param lagdays Default = 10, 10
+#' @param DOlim x
+#' @param pHlimLow x
+#' @param pHlimHigh x
 #' @param bmiIndex Default = bmiIndex
 #' @param algIndex Default = algIndex
 #' @param fishIndex Default = fishIndex
+#' @param useBMI boolean to use Benthic Macroinvertebrates.
+#' @param useAlg boolean to use Algae.
+#' @param useFish boolean to use Fish
 #' @param dir_data Absolute path to data.  Default = /Data
 #' @param dir_results Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
-#' @param siteQual2Plot Site quality to print.
+#'
+# @param probsHigh Default = 0.75
+# @param probsLow Default = 0.25
+# @param siteQual2Plot Site quality to print.
 #'
 #' @return A report for the provided SiteID in the provided format (html or word)
 #' in the results directory.

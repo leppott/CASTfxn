@@ -76,8 +76,7 @@
 #'         of all the scores continuing forward.
 #'
 #' @examples
-#' \dontrun{
-#'}
+#' # None at this time
 #' @export
 getCoOccur <- function(TargetSiteID,
                        df_data,
@@ -204,9 +203,9 @@ getCoOccur <- function(TargetSiteID,
     dplyr::mutate(NotNA = ifelse(!is.na(StressorValue), 1, 0)) %>%
     dplyr::group_by(Stressor) %>%
     dplyr::summarize(n = sum(NotNA, na.rm = TRUE),
-                     q25 = quantile(StressorValue, probs = 0.25, na.rm = TRUE),
-                     q50 = quantile(StressorValue, probs = 0.50, na.rm = TRUE),
-                     q75 = quantile(StressorValue, probs = 0.75, na.rm = TRUE),
+                     q25 = stats::quantile(StressorValue, probs = 0.25, na.rm = TRUE),
+                     q50 = stats::quantile(StressorValue, probs = 0.50, na.rm = TRUE),
+                     q75 = stats::quantile(StressorValue, probs = 0.75, na.rm = TRUE),
                      minVal = min(StressorValue, na.rm = TRUE),
                      maxVal = max(StressorValue, na.rm = TRUE))
 
@@ -455,14 +454,14 @@ getCoOccur <- function(TargetSiteID,
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
     }
     df.NE <- as.data.frame(notstressors)
     names(df.NE) <- paste0(biocomm, "_NotEvaluated")
     fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
                                         "_DetectsNotEvalFurther.tab"))
-    write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
+    utils::write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
   } ### End no stressors statement
 
   # Prep df.scores for export to include in df_LoEs

@@ -84,7 +84,7 @@ getWoE <- function(TargetSiteID,
                      .groups = "drop_last") %>%
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
-  write.table(dfLoE_summary,
+  utils::write.table(dfLoE_summary,
               file.path(dir.path, paste0(TargetSiteID, "_LoESummary.tab")),
               col.names = TRUE, row.names = FALSE, sep = "\t")
 
@@ -109,7 +109,7 @@ getWoE <- function(TargetSiteID,
     #                                                        "NE"))
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
-  write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
+  utils::write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
               col.names = TRUE, row.names = FALSE, sep = "\t")
 
 }

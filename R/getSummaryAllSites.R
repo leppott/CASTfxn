@@ -15,16 +15,17 @@
 #'
 #' Uses the libraries dplyr, tidyr, ggplot2, and ggthemes.
 #'
-#' @param biocomlist biological community; bmi or algae.  Default = c("bmi", "algae")
-#' @param bmiIndex BMI index name; Default = "CSCI"
-#' @param algIndex Algae index name; Default = "MMIhybrid"
+#' @param biocommlist biological community; bmi or algae.
+#' @param bmiIndex BMI index name
+#' @param algIndex Algae index name
+#' @param fishIndex Fish index name
 #' @param dir_data Directory containing original data.
-#' Default = "file.path(getwd(),"Data")"
+#' Default = "file.path(getwd(), "Data")"
 #' @param dir_results Directory containing all results.
-#' Default = "file.path(getwd(),"Results")"
+#' Default = "file.path(getwd(), "Results")"
 #' @param dir_sub Subdirectory for weight of evidence (WoE) outputs used by this function.
 #' Default = "WoE"
-#' @param df_sites Data frame of sites.  Default = NULL
+#' @param df_sites Data frame of sites. 
 #'
 #' @return Tab-delimited text summary data file containing site id, latitude,
 #' longitude, cluster, response (bio index), response value (index score),
@@ -39,7 +40,7 @@ getSummaryAllSites <- function(biocommlist,
                                bmiIndex,
                                algIndex,
                                fishIndex,
-                               dir_data = file.path(getwd(),"Data"),
+                               dir_data = file.path(getwd(), "Data"),
                                dir_results = file.path(getwd(), "Results"),
                                dir_sub = "WoE",
                                df_sites) {##FUNCTION.START
@@ -123,7 +124,7 @@ getSummaryAllSites <- function(biocommlist,
             # Read file
             fndet <- woe_detailfiles[dfile]
             fndet <- file.path(woe_path, fndet)
-            df_details <- read.delim(fndet, header = TRUE, sep = "\t"
+            df_details <- utils::read.delim(fndet, header = TRUE, sep = "\t"
                                      , na.strings = c("", NA)
                                      , stringsAsFactors = FALSE)
             colnames(df_details)[6] <- "IndexScore"
@@ -145,7 +146,7 @@ getSummaryAllSites <- function(biocommlist,
             # Read file
             fnstr <- woe_stressfiles[dfile]
             fnstr <- file.path(woe_path, fnstr)
-            df_stress <- read.delim(fnstr, header = TRUE, sep = "\t"
+            df_stress <- utils::read.delim(fnstr, header = TRUE, sep = "\t"
                                     , na.strings = c("", NA)
                                     , stringsAsFactors = FALSE)
             if (dfile == 1) {
@@ -185,7 +186,7 @@ getSummaryAllSites <- function(biocommlist,
       fn.Sites.Info <- file.path(dir_data, "SMCSitesFinal.tab")
       fn.sites <- fn.Sites.Info
       # fn.sites <- fn.Sites.Info <- file.path(dir_data,"SMCSitesFinal.tab")
-      df_sites <- read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
+      df_sites <- utils::read.delim(fn.Sites.Info, header = TRUE, sep = "\t")
     }## IF ~ is.null(df_sites)==TRUE) ~ END
 
     # WoE Summary ####
@@ -247,11 +248,11 @@ getSummaryAllSites <- function(biocommlist,
   myDate <- stringr::str_replace_all(myDate, "-", "")
   fnES <- file.path(dir_results, paste0("OverallWoESummary_"
                                         , myDate, ".tab"))
-  write.table(df_WoESummary, fnES, append = FALSE, col.names = TRUE
+  utils::write.table(df_WoESummary, fnES, append = FALSE, col.names = TRUE
               , row.names = FALSE, sep = "\t")
   fnDetails <- file.path(dir_results, paste0("OverallWoEDetails_"
                                              , myDate, ".tab"))
-  write.table(df_WoEDetails, fnDetails, append = FALSE, col.names = TRUE
+  utils::write.table(df_WoEDetails, fnDetails, append = FALSE, col.names = TRUE
               , row.names = FALSE, sep = "\t")
 
   # message("getSummaryAllSites, Completed compiling WoE summary.")

@@ -18,13 +18,14 @@
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
 #' @param out.dir directory where all rds files are stored
+#' @param bio x
+#' @param loaded x
+#' @param useBC x
+#' @param bioIndex x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
-#' \dontrun{}
-#
 #' @export
-#'
 prepRespData <- function(out.dir,
                          bio,
                          loaded,
@@ -38,6 +39,9 @@ prepRespData <- function(out.dir,
     useBC    <- useBC
     bioIndex <- bioIndexGp
   }
+  
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   if (bio == "bmi") {
     data_bioMetrics       <- readRDS(file.path(out.dir, "data_bmiMetrics.rds"))

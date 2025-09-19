@@ -103,6 +103,5 @@ used.
 Uses the libraries dplyr, ggplot2, grid, stringr, and tidyr.
 }
 \examples{
-\dontrun{
-}
+# None at this time
 }

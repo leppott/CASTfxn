@@ -17,7 +17,9 @@
 #' dir_data and dir_results should be absolute and not relative paths.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
-#' @param fn.inputcheck filename for the MSExcel file describing required files, columns, types, and relationships
+# @param fn.inputcheck filename for the MSExcel file describing required files, columns, types, and relationships
+#' @param dir.uploaded directory of input files to be checked
+#' @param dir.out directory for output
 #'
 #' @return A list of objects to be used in the CASTool.
 #'
@@ -28,6 +30,9 @@
 
 checkInputs <- function(dir.uploaded,
                         dir.out) {
+  
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   # Set debug status ----
   debug <- FALSE

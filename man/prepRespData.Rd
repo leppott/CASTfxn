@@ -8,11 +8,17 @@ prepRespData(out.dir, bio, loaded, useBC, bioIndex)
 }
 \arguments{
 \item{out.dir}{directory where all rds files are stored}
+
+\item{bio}{x}
+
+\item{loaded}{x}
+
+\item{useBC}{x}
+
+\item{bioIndex}{x}
 }
 \value{
 A list containing data_Sites and data_cluster to be used in the CASTool.
-
-\dontrun{}
 }
 \description{
 Prepare measured stressor data for CASTool

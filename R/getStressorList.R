@@ -26,7 +26,7 @@
 #' @param siteChem dataframe containing any detected stressor data from target
 #'                 site samples at any time
 #' @param df_Stress dataframe containing stressor data
-#' @param cheminfo dataframe containing stressor metadata, specifically "Label",
+#' @param chemInfo dataframe containing stressor metadata, specifically "Label",
 #'                 "DirIncStress", and "LogTransformYN"
 #' @param samplim minimum number of samples required to id stressors as
 #' candidate causes. Defaults to 10.
@@ -46,6 +46,7 @@
 #'                    ("bmi", "alg", or "fish")
 #' @param listbioParamsDEL list of vectors corresponding to biocommlist of
 #'                         stressors not considered relevant for evaluation
+#' @param plotVars x
 #' @param dir_results Directory to save plots. Default = file.path(getwd(), "Results").
 #' @param dir_sub Subdirectory for outputs from this function. Default = "SiteInfo"
 #'
@@ -54,8 +55,7 @@
 #' evaluated; a file of stressors excluded; stressor values and site.stressor.pctrank.
 #'
 #' @examples
-#' \dontrun{
-#' }
+#' # None at this time
 #' @export
 #'
 getStressorList <- function(TargetSiteID,
@@ -231,7 +231,7 @@ getStressorList <- function(TargetSiteID,
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
       if (!exists("tmpParmDEL")) { tmpParmDEL <- elimName }
       else { tmpParmDEL <- c(tmpParmDEL, elimName) }

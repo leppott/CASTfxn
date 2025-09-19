@@ -71,8 +71,7 @@
 #'         "Results/TargetSiteID/BioComm/Sufficiency".
 #'
 #' @examples
-#' \dontrun{
-#'}
+#' # None at this time
 #' @export
 getSufficiency <- function(TargetSiteID,
                            df_data,

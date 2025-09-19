@@ -18,8 +18,9 @@
 #' @param df_SampSummary dataframe containing sample IDs for samples collected
 #'                       at the target site, organized by sample date (rows) and
 #'                       type (columns)
-#' @param measStressSamps boolean indicating if measured stressor data are expected..
-#' @param modStressSamps boolean indicating if modeled stressor data are expected.
+# @param measStressSamps boolean indicating if measured stressor data are expected..
+# @param modStressSamps boolean indicating if modeled stressor data are expected.
+#' @param df_stress 
 #' @param biocommlist vector of biocommunity data expected.
 #' @param dir_results Directory containing all results.
 #'
@@ -155,10 +156,10 @@ getAvailableDataTypes <- function(TargetSiteID,
     fn.gaps <- file.path(dir_results, TargetSiteID,
                          paste0(TargetSiteID, "_datagaps.tab"))
     if (file.exists(fn.gaps)) {
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
     } else {
-      write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
+      utils::write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
                   row.names = FALSE, sep = "\t")
     }
   }

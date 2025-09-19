@@ -20,6 +20,9 @@
 #'
 prepSiteData <- function(out.dir) {
 
+  # define pipe
+  `%>%` <- dplyr::`%>%`
+  
   data_Sites <- readRDS(file.path(out.dir, "data_Sites.rds"))
   data_cluster <- readRDS(file.path(out.dir, "data_cluster.rds"))
   data_Sites <- data_Sites %>%

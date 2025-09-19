@@ -33,6 +33,7 @@
 #' @param plotdpi standardized dpi for all plots
 #' @param plotH standardized height for all plots
 #' @param plotW standardized width for all plots
+#' @param plotunits stardardized units for all plots
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "StressorResponse"
 #' @param boo_pred_warn Should warnings for prediction be suppressed. Default = TRUE.
@@ -44,7 +45,7 @@
 #'         target site scores for inside-the-case and outside-the-case.
 #'
 #' @examples
-#' \dontrun{}
+#' # None at this time 
 #' @export
 getBioStressorResponses <- function(TargetSiteID,
                                     df_stressinfo,
@@ -264,7 +265,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps) # LCN changed 20250917 to accomodate change in file structure
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         next
       }
@@ -282,7 +283,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         next
       }
@@ -320,7 +321,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_all_ref) > 0) == FALSE) {
@@ -331,7 +332,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_cl) > 0) == FALSE) { # SHOULD NEVER HAPPEN
@@ -341,7 +342,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_cl_ref) > 0) == FALSE) {
@@ -352,7 +353,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_site) > 0) == FALSE) { # SHOULD NEVER HAPPEN
@@ -362,7 +363,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
       }
 
@@ -385,7 +386,7 @@ getBioStressorResponses <- function(TargetSiteID,
 
       # Cluster
       # LM and Corr, Cluster ####
-      if (nrow(df_plot_cl[complete.cases(df_plot_cl), ]) > 2) { ##IF~nrow(df_plot_cl)~START
+      if (nrow(df_plot_cl[stats::complete.cases(df_plot_cl), ]) > 2) { ##IF~nrow(df_plot_cl)~START
 
         if (stats::sd(df_plot_cl[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_corr <- FALSE
@@ -398,7 +399,7 @@ getBioStressorResponses <- function(TargetSiteID,
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
           fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
 
         } else if (stats::sd(df_plot_cl[, respName], na.rm = TRUE) == 0) { # Horizontal line
@@ -412,13 +413,13 @@ getBioStressorResponses <- function(TargetSiteID,
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
           fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else {  # SD <> 0 along vertical and horizontal
 
           # 20190228, QC for no data
           model_cl <- stats::lm(df_plot_cl[, respName] ~ df_plot_cl[, stressName],
-                                na.action = na.exclude) #cluster only
+                                na.action = stats::na.exclude) #cluster only
           if (boo_pred_warn == TRUE) {
             suppressWarnings(model_cl_pred <- stats::predict(model_cl,
                                                              interval = "prediction",
@@ -467,14 +468,14 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
 
       }##IF~nrow(df_plot_cl)~END
 
       # ALL
       # LM and Corr, All ####
-      if(nrow(df_plot_all[complete.cases(df_plot_all), ]) > 2) { ##IF~nrow(df_plot_cl)~START
+      if(nrow(df_plot_all[stats::complete.cases(df_plot_all), ]) > 2) { ##IF~nrow(df_plot_cl)~START
 
         if(stats::sd(df_plot_all[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_all <- FALSE
@@ -486,7 +487,7 @@ getBioStressorResponses <- function(TargetSiteID,
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
           fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else if(stats::sd(df_plot_all[, respName], na.rm = TRUE) == 0) {
           boo_all <- FALSE
@@ -498,13 +499,13 @@ getBioStressorResponses <- function(TargetSiteID,
           colnames(gaps) <- c("fxnname", "condition", "result", "comment")
           fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
           fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-          write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                       row.names = FALSE, sep = "\t")
         } else {  # SD <> 0
           # 20190228, QC for no data
           boo_all <- TRUE
           model_all <- stats::lm(df_plot_all[, respName] ~ df_plot_all[, stressName],
-                                 na.action = na.exclude) # outside the case
+                                 na.action = stats::na.exclude) # outside the case
           if(boo_pred_warn == TRUE){
             suppressWarnings(model_all_pred <- stats::predict(model_all,
                                                               interval = "prediction",
@@ -553,7 +554,7 @@ getBioStressorResponses <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
 
       }##IF~nrow(df_plot_all)~END
@@ -766,7 +767,7 @@ getBioStressorResponses <- function(TargetSiteID,
           p_SR_all <- ggplot2::ggplot() +
             ggplot2::geom_smooth(data = model_all_val,
                                  ggplot2::aes(x = Stressor, y = Response),
-                                 method = lm,
+                                 method = stats::lm,
                                  color = "black",
                                  fill = "black",
                                  alpha = 0.2,
@@ -879,7 +880,7 @@ getBioStressorResponses <- function(TargetSiteID,
             p_SR_cl <- ggplot2::ggplot() +
               ggplot2::geom_smooth(data = model_cl_val,
                                    ggplot2::aes(x = Stressor, y = Response),
-                                   method = lm,
+                                   method = stats::lm,
                                    color = "black",
                                    fill = "black",
                                    alpha = 0.2,
@@ -1098,7 +1099,7 @@ getBioStressorResponses <- function(TargetSiteID,
   } ## END create corrplot
 
   # Scores ----
-  # df.scores <- read.delim(fp_scores, header = TRUE, na.strings = c("", "NA"),
+  # df.scores <- utils::read.delim(fp_scores, header = TRUE, na.strings = c("", "NA"),
   #                         strip.white = TRUE, stringsAsFactors = FALSE)
   #
   df.scores <- df.sc.sr %>%

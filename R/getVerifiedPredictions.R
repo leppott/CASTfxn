@@ -25,7 +25,7 @@
 #' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
 #' @param plotH Standardized plot height. Defaults to plot_H.
 #' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotUnits Standardized plot units. Defaults to plot_units.
+#' @param plotunits Standardized plot units. Defaults to plot_units.
 #' @param dir_plots default = file.path(getwd(), "Results")
 #' @param dir_sub default = "VerifiedPredictions"
 #' @param boo_plot = TRUE
@@ -106,7 +106,7 @@ getVerifiedPredictions <- function(TargetSiteID,
       colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
       fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
   }
 
@@ -149,7 +149,7 @@ getVerifiedPredictions <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
         fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         if (exists("deleteSSTVname")) {
           deleteSSTVnames <- c(deleteSSTVnames, name)
@@ -417,9 +417,9 @@ getVerifiedPredictions <- function(TargetSiteID,
           dplyr::select(Label, variable, value) %>%
           dplyr::group_by(Label, variable) %>%
           dplyr::summarise(Min = suppressWarnings(min(value, na.rm = TRUE)),
-                           q25 = quantile(value, probs = 0.25, na.rm = TRUE),
-                           q50 = quantile(value, probs = 0.50, na.rm = TRUE),
-                           q75 = quantile(value, probs = 0.75, na.rm = TRUE),
+                           q25 = stats::quantile(value, probs = 0.25, na.rm = TRUE),
+                           q50 = stats::quantile(value, probs = 0.50, na.rm = TRUE),
+                           q75 = stats::quantile(value, probs = 0.75, na.rm = TRUE),
                            Max = suppressWarnings(max(value, na.rm = TRUE)),
                            .groups = "drop_last")
 
@@ -613,7 +613,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                       RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                       Stressor, StressorValue, LoE, Score)
 
-      write.table(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
+      utils::write.table(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
                   sep = "\t", append = FALSE)
 
     }## IF ~ boo_continue ~ END

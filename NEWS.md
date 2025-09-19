@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-19 15:49:13.827755
+    #> Last Update: 2025-09-19 16:08:06.513616
 
 # Planned Updates
 
@@ -77,6 +77,7 @@ NEWS
 - docs: Add missing package references to function names
 - docs: Define pipe where missing in functions
 - docs: Update data variable names in data.R
+  - incomplete
 
 ## Changes in version 0.2.2.9004 (2025-09-19)
 

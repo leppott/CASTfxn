@@ -7,7 +7,9 @@
 checkInputs(dir.uploaded, dir.out)
 }
 \arguments{
-\item{fn.inputcheck}{filename for the MSExcel file describing required files, columns, types, and relationships}
+\item{dir.uploaded}{directory of input files to be checked}
+
+\item{dir.out}{directory for output}
 }
 \value{
 A list of objects to be used in the CASTool.

@@ -17,14 +17,17 @@
 #' dir_data and dir_results should be absolute and not relative paths.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
+#' @param in.dir x
 #' @param out.dir directory where all rds files are stored
+#' @param fn.data x
+#' @param fn.meta x
+#' @param removeOutliers x
+#' @param sub.dir x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
-#' \dontrun{}
 #
 #' @export
-#'
 prepMeasStressorData <- function(in.dir,
                                  out.dir,
                                  fn.data,
@@ -36,6 +39,9 @@ prepMeasStressorData <- function(in.dir,
   if (boo.debug) {
     sub.dir = "_Histograms"
   }
+  
+  # define pipe
+  `%>%` <- dplyr::`%>%`
 
   # Create output folder
   out.folders <- c(out.dir, sub.dir)

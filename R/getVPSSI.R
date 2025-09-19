@@ -110,7 +110,7 @@ getVPSSI <- function(TargetSiteID,
     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
     fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
                 , row.names = FALSE, sep = "\t")
 
   } else {
@@ -172,7 +172,7 @@ getVPSSI <- function(TargetSiteID,
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
         fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
         fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
         next
 
@@ -437,9 +437,9 @@ getVPSSI <- function(TargetSiteID,
         dplyr::group_by(SSIndex) %>%
         dplyr::summarise(n = dplyr::n(),
                          Min = min(SSIValue, na.rm = TRUE),
-                         q25 = quantile(SSIValue, probs = 0.25, na.rm = TRUE),
-                         q50 = quantile(SSIValue, probs = 0.50, na.rm = TRUE),
-                         q75 = quantile(SSIValue, probs = 0.75, na.rm = TRUE),
+                         q25 = stats::quantile(SSIValue, probs = 0.25, na.rm = TRUE),
+                         q50 = stats::quantile(SSIValue, probs = 0.50, na.rm = TRUE),
+                         q75 = stats::quantile(SSIValue, probs = 0.75, na.rm = TRUE),
                          Max = max(SSIValue, na.rm = TRUE),
                          .groups = "drop_last")
       # Identify min/max index values for scoring purposes
@@ -621,13 +621,13 @@ getVPSSI <- function(TargetSiteID,
 
     if (exists("df.scores.log")) {
       fn.scores.log <- paste(TargetSiteID, biocomm, "VPSSILog", "Scores.tab", sep = "_")
-      write.table(df.scores.log, file.path(dir.path, fn.scores.log), append = FALSE,
+      utils::write.table(df.scores.log, file.path(dir.path, fn.scores.log), append = FALSE,
                   col.names = TRUE, row.names = FALSE, sep = "\t")
     }
 
     if (exists("df.scores.box")) {
       fn.scores.box <- paste(TargetSiteID, biocomm, "VPSSIBox", "Scores.tab", sep = "_")
-      write.table(df.scores.box, file.path(dir.path, fn.scores.box), append = FALSE,
+      utils::write.table(df.scores.box, file.path(dir.path, fn.scores.box), append = FALSE,
                   col.names = TRUE, row.names = FALSE, sep = "\t")
     }
 

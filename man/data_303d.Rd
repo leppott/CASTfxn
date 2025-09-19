@@ -5,13 +5,13 @@
 \alias{data_303d}
 \title{303d listing example data}
 \format{
-A data frame with 2,244 rows and 4 variables:
+A data frame with 1,536 rows and 5 variables:
 \describe{
-          \item{COMID}{NHDplus COMID}
+          \item{ComID}{NHDplus COMID}
           \item{WATER.BODY.NAME}{Waterbody Name}
           \item{POLLUTANT}{Pollutant}
           \item{FINAL.LISTING.DECISION}{Final listing decision}
-          \item{ElevCategory}{}
+          \item{ElevCategory}{Elevation Category}
 }
 }
 \source{

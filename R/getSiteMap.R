@@ -27,6 +27,7 @@
 #'                    inside-the-case ID; may include outside-the-case ID.
 #' @param region Region or regulatory organization to which the data apply
 #'               (e.g., AZ, SMC, WA, OR)
+#' @param datum x
 #' @param df_sites dataframe containing site data, including both "inside the case"
 #'                 and "outside the case" identifiers.
 #' @param allSites a vector of outside-the-case site identifiers
@@ -194,7 +195,7 @@ getSiteMap <- function(sp_outline,
   # Prepare map
   # Get state bounding box
   GIS_offset <- 0.01
-  ggmap_bbox <- setNames(sf::st_bbox(sp_flowline),
+  ggmap_bbox <- stats::setNames(sf::st_bbox(sp_flowline),
                          c("left","bottom","right","top"))
 
   diffLat <- as.numeric(ggmap_bbox[4] - ggmap_bbox[2])

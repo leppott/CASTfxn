@@ -30,6 +30,8 @@ inside-the-case ID; may include outside-the-case ID.}
 \item{region}{Region or regulatory organization to which the data apply
 (e.g., AZ, SMC, WA, OR)}
 
+\item{datum}{x}
+
 \item{df_sites}{dataframe containing site data, including both "inside the case"
 and "outside the case" identifiers.}
 

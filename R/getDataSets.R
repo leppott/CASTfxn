@@ -24,13 +24,13 @@
 #' desired biological community
 #' @param siteStressors Vector containing stressors identified as candidate causes
 #' for the target site
-#' @param bioParamsDEL vector of modeled parameters to delete based on lack of
+#' @param bioParmsDEL vector of modeled parameters to delete based on lack of
 #' applicability to the biological response community
-#' @param colBioSample column name for the column containing the response sample ID
-#' @param colBioSampDate column name for the column containing the response sample date
-#' @param df_stressInfo dataframe containing stressor metadata, specifically "Label".
+# @param colBioSample column name for the column containing the response sample ID
+# @param colBioSampDate column name for the column containing the response sample date
 #' @param df_biometrics dataframe containing the biological response samples'
 #' index and metric values
+#' @param df_stressinfo dataframe containing stressor metadata, specifically "Label".
 #'
 #' @return List containing six dataframes: 1) stressor data from all samples
 #'         (outside the case), 2) stressor data from comparator samples (inside

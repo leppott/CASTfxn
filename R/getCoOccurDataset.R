@@ -75,7 +75,7 @@ getCoOccurDataset <- function(df_sites,
       dplyr::rename(RespSampFlag = FishSampFlag)
   } else {
     print("Biological community type not used.")
-    flush.console()
+    utils::flush.console()
   }
 
   # Clean up modeled data and convert to wide format ----

@@ -159,7 +159,7 @@ getQualSites <- function(TargetSiteID,
 
   dirSiteInfo <- file.path(dir_results, TargetSiteID, dir_sub)
   fnQualStats <- paste0(TargetSiteID, "_", toupper(biocomm), "_SiteQualities.tab")
-  write.table(df_qualstats, file.path(dirSiteInfo, fnQualStats),
+  utils::write.table(df_qualstats, file.path(dirSiteInfo, fnQualStats),
               append = FALSE, col.names = TRUE, row.names = FALSE, sep = "\t")
 
   numcompsfinal <- as.numeric(df_qualstats[1, "InsideCaseSamples"])
@@ -173,7 +173,7 @@ getQualSites <- function(TargetSiteID,
     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                 row.names = FALSE, sep = "\t")
   }
 

@@ -33,11 +33,27 @@ getReport(
 \arguments{
 \item{TargetSiteID}{SiteID}
 
+\item{biocomms}{x}
+
+\item{primeIndex}{x}
+
 \item{removeOutliers}{Default = TRUE}
+
+\item{samplim}{x}
+
+\item{r2_cutoff}{x}
+
+\item{p.val_cutoff}{x}
 
 \item{useBC}{Default = TRUE}
 
 \item{lagdays}{Default = 10, 10}
+
+\item{DOlim}{x}
+
+\item{pHlimLow}{x}
+
+\item{pHlimHigh}{x}
 
 \item{bmiIndex}{Default = bmiIndex}
 
@@ -49,6 +65,8 @@ getReport(
 
 \item{useAlg}{boolean to use Algae.}
 
+\item{useFish}{boolean to use Fish}
+
 \item{dir_data}{Absolute path to data.  Default = /Data}
 
 \item{dir_results}{Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.}
@@ -58,12 +76,6 @@ getReport(
 \item{report_format}{Requested report output format (html or word).  Default = html}
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
-
-\item{probsHigh}{Default = 0.75}
-
-\item{probsLow}{Default = 0.25}
-
-\item{siteQual2Plot}{Site quality to print.}
 }
 \value{
 A report for the provided SiteID in the provided format (html or word)

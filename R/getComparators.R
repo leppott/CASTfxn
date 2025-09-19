@@ -138,7 +138,8 @@ getComparators<- function(TargetSiteID,
     }
 
     df_bcdist <- df_bcdist[, c("StationID", TargetColName)]
-    df_bcdist <- df_bcdist %>% filter(StationID %in% outcaseSites)
+    df_bcdist <- df_bcdist %>% 
+      dplyr::filter(StationID %in% outcaseSites)
     df_bcdist <- as.data.frame(df_bcdist[order(df_bcdist[, TargetColName]), ])
     df_bcdist.temp <- df_bcdist[df_bcdist[, TargetColName] <= bc_cutoff, ]
 
@@ -180,7 +181,7 @@ getComparators<- function(TargetSiteID,
                                            bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = all_of(TargetColName))
-    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+    utils::write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
                 row.names = FALSE, sep = "\t")
 
     # Convert to vector that can be returned in the list generated
@@ -241,14 +242,14 @@ getComparators<- function(TargetSiteID,
       dplyr::select(StationID, RespSampleID, RespSampleDate,
                       dplyr::all_of(bioIndex), Quality)
     comp.samps <- unique(comp.samps)
-    write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+    utils::write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
                 row.names = FALSE, sep = "\t")
 
   }
 
   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-  write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
+  utils::write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
               row.names = FALSE, sep = "\t")
 
 

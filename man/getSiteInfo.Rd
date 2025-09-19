@@ -36,6 +36,8 @@ getSiteInfo(
 \arguments{
 \item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
 
+\item{TargetCOMID}{x}
+
 \item{df_Sites}{dataframe containing site data, including "inside the case"
 and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
 be cluster; if useBC == FALSE, "inside the case" will be cluster.}
@@ -113,6 +115,5 @@ samples from site
 Requires packages dplyr, ggplot2, lubridate, tidyr
 }
 \examples{
-\dontrun{
-}
+# None at this time
 }

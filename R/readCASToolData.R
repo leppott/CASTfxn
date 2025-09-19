@@ -27,13 +27,22 @@
 readCASToolData <- function(fn, NAs) {##FUNCTION.START
 
   if (tolower(tools::file_ext(fn)) == "csv" ) {
-    df <- read.csv(fn, header = TRUE, na.strings = NAs, strip.white = TRUE,
-                   stringsAsFactors = FALSE)
+    df <- utils::read.csv(fn, 
+                          header = TRUE,
+                          na.strings = NAs, 
+                          strip.white = TRUE,
+                          stringsAsFactors = FALSE)
   } else if (tolower(tools::file_ext(fn)) %in% c("txt", "tab")) {
-    df <- read.delim(fn, header = TRUE, na.strings = NAs, strip.white = TRUE,
-                     stringsAsFactors = FALSE)
+    df <- utils::read.delim(fn, 
+                            header = TRUE, 
+                            na.strings = NAs, 
+                            strip.white = TRUE,
+                            stringsAsFactors = FALSE)
   } else if (tolower(tools::file_ext(fn) %in% c("xls", "xlsx"))) {
-    df <- readxl::read_excel(fn, col_names = TRUE, skip = 0, trim_ws = TRUE,
+    df <- readxl::read_excel(fn, 
+                             col_names = TRUE, 
+                             skip = 0, 
+                             trim_ws = TRUE,
                              na = NAs)
   } else {
     message("File format not recognized.")

@@ -37,6 +37,60 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9005 (2025-09-19)
+
+* docs: Update functions examples when blank
+* docs: Update documentation for datasets
+    + data_303d
+* docs: Update parameters for function documentation
+    + checkInputs
+    + getAvailableDataTypes
+    + getBioStressorResponses
+    + getClusterInfo
+    + getDataSets
+    + getReport
+    + getSiteInfo
+    + getSiteMap
+    + getStreamCatData
+    + getStressorList
+    + getSummaryAllSites
+    + getVerifiedPredictions
+    + prepMeasStressorData
+    + prepModStressorData
+    + prepRespData
+* docs: Update DESCRIPTION
+    + Add missing imports
+        - StreamCatTools
+        - forcats 
+        - purrr 
+        - scales 
+        - sf
+        - tibble 
+        - tmap
+        - viridis
+    + Move unused imports to Suggests
+        - DT 
+        - RColorBrewer
+        - corrplot
+        - ggrepel 
+        - ggthemes
+        - grDevices
+        - graphics 
+        - gridExtra 
+        - knitr
+        - leaflet
+        - maps
+        - raster
+        - reshape
+        - reshape2
+        - shinyFiles
+        - shinyjs 
+        - wrapr
+* docs: Add missing package references to function names
+* docs: Define pipe where missing in functions
+* docs: Update data variable names in data.R
+    + incomplete
+
 ## Changes in version 0.2.2.9004 (2025-09-19)
 
 * docs: Update all Vignette chucks to eval=FALSE

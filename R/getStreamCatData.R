@@ -16,7 +16,8 @@
 #' Uses the library dplyr, readxl, StreamCatTools, stringr, and tidyr.
 #'
 #' @param localdir Directory containing CASTool metadata
-#' @param dir_results Directory containing cluster data
+#' @param dir_data Directory containing cluster data
+#' @param region x
 #' @param state Two letter state abbreviation of region of interest
 #'
 #' Will need to change this function if extrapolating to a region beyond a state
@@ -29,6 +30,9 @@ getStreamCatData <- function(localdir = "",
                              region = "",
                              state = ""){
 
+  # define pipe
+  `%>%` <- dplyr::`%>%`
+  
   tryCatch({
     fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
     data_CASTmeta <- readxl::read_excel(fn.CASTmeta, na = "", trim_ws = TRUE)
@@ -149,10 +153,10 @@ getStreamCatData <- function(localdir = "",
     data_stressorinfoWS <- dplyr::distinct(data_stressorinfoWS, StreamCatVar,
                                            SCmetrics, Year, Label)
 
-    write.csv(data_stressorWS,
+    utils::write.csv(data_stressorWS,
               file.path(dir_data, paste0("StreamCat_data_", state, ".csv")),
               row.names = FALSE)
-    write.csv(data_stressorinfoWS,
+    utils::write.csv(data_stressorinfoWS,
               file.path(dir_data, paste0("StreamCat_stressor-info_", state, ".csv")),
               row.names = FALSE)
 

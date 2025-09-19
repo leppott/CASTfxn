@@ -121,7 +121,7 @@ getTimeSeq <- function(TargetSiteID,
     }
     fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
     fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                 row.names = FALSE, sep = "\t")
   } # End modeled data write to data gaps
 

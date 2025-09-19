@@ -43,7 +43,7 @@
 #' 
 #' /dontrun{
 #' # Save Results
-#' write.table(df_elev, "Elev.tsv", sep="\t", row.names=FALSE, col.names = TRUE)
+#' utils::write.table(df_elev, "Elev.tsv", sep="\t", row.names=FALSE, col.names = TRUE)
 #' }
 #
 #' @export
