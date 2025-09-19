@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-19 08:40:32.655255
+    #> Last Update: 2025-09-19 13:01:09.726896
 
 # Planned Updates
 
@@ -24,6 +24,13 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9004 (2025-09-19)
+
+- docs: Update all Vignette chucks to eval=FALSE
+  - OLD functions
+- fix: Renamed master branch from base to main
+  - Actions were not triggering
 
 ## Changes in version 0.2.2.9003 (2025-09-19)
 

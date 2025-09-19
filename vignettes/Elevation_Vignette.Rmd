@@ -24,7 +24,7 @@ Could obtain in GIS with a DEM but more efficient to keep in R.  The function (g
 # AZ data
 A large portion of the AZ Station data was missing elevation data so had to rely on whether the sites were in each of the reach files (high and low elevation).
 
-```{r AZ_Elev}
+```{r AZ_Elev, eval=FALSE}
 # Packages
 library(CASTfxn)
 #
@@ -49,23 +49,31 @@ This takes about 10 minutes for all 2,244 sites.
 # Packages
 library(CASTfxn)
 # Function Arguments
-df_loc <- data_Sites
+df_loc <- data_Sites[1:10, ]
 Lat <- "FinalLatitude"
 Long <- "FinalLongitude"
 elev_units <- "feet"
 proj_loc <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 # Run Function
-df_elev <- getElev(df_loc, Lat, Long, elev_units, proj_loc)
+df_elev <- getElev(df_loc, 
+                   Lat, 
+                   Long, 
+                   elev_units, 
+                   proj_loc)
 # Save Results
-dir_out <- getwd()
+dir_out <- tempdir()
 fn_out <- file.path(dir_out, "AZ_Elev.tsv")
-write.table(df_elev, fn_out, sep="\t", row.names=FALSE, col.names = TRUE)
+write.table(df_elev, 
+            fn_out, 
+            sep = "\t", 
+            row.names = FALSE, 
+            col.names = TRUE)
 ```
 
 # Append Elevation
 Use saved file.
 
-```{r AppElev, fig.width=7}
+```{r AppElev, fig.width=7, eval=FALSE}
 # Packages
 library(CASTfxn)
 library(ggplot2)

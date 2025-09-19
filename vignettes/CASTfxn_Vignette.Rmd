@@ -90,11 +90,11 @@ Output is a jpg map to the "Results" directory of the working directory. And a s
 The summary list is returned to the console.  It is not saved to file.  The map is 
 saved as SitID.map.jpg, e.g., SRCKN001.61.map.jpg.
 
-```{r ex_getSiteInfo}
+```{r ex_getSiteInfo, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 dir_results <- file.path(getwd(), "Results")
 
-CurrentDir <- getwd()
+CurrentDir <- tempdir()
 myDir.Data <- file.path(CurrentDir, "data")
 
 # data, example included with package
@@ -136,7 +136,7 @@ list.SiteSummary <- getSiteInfo(TargetSiteID
 
 The structure of the data is below.
 
-```{r Output_getSiteInfo_str}
+```{r Output_getSiteInfo_str, eval=FALSE}
 str(list.SiteSummary)
 ```
 
@@ -148,7 +148,7 @@ The map (shown below) includes:
 * reference sites (blue open circles)
 * target site (red closed triangle)
 
-```{r Output_getSiteInfo_JPG, echo=TRUE}
+```{r Output_getSiteInfo_JPG, echo=TRUE, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".map.jpg")
 fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
@@ -165,7 +165,7 @@ Requires the output of:
 
 The return is a summary list; ref.sites, ref.reaches, cluster.samps, chem.info , all.chems, cluster.chem, and site.chem.
 
-```{r ex_getChemDataSubsets}
+```{r ex_getChemDataSubsets, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
@@ -233,7 +233,7 @@ list.data <- getChemDataSubsets(TargetSiteID
                                 , data.chem.info=data.chem.info)
 ```
 The structure of the data is below.
-```{r Output_getChemDataSubsets_str}
+```{r Output_getChemDataSubsets_str, eval=FALSE}
 str(list.data)
 ```
 
@@ -252,7 +252,7 @@ plots. Also returns a list of stressors; stressors and site.stressor.pctrank.
 The plots are named as SiteID.boxes.category.jpg, e.g.,
 SRCKN001.61.boxes.Nutrients.jpg.
 
-```{r ex_getStressorList, warning=FALSE}
+```{r ex_getStressorList, warning=FALSE, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
@@ -330,7 +330,7 @@ list.stressors <- getStressorList(TargetSiteID, site.Clusters, chem.info, cluste
 ```
 
 The structure of the returned data is below.
-```{r Output_getStressorList_str}
+```{r Output_getStressorList_str, eval=FALSE}
 str(list.stressors)
 ```
 
@@ -340,7 +340,7 @@ One text file is created.
 
 And plots are created and saved per stressor group.  The "nutrient" plot is shown below.
 
-```{r Output_getStressorList_txt}
+```{r Output_getStressorList_txt, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 # filename
 fn.pctrank <- file.path(getwd(), "Results", TargetSiteID
@@ -396,7 +396,7 @@ SRCKN001.61.cluster.ElevWs.jpg.
 
 In this case example 95 plots are created.
 
-```{r ex_getClusterInfo}
+```{r ex_getClusterInfo, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
@@ -467,7 +467,7 @@ For each variable in the test data set a "Ws" (Watershed) and "Cat" (Catchment) 
 
 * Cat = catchment = local polygon associated with reach
 
-```{r Output_getClusterInfo_txt}
+```{r Output_getClusterInfo_txt, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 myJPG <- paste0(TargetSiteID,".cluster.ElevWs.jpg")
 fn.img <- file.path(getwd(), "Results", TargetSiteID, myJPG)
@@ -504,7 +504,7 @@ Requires the output of:
 The return is a summary list; all.b.str, cl.b.str, site.b.str, all.b.rsp
 , cl.b.rsp, and site.b.rsp.  No files are created or saved.
 
-```{r Ex_getBioMatches_BMI}
+```{r Ex_getBioMatches_BMI, eval=FALSE}
 TargetSiteID <- "SRCKN001.61"
 
 CurrentDir<-getwd()
@@ -582,7 +582,7 @@ list.MatchBMIData <- getBioMatches(stressors, list.data,  list.SiteSummary, data
 ```
 
 The structure of the returned data is below.
-```{r Output_BMIMatches_str}
+```{r Output_BMIMatches_str, eval=FALSE}
 str(list.MatchBMIData)
 ```
 
@@ -1039,7 +1039,7 @@ user to save the output.
 The plot below reproduces the plot contained in the ssd_generator_v1.xlsm file 
 on the CADDIS website.
 
-```{r Output_getSSDplot, warnings=FALSE}
+```{r Output_getSSDplot, warnings=FALSE, eval=FALSE}
 # Example 3 
 # https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
 # ssd_generator_v1.xlsm
@@ -1123,7 +1123,7 @@ and the cooccurence score.
 system('open "901SJSJC9_CoOccurrence_20180802_123825.pdf")
 
 file.path(path.package("CASTfxn"), "extdata")
-```{r Output_getCoOccur}
+```{r Output_getCoOccur, eval=FALSE}
 dir.pkg <- file.path(path.package("CASTfxn"), "extdata")
 fn.pdf <- file.path(dir.pkg, "901SJSJC9_CoOccurrence_20180802_123825.pdf")
 fn.tsv <- file.path(dir.pkg, "901SJSJC9.CoOccurrence_Scores_20180802_123825.tsv")
@@ -1139,10 +1139,6 @@ kable(df.tsv, caption="CoOccurence Scores")
 # image
 #include_graphics(fn.jpg)
 ```
-
-
-```
-
 
 # Output
 

@@ -30,7 +30,7 @@ SSD plots are not included in the site specific analyses.
 
 Co-Occurrence is not included here either.
 
-```{r Example}
+```{r Example, eval=FALSE}
 
 # Directory
 CurrentDir <- getwd()
@@ -126,7 +126,7 @@ getReport(TargetSiteID, dir_results, report_type, report_format)
 # Co-Occurrence
 Not site specific.  Requires a data input file with Biological index scores and all stressors.  The user will need to provide 
 
-```{r CoOccur}
+```{r CoOccur, eval=FALSE}
 #Load Data
 df.data <- data_CoOccur
 #

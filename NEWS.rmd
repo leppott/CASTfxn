@@ -37,6 +37,16 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9004 (2025-09-19)
+
+* docs: Update all Vignette chucks to eval=FALSE
+    + OLD functions
+* fix: Renamed master branch from base to main
+    + Actions were not triggering
+* tests: Update GitHub Actions
+    + pkgdown
+    + test-coverage
+
 ## Changes in version 0.2.2.9003 (2025-09-19)
 
 * refactor: Updates suggested by CodeFactor

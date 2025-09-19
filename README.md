@@ -3,7 +3,7 @@ README-CASTfxn
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-04 12:46:51.498096
+    #> Last Update: 2025-09-19 12:30:07.556718
 
 <img src="man/figures/hex_CAST.png" align="left" height="139" />
 <img src="man/figures/hex_RPP.png" align="center" height="139" />
@@ -15,23 +15,26 @@ Includes Shiny app.
 
 ## Badges
 
+<!-- badges: start -->
+
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/leppott/CASTfxn/graphs/commit-activity)
 [![](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![GitHub
 license](https://img.shields.io/github/license/leppott/CASTfxn.svg)](https://github.com/leppott/CASTfxn/blob/master/LICENSE)
 
+[![R-CMD-check](https://github.com/leppott/CASTfxn/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/leppott/CASTfxn/actions/workflows/R-CMD-check.yaml)
 [![CodeFactor](https://www.codefactor.io/repository/github/leppott/CASTfxn/badge)](https://www.codefactor.io/repository/github/leppott/CASTfxn)
-[![](https://codecov.io/gh/leppott/CASTfxn/branch/master/graph/badge.svg)](https://codecov.io/gh/leppott/CASTfxn)
+[![CodeFactor](https://www.codefactor.io/repository/github/leppott/CASTfxn/badge)](https://www.codefactor.io/repository/github/leppott/CASTfxn)
 [![R build
 status](https://github.com/leppott/CASTfxn/workflows/R-CMD-check/badge.svg)](https://github.com/leppott/CASTfxn/actions)
 
 [![GitHub
 issues](https://img.shields.io/github/issues/leppott/CASTfxn.svg)](https://GitHub.com/leppott/CASTfxn/issues/)
-
 [![GitHub
 release](https://img.shields.io/github/release/leppott/CASTfxn.svg)](https://GitHub.com/leppott/CASTfxn/releases/)
 [![Github all
 releases](https://img.shields.io/github/downloads/leppott/CASTfxn/total.svg)](https://GitHub.com/leppott/CASTfxn/releases/)
+<!-- badges: end -->
 
 ## Installation
 
