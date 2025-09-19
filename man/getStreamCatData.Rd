@@ -15,6 +15,10 @@ Will need to change this function if extrapolating to a region beyond a state}
 
 \item{dir_results}{Directory containing cluster data}
 }
+\value{
+Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv
+to the local directory if the download is successful. If unsuccessful returns NULL.
+}
 \description{
 Returns StreamCat watershed summary data for reaches in the specified state
 and, if provided in the cluster data file, in the 300 m buffer around the

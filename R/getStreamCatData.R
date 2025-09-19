@@ -21,7 +21,7 @@
 #'
 #' Will need to change this function if extrapolating to a region beyond a state
 #'
-#' @result Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv
+#' @return Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv
 #' to the local directory if the download is successful. If unsuccessful returns NULL.
 
 getStreamCatData <- function(localdir = "",

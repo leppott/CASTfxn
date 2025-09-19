@@ -30,4 +30,3 @@ In addition to flagging likely outliers (by both 3x IQR and 6X sd),
 
 Uses the libraries dplyr and ggplot2.
 }
-\keyword{internal}

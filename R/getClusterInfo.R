@@ -194,7 +194,8 @@ getClusterInfo <- function(TargetSiteID
       next
     } ##IF.myY.END
 
-    if (varYlab %in% c("Cluster")) {
+    # if (varYlab %in% c("Cluster")) {
+    if (varYlab %in% "Cluster") {
       message(paste0("Skipping ", varYlab))
       utils::flush.console()
       next

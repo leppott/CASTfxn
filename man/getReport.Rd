@@ -7,7 +7,7 @@
 getReport(
   TargetSiteID,
   biocomms,
-  primeIndex = bmiIndex,
+  primeIndex = bmiIndexGp,
   removeOutliers,
   samplim,
   r2_cutoff,

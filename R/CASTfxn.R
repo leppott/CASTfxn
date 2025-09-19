@@ -28,6 +28,6 @@
 #' 
 #' getStressorSpecificRegressions
 #' 
-#' @docType package
+# @docType package
 #' @name CASTfxn
 NULL

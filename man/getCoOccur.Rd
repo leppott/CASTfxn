@@ -9,7 +9,7 @@ getCoOccur(
   df_data,
   detects,
   df_stressinfo,
-  compsites = list.CompSites$comp.sites,
+  compsites,
   biocomm,
   colBio,
   pHlimLow = 5,

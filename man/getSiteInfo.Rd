@@ -36,8 +36,6 @@ getSiteInfo(
 \arguments{
 \item{TargetSiteID}{site identifier for the site being evaluated (the Target Site)}
 
-\item{TargetCOMID}{common identifier for the reach on which the site is located}
-
 \item{df_Sites}{dataframe containing site data, including "inside the case"
 and "outside the case" identifiers. If useBC == TRUE, "outside the case" will
 be cluster; if useBC == FALSE, "inside the case" will be cluster.}

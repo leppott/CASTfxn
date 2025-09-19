@@ -12,6 +12,7 @@ getTimeSeq(
   df_resp,
   df_respinfo,
   df_stressinfo,
+  df_paired,
   plotdpi = plot_dpi,
   plotH = plot_H,
   plotW = plot_W,

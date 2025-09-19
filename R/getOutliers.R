@@ -24,7 +24,7 @@
 #' @return Dataframe containing sample ID, stressor name, stressor value,
 #'         IQR method flag, SD method flag, Outlier flag
 #'
-#' @keywords
+# @keywords
 #'
 #' @export
 getOutliers <- function(df_data,
@@ -128,7 +128,7 @@ getOutliers <- function(df_data,
     paramSD <- stats::sd(df_sub$TransfResult[is.finite(df_sub$TransfResult)],
                          na.rm = TRUE)
     df_sub <- df_sub %>%
-      dplyr::mutate(SDmethod = dplyr:::case_when((abs(TransfResult - paramMean) >
+      dplyr::mutate(SDmethod = dplyr::case_when((abs(TransfResult - paramMean) >
                                                     (6 * paramSD)) ~ "Outlier",
                                                  paramSD == 0 ~ "NE",
                                                  TRUE ~ "Good"))
