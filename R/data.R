@@ -1,789 +1,1336 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_SSD ####
-#' @title SSD example data
+# data_303d ####
+#' @title 303d listing example data
 #' 
-#' @description A dataset with example benthic macroinvertebrate data to be used with the SSD function.
+#' @description A dataset with example 303d listings for use with the getSiteInfo function.
 #' 
-#' @format A data frame with 16 rows and 28 variables:
+#' @format A data frame with 1,536 rows and 5 variables:
 #' \describe{
-#'           \item{Taxa}{Taxa}
-#'           \item{Exposure_mgperL}{Exposure mg/L}
-#'           \item{ExposureRange}{ExposureRange}
-#'           \item{OrganismStatus}{OrganismStatus}
-#'           \item{ResponseType}{ResponseType}
-#'           \item{StudyInfo}{StudyInfo}
-#'           \item{Duration_days}{Duration_days}
-#'           \item{Hardness_mgperL}{Hardness_mgperL}
-#'           \item{pH}{pH}
-#'           \item{Temperature_C}{Temperature_C}
-#'           \item{Alkalinity_mgperL}{Alkalinity_mgperL}
-#'           \item{OrganicCarbon_mgperL}{OrganicCarbon_mgperL}
-#'           \item{DissolvedOxygen_mgperL}{DissolvedOxygen_mgperL}
-#'           \item{Salinity_ppt}{Salinity_ppt}
-#'           \item{Taxonomy}{Taxonomy}
-#'           \item{Citation}{Citation}
-#'           \item{Common_Name}{Common_Name}
-#'           \item{ECOTOX_MED_Location}{ECOTOX_MED_Location}
-#'           \item{Dataline}{Dataline}
-#'           \item{SSD_Number}{SSD_Number}
-#'           \item{SSD_Title}{SSD_Title}
-#'           \item{CAS_Number}{CAS_Number}
-#'           \item{ChemicalClass}{ChemicalClass}
-#'           \item{ChemName}{ChemName}
-#'           \item{Authors}{Authors}
-#'           \item{Year}{Year}
-#'           \item{Title}{Title}
-#'           \item{Source}{Source}
+#'           \item{ComID}{NHDplus COMID}
+#'           \item{WATER.BODY.NAME}{Waterbody Name}
+#'           \item{POLLUTANT}{Pollutant}
+#'           \item{FINAL.LISTING.DECISION}{Final listing decision}
+#'           \item{ElevCategory}{Elevation Category}
 #' }
 #' @source example data
-"data_SSD"
+"data_303d"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_CoOccur_CA ####
+# data_Algcounts ####
+#' @title Algae Counts
+#' 
+#' @description Algae sample counts
+#' 
+#' @format A data frame with 4,882 observations on the following 14 variables
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{AlgalSampIdent}}{a numeric vector}
+#'           \item{\code{RepNum}}{a numeric vector}
+#'           \item{\code{CollDate}}{a factor with levels}
+#'           \item{\code{CollMeth}}{a factor with levels \code{Alg-NS-ADEQ-multihabitat} \code{Alg-NS-EMAP-reachwide}}
+#'           \item{\code{FinalID}}{a factor with levels }
+#'           \item{\code{Individuals}}{a numeric vector}
+#'           \item{\code{AdjFinalCount}}{a numeric vector}
+#'           \item{\code{RelAbund}}{a numeric vector}
+#'           \item{\code{Alg.SampID}}{a character vector}
+#'           \item{\code{clust.hi}}{a character vector}
+#'           \item{\code{clust.lo}}{a character vector}
+#'           \item{\code{COMID_NHD2}}{a character vector}
+#'           \item{\code{ElevCategory}}{a character vector}
+#' }
+#' 
+#' @source example data
+"data_Algcounts"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_AlgMasterTaxa ####
+#' @title Algae Master Taxa
+#' 
+#' @description Algae Master Taxa
+#' 
+#' @format A data frame with 557 observations on the following 24 variables.
+#' \describe{
+#'            \item{\code{FinalID}}{a factor with levels }             
+#'            \item{\code{GenusFinal}}{a factor with levels }
+#'            \item{\code{Phylum}}{a factor with levels}
+#'            \item{\code{Class}}{a factor with levels}
+#'            \item{\code{Subclass}}{a factor with levels }
+#'            \item{\code{Order}}{a factor with levels }
+#'            \item{\code{Family}}{a factor with levels }
+#'            \item{\code{Tribe}}{a logical vector}
+#'            \item{\code{Genus}}{a factor with levels }
+#'            \item{\code{Species}}{a factor with levels }
+#'            \item{\code{Variety}}{a factor with levels }
+#'            \item{\code{Poll_Tol_Class}}{a numeric vector}
+#'            \item{\code{pH_class}}{a numeric vector}
+#'            \item{\code{Salinity_class}}{a numeric vector}
+#'            \item{\code{Nitrogen_Uptake_class}}{a numeric vector}
+#'            \item{\code{Oxygen_class}}{a numeric vector}
+#'            \item{\code{Saprobity_class}}{a numeric vector}
+#'            \item{\code{Trophic_class}}{a numeric vector}
+#'            \item{\code{Moisture_class}}{a numeric vector}
+#'            \item{\code{Motility_class}}{a factor with levels \code{H} \code{M} \code{N} \code{V}}
+#'            \item{\code{Phosphorus_class}}{a factor with levels \code{H} \code{L}}
+#'            \item{\code{Nitrogen_class}}{a factor with levels \code{H} \code{L}}
+#'            \item{\code{TaxaGroup}}{a logical vector}
+#'            \item{\code{GroupName}}{a factor with levels }
+#' }
+#' 
+#' @source example data
+"data_AlgMasterTaxa"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# data_AlgMetrics ####
+#' @title Algae metrics example data
+#' 
+#' @description A dataset with example algae metric data for use with the
+#'  getSiteInfo and getAlgStressorResponses functions.
+#' 
+#' @format A data frame with 124 observations on the following 56 variables.
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{Algae.Metrics.SampID}}{a factor with levels }
+#'           \item{\code{AlgalSampIdent}}{a numeric vector}
+#'           \item{\code{RepNum}}{a numeric vector}
+#'           \item{\code{CollDate}}{a factor with levels }
+#'           \item{\code{clust.hi}}{a factor with levels }
+#'           \item{\code{clust.lo}}{a factor with levels }
+#'           \item{\code{COMID_NHD2}}{a character with vector }
+#'           \item{\code{ElevCategory}}{a factor with levels }
+#'           \item{\code{PollTolClass.1.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.2.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.3.tot}}{a numeric vector}
+#'           \item{\code{PollTolClass.11.tot}}{a numeric vector}
+#'           \item{\code{pHClass.2.tot}}{a numeric vector}
+#'           \item{\code{pHClass.3.tot}}{a numeric vector}
+#'           \item{\code{pHClass.4.tot}}{a numeric vector}
+#'           \item{\code{pHClass.5.tot}}{a numeric vector}
+#'           \item{\code{pHClass.6.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.1.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.2.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.3.tot}}{a numeric vector}
+#'           \item{\code{SalinityClass.4.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.1.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.2.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.3.tot}}{a numeric vector}
+#'           \item{\code{N_UptakeClass.4.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.1.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.2.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.3.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.4.tot}}{a numeric vector}
+#'           \item{\code{OxygenClass.5.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.1.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.2.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.3.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.4.tot}}{a numeric vector}
+#'           \item{\code{SaprobityClass.5.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.1.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.2.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.3.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.4.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.5.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.6.tot}}{a numeric vector}
+#'           \item{\code{TrophicClass.7.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.1.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.2.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.3.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.4.tot}}{a numeric vector}
+#'           \item{\code{MoistureClass.5.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.H.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.M.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.N.tot}}{a numeric vector}
+#'           \item{\code{MotilityClass.V.tot}}{a numeric vector}
+#'           \item{\code{PhosphorusClass.H.tot}}{a numeric vector}
+#'           \item{\code{PhosphorusClass.L.tot}}{a numeric vector}
+#'           \item{\code{NitrogenClass.H.tot}}{a numeric vector}
+#'           \item{\code{NitrogenClass.L.tot}}{a numeric vector}
+#' }
+#' @source example data
+"data_AlgMetrics"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_BMIcounts ####
+#' @title Benthic Macroinvertebrate counts example data
+#' 
+#' @description A dataset with example benthic macroinvertebrate (BMI) counts 
+#' for use with the getStresssorSpecificRegressions function.
+#' 
+#' @format A data frame with 55,283 rows and 19 variables:
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{SampleID}}{Sample ID}
+#'           \item{\code{Elevation}}{a numeric vector}
+#'           \item{\code{InvertReg}}{a factor with levels \code{cold} \code{Cold} \code{warm} \code{Warm}}
+#'           \item{\code{BenSampID}}{a numeric vector}
+#'           \item{\code{RepNum}}{a numeric vector}
+#'           \item{\code{CollDate}}{a Date}
+#'           \item{\code{FieldGearID}}{a factor with levels \code{D-frame di}}
+#'           \item{\code{Habitat}}{a factor with levels \code{Edge} \code{Multi-habitat} \code{Pool} \code{Riffle} \code{Run}}
+#'           \item{\code{FinalID}}{a factor with levels }
+#'           \item{\code{TotInds}}{a numeric vector}
+#'           \item{\code{TotIndsCorr}}{a numeric vector}
+#'           \item{\code{BMISampID}}{a character vector}
+#'           \item{\code{BMI.Metrics.SampID}}{a character vector}
+#'           \item{\code{ElevCategory}}{a character vector}
+#'           \item{\code{clust.hi}}{a character vector}
+#'           \item{\code{clust.lo}}{a character vector}
+#'           \item{\code{COMID_NHD2}}{a character vector}
+#'           \item{\code{RelAbundInds}}{a numeric vector}
+#' }
+#' @source example data
+"data_BMIcounts"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_BMIMasterTaxa ####
+#' @title data_BMIMasterTaxa
+#' 
+#' @description Benthic Macroinvertebrate, Master Taxa
+#' 
+#' @format A data frame with 824 observations on the following 60 variables.
+#' \describe{
+#'           \item{\code{GenusFinal}}{a factor with levels }
+#'           \item{\code{STORET}}{a logical vector}
+#'           \item{\code{BenTaxaID}}{a numeric vector}
+#'           \item{\code{WQX_FinalID}}{a factor with levels }
+#'           \item{\code{WQX_UnidentifiedSpecies}}{a factor with levels }
+#'           \item{\code{FinalID}}{a factor with levels }
+#'           \item{\code{TaxaGroup}}{a factor with levels }
+#'           \item{\code{Phylum}}{a factor with levels }
+#'           \item{\code{Class}}{a factor with levels }
+#'           \item{\code{Order}}{a factor with levels }
+#'           \item{\code{Family}}{a factor with levels }
+#'           \item{\code{Tribe}}{a factor with levels }
+#'           \item{\code{Species}}{a factor with levels }
+#'           \item{\code{Variety}}{a factor with levels \code{Type II}}
+#'           \item{\code{TolVal}}{a numeric vector}
+#'           \item{\code{TolValSource}}{a factor with levels }
+#'           \item{\code{Fam.TV}}{a numeric vector}
+#'           \item{\code{Fam.TV.reference}}{a factor with levels \code{EPA Draft} \code{Family tv} \code{Raw Data}}
+#'           \item{\code{FFG}}{a factor with levels }
+#'           \item{\code{FFGSource}}{a factor with levels }
+#'           \item{\code{Habit}}{a factor with levels }
+#'           \item{\code{HabitSource}}{a factor with levels \code{AZ DEQ}}
+#'           \item{\code{InBenthics}}{a factor with levels \code{Y}}
+#'           \item{\code{Fam.FFG}}{a factor with levels }
+#'           \item{\code{Fam.FFG.reference}}{a factor with levels \code{EPA Draft} \code{MC3} \code{Raw Data} \code{Unclassified by EI}}
+#'           \item{\code{Hilsenhoff.Biotic.Index}}{a numeric vector}
+#'           \item{\code{Fine.Sediment.Biotic.Index}}{a numeric vector}
+#'           \item{\code{Temperature.Preferance.Metric}}{a numeric vector}
+#'           \item{\code{Metals.Tolerance.Index}}{a numeric vector}
+#'           \item{\code{HT}}{a factor with levels \code{HT}}
+#'           \item{\code{Tany}}{a factor with levels \code{TANY}}
+#'           \item{\code{Voltinism}}{a factor with levels }
+#'           \item{\code{LifeCycleSource}}{a factor with levels \code{AZ DEQ}}
+#'           \item{\code{CharGroupID}}{a logical vector}
+#'           \item{\code{RowID}}{a logical vector}
+#'           \item{\code{Photo}}{a logical vector}
+#'           \item{\code{AdminCheck}}{a logical vector}
+#'           \item{\code{DateNameRevised}}{a factor with levels \code{2001-08-13 15:42:54} \code{2001-08-13 15:50:58} \code{2001-08-24 00:00:00}}
+#'           \item{\code{EnterDate}}{a factor with levels }
+#'           \item{\code{Comments}}{a factor with levels }
+#'           \item{\code{Excluded.Taxa.}}{a logical vector}
+#'           \item{\code{TIN}}{a numeric vector}
+#'           \item{\code{NonBenthic}}{a logical vector}
+#'           \item{\code{NeedsReview}}{a logical vector}
+#'           \item{\code{STORET_CharName}}{a factor with levels }
+#'           \item{\code{STORET_SpNum}}{a numeric vector}
+#'           \item{\code{STORET_Comment}}{a factor with levels \code{(DH)} \code{(LH)}}
+#'           \item{\code{OTU_Code}}{a numeric vector}
+#'           \item{\code{OTU_Name}}{a factor with levels}
+#'           \item{\code{TaxaCode}}{a factor with multiple levels }
+#'           \item{\code{TSN}}{a factor with multiple levels }
+#'           \item{\code{ParTSN}}{a numeric vector}
+#'           \item{\code{uBio.Number}}{a factor with levels }
+#'           \item{\code{Phylogenetic.Sort}}{a numeric vector}
+#'           \item{\code{OLD.TolVal}}{a numeric vector}
+#'           \item{\code{FFG_OLD}}{a factor with levels \code{CF} \code{CG} \code{Herbivores} \code{MH} \code{OM} \code{PA} \code{PH} \code{Piercer-Herbivores} \code{PR} \code{SC} \code{SH} \code{XY}}
+#'           \item{\code{Invasive}}{a logical vector}
+#'           \item{\code{FinesTV_Hi}}{a numeric vector}
+#'           \item{\code{FinesTV_Low}}{a numeric vector}
+#'           \item{\code{SpecCondTolVal}}{a numeric vector}
+#' }
+#' 
+#' @source example data, Arizona
+"data_BMIMasterTaxa"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_BMIMetrics ####
+#' @title Benthic macroinvertebrate metrics example data
+#' 
+#' @description A dataset with example benthic macroinvertebrate (BMI) metric
+#'  data for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 956 rows and 26 variables:
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{BenCollDate}}{a factor with levels }
+#'           \item{\code{NarRat}}{a factor with levels \code{Inconclusive} \code{Meets} \code{Violates}}
+#'           \item{\code{IBI}}{a numeric vector}
+#'           \item{\code{TotalTaxSPL_Sc}}{a numeric vector}
+#'           \item{\code{DipTaxSPL_Sc}}{a numeric vector}
+#'           \item{\code{IntolTaxSPL_Sc}}{a numeric vector}
+#'           \item{\code{HBISPL_Sc}}{a numeric vector}
+#'           \item{\code{PlecoPct_Sc}}{a numeric vector}
+#'           \item{\code{ScrapPctSPL_Sc}}{a numeric vector}
+#'           \item{\code{ScrapTaxSPL_Sc}}{a numeric vector}
+#'           \item{\code{TrichTax_Sc}}{a numeric vector}
+#'           \item{\code{EphemTax_Sc}}{a numeric vector}
+#'           \item{\code{EphemPct_Sc}}{a numeric vector}
+#'           \item{\code{Dom01PctSPL_Sc}}{a numeric vector}
+#'           \item{\code{CollDate}}{a Date}
+#'           \item{\code{BMISampID}}{a character vector}
+#'           \item{\code{BMI.Metrics.SampID}}{a character vector}
+#'           \item{\code{CSCI}}{a numeric vector}
+#'           \item{\code{O_E}}{a character vector}
+#'           \item{\code{MMI_Score}}{a numeric vector}
+#'           \item{\code{ElevCategory}}{a character vector}#'           
+#'           \item{\code{clust.hi}}{a character vector}
+#'           \item{\code{clust.lo}}{a character vector}
+#'           \item{\code{COMID_NHD2}}{a character vector}
+#'           \item{\code{SampYear}}{a character vector} 
+#' }
+#' @source example data
+"data_BMIMetrics"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_BMIRelAbund ####
+#' @title BMI Relative Abundance
+#' 
+#' @description Benthic Macroinvertebrate, Relative Abundances
+#' 
+#' @format A data frame with 55,319 rows and 12 variables
+#' \describe{
+#'           \item{StationID}{Station ID}
+#'           \item{BenSampID}{BenSampID}
+#'           \item{RepNum}{RepNum}
+#'           \item{CollDate}{Sample collection date; YYYY-MM-DD}
+#'           \item{SampleID}{SampleID}
+#'           \item{FinalID}{FinalID}
+#'           \item{RelAbundInds}{Relative abundance}
+#'           \item{StationID_Master}{StationID_Master}
+#'           \item{Station_Date}{Station_Date}
+#'           \item{BMISampID}{BMISampID}
+#'           \item{BMI.Metrics.SampID}{BMI.Metrics.SampID}
+#'           \item{ElevCategory}{Elevation Category}
+#' }
+#' 
+#' @source example data
+"data_BMIRelAbund"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# data_Chem ####
+#' @title Chem data
+#' 
+#' @description Chem data
+#' 
+#'  @format A data frame with 104,577 observations on the following 19 variables.
+#' \describe{
+#'           \item{\code{StationID_Master}}{a factor with levels }
+#'           \item{\code{SITE_ID}}{a factor with levels }
+#'           \item{\code{SampDate}}{a Date}
+#'           \item{\code{SampTime}}{a numeric vector}
+#'           \item{\code{SampleType}}{a factor with levels \code{A} \code{B} \code{C} \code{F} \code{G} \code{I} \code{M} \code{W} \code{Z}}
+#'           \item{\code{FlowRegimeCode}}{a factor with levels}
+#'           \item{\code{StdParamName}}{a factor with levels }
+#'           \item{\code{ResultText}}{a factor with levels }
+#'           \item{\code{FinalResultValue}}{a numeric vector}
+#'           \item{\code{ResultHalfMDL}}{a numeric vector}
+#'           \item{\code{Analyte}}{a factor with levels }
+#'           \item{\code{ChemSampleID}}{a character vector}
+#'           \item{\code{ResultValue}}{a numeric vector}
+#'           \item{\code{ConvertTo}}{a factor with levels }
+#'           \item{\code{ElevCategory}}{a character vector}
+#'           \item{\code{SampYear}}{a numeric vector}
+#'           \item{\code{clust.hi}}{a character vector}
+#'           \item{\code{clust.lo}}{a character vector}
+#'           \item{\code{COMID_NHD2}}{a character vector}
+#' }
+#' 
+#' @source example data
+"data_Chem"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_ChemInfo ####
+#' @title Chem Parameters
+#' 
+#' @description Chem Parameters
+#' 
+#' @format A data frame with 299 observations on the following 16 variables.
+#' \describe{
+#'           \item{\code{ANALYSIS_TYPE}}{a factor with levels }
+#'           \item{\code{FinalUnit}}{a factor with levels }
+#'           \item{\code{LogTransf}}{a numeric vector}
+#'           \item{\code{SSD}}{a numeric vector}
+#'           \item{\code{SSTV}}{a factor with levels \code{} \code{SpecCondTolVal}}
+#'           \item{\code{SensMin}}{a numeric vector}
+#'           \item{\code{SensMax}}{a numeric vector}
+#'           \item{\code{TolMin}}{a numeric vector}
+#'           \item{\code{TolMax}}{a numeric vector}
+#'           \item{\code{UseInStressorID}}{a numeric vector}
+#'           \item{\code{Analyte}}{a factor with levels }
+#'           \item{\code{GroupNum}}{a numeric vector}
+#'           \item{\code{GroupName}}{a factor with levels \code{Bacteria} \code{Ions} \code{Metals_metalloids} \code{Nutrients} \code{Organic} \code{Organochlorine} \code{Organohalide} \code{Organophosphate} \code{PAHs & Phthalates} \code{Radiation} \code{Water quality}}
+#'           \item{\code{CHEMICAL_NAME}}{a character vector}
+#'           \item{\code{DirIncStress}}{a character vector}
+#'           \item{\code{StdParamName}}{a character vector}
+#' }
+#'
+#' @source example data
+"data_ChemInfo"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_Cluster_Hi ####
+#' @title High elevation cluster example data
+#' 
+#' @description A dataset with example cluster data for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 5,929 rows and 95 variables:
+#' \describe{
+#'            \item{\code{COMID}}{NHD+ COMID}
+#'            \item{\code{Al2O3Cat}}{a numeric vector}
+#'            \item{\code{Al2O3Ws}}{a numeric vector}
+#'            \item{\code{BFICat}}{a numeric vector}
+#'            \item{\code{BFIWs}}{a numeric vector}
+#'            \item{\code{CompStrgthCat}}{a numeric vector}
+#'            \item{\code{CompStrgthWs}}{a numeric vector}
+#'            \item{\code{KffactCat}}{a numeric vector}
+#'            \item{\code{KffactWs}}{a numeric vector}
+#'            \item{\code{Na2OWs}}{a numeric vector}
+#'            \item{\code{PctSilicicWs}}{a numeric vector}
+#'            \item{\code{SandCat}}{a numeric vector}
+#'            \item{\code{SandWs}}{a numeric vector}
+#'            \item{\code{SiO2Cat}}{a numeric vector}
+#'            \item{\code{SiO2Ws}}{a numeric vector}
+#'            \item{\code{Tmax8110Cat}}{a numeric vector}
+#'            \item{\code{Tmax8110Ws}}{a numeric vector}
+#'            \item{\code{Tmean08Cat}}{a numeric vector}
+#'            \item{\code{Tmean08Ws}}{a numeric vector}
+#'            \item{\code{Tmean09Cat}}{a numeric vector}
+#'            \item{\code{Tmean09Ws}}{a numeric vector}
+#'            \item{\code{Tmean8110Cat}}{a numeric vector}
+#'            \item{\code{Tmean8110Ws}}{a numeric vector}
+#'            \item{\code{Tmin8110Cat}}{a numeric vector}
+#'            \item{\code{Tmin8110Ws}}{a numeric vector}
+#'            \item{\code{WtDepCat}}{a numeric vector}
+#'            \item{\code{WtDepWs}}{a numeric vector}
+#'            \item{\code{CaOCat}}{a numeric vector}
+#'            \item{\code{CaOWs}}{a numeric vector}
+#'            \item{\code{CatAreaSqKm}}{a numeric vector}
+#'            \item{\code{CatAreaSqKmRp100}}{a numeric vector}
+#'            \item{\code{ClayCat}}{a numeric vector}
+#'            \item{\code{ClayWs}}{a numeric vector}
+#'            \item{\code{Fe2O3Cat}}{a numeric vector}
+#'            \item{\code{Fe2O3Ws}}{a numeric vector}
+#'            \item{\code{HydrlCondCat}}{a numeric vector}
+#'            \item{\code{HydrlCondWs}}{a numeric vector}
+#'            \item{\code{K2OCat}}{a numeric vector}
+#'            \item{\code{MgOCat}}{a numeric vector}
+#'            \item{\code{MgOWs}}{a numeric vector}
+#'            \item{\code{Na2OCat}}{a numeric vector}
+#'            \item{\code{OmCat}}{a numeric vector}
+#'            \item{\code{OmWs}}{a numeric vector}
+#'            \item{\code{PctNonCarbResidCat}}{a numeric vector}
+#'            \item{\code{PctNonCarbResidWs}}{a numeric vector}
+#'            \item{\code{PctSilicicCat}}{a numeric vector}
+#'            \item{\code{PermCat}}{a numeric vector}
+#'            \item{\code{PermWs}}{a numeric vector}
+#'            \item{\code{Precip08Cat}}{a numeric vector}
+#'            \item{\code{Precip08Ws}}{a numeric vector}
+#'            \item{\code{Precip09Cat}}{a numeric vector}
+#'            \item{\code{Precip09Ws}}{a numeric vector}
+#'            \item{\code{Precip8110Cat}}{a numeric vector}
+#'            \item{\code{Precip8110Ws}}{a numeric vector}
+#'            \item{\code{QC_01}}{a numeric vector}
+#'            \item{\code{QC_02}}{a numeric vector}
+#'            \item{\code{QC_03}}{a numeric vector}
+#'            \item{\code{QC_04}}{a numeric vector}
+#'            \item{\code{QC_05}}{a numeric vector}
+#'            \item{\code{QC_06}}{a numeric vector}
+#'            \item{\code{QC_07}}{a numeric vector}
+#'            \item{\code{QC_08}}{a numeric vector}
+#'            \item{\code{QC_09}}{a numeric vector}
+#'            \item{\code{QC_10}}{a numeric vector}
+#'            \item{\code{QC_11}}{a numeric vector}
+#'            \item{\code{QC_12}}{a numeric vector}
+#'            \item{\code{QC_MA}}{a numeric vector}
+#'            \item{\code{RckDepCat}}{a numeric vector}
+#'            \item{\code{RckDepWs}}{a numeric vector}
+#'            \item{\code{RunoffCat}}{a numeric vector}
+#'            \item{\code{RunoffWs}}{a numeric vector}
+#'            \item{\code{WetIndexCat}}{a numeric vector}
+#'            \item{\code{WetIndexWs}}{a numeric vector}
+#'            \item{\code{WsAreaSqKm}}{a numeric vector}
+#'            \item{\code{WsAreaSqKmRp100}}{a numeric vector}
+#'            \item{\code{ElevCat}}{a numeric vector}
+#'            \item{\code{ElevWs}}{a numeric vector}
+#'            \item{\code{K2OWs}}{a numeric vector}
+#'            \item{\code{NCat}}{a numeric vector}
+#'            \item{\code{NWs}}{a numeric vector}
+#'            \item{\code{P2O5Cat}}{a numeric vector}
+#'            \item{\code{P2O5Ws}}{a numeric vector}
+#'            \item{\code{SCat}}{a numeric vector}
+#'            \item{\code{SLOPE}}{a numeric vector}
+#'            \item{\code{SWs}}{a numeric vector}
+#'            \item{\code{clust}}{a numeric vector}
+#'            \item{\code{H6_noland}}{a character vector}
+#'            \item{\code{H6_land}}{a character vector}
+#'            \item{\code{PrecipWs}}{a numeric vector}
+#'            \item{\code{TmeanWs}}{a numeric vector}
+#'            \item{\code{W___AGRIC}}{a character vector}
+#'            \item{\code{W___URBAN}}{a character vector}
+#'            \item{\code{W___FOREST}}{a character vector}
+#'            \item{\code{clust_noland}}{a numeric vector}
+#'            \item{\code{clust_land}}{a numeric vector}
+#' }
+#' @source example data
+"data_Cluster_Hi"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_Cluster_Lo ####
+#' @title Low  elevation cluster example data
+#' 
+#' @description A dataset with example cluster data for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 10,707 rows and 97 variables:
+#' \describe{
+#'           \item{\code{COMID}}{a numeric vector}       
+#'           \item{\code{Al2O3Cat}}{a numeric vector}
+#'           \item{\code{Al2O3Ws}}{a numeric vector}
+#'           \item{\code{BFICat}}{a numeric vector}
+#'           \item{\code{BFIWs}}{a numeric vector}
+#'           \item{\code{CompStrgthCat}}{a numeric vector}
+#'           \item{\code{CompStrgthWs}}{a numeric vector}
+#'           \item{\code{KffactCat}}{a numeric vector}
+#'           \item{\code{KffactWs}}{a numeric vector}
+#'           \item{\code{Na2OWs}}{a numeric vector}
+#'           \item{\code{PctSilicicWs}}{a numeric vector}
+#'           \item{\code{SandCat}}{a numeric vector}
+#'           \item{\code{SandWs}}{a numeric vector}
+#'           \item{\code{SiO2Cat}}{a numeric vector}
+#'           \item{\code{SiO2Ws}}{a numeric vector}
+#'           \item{\code{Tmax8110Cat}}{a numeric vector}
+#'           \item{\code{Tmax8110Ws}}{a numeric vector}
+#'           \item{\code{Tmean08Cat}}{a numeric vector}
+#'           \item{\code{Tmean08Ws}}{a numeric vector}
+#'           \item{\code{Tmean09Cat}}{a numeric vector}
+#'           \item{\code{Tmean09Ws}}{a numeric vector}
+#'           \item{\code{Tmean8110Cat}}{a numeric vector}
+#'           \item{\code{Tmean8110Ws}}{a numeric vector}
+#'           \item{\code{Tmin8110Cat}}{a numeric vector}
+#'           \item{\code{Tmin8110Ws}}{a numeric vector}
+#'           \item{\code{WtDepCat}}{a numeric vector}
+#'           \item{\code{WtDepWs}}{a numeric vector}
+#'           \item{\code{CaOCat}}{a numeric vector}
+#'           \item{\code{CaOWs}}{a numeric vector}
+#'           \item{\code{CatAreaSqKm}}{a numeric vector}
+#'           \item{\code{CatAreaSqKmRp100}}{a numeric vector}
+#'           \item{\code{ClayCat}}{a numeric vector}
+#'           \item{\code{ClayWs}}{a numeric vector}
+#'           \item{\code{Fe2O3Cat}}{a numeric vector}
+#'           \item{\code{Fe2O3Ws}}{a numeric vector}
+#'           \item{\code{HydrlCondCat}}{a numeric vector}
+#'           \item{\code{HydrlCondWs}}{a numeric vector}
+#'           \item{\code{K2OCat}}{a numeric vector}
+#'           \item{\code{MgOCat}}{a numeric vector}
+#'           \item{\code{MgOWs}}{a numeric vector}
+#'           \item{\code{Na2OCat}}{a numeric vector}
+#'           \item{\code{OmCat}}{a numeric vector}
+#'           \item{\code{OmWs}}{a numeric vector}
+#'           \item{\code{PctAlluvCoastCat}}{a numeric vector}
+#'           \item{\code{PctAlluvCoastWs}}{a numeric vector}
+#'           \item{\code{PctNonCarbResidCat}}{a numeric vector}
+#'           \item{\code{PctNonCarbResidWs}}{a numeric vector}
+#'           \item{\code{PctSilicicCat}}{a numeric vector}
+#'           \item{\code{PermCat}}{a numeric vector}
+#'           \item{\code{PermWs}}{a numeric vector}
+#'           \item{\code{Precip08Cat}}{a numeric vector}
+#'           \item{\code{Precip08Ws}}{a numeric vector}
+#'           \item{\code{Precip09Cat}}{a numeric vector}
+#'           \item{\code{Precip09Ws}}{a numeric vector}
+#'           \item{\code{Precip8110Cat}}{a numeric vector}           
+#'           \item{\code{Precip8110Ws}}{a numeric vector}
+#'           \item{\code{QC_01}}{a numeric vector}
+#'           \item{\code{QC_02}}{a numeric vector}
+#'           \item{\code{QC_03}}{a numeric vector}
+#'           \item{\code{QC_04}}{a numeric vector}
+#'           \item{\code{QC_05}}{a numeric vector}
+#'           \item{\code{QC_06}}{a numeric vector}
+#'           \item{\code{QC_07}}{a numeric vector}
+#'           \item{\code{QC_08}}{a numeric vector}
+#'           \item{\code{QC_09}}{a numeric vector}
+#'           \item{\code{QC_10}}{a numeric vector}
+#'           \item{\code{QC_11}}{a numeric vector}
+#'           \item{\code{QC_12}}{a numeric vector}
+#'           \item{\code{QC_MA}}{a numeric vector}
+#'           \item{\code{RckDepCat}}{a numeric vector}
+#'           \item{\code{RckDepWs}}{a numeric vector}
+#'           \item{\code{RunoffCat}}{a numeric vector}
+#'           \item{\code{RunoffWs}}{a numeric vector}
+#'           \item{\code{WetIndexCat}}{a numeric vector}
+#'           \item{\code{WetIndexWs}}{a numeric vector}
+#'           \item{\code{WsAreaSqKm}}{a numeric vector}
+#'           \item{\code{WsAreaSqKmRp100}}{a numeric vector}
+#'           \item{\code{ElevCat}}{a numeric vector}
+#'           \item{\code{ElevWs}}{a numeric vector}
+#'           \item{\code{K2OWs}}{a numeric vector}
+#'           \item{\code{NCat}}{a numeric vector}
+#'           \item{\code{NWs}}{a numeric vector}
+#'           \item{\code{P2O5Cat}}{a numeric vector}
+#'           \item{\code{P2O5Ws}}{a numeric vector}
+#'           \item{\code{SCat}}{a numeric vector}
+#'           \item{\code{SLOPE}}{a numeric vector}
+#'           \item{\code{SWs}}{a numeric vector}
+#'           \item{\code{clust}}{a numeric vector}
+#'           \item{\code{H6_noland}}{a character vector}
+#'           \item{\code{H6_land}}{a character vector}
+#'           \item{\code{PrecipWs}}{a numeric vector}
+#'           \item{\code{TmeanWs}}{a numeric vector}
+#'           \item{\code{W___AGRIC}}{a character vector}
+#'           \item{\code{W___URBAN}}{a character vector}
+#'           \item{\code{W___FOREST}}{a character vector}
+#'           \item{\code{clust_noland}}{a numeric vector}
+#'           \item{\code{clust_land}}{a numeric vector}
+#' }
+#' @source example data
+"data_Cluster_Lo"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_CoOccur_CA *fix*####
 #' @title Co-Occurrence example data (CA)
 #' 
 #' @description A dataset from California with example biological, chemical, habitat, and geo-physical parameters.
 #' 
 #' @format A data frame with 2,769 rows and 739 variables:
 #' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{SWAMP_Station_Code}}{a factor with levels }
-#'           \item{\code{CanonicalStationID}}{a factor with levels }
-#'           \item{\code{Stream_Name}}{a factor with levels }
-#'           \item{\code{SampleDate}}{a factor with levels }
-#'           \item{\code{County}}{a factor with levels }
-#'           \item{\code{Latitude}}{a numeric vector}
-#'           \item{\code{Longitude}}{a numeric vector}
-#'           \item{\code{CSCI}}{a numeric vector}
-#'           \item{\code{Group}}{a numeric vector}
-#'           \item{\code{CollDate}}{a factor with levels }
-#'           \item{\code{Acenaphthene_ng_g}}{a numeric vector}
-#'           \item{\samp{Acenaphthene_uf__L}}{a numeric vector}
-#'           \item{\code{Acenaphthylene_ng_g}}{a numeric vector}
-#'           \item{\samp{Acenaphthylene_uf__L}}{a numeric vector}
-#'           \item{\code{AFDM_Algae_Particulate_g_m2}}{a numeric vector}
-#'           \item{\samp{Ag_f__L}}{a numeric vector}
-#'           \item{\samp{Ag_uf__L}}{a numeric vector}
-#'           \item{\code{Ag_uf_mg_kg}}{a numeric vector}
-#'           \item{\samp{Al_f__L}}{a numeric vector}
-#'           \item{\samp{Al_uf__L}}{a numeric vector}
-#'           \item{\code{Al_uf_mg_kg}}{a numeric vector}
-#'           \item{\code{Aldrin_ng_g}}{a numeric vector}
-#'           \item{\code{Aldrin_ppb}}{a numeric vector}
-#'           \item{\samp{Aldrin_uf__L}}{a numeric vector}
-#'           \item{\code{Alkalinity_mg_L}}{a numeric vector}
-#'           \item{\code{AlkalinityCaCO3_f_mg_L}}{a numeric vector}
-#'           \item{\code{AlkalinityCaCO3_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Allethrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Allethrin_uf__L}}{a numeric vector}
-#'           \item{\samp{Ametryn_uf__L}}{a numeric vector}
-#'           \item{\code{Ametryne_ppb}}{a logical vector}
-#'           \item{\samp{AnatoxinA_Particulate__L}}{a numeric vector}
-#'           \item{\samp{AnatoxinA_uf__L}}{a numeric vector}
-#'           \item{\samp{ANC_uf_q_L}}{a numeric vector}
-#'           \item{\samp{Anthracene_uf__L}}{a numeric vector}
-#'           \item{\code{Anthracene_uf_ng_g}}{a numeric vector}
-#'           \item{\code{As_f_mg_L}}{a numeric vector}
-#'           \item{\code{As_uf_mg_kg}}{a numeric vector}
-#'           \item{\code{As_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Aspon_ppb}}{a logical vector}
-#'           \item{\samp{Aspon_uf__L}}{a numeric vector}
-#'           \item{\code{Atraton_ppb}}{a numeric vector}
-#'           \item{\samp{Atraton_uf__L}}{a numeric vector}
-#'           \item{\code{Atrazine_ppb}}{a numeric vector}
-#'           \item{\samp{Atrazine_uf__L}}{a numeric vector}
-#'           \item{\samp{Azinphos.ethyl_uf__L}}{a numeric vector}
-#'           \item{\samp{Azinphos.methyl_uf__L}}{a numeric vector}
-#'           \item{\code{AzinphosEthyl_ppb}}{a logical vector}
-#'           \item{\code{AzinphosMethyl_ppb}}{a logical vector}
-#'           \item{\code{B_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Ba_uf_mg_kg}}{a numeric vector}
-#'           \item{\code{Be_uf_mg_kg}}{a numeric vector}
-#'           \item{\code{Benz.a.anthracene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benz.a.anthracene_uf__L}}{a numeric vector}
-#'           \item{\samp{Benzene_uf__L}}{a numeric vector}
-#'           \item{\code{Benzo.a.pyrene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benzo.a.pyrene_uf__L}}{a numeric vector}
-#'           \item{\code{Benzo.b.fluoranthene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benzo.b.fluoranthene_uf__L}}{a numeric vector}
-#'           \item{\code{Benzo.e.pyrene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benzo.e.pyrene_uf__L}}{a numeric vector}
-#'           \item{\code{Benzo.g.h.i.perylene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benzo.g.h.i.perylene_uf__L}}{a numeric vector}
-#'           \item{\code{Benzo.k.fluoranthene_ng_g}}{a numeric vector}
-#'           \item{\samp{Benzo.k.fluoranthene_uf__L}}{a numeric vector}
-#'           \item{\code{Bicarbonate_HCO3_mg_L}}{a numeric vector}
-#'           \item{\code{Bifenthrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Bifenthrin_uf__L}}{a numeric vector}
-#'           \item{\code{Biphenyl_ng_g}}{a numeric vector}
-#'           \item{\samp{Biphenyl_uf__L}}{a numeric vector}
-#'           \item{\code{BOD_mg_L}}{a numeric vector}
-#'           \item{\code{Bolstar_ng_g}}{a numeric vector}
-#'           \item{\samp{Bolstar_uf__L}}{a numeric vector}
-#'           \item{\samp{Bromobenzene_uf__L}}{a numeric vector}
-#'           \item{\samp{Bromochloromethane_uf__L}}{a numeric vector}
-#'           \item{\samp{Bromodichloromethane_uf__L}}{a numeric vector}
-#'           \item{\samp{Bromoform_uf__L}}{a numeric vector}
-#'           \item{\samp{Butylbenzene_n_uf__L}}{a numeric vector}
-#'           \item{\samp{Butylbenzene_sec_uf__L}}{a numeric vector}
-#'           \item{\samp{Butylbenzene_tert_uf__L}}{a numeric vector}
-#'           \item{\code{Ca_f_mg_L}}{a numeric vector}
-#'           \item{\code{Ca_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{Caffeine_uf__L}}{a numeric vector}
-#'           \item{\samp{Carbadox_uf__L}}{a numeric vector}
-#'           \item{\samp{Carbamazepine_uf__L}}{a numeric vector}
-#'           \item{\code{Carbonate_CaCO3_mg_L}}{a numeric vector}
-#'           \item{\samp{CarbonTetrachloride_uf__L}}{a numeric vector}
-#'           \item{\code{Carbophenothion_ppb}}{a numeric vector}
-#'           \item{\samp{Carbophenothion_uf__L}}{a numeric vector}
-#'           \item{\samp{Cd__g}}{a numeric vector}
-#'           \item{\code{Cd_f_mg_L}}{a numeric vector}
-#'           \item{\code{Cd_uf_mg_L}}{a numeric vector}
-#'           \item{\code{CHECK.THIS}}{a numeric vector}
-#'           \item{\code{Chlor_a_mg_m2}}{a numeric vector}
-#'           \item{\code{Chlor_a_mg_m3}}{a numeric vector}
-#'           \item{\samp{Chlor_a_Particulate__L}}{a numeric vector}
-#'           \item{\code{Chlor_a_Particulate_mg_m2}}{a numeric vector}
-#'           \item{\code{Chlordane_alpha_ng_g}}{a numeric vector}
-#'           \item{\code{Chlordane_cis_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlordane_cis_uf__L}}{a numeric vector}
-#'           \item{\code{Chlordane_trans_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlordane_trans_uf__L}}{a numeric vector}
-#'           \item{\samp{Chlordene_alpha_uf__L}}{a numeric vector}
-#'           \item{\code{Chlordene_cis_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlordene_cis_uf__L}}{a numeric vector}
-#'           \item{\code{Chlordene_gamma_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlordene_gamma_uf__L}}{a numeric vector}
-#'           \item{\code{Chlordene_trans_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlordene_trans_uf__L}}{a numeric vector}
-#'           \item{\code{Chlorfenvinphos_ppb}}{a logical vector}
-#'           \item{\samp{Chlorfenvinphos_uf__L}}{a numeric vector}
-#'           \item{\samp{Chlorobenzene_uf__L}}{a numeric vector}
-#'           \item{\samp{Chloroform_uf__L}}{a numeric vector}
-#'           \item{\samp{Chlorotoluene_2_uf__L}}{a numeric vector}
-#'           \item{\samp{Chlorotoluene_4_uf__L}}{a numeric vector}
-#'           \item{\samp{Chlorpyrifos__L}}{a numeric vector}
-#'           \item{\code{Chlorpyrifos_methyl_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlorpyrifos_methyl_uf__L}}{a numeric vector}
-#'           \item{\code{Chlorpyrifos_ng_g}}{a numeric vector}
-#'           \item{\samp{Chlorpyrifos_uf__L}}{a numeric vector}
-#'           \item{\code{ChlorpyrifosMethyl_ppb}}{a logical vector}
-#'           \item{\samp{Chlortetracycline_uf__L}}{a numeric vector}
-#'           \item{\code{ChlorthalDimethyl_ppb}}{a logical vector}
-#'           \item{\code{Chrysene_ng_g}}{a numeric vector}
-#'           \item{\samp{Chrysene_uf__L}}{a numeric vector}
-#'           \item{\code{Chrysenes_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{Chrysenes_C1_uf__L}}{a numeric vector}
-#'           \item{\code{Chrysenes_C2_ng_g}}{a numeric vector}
-#'           \item{\samp{Chrysenes_C2_uf__L}}{a numeric vector}
-#'           \item{\code{Chrysenes_C3_ng_g}}{a numeric vector}
-#'           \item{\samp{Chrysenes_C3_uf__L}}{a numeric vector}
-#'           \item{\code{Cinerin1_ng_g}}{a logical vector}
-#'           \item{\code{Cinerin2_ng_g}}{a logical vector}
-#'           \item{\code{Ciodrin_ppb}}{a logical vector}
-#'           \item{\samp{Ciodrin_uf__L}}{a numeric vector}
-#'           \item{\code{Cl_f_mg_L}}{a numeric vector}
-#'           \item{\code{COD_mg_L}}{a numeric vector}
-#'           \item{\code{Coliform_Fecal_MPN_100mL}}{a numeric vector}
-#'           \item{\code{Coliform_Total_MPN_100mL}}{a numeric vector}
-#'           \item{\code{Color_True_CU}}{a numeric vector}
-#'           \item{\code{Coumaphos_ppb}}{a logical vector}
-#'           \item{\samp{Coumaphos_uf__L}}{a numeric vector}
-#'           \item{\samp{Cr__g}}{a numeric vector}
-#'           \item{\code{Cr_f_mg_L}}{a numeric vector}
-#'           \item{\code{Cr_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{Cu__g}}{a numeric vector}
-#'           \item{\code{Cu_f_mg_L}}{a numeric vector}
-#'           \item{\code{Cu_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Cyfluthrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Cyfluthrin_uf__L}}{a numeric vector}
-#'           \item{\code{Cyhalothrin_lambda_ng_g}}{a numeric vector}
-#'           \item{\code{Cyhalothrin_lambda_ppb}}{a numeric vector}
-#'           \item{\samp{Cyhalothrin_lambda_uf__L}}{a numeric vector}
-#'           \item{\code{Cypermethrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Cypermethrin_uf__L}}{a numeric vector}
-#'           \item{\code{Dacthal_ng_g}}{a numeric vector}
-#'           \item{\samp{Dacthal_uf__L}}{a numeric vector}
-#'           \item{\code{Danitol_ng_g}}{a numeric vector}
-#'           \item{\samp{Danitol_uf__L}}{a numeric vector}
-#'           \item{\code{DCBP.p.p.._ng_g}}{a numeric vector}
-#'           \item{\code{DDD.o.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDD.o.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDD.p.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDD.p.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDE.o.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDE.o.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDE.p.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDE.p.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDMU.p.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDMU.p.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDT.o.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDT.o.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDT.p.p.._ng_g}}{a numeric vector}
-#'           \item{\samp{DDT.p.p.._uf__L}}{a numeric vector}
-#'           \item{\code{DDTs_Total_ng_g}}{a numeric vector}
-#'           \item{\code{DDVP_ppb}}{a logical vector}
-#'           \item{\code{Deltamethrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Deltamethrin_uf__L}}{a numeric vector}
-#'           \item{\code{DeltamethrinTralomethrin_ng_g}}{a numeric vector}
-#'           \item{\samp{DeltamethrinTralomethrin_uf__L}}{a numeric vector}
-#'           \item{\samp{Demeton_o_uf__L}}{a numeric vector}
-#'           \item{\code{Demeton_s_ng_g}}{a numeric vector}
-#'           \item{\samp{Demeton_s_uf__L}}{a numeric vector}
-#'           \item{\code{Demeton_ug_L}}{a logical vector}
-#'           \item{\samp{DesmethylLR_Particulate__L}}{a numeric vector}
-#'           \item{\samp{DesmethylLR_uf__L}}{a numeric vector}
-#'           \item{\samp{DesmethylRR_Particulate__L}}{a numeric vector}
-#'           \item{\samp{DesmethylRR_uf__L}}{a numeric vector}
-#'           \item{\code{Diazinon_ng_g}}{a numeric vector}
-#'           \item{\samp{Diazinon_uf__L}}{a numeric vector}
-#'           \item{\code{Diazinon_ug_L}}{a numeric vector}
-#'           \item{\code{Dibenz.a.h.anthracene_ng_g}}{a numeric vector}
-#'           \item{\samp{Dibenz.a.h.anthracene_uf__L}}{a numeric vector}
-#'           \item{\code{Dibenzothiophene_ng_g}}{a numeric vector}
-#'           \item{\samp{Dibenzothiophene_uf__L}}{a numeric vector}
-#'           \item{\code{Dibenzothiophenes_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{Dibenzothiophenes_C1_uf__L}}{a numeric vector}
-#'           \item{\code{Dibenzothiophenes_C2_ng_g}}{a numeric vector}
-#'           \item{\samp{Dibenzothiophenes_C2_uf__L}}{a numeric vector}
-#'           \item{\code{Dibenzothiophenes_C3_ng_g}}{a numeric vector}
-#'           \item{\samp{Dibenzothiophenes_C3_uf__L}}{a numeric vector}
-#'           \item{\samp{Dibromo.3.Chloropropane_1.2..DBCP._uf__L}}{a numeric vector}
-#'           \item{\samp{Dibromochloromethane_uf__L}}{a numeric vector}
-#'           \item{\samp{Dibromoethane_12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dibromomethane_uf__L}}{a numeric vector}
-#'           \item{\code{Dibutyltin_Sn_ng_g}}{a numeric vector}
-#'           \item{\code{DIC_f_mg_L}}{a numeric vector}
-#'           \item{\code{Dichlofenthion_ng_g}}{a numeric vector}
-#'           \item{\code{Dichlofenthion_ppb}}{a logical vector}
-#'           \item{\samp{Dichlofenthion_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichlorobenzene_12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichlorobenzene_13_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichlorobenzene_14_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloroethane_11_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloroethane_12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloroethylene_11_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloroethylene_cis_12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloroethylene_trans_.12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloropropane_12_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloropropane_13_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloropropane_22_uf__L}}{a numeric vector}
-#'           \item{\samp{Dichloropropene_11_uf__L}}{a numeric vector}
-#'           \item{\code{Dichlorvos_ng_g}}{a numeric vector}
-#'           \item{\samp{Dichlorvos_uf__L}}{a numeric vector}
-#'           \item{\code{Dicrotophos_ppb}}{a logical vector}
-#'           \item{\samp{Dicrotophos_uf__L}}{a numeric vector}
-#'           \item{\code{Dieldrin_ng_g}}{a numeric vector}
-#'           \item{\code{Dieldrin_ppb}}{a logical vector}
-#'           \item{\samp{Dieldrin_uf__L}}{a numeric vector}
-#'           \item{\samp{Dimethoate_uf__L}}{a numeric vector}
-#'           \item{\code{Dimethylnaphthalene_2.6_ng_g}}{a numeric vector}
-#'           \item{\samp{Dimethylnaphthalene_26_uf__L}}{a numeric vector}
-#'           \item{\code{Dimethylphenanthrene_3.6_ng_g}}{a numeric vector}
-#'           \item{\samp{Dimethylphenanthrene_36_uf__L}}{a numeric vector}
-#'           \item{\code{Dioxathion._ng_g}}{a numeric vector}
-#'           \item{\samp{Dioxathion._uf__L}}{a numeric vector}
-#'           \item{\code{Dioxathion_ppb}}{a numeric vector}
-#'           \item{\samp{Disulfoton_uf__L}}{a numeric vector}
-#'           \item{\code{DO_uf_mg_L}}{a numeric vector}
-#'           \item{\code{DOC_f_mg_L}}{a numeric vector}
-#'           \item{\samp{DomoicAcid_Particulate__L}}{a numeric vector}
-#'           \item{\samp{DomoicAcid_uf__L}}{a numeric vector}
-#'           \item{\samp{Doxycycline_uf__L}}{a numeric vector}
-#'           \item{\code{DP_f_mg_L}}{a numeric vector}
-#'           \item{\code{DP_P_mg_L}}{a numeric vector}
-#'           \item{\code{E_coli_MPN_100_mL}}{a numeric vector}
-#'           \item{\code{Endosulfan_I_ng_g}}{a numeric vector}
-#'           \item{\samp{Endosulfan_I_uf__L}}{a numeric vector}
-#'           \item{\code{Endosulfan_II_ng_g}}{a numeric vector}
-#'           \item{\code{Endosulfan_II_ppb}}{a logical vector}
-#'           \item{\samp{Endosulfan_II_uf__L}}{a numeric vector}
-#'           \item{\code{Endosulfan_ppb}}{a logical vector}
-#'           \item{\code{Endosulfan_sulfate_ng_g}}{a numeric vector}
-#'           \item{\code{Endosulfan_Sulfate_ppb}}{a logical vector}
-#'           \item{\samp{Endosulfan_sulfate_uf__L}}{a numeric vector}
-#'           \item{\code{Endrin_Aldehyde_ng_g}}{a numeric vector}
-#'           \item{\code{Endrin_Aldehyde_ppb}}{a numeric vector}
-#'           \item{\samp{Endrin_Aldehyde_uf__L}}{a numeric vector}
-#'           \item{\code{Endrin_Ketone_ng_g}}{a numeric vector}
-#'           \item{\code{Endrin_Ketone_ppb}}{a logical vector}
-#'           \item{\samp{Endrin_Ketone_uf__L}}{a numeric vector}
-#'           \item{\code{Endrin_ppb}}{a logical vector}
-#'           \item{\samp{Endrin_uf__L}}{a numeric vector}
-#'           \item{\code{Endrin_uf_ng_g}}{a numeric vector}
-#'           \item{\code{Enterococci_MPN_100mL}}{a numeric vector}
-#'           \item{\code{Enterococcus_MPN_100_mL}}{a numeric vector}
-#'           \item{\samp{Erythromycin_H2O_uf__L}}{a numeric vector}
-#'           \item{\code{Esfenvalerate_ng_g}}{a numeric vector}
-#'           \item{\samp{Esfenvalerate_uf__L}}{a numeric vector}
-#'           \item{\code{EsfenvalerateFenvalerate_ng_g}}{a numeric vector}
-#'           \item{\samp{EsfenvalerateFenvalerate_uf__L}}{a numeric vector}
-#'           \item{\samp{EsfenvalerateFenvalerate1_uf__L}}{a logical vector}
-#'           \item{\samp{EsfenvalerateFenvalerate2_uf__L}}{a logical vector}
-#'           \item{\samp{Estradiol_17beta_uf__L}}{a numeric vector}
-#'           \item{\code{Ethion_ng_g}}{a numeric vector}
-#'           \item{\code{Ethion_ppb}}{a logical vector}
-#'           \item{\samp{Ethion_uf__L}}{a numeric vector}
-#'           \item{\code{Ethoprop_ng_g}}{a numeric vector}
-#'           \item{\code{Ethoprop_ppb}}{a logical vector}
-#'           \item{\samp{Ethoprop_uf__L}}{a numeric vector}
-#'           \item{\samp{Ethylbenzene_uf__L}}{a numeric vector}
-#'           \item{\code{F_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Famphur_ppb}}{a logical vector}
-#'           \item{\samp{Famphur_uf__L}}{a numeric vector}
-#'           \item{\samp{Fe__g}}{a numeric vector}
-#'           \item{\samp{Fe_f__L}}{a numeric vector}
-#'           \item{\samp{Fe_uf__L}}{a numeric vector}
-#'           \item{\code{Fenchlorphos_ng_g}}{a numeric vector}
-#'           \item{\samp{Fenchlorphos_uf__L}}{a numeric vector}
-#'           \item{\code{Fenitrothion_ng_g}}{a numeric vector}
-#'           \item{\samp{Fenitrothion_uf__L}}{a numeric vector}
-#'           \item{\code{Fenpropathrin_ppb}}{a logical vector}
-#'           \item{\samp{Fenpropathrin_uf__L}}{a numeric vector}
-#'           \item{\code{Fensulfothion_ng_g}}{a numeric vector}
-#'           \item{\samp{Fensulfothion_uf__L}}{a numeric vector}
-#'           \item{\code{Fenthion_ng_g}}{a numeric vector}
-#'           \item{\samp{Fenthion_uf__L}}{a numeric vector}
-#'           \item{\code{Fenvalerate_ng_g}}{a numeric vector}
-#'           \item{\samp{Fenvalerate_uf__L}}{a numeric vector}
-#'           \item{\code{Fipronil_ng_g}}{a numeric vector}
-#'           \item{\code{FipronilDesulfinyl_ng_g}}{a numeric vector}
-#'           \item{\code{FipronilSulfide_ng_g}}{a numeric vector}
-#'           \item{\code{FipronilSulfone_ng_g}}{a numeric vector}
-#'           \item{\code{Fluoranthene_ng_g}}{a numeric vector}
-#'           \item{\samp{Fluoranthene_uf__L}}{a numeric vector}
-#'           \item{\code{FluoranthenePyrenes_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{FluoranthenePyrenes_C1_uf__L}}{a numeric vector}
-#'           \item{\code{Fluorene_ng_g}}{a numeric vector}
-#'           \item{\samp{Fluorene_uf__L}}{a numeric vector}
-#'           \item{\code{Fluorenes_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{Fluorenes_C1_uf__L}}{a numeric vector}
-#'           \item{\code{Fluorenes_C2_ng_g}}{a numeric vector}
-#'           \item{\samp{Fluorenes_C2_uf__L}}{a numeric vector}
-#'           \item{\code{Fluorenes_C3_ng_g}}{a numeric vector}
-#'           \item{\samp{Fluorenes_C3_uf__L}}{a numeric vector}
-#'           \item{\samp{Fluoxetine_uf__L}}{a numeric vector}
-#'           \item{\code{Fluvalinate_ng_g}}{a numeric vector}
-#'           \item{\code{Fluvalinate_uf_ng_L}}{a numeric vector}
-#'           \item{\code{Fonofos_ng_g}}{a numeric vector}
-#'           \item{\code{Fonofos_ppb}}{a logical vector}
-#'           \item{\samp{Fonofos_uf__L}}{a numeric vector}
-#'           \item{\samp{Gemfibrozil_uf__L}}{a numeric vector}
-#'           \item{\code{Hardness_CaCO3_f_mg_L}}{a numeric vector}
-#'           \item{\code{Hardness_CaCO3_uf_mg_L}}{a numeric vector}
-#'           \item{\code{HCH_alpha._ng_g}}{a numeric vector}
-#'           \item{\samp{HCH_alpha._uf__L}}{a numeric vector}
-#'           \item{\code{HCH_beta_ng_g}}{a numeric vector}
-#'           \item{\samp{HCH_beta_uf__L}}{a numeric vector}
-#'           \item{\code{HCH_delta_ng_g}}{a numeric vector}
-#'           \item{\samp{HCH_delta_uf__L}}{a numeric vector}
-#'           \item{\code{HCH_gamma_ng_g}}{a numeric vector}
-#'           \item{\samp{HCH_gamma_uf__L}}{a numeric vector}
-#'           \item{\code{Heptachlor_epoxide_ng_g}}{a numeric vector}
-#'           \item{\samp{Heptachlor_epoxide_uf__L}}{a numeric vector}
-#'           \item{\code{Heptachlor_ng_g}}{a numeric vector}
-#'           \item{\code{Heptachlor_ppb}}{a logical vector}
-#'           \item{\samp{Heptachlor_uf__L}}{a numeric vector}
-#'           \item{\code{HeptachlorEpoxide_ppb}}{a logical vector}
-#'           \item{\code{Hexachlorobenzene_ng_g}}{a numeric vector}
-#'           \item{\code{Hexachlorobenzene_ppb}}{a logical vector}
-#'           \item{\samp{Hexachlorobenzene_uf__L}}{a numeric vector}
-#'           \item{\samp{Hexachlorobutadiene_uf__L}}{a numeric vector}
-#'           \item{\samp{Hg__g}}{a numeric vector}
-#'           \item{\code{Hg_f_ng_L}}{a numeric vector}
-#'           \item{\code{Hg_uf_mg_kg_FishTissue}}{a numeric vector}
-#'           \item{\code{Hg_uf_ng_L}}{a numeric vector}
-#'           \item{\code{HydroxideAlk_CaCO3_mg_L}}{a numeric vector}
-#'           \item{\samp{Ibuprofen_uf__L}}{a numeric vector}
-#'           \item{\code{Indeno.1.2.3.c.d.pyrene_ng_g}}{a numeric vector}
-#'           \item{\samp{Indeno.123cd.pyrene_uf__L}}{a numeric vector}
-#'           \item{\samp{Isopropylbenzene_uf__L}}{a numeric vector}
-#'           \item{\samp{Isopropyltoluene_p_uf__L}}{a numeric vector}
-#'           \item{\code{Jasmoline1_ng_g}}{a logical vector}
-#'           \item{\code{Jasmoline2_ng_g}}{a logical vector}
-#'           \item{\code{K_f_mg_L}}{a numeric vector}
-#'           \item{\code{K_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Leptophos_ppb}}{a logical vector}
-#'           \item{\samp{Leptophos_uf__L}}{a numeric vector}
-#'           \item{\samp{Lincomycin_uf__L}}{a numeric vector}
-#'           \item{\code{Malathion_ng_g}}{a numeric vector}
-#'           \item{\samp{Malathion_uf__L}}{a numeric vector}
-#'           \item{\code{Malathion_ug_L}}{a numeric vector}
-#'           \item{\code{MBAS_mg_L}}{a numeric vector}
-#'           \item{\code{MBAS_uf_mg_L}}{a numeric vector}
-#'           \item{\code{MeanAlkalinity}}{a numeric vector}
-#'           \item{\code{Merphos_ng_g}}{a numeric vector}
-#'           \item{\samp{Merphos_uf__L}}{a numeric vector}
-#'           \item{\samp{Methidathion_uf__L}}{a numeric vector}
-#'           \item{\code{Methoxychlor_ng_g}}{a numeric vector}
-#'           \item{\code{Methoxychlor_ppb}}{a logical vector}
-#'           \item{\samp{Methoxychlor_uf__L}}{a numeric vector}
-#'           \item{\code{Methyldibenzothiophene_4_ng_g}}{a numeric vector}
-#'           \item{\samp{Methyldibenzothiophene_4_uf__L}}{a numeric vector}
-#'           \item{\code{Methylfluoranthene_2_ng_g}}{a numeric vector}
-#'           \item{\samp{Methylfluoranthene_2_uf__L}}{a numeric vector}
-#'           \item{\code{Methylfluorene_1_ng_g}}{a numeric vector}
-#'           \item{\samp{Methylfluorene_1_uf__L}}{a numeric vector}
-#'           \item{\code{Methylnaphthalene_1_ng_g}}{a numeric vector}
-#'           \item{\samp{Methylnaphthalene_1_uf__L}}{a numeric vector}
-#'           \item{\code{Methylnaphthalene_2_ng_g}}{a numeric vector}
-#'           \item{\samp{Methylnaphthalene_2_uf__L}}{a numeric vector}
-#'           \item{\code{Methylphenanthrene_1_ng_g}}{a numeric vector}
-#'           \item{\samp{Methylphenanthrene_1_uf__L}}{a numeric vector}
-#'           \item{\code{Mevinphos_ng_g}}{a numeric vector}
-#'           \item{\code{Mevinphos_ppb}}{a numeric vector}
-#'           \item{\samp{Mevinphos_uf__L}}{a numeric vector}
-#'           \item{\code{Mg_f_mg_L}}{a numeric vector}
-#'           \item{\code{Mg_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLA_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLA_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLF_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLF_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLR_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLR_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLW_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLW_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLY_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinLY_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinRR_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinRR_uf__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinYR_Particulate__L}}{a numeric vector}
-#'           \item{\samp{MicrocystinYR_uf__L}}{a numeric vector}
-#'           \item{\code{Mirex_ng_g}}{a numeric vector}
-#'           \item{\code{Mirex_ppb}}{a logical vector}
-#'           \item{\samp{Mirex_uf__L}}{a numeric vector}
-#'           \item{\samp{Mn__g}}{a numeric vector}
-#'           \item{\samp{Mn_f__L}}{a numeric vector}
-#'           \item{\samp{Mn_uf__L}}{a numeric vector}
-#'           \item{\code{Molinate_ppb}}{a logical vector}
-#'           \item{\samp{Molinate_uf__L}}{a numeric vector}
-#'           \item{\code{Monobutyltin_Sn_ng_g}}{a numeric vector}
-#'           \item{\samp{MTBE_uf__L}}{a numeric vector}
-#'           \item{\code{Na_f_mg_L}}{a numeric vector}
-#'           \item{\code{Na_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Naled_ppb}}{a logical vector}
-#'           \item{\samp{Naled_uf__L}}{a numeric vector}
-#'           \item{\code{Naphthalene_ng_g}}{a numeric vector}
-#'           \item{\samp{Naphthalene_uf__L}}{a numeric vector}
-#'           \item{\code{Naphthalenes_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{Naphthalenes_C1_uf__L}}{a numeric vector}
-#'           \item{\code{Naphthalenes_C2_ng_g}}{a numeric vector}
-#'           \item{\samp{Naphthalenes_C2_uf__L}}{a numeric vector}
-#'           \item{\code{Naphthalenes_C3_ng_g}}{a numeric vector}
-#'           \item{\samp{Naphthalenes_C3_uf__L}}{a numeric vector}
-#'           \item{\code{Naphthalenes_C4_ng_g}}{a numeric vector}
-#'           \item{\samp{Naphthalenes_C4_uf__L}}{a numeric vector}
-#'           \item{\code{NH3_N_f_mg_L}}{a numeric vector}
-#'           \item{\code{NH3_N_mg_kg_ww}}{a numeric vector}
-#'           \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{Ni__g}}{a numeric vector}
-#'           \item{\code{Ni_f_mg_L}}{a numeric vector}
-#'           \item{\code{Ni_uf_mg_L}}{a numeric vector}
-#'           \item{\code{NO2_N_f_mg_L}}{a numeric vector}
-#'           \item{\code{NO2_N_uf_mg_L}}{a numeric vector}
-#'           \item{\code{NO2NO3_N_f_mg_L}}{a numeric vector}
-#'           \item{\code{NO2NO3_N_uf_mg_L}}{a numeric vector}
-#'           \item{\code{NO3_N_f_mg_L}}{a numeric vector}
-#'           \item{\code{NO3_N_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{Nodularin_Particulate__L}}{a numeric vector}
-#'           \item{\samp{Nodularin_uf__L}}{a numeric vector}
-#'           \item{\code{Nonachlor_cis_ng_g}}{a numeric vector}
-#'           \item{\samp{Nonachlor_cis_uf__L}}{a numeric vector}
-#'           \item{\code{Nonachlor_trans_ng_g}}{a numeric vector}
-#'           \item{\samp{Nonachlor_trans_uf__L}}{a numeric vector}
-#'           \item{\samp{Nonylphenol_uf__L}}{a numeric vector}
-#'           \item{\samp{Nonylphenolethoxylate_uf__L}}{a numeric vector}
-#'           \item{\code{O2Sat_uf_.}}{a numeric vector}
-#'           \item{\code{Oil_Grease_mg_L}}{a numeric vector}
-#'           \item{\samp{OkadaicAcid_Particulate__L}}{a numeric vector}
-#'           \item{\samp{OkadaicAcid_uf__L}}{a numeric vector}
-#'           \item{\code{oPO4_P_f_mg_L}}{a numeric vector}
-#'           \item{\code{oPO4_P_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Oxadiazon_ng_g}}{a numeric vector}
-#'           \item{\code{Oxadiazon_ppb}}{a numeric vector}
-#'           \item{\samp{Oxadiazon_uf__L}}{a numeric vector}
-#'           \item{\code{Oxychlordane_ng_g}}{a numeric vector}
-#'           \item{\samp{Oxychlordane_uf__L}}{a numeric vector}
-#'           \item{\samp{Oxytetracycline_uf__L}}{a numeric vector}
-#'           \item{\code{PAHs_ng_g}}{a numeric vector}
-#'           \item{\code{Parathion_Ethyl_ng_g}}{a numeric vector}
-#'           \item{\samp{Parathion_Ethyl_uf__L}}{a numeric vector}
-#'           \item{\code{Parathion_Methyl_ng_g}}{a numeric vector}
-#'           \item{\samp{Parathion_Methyl_uf__L}}{a numeric vector}
-#'           \item{\samp{Pb__g}}{a numeric vector}
-#'           \item{\code{Pb_f_mg_L}}{a numeric vector}
-#'           \item{\code{Pb_uf_mg_L}}{a numeric vector}
-#'           \item{\code{PBDE017_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE028_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE047_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE066_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE085_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE099_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE100_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE138_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE153_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE154_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE183_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE190_ng_g}}{a numeric vector}
-#'           \item{\code{PBDE209_ng_g}}{a numeric vector}
-#'           \item{\code{PCB_AROCLOR_1248_ng_g}}{a numeric vector}
-#'           \item{\code{PCB_AROCLOR_1254_ng_g}}{a numeric vector}
-#'           \item{\code{PCB_AROCLOR_1260_ng_g}}{a numeric vector}
-#'           \item{\code{PCB003_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB005_uf__L}}{a numeric vector}
-#'           \item{\code{PCB008_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB008_uf__L}}{a numeric vector}
-#'           \item{\samp{PCB015_uf__L}}{a numeric vector}
-#'           \item{\code{PCB018_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB018_uf__L}}{a numeric vector}
-#'           \item{\code{PCB027_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB027_uf__L}}{a numeric vector}
-#'           \item{\code{PCB028_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB028_uf__L}}{a numeric vector}
-#'           \item{\code{PCB029_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB029_uf__L}}{a numeric vector}
-#'           \item{\code{PCB031_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB031_uf__L}}{a numeric vector}
-#'           \item{\code{PCB033_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB033_uf__L}}{a numeric vector}
-#'           \item{\code{PCB037_ng_g}}{a numeric vector}
-#'           \item{\code{PCB044_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB044_uf__L}}{a numeric vector}
-#'           \item{\code{PCB049_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB049_uf__L}}{a numeric vector}
-#'           \item{\code{PCB052_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB052_uf__L}}{a numeric vector}
-#'           \item{\code{PCB056_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB056_uf__L}}{a numeric vector}
-#'           \item{\code{PCB060_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB060_uf__L}}{a numeric vector}
-#'           \item{\code{PCB064_ng_g}}{a numeric vector}
-#'           \item{\code{PCB066_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB066_uf__L}}{a numeric vector}
-#'           \item{\code{PCB070_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB070_uf__L}}{a numeric vector}
-#'           \item{\code{PCB074_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB074_uf__L}}{a numeric vector}
-#'           \item{\code{PCB077_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB077_uf__L}}{a numeric vector}
-#'           \item{\code{PCB081_ng_g}}{a numeric vector}
-#'           \item{\code{PCB087_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB087_uf__L}}{a numeric vector}
-#'           \item{\code{PCB095_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB095_uf__L}}{a numeric vector}
-#'           \item{\code{PCB097_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB097_uf__L}}{a numeric vector}
-#'           \item{\code{PCB099_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB099_uf__L}}{a numeric vector}
-#'           \item{\code{PCB101_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB101_uf__L}}{a numeric vector}
-#'           \item{\code{PCB105_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB105_uf__L}}{a numeric vector}
-#'           \item{\code{PCB110_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB110_uf__L}}{a numeric vector}
-#'           \item{\code{PCB114_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB114_uf__L}}{a numeric vector}
-#'           \item{\code{PCB118_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB118_uf__L}}{a numeric vector}
-#'           \item{\code{PCB119_ng_g}}{a numeric vector}
-#'           \item{\code{PCB123_ng_g}}{a numeric vector}
-#'           \item{\code{PCB126_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB126_uf__L}}{a numeric vector}
-#'           \item{\code{PCB128_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB128_uf__L}}{a numeric vector}
-#'           \item{\code{PCB137_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB137_uf__L}}{a numeric vector}
-#'           \item{\code{PCB138_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB138_uf__L}}{a numeric vector}
-#'           \item{\code{PCB141_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB141_uf__L}}{a numeric vector}
-#'           \item{\code{PCB146_ng_g}}{a numeric vector}
-#'           \item{\code{PCB149_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB149_uf__L}}{a numeric vector}
-#'           \item{\code{PCB151_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB151_uf__L}}{a numeric vector}
-#'           \item{\code{PCB153_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB153_uf__L}}{a numeric vector}
-#'           \item{\code{PCB156_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB156_uf__L}}{a numeric vector}
-#'           \item{\code{PCB157_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB157_uf__L}}{a numeric vector}
-#'           \item{\code{PCB158_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB158_uf__L}}{a numeric vector}
-#'           \item{\code{PCB167_ng_g}}{a numeric vector}
-#'           \item{\code{PCB168_132_ng_g}}{a numeric vector}
-#'           \item{\code{PCB168_ng_g}}{a numeric vector}
-#'           \item{\code{PCB169_ng_g}}{a numeric vector}
-#'           \item{\code{PCB170_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB170_uf__L}}{a numeric vector}
-#'           \item{\code{PCB174_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB174_uf__L}}{a numeric vector}
-#'           \item{\code{PCB177_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB177_uf__L}}{a numeric vector}
-#'           \item{\code{PCB180_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB180_uf__L}}{a numeric vector}
-#'           \item{\code{PCB183_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB183_uf__L}}{a numeric vector}
-#'           \item{\code{PCB187_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB187_uf__L}}{a numeric vector}
-#'           \item{\code{PCB189_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB189_uf__L}}{a numeric vector}
-#'           \item{\code{PCB194_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB194_uf__L}}{a numeric vector}
-#'           \item{\code{PCB195_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB195_uf__L}}{a numeric vector}
-#'           \item{\code{PCB198_199_ng_g}}{a numeric vector}
-#'           \item{\code{PCB200_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB200_uf__L}}{a numeric vector}
-#'           \item{\code{PCB201_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB201_uf__L}}{a numeric vector}
-#'           \item{\code{PCB203_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB203_uf__L}}{a numeric vector}
-#'           \item{\code{PCB206_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB206_uf__L}}{a numeric vector}
-#'           \item{\code{PCB209_ng_g}}{a numeric vector}
-#'           \item{\samp{PCB209_uf__L}}{a numeric vector}
-#'           \item{\code{Permethrin_cis_ng_g}}{a numeric vector}
-#'           \item{\samp{Permethrin_cis_uf__L}}{a numeric vector}
-#'           \item{\code{Permethrin_ng_g}}{a numeric vector}
-#'           \item{\code{Permethrin_trans_ng_g}}{a numeric vector}
-#'           \item{\samp{Permethrin_trans_uf__L}}{a numeric vector}
-#'           \item{\samp{Permethrin_uf__L}}{a numeric vector}
-#'           \item{\code{Perthane_ng_g}}{a numeric vector}
-#'           \item{\code{Perylene_ng_g}}{a numeric vector}
-#'           \item{\samp{Perylene_uf__L}}{a numeric vector}
-#'           \item{\code{pH}}{a numeric vector}
-#'           \item{\code{Phenanthrene_ng_g}}{a numeric vector}
-#'           \item{\samp{Phenanthrene_uf__L}}{a numeric vector}
-#'           \item{\code{PhenanthreneAnthracene_C1_ng_g}}{a numeric vector}
-#'           \item{\samp{PhenanthreneAnthracene_C1_uf__L}}{a numeric vector}
-#'           \item{\code{PhenanthreneAnthracene_C2_ng_g}}{a numeric vector}
-#'           \item{\samp{PhenanthreneAnthracene_C2_uf__L}}{a numeric vector}
-#'           \item{\code{PhenanthreneAnthracene_C3_ng_g}}{a numeric vector}
-#'           \item{\samp{PhenanthreneAnthracene_C3_uf__L}}{a numeric vector}
-#'           \item{\code{PhenanthreneAnthracene_C4_ng_g}}{a numeric vector}
-#'           \item{\samp{PhenanthreneAnthracene_C4_uf__L}}{a numeric vector}
-#'           \item{\samp{Pheo_a_Particulate__L}}{a numeric vector}
-#'           \item{\code{Phorate_ng_g}}{a numeric vector}
-#'           \item{\samp{Phorate_uf__L}}{a numeric vector}
-#'           \item{\samp{Phosmet_uf__L}}{a numeric vector}
-#'           \item{\code{Phosphamidon_ng_g}}{a numeric vector}
-#'           \item{\code{Phosphamidon_ppb}}{a logical vector}
-#'           \item{\samp{Phosphamidon_uf__L}}{a numeric vector}
-#'           \item{\code{PiperonylButoxide_ng_g}}{a numeric vector}
-#'           \item{\code{PO4_P_mg_kg}}{a numeric vector}
-#'           \item{\code{PO4_P_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Prallethrin_ng_g}}{a numeric vector}
-#'           \item{\samp{Prallethrin_uf__L}}{a numeric vector}
-#'           \item{\code{Prometon_ppb}}{a numeric vector}
-#'           \item{\samp{Prometon_uf__L}}{a numeric vector}
-#'           \item{\code{Prometryn_ppb}}{a logical vector}
-#'           \item{\samp{Prometryn_uf__L}}{a numeric vector}
-#'           \item{\code{Propazine_ppb}}{a numeric vector}
-#'           \item{\samp{Propazine_uf__L}}{a numeric vector}
-#'           \item{\samp{Propylbenzene_n_uf__L}}{a numeric vector}
-#'           \item{\code{Prothiofos_ppb}}{a logical vector}
-#'           \item{\code{Pyrene_ng_g}}{a numeric vector}
-#'           \item{\samp{Pyrene_uf__L}}{a numeric vector}
-#'           \item{\code{Pyrethrin1_ng_g}}{a logical vector}
-#'           \item{\code{Pyrethrin2_ng_g}}{a logical vector}
-#'           \item{\code{Resmethrin_ng_g}}{a numeric vector}
-#'           \item{\code{Ronnel_ppb}}{a logical vector}
-#'           \item{\samp{Roxithromycin_uf__L}}{a numeric vector}
-#'           \item{\code{S_mg_kg}}{a numeric vector}
-#'           \item{\code{Salinity_uf_ppt}}{a numeric vector}
-#'           \item{\samp{Sb__g}}{a numeric vector}
-#'           \item{\code{Sb_f_mg_L}}{a numeric vector}
-#'           \item{\code{Sb_uf_mg_L}}{a numeric vector}
-#'           \item{\samp{Se__g}}{a numeric vector}
-#'           \item{\code{Se_f_mg_L}}{a numeric vector}
-#'           \item{\code{Se_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Secbumeton_ppb}}{a logical vector}
-#'           \item{\samp{Secbumeton_uf__L}}{a numeric vector}
-#'           \item{\code{Si_SiO2_f_mg_L}}{a numeric vector}
-#'           \item{\code{Si_SiO2_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Simazine_ppb}}{a numeric vector}
-#'           \item{\samp{Simazine_uf__L}}{a numeric vector}
-#'           \item{\code{Simetryn_ppb}}{a logical vector}
-#'           \item{\samp{Simetryn_uf__L}}{a numeric vector}
-#'           \item{\code{SO4_f_mg_L}}{a numeric vector}
-#'           \item{\code{SO4_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Solids_.}}{a numeric vector}
-#'           \item{\code{Solids_mg_L}}{a numeric vector}
-#'           \item{\samp{SpecCond_uf__cm}}{a numeric vector}
-#'           \item{\samp{Sulfachloropyridazine_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfadimethoxine_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfamerazine_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfamethazine_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfamethizole_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfamethoxazole_uf__L}}{a numeric vector}
-#'           \item{\samp{Sulfathiazole_uf__L}}{a numeric vector}
-#'           \item{\code{Sulfotep_ng_g}}{a numeric vector}
-#'           \item{\code{Sulfotep_ppb}}{a logical vector}
-#'           \item{\samp{Sulfotep_uf__L}}{a numeric vector}
-#'           \item{\code{Sulprofos_ppb}}{a logical vector}
-#'           \item{\code{SuspSedConc_Particulate_mg_L}}{a numeric vector}
-#'           \item{\code{TDS_calc_mg_L}}{a numeric vector}
-#'           \item{\code{TDS_f_mg_L}}{a numeric vector}
-#'           \item{\code{Tedion_ng_g}}{a numeric vector}
-#'           \item{\samp{Tedion_uf__L}}{a numeric vector}
-#'           \item{\code{Temp_degC}}{a numeric vector}
-#'           \item{\code{Temp_degF}}{a numeric vector}
-#'           \item{\code{Terbufos_ppb}}{a logical vector}
-#'           \item{\samp{Terbufos_uf__L}}{a numeric vector}
-#'           \item{\code{Terbuthylazine_ppb}}{a numeric vector}
-#'           \item{\samp{Terbuthylazine_uf__L}}{a numeric vector}
-#'           \item{\code{Terbutryn_ppb}}{a logical vector}
-#'           \item{\samp{Terbutryn_uf__L}}{a numeric vector}
-#'           \item{\samp{Terphenyl_d14_Surrogate_uf__L}}{a numeric vector}
-#'           \item{\samp{Tetrachloroethane_1112_uf__L}}{a numeric vector}
-#'           \item{\samp{Tetrachloroethane_1122_uf__L}}{a numeric vector}
-#'           \item{\samp{Tetrachloroethylene_uf__L}}{a numeric vector}
-#'           \item{\code{Tetrachlorvinphos_ng_g}}{a numeric vector}
-#'           \item{\code{Tetrachlorvinphos_ppb}}{a logical vector}
-#'           \item{\samp{Tetrachlorvinphos_uf__L}}{a numeric vector}
-#'           \item{\samp{Tetracycline_uf__L}}{a numeric vector}
-#'           \item{\code{Tetradifon_ppb}}{a logical vector}
-#'           \item{\code{Thiobencarb_ppb}}{a numeric vector}
-#'           \item{\samp{Thiobencarb_uf__L}}{a numeric vector}
-#'           \item{\code{Thionazin_ng_g}}{a numeric vector}
-#'           \item{\code{Thionazin_ppb}}{a logical vector}
-#'           \item{\samp{Thionazin_uf__L}}{a numeric vector}
-#'           \item{\code{TKN_uf_mg_L}}{a numeric vector}
-#'           \item{\code{TN_mg_kg}}{a numeric vector}
-#'           \item{\code{TN_uf_mg_L}}{a numeric vector}
-#'           \item{\code{TOC_.}}{a numeric vector}
-#'           \item{\code{TOC_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Tokuthion_ng_g}}{a numeric vector}
-#'           \item{\samp{Tokuthion_uf__L}}{a numeric vector}
-#'           \item{\samp{Toluene_uf__L}}{a numeric vector}
-#'           \item{\code{Toxaphene_ng_g}}{a numeric vector}
-#'           \item{\code{TP_mg_L}}{a numeric vector}
-#'           \item{\code{TP_P_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Tributyltin_Sn_ng_g}}{a numeric vector}
-#'           \item{\samp{Trichlorfon_uf__L}}{a numeric vector}
-#'           \item{\samp{Trichlorobenzene_123_uf__L}}{a numeric vector}
-#'           \item{\samp{Trichlorobenzene_124_uf__L}}{a numeric vector}
-#'           \item{\samp{Trichloroethane_111_uf__L}}{a numeric vector}
-#'           \item{\samp{Trichloroethane_112_uf__L}}{a numeric vector}
-#'           \item{\samp{Trichloroethylene_uf__L}}{a numeric vector}
-#'           \item{\code{Trichloronate_ng_g}}{a numeric vector}
-#'           \item{\samp{Trichloronate_uf__L}}{a numeric vector}
-#'           \item{\code{Trichlorophon_ppb}}{a logical vector}
-#'           \item{\samp{Trichloropropane_123_uf__L}}{a numeric vector}
-#'           \item{\samp{Triclosan_uf__L}}{a numeric vector}
-#'           \item{\samp{Trimethoprim_uf__L}}{a numeric vector}
-#'           \item{\samp{Trimethylbenzene_124_uf__L}}{a numeric vector}
-#'           \item{\samp{Trimethylbenzene_135_uf__L}}{a numeric vector}
-#'           \item{\code{Trimethylnaphthalene_2.3.5_ng_g}}{a numeric vector}
-#'           \item{\samp{Trimethylnaphthalene_235_uf__L}}{a numeric vector}
-#'           \item{\code{TSS_uf_mg_L}}{a numeric vector}
-#'           \item{\code{Turb_NTU}}{a numeric vector}
-#'           \item{\samp{Tylosin_uf__L}}{a numeric vector}
-#'           \item{\samp{Xylene_mp_uf__L}}{a numeric vector}
-#'           \item{\samp{Xylene_o_uf__L}}{a numeric vector}
-#'           \item{\samp{Zn__g}}{a numeric vector}
-#'           \item{\code{Zn_f_mg_L}}{a numeric vector}
-#'           \item{\code{Zn_uf_mg_L}}{a numeric vector}
+#'               \item{\code{StationID_Master}}{a character vector}
+#'               \item{\code{SWAMP_Station_Code}}{a character vector}
+#'               \item{\code{CanonicalStationID}}{a character vector}
+#'               \item{\code{Stream_Name}}{a character vector}
+#'               \item{\code{SampleDate}}{a character vector}
+#'               \item{\code{County}}{a character vector}
+#'               \item{\code{Latitude}}{a numeric vector}
+#'               \item{\code{Longitude}}{a numeric vector}
+#'               \item{\code{CSCI}}{a numeric vector}
+#'               \item{\code{Group}}{a numeric vector}
+#'               \item{\code{CollDate}}{a character vector}
+#'               \item{\code{Acenaphthene_ng_g}}{a numeric vector}
+#'               \item{\code{Acenaphthene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Acenaphthylene_ng_g}}{a numeric vector}
+#'               \item{\code{Acenaphthylene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{AFDM_Algae_Particulate_g_m2}}{a numeric vector}
+#'               \item{\code{Ag_f_ug_L}}{a numeric vector}
+#'               \item{\code{Ag_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ag_uf_mg_kg}}{a numeric vector}
+#'               \item{\code{Al_f_ug_L}}{a numeric vector}
+#'               \item{\code{Al_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Al_uf_mg_kg}}{a numeric vector}
+#'               \item{\code{Aldrin_ng_g}}{a numeric vector}
+#'               \item{\code{Aldrin_ppb}}{a numeric vector}
+#'               \item{\code{Aldrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Alkalinity_mg_L}}{a numeric vector}
+#'               \item{\code{AlkalinityCaCO3_f_mg_L}}{a numeric vector}
+#'               \item{\code{AlkalinityCaCO3_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Allethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Allethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ametryn_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ametryne_ppb}}{a logical vector}
+#'               \item{\code{AnatoxinA_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{AnatoxinA_uf_ug_L}}{a numeric vector}
+#'               \item{\code{ANC_uf_ueq_L}}{a numeric vector}
+#'               \item{\code{Anthracene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Anthracene_uf_ng_g}}{a numeric vector}
+#'               \item{\code{As_f_mg_L}}{a numeric vector}
+#'               \item{\code{As_uf_mg_kg}}{a numeric vector}
+#'               \item{\code{As_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Aspon_ppb}}{a logical vector}
+#'               \item{\code{Aspon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Atraton_ppb}}{a numeric vector}
+#'               \item{\code{Atraton_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Atrazine_ppb}}{a numeric vector}
+#'               \item{\code{Atrazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Azinphos.ethyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Azinphos.methyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{AzinphosEthyl_ppb}}{a logical vector}
+#'               \item{\code{AzinphosMethyl_ppb}}{a logical vector}
+#'               \item{\code{B_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Ba_uf_mg_kg}}{a numeric vector}
+#'               \item{\code{Be_uf_mg_kg}}{a numeric vector}
+#'               \item{\code{Benz.a.anthracene_ng_g}}{a numeric vector}
+#'               \item{\code{Benz.a.anthracene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzo.a.pyrene_ng_g}}{a numeric vector}
+#'               \item{\code{Benzo.a.pyrene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzo.b.fluoranthene_ng_g}}{a numeric vector}
+#'               \item{\code{Benzo.b.fluoranthene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzo.e.pyrene_ng_g}}{a numeric vector}
+#'               \item{\code{Benzo.e.pyrene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzo.g.h.i.perylene_ng_g}}{a numeric vector}
+#'               \item{\code{Benzo.g.h.i.perylene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Benzo.k.fluoranthene_ng_g}}{a numeric vector}
+#'               \item{\code{Benzo.k.fluoranthene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Bicarbonate_HCO3_mg_L}}{a numeric vector}
+#'               \item{\code{Bifenthrin_ng_g}}{a numeric vector}
+#'               \item{\code{Bifenthrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Biphenyl_ng_g}}{a numeric vector}
+#'               \item{\code{Biphenyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{BOD_mg_L}}{a numeric vector}
+#'               \item{\code{Bolstar_ng_g}}{a numeric vector}
+#'               \item{\code{Bolstar_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Bromobenzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Bromochloromethane_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Bromodichloromethane_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Bromoform_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Butylbenzene_n_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Butylbenzene_sec_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Butylbenzene_tert_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ca_f_mg_L}}{a numeric vector}
+#'               \item{\code{Ca_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Caffeine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Carbadox_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Carbamazepine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Carbonate_CaCO3_mg_L}}{a numeric vector}
+#'               \item{\code{CarbonTetrachloride_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Carbophenothion_ppb}}{a numeric vector}
+#'               \item{\code{Carbophenothion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cd_ug_g}}{a numeric vector}
+#'               \item{\code{Cd_f_mg_L}}{a numeric vector}
+#'               \item{\code{Cd_uf_mg_L}}{a numeric vector}
+#'               \item{\code{CHECK.THIS}}{a numeric vector}
+#'               \item{\code{Chlor_a_mg_m2}}{a numeric vector}
+#'               \item{\code{Chlor_a_mg_m3}}{a numeric vector}
+#'               \item{\code{Chlor_a_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{Chlor_a_Particulate_mg_m2}}{a numeric vector}
+#'               \item{\code{Chlordane_alpha_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordane_cis_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordane_cis_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlordane_trans_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordane_trans_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlordene_alpha_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlordene_cis_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordene_cis_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlordene_gamma_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordene_gamma_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlordene_trans_ng_g}}{a numeric vector}
+#'               \item{\code{Chlordene_trans_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorfenvinphos_ppb}}{a logical vector}
+#'               \item{\code{Chlorfenvinphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorobenzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chloroform_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorotoluene_2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorotoluene_4_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorpyrifos_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorpyrifos_methyl_ng_g}}{a numeric vector}
+#'               \item{\code{Chlorpyrifos_methyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chlorpyrifos_ng_g}}{a numeric vector}
+#'               \item{\code{Chlorpyrifos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{ChlorpyrifosMethyl_ppb}}{a logical vector}
+#'               \item{\code{Chlortetracycline_uf_ug_L}}{a numeric vector}
+#'               \item{\code{ChlorthalDimethyl_ppb}}{a logical vector}
+#'               \item{\code{Chrysene_ng_g}}{a numeric vector}
+#'               \item{\code{Chrysene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chrysenes_C1_ng_g}}{a numeric vector}
+#'               \item{\code{Chrysenes_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chrysenes_C2_ng_g}}{a numeric vector}
+#'               \item{\code{Chrysenes_C2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Chrysenes_C3_ng_g}}{a numeric vector}
+#'               \item{\code{Chrysenes_C3_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cinerin1_ng_g}}{a logical vector}
+#'               \item{\code{Cinerin2_ng_g}}{a logical vector}
+#'               \item{\code{Ciodrin_ppb}}{a logical vector}
+#'               \item{\code{Ciodrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cl_f_mg_L}}{a numeric vector}
+#'               \item{\code{COD_mg_L}}{a numeric vector}
+#'               \item{\code{Coliform_Fecal_MPN_100mL}}{a numeric vector}
+#'               \item{\code{Coliform_Total_MPN_100mL}}{a numeric vector}
+#'               \item{\code{Color_True_CU}}{a numeric vector}
+#'               \item{\code{Coumaphos_ppb}}{a logical vector}
+#'               \item{\code{Coumaphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cr_ug_g}}{a numeric vector}
+#'               \item{\code{Cr_f_mg_L}}{a numeric vector}
+#'               \item{\code{Cr_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Cu_ug_g}}{a numeric vector}
+#'               \item{\code{Cu_f_mg_L}}{a numeric vector}
+#'               \item{\code{Cu_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Cyfluthrin_ng_g}}{a numeric vector}
+#'               \item{\code{Cyfluthrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cyhalothrin_lambda_ng_g}}{a numeric vector}
+#'               \item{\code{Cyhalothrin_lambda_ppb}}{a numeric vector}
+#'               \item{\code{Cyhalothrin_lambda_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Cypermethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Cypermethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dacthal_ng_g}}{a numeric vector}
+#'               \item{\code{Dacthal_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Danitol_ng_g}}{a numeric vector}
+#'               \item{\code{Danitol_uf_ug_L}}{a numeric vector}
+#'               \item{\code{DCBP.p.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDD.o.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDD.o.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDD.p.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDD.p.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDE.o.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDE.o.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDE.p.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDE.p.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDMU.p.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDMU.p.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDT.o.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDT.o.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDT.p.p.._ng_g}}{a numeric vector}
+#'               \item{\code{DDT.p.p.._uf_ug_L}}{a numeric vector}
+#'               \item{\code{DDTs_Total_ng_g}}{a numeric vector}
+#'               \item{\code{DDVP_ppb}}{a logical vector}
+#'               \item{\code{Deltamethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Deltamethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{DeltamethrinTralomethrin_ng_g}}{a numeric vector}
+#'               \item{\code{DeltamethrinTralomethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Demeton_o_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Demeton_s_ng_g}}{a numeric vector}
+#'               \item{\code{Demeton_s_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Demeton_ug_L}}{a logical vector}
+#'               \item{\code{DesmethylLR_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{DesmethylLR_uf_ug_L}}{a numeric vector}
+#'               \item{\code{DesmethylRR_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{DesmethylRR_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Diazinon_ng_g}}{a numeric vector}
+#'               \item{\code{Diazinon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Diazinon_ug_L}}{a numeric vector}
+#'               \item{\code{Dibenz.a.h.anthracene_ng_g}}{a numeric vector}
+#'               \item{\code{Dibenz.a.h.anthracene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibenzothiophene_ng_g}}{a numeric vector}
+#'               \item{\code{Dibenzothiophene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C1_ng_g}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C2_ng_g}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C3_ng_g}}{a numeric vector}
+#'               \item{\code{Dibenzothiophenes_C3_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibromo.3.Chloropropane_1.2..DBCP._uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibromochloromethane_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibromoethane_12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibromomethane_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dibutyltin_Sn_ng_g}}{a numeric vector}
+#'               \item{\code{DIC_f_mg_L}}{a numeric vector}
+#'               \item{\code{Dichlofenthion_ng_g}}{a numeric vector}
+#'               \item{\code{Dichlofenthion_ppb}}{a logical vector}
+#'               \item{\code{Dichlofenthion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichlorobenzene_12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichlorobenzene_13_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichlorobenzene_14_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloroethane_11_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloroethane_12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloroethylene_11_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloroethylene_cis_12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloroethylene_trans_.12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloropropane_12_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloropropane_13_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloropropane_22_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichloropropene_11_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dichlorvos_ng_g}}{a numeric vector}
+#'               \item{\code{Dichlorvos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dicrotophos_ppb}}{a logical vector}
+#'               \item{\code{Dicrotophos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dieldrin_ng_g}}{a numeric vector}
+#'               \item{\code{Dieldrin_ppb}}{a logical vector}
+#'               \item{\code{Dieldrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dimethoate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dimethylnaphthalene_2.6_ng_g}}{a numeric vector}
+#'               \item{\code{Dimethylnaphthalene_26_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dimethylphenanthrene_3.6_ng_g}}{a numeric vector}
+#'               \item{\code{Dimethylphenanthrene_36_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dioxathion._ng_g}}{a numeric vector}
+#'               \item{\code{Dioxathion._uf_ug_L}}{a numeric vector}
+#'               \item{\code{Dioxathion_ppb}}{a numeric vector}
+#'               \item{\code{Disulfoton_uf_ug_L}}{a numeric vector}
+#'               \item{\code{DO_uf_mg_L}}{a numeric vector}
+#'               \item{\code{DOC_f_mg_L}}{a numeric vector}
+#'               \item{\code{DomoicAcid_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{DomoicAcid_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Doxycycline_uf_ug_L}}{a numeric vector}
+#'               \item{\code{DP_f_mg_L}}{a numeric vector}
+#'               \item{\code{DP_P_mg_L}}{a numeric vector}
+#'               \item{\code{E_coli_MPN_100_mL}}{a numeric vector}
+#'               \item{\code{Endosulfan_I_ng_g}}{a numeric vector}
+#'               \item{\code{Endosulfan_I_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endosulfan_II_ng_g}}{a numeric vector}
+#'               \item{\code{Endosulfan_II_ppb}}{a logical vector}
+#'               \item{\code{Endosulfan_II_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endosulfan_ppb}}{a logical vector}
+#'               \item{\code{Endosulfan_sulfate_ng_g}}{a numeric vector}
+#'               \item{\code{Endosulfan_Sulfate_ppb}}{a logical vector}
+#'               \item{\code{Endosulfan_sulfate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endrin_Aldehyde_ng_g}}{a numeric vector}
+#'               \item{\code{Endrin_Aldehyde_ppb}}{a numeric vector}
+#'               \item{\code{Endrin_Aldehyde_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endrin_Ketone_ng_g}}{a numeric vector}
+#'               \item{\code{Endrin_Ketone_ppb}}{a logical vector}
+#'               \item{\code{Endrin_Ketone_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endrin_ppb}}{a logical vector}
+#'               \item{\code{Endrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Endrin_uf_ng_g}}{a numeric vector}
+#'               \item{\code{Enterococci_MPN_100mL}}{a numeric vector}
+#'               \item{\code{Enterococcus_MPN_100_mL}}{a numeric vector}
+#'               \item{\code{Erythromycin_H2O_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Esfenvalerate_ng_g}}{a numeric vector}
+#'               \item{\code{Esfenvalerate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{EsfenvalerateFenvalerate_ng_g}}{a numeric vector}
+#'               \item{\code{EsfenvalerateFenvalerate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{EsfenvalerateFenvalerate1_uf_ug_L}}{a logical vector}
+#'               \item{\code{EsfenvalerateFenvalerate2_uf_ug_L}}{a logical vector}
+#'               \item{\code{Estradiol_17beta_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ethion_ng_g}}{a numeric vector}
+#'               \item{\code{Ethion_ppb}}{a logical vector}
+#'               \item{\code{Ethion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ethoprop_ng_g}}{a numeric vector}
+#'               \item{\code{Ethoprop_ppb}}{a logical vector}
+#'               \item{\code{Ethoprop_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Ethylbenzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{F_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Famphur_ppb}}{a logical vector}
+#'               \item{\code{Famphur_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fe_ug_g}}{a numeric vector}
+#'               \item{\code{Fe_f_ug_L}}{a numeric vector}
+#'               \item{\code{Fe_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fenchlorphos_ng_g}}{a numeric vector}
+#'               \item{\code{Fenchlorphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fenitrothion_ng_g}}{a numeric vector}
+#'               \item{\code{Fenitrothion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fenpropathrin_ppb}}{a logical vector}
+#'               \item{\code{Fenpropathrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fensulfothion_ng_g}}{a numeric vector}
+#'               \item{\code{Fensulfothion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fenthion_ng_g}}{a numeric vector}
+#'               \item{\code{Fenthion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fenvalerate_ng_g}}{a numeric vector}
+#'               \item{\code{Fenvalerate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fipronil_ng_g}}{a numeric vector}
+#'               \item{\code{FipronilDesulfinyl_ng_g}}{a numeric vector}
+#'               \item{\code{FipronilSulfide_ng_g}}{a numeric vector}
+#'               \item{\code{FipronilSulfone_ng_g}}{a numeric vector}
+#'               \item{\code{Fluoranthene_ng_g}}{a numeric vector}
+#'               \item{\code{Fluoranthene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{FluoranthenePyrenes_C1_ng_g}}{a numeric vector}
+#'               \item{\code{FluoranthenePyrenes_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluorene_ng_g}}{a numeric vector}
+#'               \item{\code{Fluorene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluorenes_C1_ng_g}}{a numeric vector}
+#'               \item{\code{Fluorenes_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluorenes_C2_ng_g}}{a numeric vector}
+#'               \item{\code{Fluorenes_C2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluorenes_C3_ng_g}}{a numeric vector}
+#'               \item{\code{Fluorenes_C3_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluoxetine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Fluvalinate_ng_g}}{a numeric vector}
+#'               \item{\code{Fluvalinate_uf_ng_L}}{a numeric vector}
+#'               \item{\code{Fonofos_ng_g}}{a numeric vector}
+#'               \item{\code{Fonofos_ppb}}{a logical vector}
+#'               \item{\code{Fonofos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Gemfibrozil_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Hardness_CaCO3_f_mg_L}}{a numeric vector}
+#'               \item{\code{Hardness_CaCO3_uf_mg_L}}{a numeric vector}
+#'               \item{\code{HCH_alpha._ng_g}}{a numeric vector}
+#'               \item{\code{HCH_alpha._uf_ug_L}}{a numeric vector}
+#'               \item{\code{HCH_beta_ng_g}}{a numeric vector}
+#'               \item{\code{HCH_beta_uf_ug_L}}{a numeric vector}
+#'               \item{\code{HCH_delta_ng_g}}{a numeric vector}
+#'               \item{\code{HCH_delta_uf_ug_L}}{a numeric vector}
+#'               \item{\code{HCH_gamma_ng_g}}{a numeric vector}
+#'               \item{\code{HCH_gamma_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Heptachlor_epoxide_ng_g}}{a numeric vector}
+#'               \item{\code{Heptachlor_epoxide_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Heptachlor_ng_g}}{a numeric vector}
+#'               \item{\code{Heptachlor_ppb}}{a logical vector}
+#'               \item{\code{Heptachlor_uf_ug_L}}{a numeric vector}
+#'               \item{\code{HeptachlorEpoxide_ppb}}{a logical vector}
+#'               \item{\code{Hexachlorobenzene_ng_g}}{a numeric vector}
+#'               \item{\code{Hexachlorobenzene_ppb}}{a logical vector}
+#'               \item{\code{Hexachlorobenzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Hexachlorobutadiene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Hg_ug_g}}{a numeric vector}
+#'               \item{\code{Hg_f_ng_L}}{a numeric vector}
+#'               \item{\code{Hg_uf_mg_kg_FishTissue}}{a numeric vector}
+#'               \item{\code{Hg_uf_ng_L}}{a numeric vector}
+#'               \item{\code{HydroxideAlk_CaCO3_mg_L}}{a numeric vector}
+#'               \item{\code{Ibuprofen_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Indeno.1.2.3.c.d.pyrene_ng_g}}{a numeric vector}
+#'               \item{\code{Indeno.123cd.pyrene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Isopropylbenzene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Isopropyltoluene_p_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Jasmoline1_ng_g}}{a logical vector}
+#'               \item{\code{Jasmoline2_ng_g}}{a logical vector}
+#'               \item{\code{K_f_mg_L}}{a numeric vector}
+#'               \item{\code{K_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Leptophos_ppb}}{a logical vector}
+#'               \item{\code{Leptophos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Lincomycin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Malathion_ng_g}}{a numeric vector}
+#'               \item{\code{Malathion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Malathion_ug_L}}{a numeric vector}
+#'               \item{\code{MBAS_mg_L}}{a numeric vector}
+#'               \item{\code{MBAS_uf_mg_L}}{a numeric vector}
+#'               \item{\code{MeanAlkalinity}}{a numeric vector}
+#'               \item{\code{Merphos_ng_g}}{a numeric vector}
+#'               \item{\code{Merphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methidathion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methoxychlor_ng_g}}{a numeric vector}
+#'               \item{\code{Methoxychlor_ppb}}{a logical vector}
+#'               \item{\code{Methoxychlor_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methyldibenzothiophene_4_ng_g}}{a numeric vector}
+#'               \item{\code{Methyldibenzothiophene_4_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methylfluoranthene_2_ng_g}}{a numeric vector}
+#'               \item{\code{Methylfluoranthene_2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methylfluorene_1_ng_g}}{a numeric vector}
+#'               \item{\code{Methylfluorene_1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methylnaphthalene_1_ng_g}}{a numeric vector}
+#'               \item{\code{Methylnaphthalene_1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methylnaphthalene_2_ng_g}}{a numeric vector}
+#'               \item{\code{Methylnaphthalene_2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Methylphenanthrene_1_ng_g}}{a numeric vector}
+#'               \item{\code{Methylphenanthrene_1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Mevinphos_ng_g}}{a numeric vector}
+#'               \item{\code{Mevinphos_ppb}}{a numeric vector}
+#'               \item{\code{Mevinphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Mg_f_mg_L}}{a numeric vector}
+#'               \item{\code{Mg_uf_mg_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLA_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLA_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLF_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLF_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLR_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLR_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLW_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLW_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLY_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinLY_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinRR_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinRR_uf_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinYR_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{MicrocystinYR_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Mirex_ng_g}}{a numeric vector}
+#'               \item{\code{Mirex_ppb}}{a logical vector}
+#'               \item{\code{Mirex_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Mn_ug_g}}{a numeric vector}
+#'               \item{\code{Mn_f_ug_L}}{a numeric vector}
+#'               \item{\code{Mn_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Molinate_ppb}}{a logical vector}
+#'               \item{\code{Molinate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Monobutyltin_Sn_ng_g}}{a numeric vector}
+#'               \item{\code{MTBE_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Na_f_mg_L}}{a numeric vector}
+#'               \item{\code{Na_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Naled_ppb}}{a logical vector}
+#'               \item{\code{Naled_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Naphthalene_ng_g}}{a numeric vector}
+#'               \item{\code{Naphthalene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C1_ng_g}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C2_ng_g}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C3_ng_g}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C3_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C4_ng_g}}{a numeric vector}
+#'               \item{\code{Naphthalenes_C4_uf_ug_L}}{a numeric vector}
+#'               \item{\code{NH3_N_f_mg_L}}{a numeric vector}
+#'               \item{\code{NH3_N_mg_kg_ww}}{a numeric vector}
+#'               \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Ni_ug_g}}{a numeric vector}
+#'               \item{\code{Ni_f_mg_L}}{a numeric vector}
+#'               \item{\code{Ni_uf_mg_L}}{a numeric vector}
+#'               \item{\code{NO2_N_f_mg_L}}{a numeric vector}
+#'               \item{\code{NO2_N_uf_mg_L}}{a numeric vector}
+#'               \item{\code{NO2NO3_N_f_mg_L}}{a numeric vector}
+#'               \item{\code{NO2NO3_N_uf_mg_L}}{a numeric vector}
+#'               \item{\code{NO3_N_f_mg_L}}{a numeric vector}
+#'               \item{\code{NO3_N_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Nodularin_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{Nodularin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Nonachlor_cis_ng_g}}{a numeric vector}
+#'               \item{\code{Nonachlor_cis_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Nonachlor_trans_ng_g}}{a numeric vector}
+#'               \item{\code{Nonachlor_trans_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Nonylphenol_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Nonylphenolethoxylate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{O2Sat_uf_.}}{a numeric vector}
+#'               \item{\code{Oil_Grease_mg_L}}{a numeric vector}
+#'               \item{\code{OkadaicAcid_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{OkadaicAcid_uf_ug_L}}{a numeric vector}
+#'               \item{\code{oPO4_P_f_mg_L}}{a numeric vector}
+#'               \item{\code{oPO4_P_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Oxadiazon_ng_g}}{a numeric vector}
+#'               \item{\code{Oxadiazon_ppb}}{a numeric vector}
+#'               \item{\code{Oxadiazon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Oxychlordane_ng_g}}{a numeric vector}
+#'               \item{\code{Oxychlordane_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Oxytetracycline_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PAHs_ng_g}}{a numeric vector}
+#'               \item{\code{Parathion_Ethyl_ng_g}}{a numeric vector}
+#'               \item{\code{Parathion_Ethyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Parathion_Methyl_ng_g}}{a numeric vector}
+#'               \item{\code{Parathion_Methyl_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Pb_ug_g}}{a numeric vector}
+#'               \item{\code{Pb_f_mg_L}}{a numeric vector}
+#'               \item{\code{Pb_uf_mg_L}}{a numeric vector}
+#'               \item{\code{PBDE017_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE028_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE047_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE066_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE085_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE099_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE100_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE138_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE153_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE154_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE183_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE190_ng_g}}{a numeric vector}
+#'               \item{\code{PBDE209_ng_g}}{a numeric vector}
+#'               \item{\code{PCB_AROCLOR_1248_ng_g}}{a numeric vector}
+#'               \item{\code{PCB_AROCLOR_1254_ng_g}}{a numeric vector}
+#'               \item{\code{PCB_AROCLOR_1260_ng_g}}{a numeric vector}
+#'               \item{\code{PCB003_ng_g}}{a numeric vector}
+#'               \item{\code{PCB005_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB008_ng_g}}{a numeric vector}
+#'               \item{\code{PCB008_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB015_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB018_ng_g}}{a numeric vector}
+#'               \item{\code{PCB018_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB027_ng_g}}{a numeric vector}
+#'               \item{\code{PCB027_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB028_ng_g}}{a numeric vector}
+#'               \item{\code{PCB028_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB029_ng_g}}{a numeric vector}
+#'               \item{\code{PCB029_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB031_ng_g}}{a numeric vector}
+#'               \item{\code{PCB031_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB033_ng_g}}{a numeric vector}
+#'               \item{\code{PCB033_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB037_ng_g}}{a numeric vector}
+#'               \item{\code{PCB044_ng_g}}{a numeric vector}
+#'               \item{\code{PCB044_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB049_ng_g}}{a numeric vector}
+#'               \item{\code{PCB049_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB052_ng_g}}{a numeric vector}
+#'               \item{\code{PCB052_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB056_ng_g}}{a numeric vector}
+#'               \item{\code{PCB056_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB060_ng_g}}{a numeric vector}
+#'               \item{\code{PCB060_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB064_ng_g}}{a numeric vector}
+#'               \item{\code{PCB066_ng_g}}{a numeric vector}
+#'               \item{\code{PCB066_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB070_ng_g}}{a numeric vector}
+#'               \item{\code{PCB070_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB074_ng_g}}{a numeric vector}
+#'               \item{\code{PCB074_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB077_ng_g}}{a numeric vector}
+#'               \item{\code{PCB077_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB081_ng_g}}{a numeric vector}
+#'               \item{\code{PCB087_ng_g}}{a numeric vector}
+#'               \item{\code{PCB087_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB095_ng_g}}{a numeric vector}
+#'               \item{\code{PCB095_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB097_ng_g}}{a numeric vector}
+#'               \item{\code{PCB097_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB099_ng_g}}{a numeric vector}
+#'               \item{\code{PCB099_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB101_ng_g}}{a numeric vector}
+#'               \item{\code{PCB101_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB105_ng_g}}{a numeric vector}
+#'               \item{\code{PCB105_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB110_ng_g}}{a numeric vector}
+#'               \item{\code{PCB110_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB114_ng_g}}{a numeric vector}
+#'               \item{\code{PCB114_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB118_ng_g}}{a numeric vector}
+#'               \item{\code{PCB118_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB119_ng_g}}{a numeric vector}
+#'               \item{\code{PCB123_ng_g}}{a numeric vector}
+#'               \item{\code{PCB126_ng_g}}{a numeric vector}
+#'               \item{\code{PCB126_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB128_ng_g}}{a numeric vector}
+#'               \item{\code{PCB128_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB137_ng_g}}{a numeric vector}
+#'               \item{\code{PCB137_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB138_ng_g}}{a numeric vector}
+#'               \item{\code{PCB138_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB141_ng_g}}{a numeric vector}
+#'               \item{\code{PCB141_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB146_ng_g}}{a numeric vector}
+#'               \item{\code{PCB149_ng_g}}{a numeric vector}
+#'               \item{\code{PCB149_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB151_ng_g}}{a numeric vector}
+#'               \item{\code{PCB151_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB153_ng_g}}{a numeric vector}
+#'               \item{\code{PCB153_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB156_ng_g}}{a numeric vector}
+#'               \item{\code{PCB156_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB157_ng_g}}{a numeric vector}
+#'               \item{\code{PCB157_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB158_ng_g}}{a numeric vector}
+#'               \item{\code{PCB158_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB167_ng_g}}{a numeric vector}
+#'               \item{\code{PCB168_132_ng_g}}{a numeric vector}
+#'               \item{\code{PCB168_ng_g}}{a numeric vector}
+#'               \item{\code{PCB169_ng_g}}{a numeric vector}
+#'               \item{\code{PCB170_ng_g}}{a numeric vector}
+#'               \item{\code{PCB170_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB174_ng_g}}{a numeric vector}
+#'               \item{\code{PCB174_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB177_ng_g}}{a numeric vector}
+#'               \item{\code{PCB177_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB180_ng_g}}{a numeric vector}
+#'               \item{\code{PCB180_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB183_ng_g}}{a numeric vector}
+#'               \item{\code{PCB183_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB187_ng_g}}{a numeric vector}
+#'               \item{\code{PCB187_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB189_ng_g}}{a numeric vector}
+#'               \item{\code{PCB189_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB194_ng_g}}{a numeric vector}
+#'               \item{\code{PCB194_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB195_ng_g}}{a numeric vector}
+#'               \item{\code{PCB195_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB198_199_ng_g}}{a numeric vector}
+#'               \item{\code{PCB200_ng_g}}{a numeric vector}
+#'               \item{\code{PCB200_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB201_ng_g}}{a numeric vector}
+#'               \item{\code{PCB201_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB203_ng_g}}{a numeric vector}
+#'               \item{\code{PCB203_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB206_ng_g}}{a numeric vector}
+#'               \item{\code{PCB206_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PCB209_ng_g}}{a numeric vector}
+#'               \item{\code{PCB209_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Permethrin_cis_ng_g}}{a numeric vector}
+#'               \item{\code{Permethrin_cis_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Permethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Permethrin_trans_ng_g}}{a numeric vector}
+#'               \item{\code{Permethrin_trans_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Permethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Perthane_ng_g}}{a numeric vector}
+#'               \item{\code{Perylene_ng_g}}{a numeric vector}
+#'               \item{\code{Perylene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{pH}}{a numeric vector}
+#'               \item{\code{Phenanthrene_ng_g}}{a numeric vector}
+#'               \item{\code{Phenanthrene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C1_ng_g}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C1_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C2_ng_g}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C2_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C3_ng_g}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C3_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C4_ng_g}}{a numeric vector}
+#'               \item{\code{PhenanthreneAnthracene_C4_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Pheo_a_Particulate_ug_L}}{a numeric vector}
+#'               \item{\code{Phorate_ng_g}}{a numeric vector}
+#'               \item{\code{Phorate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Phosmet_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Phosphamidon_ng_g}}{a numeric vector}
+#'               \item{\code{Phosphamidon_ppb}}{a logical vector}
+#'               \item{\code{Phosphamidon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{PiperonylButoxide_ng_g}}{a numeric vector}
+#'               \item{\code{PO4_P_mg_kg}}{a numeric vector}
+#'               \item{\code{PO4_P_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Prallethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Prallethrin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Prometon_ppb}}{a numeric vector}
+#'               \item{\code{Prometon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Prometryn_ppb}}{a logical vector}
+#'               \item{\code{Prometryn_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Propazine_ppb}}{a numeric vector}
+#'               \item{\code{Propazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Propylbenzene_n_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Prothiofos_ppb}}{a logical vector}
+#'               \item{\code{Pyrene_ng_g}}{a numeric vector}
+#'               \item{\code{Pyrene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Pyrethrin1_ng_g}}{a logical vector}
+#'               \item{\code{Pyrethrin2_ng_g}}{a logical vector}
+#'               \item{\code{Resmethrin_ng_g}}{a numeric vector}
+#'               \item{\code{Ronnel_ppb}}{a logical vector}
+#'               \item{\code{Roxithromycin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{S_mg_kg}}{a numeric vector}
+#'               \item{\code{Salinity_uf_ppt}}{a numeric vector}
+#'               \item{\code{Sb_ug_g}}{a numeric vector}
+#'               \item{\code{Sb_f_mg_L}}{a numeric vector}
+#'               \item{\code{Sb_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Se_ug_g}}{a numeric vector}
+#'               \item{\code{Se_f_mg_L}}{a numeric vector}
+#'               \item{\code{Se_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Secbumeton_ppb}}{a logical vector}
+#'               \item{\code{Secbumeton_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Si_SiO2_f_mg_L}}{a numeric vector}
+#'               \item{\code{Si_SiO2_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Simazine_ppb}}{a numeric vector}
+#'               \item{\code{Simazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Simetryn_ppb}}{a logical vector}
+#'               \item{\code{Simetryn_uf_ug_L}}{a numeric vector}
+#'               \item{\code{SO4_f_mg_L}}{a numeric vector}
+#'               \item{\code{SO4_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Solids_.}}{a numeric vector}
+#'               \item{\code{Solids_mg_L}}{a numeric vector}
+#'               \item{\code{SpecCond_uf_uS_cm}}{a numeric vector}
+#'               \item{\code{Sulfachloropyridazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfadimethoxine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfamerazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfamethazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfamethizole_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfamethoxazole_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfathiazole_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulfotep_ng_g}}{a numeric vector}
+#'               \item{\code{Sulfotep_ppb}}{a logical vector}
+#'               \item{\code{Sulfotep_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Sulprofos_ppb}}{a logical vector}
+#'               \item{\code{SuspSedConc_Particulate_mg_L}}{a numeric vector}
+#'               \item{\code{TDS_calc_mg_L}}{a numeric vector}
+#'               \item{\code{TDS_f_mg_L}}{a numeric vector}
+#'               \item{\code{Tedion_ng_g}}{a numeric vector}
+#'               \item{\code{Tedion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Temp_degC}}{a numeric vector}
+#'               \item{\code{Temp_degF}}{a numeric vector}
+#'               \item{\code{Terbufos_ppb}}{a logical vector}
+#'               \item{\code{Terbufos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Terbuthylazine_ppb}}{a numeric vector}
+#'               \item{\code{Terbuthylazine_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Terbutryn_ppb}}{a logical vector}
+#'               \item{\code{Terbutryn_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Terphenyl_d14_Surrogate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetrachloroethane_1112_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetrachloroethane_1122_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetrachloroethylene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetrachlorvinphos_ng_g}}{a numeric vector}
+#'               \item{\code{Tetrachlorvinphos_ppb}}{a logical vector}
+#'               \item{\code{Tetrachlorvinphos_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetracycline_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Tetradifon_ppb}}{a logical vector}
+#'               \item{\code{Thiobencarb_ppb}}{a numeric vector}
+#'               \item{\code{Thiobencarb_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Thionazin_ng_g}}{a numeric vector}
+#'               \item{\code{Thionazin_ppb}}{a logical vector}
+#'               \item{\code{Thionazin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{TKN_uf_mg_L}}{a numeric vector}
+#'               \item{\code{TN_mg_kg}}{a numeric vector}
+#'               \item{\code{TN_uf_mg_L}}{a numeric vector}
+#'               \item{\code{TOC_.}}{a numeric vector}
+#'               \item{\code{TOC_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Tokuthion_ng_g}}{a numeric vector}
+#'               \item{\code{Tokuthion_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Toluene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Toxaphene_ng_g}}{a numeric vector}
+#'               \item{\code{TP_mg_L}}{a numeric vector}
+#'               \item{\code{TP_P_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Tributyltin_Sn_ng_g}}{a numeric vector}
+#'               \item{\code{Trichlorfon_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichlorobenzene_123_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichlorobenzene_124_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichloroethane_111_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichloroethane_112_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichloroethylene_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichloronate_ng_g}}{a numeric vector}
+#'               \item{\code{Trichloronate_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trichlorophon_ppb}}{a logical vector}
+#'               \item{\code{Trichloropropane_123_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Triclosan_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trimethoprim_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trimethylbenzene_124_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trimethylbenzene_135_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Trimethylnaphthalene_2.3.5_ng_g}}{a numeric vector}
+#'               \item{\code{Trimethylnaphthalene_235_uf_ug_L}}{a numeric vector}
+#'               \item{\code{TSS_uf_mg_L}}{a numeric vector}
+#'               \item{\code{Turb_NTU}}{a numeric vector}
+#'               \item{\code{Tylosin_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Xylene_mp_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Xylene_o_uf_ug_L}}{a numeric vector}
+#'               \item{\code{Zn_ug_g}}{a numeric vector}
+#'               \item{\code{Zn_f_mg_L}}{a numeric vector}
+#'               \item{\code{Zn_uf_mg_L}}{a numeric vector}
 #' }
 #' @source example data
 "data_CoOccur_CA"
@@ -793,7 +1340,7 @@
 #' 
 #' @description A dataset from California with example biological, chemical, habitat, and geo-physical parameters.
 #' 
-#' @format A data frame with 351 rows and 285 variables:
+#' @format A data frame with 336 rows and 307 variables:
 #' \describe{
 #'           \item{\code{StationID_Master}}{}
 #'           \item{\code{Group}}{a numeric vector}
@@ -832,7 +1379,6 @@
 #'           \item{\code{alphaHexachlorocyclohexane_uf_ug_L}}{a logical vector}
 #'           \item{\code{Aluminum_f_mg_L}}{a logical vector}
 #'           \item{\code{Aluminum_uf_ug_L}}{a numeric vector}
-#'           \item{\code{Ammonia_N_calc_mg_kg}}{a logical vector}
 #'           \item{\code{Aniline_uf_ug_L}}{a logical vector}
 #'           \item{\code{Anthracene_uf_ug_L}}{a logical vector}
 #'           \item{\code{Antimony_f_mg_L}}{a numeric vector}
@@ -873,8 +1419,6 @@
 #'           \item{\code{CaCO3_calc_mg_L}}{a logical vector}
 #'           \item{\code{CaCO3_f_mg_L}}{a logical vector}
 #'           \item{\code{CaCO3_mg_L}}{a numeric vector}
-#'           \item{\code{CaCO3_other_mg_L}}{a logical vector}
-#'           \item{\code{CaCO3_uf_mg_L}}{a numeric vector}
 #'           \item{\code{Cadmium_calc_mg_kg}}{a logical vector}
 #'           \item{\code{Cadmium_f_mg_L}}{a numeric vector}
 #'           \item{\code{Cadmium_uf_mg_L}}{a numeric vector}
@@ -942,9 +1486,7 @@
 #'           \item{\code{Ethyl_p_nitrophenylPhenylphosphorothioate_uf_ug_L}}{a logical vector}
 #'           \item{\code{Fensulfothion_uf_ug_L}}{a logical vector}
 #'           \item{\code{Fenthion_uf_ug_L}}{a logical vector}
-#'           \item{\code{Flow_calc_cfs}}{a logical vector}
 #'           \item{\code{Flow_cfs}}{a numeric vector}
-#'           \item{\code{Flow_ft_sec}}{a numeric vector}
 #'           \item{\code{Fluoranthene_uf_ug_L}}{a logical vector}
 #'           \item{\code{Fluorene_uf_ug_L}}{a logical vector}
 #'           \item{\code{Fluoride_f_mg_L}}{a logical vector}
@@ -998,7 +1540,6 @@
 #'           \item{\code{N_nitrosodiphenylamine_uf_ug_L}}{a logical vector}
 #'           \item{\code{Naled_uf_ug_L}}{a logical vector}
 #'           \item{\code{Naphthalene_uf_ug_L}}{a logical vector}
-#'           \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
 #'           \item{\code{Nickel_calc_mg_kg}}{a logical vector}
 #'           \item{\code{Nickel_f_mg_L}}{a logical vector}
 #'           \item{\code{Nickel_uf_ug_L}}{a logical vector}
@@ -1049,7 +1590,6 @@
 #'           \item{\code{Sodium_uf_mg_L}}{a numeric vector}
 #'           \item{\code{SolidsInSediment_calc_.}}{a logical vector}
 #'           \item{\code{SpecCond_umhos_cm}}{a numeric vector}
-#'           \item{\code{StreamWidth_ft}}{a numeric vector}
 #'           \item{\code{Strontium_f_mg_L}}{a logical vector}
 #'           \item{\code{Sulfate_uf_mg_L}}{a numeric vector}
 #'           \item{\code{TDS_calc_mg_L}}{a logical vector}
@@ -1071,7 +1611,6 @@
 #'           \item{\code{Turbidity_NTU}}{a numeric vector}
 #'           \item{\code{Uranium_natural_f_ug_L}}{a logical vector}
 #'           \item{\code{Uranium_Natural_uf_pCi_L}}{a logical vector}
-#'           \item{\code{Uranium_Natural_uf_ug_L}}{a logical vector}
 #'           \item{\code{Vanadium_f_mg_L}}{a logical vector}
 #'           \item{\code{Vanadium_uf_mg_L}}{a logical vector}
 #'           \item{\code{Velocity_ft_sec}}{a numeric vector}
@@ -1080,6 +1619,36 @@
 #'           \item{\code{Zinc_f_mg_L}}{a numeric vector}
 #'           \item{\code{Zinc_uf_mg_L}}{a numeric vector}
 #'           \item{\code{Zirconium_95_uf_pCi_L}}{a logical vector}
+#'           \item{\code{Alkalinity_bicarbonate_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Alkalinity_carbonate_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Alkalinity_hydroxide_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Alkalinity_total_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Barium_cmpds_f_mg_L}}{a numeric vector}
+#'           \item{\code{CaCO3_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Chlorophyll_pheophytin_uf_ratio}}{a numeric vector}
+#'           \item{\code{Depth_unk}}{a numeric vector}
+#'           \item{\code{DO_f_unk}}{a numeric vector}
+#'           \item{\code{DOSat_f_.}}{a numeric vector}
+#'           \item{\code{DOSat_f_unk}}{a numeric vector}
+#'           \item{\code{EventCond_none}}{a numeric vector}
+#'           \item{\code{Fines_lt2mm_pct_Reach}}{a numeric vector}
+#'           \item{\code{Fines_lt2mm_pct_Riffle}}{a numeric vector}
+#'           \item{\code{Flow_unk}}{a numeric vector}
+#'           \item{\code{Hardness_CaCO3_MgCO3_uf_mg_L}}{a numeric vector}
+#'           \item{\code{NH3_N_calc_mg_kg}}{a numeric vector}
+#'           \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
+#'           \item{\code{SpecCond_unk}}{a numeric vector}
+#'           \item{\code{StreamCrossSectArea_unk}}{a numeric vector}
+#'           \item{\code{StreamWidth_ft}}{a numeric vector}
+#'           \item{\code{StreamWidth_unk}}{a numeric vector}
+#'           \item{\code{TDS_f_unk}}{a numeric vector}
+#'           \item{\code{TDS_uf_mg_L}}{a numeric vector}
+#'           \item{\code{Temp_air_degC}}{a numeric vector}
+#'           \item{\code{Temp_air_unk}}{a numeric vector}
+#'           \item{\code{Temp_unk}}{a numeric vector}
+#'           \item{\code{Turbidity_unk}}{a numeric vector}
+#'           \item{\code{Uranium_natural_uf_ug_L}}{a numeric vector}
+#'           \item{\code{Velocity_unk}}{a numeric vector}
 #' }
 #' @source example data
 "data_CoOccur_AZ_Hi"           
@@ -1405,434 +1974,99 @@
 #' @source example data
 "data_CoOccur_AZ_Lo"           
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
-# data_SSD_permethrin ####
-#' @title SSD example data (permethrin)
+
+# data_GIS_AZ_Outline ####
+#' @title AZ state outline
 #' 
-#' @description A dataset with example benthic macroinvertebrate data for permethrin to be used with the SSD function.
+#' @description A dataset with example GIS state outline of Arizona  
+#' for use with the getSiteInfo function.  1 row with 51 columns.
 #' 
-#' @format A data frame with 48 rows and 2 variables:
+#' @format Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
+#' 
 #' \describe{
-#'           \item{Taxa}{Taxa names}
-#'           \item{Exposure}{Exposure mg/L}
-#' }
+#'..@ data       :'data.frame':	1 obs. of  51 variables:
+#'  .. ..$ AREA      : num 113713
+#'.. ..$ STATE_NAME: Factor w/ 1 level "Arizona": 1
+#'.. ..$ STATE_FIPS: Factor w/ 1 level "04": 1
+#'.. ..$ SUB_REGION: Factor w/ 1 level "Mtn": 1
+#'.. ..$ STATE_ABBR: Factor w/ 1 level "AZ": 1
+#'.. ..$ POP1990   : Factor w/ 1 level "3665228": 1
+#'.. ..$ POP1999   : Factor w/ 1 level "4790311": 1
+#'.. ..$ POP90_SQMI: int 32
+#'.. ..$ HOUSEHOLDS: int 1368843
+#'.. ..$ MALES     : int 1810691
+#'.. ..$ FEMALES   : int 1854537
+#'.. ..$ WHITE     : int 2963186
+#'.. ..$ BLACK     : int 110524
+#'.. ..$ AMERI_ES  : int 203527
+#'.. ..$ ASIAN_PI  : int 55206
+#'.. ..$ OTHER     : int 332785
+#'.. ..$ HISPANIC  : int 688338
+#'.. ..$ AGE_UNDER5: int 292859
+#'.. ..$ AGE_5_17  : int 688260
+#'.. ..$ AGE_18_29 : int 710728
+#'.. ..$ AGE_30_49 : int 1038130
+#'.. ..$ AGE_50_64 : int 456477
+#'.. ..$ AGE_65_UP : int 478774
+#'.. ..$ NEVERMARRY: int 723628
+#'.. ..$ MARRIED   : int 1576632
+#'.. ..$ SEPARATED : int 57025
+#'.. ..$ WIDOWED   : int 182501
+#'.. ..$ DIVORCED  : int 292486
+#'.. ..$ HSEHLD_1_M: int 148181
+#'.. ..$ HSEHLD_1_F: int 189500
+#'.. ..$ MARHH_CHD : int 348392
+#'.. ..$ MARHH_NO_C: int 399414
+#'.. ..$ MHH_CHILD : int 29655
+#'.. ..$ FHH_CHILD : int 99609
+#'.. ..$ HSE_UNITS : int 1659430
+#'
+#'.. ..$ VACANT    : int 290587
+#'. ..$ OWNER_OCC : int 878561
+#'.. ..$ RENTER_OCC: int 490282
+#'.. ..$ MEDIAN_VAL: int 80100
+#'.. ..$ MEDIANRENT: int 370
+#'.. ..$ UNITS_1DET: int 867884
+#'.. ..$ UNITS_1ATT: int 109989
+#'.. ..$ UNITS2    : int 28826
+#'.. ..$ UNITS3_9  : int 120656
+#'.. ..$ UNITS10_49: int 153822
+#'.. ..$ UNITS50_UP: int 103386
+#'.. ..$ MOBILEHOME: int 250597
+#'.. ..$ NO_FARMS87: int 7669
+#'.. ..$ AVG_SIZE87: int 4732
+#'.. ..$ CROP_ACR87: int 1453852
+#'.. ..$ AVG_SALE87: int 212354
+#'..@ polygons   :List of 1
+#'.. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
+#'.. .. .. ..@ Polygons :List of 1
+#'.. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
+#'.. .. .. .. .. .. ..@ labpt  : num [1:2] -1363532 -559198
+#'.. .. .. .. .. .. ..@ area   : num 2.95e+11
+#'.. .. .. .. .. .. ..@ hole   : logi FALSE
+#'.. .. .. .. .. .. ..@ ringDir: int 1
+#'.. .. .. .. .. .. ..@ coords : num [1:153, 1:2] -1637983 -1641135 -1645795 -1647744 -1648474 ...
+#'.. .. .. ..@ plotOrder: int 1
+#'.. .. .. ..@ labpt    : num [1:2] -1363532 -559198
+#'.. .. .. ..@ ID       : chr "0"
+#'.. .. .. ..@ area     : num 2.95e+11
+#'..@ plotOrder  : int 1
+#'..@ bbox       : num [1:2, 1:2] -1676669 -931786 -1094035 -209591
+#'.. ..- attr(*, "dimnames")=List of 2
+#'.. .. ..$ : chr [1:2] "x" "y"
+#'.. .. ..$ : chr [1:2] "min" "max"
+#'..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
+#'.. .. ..@ projargs: chr "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+#'}
+#' 
 #' @source example data
-"data_SSD_permethrin"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_SSD_generator ####
-#' @title SSD example data (generator file)
-#' 
-#' @description A dataset with example benthic macroinvertebrate data from 
-#' USEPA ssd_generator_v1.xlsm file to be used with the SSD function.
-#' 
-#' https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
-#' 
-#' @format A data frame with 5 rows and 3 variables:
-#' \describe{
-#'           \item{Taxa}{Taxa names}
-#'           \item{Exposure}{Exposure mg/L}
-#'           \item{ResponseType}{Response type; LC50}
-#' }
-#' @source example data
-"data_SSD_generator"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_Sites ####
-#' @title Sites example data
-#' 
-#' @description A dataset with example site information for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 2,233 observations on the following 23 variables:
-#' \describe{
-#'           \item{STATION_CD}{Station Code}
-#'           \item{StationRID}{a numeric vector}
-#'           \item{StationType}{a vector}
-#'           \item{clust.hi}{a vector}
-#'           \item{clust.lo}{a vector}
-#'           \item{HUC08}{8 digit Hydrologic Unit Code}
-#'           \item{FLAG}{Flag}
-#'           \item{InvRegCOMMENT}{Flag}
-#'           \item{InvRegFINAL}{Flag}
-#'           \item{UTM_EAST}{UTM Easting}
-#'           \item{UTM_NORTH}{UTM Northing}
-#'           \item{UTM_ZONE}{UTM Zone \code{11N} \code{12N}}
-#'           \item{Elev}{Elevation}
-#'           \item{ReferenceStatus}{Reference Status \code{reference} \code{Reference}}
-#'           \item{Year}{Year}
-#'           \item{StationID_Master}{StationID Master Code}
-#'           \item{FinalLatitude}{Final Latitude}
-#'           \item{FinalLongitude}{Final Longitude}
-#'           \item{WaterbodyName}{Waterbody Name}
-#'           \item{GIS_County}{County; derived from GIS }
-#'           \item{CARefSite_2017}{a character vector}
-#'           \item{COMID_NHD2}{a numeric vector}
-#'           \item{ElevCategory}{Elevation Category; Hi or Lo, break point at 5,000 ft}
-#'           \item{FlowRegime}{a vector}
-#            \item{COMID}}{Associated NHD+v2 COMID}
-#            \item{COUNTY_NAME}}{County Name}
-#           \item{LATITUDE}}{Latitude}
-#           \item{LONGITUDE}}{Longitude}
-#           \item{STATION_NAME}{Station Name}
-#           \item{STATION_TYPE}{Station Type}
-#' }
-#' @source example data
-"data_Sites"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_ReachMod ####
-#' @title Reach modified status example data
-#' 
-#' @description A dataset with example reach modified status for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 1,428 rows and 3 variables:
-#' \describe{
-#'           \item{COMID}{NHDplus COMID}
-#'           \item{ReachModStatus}{Reach modified flow status}
-#'           \item{ModReason}{Reach modified flow reason}
-#' }
-#' @source example data
-"data_ReachMod"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_303d ####
-#' @title 303d listing example data
-#' 
-#' @description A dataset with example 303d listings for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 1,536 rows and 5 variables:
-#' \describe{
-#'           \item{ComID}{NHDplus COMID}
-#'           \item{WATER.BODY.NAME}{Waterbody Name}
-#'           \item{POLLUTANT}{Pollutant}
-#'           \item{FINAL.LISTING.DECISION}{Final listing decision}
-#'           \item{ElevCategory}{Elevation Category}
-#' }
-#' @source example data
-"data_303d"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_Cluster_Hi ####
-#' @title High elevation cluster example data
-#' 
-#' @description A dataset with example cluster data for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 5,783 rows and 96 variables:
-#' \describe{
-#'            \item{\code{COMID}}{NHD+ COMID}
-#'            \item{\code{Al2O3Cat}}{a numeric vector}
-#'            \item{\code{Al2O3Ws}}{a numeric vector}
-#'            \item{\code{BFICat}}{a numeric vector}
-#'            \item{\code{BFIWs}}{a numeric vector}
-#'            \item{\code{CompStrgthCat}}{a numeric vector}
-#'            \item{\code{CompStrgthWs}}{a numeric vector}
-#'            \item{\code{KffactCat}}{a numeric vector}
-#'            \item{\code{KffactWs}}{a numeric vector}
-#'            \item{\code{Na2OWs}}{a numeric vector}
-#'            \item{\code{PctSilicicWs}}{a numeric vector}
-#'            \item{\code{SandCat}}{a numeric vector}
-#'            \item{\code{SandWs}}{a numeric vector}
-#'            \item{\code{SiO2Cat}}{a numeric vector}
-#'            \item{\code{SiO2Ws}}{a numeric vector}
-#'            \item{\code{Tmax8110Cat}}{a numeric vector}
-#'            \item{\code{Tmax8110Ws}}{a numeric vector}
-#'            \item{\code{Tmean08Cat}}{a numeric vector}
-#'            \item{\code{Tmean08Ws}}{a numeric vector}
-#'            \item{\code{Tmean09Cat}}{a numeric vector}
-#'            \item{\code{Tmean09Ws}}{a numeric vector}
-#'            \item{\code{Tmean8110Cat}}{a numeric vector}
-#'            \item{\code{Tmean8110Ws}}{a numeric vector}
-#'            \item{\code{Tmin8110Cat}}{a numeric vector}
-#'            \item{\code{Tmin8110Ws}}{a numeric vector}
-#'            \item{\code{WtDepCat}}{a numeric vector}
-#'            \item{\code{WtDepWs}}{a numeric vector}
-#'            \item{\code{CaOCat}}{a numeric vector}
-#'            \item{\code{CaOWs}}{a numeric vector}
-#'            \item{\code{CatAreaSqKm}}{a numeric vector}
-#'            \item{\code{CatAreaSqKmRp100}}{a numeric vector}
-#'            \item{\code{ClayCat}}{a numeric vector}
-#'            \item{\code{ClayWs}}{a numeric vector}
-#'            \item{\code{Fe2O3Cat}}{a numeric vector}
-#'            \item{\code{Fe2O3Ws}}{a numeric vector}
-#'            \item{\code{HydrlCondCat}}{a numeric vector}
-#'            \item{\code{HydrlCondWs}}{a numeric vector}
-#'            \item{\code{K2OCat}}{a numeric vector}
-#'            \item{\code{MgOCat}}{a numeric vector}
-#'            \item{\code{MgOWs}}{a numeric vector}
-#'            \item{\code{Na2OCat}}{a numeric vector}
-#'            \item{\code{OmCat}}{a numeric vector}
-#'            \item{\code{OmWs}}{a numeric vector}
-#'            \item{\code{PctNonCarbResidCat}}{a numeric vector}
-#'            \item{\code{PctNonCarbResidWs}}{a numeric vector}
-#'            \item{\code{PctSilicicCat}}{a numeric vector}
-#'            \item{\code{PermCat}}{a numeric vector}
-#'            \item{\code{PermWs}}{a numeric vector}
-#'            \item{\code{Precip08Cat}}{a numeric vector}
-#'            \item{\code{Precip08Ws}}{a numeric vector}
-#'            \item{\code{Precip09Cat}}{a numeric vector}
-#'            \item{\code{Precip09Ws}}{a numeric vector}
-#'            \item{\code{Precip8110Cat}}{a numeric vector}
-#'            \item{\code{Precip8110Ws}}{a numeric vector}
-#'            \item{\code{QC_01}}{a numeric vector}
-#'            \item{\code{QC_02}}{a numeric vector}
-#'            \item{\code{QC_03}}{a numeric vector}
-#'            \item{\code{QC_04}}{a numeric vector}
-#'            \item{\code{QC_05}}{a numeric vector}
-#'            \item{\code{QC_06}}{a numeric vector}
-#'            \item{\code{QC_07}}{a numeric vector}
-#'            \item{\code{QC_08}}{a numeric vector}
-#'            \item{\code{QC_09}}{a numeric vector}
-#'            \item{\code{QC_10}}{a numeric vector}
-#'            \item{\code{QC_11}}{a numeric vector}
-#'            \item{\code{QC_12}}{a numeric vector}
-#'            \item{\code{QC_MA}}{a numeric vector}
-#'            \item{\code{RckDepCat}}{a numeric vector}
-#'            \item{\code{RckDepWs}}{a numeric vector}
-#'            \item{\code{RunoffCat}}{a numeric vector}
-#'            \item{\code{RunoffWs}}{a numeric vector}
-#'            \item{\code{WetIndexCat}}{a numeric vector}
-#'            \item{\code{WetIndexWs}}{a numeric vector}
-#'            \item{\code{WsAreaSqKm}}{a numeric vector}
-#'            \item{\code{WsAreaSqKmRp100}}{a numeric vector}
-#'            \item{\code{ElevCat}}{a numeric vector}
-#'            \item{\code{ElevWs}}{a numeric vector}
-#'            \item{\code{K2OWs}}{a numeric vector}
-#'            \item{\code{NCat}}{a numeric vector}
-#'            \item{\code{NWs}}{a numeric vector}
-#'            \item{\code{P2O5Cat}}{a numeric vector}
-#'            \item{\code{P2O5Ws}}{a numeric vector}
-#'            \item{\code{SCat}}{a numeric vector}
-#'            \item{\code{SLOPE}}{a numeric vector}
-#'            \item{\code{SWs}}{a numeric vector}
-#'            \item{\code{clust}}{a numeric vector}
-#'            \item{\code{H6_noland}}{a character vector}
-#'            \item{\code{H6_land}}{a character vector}
-#'            \item{\code{PrecipWs}}{a numeric vector}
-#'            \item{\code{TmeanWs}}{a numeric vector}
-#'            \item{\code{W___AGRIC}}{a character vector}
-#'            \item{\code{W___URBAN}}{a character vector}
-#'            \item{\code{W___FOREST}}{a character vector}
-#'            \item{\code{clust_noland}}{a numeric vector}
-#'            \item{\code{clust_land}}{a numeric vector}
-#'            \item{\code{ElevCategory}}{a character vector}
-#' }
-#' @source example data
-"data_Cluster_Hi"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_Cluster_Lo ####
-#' @title Low  elevation cluster example data
-#' 
-#' @description A dataset with example cluster data for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 10,593 rows and 98 variables:
-#' \describe{
-#'           \item{COMID}{NHDplus COMID}
-#'           \item{\code{COMID}}{a numeric vector}
-#'           \item{\code{Al2O3Cat}}{a numeric vector}
-#'           \item{\code{Al2O3Ws}}{a numeric vector}
-#'           \item{\code{BFICat}}{a numeric vector}
-#'           \item{\code{BFIWs}}{a numeric vector}
-#'           \item{\code{CompStrgthCat}}{a numeric vector}
-#'           \item{\code{CompStrgthWs}}{a numeric vector}
-#'           \item{\code{KffactCat}}{a numeric vector}
-#'           \item{\code{KffactWs}}{a numeric vector}
-#'           \item{\code{Na2OWs}}{a numeric vector}
-#'           \item{\code{PctSilicicWs}}{a numeric vector}
-#'           \item{\code{SandCat}}{a numeric vector}
-#'           \item{\code{SandWs}}{a numeric vector}
-#'           \item{\code{SiO2Cat}}{a numeric vector}
-#'           \item{\code{SiO2Ws}}{a numeric vector}
-#'           \item{\code{Tmax8110Cat}}{a numeric vector}
-#'           \item{\code{Tmax8110Ws}}{a numeric vector}
-#'           \item{\code{Tmean08Cat}}{a numeric vector}
-#'           \item{\code{Tmean08Ws}}{a numeric vector}
-#'           \item{\code{Tmean09Cat}}{a numeric vector}
-#'           \item{\code{Tmean09Ws}}{a numeric vector}
-#'           \item{\code{Tmean8110Cat}}{a numeric vector}
-#'           \item{\code{Tmean8110Ws}}{a numeric vector}
-#'           \item{\code{Tmin8110Cat}}{a numeric vector}
-#'           \item{\code{Tmin8110Ws}}{a numeric vector}
-#'           \item{\code{WtDepCat}}{a numeric vector}
-#'           \item{\code{WtDepWs}}{a numeric vector}
-#'           \item{\code{CaOCat}}{a numeric vector}
-#'           \item{\code{CaOWs}}{a numeric vector}
-#'           \item{\code{CatAreaSqKm}}{a numeric vector}
-#'           \item{\code{CatAreaSqKmRp100}}{a numeric vector}
-#'           \item{\code{ClayCat}}{a numeric vector}
-#'           \item{\code{ClayWs}}{a numeric vector}
-#'           \item{\code{Fe2O3Cat}}{a numeric vector}
-#'           \item{\code{Fe2O3Ws}}{a numeric vector}
-#'           \item{\code{HydrlCondCat}}{a numeric vector}
-#'           \item{\code{HydrlCondWs}}{a numeric vector}
-#'           \item{\code{K2OCat}}{a numeric vector}
-#'           \item{\code{MgOCat}}{a numeric vector}
-#'           \item{\code{MgOWs}}{a numeric vector}
-#'           \item{\code{Na2OCat}}{a numeric vector}
-#'           \item{\code{OmCat}}{a numeric vector}
-#'           \item{\code{OmWs}}{a numeric vector}
-#'           \item{\code{PctAlluvCoastCat}}{a numeric vector}
-#'           \item{\code{PctAlluvCoastWs}}{a numeric vector}
-#'           \item{\code{PctNonCarbResidCat}}{a numeric vector}
-#'           \item{\code{PctNonCarbResidWs}}{a numeric vector}
-#'           \item{\code{PctSilicicCat}}{a numeric vector}
-#'           \item{\code{PermCat}}{a numeric vector}
-#'           \item{\code{PermWs}}{a numeric vector}
-#'           \item{\code{Precip08Cat}}{a numeric vector}
-#'           \item{\code{Precip08Ws}}{a numeric vector}
-#'           \item{\code{Precip09Cat}}{a numeric vector}
-#'           \item{\code{Precip09Ws}}{a numeric vector}
-#'           \item{\code{Precip8110Cat}}{a numeric vector}           
-#'           \item{\code{Precip8110Ws}}{a numeric vector}
-#'           \item{\code{QC_01}}{a numeric vector}
-#'           \item{\code{QC_02}}{a numeric vector}
-#'           \item{\code{QC_03}}{a numeric vector}
-#'           \item{\code{QC_04}}{a numeric vector}
-#'           \item{\code{QC_05}}{a numeric vector}
-#'           \item{\code{QC_06}}{a numeric vector}
-#'           \item{\code{QC_07}}{a numeric vector}
-#'           \item{\code{QC_08}}{a numeric vector}
-#'           \item{\code{QC_09}}{a numeric vector}
-#'           \item{\code{QC_10}}{a numeric vector}
-#'           \item{\code{QC_11}}{a numeric vector}
-#'           \item{\code{QC_12}}{a numeric vector}
-#'           \item{\code{QC_MA}}{a numeric vector}
-#'           \item{\code{RckDepCat}}{a numeric vector}
-#'           \item{\code{RckDepWs}}{a numeric vector}
-#'           \item{\code{RunoffCat}}{a numeric vector}
-#'           \item{\code{RunoffWs}}{a numeric vector}
-#'           \item{\code{WetIndexCat}}{a numeric vector}
-#'           \item{\code{WetIndexWs}}{a numeric vector}
-#'           \item{\code{WsAreaSqKm}}{a numeric vector}
-#'           \item{\code{WsAreaSqKmRp100}}{a numeric vector}
-#'           \item{\code{ElevCat}}{a numeric vector}
-#'           \item{\code{ElevWs}}{a numeric vector}
-#'           \item{\code{K2OWs}}{a numeric vector}
-#'           \item{\code{NCat}}{a numeric vector}
-#'           \item{\code{NWs}}{a numeric vector}
-#'           \item{\code{P2O5Cat}}{a numeric vector}
-#'           \item{\code{P2O5Ws}}{a numeric vector}
-#'           \item{\code{SCat}}{a numeric vector}
-#'           \item{\code{SLOPE}}{a numeric vector}
-#'           \item{\code{SWs}}{a numeric vector}
-#'           \item{\code{clust}}{a numeric vector}
-#'           \item{\code{H6_noland}}{a character vector}
-#'           \item{\code{H6_land}}{a character vector}
-#'           \item{\code{PrecipWs}}{a numeric vector}
-#'           \item{\code{TmeanWs}}{a numeric vector}
-#'           \item{\code{W___AGRIC}}{a character vector}
-#'           \item{\code{W___URBAN}}{a character vector}
-#'           \item{\code{W___FOREST}}{a character vector}
-#'           \item{\code{clust_noland}}{a numeric vector}
-#'           \item{\code{clust_land}}{a numeric vector}
-#'           \item{\code{ElevCategory}}{a character vector}
-#' }
-#' @source example data
-"data_Cluster_Lo"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_BMIMetrics ####
-#' @title Benthic macroinvertebrate metrics example data
-#' 
-#' @description A dataset with example benthic macroinvertebrate (BMI) metric
-#'  data for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 957 rows and 32 variables:
-#' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{Year}}{a numeric vector}
-#'           \item{\code{Index}}{a factor with levels \code{Sp} \code{Su}}
-#'           \item{\code{BenSampID}}{a numeric vector}
-#'           \item{\code{RepNum}}{a numeric vector}
-#'           \item{\code{Lat_Dec}}{a numeric vector}
-#'           \item{\code{Long_Dec}}{a numeric vector}
-#'           \item{\code{InvertReg}}{a factor with levels \code{cold} \code{warm}}
-#'           \item{\code{StreamType}}{a factor with levels \code{Effluent} \code{Perennial}}
-#'           \item{\code{ActivityCategory}}{a factor with levels \code{Field Replicate} \code{Routine Sample}}
-#'           \item{\code{BenCollDate}}{a factor with levels }
-#'           \item{\code{NarRat}}{a factor with levels \code{Inconclusive} \code{Meets} \code{Violates}}
-#'           \item{\code{IBI}}{a numeric vector}
-#'           \item{\code{TotalTaxSPL_Sc}}{a numeric vector}
-#'           \item{\code{DipTaxSPL_Sc}}{a numeric vector}
-#'           \item{\code{IntolTaxSPL_Sc}}{a numeric vector}
-#'           \item{\code{HBISPL_Sc}}{a numeric vector}
-#'           \item{\code{PlecoPct_Sc}}{a numeric vector}
-#'           \item{\code{ScrapPctSPL_Sc}}{a numeric vector}
-#'           \item{\code{ScrapTaxSPL_Sc}}{a numeric vector}
-#'           \item{\code{TrichTax_Sc}}{a numeric vector}
-#'           \item{\code{EphemTax_Sc}}{a numeric vector}
-#'           \item{\code{EphemPct_Sc}}{a numeric vector}
-#'           \item{\code{Dom01PctSPL_Sc}}{a numeric vector}
-#'           \item{\code{CollDate}}{a Date}
-#'           \item{\code{BMISampID}}{a character vector}
-#'           \item{\code{BMI.Metrics.SampID}}{a character vector}
-#'           \item{\code{CSCI}}{a numeric vector}
-#'           \item{\code{O_E}}{a character vector}
-#'           \item{\code{MMI_Score}}{a numeric vector}
-#'           \item{\code{ElevCategory}}{a character vector}
-#' }
-#' @source example data
-"data_BMIMetrics"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_SampSummary ####
-#' @title Sample summary example data
-#' 
-#' @description A dataset with example sample summary for use with the getSiteInfo function.
-#' 
-#' @format A data frame with 3,577 rows and 7 variables:
-#' \describe{
-#'           \item{StationID_Master}{Station ID}
-#'           \item{CollDate}{Station ID}
-#'           \item{Station_Date}{combined StationID and Date}
-#'           \item{ChemCampID}{SampleID, Chem}
-#'           \item{PhabSampID}{SampleID, Phab}
-#'           \item{BMI.Metrics.SampID}{SampleID, BMI Metrics}
-#'           \item{Algae.Metrics.SampID}{SampleID, Algae Metrics}
-#' }
-#' @source example data
-"data_SampSummary"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_BMIcounts ####
-#' @title Benthic Macroinvertebrate counts example data
-#' 
-#' @description A dataset with example benthic macroinvertebrate (BMI) counts 
-#' for use with the getStresssorSpecificRegressions function.
-#' 
-#' @format A data frame with 57,012 rows and 24 variables:
-#' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{StationID}}{Station ID}
-#'           \item{\code{Lat_Dec}}{Latitude, decimal degrees}
-#'           \item{\code{Long_Dec}}{Longitude, decimal degrees}
-#'           \item{\code{StreamType}}{a factor with levels \code{Effluent} \code{Perennial}}
-#'           \item{\code{WBID}}{a factor with levels }
-#'           \item{\code{Elevation}}{a numeric vector}
-#'           \item{\code{InvertReg}}{a factor with levels \code{cold} \code{Cold} \code{warm} \code{Warm}}
-#'           \item{\code{BenSampID}}{a numeric vector}
-#'           \item{\code{RepNum}}{a numeric vector}
-#'           \item{\code{CollDate}}{a Date}
-#'           \item{\code{Comments}}{a factor with levels }
-#'           \item{\code{CollMeth}}{a factor with levels \code{ADEQ Riffle bugs} \code{ADEQ Riffle Bugs} \code{EMAP Multihab bugs}}
-#'           \item{\code{FieldGearID}}{a factor with levels \code{D-frame di}}
-#'           \item{\code{Habitat}}{a factor with levels \code{Edge} \code{Multi-habitat} \code{Pool} \code{Riffle} \code{Run}}
-#'           \item{\code{WQX_FinalID}}{a factor with levels }
-#'           \item{\code{FinalID}}{a factor with levels }
-#'           \item{\code{Individuals}}{a numeric vector}
-#'           \item{\code{IndividualsCorrected}}{a numeric vector}
-#'           \item{\code{LargeRare}}{a logical vector}
-#'           \item{\code{Stage}}{a factor with levels \code{A} \code{ei} \code{eI} \code{i} \code{L} \code{p} \code{P} \code{x} \code{X}}
-#'           \item{\code{BMISampID}}{a character vector}
-#'           \item{\code{BMI.Metrics.SampID}}{a character vector}
-#'           \item{\code{ElevCategory}}{a character vector}
-#' }
-#' @source example data
-"data_BMIcounts"
+"data_GIS_AZ_Outline"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # data_GIS_Flow_HI ####
 #' @title NHD+ flow line example data, AZ high gradient
 #' 
 #' @description A dataset with example GIS flow line data 
-#' for use with the getSiteInfo function.
+#' for use with the getSiteInfo function.  5,658 rows and 836 columns.
 #' 
 #' @format Formal class 'SpatialLinesDataFrame' [package "sp"] with 4 slots, 87.7 Mb:
 #' \describe{
@@ -2448,7 +2682,7 @@
 #' @title NHD+ flow line example data, AZ low gradient
 #' 
 #' @description A dataset with example GIS flow line data 
-#' for use with the getSiteInfo function.
+#' for use with the getSiteInfo function. 9,981 rows and 836 columns.
 #' 
 #' @format Formal class 'SpatialLinesDataFrame' [package "sp"] with 4 slots, 162.9 Mb:
 #' \describe{
@@ -3060,362 +3294,141 @@
 #' @source example data
 "data_GIS_Flow_LO"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_GIS_AZ_Outline ####
-#' @title AZ state outline
+# data_ReachMod ####
+#' @title Reach modified status example data
 #' 
-#' @description A dataset with example GIS state outline of Arizona  
-#' for use with the getSiteInfo function.
+#' @description A dataset with example reach modified status for use with the getSiteInfo function.
 #' 
-#' @format Formal class 'SpatialPolygonsDataFrame' [package "sp"] with 5 slots
-#' 
+#' @format A data frame with 1,419 rows and43 variables:
 #' \describe{
-#'..@ data       :'data.frame':	1 obs. of  51 variables:
-#'  .. ..$ AREA      : num 113713
-#'.. ..$ STATE_NAME: Factor w/ 1 level "Arizona": 1
-#'.. ..$ STATE_FIPS: Factor w/ 1 level "04": 1
-#'.. ..$ SUB_REGION: Factor w/ 1 level "Mtn": 1
-#'.. ..$ STATE_ABBR: Factor w/ 1 level "AZ": 1
-#'.. ..$ POP1990   : Factor w/ 1 level "3665228": 1
-#'.. ..$ POP1999   : Factor w/ 1 level "4790311": 1
-#'.. ..$ POP90_SQMI: int 32
-#'.. ..$ HOUSEHOLDS: int 1368843
-#'.. ..$ MALES     : int 1810691
-#'.. ..$ FEMALES   : int 1854537
-#'.. ..$ WHITE     : int 2963186
-#'.. ..$ BLACK     : int 110524
-#'.. ..$ AMERI_ES  : int 203527
-#'.. ..$ ASIAN_PI  : int 55206
-#'.. ..$ OTHER     : int 332785
-#'.. ..$ HISPANIC  : int 688338
-#'.. ..$ AGE_UNDER5: int 292859
-#'.. ..$ AGE_5_17  : int 688260
-#'.. ..$ AGE_18_29 : int 710728
-#'.. ..$ AGE_30_49 : int 1038130
-#'.. ..$ AGE_50_64 : int 456477
-#'.. ..$ AGE_65_UP : int 478774
-#'.. ..$ NEVERMARRY: int 723628
-#'.. ..$ MARRIED   : int 1576632
-#'.. ..$ SEPARATED : int 57025
-#'.. ..$ WIDOWED   : int 182501
-#'.. ..$ DIVORCED  : int 292486
-#'.. ..$ HSEHLD_1_M: int 148181
-#'.. ..$ HSEHLD_1_F: int 189500
-#'.. ..$ MARHH_CHD : int 348392
-#'.. ..$ MARHH_NO_C: int 399414
-#'.. ..$ MHH_CHILD : int 29655
-#'.. ..$ FHH_CHILD : int 99609
-#'.. ..$ HSE_UNITS : int 1659430
-#'
-#'.. ..$ VACANT    : int 290587
-#'. ..$ OWNER_OCC : int 878561
-#'.. ..$ RENTER_OCC: int 490282
-#'.. ..$ MEDIAN_VAL: int 80100
-#'.. ..$ MEDIANRENT: int 370
-#'.. ..$ UNITS_1DET: int 867884
-#'.. ..$ UNITS_1ATT: int 109989
-#'.. ..$ UNITS2    : int 28826
-#'.. ..$ UNITS3_9  : int 120656
-#'.. ..$ UNITS10_49: int 153822
-#'.. ..$ UNITS50_UP: int 103386
-#'.. ..$ MOBILEHOME: int 250597
-#'.. ..$ NO_FARMS87: int 7669
-#'.. ..$ AVG_SIZE87: int 4732
-#'.. ..$ CROP_ACR87: int 1453852
-#'.. ..$ AVG_SALE87: int 212354
-#'..@ polygons   :List of 1
-#'.. ..$ :Formal class 'Polygons' [package "sp"] with 5 slots
-#'.. .. .. ..@ Polygons :List of 1
-#'.. .. .. .. ..$ :Formal class 'Polygon' [package "sp"] with 5 slots
-#'.. .. .. .. .. .. ..@ labpt  : num [1:2] -1363532 -559198
-#'.. .. .. .. .. .. ..@ area   : num 2.95e+11
-#'.. .. .. .. .. .. ..@ hole   : logi FALSE
-#'.. .. .. .. .. .. ..@ ringDir: int 1
-#'.. .. .. .. .. .. ..@ coords : num [1:153, 1:2] -1637983 -1641135 -1645795 -1647744 -1648474 ...
-#'.. .. .. ..@ plotOrder: int 1
-#'.. .. .. ..@ labpt    : num [1:2] -1363532 -559198
-#'.. .. .. ..@ ID       : chr "0"
-#'.. .. .. ..@ area     : num 2.95e+11
-#'..@ plotOrder  : int 1
-#'..@ bbox       : num [1:2, 1:2] -1676669 -931786 -1094035 -209591
-#'.. ..- attr(*, "dimnames")=List of 2
-#'.. .. ..$ : chr [1:2] "x" "y"
-#'.. .. ..$ : chr [1:2] "min" "max"
-#'..@ proj4string:Formal class 'CRS' [package "sp"] with 1 slot
-#'.. .. ..@ projargs: chr "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
-#'}
-#' 
-#' @source example data
-"data_GIS_AZ_Outline"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_Chem ####
-#' @title Chem data
-#' 
-#' @description Chem data
-#' 
-#'  @format A data frame with 103,548 observations on the following 16 variables.
-#' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{SITE_ID}}{a factor with levels }
-#'           \item{\code{SITE_NAME}}{a factor with levels }
-#'           \item{\code{SampDate}}{a Date}
-#'           \item{\code{SAMPLE_TIME}}{a numeric vector}
-#'           \item{\code{SAMPLE_TYPE}}{a factor with levels \code{A} \code{B} \code{C} \code{F} \code{G} \code{I} \code{M} \code{W} \code{Z}}
-#'           \item{\code{FLOW_REGIME_CODE}}{a factor with levels \code{PER}}
-#'           \item{\code{StdParamName}}{a factor with levels }
-#'           \item{\code{FinalResultText}}{a factor with levels }
-#'           \item{\code{FinalResultValue}}{a numeric vector}
-#'           \item{\code{FinalResultHalfMDL}}{a numeric vector}
-#'           \item{\code{Analyte}}{a factor with levels }
-#'           \item{\code{ChemSampleID}}{a character vector}
-#'           \item{\code{ResultValue}}{a numeric vector}
-#'           \item{\code{ConvertTo}}{a factor with levels }
-#'           \item{\code{ElevCategory}}{a character vector}
-#' }
-#' 
-#' @source example data
-"data_Chem"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  ******NEEDS MORE ####
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_ChemInfo ####
-#' @title Chem Parameters
-#' 
-#' @description Chem Parameters
-#' 
-#' @format A data frame with 284 observations on the following 16 variables.
-#' \describe{
-#'           \item{\code{ANALYSIS_TYPE}}{a factor with levels }
-#'           \item{\code{FinalUnit}}{a factor with levels }
-#'           \item{\code{LogTransf}}{a numeric vector}
-#'           \item{\code{SSD}}{a numeric vector}
-#'           \item{\code{SSTV}}{a factor with levels \code{} \code{SpecCondTolVal}}
-#'           \item{\code{SensMin}}{a numeric vector}
-#'           \item{\code{SensMax}}{a numeric vector}
-#'           \item{\code{TolMin}}{a numeric vector}
-#'           \item{\code{TolMax}}{a numeric vector}
-#'           \item{\code{UseInStressorID}}{a numeric vector}
-#'           \item{\code{Analyte}}{a factor with levels }
-#'           \item{\code{GroupNum}}{a numeric vector}
-#'           \item{\code{GroupName}}{a factor with levels \code{Bacteria} \code{Ions} \code{Metals_metalloids} \code{Nutrients} \code{Organic} \code{Organochlorine} \code{Organohalide} \code{Organophosphate} \code{PAHs & Phthalates} \code{Radiation} \code{Water quality}}
-#' }
-#'
-#' @source example data
-"data_ChemInfo"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_BMIRelAbund ####
-#' @title BMI Relative Abundance
-#' 
-#' @description Benthic Macroinvertebrate, Relative Abundances
-#' 
-#' @format A data frame with 55,319 rows and 11 variables
-#' \describe{
-#'           \item{StationID}{Station ID}
-#'           \item{BenSampID}{BenSampID}
-#'           \item{RepNum}{RepNum}
-#'           \item{CollDate}{Sample collection date; YYYY-MM-DD}
-#'           \item{SampleID}{SampleID}
-#'           \item{FinalID}{FinalID}
-#'           \item{RelAbundInds}{Relative abundance}
-#'           \item{StationID_Master}{StationID_Master}
-#'           \item{Station_Date}{Station_Date}
-#'           \item{BMISampID}{BMISampID}
-#'           \item{BMI.Metrics.SampID}{BMI.Metrics.SampID}
-#' }
-#' 
-#' @source example data
-"data_BMIRelAbund"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_BMIMasterTaxa ####
-#' @title data_BMIMasterTaxa
-#' 
-#' @description Benthic Macroinvertebrate, Master Taxa
-#' 
-#' @format A data frame with 824 observations on the following 60 variables.
-#' \describe{
-#'           \item{\code{GenusFinal}}{a factor with levels }
-#'           \item{\code{STORET}}{a logical vector}
-#'           \item{\code{BenTaxaID}}{a numeric vector}
-#'           \item{\code{WQX_FinalID}}{a factor with levels }
-#'           \item{\code{WQX_UnidentifiedSpecies}}{a factor with levels }
-#'           \item{\code{FinalID}}{a factor with levels }
-#'           \item{\code{TaxaGroup}}{a factor with levels }
-#'           \item{\code{Phylum}}{a factor with levels }
-#'           \item{\code{Class}}{a factor with levels }
-#'           \item{\code{Order}}{a factor with levels }
-#'           \item{\code{Family}}{a factor with levels }
-#'           \item{\code{Tribe}}{a factor with levels }
-#'           \item{\code{Species}}{a factor with levels }
-#'           \item{\code{Variety}}{a factor with levels \code{Type II}}
-#'           \item{\code{TolVal}}{a numeric vector}
-#'           \item{\code{TolValSource}}{a factor with levels }
-#'           \item{\code{Fam.TV}}{a numeric vector}
-#'           \item{\code{Fam.TV.reference}}{a factor with levels \code{EPA Draft} \code{Family tv} \code{Raw Data}}
-#'           \item{\code{FFG}}{a factor with levels }
-#'           \item{\code{FFGSource}}{a factor with levels }
-#'           \item{\code{Habit}}{a factor with levels }
-#'           \item{\code{HabitSource}}{a factor with levels \code{AZ DEQ}}
-#'           \item{\code{InBenthics}}{a factor with levels \code{Y}}
-#'           \item{\code{Fam.FFG}}{a factor with levels }
-#'           \item{\code{Fam.FFG.reference}}{a factor with levels \code{EPA Draft} \code{MC3} \code{Raw Data} \code{Unclassified by EI}}
-#'           \item{\code{Hilsenhoff.Biotic.Index}}{a numeric vector}
-#'           \item{\code{Fine.Sediment.Biotic.Index}}{a numeric vector}
-#'           \item{\code{Temperature.Preferance.Metric}}{a numeric vector}
-#'           \item{\code{Metals.Tolerance.Index}}{a numeric vector}
-#'           \item{\code{HT}}{a factor with levels \code{HT}}
-#'           \item{\code{Tany}}{a factor with levels \code{TANY}}
-#'           \item{\code{Voltinism}}{a factor with levels }
-#'           \item{\code{LifeCycleSource}}{a factor with levels \code{AZ DEQ}}
-#'           \item{\code{CharGroupID}}{a logical vector}
-#'           \item{\code{RowID}}{a logical vector}
-#'           \item{\code{Photo}}{a logical vector}
-#'           \item{\code{AdminCheck}}{a logical vector}
-#'           \item{\code{DateNameRevised}}{a factor with levels \code{2001-08-13 15:42:54} \code{2001-08-13 15:50:58} \code{2001-08-24 00:00:00}}
-#'           \item{\code{EnterDate}}{a factor with levels }
-#'           \item{\code{Comments}}{a factor with levels }
-#'           \item{\code{Excluded.Taxa.}}{a logical vector}
-#'           \item{\code{TIN}}{a numeric vector}
-#'           \item{\code{NonBenthic}}{a logical vector}
-#'           \item{\code{NeedsReview}}{a logical vector}
-#'           \item{\code{STORET_CharName}}{a factor with levels }
-#'           \item{\code{STORET_SpNum}}{a numeric vector}
-#'           \item{\code{STORET_Comment}}{a factor with levels \code{(DH)} \code{(LH)}}
-#'           \item{\code{OTU_Code}}{a numeric vector}
-#'           \item{\code{OTU_Name}}{a factor with levels}
-#'           \item{\code{TaxaCode}}{a factor with multiple levels }
-#'           \item{\code{TSN}}{a factor with multiple levels }
-#'           \item{\code{ParTSN}}{a numeric vector}
-#'           \item{\code{uBio.Number}}{a factor with levels }
-#'           \item{\code{Phylogenetic.Sort}}{a numeric vector}
-#'           \item{\code{OLD.TolVal}}{a numeric vector}
-#'           \item{\code{FFG_OLD}}{a factor with levels \code{CF} \code{CG} \code{Herbivores} \code{MH} \code{OM} \code{PA} \code{PH} \code{Piercer-Herbivores} \code{PR} \code{SC} \code{SH} \code{XY}}
-#'           \item{\code{Invasive}}{a logical vector}
-#'           \item{\code{FinesTolVal_hi}}{a numeric vector}
-#'           \item{\code{FinesTolVal_low}}{a numeric vector}
-#'           \item{\code{SpecCondTolVal}}{a numeric vector}
-#' }
-#' 
-#' @source example data, Arizona
-"data_BMIMasterTaxa"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_AlgMasterTaxa ####
-#' @title Algae Master Taxa
-#' 
-#' @description Algae Master Taxa
-#' 
-#' @format A data frame with 557 observations on the following 23 variables.
-#' \describe{
-#'           \item{\code{FinalID}}{a factor with levels } 
-#'           \item{\code{Phylum}}{a factor with levels \code{Heterokontophyta}}
-#'            \item{\code{Class}}{a factor with levels \code{Bacillariophyceae}}
-#'            \item{\code{Subclass}}{a factor with levels }
-#'            \item{\code{Order}}{a factor with levels }
-#'            \item{\code{Family}}{a factor with levels }
-#'            \item{\code{Tribe}}{a logical vector}
-#'            \item{\code{Genus}}{a factor with levels }
-#'            \item{\code{Species}}{a factor with levels }
-#'            \item{\code{Variety}}{a factor with levels }
-#'            \item{\code{Poll_Tol_Class}}{a numeric vector}
-#'            \item{\code{pH_class}}{a numeric vector}
-#'            \item{\code{Salinity_class}}{a numeric vector}
-#'            \item{\code{Nitrogen_Uptake_class}}{a numeric vector}
-#'            \item{\code{Oxygen_class}}{a numeric vector}
-#'            \item{\code{Saprobity_class}}{a numeric vector}
-#'            \item{\code{Trophic_class}}{a numeric vector}
-#'            \item{\code{Moisture_class}}{a numeric vector}
-#'            \item{\code{Motility_class}}{a factor with levels \code{H} \code{M} \code{N} \code{V}}
-#'            \item{\code{Phosphorus_class}}{a factor with levels \code{H} \code{L}}
-#'            \item{\code{Nitrogen_class}}{a factor with levels \code{H} \code{L}}
-#'            \item{\code{TaxaGroup}}{a logical vector}
-#'            \item{\code{GroupName}}{a factor with levels }
-#' }
-#' 
-#' @source example data
-"data_AlgMasterTaxa"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_Algcounts ####
-#' @title Algae Counts
-#' 
-#' @description Algae sample counts
-#' 
-#' @format A data frame with 4882 observations on the following 10 variables
-#' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{AlgalSampIdent}}{a numeric vector}
-#'           \item{\code{RepNum}}{a numeric vector}
-#'           \item{\code{CollDate}}{a factor with levels}
-#'           \item{\code{CollMeth}}{a factor with levels \code{Alg-NS-ADEQ-multihabitat} \code{Alg-NS-EMAP-reachwide}}
-#'           \item{\code{FinalID}}{a factor with levels }
-#'           \item{\code{Individuals}}{a numeric vector}
-#'           \item{\code{AdjFinalCount}}{a numeric vector}
-#'           \item{\code{RelAbund}}{a numeric vector}
-#' }
-#' 
-#' @source example data
-"data_Algcounts"
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# data_AlgMetrics ####
-#' @title Algae metrics example data
-#' 
-#' @description A dataset with example algae metric data for use with the
-#'  getSiteInfo and getAlgStressorResponses functions.
-#' 
-#' @format A data frame with 124 observations on the following 52 variables.
-#' \describe{
-#'           \item{\code{StationID_Master}}{a factor with levels }
-#'           \item{\code{Algae.Metrics.SampID}}{a factor with levels }
-#'           \item{\code{AlgalSampIdent}}{a numeric vector}
-#'           \item{\code{RepNum}}{a numeric vector}
-#'           \item{\code{CollDate}}{a factor with levels }
-#'           \item{\code{PollTolClass.1.tot}}{a numeric vector}
-#'           \item{\code{PollTolClass.2.tot}}{a numeric vector}
-#'           \item{\code{PollTolClass.3.tot}}{a numeric vector}
-#'           \item{\code{PollTolClass.11.tot}}{a numeric vector}
-#'           \item{\code{pHClass.2.tot}}{a numeric vector}
-#'           \item{\code{pHClass.3.tot}}{a numeric vector}
-#'           \item{\code{pHClass.4.tot}}{a numeric vector}
-#'           \item{\code{pHClass.5.tot}}{a numeric vector}
-#'           \item{\code{pHClass.6.tot}}{a numeric vector}
-#'           \item{\code{SalinityClass.1.tot}}{a numeric vector}
-#'           \item{\code{SalinityClass.2.tot}}{a numeric vector}
-#'           \item{\code{SalinityClass.3.tot}}{a numeric vector}
-#'           \item{\code{SalinityClass.4.tot}}{a numeric vector}
-#'           \item{\code{N_UptakeClass.1.tot}}{a numeric vector}
-#'           \item{\code{N_UptakeClass.2.tot}}{a numeric vector}
-#'           \item{\code{N_UptakeClass.3.tot}}{a numeric vector}
-#'           \item{\code{N_UptakeClass.4.tot}}{a numeric vector}
-#'           \item{\code{OxygenClass.1.tot}}{a numeric vector}
-#'           \item{\code{OxygenClass.2.tot}}{a numeric vector}
-#'           \item{\code{OxygenClass.3.tot}}{a numeric vector}
-#'           \item{\code{OxygenClass.4.tot}}{a numeric vector}
-#'           \item{\code{OxygenClass.5.tot}}{a numeric vector}
-#'           \item{\code{SaprobityClass.1.tot}}{a numeric vector}
-#'           \item{\code{SaprobityClass.2.tot}}{a numeric vector}
-#'           \item{\code{SaprobityClass.3.tot}}{a numeric vector}
-#'           \item{\code{SaprobityClass.4.tot}}{a numeric vector}
-#'           \item{\code{SaprobityClass.5.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.1.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.2.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.3.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.4.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.5.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.6.tot}}{a numeric vector}
-#'           \item{\code{TrophicClass.7.tot}}{a numeric vector}
-#'           \item{\code{MoistureClass.1.tot}}{a numeric vector}
-#'           \item{\code{MoistureClass.2.tot}}{a numeric vector}
-#'           \item{\code{MoistureClass.3.tot}}{a numeric vector}
-#'           \item{\code{MoistureClass.4.tot}}{a numeric vector}
-#'           \item{\code{MoistureClass.5.tot}}{a numeric vector}
-#'           \item{\code{MotilityClass.H.tot}}{a numeric vector}
-#'           \item{\code{MotilityClass.M.tot}}{a numeric vector}
-#'           \item{\code{MotilityClass.N.tot}}{a numeric vector}
-#'           \item{\code{MotilityClass.V.tot}}{a numeric vector}
-#'           \item{\code{PhosphorusClass.H.tot}}{a numeric vector}
-#'           \item{\code{PhosphorusClass.L.tot}}{a numeric vector}
-#'           \item{\code{NitrogenClass.H.tot}}{a numeric vector}
-#'           \item{\code{NitrogenClass.L.tot}}{a numeric vector}
+#'           \item{COMID}{NHDplus COMID}
+#'           \item{ElevCategory}{Elevation Category}
+#'           \item{ReachModStatus}{Reach modified flow status}
+#'           \item{ModReason}{Reach modified flow reason}
 #' }
 #' @source example data
-"data_AlgMetrics"
+"data_ReachMod"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_SampSummary ####
+#' @title Sample summary example data
+#' 
+#' @description A dataset with example sample summary for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 3,646 rows and 9 variables:
+#' \describe{
+#'           \item{StationID_Master}{Station ID}
+#'           \item{CollDate}{Station ID}
+#'           \item{Station_Date}{combined StationID and Date}
+#'           \item{ChemSampleID}{SampleID, Chem}
+#'           \item{PhabSampID}{SampleID, Phab}
+#'           \item{BMI.Metrics.SampID}{SampleID, BMI Metrics}
+#'           \item{Algae.Metrics.SampID}{SampleID, Algae Metrics}
+#'           \item{ElevCategory}{Elevation Category}           
+#'           \item{SampleYr}{Sample Year}
+#' }
+#' @source example data
+"data_SampSummary"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_Sites ####
+#' @title Sites example data
+#' 
+#' @description A dataset with example site information for use with the getSiteInfo function.
+#' 
+#' @format A data frame with 2,233 observations on the following 23 variables:
+#' \describe{
+#'           \item{StationRID}{a numeric vector}
+#'           \item{StationType}{a vector}
+#'           \item{clust.hi}{a vector}
+#'           \item{clust.lo}{a vector}
+#'           \item{HUC08}{8 digit Hydrologic Unit Code}
+#'           \item{FLAG}{Flag}
+#'           \item{InvRegCOMMENT}{Flag}
+#'           \item{InvRegFINAL}{Flag}
+#'           \item{UTM_EAST}{UTM Easting}
+#'           \item{UTM_NORTH}{UTM Northing}
+#'           \item{UTM_ZONE}{UTM Zone \code{11N} \code{12N}}
+#'           \item{Elev}{Elevation}
+#'           \item{ReferenceStatus}{Reference Status \code{reference} \code{Reference}}
+#'           \item{Year}{Year}
+#'           \item{StationID_Master}{StationID Master Code}
+#'           \item{FinalLatitude}{Final Latitude}
+#'           \item{FinalLongitude}{Final Longitude}
+#'           \item{WaterbodyName}{Waterbody Name}
+#'           \item{GIS_County}{County; derived from GIS }
+#'           \item{CARefSite_2017}{a character vector}
+#'           \item{COMID_NHD2}{a numeric vector}
+#'           \item{ElevCategory}{Elevation Category; Hi or Lo, break point at 5,000 ft}
+#'           \item{FlowRegime}{a vector}
+#' }
+#' @source example data
+"data_Sites"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_SSD ####
+#' @title SSD example data
+#' 
+#' @description A dataset with example benthic macroinvertebrate data to be used with the SSD function.
+#' 
+#' @format A data frame with 16 rows and 28 variables:
+#' \describe{
+#'           \item{Taxa}{Taxa}
+#'           \item{Exposure_mgperL}{Exposure mg/L}
+#'           \item{ExposureRange}{ExposureRange}
+#'           \item{OrganismStatus}{OrganismStatus}
+#'           \item{ResponseType}{ResponseType}
+#'           \item{StudyInfo}{StudyInfo}
+#'           \item{Duration_days}{Duration_days}
+#'           \item{Hardness_mgperL}{Hardness_mgperL}
+#'           \item{pH}{pH}
+#'           \item{Temperature_C}{Temperature_C}
+#'           \item{Alkalinity_mgperL}{Alkalinity_mgperL}
+#'           \item{OrganicCarbon_mgperL}{OrganicCarbon_mgperL}
+#'           \item{DissolvedOxygen_mgperL}{DissolvedOxygen_mgperL}
+#'           \item{Salinity_ppt}{Salinity_ppt}
+#'           \item{Taxonomy}{Taxonomy}
+#'           \item{Citation}{Citation}
+#'           \item{Common_Name}{Common_Name}
+#'           \item{ECOTOX_MED_Location}{ECOTOX_MED_Location}
+#'           \item{Dataline}{Dataline}
+#'           \item{SSD_Number}{SSD_Number}
+#'           \item{SSD_Title}{SSD_Title}
+#'           \item{CAS_Number}{CAS_Number}
+#'           \item{ChemicalClass}{ChemicalClass}
+#'           \item{ChemName}{ChemName}
+#'           \item{Authors}{Authors}
+#'           \item{Year}{Year}
+#'           \item{Title}{Title}
+#'           \item{Source}{Source}
+#' }
+#' @source example data
+"data_SSD"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_SSD_generator ####
+#' @title SSD example data (generator file)
+#' 
+#' @description A dataset with example benthic macroinvertebrate data from 
+#' USEPA ssd_generator_v1.xlsm file to be used with the SSD function.
+#' 
+#' https://www.epa.gov/caddis-vol4/caddis-volume-4-data-analysis-download-software
+#' 
+#' @format A data frame with 5 rows and 3 variables:
+#' \describe{
+#'           \item{Taxa}{Taxa names}
+#'           \item{Exposure}{Exposure mg/L}
+#'           \item{ResponseType}{Response type; LC50}
+#' }
+#' @source example data
+"data_SSD_generator"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# data_SSD_permethrin ####
+#' @title SSD example data (permethrin)
+#' 
+#' @description A dataset with example benthic macroinvertebrate data for permethrin to be used with the SSD function.
+#' 
+#' @format A data frame with 48 rows and 2 variables:
+#' \describe{
+#'           \item{Taxa}{Taxa names}
+#'           \item{Exposure}{Exposure mg/L}
+#' }
+#' @source example data
+"data_SSD_permethrin"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

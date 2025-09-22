@@ -3,6 +3,12 @@
 # Erik.Leppo@tetratech.com
 # 20180604
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Munge, 
+# CA
+# Colnames include nonASCI (mu)
+# n = 337, do in Excel, add "_MOD" to name of file
+# Erik.Leppo@tetratech.com, 2025-09022
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 0. Prep####
 wd <- getwd() # assume is package directory
@@ -10,7 +16,7 @@ wd <- getwd() # assume is package directory
 
 # 1. Get data and process#####
 # 1.1. Import Data
-myFile <- "data_CoOccur.tsv"
+myFile <- "data_CoOccur_MOD.tsv"
 df <- utils::read.delim(file.path(wd, "data-raw", myFile))
 
 # no elevation as this example data is from San Diego not AZ
@@ -34,10 +40,13 @@ str(df)
 # 2. Save as RDA for use in package####
 #
 data_CoOccur_CA <- df
-devtools::use_data(data_CoOccur_CA, overwrite = TRUE)
+usethis::use_data(data_CoOccur_CA, overwrite = TRUE)
 
 data_CoOccur_AZ_Hi <- df_AZ_Hi
 devtools::use_data(data_CoOccur_AZ_Hi, overwrite = TRUE)
 
 data_CoOccur_AZ_Lo <- df_AZ_Lo
 devtools::use_data(data_CoOccur_AZ_Lo, overwrite = TRUE)
+
+# 3. Document data ----
+promptData(data_CoOccur_CA)

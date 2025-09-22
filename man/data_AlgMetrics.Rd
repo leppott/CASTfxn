@@ -5,13 +5,17 @@
 \alias{data_AlgMetrics}
 \title{Algae metrics example data}
 \format{
-A data frame with 124 observations on the following 52 variables.
+A data frame with 124 observations on the following 56 variables.
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{Algae.Metrics.SampID}}{a factor with levels }
           \item{\code{AlgalSampIdent}}{a numeric vector}
           \item{\code{RepNum}}{a numeric vector}
           \item{\code{CollDate}}{a factor with levels }
+          \item{\code{clust.hi}}{a factor with levels }
+          \item{\code{clust.lo}}{a factor with levels }
+          \item{\code{COMID_NHD2}}{a character with vector }
+          \item{\code{ElevCategory}}{a factor with levels }
           \item{\code{PollTolClass.1.tot}}{a numeric vector}
           \item{\code{PollTolClass.2.tot}}{a numeric vector}
           \item{\code{PollTolClass.3.tot}}{a numeric vector}

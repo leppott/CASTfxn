@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9007 (2025-09-21xxxxx)
+
+* fix: Update data_CoOccur_CA for non-ASCII characters
+* docs: Update data variable names in data.R
+    
 ## Changes in version 0.2.2.9006 (2025-09-21)
 
 * docs: Update data variable names in data.R

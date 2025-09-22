@@ -5,7 +5,7 @@
 \alias{data_Algcounts}
 \title{Algae Counts}
 \format{
-A data frame with 4882 observations on the following 10 variables
+A data frame with 4,882 observations on the following 14 variables
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{AlgalSampIdent}}{a numeric vector}
@@ -16,6 +16,11 @@ A data frame with 4882 observations on the following 10 variables
           \item{\code{Individuals}}{a numeric vector}
           \item{\code{AdjFinalCount}}{a numeric vector}
           \item{\code{RelAbund}}{a numeric vector}
+          \item{\code{Alg.SampID}}{a character vector}
+          \item{\code{clust.hi}}{a character vector}
+          \item{\code{clust.lo}}{a character vector}
+          \item{\code{COMID_NHD2}}{a character vector}
+          \item{\code{ElevCategory}}{a character vector}
 }
 }
 \source{

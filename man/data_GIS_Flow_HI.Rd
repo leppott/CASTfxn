@@ -621,6 +621,6 @@ data_GIS_Flow_HI
 }
 \description{
 A dataset with example GIS flow line data 
-for use with the getSiteInfo function.
+for use with the getSiteInfo function.  5,658 rows and 836 columns.
 }
 \keyword{datasets}

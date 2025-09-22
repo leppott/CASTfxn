@@ -5,10 +5,9 @@
 \alias{data_Cluster_Lo}
 \title{Low  elevation cluster example data}
 \format{
-A data frame with 10,593 rows and 98 variables:
+A data frame with 10,707 rows and 97 variables:
 \describe{
-          \item{COMID}{NHDplus COMID}
-          \item{\code{COMID}}{a numeric vector}
+          \item{\code{COMID}}{a numeric vector}       
           \item{\code{Al2O3Cat}}{a numeric vector}
           \item{\code{Al2O3Ws}}{a numeric vector}
           \item{\code{BFICat}}{a numeric vector}
@@ -105,7 +104,6 @@ A data frame with 10,593 rows and 98 variables:
           \item{\code{W___FOREST}}{a character vector}
           \item{\code{clust_noland}}{a numeric vector}
           \item{\code{clust_land}}{a numeric vector}
-          \item{\code{ElevCategory}}{a character vector}
 }
 }
 \source{

@@ -64,8 +64,8 @@ A data frame with 824 observations on the following 60 variables.
           \item{\code{OLD.TolVal}}{a numeric vector}
           \item{\code{FFG_OLD}}{a factor with levels \code{CF} \code{CG} \code{Herbivores} \code{MH} \code{OM} \code{PA} \code{PH} \code{Piercer-Herbivores} \code{PR} \code{SC} \code{SH} \code{XY}}
           \item{\code{Invasive}}{a logical vector}
-          \item{\code{FinesTolVal_hi}}{a numeric vector}
-          \item{\code{FinesTolVal_low}}{a numeric vector}
+          \item{\code{FinesTV_Hi}}{a numeric vector}
+          \item{\code{FinesTV_Low}}{a numeric vector}
           \item{\code{SpecCondTolVal}}{a numeric vector}
 }
 }

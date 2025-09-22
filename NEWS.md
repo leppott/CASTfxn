@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-22 16:51:49.761368
+    #> Last Update: 2025-09-22 17:04:47.817929
 
 # Planned Updates
 
@@ -27,8 +27,8 @@ NEWS
 
 ## Changes in version 0.2.2.9007 (2025-09-21xxxxx)
 
-- docs: Update data variable names in data.R
 - fix: Update data_CoOccur_CA for non-ASCII characters
+- docs: Update data variable names in data.R
 
 ## Changes in version 0.2.2.9006 (2025-09-21)
 

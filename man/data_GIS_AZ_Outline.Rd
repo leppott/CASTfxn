@@ -91,6 +91,6 @@ data_GIS_AZ_Outline
 }
 \description{
 A dataset with example GIS state outline of Arizona  
-for use with the getSiteInfo function.
+for use with the getSiteInfo function.  1 row with 51 columns.
 }
 \keyword{datasets}

@@ -5,15 +5,17 @@
 \alias{data_SampSummary}
 \title{Sample summary example data}
 \format{
-A data frame with 3,577 rows and 7 variables:
+A data frame with 3,646 rows and 9 variables:
 \describe{
           \item{StationID_Master}{Station ID}
           \item{CollDate}{Station ID}
           \item{Station_Date}{combined StationID and Date}
-          \item{ChemCampID}{SampleID, Chem}
+          \item{ChemSampleID}{SampleID, Chem}
           \item{PhabSampID}{SampleID, Phab}
           \item{BMI.Metrics.SampID}{SampleID, BMI Metrics}
           \item{Algae.Metrics.SampID}{SampleID, Algae Metrics}
+          \item{ElevCategory}{Elevation Category}           
+          \item{SampleYr}{Sample Year}
 }
 }
 \source{

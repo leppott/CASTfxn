@@ -5,7 +5,7 @@
 \alias{data_Cluster_Hi}
 \title{High elevation cluster example data}
 \format{
-A data frame with 5,783 rows and 96 variables:
+A data frame with 5,929 rows and 95 variables:
 \describe{
            \item{\code{COMID}}{NHD+ COMID}
            \item{\code{Al2O3Cat}}{a numeric vector}
@@ -102,7 +102,6 @@ A data frame with 5,783 rows and 96 variables:
            \item{\code{W___FOREST}}{a character vector}
            \item{\code{clust_noland}}{a numeric vector}
            \item{\code{clust_land}}{a numeric vector}
-           \item{\code{ElevCategory}}{a character vector}
 }
 }
 \source{
