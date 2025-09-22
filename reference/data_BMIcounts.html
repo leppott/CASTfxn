@@ -18,7 +18,7 @@ for use with the getStresssorSpecificRegressions function."><!-- mathjax --><scr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASTfxn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2.9007</span>
       </span>
     </div>
 
@@ -42,6 +42,9 @@ for use with the getStresssorSpecificRegressions function."><!-- mathjax --><scr
       <a href="../articles/Elevation_Vignette.html">Elevation Vignette</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/leppott/CASTfxn/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -73,23 +76,11 @@ for use with the getStresssorSpecificRegressions function.</p>
 
     <div id="format">
     <h2>Format</h2>
-    <p>A data frame with 57,012 rows and 24 variables:</p><dl><dt><code>StationID_Master</code></dt>
+    <p>A data frame with 55,283 rows and 19 variables:</p><dl><dt><code>StationID_Master</code></dt>
 <dd><p>a factor with levels</p></dd>
 
-          <dt><code>StationID</code></dt>
-<dd><p>Station ID</p></dd>
-
-          <dt><code>Lat_Dec</code></dt>
-<dd><p>Latitude, decimal degrees</p></dd>
-
-          <dt><code>Long_Dec</code></dt>
-<dd><p>Longitude, decimal degrees</p></dd>
-
-          <dt><code>StreamType</code></dt>
-<dd><p>a factor with levels <code>Effluent</code> <code>Perennial</code></p></dd>
-
-          <dt><code>WBID</code></dt>
-<dd><p>a factor with levels</p></dd>
+          <dt><code>SampleID</code></dt>
+<dd><p>Sample ID</p></dd>
 
           <dt><code>Elevation</code></dt>
 <dd><p>a numeric vector</p></dd>
@@ -106,35 +97,20 @@ for use with the getStresssorSpecificRegressions function.</p>
           <dt><code>CollDate</code></dt>
 <dd><p>a Date</p></dd>
 
-          <dt><code>Comments</code></dt>
-<dd><p>a factor with levels</p></dd>
-
-          <dt><code>CollMeth</code></dt>
-<dd><p>a factor with levels <code>ADEQ Riffle bugs</code> <code>ADEQ Riffle Bugs</code> <code>EMAP Multihab bugs</code></p></dd>
-
           <dt><code>FieldGearID</code></dt>
 <dd><p>a factor with levels <code>D-frame di</code></p></dd>
 
           <dt><code>Habitat</code></dt>
 <dd><p>a factor with levels <code>Edge</code> <code>Multi-habitat</code> <code>Pool</code> <code>Riffle</code> <code>Run</code></p></dd>
 
-          <dt><code>WQX_FinalID</code></dt>
-<dd><p>a factor with levels</p></dd>
-
           <dt><code>FinalID</code></dt>
 <dd><p>a factor with levels</p></dd>
 
-          <dt><code>Individuals</code></dt>
+          <dt><code>TotInds</code></dt>
 <dd><p>a numeric vector</p></dd>
 
-          <dt><code>IndividualsCorrected</code></dt>
+          <dt><code>TotIndsCorr</code></dt>
 <dd><p>a numeric vector</p></dd>
-
-          <dt><code>LargeRare</code></dt>
-<dd><p>a logical vector</p></dd>
-
-          <dt><code>Stage</code></dt>
-<dd><p>a factor with levels <code>A</code> <code>ei</code> <code>eI</code> <code>i</code> <code>L</code> <code>p</code> <code>P</code> <code>x</code> <code>X</code></p></dd>
 
           <dt><code>BMISampID</code></dt>
 <dd><p>a character vector</p></dd>
@@ -144,6 +120,18 @@ for use with the getStresssorSpecificRegressions function.</p>
 
           <dt><code>ElevCategory</code></dt>
 <dd><p>a character vector</p></dd>
+
+          <dt><code>clust.hi</code></dt>
+<dd><p>a character vector</p></dd>
+
+          <dt><code>clust.lo</code></dt>
+<dd><p>a character vector</p></dd>
+
+          <dt><code>COMID_NHD2</code></dt>
+<dd><p>a character vector</p></dd>
+
+          <dt><code>RelAbundInds</code></dt>
+<dd><p>a numeric vector</p></dd>
 
 
 </dl></div>
