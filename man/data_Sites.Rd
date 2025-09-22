@@ -8,33 +8,29 @@
 A data frame with 2,233 observations on the following 23 variables:
 \describe{
           \item{STATION_CD}{Station Code}
-              \item{\code{STATION_CD}}{Station Code}
-               \item{\code{STATION_NAME}}{Station Name}
-               \item{\code{StationRID}}{a numeric vector}
-               \item{\code{StationType}}{a vector}
-               \item{\code{clust.hi}}{a vector}
-               \item{\code{clust.lo}}{a vector}
-               \item{\code{HUC08}}{8 digit Hydrologic Unit Code}
-               \item{\code{FLAG}}{Flag}
-               \item{\code{InvRegCOMMENT}}{Flag}
-               \item{\code{InvRegFINAL}}{Flag}
-               \item{\code{STATION_TYPE}}{Station Type}
-               \item{\code{LATITUDE}}{Latitude}
-               \item{\code{LONGITUDE}}{Longitude}
-               \item{\code{UTM_EAST}}{UTM Easting}
-               \item{\code{UTM_NORTH}}{UTM Northing}
-               \item{\code{UTM_ZONE}}{UTM Zone \code{11N} \code{12N}}
-               \item{\code{Elev}}{Elevation}
-               \item{\code{ReferenceStatus}}{Reference Status \code{reference} \code{Reference}}
-               \item{\code{Year}}{Year}
-               \item{\code{StationID_Master}}{StationID Master Code}
-               \item{\code{FinalLatitude}}{Final Latitude}
-               \item{\code{FinalLongitude}}{Final Longitude}
-               \item{\code{WaterbodyName}}{Waterbody Name}
-               \item{\code{GIS_County}}{County; derived from GIS }
-               \item{\code{CARefSite_2017}}{a character vector}
-               \item{\code{COMID_NHD2}}{a numeric vector}
-               \item{\code{ElevCategory}}{Elevation Category; Hi or Lo, break point at 5,000 ft}
+          \item{StationRID}{a numeric vector}
+          \item{StationType}{a vector}
+          \item{clust.hi}{a vector}
+          \item{clust.lo}{a vector}
+          \item{HUC08}{8 digit Hydrologic Unit Code}
+          \item{FLAG}{Flag}
+          \item{InvRegCOMMENT}{Flag}
+          \item{InvRegFINAL}{Flag}
+          \item{UTM_EAST}{UTM Easting}
+          \item{UTM_NORTH}{UTM Northing}
+          \item{UTM_ZONE}{UTM Zone \code{11N} \code{12N}}
+          \item{Elev}{Elevation}
+          \item{ReferenceStatus}{Reference Status \code{reference} \code{Reference}}
+          \item{Year}{Year}
+          \item{StationID_Master}{StationID Master Code}
+          \item{FinalLatitude}{Final Latitude}
+          \item{FinalLongitude}{Final Longitude}
+          \item{WaterbodyName}{Waterbody Name}
+          \item{GIS_County}{County; derived from GIS }
+          \item{CARefSite_2017}{a character vector}
+          \item{COMID_NHD2}{a numeric vector}
+          \item{ElevCategory}{Elevation Category; Hi or Lo, break point at 5,000 ft}
+          \item{FlowRegime}{a vector}
 }
 }
 \source{

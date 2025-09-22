@@ -28,13 +28,13 @@ desired biological community}
 \item{siteStressors}{Vector containing stressors identified as candidate causes
 for the target site}
 
+\item{bioParmsDEL}{vector of modeled parameters to delete based on lack of
+applicability to the biological response community}
+
 \item{df_biometrics}{dataframe containing the biological response samples'
 index and metric values}
 
-\item{bioParamsDEL}{vector of modeled parameters to delete based on lack of
-applicability to the biological response community}
-
-\item{df_stressInfo}{dataframe containing stressor metadata, specifically "Label".}
+\item{df_stressinfo}{dataframe containing stressor metadata, specifically "Label".}
 }
 \value{
 List containing six dataframes: 1) stressor data from all samples

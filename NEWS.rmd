@@ -37,6 +37,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9006 (2025-09-21)
+
+* docs: Update data variable names in data.R
+    + incomplete
+* docs: Remove dontrun from checkinputs in example
+* docs: Remove unused packages from DESCRIPTION
+    + reshape2
+
 ## Changes in version 0.2.2.9005 (2025-09-19)
 
 * docs: Update functions examples when blank

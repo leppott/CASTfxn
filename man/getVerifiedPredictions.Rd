@@ -49,13 +49,13 @@ Defaults to data_plotvars}
 
 \item{plotW}{Standardized plot width. Defaults to plot_W.}
 
+\item{plotunits}{Standardized plot units. Defaults to plot_units.}
+
 \item{dir_plots}{default = file.path(getwd(), "Results")}
 
 \item{dir_sub}{default = "VerifiedPredictions"}
 
 \item{boo_plot}{= TRUE}
-
-\item{plotUnits}{Standardized plot units. Defaults to plot_units.}
 }
 \value{
 Results text file and png files to "Results" "VerifiedPredictions" folder

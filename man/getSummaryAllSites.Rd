@@ -16,6 +16,8 @@ getSummaryAllSites(
 )
 }
 \arguments{
+\item{biocommlist}{biological community; bmi or algae.}
+
 \item{bmiIndex}{BMI index name}
 
 \item{algIndex}{Algae index name}
@@ -32,8 +34,6 @@ Default = "file.path(getwd(), "Results")"}
 Default = "WoE"}
 
 \item{df_sites}{Data frame of sites.}
-
-\item{biocomlist}{biological community; bmi or algae.}
 }
 \value{
 Tab-delimited text summary data file containing site id, latitude,

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-19 15:49:13.827755
+    #> Last Update: 2025-09-22 12:37:12.606906
 
 # Planned Updates
 
@@ -24,6 +24,14 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9006 (2025-09-21)
+
+- docs: Update data variable names in data.R
+  - incomplete
+- docs: Remove dontrun from checkinputs in example
+- docs: Remove unused packages from DESCRIPTION
+  - reshape2
 
 ## Changes in version 0.2.2.9005 (2025-09-19)
 
@@ -77,6 +85,7 @@ NEWS
 - docs: Add missing package references to function names
 - docs: Define pipe where missing in functions
 - docs: Update data variable names in data.R
+  - incomplete
 
 ## Changes in version 0.2.2.9004 (2025-09-19)
 

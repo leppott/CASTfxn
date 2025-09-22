@@ -13,8 +13,6 @@ checkInputs(dir.uploaded, dir.out)
 }
 \value{
 A list of objects to be used in the CASTool.
-
-\dontrun{}
 }
 \description{
 Check input files for existence, followed by checks for required columns, types, and relationships

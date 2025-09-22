@@ -22,12 +22,8 @@
 #' @param dir.out directory for output
 #'
 #' @return A list of objects to be used in the CASTool.
-#'
-#' \dontrun{}
 #
 #' @export
-#'
-
 checkInputs <- function(dir.uploaded,
                         dir.out) {
   

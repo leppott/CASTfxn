@@ -28,7 +28,6 @@ Imports:
   lubridate,
   psych,
   rmarkdown, 
-  reshape2,
   shiny, 
   sp,
   stats,
