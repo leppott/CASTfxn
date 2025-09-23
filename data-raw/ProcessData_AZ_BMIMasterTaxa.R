@@ -3,6 +3,10 @@
 # Erik.Leppo@tetratech.com
 # 20181211
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 20250923, EWL
+# remove non-ASCII character
+# "nr. Lopescladius<a0>"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 0. Prep####
 wd <- getwd() # assume is package directory
@@ -11,7 +15,7 @@ wd <- getwd() # assume is package directory
 # 1. Get data and process#####
 # 1.1. Import Data
 myFile <- "AZBenthicMasterTaxa.tab"
-df <- read.delim(file.path(wd, "data-raw", "AZ", myFile))
+df <- read.delim(file.path(wd, "data-raw", "AZ", "AZ data 20181218", myFile))
 
 # 1.2. Process Data
 View(df)
@@ -24,4 +28,4 @@ str(df)
 # 2. Save as RDA for use in package####
 #
 data_BMIMasterTaxa <- df
-devtools::use_data(data_BMIMasterTaxa, overwrite = TRUE)
+usethis::use_data(data_BMIMasterTaxa, overwrite = TRUE)

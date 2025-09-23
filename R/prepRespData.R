@@ -94,7 +94,8 @@ prepRespData <- function(out.dir,
   bioIndex.Inc <- data_bioMetricsInfo$InclusiveIndicator[data_bioMetricsInfo$MetricName == bioIndex]
 
   ## Identify quality for primary index ----
-  if (bioIndex.Inc == "≤" | bioIndex.Inc == "<=") {
+  # if (bioIndex.Inc == "≤" | bioIndex.Inc == "<=") {
+  if (bioIndex.Inc == "\u2264" | bioIndex.Inc == "<=") {
     if (bioIndex.dir == "Dec") { # Lower values of the index represent more stress
       data_bioMetrics$Quality <- cut(data_bioMetrics[, bioIndex],
                                      breaks = c(-Inf, bioIndex.cutval, Inf),
@@ -106,7 +107,8 @@ prepRespData <- function(out.dir,
                                      right = TRUE,
                                      labels = c("Not degraded", "Degraded"))
     }
-  } else if (bioIndex.Inc == "≥" | bioIndex.Inc == ">=") {
+  # } else if (bioIndex.Inc == "≥" | bioIndex.Inc == ">=") {
+  } else if (bioIndex.Inc == "\u2265" | bioIndex.Inc == ">=") {
     if (bioIndex.dir == "Dec") { # Lower values of the index represent more stress
       data_bioMetrics$Quality <- cut(data_bioMetrics[, bioIndex],
                                      breaks = c(-Inf, bioIndex.cutval, Inf),

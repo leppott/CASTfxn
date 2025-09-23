@@ -49,11 +49,8 @@
 #'         are omitted.
 #'
 #' @examples
-#' \dontrun{
-#' # Insert example code here
-#' }
+#' # None at this time 
 #' @export
-#'
 getAllSamplesTable <- function(df.stress,
                                df.stressInfo,
                                df.resp,

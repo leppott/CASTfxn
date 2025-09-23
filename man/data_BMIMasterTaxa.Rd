@@ -11,7 +11,6 @@ A data frame with 824 observations on the following 60 variables.
           \item{\code{STORET}}{a logical vector}
           \item{\code{BenTaxaID}}{a numeric vector}
           \item{\code{WQX_FinalID}}{a factor with levels }
-          \item{\code{WQX_UnidentifiedSpecies}}{a factor with levels }
           \item{\code{FinalID}}{a factor with levels }
           \item{\code{TaxaGroup}}{a factor with levels }
           \item{\code{Phylum}}{a factor with levels }
@@ -64,9 +63,10 @@ A data frame with 824 observations on the following 60 variables.
           \item{\code{OLD.TolVal}}{a numeric vector}
           \item{\code{FFG_OLD}}{a factor with levels \code{CF} \code{CG} \code{Herbivores} \code{MH} \code{OM} \code{PA} \code{PH} \code{Piercer-Herbivores} \code{PR} \code{SC} \code{SH} \code{XY}}
           \item{\code{Invasive}}{a logical vector}
-          \item{\code{FinesTV_Hi}}{a numeric vector}
-          \item{\code{FinesTV_Low}}{a numeric vector}
+          \item{\code{FinesTolVal_hi}}{a numeric vector}
+          \item{\code{FinesTolVal_low}}{a numeric vector}
           \item{\code{SpecCondTolVal}}{a numeric vector}
+          \item{\code{WQX_UnidentifiedSpecies}}{a character vector}
 }
 }
 \source{

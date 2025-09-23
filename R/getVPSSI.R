@@ -35,9 +35,7 @@
 #' @return Results text file and png files to "Results" "VerifiedPredictions" folder
 #' in working directory of box plots
 #'
-#' @examples
-#' \dontrun{
-#' }
+# @examples
 #'
 #' #~~~~~~~~~~~~~~~~
 #' @export
@@ -200,9 +198,10 @@ getVPSSI <- function(TargetSiteID,
       if (!is.na(ssi.cutoff)) {
 
         message(paste0(ssi.name, " has a cutoff value."))
-
+        
         # Prep data for logistic regression and scoring
-        if (ssi.inclind == "≤" | ssi.inclind == "<=") {
+        # if (ssi.inclind == "≤" | ssi.inclind == "<=") {
+        if (ssi.inclind == "\u2264" | ssi.inclind == "<=") {
           if (ssi.dir == "Dec") { # Lower values of the index represent more stress
             df_plot$SSIqual <- cut(df_plot$SSIValue, breaks = c(-Inf, ssi.cutoff, Inf),
                                    right = TRUE,
@@ -212,7 +211,8 @@ getVPSSI <- function(TargetSiteID,
                                    right = TRUE,
                                    labels = c("Not degraded", "Degraded"))
           }
-        } else if (ssi.inclind == "≥" | ssi.inclind == ">=") {
+        # } else if (ssi.inclind == "≥" | ssi.inclind == ">=") {
+        } else if (ssi.inclind == "\u2265" | ssi.inclind == ">=") {
           if (ssi.dir == "Dec") { # Lower values of the index represent more stress
             df_plot$SSIqual <- cut(df_plot$SSIValue, breaks = c(-Inf, ssi.cutoff, Inf),
                                    right = FALSE,
