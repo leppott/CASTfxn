@@ -7,7 +7,6 @@
 <url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
-<url><loc>/news/index.html</loc></url>
 <url><loc>/reference/CASTfxn.html</loc></url>
 <url><loc>/reference/checkInputs.html</loc></url>
 <url><loc>/reference/data_303d.html</loc></url>
@@ -34,6 +33,7 @@
 <url><loc>/reference/data_SSD_permethrin.html</loc></url>
 <url><loc>/reference/data_SampSummary.html</loc></url>
 <url><loc>/reference/data_Sites.html</loc></url>
+<url><loc>/reference/df.sites.map.html</loc></url>
 <url><loc>/reference/getAllSamplesTable.html</loc></url>
 <url><loc>/reference/getAvailableDataTypes.html</loc></url>
 <url><loc>/reference/getBioStressorResponses.html</loc></url>
