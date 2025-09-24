@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9010 (2025-09-24)
+
+* docs: Add missing packages to DESCRIPTION that are used in skeleton code
+* refactor: Updates to skeleton code for use in Shiny
+
 ## Changes in version 0.2.2.9009 (2025-09-24)
 
 * refactor: Add Global Bindings per Check Package, all functions

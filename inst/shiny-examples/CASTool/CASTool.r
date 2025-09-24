@@ -16,18 +16,65 @@
 # Add Shiny code for use in Shiny App
 # 2020-10-30, Erik
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#rm(list=ls())
+# 2025-09-24, Erik, start mods for updated Shiny App
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, Start ####
 # external/CASTool.R
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-boo_Shiny <- FALSE
+# Packages ----
 # library(tidyverse) #LCN added
+# library(CASTfxn)
+# if(require(CASToolClusterPckg)!=TRUE){
+#   if(require(pak)!=TRUE){
+#     install.packages("pak")
+#   }
+#   pak::pak("laura-naslund/CASToolClusterPckg")
+# }
+# library(CASToolClusterPckg)
+
+# Global Variables ----
+# boo_Shiny <- TRUE # Comment out and define in Shiny App
+# boo.debug <- TRUE # Comment out and define in Shiny App
+debug.person <- "Erik" # Ann, Erik, Laura
+
+if (boo_Shiny == FALSE) {
+  # prompt user for path to input/output data directories
+  # ** Run one line at a time **
+  # Else next line of code is taken as the response and it fails
+  in.dir        <- readline(prompt = "Enter input data file directory path: ")
+  out.dir       <- readline(prompt = "Enter output file directory path: ")
+  region        <- readline(prompt = "Enter region name: ")
+  #
+  in.dir        <- gsub("\\\\", "/", in.dir)
+  out.dir       <- gsub("\\\\", "/", out.dir)
+  boo.plot.user <- TRUE
+}## IF ~ boo_Shiny
+
+`%>%` <- dplyr::`%>%`
+
+## Color assignments ####
+# Based on ito_seven from ggpubfigs
+data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
+                            "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
+                            "Shape" = c(24, 21, 25, 21, 25),
+                            "Size" = c(1.75, 0.8, 1, 0.8, 1),
+                            "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
+refOutline_col <- "#26F7FD" # LCN changed from "#009E73"
+# Note: this change may not be colorblind-friendly
+# check site map using https://www.color-blindness.com/coblis-color-blindness-simulator/
+
+## Other plot variables ####
+plot_dpi <- 600
+plot_H <- 6
+plot_W <- 8
+plot_units <- "in"
+
 # 01, Set up ####
 # Progress, 02
+## Shiny ----
 if (boo_Shiny == TRUE) {
   prog_det <- "Set up"
   prog_cnt <- prog_cnt + 1
@@ -35,11 +82,7 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(mySleepTime)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
-#
-boo.debug <- TRUE
-debug.person <- "Laura"
-if (boo_Shiny == TRUE) {
+  #
   gitpath     <- file.path(".", "external", "R")  # used in getReport
   dir_rmd     <- file.path(".", "external", "rmd")
   wd          <- file.path(".")
@@ -48,8 +91,8 @@ if (boo_Shiny == TRUE) {
 } else {# Not using shiny app
   #
   # in global in shiny
-  not_all_na <- function(x) {!all(is.na(x))}
-  #
+  # not_all_na <- function(x) {!all(is.na(x))}
+  ## Ann ----
   if (boo.debug == TRUE & debug.person == "Ann") {
 
     wd <- "C:/Users/ann.lincoln/Documents" # ARL 2025-01-13
@@ -59,7 +102,8 @@ if (boo_Shiny == TRUE) {
     # localdir <- file.path(wd, "CASTool_DATA")
     # in.dir <- file.path(localdir, "UploadedData_Test")
 
-    ## source functions ----
+    ### source functions ----
+    # sourcing so can use updates without reinstalling the package
     ## All data
     source(file.path(gitpath, "readCASToolData.R"))
     source(file.path(gitpath, "checkInputs.R"))
@@ -94,18 +138,20 @@ if (boo_Shiny == TRUE) {
     ## Summarize findings for all test sites
     # source(file.path(gitpath, "getSummaryAllSites.R"))
     #}
+    # Erik ----
   } else if (boo.debug == TRUE & debug.person == "Erik") {
-    library(CASTfxn)
+    # library(CASTfxn)
     # gitpath <- file.path(system.file(package = "CASTfxn"), "R")
     dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
-    wd <- "C://Users//Erik.Leppo//OneDrive - Tetra Tech, Inc//MyDocs_OneDrive//GitHub//CASTfxn//inst//shiny-examples//CAST_SMC"
+    # wd <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CAST_SMC"
+    wd <- "C:\\Users\\Erik.Leppo\\Documents\\GitHub\\CAST_Shiny\\apps\\CASTool_USEPA"
     dir_data <- file.path(wd, "Data")
     dir_results <- file.path(wd, "Results")
     site <- "SMC04134"
     TargetSiteID <- site
     b <- 1
+    ## Laura ----
   } else if (boo.debug == TRUE & debug.person == "Laura") {
-    # This should be an error condition, because Ann & Erik are only people
     #LCN file paths
     # region <- "WA"
     wd <-  "C:/Users/lnaslund/Documents"
@@ -147,7 +193,7 @@ if (boo_Shiny == TRUE) {
     source(file.path(gitpath, "getReport.R"))
   } else {#boo.debug == FALSE
     # Install CASTfxn package
-    library(CASTfxn)
+    # library(CASTfxn)
     # Set local directory info
     wd <- file.path(".")
     dir_data <- file.path(wd, "Data")
@@ -165,25 +211,8 @@ msg <- paste0("debug = ", boo.debug
 message(msg)
 
 # define pipe
-`%>%` <- dplyr::`%>%`
-not_all_na <- function(x) {!all(is.na(x))}
-
-## Color assignments ####
-# Based on ito_seven from ggpubfigs
-data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
-                            "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
-                            "Shape" = c(24, 21, 25, 21, 25),
-                            "Size" = c(1.75, 0.8, 1, 0.8, 1),
-                            "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#26F7FD" # LCN changed from "#009E73"
-# Note: this change may not be colorblind-friendly
-# check site map using https://www.color-blindness.com/coblis-color-blindness-simulator/
-
-## Other plot variables ####
-plot_dpi <- 600
-plot_H <- 6
-plot_W <- 8
-plot_units <- "in"
+# `%>%` <- dplyr::`%>%`
+# not_all_na <- function(x) {!all(is.na(x))}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
@@ -197,13 +226,13 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(mySleepTime)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
-  # prompt user for path to input/output data directories
-  in.dir        <- readline(prompt = "Enter input data file directory path: ")
-  out.dir       <- readline(prompt = "Enter output file directory path: ")
-  region        <- readline(prompt = "Enter region name: ")
-  in.dir        <- gsub("\\\\", "/", in.dir)
-  out.dir       <- gsub("\\\\", "/", out.dir)
-  boo.plot.user <- TRUE
+  # # prompt user for path to input/output data directories
+  # in.dir        <- readline(prompt = "Enter input data file directory path: ")
+  # out.dir       <- readline(prompt = "Enter output file directory path: ")
+  # region        <- readline(prompt = "Enter region name: ")
+  # in.dir        <- gsub("\\\\", "/", in.dir)
+  # out.dir       <- gsub("\\\\", "/", out.dir)
+  # boo.plot.user <- TRUE
 }## IF ~ boo_Shiny ~ END
 
 list.Tables <- checkInputs(dir.uploaded = in.dir,
@@ -842,14 +871,14 @@ for (site in seq_along(1:nrow(df_targets))) {
   
   # Create site map
   if(debug.person == "Laura"){
-    if(require(CASToolClusterPckg)!=TRUE){
-      if(require(pak)!=TRUE){
-        install.packages("pak")
-      }
-      pak::pak("laura-naslund/CASToolClusterPckg")
-    }
-    
-    library(CASToolClusterPckg)
+    # if(require(CASToolClusterPckg)!=TRUE){
+    #   if(require(pak)!=TRUE){
+    #     install.packages("pak")
+    #   }
+    #   pak::pak("laura-naslund/CASToolClusterPckg")
+    # }
+    # 
+    # library(CASToolClusterPckg)
     
     STATE.shp <- retrieve_boundary(region)
     
