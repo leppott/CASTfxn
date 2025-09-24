@@ -38,15 +38,42 @@
 # Global Variables ----
 # boo_Shiny <- TRUE # Comment out and define in Shiny App
 # boo.debug <- TRUE # Comment out and define in Shiny App
-debug.person <- "Erik" # Ann, Erik, Laura
+# debug.person <- "Erik" # Ann, Erik, Laura
 
 if (boo_Shiny == FALSE) {
   # prompt user for path to input/output data directories
   # ** Run one line at a time **
   # Else next line of code is taken as the response and it fails
-  in.dir        <- readline(prompt = "Enter input data file directory path: ")
-  out.dir       <- readline(prompt = "Enter output file directory path: ")
-  region        <- readline(prompt = "Enter region name: ")
+  # in.dir        <- readline(prompt = "Enter input data file directory path: ")
+  # out.dir       <- readline(prompt = "Enter output file directory path: ")
+  # region        <- readline(prompt = "Enter region name: ")
+  # Use tcltk instead
+  in.dir <- tcltk::tk_choose.dir(default = getwd(),
+                                 caption = "Enter input data file directory path:")
+  out.dir <- tcltk::tk_choose.dir(default = getwd(),
+                                 caption = "Enter output file directory path: ")
+  # get user value for region
+  # code help from Bing CoPilot, 20250924
+  ## Create a variable to store the input
+  input_var <- tcltk::tclVar("")
+  ## Create a top-level window
+  tt <- tcltk::tktoplevel()
+  tcltk::tkwm.title(tt, "Enter a Value")
+  ## Create label and entry widgets
+  tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), padx = 10, pady = 5)
+  entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
+  tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
+  ## Function to close the window
+  onOK <- function() {
+    tcltk::tkdestroy(tt)
+  }
+  ## OK button
+  ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
+  tcltk::tkgrid(ok_button, padx = 10, pady = 10)
+  ## Wait for user to respond
+  tcltk::tkwait.window(tt)
+  ## Get the value
+  region <- tcltk::tclvalue(input_var)
   #
   in.dir        <- gsub("\\\\", "/", in.dir)
   out.dir       <- gsub("\\\\", "/", out.dir)

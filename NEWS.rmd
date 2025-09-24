@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9011 (2025-09-24)
+
+* refactor: Skeleton code user inputs to tcltk instead of prompt
+
 ## Changes in version 0.2.2.9010 (2025-09-24)
 
 * docs: Add missing packages to DESCRIPTION that are used in skeleton code
