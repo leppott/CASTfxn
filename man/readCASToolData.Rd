@@ -25,4 +25,7 @@ No other options are allowed currently.
 
 Uses the librares readxl and tools.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

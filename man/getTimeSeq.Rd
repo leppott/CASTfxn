@@ -67,4 +67,7 @@ Improvements: Add scoring.
 
 Uses the packages dplyr, ggplot2, lubridate, tidyr
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

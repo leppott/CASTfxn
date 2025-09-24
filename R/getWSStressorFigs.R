@@ -8,7 +8,14 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               df_SampSummary = data_sampSummary,
                               biocommlist = biocommlist,
                               boo_plot = TRUE) { # FUN: Start
-
+  
+  # Global Bindings
+  data_stressorWS <- data_stressorinfoWS <- dir_results <- 
+    StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <- useBC <-
+    mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
+    yLoc <- Label <- TargetAboveMedian <- NULL
+                                
+  # Debug
   boo.debug <- FALSE
   if (boo.debug) {
     TargetSiteID      <- TargetSiteID

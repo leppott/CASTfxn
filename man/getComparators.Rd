@@ -82,4 +82,7 @@ Obtains the cluster members for the cluster containing the target
 
 Uses the library dplyr, stringr
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

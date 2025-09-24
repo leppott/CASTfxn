@@ -87,6 +87,15 @@ getSiteInfo <- function(TargetSiteID,
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
                         boo_plot = TRUE) {##FUNCTION.START
+  
+  # Global Bindings
+   list.CompSites <- data_Sites <- data_sampSummary <- 
+    data_bmiMetrics <- bmiIndexGp <- data_algMetrics <- algIndexGp <- 
+    data_fishMetrics <- fishIndexGp <- outcaseLabel <- incaseLabel <- in.dir <- 
+    region <- StationID <- Latitude <- Longitude <- RefSiteFlag <- COMID <- 
+    OutcaseCol <- IncaseCol <- SampleDate <- SampleType <- yLoc <- 
+    df_algMetrics <- df_fishMetrics <- Quality <- Index <- Samples <- 
+    RespSampleID <- RespSampleDate <- Score <- Case <- NULL
 
   # DEBUG
   boo_DEBUG <- FALSE
@@ -248,7 +257,8 @@ getSiteInfo <- function(TargetSiteID,
       dplyr::mutate(Quality = as.character(Quality),
                     Case = "Outside the case")
     allBioMetrics <- allBioMetrics %>%
-      tidyr::pivot_longer(cols = all_of(bioIndexGp), names_to = "Index",
+      tidyr::pivot_longer(cols = dplyr::all_of(bioIndexGp), 
+                          names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
                     Quality = factor(Quality, levels = c("Target",
@@ -271,12 +281,13 @@ getSiteInfo <- function(TargetSiteID,
 
     compBioMetrics <- bioMetricData %>%
       dplyr::filter(StationID %in% comp.sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
+      dplyr::select(StationID, RespSampleID, RespSampleDate, 
+                    dplyr::all_of(bioIndexGp),
                     Quality) %>%
       dplyr::mutate(Quality = as.character(Quality))
 
     compBioMetrics <- compBioMetrics %>%
-      tidyr::pivot_longer(cols = all_of(bioIndexGp), names_to = "Index",
+      tidyr::pivot_longer(cols = dplyr::all_of(bioIndexGp), names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
                     Quality = factor(Quality, levels = c("Target",
@@ -379,7 +390,7 @@ getSiteInfo <- function(TargetSiteID,
     have.photos <- FALSE
     for (l in 1:length(photofiles)) {
       photoname <- photofiles[l]
-      if (str_detect(photoname, all_of(TargetSiteID)) == TRUE) {
+      if (stringr::str_detect(photoname, dplyr::all_of(TargetSiteID)) == TRUE) {
         file.copy(file.path(dir_photo, photoname),
                   file.path(dir_path, "Photos", photoname))
         message(paste0(photoname, " copied."))

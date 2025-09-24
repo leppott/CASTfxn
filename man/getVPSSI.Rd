@@ -62,13 +62,13 @@ outside the case degraded)}
 \value{
 Results text file and png files to "Results" "VerifiedPredictions" folder
 in working directory of box plots
-
-
-#~~~~~~~~~~~~~~~~
 }
 \description{
 Get verified predictions.
 }
 \details{
 Required packages: dplyr, ggplot2, grid, stringr, tidyr
+}
+\examples{
+# None at this time 
 }

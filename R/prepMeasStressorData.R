@@ -26,7 +26,8 @@
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
-#
+#' @examples
+#' # None at this time 
 #' @export
 prepMeasStressorData <- function(in.dir,
                                  out.dir,
@@ -34,7 +35,11 @@ prepMeasStressorData <- function(in.dir,
                                  fn.meta,
                                  removeOutliers,
                                  sub.dir = "_Histograms") {
-
+  # Global Bindings
+  UseInStressorID <- StdParamName <- StationID <- StressSampleID <- 
+    StressSampleDate <- TransfResult <- IQRmethod <- SDmethod <- Outlier <- NULL
+                                                 
+  # Debug
   boo.debug = TRUE
   if (boo.debug) {
     sub.dir = "_Histograms"

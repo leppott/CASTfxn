@@ -58,4 +58,7 @@ Subsets the data frame output by the function getCoOccurDataset
 
 Uses the libraries dplyr, tidyr, and fuzzyjoin.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

@@ -15,10 +15,14 @@
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
 #' @keywords internal
-#
+#' @examples
+#' # None at this time 
 #' @export
 #'
 prepSiteData <- function(out.dir) {
+  
+  # Global Bindings
+  StationID <- outcaseLabel <- incaseColName <- useBC <- NULL
 
   # define pipe
   `%>%` <- dplyr::`%>%`

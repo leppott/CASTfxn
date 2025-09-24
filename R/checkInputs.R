@@ -22,13 +22,23 @@
 #' @param dir.out directory for output
 #'
 #' @return A list of objects to be used in the CASTool.
-#
+#' @examples
+#' # None at this time 
 #' @export
 checkInputs <- function(dir.uploaded,
                         dir.out) {
   
   # define pipe
   `%>%` <- dplyr::`%>%`
+  
+  # Global Bindings
+  in.dir <- Variable <- Value <- Type <- Uploaded <- Object <- FilePath <- 
+    ObjectData <- DataType <- DataFN <- DataFileUploaded <- ObjectMetadata <- 
+    MetadataType <- MetadataFN <- DataFile <- MetadataFile <- sstv.alg <- 
+    ExpectedDatatypes <- errors <- ExpectedColumns <- StationID <- 
+    RespSampleID <- RespSampleDate <- NumUniquePKs <- Observations <- 
+    PrimaryKey <- FileOne <- FileTwo <- MetadataFileUploaded <- 
+    data_bmiMetricInfo <- NULL
 
   # Set debug status ----
   debug <- FALSE
@@ -62,7 +72,7 @@ checkInputs <- function(dir.uploaded,
   compare.coltypes <- function(object, required.cols) {
 
     df.obj <- get(object)
-    df.obj <- dplyr::select(df.obj, all_of(required.cols))
+    df.obj <- dplyr::select(df.obj, dplyr::all_of(required.cols))
     obj.cols <- colnames(df.obj)
     df.coltypechecks <- data.frame("object" = as.character(),
                                    "col" = as.character(),
@@ -799,7 +809,7 @@ checkInputs <- function(dir.uploaded,
     nunq.bmi.data.sites  <- length(unq.bmi.data.sites)
     nunq.bmi.data.sites  <- paste(nunq.bmi.data.sites, "StationIDs")
     data_bmiMetrics.long <- data_bmiMetrics |>
-      dplyr::select(-any_of(c("Study_ID", "Latitude", "Longitude"))) %>% # LCN added 20250916
+      dplyr::select(-dplyr::any_of(c("Study_ID", "Latitude", "Longitude"))) %>% # LCN added 20250916
       tidyr::pivot_longer(cols = !c(StationID, RespSampleID, RespSampleDate),
                           names_to = "MetricName", values_to = "Value",
                           values_transform = list(Value = as.character))

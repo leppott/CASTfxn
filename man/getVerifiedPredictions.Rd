@@ -67,3 +67,6 @@ Get verified predictions.
 \details{
 Required packages: dplyr, forcats, ggplot2, grid, stringr, tidyr
 }
+\examples{
+# None at this time 
+}

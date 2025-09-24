@@ -108,8 +108,15 @@
 # Exposure <- "Exposure"
 #
 #' @export
-getSSDplot <- function(Data, ResponseType, Taxa, Exposure) {
-  #
+getSSDplot <- function(Data, 
+                       ResponseType, 
+                       Taxa, 
+                       Exposure) {
+  
+  # Global Bindings
+  Probit <- Log10CentralTendency <- LogMean <- PointError <- log10LowerPI <- 
+    log10UpperPI <- Conc_1_Mean_Standardized <- Proportion <- CentralTendency <- 
+    LowerPI <- UppererPI <- NULL
   
   # Define col names for dplyr
   names(Data)[names(Data)==ResponseType] <- "ResponseType"

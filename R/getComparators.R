@@ -49,7 +49,8 @@
 #'         additional information relating to their similarity to the target site.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getComparators<- function(TargetSiteID,
                           df_sites,
@@ -66,6 +67,11 @@ getComparators<- function(TargetSiteID,
                           bc_cutoff = 0.05,
                           dir_results,
                           dir_sub = "SiteInfo") {##FUNCTION.START
+  
+  # Global Bindings
+  data_Sites <- data_cluster <- data_bmiCoOccur <- bmiIndex <- StationID <-
+    OutcaseCol <- IncaseCol <- RespSampleID <- RespSampleDate <- Quality <- 
+    NULL
 
   # For QC purposes
   boo_DEBUG <- FALSE
@@ -180,7 +186,7 @@ getComparators<- function(TargetSiteID,
     df_bioCoOccurTrim <- df_bioCoOccur[, c("StationID", "RespSampID",
                                            bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
-    comp.samps <- dplyr::rename(comp.samps, BCdistance = all_of(TargetColName))
+    comp.samps <- dplyr::rename(comp.samps, BCdistance = dplyr::all_of(TargetColName))
     utils::write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
                 row.names = FALSE, sep = "\t")
 

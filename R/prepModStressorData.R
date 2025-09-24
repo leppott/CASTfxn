@@ -33,7 +33,12 @@ prepModStressorData <- function(in.dir,
                                 fn.meta,
                                 removeOutliers,
                                 sub.dir = "_Histograms") {
-
+  # Global Bindings
+  UseInStressorID <- StdParamName <- data_measOutliers <- StationID <- 
+    StressSampleID <- StressSampleDate <- TransfResult <- IQRmethod <- 
+    SDmethod <- Outlier <- data_model_all <- NULL
+  
+  # Debug
   boo.debug = TRUE
   if (boo.debug) {
     sub.dir = "_Histograms"

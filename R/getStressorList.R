@@ -78,6 +78,14 @@ getStressorList <- function(TargetSiteID,
                             plotVars,
                             dir_results = file.path(getwd(), "Results"),
                             dir_sub = "CandidateCauses") {##FUNCTION.START
+  # Global Bindings
+  list.CompSites <- siteDetectsAll <- data_Stress <- data_stressInfo <- 
+    list.bioParamsDEL <- data_plotvars <- StationID <- StdParamName <- 
+    StressSampleID <- StressSampleDate <- ResultValue <- TransfResult <- 
+    RefSiteFlag <- GroupName <- GrpNm <- value <- Label <- boo_plot_ref <- 
+    Biocomm <- Stressor <- LogTransf <- SSTV <- SSI <- SensMin <- SensMax <- 
+    TolMin <- TolMax <- DirIncStress <- SSTVname <- SSIndex <- NULL
+    
   # DEBUGGING ####
   boo.DEBUG <- FALSE
   #
@@ -202,8 +210,8 @@ getStressorList <- function(TargetSiteID,
   # TODO: change to incaseChemData
   allcount <- outcaseChemData %>%
     dplyr::select_if(not_all_na) %>%
-    dplyr::select(any_of(siteChem)) %>%
-    dplyr::summarise(across(.cols = everything(), .fns = ~sum(!is.na(.))))
+    dplyr::select(dplyr::any_of(siteChem)) %>%
+    dplyr::summarise(dplyr::across(.cols = dplyr::everything(), .fns = ~sum(!is.na(.))))
 
   # identify parameter names with <= samplim # samples for data gap identification
   uncoolvar <- as.character(colnames(allcount %>% dplyr::select_if(~ any(. <= samplim))))
@@ -220,7 +228,7 @@ getStressorList <- function(TargetSiteID,
   # uncoolvar <- setdiff(chemnames, colnames(coolvar))
   if (length(uncoolvar) > 0) {
     df_allcount <- allcount %>%
-      dplyr::select(all_of(uncoolvar))
+      dplyr::select(dplyr::all_of(uncoolvar))
 
     for (s in 1:ncol(df_allcount)) {
       elimName <- colnames(df_allcount)[s]
@@ -266,7 +274,7 @@ getStressorList <- function(TargetSiteID,
 
       # Testing % rank -- doesn't work for TSS
       df_plot_pctrank <- gpcoolvar %>%
-        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                             values_to = "value", values_drop_na = TRUE) %>%
         dplyr::group_by(GrpNm) %>%
         dplyr::mutate(PctRank = dplyr::percent_rank(value))
@@ -282,7 +290,7 @@ getStressorList <- function(TargetSiteID,
       df_plot_wide_mod <- sweep(df_plot_wide_valminusmin, 2,
                                 df_plot_wide_diff, FUN = "/")
       df_plot_long <- df_plot_wide_mod %>%
-        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                             values_to = "value") %>%
         dplyr::filter(!is.na(value))
       df_plot_long <- merge(gpchems, df_plot_long, by.x = "StdParamName",
@@ -303,7 +311,7 @@ getStressorList <- function(TargetSiteID,
 
         if (any(colnames(gpcoolvar) %in% compchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_comp <- df_plot_comp_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+            tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                                 values_to = "value") %>%
             dplyr::filter(!is.na(value))
           df_plot_long_comp <- merge(gpchems, df_plot_long_comp,
@@ -328,7 +336,7 @@ getStressorList <- function(TargetSiteID,
 
         if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_ref_out <- df_plot_ref_out_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+            tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                                 values_to = "value") %>%
             dplyr::filter(!is.na(value))
           df_plot_long_ref_out <- merge(gpchems, df_plot_long_ref_out,
@@ -352,7 +360,7 @@ getStressorList <- function(TargetSiteID,
 
         if (any(colnames(gpcoolvar) %in% refchemcolnames)) { # Should this be ANY? --ARL CHECK
           df_plot_long_ref_in <- df_plot_ref_in_wide_mod %>%
-            tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+            tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                                 values_to = "value") %>%
             dplyr::filter(!is.na(value))
           df_plot_long_ref_in <- merge(gpchems, df_plot_long_ref_in,
@@ -371,7 +379,7 @@ getStressorList <- function(TargetSiteID,
       df_plot_targ_wide_mod <- sweep(df_plot_targ_wide_valminusmin, 2,
                                      df_plot_wide_diff, FUN = "/")
       df_plot_long_targ <- df_plot_targ_wide_mod %>%
-        tidyr::pivot_longer(cols = everything(), names_to = "GrpNm",
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = "GrpNm",
                             values_to = "value") %>%
         dplyr::filter(!is.na(value))
       df_plot_long_targ <- merge(gpchems, df_plot_long_targ,

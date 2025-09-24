@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-23 16:04:31.618067
+    #> Last Update: 2025-09-24 14:07:15.994834
 
 # Planned Updates
 
@@ -24,6 +24,23 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9009 (2025-09-24)
+
+- refactor: Add Global Bindings per Check Package, all functions
+- refactor: Update example for getElev to remove error
+  - wrong direction slash for donttest
+- refactor: Add example section of missing, none at this time
+- refactor: Add missing package name
+  - all_of
+  - any_of
+  - ends_with
+  - everything
+  - across
+  - where
+  - desc
+  - str_detect
+- docs: Update LICENSE file and DESCRIPTION
 
 ## Changes in version 0.2.2.9008 (2025-09-23)
 

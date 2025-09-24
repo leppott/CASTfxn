@@ -32,7 +32,8 @@
 #' response sample was obtained. Result values are *not* transformed.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getCoOccurDataset <- function(df_sites,
                               df_stress,
@@ -40,6 +41,13 @@ getCoOccurDataset <- function(df_sites,
                               df_resp,
                               index,
                               lagdays = c(0, 0)) {##FUNCTION.START
+  
+  # Global Settings
+  data_Sites <- data_Stress <- data_bmiMetrics <- bmiIndex <- 
+    StressSampleDate <- AlgSampFlag <- FishSampFlag <- StdParamName <- 
+    TransfResult <- RespSampleDate <- RespSampleID <- StationID.y <- 
+    StationID.x <- DateDiff <- StressSampleID <- StationID <- Quality <-
+    BioComm <- NULL
 
   # Debug
   boo_DEBUG <- FALSE
@@ -95,9 +103,9 @@ getCoOccurDataset <- function(df_sites,
                     RespSampleDate,
                     RespSampleID,
                     Quality,
-                    all_of(index),
+                    dplyr::all_of(index),
                     #RespSampleFlag, # LCN removed 20250916
-                    all_of(modColnames))
+                    dplyr::all_of(modColnames))
 
     rm(df_model, df_resp)
     respColnames <- c("RespSampID", index, "Quality", "RespSampFlag")
@@ -196,22 +204,25 @@ getCoOccurDataset <- function(df_sites,
   if(exists("modColnames") & exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
-                    RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames),
-                    all_of(measColnames)) %>%
+                    RespSampleID, BioComm, dplyr::all_of(index), Quality, 
+                    dplyr::all_of(modColnames),
+                    dplyr::all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else if (exists("measColnames")) {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
-                    RespSampleID, BioComm, all_of(index), Quality, all_of(measColnames)) %>%
+                    RespSampleID, BioComm, dplyr::all_of(index), Quality,
+                    dplyr::all_of(measColnames)) %>%
       dplyr::select_if(not_all_na)
   } else {
     df_coOccur <- df_coOccur %>%
       dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
-                    RespSampleID, BioComm, all_of(index), Quality, all_of(modColnames)) %>%
+                    RespSampleID, BioComm, dplyr::all_of(index), Quality, 
+                    dplyr::all_of(modColnames)) %>%
       dplyr::select_if(not_all_na)
   }
 
-  df_sites <- dplyr::select(df_sites, StationID, ends_with("caseCol"))
+  df_sites <- dplyr::select(df_sites, StationID, dplyr::ends_with("caseCol"))
   df_coOccur <- merge(df_sites, df_coOccur)
 
   myCoOccurData <- df_coOccur

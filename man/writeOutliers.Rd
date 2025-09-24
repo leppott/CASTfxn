@@ -40,4 +40,7 @@ outside-the-case samples.
 
 Uses the library dplyr.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

@@ -35,11 +35,9 @@
 #' @return Results text file and png files to "Results" "VerifiedPredictions" folder
 #' in working directory of box plots
 #'
-# @examples
-#'
-#' #~~~~~~~~~~~~~~~~
+#' @examples
+#' # None at this time 
 #' @export
-#'
 getVPSSI <- function(TargetSiteID,
                      stressors.ssi,
                      df_stressinfo,
@@ -57,6 +55,16 @@ getVPSSI <- function(TargetSiteID,
                      dir_sub = "_WoE",
                      boo_plot = TRUE) {##FUNCTION.START
 
+  # Global Bindings
+  df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioMetricData <- 
+    bioMetricInfo <- bioIndex <- dir_results <- boo_plot_user <- Type <- 
+    Stressor <- SSIndex <- Label <- LogTransf <- MetricName <- StationID <- 
+    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <- 
+    IncaseYN <- IncaseCol <- Quality <- SSIValue <- SSIqual <- StressorValue <- 
+    n <- VPpred_Deg <- Sc_VPlog <- y <- y.name <- x <- Sc_VPSSI_box <- Min <- 
+    q25 <- q50 <- q75 <- Max <- TransfValue <- incaseLabel <- bioIndexName <- 
+    LoE <- Score <- NULL
+  
   # Debugging
   boo.DEBUG <- FALSE
   #

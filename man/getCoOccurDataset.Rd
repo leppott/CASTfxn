@@ -47,4 +47,7 @@ Improvements: Add BioDegLab and BioNarLab?
 
 Uses the libraries dplyr, fuzzyjoin, and tidyr.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

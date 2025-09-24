@@ -55,6 +55,12 @@ getAllSamplesTable <- function(df.stress,
                                df.stressInfo,
                                df.resp,
                                df.sites) {
+  
+  # Global Bindings
+  data_Stress <- data_stressInfo <- data_respTrim <- StressSampleDate <-
+    StressSampleID <- SourceGroup <- StdParamName <- RespSampleDate <- 
+    RespSampleID <- ModeledSampleID <- incaseColName <- data_Sites <- 
+    StationID <- Label <- Type <- biocomm <- SampleDate <- NULL
 
   boo.debug = FALSE
 
@@ -118,13 +124,13 @@ getAllSamplesTable <- function(df.stress,
 
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
-      dplyr::select(StationID, SampleDate, all_of(chemsamptypes),
-                    ModeledSampleID, all_of(respsamptypes))
+      dplyr::select(StationID, SampleDate, dplyr::all_of(chemsamptypes),
+                    ModeledSampleID, dplyr::all_of(respsamptypes))
   } else {
     df.sampSummary <- df.sampSummary %>%
       dplyr::rename(SampleDate = StressSampleDate) %>%
-      dplyr::select(StationID, SampleDate, all_of(chemsamptypes),
-                    all_of(respsamptypes))
+      dplyr::select(StationID, SampleDate, dplyr::all_of(chemsamptypes),
+                    dplyr::all_of(respsamptypes))
   }
 
   if (is.na(incaseColName)) {

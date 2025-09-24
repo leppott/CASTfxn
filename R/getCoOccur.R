@@ -95,7 +95,15 @@ getCoOccur <- function(TargetSiteID,
                        plotunits = plot_units,
                        dir_plots = dir_results,
                        dir_sub = "_WoE",
-                       boo_plot = TRUE) {##FUNCTION.START
+                       boo_plot = TRUE) {
+  
+  # Global Bindings
+  df_PairedStressResp <- siteDetectsAll <- data_stressInfo <- 
+    list.CompSites <- bioComm <- bioIndex <- Type <- StdParamName <- Stressor <- 
+    StationID <- StressSampleID <- StressSampleDate <- IncaseCol <- 
+    OutcaseCol <- RespSampleID <- RespSampleDate <- RefSiteFlag <- BetterThan <-
+    Quality <- StressorValue <- NotNA <- DirIncStress <- LogTransf <- Label <-
+    incaseLabel <- Sc_Box <- bioIndexName <- LoE <- Score <- SSIndex <- NULL
 
   boo_DEBUG <- FALSE
 
@@ -172,8 +180,8 @@ getCoOccur <- function(TargetSiteID,
   # Prep data, 20250330 --
   df_data <- dplyr::select(df_data, StationID, StressSampleID, StressSampleDate,
                            IncaseCol, OutcaseCol, RespSampleID, RespSampleDate,
-                           RefSiteFlag, BetterThan, all_of(colBio), Quality,
-                           all_of(detects)) %>%
+                           RefSiteFlag, BetterThan, dplyr::all_of(colBio), Quality,
+                           dplyr::all_of(detects)) %>%
     dplyr::filter(StationID %in% c(TargetSiteID, compsites))
 
   ## Create Score Output File ####
@@ -197,8 +205,8 @@ getCoOccur <- function(TargetSiteID,
   detects <- intersect(detects, colnames(df.comp))
 
   df.stats <- df.comp %>%
-    dplyr::select(all_of(detects)) %>%
-    tidyr::pivot_longer(cols = everything(), names_to = "Stressor",
+    dplyr::select(dplyr::all_of(detects)) %>%
+    tidyr::pivot_longer(cols = dplyr::everything(), names_to = "Stressor",
                         values_to = "StressorValue") %>%
     dplyr::mutate(NotNA = ifelse(!is.na(StressorValue), 1, 0)) %>%
     dplyr::group_by(Stressor) %>%
@@ -255,8 +263,8 @@ getCoOccur <- function(TargetSiteID,
     # Select only necessary columns
     df.j <- df.i %>%
       dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                    RespSampleID, RespSampleDate, all_of(colBio), Quality,
-                    all_of(stressname)) %>%
+                    RespSampleID, RespSampleDate, dplyr::all_of(colBio), Quality,
+                    dplyr::all_of(stressname)) %>%
       dplyr::rename(StressorValue = {{stressname}}) %>%
       dplyr::mutate(Stressor := {{stressname}}) %>%
       dplyr::mutate(n = df.stats$n[df.stats$Stressor == stressname],
@@ -307,7 +315,7 @@ getCoOccur <- function(TargetSiteID,
     df.j <- df.j %>%
       dplyr::mutate(biocomm = "BMI",
                     Label = stresslabel) %>%
-      dplyr::select(all_of(cols))
+      dplyr::select(dplyr::all_of(cols))
 
     df.scores <- rbind(df.scores, df.j)
 
@@ -467,7 +475,7 @@ getCoOccur <- function(TargetSiteID,
   # Prep df.scores for export to include in df_LoEs
   df.scores <- dplyr::filter(df.scores, Stressor %in% stressors) %>%
     dplyr::select(!Stressor) %>%
-    dplyr::rename(bioComm = biocomm, bioIndex = all_of(colBio), Score = Sc_Box,
+    dplyr::rename(bioComm = biocomm, bioIndex = dplyr::all_of(colBio), Score = Sc_Box,
                   Stressor = Label) %>%
     dplyr::mutate(LoE = "CO", bioIndexName := {{colBio}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
@@ -481,7 +489,8 @@ getCoOccur <- function(TargetSiteID,
   df.stressorMetadata <- df_stressinfo %>%
     dplyr::filter(Stressor %in% stressors) %>%
     dplyr::select(Stressor, LogTransf, DirIncStress, Label, SSIndex,
-                  all_of(sstv.name), all_of(sens.max), all_of(sens.min))
+                  dplyr::all_of(sstv.name), dplyr::all_of(sens.max),
+                  dplyr::all_of(sens.min))
 
   return(list(df_stressorMetadata = df.stressorMetadata,
               notEvaluated = notstressors,

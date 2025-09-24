@@ -31,7 +31,14 @@ prepRespData <- function(out.dir,
                          loaded,
                          useBC,
                          bioIndex) {
-
+  # Global Bindings
+  bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <- 
+    UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <- 
+    CutoffValue <- InclusiveIndicator <- calcRelAbund <- NumInd <- 
+    SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <- 
+    PctInd <- PctTaxa <- NULL
+  
+  # Debug
   boo.debug <- FALSE
   if (boo.debug) {
     bio      <- "bmi"
