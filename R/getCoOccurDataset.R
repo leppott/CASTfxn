@@ -67,12 +67,10 @@ getCoOccurDataset <- function(df_sites,
                            index, "Quality")]
   } else if (biocomm == "alg") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
-                           index, "Quality", "AlgSampFlag")] %>%
-      dplyr::rename(RespSampFlag = AlgSampFlag)
+                           index, "Quality")] 
   } else if (biocomm == "fish") {
     df_resp <- df_resp[, c("StationID", "RespSampleDate", "RespSampleID",
-                           index, "Quality", "FishSampFlag")] %>%
-      dplyr::rename(RespSampFlag = FishSampFlag)
+                           index, "Quality")]
   } else {
     print("Biological community type not used.")
     utils::flush.console()

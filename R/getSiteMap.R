@@ -139,6 +139,27 @@ getSiteMap <- function(sp_outline,
   # Ensure flowline shapefile contains "ClusterID"
   sp_outline <- sf::st_transform(sp_outline, crs = sf::st_crs(sp_flowline))
 
+  # LCN 9/23/25 jury rigged solution to remove dependence on hardcoded data_bmiCoOccur
+  # Does IncaseCol work if useBC == TRUE?
+  
+  if(useBC == TRUE){
+    compSites <- compSites
+    allSites <- allSites
+  } else{
+    TargetSiteCluster <- df_sites %>% 
+      dplyr::filter(StationID == TargetSiteID) %>% 
+      dplyr::pull(IncaseCol)
+    
+    compSites <- df_sites %>% 
+      dplyr::filter(IncaseCol == TargetSiteCluster) %>% 
+      dplyr::pull(StationID)
+    
+    allSites <- df_sites %>% 
+      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>% 
+      dplyr::pull(StationID)
+  }
+  
+  
   # Get sites (if datum is specified in the metadata, transform to WGS84,
   # otherwise, assume wGS84)
   # Subset ref sites, outside case sites, inside case sites, and target site

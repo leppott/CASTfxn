@@ -62,7 +62,7 @@ prepRespData <- function(out.dir,
     if (("data_algMasterTaxa" %in% loaded) && ("data_algCounts" %in% loaded)) {
       data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_algMasterTaxa.rds"))
       data_bioCounts      <- readRDS(file.path(out.dir, "data_algCounts.rds"))
-    }
+    } 
   }
   if (bio == "fish") {
     data_bioMetrics       <- readRDS(file.path(out.dir, "data_fishMetrics.rds"))
@@ -177,6 +177,14 @@ prepRespData <- function(out.dir,
   }
 
   # Get Master Taxa file - Done above
+  
+  if(exists("data_bioMasterTaxa")==FALSE){
+    data_bioMasterTaxa <- NA
+  }
+  if(exists("data_bioCounts")==FALSE){
+    data_bioCounts <- NA
+  }
+  
 
   myRespData <- list(data_bioMetrics = data_bioMetrics,
                      data_bioMetricsInfo = data_bioMetricsInfo,

@@ -224,13 +224,13 @@ getSiteInfo <- function(TargetSiteID,
       bioIndexGp <- BMIIndexGp
       bioMetricData <- df_BMIMetrics
       bioSampleID <- "BMISampleID"
-    } else if (bioComm == "algae") {
+    } else if (bioComm == "alg") {
       bioIndexGp <- algIndexGp
-      bioMetricData <- df_algMetrics
+      bioMetricData <- df_ALGMetrics
       bioSampleID <- "AlgSampleID"
     } else if (bioComm == "fish") {
       bioIndexGp <- fishIndexGp
-      bioMetricData <- df_fishMetrics
+      bioMetricData <- df_FishMetrics
       bioSampleID <- "FishSampleID"
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
@@ -240,8 +240,18 @@ getSiteInfo <- function(TargetSiteID,
 
     # Prep bio data for plotting
     targetBioMetrics <- dplyr::filter(bioMetricData, StationID == TargetSiteID)
-    allBioMetrics <- bioMetricData %>%
-      dplyr::filter(!(StationID %in% comp.sites))
+    
+    # LCN 9/23/25 patch to remove dependence on hardcoded data_bmiCoOccur
+    if(useBC == TRUE){
+      allBioMetrics <- bioMetricData %>%
+        dplyr::filter(!(StationID %in% comp.sites))
+    } else{
+      allBioMetrics <- bioMetricData %>% 
+        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>% 
+        dplyr::filter(is.na(IncaseCol) | IncaseCol != myIncaseID) %>% 
+        dplyr::select(-IncaseCol)
+    }
+    
     allBioMetrics <- rbind(targetBioMetrics, allBioMetrics)
 
     allBioMetrics <- allBioMetrics %>%
@@ -269,11 +279,23 @@ getSiteInfo <- function(TargetSiteID,
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
                     Score, Case, Samples)
 
-    compBioMetrics <- bioMetricData %>%
-      dplyr::filter(StationID %in% comp.sites)%>%
-      dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
-                    Quality) %>%
-      dplyr::mutate(Quality = as.character(Quality))
+    # LCN 9/23/25 patch to remove dependence on hardcoded data_bmiCoOccur
+    if(useBC == TRUE){
+      compBioMetrics <- bioMetricData %>%
+        dplyr::filter(StationID %in% comp.sites)%>%
+        dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
+                      Quality) %>%
+        dplyr::mutate(Quality = as.character(Quality))
+    } else{
+      compBioMetrics <- bioMetricData %>% 
+        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>% 
+        dplyr::filter(IncaseCol == myIncaseID) %>%
+        dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
+                      Quality) %>%
+        dplyr::mutate(Quality = as.character(Quality))
+    }
+    
+
 
     compBioMetrics <- compBioMetrics %>%
       tidyr::pivot_longer(cols = all_of(bioIndexGp), names_to = "Index",
@@ -319,9 +341,19 @@ getSiteInfo <- function(TargetSiteID,
     myBioSamps <- dplyr::filter(mySamps, !is.na(bioSampleID))
     lab.sub <- paste0("Comparator samples (n = ",
                       (nrow(compBioMetrics) - nrow(myBioSamps)),
-                      " from ", (length(comp.sites) - 1), " sites)")
+                      " from ", (length(unique(compBioMetrics$StationID)) - 1), " sites)") # :CN 9/23/25 changed from length(comp.sites)
 
-    str_title <- "Benthic macroinvertebrate index scores"
+    
+    
+    if(bioComm == "bmi"){
+      str_title <- "Benthic macroinvertebrate index scores"
+    }
+    if(bioComm == "alg"){
+      str_title <- "Algae index scores"
+    }
+    if(bioComm == "fish"){
+      str_title <- "Fish index scores"
+    }
     str_ylab  <- "Score"
 
     ## Plot, BMI data by case ----
@@ -341,7 +373,7 @@ getSiteInfo <- function(TargetSiteID,
                                         shape = Samples, alpha = Samples,
                                         size = Samples))
     pBiobyCase <- pBiobyCase +
-      ggplot2::geom_jitter(data = targetSamples, width = 0.2, na.rm = TRUE,
+      ggplot2::geom_jitter(data = targetSamples, width = 0.2, height = 0, na.rm = TRUE,
                            ggplot2::aes(color = Samples, fill = Samples,
                                         shape = Samples, alpha = Samples,
                                         size = Samples)) +

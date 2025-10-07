@@ -973,7 +973,7 @@ checkInputs <- function(dir.uploaded,
     # data_algMetricInfo
     data_algMetricsInfo   <- unique(data_algMetricsInfo)
     unq.alg.meta.metric  <- unique(data_algMetricsInfo$MetricName)
-    nunq.alg.meta.metric <- length(nunq.alg.meta.metric)
+    nunq.alg.meta.metric <- length(unq.alg.meta.metric)
     nunq.alg.meta.metric <- paste(nunq.alg.meta.metric, "metrics")
     # Combine results in data frame
     df.uniquePKs <- rbind(df.uniquePKs, cbind("Object" = "data_algMetrics",
@@ -1288,11 +1288,11 @@ checkInputs <- function(dir.uploaded,
   }
 
   # Clean up vectors
-  rm(fk.issues, pk.issues, sites.noCOMID, unq.bmi.count.sites,
-     unq.bmi.count.taxa, unq.bmi.data.metric, unq.bmi.data.sites,
-     unq.bmi.mastertaxa, unq.bmi.meta.metric, unq.cluster, unq.COMIDs,
-     unq.meas.data.param, unq.meas.data.sites, unq.meas.meta.param,
-     unq.sites, unq.sites.COMIDs, unq.targets)
+  # rm(fk.issues, pk.issues, sites.noCOMID, unq.bmi.count.sites,
+  #    unq.bmi.count.taxa, unq.bmi.data.metric, unq.bmi.data.sites,
+  #    unq.bmi.mastertaxa, unq.bmi.meta.metric, unq.cluster, unq.COMIDs,
+  #    unq.meas.data.param, unq.meas.data.sites, unq.meas.meta.param,
+  #    unq.sites, unq.sites.COMIDs, unq.targets)
 
   # Prepare outputs ----
   ## TableOne: Summary of file inputs ----

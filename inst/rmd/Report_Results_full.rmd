@@ -212,10 +212,10 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
     dfSamps <- dfSamps[, c(2:(origcol), 1, (origcol + 1):ncol(dfSamps))]
   }
   if (!is.null(data_algMetrics)) {
-    origcol <- which(colnames(dfSamps) == "Algae Sample ID")
+    origcol <- which(colnames(dfSamps) == "Alg Sample ID")
     dfalg <- dplyr::filter(data_algMetrics, StationID == TargetSiteID) %>%
       dplyr::select(RespSampleID, all_of(algIndex), Quality)
-    dfSamps <- merge(dfSamps, dfalg, by.x = "Algae Sample ID", by.y = "RespSampleID",
+    dfSamps <- merge(dfSamps, dfalg, by.x = "Alg Sample ID", by.y = "RespSampleID",
                      all.x = TRUE)
     dfSamps <- dplyr::rename(dfSamps, `Algae Quality` = Quality)
     dfSamps <- dfSamps[, c(2:(origcol), 1, (origcol + 1):ncol(dfSamps))]

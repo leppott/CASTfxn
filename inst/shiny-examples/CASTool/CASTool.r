@@ -267,7 +267,7 @@ for (b in seq_along(biocommlist)) {
     bmiIndexGp       <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiIndexGp), ", "))
     useBC            <- as.logical(dplyr::select(data_CASTmeta, useBC))
   }
-  if (bio == "algae") {
+  if (bio == "alg") {
     algIndexGp       <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
   }
   if (bio == "fish") {
@@ -531,8 +531,8 @@ for (b in seq_along(biocommlist)) {
                                          lagdays   = lagdays)
     data_respTrim <- rbind(data_respTrim,
                            data_bmiCoOccur[, c("StationID", "RespSampleID",
-                                               "RespSampleDate", "BioComm")]) %>%
-      dplyr::mutate(biocomm = "BMISampleID")
+                                               "RespSampleDate", "BioComm")] %>%
+                             dplyr::mutate(biocomm = "BMISampleID")) 
   } # end BMI
   if (bio == "alg") {
     # Read alg data files
@@ -552,13 +552,13 @@ for (b in seq_along(biocommlist)) {
     data_algCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
                                          df_stress = data_Stress,
                                          biocomm   = "alg",
-                                         df_resp   = data_bmiMetrics,
+                                         df_resp   = data_algMetrics, # LCN 9/22/25 changed from data_bmiMetrics 
                                          index     = algIndexGp,
                                          lagdays   = lagdays)
     data_respTrim <- rbind(data_respTrim,
-                           data_algMetrics[, c("StationID", "RespSampleID",
-                                               "RespSampleDate", "BioComm")]) %>%
-      dplyr::mutate(biocomm = "AlgSampleID")
+                           data_algCoOccur[, c("StationID", "RespSampleID",
+                                               "RespSampleDate", "BioComm")]%>%
+                             dplyr::mutate(biocomm = "AlgSampleID")) 
   } # end ALG
   if (bio == "fish") {
     # Read fish data files
@@ -577,14 +577,14 @@ for (b in seq_along(biocommlist)) {
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites,
                                          df_stress = data_Stress,
-                                         biocomm   = "FISH",
-                                         df_resp   = data_bmiMetrics,
+                                         biocomm   = "FISH", # TODO make sure this is ok capitalized
+                                         df_resp   = data_fishMetrics, # LCN 9/22/25 changed from data_bmiMetrics
                                          index     = fishIndexGp,
                                          lagdays   = lagdays)
     data_respTrim <- rbind(data_respTrim,
-                           data_fishMetrics[, c("StationID", "RespSampleID",
-                                                "RespSampleDate", "BioComm")]) %>%
-      dplyr::mutate(biocomm = "FishSampleID")
+                           data_fishCoOccur[, c("StationID", "RespSampleID",
+                                                "RespSampleDate", "BioComm")] %>%
+                             dplyr::mutate(biocomm = "FishSampleID")) 
   } # end FISH
 
 }
@@ -754,21 +754,86 @@ for (site in seq_along(1:nrow(df_targets))) {
   # BC matrices for different biocomms, then this must move into the biocomm
   # loop or it needs to be run more than once for each biocomm here, since
   # it's used in getSiteInfo immediately afterward.
-  list.CompSites <- getComparators(TargetSiteID = TargetSiteID,
-                                   df_sites = data_Sites,
-                                   df_cluster = data_cluster,
-                                   df_bioCoOccur = data_bmiCoOccur,
-                                   bioIndex = bmiIndexGp,
-                                   useBC = useBC,
-                                   df_bcdist = data_BCdist,
-                                   bc_cutoff = 0.05,
-                                   outcaseColName = outcaseColName,
-                                   outcaseLabel = outcaseLabel,
-                                   incaseColName = incaseColName,
-                                   incaseLabel = incaseLabel,
-                                   useAllCompReaches = useAllCompReaches,
-                                   dir_results = dir_results,
-                                   dir_sub = "SiteInfo")
+  # list.CompSites <- getComparators(TargetSiteID = TargetSiteID,
+  #                                  df_sites = data_Sites,
+  #                                  df_cluster = data_cluster,
+  #                                  df_bioCoOccur = data_bmiCoOccur,
+  #                                  bioIndex = bmiIndexGp,
+  #                                  useBC = useBC,
+  #                                  df_bcdist = data_BCdist,
+  #                                  bc_cutoff = 0.05,
+  #                                  outcaseColName = outcaseColName,
+  #                                  outcaseLabel = outcaseLabel,
+  #                                  incaseColName = incaseColName,
+  #                                  incaseLabel = incaseLabel,
+  #                                  useAllCompReaches = useAllCompReaches,
+  #                                  dir_results = dir_results,
+  #                                  dir_sub = "SiteInfo")
+  
+  compSitesList <- list()
+    
+  for(b in seq_along(biocommlist)){
+    bio <- tolower(biocommlist[b])
+    
+    if(bio == "bmi"){
+      list.CompSites.bmi <- getComparators(TargetSiteID = TargetSiteID,
+                                       df_sites = data_Sites,
+                                       df_cluster = data_cluster,
+                                       df_bioCoOccur = data_bmiCoOccur,
+                                       bioIndex = bmiIndexGp,
+                                       useBC = useBC,
+                                       df_bcdist = data_BCdist,
+                                       bc_cutoff = 0.05,
+                                       outcaseColName = outcaseColName,
+                                       outcaseLabel = outcaseLabel,
+                                       incaseColName = incaseColName,
+                                       incaseLabel = incaseLabel,
+                                       useAllCompReaches = useAllCompReaches,
+                                       dir_results = dir_results,
+                                       dir_sub = "SiteInfo")
+      compSitesList[[bio]] <- list.CompSites.bmi
+    }
+    if(bio == "alg"){
+      list.CompSites.alg <- getComparators(TargetSiteID = TargetSiteID,
+                                           df_sites = data_Sites,
+                                           df_cluster = data_cluster,
+                                           df_bioCoOccur = data_algCoOccur,
+                                           bioIndex = algIndexGp,
+                                           useBC = useBC,
+                                           df_bcdist = data_BCdist,
+                                           bc_cutoff = 0.05,
+                                           outcaseColName = outcaseColName,
+                                           outcaseLabel = outcaseLabel,
+                                           incaseColName = incaseColName,
+                                           incaseLabel = incaseLabel,
+                                           useAllCompReaches = useAllCompReaches,
+                                           dir_results = dir_results,
+                                           dir_sub = "SiteInfo")
+      compSitesList[[bio]] <- list.CompSites.alg
+    }
+    if(bio == "fish"){
+      list.CompSites.fish <- getComparators(TargetSiteID = TargetSiteID,
+                                           df_sites = data_Sites,
+                                           df_cluster = data_cluster,
+                                           df_bioCoOccur = data_fishCoOccur,
+                                           bioIndex = fishIndexGp,
+                                           useBC = useBC,
+                                           df_bcdist = data_BCdist,
+                                           bc_cutoff = 0.05,
+                                           outcaseColName = outcaseColName,
+                                           outcaseLabel = outcaseLabel,
+                                           incaseColName = incaseColName,
+                                           incaseLabel = incaseLabel,
+                                           useAllCompReaches = useAllCompReaches,
+                                           dir_results = dir_results,
+                                           dir_sub = "SiteInfo")
+      compSitesList[[bio]] <- list.CompSites.fish
+    }
+  }
+  
+  # just chooses the first biocomm as list.CompSites, which shouldn't matter unless potentially useBC = TRUE
+  list.CompSites <- compSitesList[[1]]
+  
   # Returns: list.CompSites$TargetCOMID (Reach on which target site is located)
   #          list.CompSites$comp.sites (vector of unique inside-the-case sites
   #          regardless of useBC)
@@ -954,16 +1019,31 @@ for (site in seq_along(1:nrow(df_targets))) {
   rm(noStressors, noResponses)
 
   if (boo.WS) {
+    # getWSStressorFigs(TargetSiteID      = TargetSiteID,
+    #                   df_WSData         = data_stressorWS,
+    #                   df_WSInfo         = data_stressorinfoWS,
+    #                   comp.reaches      = list.CompSites$comp.reaches,
+    #                   TargetCOMID       = list.CompSites$TargetCOMID,
+    #                   useAllCompReaches = useAllCompReaches,
+    #                   dir_sub           = "SiteInfo",
+    #                   df_SampSummary    = data_sampSummary,
+    #                   biocommlist       = biocommlist,
+    #                   boo_plot          = TRUE)
+    
     getWSStressorFigs(TargetSiteID      = TargetSiteID,
                       df_WSData         = data_stressorWS,
                       df_WSInfo         = data_stressorinfoWS,
+                      df_Sites          = data_Sites,
                       comp.reaches      = list.CompSites$comp.reaches,
                       TargetCOMID       = list.CompSites$TargetCOMID,
                       useAllCompReaches = useAllCompReaches,
+                      useBC             = FALSE,
                       dir_sub           = "SiteInfo",
                       df_SampSummary    = data_sampSummary,
                       biocommlist       = biocommlist,
                       boo_plot          = TRUE)
+    
+
   }
   
   # Write target site outliers, comparator site outliers (inside the case),
@@ -971,6 +1051,8 @@ for (site in seq_along(1:nrow(df_targets))) {
   writeOutliers(TargetSiteID  = TargetSiteID,
                 df_outliers   = data_stressoutliers,
                 df_stressInfo = data_stressInfo,
+                df_Sites      = data_Sites,
+                useBC         = FALSE,
                 siteDetects   = siteDetectsAll,
                 compSites     = list.CompSites$comp.sites,
                 allSites      = list.CompSites$all.sites,
@@ -997,14 +1079,20 @@ for (site in seq_along(1:nrow(df_targets))) {
       bioMetricInfo   <- data_bmiMetricsInfo
       bioTaxaData     <- data_bmiCounts
       bioMasterTaxa   <- data_bmiMasterTaxa
+      
+      list.CompSites <- list.CompSites.bmi
+      
       # colBio <- bmiIndex
-    } else if ((bioComm == "algae") && (useAlg == TRUE)) {
+    } else if ((bioComm == "alg") && (useAlg == TRUE)) {
       data_bioCoOccur <- data_algCoOccur
       bioIndexGp      <- algIndexGp
       bioMetricData   <- data_algMetrics
       bioMetricInfo   <- data_algMetricsInfo
       bioTaxaData     <- data_algCounts
       bioMasterTaxa   <- data_algMasterTaxa
+      
+      list.CompSites <- list.CompSites.alg
+      
       # colBio <- algIndex
     } else if ((bioComm == "fish") && (useFish == TRUE)) {
       data_bioCoOccur <- data_fishCoOccur
@@ -1013,6 +1101,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       bioMetricInfo   <- data_fishMetricsInfo
       bioTaxaData     <- data_fishCounts
       bioMasterTaxa   <- data_fishMasterTaxa
+      
+      list.CompSites <- list.CompSites.fish
+      
       # colBio <- fishIndex
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
@@ -1492,8 +1583,8 @@ for (site in seq_along(1:nrow(df_targets))) {
   }
 
   getReport(TargetSiteID,
-            biocomms,
-            primeIndex     = bmiIndex,
+            biocomms       = biocommlist,
+            primeIndex     = bmiIndexGp,
             removeOutliers = removeOutliers,
             samplim        = samplim,
             r2_cutoff      = r2_cutoff,
@@ -1503,9 +1594,9 @@ for (site in seq_along(1:nrow(df_targets))) {
             DOlim          = DOlim,
             pHlimLow       = pHlimLow,
             pHlimHigh      = pHlimHigh,
-            bmiIndex       = bmiIndex,
-            algIndex       = algIndex,
-            fishIndex      = fishIndex,
+            bmiIndex       = bmiIndexGp,
+            algIndex       = algIndexGp,
+            fishIndex      = fishIndexGp,
             useBMI         = useBMI,
             useAlg         = useAlg,
             useFish        = useFish,
