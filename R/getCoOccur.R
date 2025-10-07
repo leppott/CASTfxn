@@ -366,7 +366,7 @@ getCoOccur <- function(TargetSiteID,
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
 
-    p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = .data[[stressname]],
+    p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
                                                 x = IncaseCol,
                                                 group = IncaseCol)) +
       ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,

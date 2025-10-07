@@ -39,7 +39,7 @@ prepSiteData <- function(out.dir) {
   # Rename or add OutcaseCol to sites file
   if (!is.na(outcaseColName)) {             # outside the case is defined
     if (outcaseColName %in% colnames(data_Sites)) {
-      data_Sites <- dplyr::rename(data_Sites, OutcaseCol = all_of(outcaseColName))
+      data_Sites <- dplyr::rename(data_Sites, OutcaseCol = dplyr::all_of(outcaseColName))
     } else {
       msg <- paste0("Replacing ", outcaseColName, " with 'OutcaseCol' having ",
                     "values equal to '", outcaseLabel, "'.")
@@ -56,7 +56,7 @@ prepSiteData <- function(out.dir) {
 
   # Rename IncaseCol in sites file or send error message
   if (!is.na(incaseColName)) {
-    data_Sites <- dplyr::rename(data_Sites, IncaseCol = all_of(incaseColName))
+    data_Sites <- dplyr::rename(data_Sites, IncaseCol = dplyr::all_of(incaseColName))
   } else {
     if (useBC == TRUE) {
       msg <- paste0("Bray-Curtis dissimilarity distance matrix must be available.")

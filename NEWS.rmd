@@ -37,6 +37,12 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9013 (2025-10-07)
+
+* refactor: Add missing package name 
+    + all_of
+    + .data
+
 ## Changes in version 0.2.2.9012 (2025-09-24)
 
 * docs: Add tcltk to Suggests in DESCRIPTION

@@ -111,7 +111,7 @@ checkInputs <- function(dir.uploaded,
           result <- tryCatch(
             {
               df.obj <- df.obj |>
-                dplyr::mutate({{col}} := lubridate::parse_date_time(.data[[col]],
+                dplyr::mutate({{col}} := lubridate::parse_date_time(dplyr::.data[[col]],
                                          orders = c("ymd", "mdy", "dmy")) |> # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date. 
                             lubridate::date())
             },

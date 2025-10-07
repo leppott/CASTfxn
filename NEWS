@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-24 14:07:15.994834
+    #> Last Update: 2025-10-07 11:30:30.74486
 
 # Planned Updates
 
@@ -24,6 +24,26 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9013 (2025-10-07)
+
+- refactor: Add missing package name
+  - all_of
+  - .data
+
+## Changes in version 0.2.2.9012 (2025-09-24)
+
+- docs: Add tcltk to Suggests in DESCRIPTION
+
+## Changes in version 0.2.2.9011 (2025-09-24)
+
+- refactor: Skeleton code user inputs to tcltk instead of prompt
+
+## Changes in version 0.2.2.9010 (2025-09-24)
+
+- docs: Add missing packages to DESCRIPTION that are used in skeleton
+  code
+- refactor: Updates to skeleton code for use in Shiny
 
 ## Changes in version 0.2.2.9009 (2025-09-24)
 

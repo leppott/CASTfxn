@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
 Description: Functions and other tools associated with the Causal Assessment 
     Screening Tool.  Used to more quickly assess stressors to a list of sites.
-Version: 0.2.2.9012
+Version: 0.2.2.9013
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),

@@ -142,7 +142,7 @@ prepMeasStressorData <- function(in.dir,
     dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
     dplyr::ungroup()
   data_chemRaw <- data_chemRaw %>%
-    tidyr::pivot_longer(cols = all_of(analytes),
+    tidyr::pivot_longer(cols = dplyr::all_of(analytes),
                         names_to = "StdParamName",
                         values_to = "TransfResult")
   data_chemRaw <- dplyr::filter(data_chemRaw, !is.na(TransfResult))

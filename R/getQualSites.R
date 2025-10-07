@@ -103,12 +103,12 @@ getQualSites <- function(TargetSiteID,
   if ("Degraded" %in% target.quals) {
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID & Quality == "Degraded") %>%
-      dplyr::summarise(max := max(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(max := max(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$max)
   } else { #
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::summarise(min := min(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(min := min(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$min)
   }
 
