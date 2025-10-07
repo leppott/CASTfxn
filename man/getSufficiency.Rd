@@ -12,10 +12,10 @@ getSufficiency(
   biocomm,
   colBio,
   plotvars = data_plotvars,
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi = 600,
+  plotH = 6,
+  plotW = 8,
+  plotunits = "in",
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
   boo_plot = TRUE
@@ -38,13 +38,13 @@ biological response community desired}
 \item{plotvars}{Standardized sizes, fills, shapes, and transparencies for plots.
 Defaults to data_plotvars}
 
-\item{plotdpi}{Standardized plot dpi. Defaults to plot_dpi.}
+\item{plotdpi}{Standardized plot dpi. Defaults to plot_dpi. 600}
 
-\item{plotH}{Standardized plot height. Defaults to plot_H.}
+\item{plotH}{Standardized plot height. Defaults to plot_H. 6}
 
-\item{plotW}{Standardized plot width. Defaults to plot_W.}
+\item{plotW}{Standardized plot width. Defaults to plot_W. 8}
 
-\item{plotunits}{Standardized plot units. Defaults to plot_units.}
+\item{plotunits}{Standardized plot units. Defaults to plot_units. "in"}
 
 \item{dir_plots}{Directory to save plots. Default = working directory and Results.}
 

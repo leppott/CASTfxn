@@ -37,6 +37,22 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9014 (2025-10-07)
+
+* fix: Update function defaults to values not variables
+    + plot_dpi, plot_H, plot_W, plot_units
+        - getCoOccur
+        - getSiteInfo
+        - getSufficiency
+        - getTimeSeq
+        - getVPSSI
+        - getVerifiedPredictions
+fix: Add function variables
+    + plot_dpi, plot_H, plot_W, plot_units
+        - getWSStressorFigs 
+docs: Update function documentation
+    + getWSStressorFigs 
+
 ## Changes in version 0.2.2.9013 (2025-10-07)
 
 * refactor: Add missing package name 

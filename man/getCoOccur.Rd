@@ -16,10 +16,10 @@ getCoOccur(
   pHlimHigh = 9,
   DOlim = 6,
   plotvars = data_plotvars,
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi = 600,
+  plotH = 6,
+  plotW = 8,
+  plotunits = "in",
   dir_plots = dir_results,
   dir_sub = "_WoE",
   boo_plot = TRUE
@@ -56,13 +56,13 @@ biological community. Defaults to 7 mg/L}
 not degraded, degraded, inside-the-case, outside-the-case).
 Default = data_plotvars.}
 
-\item{plotdpi}{DPI for plots for standardization. Default = plot_dpi.}
+\item{plotdpi}{DPI for plots for standardization. Default = plot_dpi.  600}
 
-\item{plotH}{Plot height for standardization. Default = plot_H.}
+\item{plotH}{Plot height for standardization. Default = plot_H. 6}
 
-\item{plotW}{Plot width for standardization. Default = plot_W.}
+\item{plotW}{Plot width for standardization. Default = plot_W. 8}
 
-\item{plotunits}{Plot units for standardization. Default = plot_units.}
+\item{plotunits}{Plot units for standardization. Default = plot_units. "in"}
 
 \item{dir_plots}{Directory to save plots.  Default = working directory and Results.}
 

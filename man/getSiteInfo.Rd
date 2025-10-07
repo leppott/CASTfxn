@@ -23,10 +23,10 @@ getSiteInfo(
   useBC = FALSE,
   plotvars = data_plotvars,
   refSiteCol = refOutline_col,
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi = 600,
+  plotH = 6,
+  plotW = 8,
+  plotunits = "in",
   dir_photo = file.path(getwd(), "Data", "Photos"),
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "SiteInfo",
@@ -76,13 +76,17 @@ not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotv
 \item{refSiteCol}{Default color outline for reference sites, used for standardization.
 Default = refOutline_col.}
 
-\item{plotdpi}{Default dpi for plots, used for standardization. Default = plot_dpi.}
+\item{plotdpi}{Default dpi for plots, used for standardization. 
+Default = plot_dpi. 600}
 
-\item{plotH}{Default height for plots, used for standardization. Default = plot_H.}
+\item{plotH}{Default height for plots, used for standardization. 
+Default = plot_H. 6}
 
-\item{plotW}{Default width for plots, used for standardization. Default = plot_W.}
+\item{plotW}{Default width for plots, used for standardization. 
+Default = plot_W. 8}
 
-\item{plotunits}{Default units for plots, used for standardization. Default = plot_units.}
+\item{plotunits}{Default units for plots, used for standardization. 
+Default = plot_units. "in"}
 
 \item{dir_photo}{directory containing all site photos (for every site in the data set).
 Default is file.path(getwd(), "Data", "Photos").}

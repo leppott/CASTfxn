@@ -22,10 +22,10 @@
 #' index and metric values, regardless of matching status
 #' @param df_respinfo dataframe containing response metadata, specifically "Label"
 #' @param df_stressinfo dataframe containing stressor metadata, specifically "Label"
-#' @param plotdpi Standardized dpi value for graphics. Default = plot_dpi.
-#' @param plotH Standardized height value for graphics. Default = plot_H.
-#' @param plotW Standardized width value for graphics. Default = plot_W.
-#' @param plotunits Standardized units for graphics. Default = plot_units.
+#' @param plotdpi Standardized dpi value for graphics. Default = plot_dpi. 600
+#' @param plotH Standardized height value for graphics. Default = plot_H. 6
+#' @param plotW Standardized width value for graphics. Default = plot_W. 8
+#' @param plotunits Standardized units for graphics. Default = plot_units. "in"
 #' @param dir_results Directory containing all results. Default = file.path(getwd(),"Results").
 #' NOTE: the code adds a middle directory, BioComm, between the Results and the subdirectory.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "TimeSequence"
@@ -46,10 +46,10 @@ getTimeSeq <- function(TargetSiteID,
                        df_respinfo,
                        df_stressinfo,
                        df_paired,
-                       plotdpi = plot_dpi,
-                       plotH = plot_H,
-                       plotW = plot_W,
-                       plotunits = plot_units,
+                       plotdpi = 600,
+                       plotH = 6,
+                       plotW = 8,
+                       plotunits = "in",
                        dir_results = file.path(getwd(),"Results"),
                        dir_sub = "_WoE",
                        boo_plot = TRUE) {##FUNCTION.START
@@ -71,10 +71,10 @@ getTimeSeq <- function(TargetSiteID,
     df_resp = bioMetricData[bioMetricData$StationID == TargetSiteID, ]
     df_respinfo = data_bmiMetricsInfo
     df_stressinfo = df_stressorMetadata
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_results = dir_results
     dir_sub = "_WoE"
   }

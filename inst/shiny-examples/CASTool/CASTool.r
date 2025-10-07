@@ -892,7 +892,11 @@ for (site in seq_along(1:nrow(df_targets))) {
   #                     dir_sub           = "SiteInfo",
   #                     df_SampSummary    = data_sampSummary,
   #                     biocommlist       = biocommlist,
-  #                     boo_plot          = TRUE)
+  #                     boo_plot          = TRUE,
+  #                     plotdpi           = plot_dpi,
+  #                     plotH             = plot_H,
+  #                     plotW             = plot_W,
+  #                     plotunits         = plot_units)
   # }
 
   
@@ -1019,7 +1023,11 @@ for (site in seq_along(1:nrow(df_targets))) {
                       dir_sub           = "SiteInfo",
                       df_SampSummary    = data_sampSummary,
                       biocommlist       = biocommlist,
-                      boo_plot          = TRUE)
+                      boo_plot          = TRUE,
+                      plotdpi           = plot_dpi,
+                      plotH             = plot_H,
+                      plotW             = plot_W,
+                      plotunits         = plot_units)
   }
   
   # Write target site outliers, comparator site outliers (inside the case),

@@ -37,10 +37,14 @@
 #' not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.
 #' @param refSiteCol Default color outline for reference sites, used for standardization.
 #' Default = refOutline_col.
-#' @param plotdpi Default dpi for plots, used for standardization. Default = plot_dpi.
-#' @param plotH Default height for plots, used for standardization. Default = plot_H.
-#' @param plotW Default width for plots, used for standardization. Default = plot_W.
-#' @param plotunits Default units for plots, used for standardization. Default = plot_units.
+#' @param plotdpi Default dpi for plots, used for standardization. 
+#' Default = plot_dpi. 600
+#' @param plotH Default height for plots, used for standardization. 
+#' Default = plot_H. 6
+#' @param plotW Default width for plots, used for standardization. 
+#' Default = plot_W. 8
+#' @param plotunits Default units for plots, used for standardization. 
+#' Default = plot_units. "in"
 #' @param dir_photo directory containing all site photos (for every site in the data set).
 #' Default is file.path(getwd(), "Data", "Photos").
 #' @param dir_results Directory containing all results. Default is file.path(getwd(),"Results").
@@ -79,10 +83,10 @@ getSiteInfo <- function(TargetSiteID,
                         useBC = FALSE,
                         plotvars = data_plotvars,
                         refSiteCol = refOutline_col,
-                        plotdpi = plot_dpi,
-                        plotH = plot_H,
-                        plotW = plot_W,
-                        plotunits = plot_units,
+                        plotdpi = 600,
+                        plotH = 6,
+                        plotW = 8,
+                        plotunits = "in",
                         dir_photo = file.path(getwd(), "Data", "Photos"),
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
@@ -118,10 +122,10 @@ getSiteInfo <- function(TargetSiteID,
     IncaseLabel    = incaseLabel
     useBC          = FALSE
     plotvars       = data_plotvars
-    plotdpi        = plot_dpi
-    plotH          = plot_H
-    plotW          = plot_W
-    plotunits      = plot_units
+    plotdpi        = 600
+    plotH          = 6
+    plotW          = 8
+    plotunits      = "in"
     refSiteCol     = refOutline_col
     dir_photo      = file.path(in.dir, region, "Photos")
     dir_results    = dir_results

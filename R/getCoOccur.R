@@ -59,10 +59,10 @@
 #' @param plotvars Colors, fills, shapes, transparencies for each type (target,
 #'                 not degraded, degraded, inside-the-case, outside-the-case).
 #'                 Default = data_plotvars.
-#' @param plotdpi DPI for plots for standardization. Default = plot_dpi.
-#' @param plotH Plot height for standardization. Default = plot_H.
-#' @param plotW Plot width for standardization. Default = plot_W.
-#' @param plotunits Plot units for standardization. Default = plot_units.
+#' @param plotdpi DPI for plots for standardization. Default = plot_dpi.  600
+#' @param plotH Plot height for standardization. Default = plot_H. 6
+#' @param plotW Plot width for standardization. Default = plot_W. 8
+#' @param plotunits Plot units for standardization. Default = plot_units. "in"
 #' @param dir_plots Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
 #' @param boo_plot Boolean value to save plots.  Default = TRUE.
@@ -89,10 +89,10 @@ getCoOccur <- function(TargetSiteID,
                        pHlimHigh = 9,
                        DOlim = 6,
                        plotvars = data_plotvars,
-                       plotdpi = plot_dpi,
-                       plotH = plot_H,
-                       plotW = plot_W,
-                       plotunits = plot_units,
+                       plotdpi = 600,
+                       plotH = 6,
+                       plotW = 8,
+                       plotunits = "in",
                        dir_plots = dir_results,
                        dir_sub = "_WoE",
                        boo_plot = TRUE) {
@@ -119,10 +119,10 @@ getCoOccur <- function(TargetSiteID,
     pHlimHigh = pHlimHigh
     DOlim = DOlim
     plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = TRUE

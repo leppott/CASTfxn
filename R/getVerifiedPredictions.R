@@ -22,10 +22,10 @@
 #' @param colBio default = "IBI"
 #' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
 #' Defaults to data_plotvars
-#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
-#' @param plotH Standardized plot height. Defaults to plot_H.
-#' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotunits Standardized plot units. Defaults to plot_units.
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi. 600
+#' @param plotH Standardized plot height. Defaults to plot_H. 6
+#' @param plotW Standardized plot width. Defaults to plot_W. 8
+#' @param plotunits Standardized plot units. Defaults to plot_units. "in"
 #' @param dir_plots default = file.path(getwd(), "Results")
 #' @param dir_sub default = "VerifiedPredictions"
 #' @param boo_plot = TRUE
@@ -45,10 +45,10 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    df_MasterTaxa,
                                    colBio,
                                    plotvars = data_plotvars,
-                                   plotdpi = plot_dpi,
-                                   plotH = plot_H,
-                                   plotW = plot_W,
-                                   plotunits = plot_units,
+                                   plotdpi = 600,
+                                   plotH = 6,
+                                   plotW = 8,
+                                   plotunits = "in",
                                    dir_plots = file.path(getwd(), "Results"),
                                    dir_sub = "_WoE",
                                    boo_plot = TRUE) {##FUNCTION.START
@@ -78,10 +78,10 @@ getVerifiedPredictions <- function(TargetSiteID,
     df_MasterTaxa = bioMasterTaxa
     colBio = bioIndexGp
     plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = boo.plot.user

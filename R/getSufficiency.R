@@ -57,10 +57,10 @@
 #' @param colBio df_data column name for the field with biological index value.
 #' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
 #'                 Defaults to data_plotvars
-#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
-#' @param plotH Standardized plot height. Defaults to plot_H.
-#' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotunits Standardized plot units. Defaults to plot_units.
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi. 600
+#' @param plotH Standardized plot height. Defaults to plot_H. 6
+#' @param plotW Standardized plot width. Defaults to plot_W. 8
+#' @param plotunits Standardized plot units. Defaults to plot_units. "in"
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #' @param boo_plot Boolean value indicating whether or not to print the plot.
@@ -80,10 +80,10 @@ getSufficiency <- function(TargetSiteID,
                            biocomm,
                            colBio,
                            plotvars = data_plotvars,
-                           plotdpi = plot_dpi,
-                           plotH = plot_H,
-                           plotW = plot_W,
-                           plotunits = plot_units,
+                           plotdpi = 600,
+                           plotH = 6,
+                           plotW = 8,
+                           plotunits = "in",
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "_WoE",
                            boo_plot = TRUE) {##FUNCTION.START
@@ -107,10 +107,10 @@ getSufficiency <- function(TargetSiteID,
     biocomm = bioComm
     colBio = bioIndex
     plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = boo_plot_user
