@@ -1557,7 +1557,12 @@ for (site in seq_along(1:nrow(df_targets))) {
            dfLoE        = df_LoE,
            dfStress     = df_stressorMetadata,
            dir_results  = dir_results,
-           dir_WoE      = "_WoE")
+           dir_WoE      = "_WoE", 
+           plotdpi = plot_dpi,
+           plotH = plot_H,
+           plotW = plot_W,
+           plotunits = plot_units,
+           boo_plot = boo.plot.user)
     msg <- paste0("getWoE for ", bioComm, " is complete.")
     message(msg)
 

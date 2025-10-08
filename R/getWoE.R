@@ -35,7 +35,12 @@ getWoE <- function(TargetSiteID,
                    dfLoE,
                    dfStress = df_stressorMetadata,
                    dir_results = file.path(getwd(), "Results"),
-                   dir_WoE = "_WoE") {##FUNCTION.START
+                   dir_WoE = "_WoE", 
+                   plotdpi = plot_dpi,
+                   plotH = plot_H,
+                   plotW = plot_W,
+                   plotunits = plot_units,
+                   boo_plot = TRUE) {##FUNCTION.START
 
   # QC data
   boo_DEBUG <- FALSE
@@ -88,6 +93,63 @@ getWoE <- function(TargetSiteID,
               file.path(dir.path, paste0(TargetSiteID, "_LoESummary.tab")),
               col.names = TRUE, row.names = FALSE, sep = "\t")
 
+  
+  dfLoESummary_pivot <- dfLoE_summary %>%
+    dplyr::select(Stressor, StressSampleID, StressSampleDate, NumSupport,
+                  NumRefute, NumIndeterminate, NumNotEvaluated) %>%
+    dplyr::arrange(Stressor, StressSampleDate) %>%
+    dplyr::rename("Support" = "NumSupport", "Refute" = "NumRefute", "Indeterminate" = "NumIndeterminate") %>% 
+    dplyr::select(-NumNotEvaluated) %>% 
+    tidyr::pivot_longer(cols = c("Support", "Refute", "Indeterminate"), names_to = "Evidence", values_to = "Count") %>% 
+    dplyr::mutate(Evidence = forcats::fct_relevel(as.factor(Evidence), "Support", "Refute", "Indeterminate")) %>% 
+    dplyr::ungroup() %>% 
+    dplyr::mutate(Stressor = stringr::str_wrap(Stressor, width = 40), 
+                  StressSampleID = dplyr::if_else(nchar(StressSampleID)>20,
+                                           paste0(stringr::str_sub(StressSampleID, 1, ceiling(nchar(StressSampleID)/2)), "\n", stringr::str_sub(StressSampleID, ceiling(nchar(StressSampleID)/2) + 1, nchar(StressSampleID)), "\n"),
+                  StressSampleID)) 
+  
+  
+  stressor_order <- dfLoESummary_pivot %>% 
+    dplyr::filter(Evidence == "Support") %>% 
+    dplyr::group_by(Stressor) %>% 
+    dplyr::summarize(max_count = max(Count)) %>% 
+    dplyr::arrange(max_count) %>% 
+    dplyr::pull(Stressor) 
+  
+  sample_order <- dfLoESummary_pivot %>% 
+    dplyr::distinct(StressSampleID, StressSampleDate) %>% 
+    dplyr::arrange(desc(StressSampleDate)) %>% 
+    dplyr::pull(StressSampleID)
+
+  
+  dfLoESummary_pivot <- dfLoESummary_pivot %>% 
+    dplyr::mutate(
+      Stressor = as.factor(Stressor),
+      Stressor = forcats::fct_relevel(Stressor, stressor_order), 
+      StressSampleID = as.factor(StressSampleID), 
+      StressSampleID = forcats::fct_relevel(StressSampleID, sample_order)
+      )
+  
+  p1 <- ggplot2::ggplot(dfLoESummary_pivot, 
+                        ggplot2::aes(x = Stressor, y = Count, fill = StressSampleID))+
+    ggplot2::geom_bar(width = 0.5, stat = "identity", position = "dodge")+
+    ggplot2::scale_fill_brewer(palette = "Paired")+
+    ggplot2::coord_flip()+
+    ggplot2::facet_wrap(~Evidence, ncol = 3)+
+    ggplot2::theme_bw()+
+    ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))+
+    ggplot2::theme(axis.text = ggplot2::element_text(size = 10), legend.text = ggplot2::element_text(size = 10), 
+                   strip.text = ggplot2::element_text(size = 11), axis.title = ggplot2::element_text(size = 12))
+  
+  fn_png_p1 <- paste0(TargetSiteID, "_", 
+                      biocomm, "_LoESummaryFig.png")
+  
+  if ((boo_plot) == TRUE) {
+    ggplot2::ggsave(filename = file.path(dir.path, fn_png_p1),
+                    plot = p1, dpi = plotdpi, width = plotW, height = plotH,
+                    units = plotunits)
+  }
+  
   dfLoE <- dfLoE %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                   RespSampleDate, bioComm, Stressor, StressorValue, LoE, Score) %>%

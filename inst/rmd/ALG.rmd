@@ -364,6 +364,16 @@ This table provides an indication of the consistency of the evidence for a candi
 
  }
 ```
+```{r algLoESummaryFig, echo = FALSE}
+fn_loe_fig <- file.path(dir_results, TargetSiteID, "ALG", "_WoE", paste0(TargetSiteID, "_ALG_LoESummaryFig.png"))
+   
+   if (file.exists(fn_loe_fig) == TRUE) {
+      cat(paste0("<img src='", fn_loe_fig, "'><br>"))
+    } else {
+      cat("\nSummary weight of evidence figure not available.\n\n")
+    }
+```
+
   
 ### *Visuals for candidate causes*
 The following images are lines of evidence graphics grouped by candidate cause. Only the figures generated for the primary biotic index and stressor-specific indices and tolerance values specified for inclusion
