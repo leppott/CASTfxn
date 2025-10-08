@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-10-07 13:21:50.516057
+    #> Last Update: 2025-10-08 15:22:36.821788
 
 # Planned Updates
 
@@ -24,6 +24,18 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9015 (2025-10-08)
+
+- refactor: Update skeleton code withProgress variables
+- style: Edits to checkInputs
+- refactor: Add CASTool_InputCheck.xlsx to inst
+- fix: Update checkInputs function
+  - Add extra variable for CheckInputs file
+  - Remove referenced to in.dir in code
+  - Added check for function inputs but did not add stop code
+- refactor: Update skeleton code to run check files only when in the
+  console
 
 ## Changes in version 0.2.2.9014 (2025-10-07)
 

@@ -103,11 +103,18 @@ plot_units <- "in"
 # Progress, 02
 ## Shiny ----
 if (boo_Shiny == TRUE) {
+  ### 00, Initialize----
+  prog_cnt <- 0
+  # Number of increments
+  prog_n <- 25
+  prog_sleep <- 0.25
+  #
   prog_det <- "Set up"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
   #
   gitpath     <- file.path(".", "external", "R")  # used in getReport
@@ -249,8 +256,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Data, Model"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
   # # prompt user for path to input/output data directories
@@ -365,8 +373,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Load Site Data Files"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
@@ -433,8 +442,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Data, Chem"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
@@ -458,8 +468,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Data, Model"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
@@ -485,8 +496,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Data, Combine stressor data and metadata"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
@@ -559,8 +571,9 @@ for (b in seq_along(biocommlist)) {
     prog_det <- paste0("Data, ", bio, ", Response data")
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
+    prog_inc <- 1 / prog_n
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
+    Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
 
@@ -682,8 +695,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Data, Sample Summary"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
@@ -707,8 +721,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Site Selection"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 #
@@ -734,8 +749,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "Main Code Start"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 #
@@ -799,8 +815,9 @@ for (site in seq_along(1:nrow(df_targets))) {
     prog_det <- "getComparators"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
+    prog_inc <- 1 / prog_n
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
+    Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
@@ -847,8 +864,9 @@ for (site in seq_along(1:nrow(df_targets))) {
     prog_det <- "getSiteInfo, getSiteMap, writeOutliers"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
+    prog_inc <- 1 / prog_n
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
+    Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   # Get site information for general use (map, sample summary, etc)
@@ -965,8 +983,9 @@ for (site in seq_along(1:nrow(df_targets))) {
     prog_det <- "getAvailableDataTypes"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
+    prog_inc <- 1 / prog_n
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
+    Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
@@ -1151,8 +1170,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- paste0(bioComm, "; getQualSites")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
@@ -1228,8 +1248,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getCoOccur"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
@@ -1293,6 +1314,7 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getTimeSeq"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
@@ -1331,8 +1353,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getSufficiency"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
@@ -1369,8 +1392,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getBioStressorResponses"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
@@ -1410,8 +1434,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getVerifiedPredictions"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
     #
@@ -1520,8 +1545,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       prog_det <- "getWOE"
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
+      prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
-      Sys.sleep(mySleepTime)
+      Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
 
@@ -1543,8 +1569,9 @@ for (site in seq_along(1:nrow(df_targets))) {
     prog_det <- "getReport"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
+    prog_inc <- 1 / prog_n
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    Sys.sleep(mySleepTime)
+    Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
@@ -1599,8 +1626,9 @@ if (boo_Shiny == TRUE) {
   prog_det <- "getSummaryAllSites"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(mySleepTime)
+  Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 

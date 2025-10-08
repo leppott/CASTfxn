@@ -6,40 +6,50 @@
 #
 #' @title checkInputs
 #'
-#' @description Check input files for existence, followed by checks for required columns, types, and relationships
+#' @description Check input files for existence, followed by checks for required
+#'  columns, types, and relationships
 #'
-#' @details Reviews each uploaded file against both user-input data (either via the shiny app or contained in the CASToolMetadata.xlsx file) to evaluate 1) if the file exists, 2) if it contains the required columns (which requires that they be named correctly), 3) whether datatypes meet requirements.
+#' @details Reviews each uploaded file against both user-input data (either via 
+#' the shiny app or contained in the CASToolMetadata.xlsx file) to evaluate 1) 
+#' if the file exists, 2) if it contains the required columns (which requires 
+#' that they be named correctly), 3) whether datatypes meet requirements.
 #'
-#' If any required files do not exist, return the list of missing files and shut down.
-#' If all required files exist, proceed to internal checks of the columns and data.
-#' Lastly, perform minimal joins to determine missing values.
+#' If any required files do not exist, return the list of missing files and shut
+#' down.  If all required files exist, proceed to internal checks of the columns
+#' and data. Lastly, perform minimal joins to determine missing values.
 #'
 #' dir_data and dir_results should be absolute and not relative paths.
-#' The function `normalizePath` can be used to convert from relative to absolute path.
+#' The function `normalizePath` can be used to convert from relative to absolute
+#' path.
 #'
-# @param fn.inputcheck filename for the MSExcel file describing required files, columns, types, and relationships
 #' @param dir.uploaded directory of input files to be checked
 #' @param dir.out directory for output
+#' @param fn.inputcheck path filename for the MSExcel file describing required 
+#' files, columns, types, and relationships.  
+#' Default is extdata/CASTool_InputCheck.xlsx
 #'
 #' @return A list of objects to be used in the CASTool.
 #' @examples
 #' # None at this time 
 #' @export
 checkInputs <- function(dir.uploaded,
-                        dir.out) {
+                        dir.out,
+                        fn.inputcheck = system.file("extdata", 
+                                                    "CASTool_InputCheck.xlsx",
+                                                    package = "CASTfxn")) {
   
   # define pipe
   `%>%` <- dplyr::`%>%`
   
   # Global Bindings
-  in.dir <- Variable <- Value <- Type <- Uploaded <- Object <- FilePath <- 
+  Variable <- Value <- Type <- Uploaded <- Object <- FilePath <- 
     ObjectData <- DataType <- DataFN <- DataFileUploaded <- ObjectMetadata <- 
     MetadataType <- MetadataFN <- DataFile <- MetadataFile <- sstv.alg <- 
     ExpectedDatatypes <- errors <- ExpectedColumns <- StationID <- 
     RespSampleID <- RespSampleDate <- NumUniquePKs <- Observations <- 
     PrimaryKey <- FileOne <- FileTwo <- MetadataFileUploaded <- 
     data_bmiMetricInfo <- NULL
-
+  
   # Set debug status ----
   debug <- FALSE
   if (debug) {
@@ -52,7 +62,15 @@ checkInputs <- function(dir.uploaded,
     dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
   }
 
-  dir.uploaded <- in.dir
+  # QC
+  # make proper later
+  file.exists(system.file("extdata", 
+                          "CASTool_InputCheck.xlsx", 
+                          package = "CASTfxn"))
+  dir.exists(dir.uploaded)
+  dir.exists(dir.out)
+  
+  # dir.uploaded <- in.dir
 
   # Declare internal functions ----
   compare.fk.pk <- function(fk, pk) {
@@ -150,7 +168,8 @@ checkInputs <- function(dir.uploaded,
   # Regardless of whether or not the file is required, if it is provided, certain
   # columns are required. These are included in input_check, too. Relationships
   # are sort of included in input_check, but mostly that logic is in this code.
-  fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
+  # fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
+  #    defined in input of function
   input_check <- readxl::read_xlsx(fn.inputcheck, sheet = "data", na = "")
   fn.paired <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
   paired_check <- readxl::read_xlsx(fn.inputcheck, sheet = "paired", na = "") |>
