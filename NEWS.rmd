@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9017 (2025-10-09)
+
+* fix: Change column check procedure in checkInputs, Issue #92
+
 ## Changes in version 0.2.2.9016 (2025-10-09)
 
 * refactor: Add *.proj to .gitignore
