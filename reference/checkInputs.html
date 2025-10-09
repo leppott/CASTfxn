@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASTfxn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2.9016</span>
       </span>
     </div>
 
@@ -71,7 +71,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkInputs</span><span class="op">(</span></span>
 <span>  <span class="va">dir.uploaded</span>,</span>
 <span>  <span class="va">dir.out</span>,</span>
-<span>  fn.inputcheck <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CASTool_InputCheck.xlsx"</span>, package <span class="op">=</span> <span class="st">"CASTfxn"</span><span class="op">)</span></span>
+<span>  fn.inputcheck <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CASTool_InputCheck.xlsx"</span>, package <span class="op">=</span> <span class="st">"CASTfxn"</span><span class="op">)</span>,</span>
+<span>  df_targets <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,6 +92,11 @@
 <dd><p>path filename for the MSExcel file describing required
 files, columns, types, and relationships.
 Default is extdata/CASTool_InputCheck.xlsx</p></dd>
+
+
+<dt id="arg-df-targets">df_targets<a class="anchor" aria-label="anchor" href="#arg-df-targets"></a></dt>
+<dd><p>data frame with single column (TargetSiteID) of target
+sites</p></dd>
 
 </dl></div>
     <div id="value">
