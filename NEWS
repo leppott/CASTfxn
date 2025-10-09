@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-10-08 15:22:36.821788
+    #> Last Update: 2025-10-09 10:09:15.059644
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9016 (2025-10-09)
+
+- refactor: Add \*.proj to .gitignore
+- refactor: Add error checking for input parameters for checkInputs
 
 ## Changes in version 0.2.2.9015 (2025-10-08)
 

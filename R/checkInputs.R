@@ -27,6 +27,8 @@
 #' @param fn.inputcheck path filename for the MSExcel file describing required 
 #' files, columns, types, and relationships.  
 #' Default is extdata/CASTool_InputCheck.xlsx
+#' @param df_targets data frame with single column (TargetSiteID) of target 
+#' sites
 #'
 #' @return A list of objects to be used in the CASTool.
 #' @examples
@@ -36,7 +38,8 @@ checkInputs <- function(dir.uploaded,
                         dir.out,
                         fn.inputcheck = system.file("extdata", 
                                                     "CASTool_InputCheck.xlsx",
-                                                    package = "CASTfxn")) {
+                                                    package = "CASTfxn"),
+                        df_targets = NULL) {
   
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -55,20 +58,33 @@ checkInputs <- function(dir.uploaded,
   if (debug) {
     # Uploaded files
     dir.uploaded <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/UploadedData_Test"
+    # Output dir
+    dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
     # Included functions
     dir.git <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     source(file.path(dir.git, "readCASToolData.R"))
-    # Output dir
-    dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
-  }
+  }## IF ~ debug
 
-  # QC
-  # make proper later
-  file.exists(system.file("extdata", 
-                          "CASTool_InputCheck.xlsx", 
-                          package = "CASTfxn"))
-  dir.exists(dir.uploaded)
-  dir.exists(dir.out)
+  # QC----
+  qc_dir_uploaded <- !dir.exists(dir.uploaded)
+  if (qc_dir_uploaded) {
+    stop("ERROR: 'dir.uploaded' does not exist.")
+  } ## IF ~ qc_dir_uploaded
+  #
+  qc_dir_out <- !dir.exists(dir.out)
+  if (qc_dir_out) {
+    stop("ERROR: 'dir.out' does not exist.")
+  } ## IF ~ qc_dir_out
+  #
+  qc_inputcheck <- !file.exists(fn.inputcheck)
+  if (qc_inputcheck) {
+    stop("ERROR: 'fn.inputcheck' does not exist.")
+  } ## IF ~ qc_inputcheck
+  #
+  qc_df_targets <- is.null(df_targets)
+  if (qc_df_targets) {
+    stop("ERROR: 'df_targets' does not exist.")
+  } ## IF ~ qc_df_targets
   
   # dir.uploaded <- in.dir
 
@@ -312,7 +328,7 @@ checkInputs <- function(dir.uploaded,
                         "Result" = as.character())
 
   for (j in 1:nrow(loaded)) {
-
+    
     object <- loaded$Object[j]
     fn <- loaded$Value[j]
     desc <- loaded$Description[j]

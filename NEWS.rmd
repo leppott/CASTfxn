@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.2.9016 (2025-10-09)
+
+* refactor: Add *.proj to .gitignore
+* refactor: Add error checking for input parameters for checkInputs
+
 ## Changes in version 0.2.2.9015 (2025-10-08)
 
 * refactor: Update skeleton code withProgress variables

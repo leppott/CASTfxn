@@ -7,7 +7,8 @@
 checkInputs(
   dir.uploaded,
   dir.out,
-  fn.inputcheck = system.file("extdata", "CASTool_InputCheck.xlsx", package = "CASTfxn")
+  fn.inputcheck = system.file("extdata", "CASTool_InputCheck.xlsx", package = "CASTfxn"),
+  df_targets = NULL
 )
 }
 \arguments{
@@ -18,6 +19,9 @@ checkInputs(
 \item{fn.inputcheck}{path filename for the MSExcel file describing required 
 files, columns, types, and relationships.  
 Default is extdata/CASTool_InputCheck.xlsx}
+
+\item{df_targets}{data frame with single column (TargetSiteID) of target 
+sites}
 }
 \value{
 A list of objects to be used in the CASTool.
