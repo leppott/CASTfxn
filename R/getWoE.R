@@ -28,7 +28,8 @@
 #'         or were not evaluated.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getWoE <- function(TargetSiteID,
                    biocomm,
@@ -42,6 +43,11 @@ getWoE <- function(TargetSiteID,
                    plotunits = plot_units,
                    boo_plot = TRUE) {##FUNCTION.START
 
+  # Global Bindings
+  bioComm <- df_LoE <- Score <- StressorValue <- StationID <- StressSampleID <- 
+    StressSampleDate <- RespSampleID <- RespSampleDate <- Stressor <- LoE <- 
+    NULL
+    
   # QC data
   boo_DEBUG <- FALSE
 

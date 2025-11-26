@@ -5,7 +5,7 @@
 \alias{data_CoOccur_AZ_Hi}
 \title{Co-Occurrence example data (AZ hi)}
 \format{
-A data frame with 351 rows and 285 variables:
+A data frame with 336 rows and 307 variables:
 \describe{
           \item{\code{StationID_Master}}{}
           \item{\code{Group}}{a numeric vector}
@@ -44,7 +44,6 @@ A data frame with 351 rows and 285 variables:
           \item{\code{alphaHexachlorocyclohexane_uf_ug_L}}{a logical vector}
           \item{\code{Aluminum_f_mg_L}}{a logical vector}
           \item{\code{Aluminum_uf_ug_L}}{a numeric vector}
-          \item{\code{Ammonia_N_calc_mg_kg}}{a logical vector}
           \item{\code{Aniline_uf_ug_L}}{a logical vector}
           \item{\code{Anthracene_uf_ug_L}}{a logical vector}
           \item{\code{Antimony_f_mg_L}}{a numeric vector}
@@ -85,8 +84,6 @@ A data frame with 351 rows and 285 variables:
           \item{\code{CaCO3_calc_mg_L}}{a logical vector}
           \item{\code{CaCO3_f_mg_L}}{a logical vector}
           \item{\code{CaCO3_mg_L}}{a numeric vector}
-          \item{\code{CaCO3_other_mg_L}}{a logical vector}
-          \item{\code{CaCO3_uf_mg_L}}{a numeric vector}
           \item{\code{Cadmium_calc_mg_kg}}{a logical vector}
           \item{\code{Cadmium_f_mg_L}}{a numeric vector}
           \item{\code{Cadmium_uf_mg_L}}{a numeric vector}
@@ -154,9 +151,7 @@ A data frame with 351 rows and 285 variables:
           \item{\code{Ethyl_p_nitrophenylPhenylphosphorothioate_uf_ug_L}}{a logical vector}
           \item{\code{Fensulfothion_uf_ug_L}}{a logical vector}
           \item{\code{Fenthion_uf_ug_L}}{a logical vector}
-          \item{\code{Flow_calc_cfs}}{a logical vector}
           \item{\code{Flow_cfs}}{a numeric vector}
-          \item{\code{Flow_ft_sec}}{a numeric vector}
           \item{\code{Fluoranthene_uf_ug_L}}{a logical vector}
           \item{\code{Fluorene_uf_ug_L}}{a logical vector}
           \item{\code{Fluoride_f_mg_L}}{a logical vector}
@@ -210,7 +205,6 @@ A data frame with 351 rows and 285 variables:
           \item{\code{N_nitrosodiphenylamine_uf_ug_L}}{a logical vector}
           \item{\code{Naled_uf_ug_L}}{a logical vector}
           \item{\code{Naphthalene_uf_ug_L}}{a logical vector}
-          \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
           \item{\code{Nickel_calc_mg_kg}}{a logical vector}
           \item{\code{Nickel_f_mg_L}}{a logical vector}
           \item{\code{Nickel_uf_ug_L}}{a logical vector}
@@ -261,7 +255,6 @@ A data frame with 351 rows and 285 variables:
           \item{\code{Sodium_uf_mg_L}}{a numeric vector}
           \item{\code{SolidsInSediment_calc_.}}{a logical vector}
           \item{\code{SpecCond_umhos_cm}}{a numeric vector}
-          \item{\code{StreamWidth_ft}}{a numeric vector}
           \item{\code{Strontium_f_mg_L}}{a logical vector}
           \item{\code{Sulfate_uf_mg_L}}{a numeric vector}
           \item{\code{TDS_calc_mg_L}}{a logical vector}
@@ -283,7 +276,6 @@ A data frame with 351 rows and 285 variables:
           \item{\code{Turbidity_NTU}}{a numeric vector}
           \item{\code{Uranium_natural_f_ug_L}}{a logical vector}
           \item{\code{Uranium_Natural_uf_pCi_L}}{a logical vector}
-          \item{\code{Uranium_Natural_uf_ug_L}}{a logical vector}
           \item{\code{Vanadium_f_mg_L}}{a logical vector}
           \item{\code{Vanadium_uf_mg_L}}{a logical vector}
           \item{\code{Velocity_ft_sec}}{a numeric vector}
@@ -292,6 +284,36 @@ A data frame with 351 rows and 285 variables:
           \item{\code{Zinc_f_mg_L}}{a numeric vector}
           \item{\code{Zinc_uf_mg_L}}{a numeric vector}
           \item{\code{Zirconium_95_uf_pCi_L}}{a logical vector}
+          \item{\code{Alkalinity_bicarbonate_uf_mg_L}}{a numeric vector}
+          \item{\code{Alkalinity_carbonate_uf_mg_L}}{a numeric vector}
+          \item{\code{Alkalinity_hydroxide_uf_mg_L}}{a numeric vector}
+          \item{\code{Alkalinity_total_uf_mg_L}}{a numeric vector}
+          \item{\code{Barium_cmpds_f_mg_L}}{a numeric vector}
+          \item{\code{CaCO3_uf_mg_L}}{a numeric vector}
+          \item{\code{Chlorophyll_pheophytin_uf_ratio}}{a numeric vector}
+          \item{\code{Depth_unk}}{a numeric vector}
+          \item{\code{DO_f_unk}}{a numeric vector}
+          \item{\code{DOSat_f_.}}{a numeric vector}
+          \item{\code{DOSat_f_unk}}{a numeric vector}
+          \item{\code{EventCond_none}}{a numeric vector}
+          \item{\code{Fines_lt2mm_pct_Reach}}{a numeric vector}
+          \item{\code{Fines_lt2mm_pct_Riffle}}{a numeric vector}
+          \item{\code{Flow_unk}}{a numeric vector}
+          \item{\code{Hardness_CaCO3_MgCO3_uf_mg_L}}{a numeric vector}
+          \item{\code{NH3_N_calc_mg_kg}}{a numeric vector}
+          \item{\code{NH3_N_uf_mg_L}}{a numeric vector}
+          \item{\code{SpecCond_unk}}{a numeric vector}
+          \item{\code{StreamCrossSectArea_unk}}{a numeric vector}
+          \item{\code{StreamWidth_ft}}{a numeric vector}
+          \item{\code{StreamWidth_unk}}{a numeric vector}
+          \item{\code{TDS_f_unk}}{a numeric vector}
+          \item{\code{TDS_uf_mg_L}}{a numeric vector}
+          \item{\code{Temp_air_degC}}{a numeric vector}
+          \item{\code{Temp_air_unk}}{a numeric vector}
+          \item{\code{Temp_unk}}{a numeric vector}
+          \item{\code{Turbidity_unk}}{a numeric vector}
+          \item{\code{Uranium_natural_uf_ug_L}}{a numeric vector}
+          \item{\code{Velocity_unk}}{a numeric vector}
 }
 }
 \source{

@@ -41,4 +41,7 @@ Stressor-based weight of evidence for the stressor as a cause of impairment
 
 Uses the packages dplyr and tidyr.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

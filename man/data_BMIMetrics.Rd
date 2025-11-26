@@ -5,18 +5,9 @@
 \alias{data_BMIMetrics}
 \title{Benthic macroinvertebrate metrics example data}
 \format{
-A data frame with 957 rows and 32 variables:
+A data frame with 956 rows and 26 variables:
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
-          \item{\code{Year}}{a numeric vector}
-          \item{\code{Index}}{a factor with levels \code{Sp} \code{Su}}
-          \item{\code{BenSampID}}{a numeric vector}
-          \item{\code{RepNum}}{a numeric vector}
-          \item{\code{Lat_Dec}}{a numeric vector}
-          \item{\code{Long_Dec}}{a numeric vector}
-          \item{\code{InvertReg}}{a factor with levels \code{cold} \code{warm}}
-          \item{\code{StreamType}}{a factor with levels \code{Effluent} \code{Perennial}}
-          \item{\code{ActivityCategory}}{a factor with levels \code{Field Replicate} \code{Routine Sample}}
           \item{\code{BenCollDate}}{a factor with levels }
           \item{\code{NarRat}}{a factor with levels \code{Inconclusive} \code{Meets} \code{Violates}}
           \item{\code{IBI}}{a numeric vector}
@@ -37,7 +28,11 @@ A data frame with 957 rows and 32 variables:
           \item{\code{CSCI}}{a numeric vector}
           \item{\code{O_E}}{a character vector}
           \item{\code{MMI_Score}}{a numeric vector}
-          \item{\code{ElevCategory}}{a character vector}
+          \item{\code{ElevCategory}}{a character vector}#'           
+          \item{\code{clust.hi}}{a character vector}
+          \item{\code{clust.lo}}{a character vector}
+          \item{\code{COMID_NHD2}}{a character vector}
+          \item{\code{SampYear}}{a character vector} 
 }
 }
 \source{

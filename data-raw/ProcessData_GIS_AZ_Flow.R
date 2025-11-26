@@ -3,6 +3,10 @@
 # Erik.Leppo@tetratech.com
 # 20180612
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 20250923, EWL
+# fix some non-ASCII characters
+# rgdal so have to run in old version of R (e.g., 4.3.3) with rdgal installed
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # 0. Prep####
 wd <- getwd() # assume is package directory
@@ -43,8 +47,8 @@ proj4string(data_GIS_Flow_LO.proj)
 data_GIS_Flow_HI <- data_GIS_Flow_HI.proj
 data_GIS_Flow_LO <- data_GIS_Flow_LO.proj
 
-devtools::use_data(data_GIS_Flow_HI, overwrite = TRUE)
-devtools::use_data(data_GIS_Flow_LO, overwrite = TRUE)
+usethis::use_data(data_GIS_Flow_HI, overwrite = TRUE)
+usethis::use_data(data_GIS_Flow_LO, overwrite = TRUE)
 
 # HI, 87.7 MB compresses to 12.5 MB
 # LO, 162.9 MB compresses to 22.9 MB

@@ -13,10 +13,10 @@ getTimeSeq(
   df_respinfo,
   df_stressinfo,
   df_paired,
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi = 600,
+  plotH = 6,
+  plotW = 8,
+  plotunits = "in",
   dir_results = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
   boo_plot = TRUE
@@ -38,13 +38,13 @@ index and metric values, regardless of matching status}
 
 \item{df_stressinfo}{dataframe containing stressor metadata, specifically "Label"}
 
-\item{plotdpi}{Standardized dpi value for graphics. Default = plot_dpi.}
+\item{plotdpi}{Standardized dpi value for graphics. Default = plot_dpi. 600}
 
-\item{plotH}{Standardized height value for graphics. Default = plot_H.}
+\item{plotH}{Standardized height value for graphics. Default = plot_H. 6}
 
-\item{plotW}{Standardized width value for graphics. Default = plot_W.}
+\item{plotW}{Standardized width value for graphics. Default = plot_W. 8}
 
-\item{plotunits}{Standardized units for graphics. Default = plot_units.}
+\item{plotunits}{Standardized units for graphics. Default = plot_units. "in"}
 
 \item{dir_results}{Directory containing all results. Default = file.path(getwd(),"Results").
 NOTE: the code adds a middle directory, BioComm, between the Results and the subdirectory.}
@@ -66,5 +66,8 @@ atop the other). All stressor/response data are graphed.
 Improvements: Add scoring.
 
 Uses the packages dplyr, ggplot2, lubridate, tidyr
+}
+\examples{
+# None at this time 
 }
 \keyword{internal}

@@ -67,6 +67,16 @@ getBioStressorResponses <- function(TargetSiteID,
                                     dir_sub = "_WoE",
                                     boo_pred_warn = TRUE,
                                     boo_plot = TRUE) {##FUNCTION.START
+  
+  # Global Bindings
+  df_stressorMetadata <- 
+    bioMetricInfo <- bioMetricData <- df_PairedStressResp <- bioComm <- 
+    bioIndex <- plot_dpi <- plot_H <- plot_W <- plot_units <- dir_results <- 
+    Type <- StationID <- StressSampleID <- RespSampleID <- Quality <- 
+    RefSiteFlag <- Stressor <- Response <- lwr <- upr <- StressSampleDate <- 
+    RespSampleDate <- stressVal <- respVal <- n_site <- n_comp <- 
+    SRLin_Score_inside <- SRLin_Score_outside <- estimate <- LoE <- 
+    bioIndexName <- StressorValue <- Score <- list.SiteSummary <- NULL
 
   boo.DEBUG <- FALSE
 
@@ -247,7 +257,7 @@ getBioStressorResponses <- function(TargetSiteID,
       # Create df_plot_all & QC
       df_plot_all <- df_AllData %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
-                      RefSiteFlag, all_of(stressName), all_of(respName))
+                      RefSiteFlag, dplyr::all_of(stressName), dplyr::all_of(respName))
       df_plot_all <- df_plot_all[stats::complete.cases(df_plot_all), ]
 
       # QC
@@ -291,26 +301,26 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_all_ref <- df_plot_all %>%
         dplyr::filter(RefSiteFlag == 1) %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
-                      RefSiteFlag, all_of(stressName), all_of(respName))
+                      RefSiteFlag, dplyr::all_of(stressName), dplyr::all_of(respName))
       df_plot_all_ref <- df_plot_all_ref[stats::complete.cases(df_plot_all_ref), ]
 
       #get all cluster data to plot
       df_plot_cl <- df_CompData %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
-                      RefSiteFlag, all_of(stressName), all_of(respName))
+                      RefSiteFlag, dplyr::all_of(stressName), dplyr::all_of(respName))
       df_plot_cl <- df_plot_cl[stats::complete.cases(df_plot_cl), ]
 
       #get all cluster reference data
       df_plot_cl_ref <- df_plot_cl %>%
         dplyr::filter(RefSiteFlag == 1) %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
-                      RefSiteFlag, all_of(stressName), all_of(respName))
+                      RefSiteFlag, dplyr::all_of(stressName), dplyr::all_of(respName))
       df_plot_cl_ref <- df_plot_cl_ref[stats::complete.cases(df_plot_cl_ref), ]
 
       #get target site data to plot
       df_plot_site <- df_SiteData %>%
         dplyr::select(StationID, StressSampleID, RespSampleID, Quality,
-                      RefSiteFlag, all_of(stressName), all_of(respName))
+                      RefSiteFlag, dplyr::all_of(stressName), dplyr::all_of(respName))
       df_plot_site <- df_plot_site[stats::complete.cases(df_plot_site), ]
 
       # Check for missing data and write to data gaps file
@@ -1008,14 +1018,14 @@ getBioStressorResponses <- function(TargetSiteID,
   # Pivot longer site data before merging with df.sc.sr
   df_SiteDataStrLong <- df_SiteData %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate,
-                  RespSampleID, RespSampleDate, all_of(stressors)) %>%
-    tidyr::pivot_longer(cols = c(all_of(stressors)),
+                  RespSampleID, RespSampleDate, dplyr::all_of(stressors)) %>%
+    tidyr::pivot_longer(cols = c(dplyr::all_of(stressors)),
                         names_to = "stressName",
                         values_to = "stressVal")
   df_SiteDataRespLong <- df_SiteData %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, all_of(BioResp), Quality) %>%
-    tidyr::pivot_longer(cols = c(all_of(BioResp)), names_to = "respName",
+                  RespSampleDate, dplyr::all_of(BioResp), Quality) %>%
+    tidyr::pivot_longer(cols = c(dplyr::all_of(BioResp)), names_to = "respName",
                         values_to = "respVal")
   df_SiteDataLong <- merge(df_SiteDataStrLong, df_SiteDataRespLong,
                            by = c("StationID", "StressSampleID",

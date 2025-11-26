@@ -26,7 +26,8 @@
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
-#
+#' @examples
+#' # None at this time 
 #' @export
 prepMeasStressorData <- function(in.dir,
                                  out.dir,
@@ -34,7 +35,11 @@ prepMeasStressorData <- function(in.dir,
                                  fn.meta,
                                  removeOutliers,
                                  sub.dir = "_Histograms") {
-
+  # Global Bindings
+  UseInStressorID <- StdParamName <- StationID <- StressSampleID <- 
+    StressSampleDate <- TransfResult <- IQRmethod <- SDmethod <- Outlier <- NULL
+                                                 
+  # Debug
   boo.debug = TRUE
   if (boo.debug) {
     sub.dir = "_Histograms"
@@ -137,7 +142,7 @@ prepMeasStressorData <- function(in.dir,
     dplyr::mutate(StressSampleDate = min(StressSampleDate)) %>%
     dplyr::ungroup()
   data_chemRaw <- data_chemRaw %>%
-    tidyr::pivot_longer(cols = all_of(analytes),
+    tidyr::pivot_longer(cols = dplyr::all_of(analytes),
                         names_to = "StdParamName",
                         values_to = "TransfResult")
   data_chemRaw <- dplyr::filter(data_chemRaw, !is.na(TransfResult))

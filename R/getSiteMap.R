@@ -43,9 +43,9 @@
 #' @return A png map to a subdirectory "SiteInfo" in the folder named by the SiteID
 #' in the user supplied dir_results folder (default is "Results" folder in the
 #' working directory).
-#
-# no examples
-#
+#' 
+#' @examples
+#' # None at this time 
 #' @export
 getSiteMap <- function(sp_outline,
                        sp_flowline,
@@ -61,7 +61,13 @@ getSiteMap <- function(sp_outline,
                        dir_results = file.path(getwd(), "Results"),
                        dir_sub = "SiteInfo",
                        dir_map_rmd) {
-
+  
+  # Global Bindings
+  STATE.shp <- NHD.STATE <- data_Sites <- list.CompSites <- data_plotvars <- 
+    refOutline_col <- StationID <- Longitude <- Latitude <- RefSiteFlag <- 
+    COMID <- IncaseCol <- OutcaseCol <- Case <- geometry <- NULL
+  
+  # Debug
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG == TRUE) {

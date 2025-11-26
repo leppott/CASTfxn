@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-09-22 12:37:12.606906
+    #> Last Update: 2025-10-09 13:48:58.588885
 
 # Planned Updates
 
@@ -24,6 +24,101 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.2.9017 (2025-10-09)
+
+- fix: Change column check procedure in checkInputs, Issue \#92
+
+## Changes in version 0.2.2.9016 (2025-10-09)
+
+- refactor: Add \*.proj to .gitignore
+- refactor: Add error checking for input parameters for checkInputs
+
+## Changes in version 0.2.2.9015 (2025-10-08)
+
+- refactor: Update skeleton code withProgress variables
+- style: Edits to checkInputs
+- refactor: Add CASTool_InputCheck.xlsx to inst
+- fix: Update checkInputs function
+  - Add extra variable for CheckInputs file
+  - Remove referenced to in.dir in code
+  - Added check for function inputs but did not add stop code
+- refactor: Update skeleton code to run check files only when in the
+  console
+
+## Changes in version 0.2.2.9014 (2025-10-07)
+
+- fix: Update function defaults to values not variables
+  - plot_dpi, plot_H, plot_W, plot_units
+    - getCoOccur
+    - getSiteInfo
+    - getSufficiency
+    - getTimeSeq
+    - getVPSSI
+    - getVerifiedPredictions fix: Add function variables
+  - plot_dpi, plot_H, plot_W, plot_units
+    - getWSStressorFigs docs: Update function documentation
+  - getWSStressorFigs
+
+## Changes in version 0.2.2.9013 (2025-10-07)
+
+- refactor: Add missing package name
+  - all_of
+  - .data
+
+## Changes in version 0.2.2.9012 (2025-09-24)
+
+- docs: Add tcltk to Suggests in DESCRIPTION
+
+## Changes in version 0.2.2.9011 (2025-09-24)
+
+- refactor: Skeleton code user inputs to tcltk instead of prompt
+
+## Changes in version 0.2.2.9010 (2025-09-24)
+
+- docs: Add missing packages to DESCRIPTION that are used in skeleton
+  code
+- refactor: Updates to skeleton code for use in Shiny
+
+## Changes in version 0.2.2.9009 (2025-09-24)
+
+- refactor: Add Global Bindings per Check Package, all functions
+- refactor: Update example for getElev to remove error
+  - wrong direction slash for donttest
+- refactor: Add example section of missing, none at this time
+- refactor: Add missing package name
+  - all_of
+  - any_of
+  - ends_with
+  - everything
+  - across
+  - where
+  - desc
+  - str_detect
+- docs: Update LICENSE file and DESCRIPTION
+
+## Changes in version 0.2.2.9008 (2025-09-23)
+
+- refactor: Remove non-ASCII characters from data objects
+  - data_BMIMasterTaxa
+- refactor: Replace non-ASCII \<= and \>= with unicode 264 and 265
+  - getVPSSI.R
+  - prepRespData.R
+- refactor: Add to .Rbuildignore
+  - data-raw
+  - \_junk
+  - NEWS.rmd
+  - README.Rmd
+  - \_plkdown.yml
+  - codecov.yml
+- refactor: Update data.R
+  - data_BMIMasterTaxa
+  - df.sites.map
+
+## Changes in version 0.2.2.9007 (2025-09-22)
+
+- fix: Update data_CoOccur_CA for non-ASCII characters
+- docs: Update data variable names in data.R
 
 ## Changes in version 0.2.2.9006 (2025-09-21)
 
@@ -895,7 +990,7 @@ CASTool + global.R - Remove targeted site from pull down list.
 - getWoE.R
   - Outlining.
 
-## Changes in Pull Request \#88.9001 (2020-08-21).
+## Changes in Pull Request 88.9001 (2020-08-21)
 
 - CASTool_CA.r
   - Move from R/ to inst/extdata/

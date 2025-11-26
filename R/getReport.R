@@ -87,7 +87,10 @@ getReport <- function(TargetSiteID,
                       report_format = "html",
                       dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                       ) { ##FUNCTION.START
-  #
+  # Global Bindings
+  biocommlist <- regionName <- fn.cluster <- NULL
+    
+  # Debug
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
   if (boo_DEBUG) {

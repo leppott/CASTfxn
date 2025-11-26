@@ -39,4 +39,7 @@ sample data. Sample ID column names are required to end with "SampleID".
 
 Uses the library dplyr
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

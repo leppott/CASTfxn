@@ -5,11 +5,12 @@
 \alias{data_AlgMasterTaxa}
 \title{Algae Master Taxa}
 \format{
-A data frame with 557 observations on the following 23 variables.
+A data frame with 557 observations on the following 24 variables.
 \describe{
-          \item{\code{FinalID}}{a factor with levels } 
-          \item{\code{Phylum}}{a factor with levels \code{Heterokontophyta}}
-           \item{\code{Class}}{a factor with levels \code{Bacillariophyceae}}
+           \item{\code{FinalID}}{a factor with levels }             
+           \item{\code{GenusFinal}}{a factor with levels }
+           \item{\code{Phylum}}{a factor with levels}
+           \item{\code{Class}}{a factor with levels}
            \item{\code{Subclass}}{a factor with levels }
            \item{\code{Order}}{a factor with levels }
            \item{\code{Family}}{a factor with levels }

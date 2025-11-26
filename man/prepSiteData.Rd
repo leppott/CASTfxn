@@ -18,4 +18,7 @@ Prepare site data for CASTool, adding ClusterID, if needed
 \details{
 Retrieves saved site and cluster objects from their respective rds files.
 }
+\examples{
+# None at this time 
+}
 \keyword{internal}

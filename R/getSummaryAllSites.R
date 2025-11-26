@@ -34,7 +34,8 @@
 #' final weight of evidence.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getSummaryAllSites <- function(biocommlist,
                                bmiIndex,
@@ -44,6 +45,13 @@ getSummaryAllSites <- function(biocommlist,
                                dir_results = file.path(getwd(), "Results"),
                                dir_sub = "WoE",
                                df_sites) {##FUNCTION.START
+  
+  # Global Bindings
+  localdir <- StationID_Master <- FinalLatitude <- FinalLongitude <- BioComm <- 
+    BioDeg <- NumRespSamples <- minIndex <- meanIndex <- maxIndex <- 
+    StressorType <- NumStressSamples <- NumStressors <- WtTot_WoE <- 
+    WtTotTS_barplot <- WtTotCO_boxplot <- WtTotSR_InCase_LogRegr <- 
+    WtTotSR_InCase_LinRegr <- WtTotSR_OutCase_LinRegr <- WtTotVP_boxplot <- NULL
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -217,7 +225,7 @@ getSummaryAllSites <- function(biocommlist,
       dplyr::select(StationID_Master
                     , FinalLatitude
                     , FinalLongitude
-                    # , all_of(OutsideColName)
+                    # , dplyr::all_of(OutsideColName)
                     , BioComm
                     , BioDeg
                     , NumRespSamples
@@ -235,8 +243,8 @@ getSummaryAllSites <- function(biocommlist,
                     , WtTotSR_OutCase_LinRegr
                     , WtTotVP_boxplot) %>%
       dplyr::rename(Overall_WoE = WtTot_WoE) %>%
-      dplyr::arrange(StationID_Master, desc(BioComm)
-                     , desc(BioDeg), StressorType)
+      dplyr::arrange(StationID_Master, dplyr::desc(BioComm)
+                     , dplyr::desc(BioDeg), StressorType)
     df_WoESummary <- unique(df_WoESummary)
 
   }## FOR ~ !dir.exists(file.path(dir_results))==TRUE ~ END

@@ -57,10 +57,10 @@
 #' @param colBio df_data column name for the field with biological index value.
 #' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
 #'                 Defaults to data_plotvars
-#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
-#' @param plotH Standardized plot height. Defaults to plot_H.
-#' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotunits Standardized plot units. Defaults to plot_units.
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi. 600
+#' @param plotH Standardized plot height. Defaults to plot_H. 6
+#' @param plotW Standardized plot width. Defaults to plot_W. 8
+#' @param plotunits Standardized plot units. Defaults to plot_units. "in"
 #' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "Sufficiency"
 #' @param boo_plot Boolean value indicating whether or not to print the plot.
@@ -80,14 +80,23 @@ getSufficiency <- function(TargetSiteID,
                            biocomm,
                            colBio,
                            plotvars = data_plotvars,
-                           plotdpi = plot_dpi,
-                           plotH = plot_H,
-                           plotW = plot_W,
-                           plotunits = plot_units,
+                           plotdpi = 600,
+                           plotH = 6,
+                           plotW = 8,
+                           plotunits = "in",
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "_WoE",
                            boo_plot = TRUE) {##FUNCTION.START
+  
+  # Global Bindings
+  df_PairedStressResp <- list.CompSites <- df_stressorMetadata <- bioComm <- 
+    bioIndex <- dir_results <- boo_plot_user <- Type <- StationID <- 
+    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <- 
+    Quality <- Stressor <- LogTransf <- Label <- y <- y.name <- x <- 
+    StressorCode <- StressorValue <- n <- SRpred_Deg <- Sc_SRlog <- 
+    bioIndexName <- LoE <- Score <- NULL
 
+  # Debug
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG==TRUE) {
@@ -98,10 +107,10 @@ getSufficiency <- function(TargetSiteID,
     biocomm = bioComm
     colBio = bioIndex
     plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = boo_plot_user
@@ -157,7 +166,8 @@ getSufficiency <- function(TargetSiteID,
   df_data <- df_data %>%
     dplyr::filter(StationID %in% compSites) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, Quality, all_of(colBio), all_of(stressors))
+                  RespSampleDate, Quality, dplyr::all_of(colBio),
+                  dplyr::all_of(stressors))
 
   df_target <- dplyr::filter(df_data, StationID == TargetSiteID)
 
@@ -169,7 +179,7 @@ getSufficiency <- function(TargetSiteID,
   # Create Score Output File # add Bio.Nar just before Quality
   df.scores <- df_data %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, all_of(colBio), Quality) %>%
+                  RespSampleDate, dplyr::all_of(colBio), Quality) %>%
     dplyr::mutate(StressorCode  = as.character(NA),
                   StressorValue = as.numeric(NA),
                   n             = as.character(NA),
@@ -213,20 +223,21 @@ getSufficiency <- function(TargetSiteID,
 
     df.score.j <- df_data %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate,
-                    RespSampleID, RespSampleDate, Quality, all_of(colBio),
-                    all_of(str)) %>%
+                    RespSampleID, RespSampleDate, Quality, 
+                    dplyr::all_of(colBio),
+                    dplyr::all_of(str)) %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      tidyr::pivot_longer(cols = all_of(str), names_to = "StressorCode",
+      tidyr::pivot_longer(cols = dplyr::all_of(str), names_to = "StressorCode",
                           values_to = "StressorValue")
 
     df.plot <- df_data %>%
-      dplyr::select(all_of(colBio), Quality, all_of(str))
+      dplyr::select(dplyr::all_of(colBio), Quality, dplyr::all_of(str))
 
     df.plot <- df.plot[!is.na(df.plot[, str]), ]
 
     if (nrow(df.plot) > 0) { # This uses the dataframe with transformed (if necessary) values
       df.plot <- df.plot %>%
-        dplyr::rename(y = all_of(colBio), x = all_of(str)) %>%
+        dplyr::rename(y = dplyr::all_of(colBio), x = dplyr::all_of(str)) %>%
         dplyr::mutate(y.name = ifelse(Quality == "Degraded", 1, 0)) %>%
         dplyr::select(y, Quality, y.name, x)
       fit <- stats::glm(y.name ~ x, data = df.plot, family = stats::binomial)
@@ -280,7 +291,8 @@ getSufficiency <- function(TargetSiteID,
                       SRpred_Deg = j_SR_predict,
                       Sc_SRlog = j_SR_score) %>%
         dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                      RespSampleDate, all_of(colBio), Quality, StressorCode,
+                      RespSampleDate, dplyr::all_of(colBio), Quality, 
+                      StressorCode,
                       StressorValue, n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
       # plot1, ggplot ####
@@ -366,7 +378,8 @@ getSufficiency <- function(TargetSiteID,
     dplyr::select(!StressorCode) %>%
     dplyr::rename(Stressor = Label) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, BioComm, all_of(colBio), Quality, Stressor,
+                  RespSampleDate, BioComm, dplyr::all_of(colBio), Quality, 
+                  Stressor,
                   StressorValue, n, SRpred_Deg, Sc_SRlog)
 
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
@@ -375,7 +388,8 @@ getSufficiency <- function(TargetSiteID,
                      col.names = TRUE, row.names = FALSE, sep = "\t")
 
   df_SuffScores <- df.scores %>%
-    dplyr::rename(bioComm = BioComm, bioIndex = all_of(colBio), Score = Sc_SRlog) %>%
+    dplyr::rename(bioComm = BioComm, bioIndex = dplyr::all_of(colBio), 
+                  Score = Sc_SRlog) %>%
     dplyr::mutate(LoE = "Suff", bioIndexName := {{colBio}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                   RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,

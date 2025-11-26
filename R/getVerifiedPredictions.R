@@ -22,17 +22,18 @@
 #' @param colBio default = "IBI"
 #' @param plotvars Standardized sizes, fills, shapes, and transparencies for plots.
 #' Defaults to data_plotvars
-#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi.
-#' @param plotH Standardized plot height. Defaults to plot_H.
-#' @param plotW Standardized plot width. Defaults to plot_W.
-#' @param plotunits Standardized plot units. Defaults to plot_units.
+#' @param plotdpi Standardized plot dpi. Defaults to plot_dpi. 600
+#' @param plotH Standardized plot height. Defaults to plot_H. 6
+#' @param plotW Standardized plot width. Defaults to plot_W. 8
+#' @param plotunits Standardized plot units. Defaults to plot_units. "in"
 #' @param dir_plots default = file.path(getwd(), "Results")
 #' @param dir_sub default = "VerifiedPredictions"
 #' @param boo_plot = TRUE
 #'
 #' @return Results text file and png files to "Results" "VerifiedPredictions" folder
 #' in working directory of box plots
-#'
+#' @examples
+#' # None at this time 
 #' @export
 #'
 getVerifiedPredictions <- function(TargetSiteID,
@@ -44,14 +45,26 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    df_MasterTaxa,
                                    colBio,
                                    plotvars = data_plotvars,
-                                   plotdpi = plot_dpi,
-                                   plotH = plot_H,
-                                   plotW = plot_W,
-                                   plotunits = plot_units,
+                                   plotdpi = 600,
+                                   plotH = 6,
+                                   plotW = 8,
+                                   plotunits = "in",
                                    dir_plots = file.path(getwd(), "Results"),
                                    dir_sub = "_WoE",
                                    boo_plot = TRUE) {##FUNCTION.START
 
+  # Global Bindings
+  df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioTaxaData <- 
+    bioMasterTaxa <- bioIndexGp <- dir_results <- boo.plot.user <- SSTVname <- 
+    SensMin <- SensMax <- Stressor <- LogTransf <- Label <- TaxonID <-
+    IncaseYN <- Quality <- StationID <- IncaseCol <- StressSampleID <- 
+    StressSampleDate <- RespSampleID <- RespSampleDate <- RefSiteFlag <- 
+    BetterThan <- sstv.sensall <- sstv.sensmaxLabel <- Group <- NumInd <- 
+    PctInd <- PctTaxa <- NumInds <- PctInds <- NumTaxa <- variable <- value <- 
+    Min <- q25 <- q50 <- q75 <- Max <- StressorLabel <- StressorValue <- 
+    Response <- ResponseValue <- Score <- Scores <- Type <- OverallMax <- 
+    bioIndex <- bioIndexName <- LoE <- NULL
+  
   # Debugging
   boo.DEBUG <- FALSE
   #
@@ -65,10 +78,10 @@ getVerifiedPredictions <- function(TargetSiteID,
     df_MasterTaxa = bioMasterTaxa
     colBio = bioIndexGp
     plotvars = data_plotvars
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = boo.plot.user
@@ -165,7 +178,7 @@ getVerifiedPredictions <- function(TargetSiteID,
     if (exists("keepMTcol") == TRUE) { # Some stressors have SSTV vals in master taxa file
       # Merge biotaxa results with master taxa file ----
       df_SSTVtaxa <- df_MasterTaxa %>%
-        dplyr::select(TaxonID, all_of(keepMTcol))
+        dplyr::select(TaxonID, dplyr::all_of(keepMTcol))
 
       df_SSTVtaxa <- df_SSTVtaxa %>%
         dplyr::filter(dplyr::if_any(-1, ~ !is.na(.)))
@@ -190,8 +203,10 @@ getVerifiedPredictions <- function(TargetSiteID,
         dplyr::filter(IncaseYN == 1) %>%
         dplyr::mutate(Quality = forcats::fct_expand(Quality, "Target")) %>%
         dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                      RespSampleID, RespSampleDate, BioComm, all_of(colBio),
-                      RefSiteFlag, Quality, BetterThan, all_of(stressors.sstv))
+                      RespSampleID, RespSampleDate, BioComm, 
+                      dplyr::all_of(colBio),
+                      RefSiteFlag, Quality, BetterThan, 
+                      dplyr::all_of(stressors.sstv))
       nTargetSamples <- nrow(df_stress.sstv[df_stress.sstv$StationID == TargetSiteID,])
 
       for (tv in seq_along(keepMTcol)) { # Obtain one or more sstv columns
@@ -221,8 +236,8 @@ getVerifiedPredictions <- function(TargetSiteID,
           if (length(sstv.sensmin) > 1) {
             # Handle case where sensmin defines endpoints of a range
             sstv.sensmin.gp <- df_bioTaxaData %>%
-              dplyr::select(all_of(sstv)) %>%
-              dplyr::filter(dplyr::between(.data[[sstv]], sstv.sensmin[1],
+              dplyr::select(dplyr::all_of(sstv)) %>%
+              dplyr::filter(dplyr::between(dplyr::.data[[sstv]], sstv.sensmin[1],
                                            sstv.sensmin[2]))
             sstv.sensmin.gp <- unique(sstv.sensmin.gp)
             sstv.sensmin.gp <- sort(as.numeric(unlist(sstv.sensmin.gp)))
@@ -233,8 +248,8 @@ getVerifiedPredictions <- function(TargetSiteID,
           if (length(sstv.sensmax) > 1) {
             # Handle case where sensmax defines endpoints of a range
             sstv.sensmax.gp <- df_bioTaxaData %>%
-              dplyr::select(all_of(sstv)) %>%
-              dplyr::filter(dplyr::between(.data[[sstv]], sstv.sensmax[1],
+              dplyr::select(dplyr::all_of(sstv)) %>%
+              dplyr::filter(dplyr::between(dplyr::.data[[sstv]], sstv.sensmax[1],
                                            sstv.sensmax[2]))
             sstv.sensmax.gp <- unique(sstv.sensmax.gp)
             sstv.sensmax.gp <- sort(as.numeric(unlist(sstv.sensmax.gp)))
@@ -249,10 +264,10 @@ getVerifiedPredictions <- function(TargetSiteID,
           sstv.sensallLabel <- paste(sstv, "SensAll", sep = "_")
 
           df_temp <- df_bioTaxaData %>%
-            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] %in% sstv.sensmin.gp,
+            dplyr::mutate({{sstv.sensminLabel}} := ifelse(dplyr::.data[[sstv]] %in% sstv.sensmin.gp,
                                                           "Most sensitive",
                                                           NA),
-                          {{sstv.sensallLabel}} := ifelse(.data[[sstv]] %in% sstv.sensall.gp,
+                          {{sstv.sensallLabel}} := ifelse(dplyr::.data[[sstv]] %in% sstv.sensall.gp,
                                                           "All sensitive",
                                                           NA))
         } else { # tv is character or vector
@@ -263,9 +278,9 @@ getVerifiedPredictions <- function(TargetSiteID,
           sstv.sensall.gp   <- paste0(sstv.sensmin.gp, ", ", sstv.sensmax.gp)
 
           df_temp <- df_bioTaxaData %>%
-            dplyr::mutate({{sstv.sensminLabel}} := ifelse(.data[[sstv]] == sstv.sensmin,
+            dplyr::mutate({{sstv.sensminLabel}} := ifelse(dplyr::.data[[sstv]] == sstv.sensmin,
                                                           sstv.sensmin.gp, NA),
-                          {{sstv.sensallLabel}} := dplyr::case_when(.data[[sstv]] %in%
+                          {{sstv.sensallLabel}} := dplyr::case_when(dplyr::.data[[sstv]] %in%
                                                                       c(sstv.sensmin, sstv.sensmax) ~
                                                                       sstv.sensall.gp,
                                                                     TRUE ~ NA))
@@ -353,7 +368,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                           Group = tolval)
           df_tv.target <- merge(df_stress.sstv.target, df_GpLbl)
           df_tv.target <- df_tv.target %>%
-            dplyr::select(all_of(cols2use))
+            dplyr::select(dplyr::all_of(cols2use))
         } # This creates missing data for all stressor samples (with paired responses)
 
         # ASSUMPTION: Most sensitive will disappear prior to all sensitive
@@ -362,8 +377,8 @@ getVerifiedPredictions <- function(TargetSiteID,
           df_tv.target.qc1 <- df_tv.target %>%
             dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
                           StressSampleID, StressSampleDate, BioComm,
-                          all_of(colBio), RefSiteFlag, Quality, BetterThan,
-                          all_of(stressor), Group, Label, NumInds, PctInds,
+                          dplyr::all_of(colBio), RefSiteFlag, Quality, BetterThan,
+                          dplyr::all_of(stressor), Group, Label, NumInds, PctInds,
                           NumTaxa, PctTaxa) %>%
             dplyr::group_by(StationID, RespSampleID, RespSampleDate, IncaseCol,
                             StressSampleID, StressSampleDate, BioComm, Group) %>%
@@ -384,7 +399,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                           PctInds = 0,
                           NumTaxa = 0,
                           PctTaxa = 0) %>%
-            dplyr::select(all_of(cols2use))
+            dplyr::select(dplyr::all_of(cols2use))
 
           df_tv.target <- rbind(df_tv.target, df_tv.target.qc2)
 
@@ -392,8 +407,8 @@ getVerifiedPredictions <- function(TargetSiteID,
         } # End if
 
         df_tv.target <- df_tv.target %>%
-          dplyr::filter(!is.na(.data[[stressor]])) %>% # Exclude samples ND for stressor
-          dplyr::select(all_of(cols2use)) %>%
+          dplyr::filter(!is.na(dplyr::.data[[stressor]])) %>% # Exclude samples ND for stressor
+          dplyr::select(dplyr::all_of(cols2use)) %>%
           dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
                         PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
           tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
@@ -403,8 +418,8 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_tv.incase <- dplyr::filter(df_tv, Group == {{tolval}} &
                                         Quality == "Not degraded") %>%
           dplyr::filter(StationID != TargetSiteID) %>% # Exclude Target Samples
-          dplyr::filter(!is.na(.data[[stressor]])) %>% # Exclude samples ND for stressor
-          dplyr::select(all_of(cols2use)) %>%
+          dplyr::filter(!is.na(dplyr::.data[[stressor]])) %>% # Exclude samples ND for stressor
+          dplyr::select(dplyr::all_of(cols2use)) %>%
           dplyr::mutate(PctInds = signif(PctInds * 100, digits = 3),
                         PctTaxa = signif(PctTaxa * 100, digits = 3)) %>%
           tidyr::pivot_longer(cols = NumInds:PctTaxa, names_to = "variable",
@@ -429,8 +444,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         # Assign scores to target site
         df_tbl_scores <- df_tbl_scores %>%
           dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                        RespSampleDate, IncaseCol, BioComm, all_of(colBio),
-                        Quality, all_of(stressor), Group, Label, variable, value,
+                        RespSampleDate, IncaseCol, BioComm, dplyr::all_of(colBio),
+                        Quality, dplyr::all_of(stressor), Group, Label, 
+                        variable, value,
                         Min, q25, q50, q75, Max) %>%
           dplyr::rename(StressorValue = {{stressor}},
                         Response = variable,
@@ -441,7 +457,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                         StressorLabel = stressorLabel,
                         Stressor := {{stressor}}) %>%
           dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                        RespSampleDate, BioComm, all_of(colBio), Quality,
+                        RespSampleDate, BioComm, dplyr::all_of(colBio), Quality,
                         StressorLabel, Stressor, StressorValue, Group, Label,
                         Response, ResponseValue, Min, q25, q50, q75, Max, Score)
 
@@ -603,7 +619,7 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       df.scores <- df.scores %>%
         dplyr::group_by(StationID, RespSampleID, RespSampleDate, StressSampleID,
-                        StressSampleDate, BioComm, .data[[colBio]], Quality,
+                        StressSampleDate, BioComm, dplyr::.data[[colBio]], Quality,
                         StressorLabel, StressorValue, Group) %>%
         dplyr::summarise(Score = mean(Score, na.rm = TRUE), .groups = "drop_last") %>%
         dplyr::rename(bioIndex := {{colBio}}, bioComm = BioComm,

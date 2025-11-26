@@ -14,10 +14,10 @@ getVPSSI(
   df_bioMetricInfo,
   colBio,
   plotvars = data_plotvars,
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi = 600,
+  plotH = 6,
+  plotW = 8,
+  plotunits = "in",
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
   boo_plot = TRUE
@@ -45,13 +45,13 @@ fill, alpha, shape for target, inside the case not degraded,
 inside the case degraded, outside the case not degraded, and
 outside the case degraded)}
 
-\item{plotdpi}{standardized plot dpi}
+\item{plotdpi}{standardized plot dpi. Default = 600}
 
-\item{plotH}{standardized plot height}
+\item{plotH}{standardized plot height. Default = 6}
 
-\item{plotW}{standardized plot width}
+\item{plotW}{standardized plot width. Default = 8}
 
-\item{plotunits}{units for plot height and width}
+\item{plotunits}{units for plot height and width. Default = "in"}
 
 \item{dir_plots}{default = file.path(getwd(), "Results")}
 
@@ -70,8 +70,5 @@ Get verified predictions.
 Required packages: dplyr, ggplot2, grid, stringr, tidyr
 }
 \examples{
-\dontrun{
-}
-
-#~~~~~~~~~~~~~~~~
+# None at this time 
 }

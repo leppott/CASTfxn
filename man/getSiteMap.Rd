@@ -66,3 +66,6 @@ Plots a map of the region, indicating the target site in red,
 inside-the-case (comparator) sites in teal, outside-the-case sites in grey,
 and both inside/outside the case reference sites outlined in dark blue.
 }
+\examples{
+# None at this time 
+}

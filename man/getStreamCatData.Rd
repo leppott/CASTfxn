@@ -34,3 +34,6 @@ parameters within each reach's watershed.
 
 Uses the library dplyr, readxl, StreamCatTools, stringr, and tidyr.
 }
+\examples{
+# None at this time 
+}

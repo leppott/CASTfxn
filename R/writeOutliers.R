@@ -24,7 +24,8 @@
 #' @param dir_results directory for results; Default = ./Results
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 writeOutliers <- function(TargetSiteID,
                           df_outliers,
@@ -36,6 +37,11 @@ writeOutliers <- function(TargetSiteID,
                           allSites,
                           dir_results = file.path(getwd(), "Results")) {
 
+  # Global Bindings
+  data_outliers <- data_stressInfo <- siteDetectsAll <- list.CompSites <- 
+    StationID <- TransfResult <- Outlier <- StdParamName <- NULL
+    
+  # Debug  
   boo.debug = FALSE
 
   if (boo.debug) {

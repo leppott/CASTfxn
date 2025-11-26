@@ -7,7 +7,6 @@
 \format{
 A data frame with 2,233 observations on the following 23 variables:
 \describe{
-          \item{STATION_CD}{Station Code}
           \item{StationRID}{a numeric vector}
           \item{StationType}{a vector}
           \item{clust.hi}{a vector}

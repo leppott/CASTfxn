@@ -1,3 +1,32 @@
+#' @title Watershed Stressor Figures
+#'
+#' @description Get watershed stressor figures
+#'
+#' @details Create watershed stressor figures
+#' 
+#' @param TargetSiteID Site ID
+#' @param df_WSData xyz
+#' @param df_WSInfo xyz
+#' @param comp.reaches xyz
+#' @param TargetCOMID xyz
+#' @param useAllCompReaches xyz
+#' @param dir_sub Subdirectory for outputs from this function. 
+#' Default = "SiteInfo"
+#' @param df_SampSummary xyz
+#' @param biocommlist xyz
+#' @param boo_plot Flag declaring whether the plots should be saved or not. 
+#' Default = TRUE.
+#' @param plotdpi standardized plot dpi. Default = 600
+#' @param plotH standardized plot height. Default = 6
+#' @param plotW standardized plot width. Default = 8
+#' @param plotunits units for plot height and width. Default = "in"
+#' 
+#' @return xyz
+#' 
+#' @examples
+#' # None at this time 
+#' 
+#' @export
 getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               df_WSData = NULL,
                               df_WSInfo = NULL,
@@ -9,8 +38,19 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               dir_sub = "SiteInfo",
                               df_SampSummary = data_sampSummary,
                               biocommlist = biocommlist,
-                              boo_plot = TRUE) { # FUN: Start
-
+                              boo_plot = TRUE,
+                              plotdpi = 600,
+                              plotH = 6,
+                              plotW = 8,
+                              plotunits = "in") { # FUN: Start
+  
+  # Global Bindings
+  data_stressorWS <- data_stressorinfoWS <- dir_results <- 
+    StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <- useBC <-
+    mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
+    yLoc <- Label <- TargetAboveMedian <- NULL
+                                
+  # Debug
   boo.debug <- FALSE
   if (boo.debug) {
     TargetSiteID      <- TargetSiteID
@@ -25,6 +65,10 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     df_SampSummary    <- data_sampSummary
     biocommlist       <- biocommlist
     boo_plot          <- TRUE
+    plotdpi           <- 600
+    plotH             <- 6
+    plotW             <- 8
+    plotunits         <- "in"
   }
   
   # define pipe
@@ -246,8 +290,12 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
           }
 
           if (boo_plot) {
-            ggplot2::ggsave(fn.bkgplot, p.boxtime, dpi = plot_dpi, width = plot_W,
-                            height = 1.5 * plot_H, units = plot_units)
+            ggplot2::ggsave(fn.bkgplot, 
+                            p.boxtime, 
+                            dpi = plotdpi, 
+                            width = plotW,
+                            height = 1.5 * plotH, 
+                            units = plotunits)
           }## IF ~ boo_plot ~ END
 
         } else { # no years to consider
@@ -289,8 +337,12 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                                size = 2.3, color = "red", nudge_y = ymax * 0.02,
                                nudge_x = 0)
           if(boo_plot){
-            ggplot2::ggsave(fn.bkgplot, p.box, dpi = plot_dpi, width = plot_W,
-                            height = plot_H, units = plot_units)
+            ggplot2::ggsave(fn.bkgplot, 
+                            p.box, 
+                            dpi = plotdpi, 
+                            width = plotW,
+                            height = plotH, 
+                            units = plotunits)
           }## IF ~ boo_plot ~ END
         }## If/else for graphs ends
       }## for loop over variables ends

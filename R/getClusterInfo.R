@@ -114,7 +114,9 @@ getClusterInfo <- function(TargetSiteID
                            , dir_results=file.path(getwd(), "Results")
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
-  #
+  # Global Bindings
+  outcaseID <- localdir <- Cluster <- var <- NULL
+  
   boo_DEBUG <- FALSE
   #
   if (boo_DEBUG == TRUE) {
@@ -128,8 +130,7 @@ getClusterInfo <- function(TargetSiteID
     dir_results = file.path(localdir, "Results")
     dir_sub = "ClusterInfo"
   }##IF~boo_DEBUG~END
-  #
-
+  
   # define pipe
   `%>%` <- dplyr::`%>%`
 
@@ -217,11 +218,11 @@ getClusterInfo <- function(TargetSiteID
     colnames(df_ggplot_all)  <- c("var", str_xlab)
     colnames(df_ggplot_ref)  <- c("var", str_xlab)
     colnames(df_ggplot_targ) <- c("var", str_xlab)
-    df_ggplot_all <- mutate(df_ggplot_all, Cluster = factor(Cluster
+    df_ggplot_all <- dplyr::mutate(df_ggplot_all, Cluster = factor(Cluster
                                                             , levels = clusterLevels))
-    df_ggplot_ref <- mutate(df_ggplot_ref, Cluster = factor(Cluster
+    df_ggplot_ref <- dplyr::mutate(df_ggplot_ref, Cluster = factor(Cluster
                                                             , levels = clusterLevels))
-    df_ggplot_targ <- mutate(df_ggplot_targ, Cluster = factor(Cluster
+    df_ggplot_targ <- dplyr::mutate(df_ggplot_targ, Cluster = factor(Cluster
                                                             , levels = clusterLevels))
 
     ## Plot, portions

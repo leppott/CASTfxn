@@ -56,7 +56,5 @@ Required objects:
   the same as the data input directory, ideally, although may be elsewhere
 }
 \examples{
-\dontrun{
-# Insert example code here
-}
+# None at this time 
 }

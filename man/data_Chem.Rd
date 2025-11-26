@@ -16,24 +16,27 @@ data_Chem
 \description{
 Chem data
 
- @format A data frame with 103,548 observations on the following 16 variables.
+ @format A data frame with 104,577 observations on the following 19 variables.
 \describe{
           \item{\code{StationID_Master}}{a factor with levels }
           \item{\code{SITE_ID}}{a factor with levels }
-          \item{\code{SITE_NAME}}{a factor with levels }
           \item{\code{SampDate}}{a Date}
-          \item{\code{SAMPLE_TIME}}{a numeric vector}
-          \item{\code{SAMPLE_TYPE}}{a factor with levels \code{A} \code{B} \code{C} \code{F} \code{G} \code{I} \code{M} \code{W} \code{Z}}
-          \item{\code{FLOW_REGIME_CODE}}{a factor with levels \code{PER}}
+          \item{\code{SampTime}}{a numeric vector}
+          \item{\code{SampleType}}{a factor with levels \code{A} \code{B} \code{C} \code{F} \code{G} \code{I} \code{M} \code{W} \code{Z}}
+          \item{\code{FlowRegimeCode}}{a factor with levels}
           \item{\code{StdParamName}}{a factor with levels }
-          \item{\code{FinalResultText}}{a factor with levels }
+          \item{\code{ResultText}}{a factor with levels }
           \item{\code{FinalResultValue}}{a numeric vector}
-          \item{\code{FinalResultHalfMDL}}{a numeric vector}
+          \item{\code{ResultHalfMDL}}{a numeric vector}
           \item{\code{Analyte}}{a factor with levels }
           \item{\code{ChemSampleID}}{a character vector}
           \item{\code{ResultValue}}{a numeric vector}
           \item{\code{ConvertTo}}{a factor with levels }
           \item{\code{ElevCategory}}{a character vector}
+          \item{\code{SampYear}}{a numeric vector}
+          \item{\code{clust.hi}}{a character vector}
+          \item{\code{clust.lo}}{a character vector}
+          \item{\code{COMID_NHD2}}{a character vector}
 }
 }
 \keyword{datasets}

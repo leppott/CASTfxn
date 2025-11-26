@@ -45,7 +45,8 @@
 #'         minumum not degraded target site sample.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getQualSites <- function(TargetSiteID,
                          biocomm,
@@ -57,8 +58,18 @@ getQualSites <- function(TargetSiteID,
                          stressors,
                          dir_results = dir_results,
                          dir_sub = "SiteInfo") {##FUNCTION.START
-
-  # For QC purposes
+  
+  # Global Bindings
+  bioComm <- data_bioCoOccur <- bioIndex <- list.CompSites <- StationID <- 
+    Quality <- IncaseCol <- OutcaseCol <- StressSampleDate <- RespSampleDate <- 
+    StressSampleID <- RespSampleID <- RefSiteFlag <- IncaseYN <- OutcaseYN <- 
+    BetterThan <- IncaseSamples <- IncaseGood <- IncaseBad <- OutcaseSamples <- 
+    OutcaseGood <- OutcaseBad <- TotalSamples <- TotalSamplesGood <- 
+    TotalSamplesBad <- RefSamples <- RefSamplesGood <- RefSamplesBad <-
+    rowname <- V1 <- Label <- getQualSites <- InsideCaseSamples <- 
+    OutsideCaseSamples <- AllSamples <- ReferenceSamples <- NULL
+  
+  # Debug
   boo_DEBUG <- FALSE
 
   if (boo_DEBUG == TRUE) {
@@ -92,12 +103,12 @@ getQualSites <- function(TargetSiteID,
   if ("Degraded" %in% target.quals) {
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID & Quality == "Degraded") %>%
-      dplyr::summarise(max := max(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(max := max(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$max)
   } else { #
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::summarise(min := min(.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(min := min(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$min)
   }
 
@@ -105,8 +116,9 @@ getQualSites <- function(TargetSiteID,
 
   df_qual <- dplyr::select(df_qual, StationID, IncaseCol, OutcaseCol, StressSampleDate,
                            RespSampleDate, StressSampleID, RespSampleID, BioComm,
-                           RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, all_of(colBio),
-                           Quality, all_of(stressors))
+                           RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, 
+                           dplyr::all_of(colBio),
+                           Quality, dplyr::all_of(stressors))
 
   # Create dataframe for all possible cases
   df_qualstats <- df_qual %>%
@@ -134,7 +146,7 @@ getQualSites <- function(TargetSiteID,
                   RefSamples, RefSamplesGood, RefSamplesBad)
 
   df_qualstats <- df_qualstats %>%
-    dplyr::summarise(across(where(is.numeric), sum)) %>%
+    dplyr::summarise(dplyr::across(dplyr::where(is.numeric), sum)) %>%
     t()
   df_qualstats <- as.data.frame(df_qualstats) %>%
     tibble::rownames_to_column() %>%

@@ -40,7 +40,8 @@
 #'         the target samples.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getDataSets <- function(TargetSiteID
                         , compSites # inside the case
@@ -51,6 +52,10 @@ getDataSets <- function(TargetSiteID
                         , df_biometrics
                         , df_stressinfo
                         ) {##FUNCTION.START
+  
+  # Global Bindings
+  comp_sites <- all_sites <- data_bioCoOccur <- stressors <- bioMetricData <- 
+    data_stressInfo <- StationID <- StdParamName <- NULL
 
   # For QC purposes
   boo_DEBUG <- FALSE
@@ -89,7 +94,7 @@ getDataSets <- function(TargetSiteID
     dplyr::filter(StationID %in% compSites)
 
   # Create response data sets for target, inside the case, and outside the case
-  df_core <- dplyr::select(df_detects, all_of(coreCols))
+  df_core <- dplyr::select(df_detects, dplyr::all_of(coreCols))
   allBioRespData <- merge(df_core, df_biometrics)
   allBioRespData  <- dplyr::filter(allBioRespData, StationID %in% allSites)
   compBioRespData <- dplyr::filter(allBioRespData, StationID %in% compSites)

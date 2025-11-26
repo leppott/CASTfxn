@@ -21,7 +21,8 @@
 #' @param state Two letter state abbreviation of region of interest
 #'
 #' Will need to change this function if extrapolating to a region beyond a state
-#'
+#' @examples
+#' # None at this time 
 #' @return Writes StreamCat_data_region.csv and StreamCat_stressor-info_region.csv
 #' to the local directory if the download is successful. If unsuccessful returns NULL.
 
@@ -30,6 +31,10 @@ getStreamCatData <- function(localdir = "",
                              region = "",
                              state = ""){
 
+  # Global Bindings
+  Variable <- StreamCatVar <- Year <- ReachLoc <- COMID <- ClusterID <- 
+      Label <- NULL
+  
   # define pipe
   `%>%` <- dplyr::`%>%`
   
@@ -37,8 +42,8 @@ getStreamCatData <- function(localdir = "",
     fn.CASTmeta   <- file.path(localdir, "CASTool_Metadata.xlsx")
     data_CASTmeta <- readxl::read_excel(fn.CASTmeta, na = "", trim_ws = TRUE)
     data_CASTmeta <- data_CASTmeta %>%
-      dplyr::select(Variable, all_of(region)) %>%
-      tidyr::pivot_wider(names_from = Variable, values_from = all_of(region))
+      dplyr::select(Variable, dplyr::all_of(region)) %>%
+      tidyr::pivot_wider(names_from = Variable, values_from = dplyr::all_of(region))
 
     fn.SC.WSvars  <- file.path(localdir, "SelectedStreamCatStressors.csv")
     fn.cluster <- file.path(dir_data, dplyr::select(data_CASTmeta, fn.cluster))

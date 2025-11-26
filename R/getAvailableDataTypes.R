@@ -28,13 +28,18 @@
 #'         4) noStressors, 5) noResponses, and 6) siteDetectsAll.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
 getAvailableDataTypes <- function(TargetSiteID,
                                   df_SampSummary,
                                   df_stress,
                                   biocommlist,
                                   dir_results) {##FUNCTION.START
+  
+  # Global Bindings
+  data_sampSummary <- data_Stress <- StationID <- StdParamName <- 
+    TransfResult <- NULL
 
   boo.DEBUG <- FALSE
 
@@ -63,7 +68,7 @@ getAvailableDataTypes <- function(TargetSiteID,
   # ID stressor samples ----
   avail.data <- df_SampSummary %>%
     dplyr::filter(StationID == TargetSiteID) %>%
-    dplyr::select(ends_with("SampleID")) %>%
+    dplyr::select(dplyr::ends_with("SampleID")) %>%
     dplyr::select_if(not_all_na)
   samptypes <- names(avail.data)
 

@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
 Description: Functions and other tools associated with the Causal Assessment 
     Screening Tool.  Used to more quickly assess stressors to a list of sites.
-Version: 0.2.2.9005
+Version: 0.2.2.9017
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),
@@ -14,12 +14,13 @@ Author: Erik W Leppo [aut, cre],
     Laura Naslund [ctb], 
     Diana Sagua [dtc]
 Maintainer: Erik Leppo <Erik.Leppo@tetratech.com>
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
 URL: https://github.com/leppott/CASTfxn
-Depends: R (>= 2.10)
+Depends: 
+    R (>= 3.5)
 Imports: 
   dplyr,
   elevatr,
@@ -57,9 +58,12 @@ Suggests:
   knitr,
   leaflet,
   maps,
+  nhdplusTools,
+  pak,
   raster,
   reshape,
   shinyFiles,
   shinyjs,
+  tcltk,
   wrapr
 RoxygenNote: 7.3.3

@@ -21,9 +21,9 @@
 #' @return A dataframe containing the parsed file.
 #'
 #' @keywords internal
-#'
+#' @examples
+#' # None at this time 
 #' @export
-#'
 readCASToolData <- function(fn, NAs) {##FUNCTION.START
 
   if (tolower(tools::file_ext(fn)) == "csv" ) {

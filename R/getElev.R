@@ -31,6 +31,7 @@
 #' @return A data frame with elevation and units columns appended to it.
 #' 
 #' @examples
+#' \dontrun{
 #' #Function Arguments
 #' df_loc <- head(data_Sites)
 #' Lat <- "FinalLatitude"
@@ -41,7 +42,7 @@
 #' # Run Function
 #' df_elev <- getElev(df_loc, Lat, Long, elev_units, proj_loc)
 #' 
-#' /dontrun{
+#' 
 #' # Save Results
 #' utils::write.table(df_elev, "Elev.tsv", sep="\t", row.names=FALSE, col.names = TRUE)
 #' }

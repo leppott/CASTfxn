@@ -6,43 +6,87 @@
 #
 #' @title checkInputs
 #'
-#' @description Check input files for existence, followed by checks for required columns, types, and relationships
+#' @description Check input files for existence, followed by checks for required
+#'  columns, types, and relationships
 #'
-#' @details Reviews each uploaded file against both user-input data (either via the shiny app or contained in the CASToolMetadata.xlsx file) to evaluate 1) if the file exists, 2) if it contains the required columns (which requires that they be named correctly), 3) whether datatypes meet requirements.
+#' @details Reviews each uploaded file against both user-input data (either via 
+#' the shiny app or contained in the CASToolMetadata.xlsx file) to evaluate 1) 
+#' if the file exists, 2) if it contains the required columns (which requires 
+#' that they be named correctly), 3) whether datatypes meet requirements.
 #'
-#' If any required files do not exist, return the list of missing files and shut down.
-#' If all required files exist, proceed to internal checks of the columns and data.
-#' Lastly, perform minimal joins to determine missing values.
+#' If any required files do not exist, return the list of missing files and shut
+#' down.  If all required files exist, proceed to internal checks of the columns
+#' and data. Lastly, perform minimal joins to determine missing values.
 #'
 #' dir_data and dir_results should be absolute and not relative paths.
-#' The function `normalizePath` can be used to convert from relative to absolute path.
+#' The function `normalizePath` can be used to convert from relative to absolute
+#' path.
 #'
-# @param fn.inputcheck filename for the MSExcel file describing required files, columns, types, and relationships
 #' @param dir.uploaded directory of input files to be checked
 #' @param dir.out directory for output
+#' @param fn.inputcheck path filename for the MSExcel file describing required 
+#' files, columns, types, and relationships.  
+#' Default is extdata/CASTool_InputCheck.xlsx
+#' @param df_targets data frame with single column (TargetSiteID) of target 
+#' sites
 #'
 #' @return A list of objects to be used in the CASTool.
-#
+#' @examples
+#' # None at this time 
 #' @export
 checkInputs <- function(dir.uploaded,
-                        dir.out) {
+                        dir.out,
+                        fn.inputcheck = system.file("extdata", 
+                                                    "CASTool_InputCheck.xlsx",
+                                                    package = "CASTfxn"),
+                        df_targets = NULL) {
   
   # define pipe
   `%>%` <- dplyr::`%>%`
-
+  
+  # Global Bindings
+  Variable <- Value <- Type <- Uploaded <- Object <- FilePath <- 
+    ObjectData <- DataType <- DataFN <- DataFileUploaded <- ObjectMetadata <- 
+    MetadataType <- MetadataFN <- DataFile <- MetadataFile <- sstv.alg <- 
+    ExpectedDatatypes <- errors <- ExpectedColumns <- StationID <- 
+    RespSampleID <- RespSampleDate <- NumUniquePKs <- Observations <- 
+    PrimaryKey <- FileOne <- FileTwo <- MetadataFileUploaded <- 
+    data_bmiMetricInfo <- NULL
+  
   # Set debug status ----
   debug <- FALSE
   if (debug) {
     # Uploaded files
     dir.uploaded <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/UploadedData_Test"
+    # Output dir
+    dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
     # Included functions
     dir.git <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     source(file.path(dir.git, "readCASToolData.R"))
-    # Output dir
-    dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
-  }
+  }## IF ~ debug
 
-  dir.uploaded <- in.dir
+  # QC----
+  qc_dir_uploaded <- !dir.exists(dir.uploaded)
+  if (qc_dir_uploaded) {
+    stop("ERROR: 'dir.uploaded' does not exist.")
+  } ## IF ~ qc_dir_uploaded
+  #
+  qc_dir_out <- !dir.exists(dir.out)
+  if (qc_dir_out) {
+    stop("ERROR: 'dir.out' does not exist.")
+  } ## IF ~ qc_dir_out
+  #
+  qc_inputcheck <- !file.exists(fn.inputcheck)
+  if (qc_inputcheck) {
+    stop("ERROR: 'fn.inputcheck' does not exist.")
+  } ## IF ~ qc_inputcheck
+  #
+  qc_df_targets <- is.null(df_targets)
+  if (qc_df_targets) {
+    stop("ERROR: 'df_targets' does not exist.")
+  } ## IF ~ qc_df_targets
+  
+  # dir.uploaded <- in.dir
 
   # Declare internal functions ----
   compare.fk.pk <- function(fk, pk) {
@@ -62,7 +106,7 @@ checkInputs <- function(dir.uploaded,
   compare.coltypes <- function(object, required.cols) {
 
     df.obj <- get(object)
-    df.obj <- dplyr::select(df.obj, all_of(required.cols))
+    df.obj <- dplyr::select(df.obj, dplyr::any_of(required.cols))
     obj.cols <- colnames(df.obj)
     df.coltypechecks <- data.frame("object" = as.character(),
                                    "col" = as.character(),
@@ -101,7 +145,7 @@ checkInputs <- function(dir.uploaded,
           result <- tryCatch(
             {
               df.obj <- df.obj |>
-                dplyr::mutate({{col}} := lubridate::parse_date_time(.data[[col]],
+                dplyr::mutate({{col}} := lubridate::parse_date_time(dplyr::.data[[col]],
                                          orders = c("ymd", "mdy", "dmy")) |> # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date. 
                             lubridate::date())
             },
@@ -140,7 +184,8 @@ checkInputs <- function(dir.uploaded,
   # Regardless of whether or not the file is required, if it is provided, certain
   # columns are required. These are included in input_check, too. Relationships
   # are sort of included in input_check, but mostly that logic is in this code.
-  fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
+  # fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
+  #    defined in input of function
   input_check <- readxl::read_xlsx(fn.inputcheck, sheet = "data", na = "")
   fn.paired <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
   paired_check <- readxl::read_xlsx(fn.inputcheck, sheet = "paired", na = "") |>
@@ -283,7 +328,7 @@ checkInputs <- function(dir.uploaded,
                         "Result" = as.character())
 
   for (j in 1:nrow(loaded)) {
-
+    
     object <- loaded$Object[j]
     fn <- loaded$Value[j]
     desc <- loaded$Description[j]
@@ -799,7 +844,7 @@ checkInputs <- function(dir.uploaded,
     nunq.bmi.data.sites  <- length(unq.bmi.data.sites)
     nunq.bmi.data.sites  <- paste(nunq.bmi.data.sites, "StationIDs")
     data_bmiMetrics.long <- data_bmiMetrics |>
-      dplyr::select(-any_of(c("Study_ID", "Latitude", "Longitude"))) %>% # LCN added 20250916
+      dplyr::select(-dplyr::any_of(c("Study_ID", "Latitude", "Longitude"))) %>% # LCN added 20250916
       tidyr::pivot_longer(cols = !c(StationID, RespSampleID, RespSampleDate),
                           names_to = "MetricName", values_to = "Value",
                           values_transform = list(Value = as.character))
