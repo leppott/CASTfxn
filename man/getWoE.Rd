@@ -10,7 +10,12 @@ getWoE(
   dfLoE,
   dfStress = df_stressorMetadata,
   dir_results = file.path(getwd(), "Results"),
-  dir_WoE = "_WoE"
+  dir_WoE = "_WoE",
+  plotdpi = plot_dpi,
+  plotH = plot_H,
+  plotW = plot_W,
+  plotunits = plot_units,
+  boo_plot = TRUE
 )
 }
 \arguments{

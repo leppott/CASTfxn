@@ -8,8 +8,10 @@ writeOutliers(
   TargetSiteID,
   df_outliers,
   df_stressInfo,
+  df_Sites,
   siteDetects,
   compSites,
+  useBC = FALSE,
   allSites,
   dir_results = file.path(getwd(), "Results")
 )

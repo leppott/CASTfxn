@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-10-09 13:48:58.588885
+    #> Last Update: 2025-11-26 16:07:52.680944
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3 (2025-11-26)
+
+- refactor: Bump version number after merging lcn branch
+  - Multiple fixes in skeleton code
 
 ## Changes in version 0.2.2.9017 (2025-10-09)
 
