@@ -30,9 +30,11 @@
 getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               df_WSData = NULL,
                               df_WSInfo = NULL,
+                              df_Sites = NULL, 
                               comp.reaches = list.CompSites$comp.reaches,
                               TargetCOMID = list.CompSites$TargetCOMID,
                               useAllCompReaches = useAllCompReaches,
+                              useBC = FALSE,
                               dir_sub = "SiteInfo",
                               df_SampSummary = data_sampSummary,
                               biocommlist = biocommlist,
@@ -54,9 +56,11 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     TargetSiteID      <- TargetSiteID
     df_WSData         <- data_stressorWS
     df_WSInfo         <- data_stressorinfoWS
+    df_Sites          <- data_Sites
     comp.reaches      <- list.CompSites$comp.reaches
     TargetCOMID       <- list.CompSites$TargetCOMID
     useAllCompReaches <- useAllCompReaches
+    useBC             <- FALSE
     dir_sub           <- "SiteInfo"
     df_SampSummary    <- data_sampSummary
     biocommlist       <- biocommlist
@@ -85,6 +89,20 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     if (dir.exists(dir_path) == FALSE) {
       dir.create(dir_path)
     }
+  }
+  
+  # LCN 9/23/25 patch fix to remove dependency on hard coded data_bmiCoOccur
+  if(useBC == TRUE){
+    comp.reaches <- comp.reaches
+  } else{
+    TargetSiteCluster <- df_Sites %>% 
+      dplyr::filter(StationID == TargetSiteID) %>% 
+      dplyr::pull(IncaseCol)
+    
+    comp.reaches <- df_Sites %>% 
+      dplyr::filter(IncaseCol == TargetSiteCluster) %>%
+      dplyr::distinct(COMID) %>% 
+      dplyr::pull(COMID)
   }
 
   # get sampling info (dates of samples)

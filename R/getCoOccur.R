@@ -313,7 +313,7 @@ getCoOccur <- function(TargetSiteID,
     # Append scores to table
     cols <- colnames(df.scores)
     df.j <- df.j %>%
-      dplyr::mutate(biocomm = "BMI",
+      dplyr::mutate(biocomm = biocomm,
                     Label = stresslabel) %>%
       dplyr::select(dplyr::all_of(cols))
 

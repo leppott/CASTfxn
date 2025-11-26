@@ -30,8 +30,10 @@
 writeOutliers <- function(TargetSiteID,
                           df_outliers,
                           df_stressInfo,
+                          df_Sites,
                           siteDetects,
                           compSites,
+                          useBC = FALSE,
                           allSites,
                           dir_results = file.path(getwd(), "Results")) {
 
@@ -52,6 +54,24 @@ writeOutliers <- function(TargetSiteID,
     dir_results = dir_results
   }
 
+  # LCN patch fix to remove dependence on hardcoded bmi_dataBioCoOccur
+  if(useBC == TRUE){
+    compSites <- compSites
+    allSites <- allSites
+  } else{
+    TargetSiteCluster <- df_Sites %>% 
+      dplyr::filter(StationID == TargetSiteID) %>% 
+      dplyr::pull(IncaseCol)
+    
+    compSites <- df_Sites %>% 
+      dplyr::filter(IncaseCol == TargetSiteCluster) %>% 
+      dplyr::pull(StationID)
+    
+    allSites <- df_Sites %>% 
+      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>% 
+      dplyr::pull(StationID)
+  }
+  
   # define pipe
   `%>%` <- dplyr::`%>%`
 
