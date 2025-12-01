@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-11-26 16:07:52.680944
+    #> Last Update: 2025-12-01 17:40:39.34697
 
 # Planned Updates
 
@@ -24,6 +24,15 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3.9001 (2025-12-01)
+
+- fix: Updates to skeleton code for use with Shiny app
+  - Directories for Shiny use
+  - Move check files inside boo_shiny == FALSE
+    - Files are RDS and no longer available for checkInputs()
+  - dn_checked_sk variable for “\_CheckedInputs”
+  - Add dummy variables and browser for testing within Shiny
 
 ## Changes in version 0.2.3 (2025-11-26)
 

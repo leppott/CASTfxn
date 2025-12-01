@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9001 (2025-12-01)
+
+* fix: Updates to skeleton code for use with Shiny app
+    + Directories for Shiny use
+    + Move check files inside boo_shiny == FALSE
+        - Files are RDS and no longer available for checkInputs()
+    + dn_checked_sk variable for "_CheckedInputs"
+    + Add dummy variables and browser for testing within Shiny
+
 ## Changes in version 0.2.3 (2025-11-26)
 
 * refactor: Bump version number after merging lcn branch

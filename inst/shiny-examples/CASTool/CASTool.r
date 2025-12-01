@@ -39,6 +39,7 @@
 # boo_Shiny <- TRUE # Comment out and define in Shiny App
 # boo.debug <- TRUE # Comment out and define in Shiny App
 # debug.person <- "Erik" # Ann, Erik, Laura
+# dn_checked_sk <- "_CheckedInputs" # Comment out and define in Shiny App
 
 if (boo_Shiny == FALSE) {
   # prompt user for path to input/output data directories
@@ -78,9 +79,11 @@ if (boo_Shiny == FALSE) {
   in.dir        <- gsub("\\\\", "/", in.dir)
   out.dir       <- gsub("\\\\", "/", out.dir)
   boo.plot.user <- TRUE
-}## IF ~ boo_Shiny
+}## IF ~ boo_Shiny == FALSE
 
+# define pipe
 `%>%` <- dplyr::`%>%`
+# not_all_na <- function(x) {!all(is.na(x))}
 
 ## Color assignments ####
 # Based on ito_seven from ggpubfigs
@@ -117,11 +120,11 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
   #
-  gitpath     <- file.path(".", "external", "R")  # used in getReport
-  dir_rmd     <- file.path(".", "external", "rmd")
-  wd          <- file.path(".")
-  dir_data    <- file.path(wd, "Data")
-  dir_results <- file.path(wd, "Results")
+  # gitpath     <- file.path("external", "R")  # used in getReport
+  dir_rmd     <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
+  wd          <- getwd()
+  dir_data    <- dn_data
+  dir_results <- dn_results
 } else {# Not using shiny app
   #
   # in global in shiny
@@ -240,13 +243,10 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 msg <- paste0("debug = ", boo.debug
-              , ifelse(boo.debug == FALSE, ""
+              , ifelse(boo.debug == FALSE
+                       , ""
                        , paste0(", person = ", debug.person)))
 message(msg)
-
-# define pipe
-# `%>%` <- dplyr::`%>%`
-# not_all_na <- function(x) {!all(is.na(x))}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
@@ -268,17 +268,18 @@ if (boo_Shiny == TRUE) {
   # in.dir        <- gsub("\\\\", "/", in.dir)
   # out.dir       <- gsub("\\\\", "/", out.dir)
   # boo.plot.user <- TRUE
+  
+  list.Tables <- checkInputs(dir.uploaded = in.dir,
+                             dir.out = out.dir)
+  TableOne    <- list.Tables$TableOne
+  write.table(TableOne, file.path(out.dir, region, "Results", "TableOne.tab"),
+              sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
+  TableTwo    <- list.Tables$TableTwo
+  write.table(TableTwo, file.path(out.dir, region, "Results", "TableTwo.tab"),
+              sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
+  rm(list.Tables, TableOne, TableTwo)
+  # 2025-12-01, EWL, in Shiny no longer CSV files but RDS, won't work
 }## IF ~ boo_Shiny ~ END
-
-list.Tables <- checkInputs(dir.uploaded = in.dir,
-                           dir.out = out.dir)
-TableOne    <- list.Tables$TableOne
-write.table(TableOne, file.path(out.dir, region, "Results", "TableOne.tab"),
-            sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
-TableTwo    <- list.Tables$TableTwo
-write.table(TableTwo, file.path(out.dir, region, "Results", "TableTwo.tab"),
-            sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
-rm(list.Tables, TableOne, TableTwo)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 03, Select region variables ####
@@ -286,12 +287,12 @@ rm(list.Tables, TableOne, TableTwo)
 out.dir <- file.path(out.dir, region, "Results")
 
 ## Load CASTool_Metadata ####
-data_CASTmeta <- readRDS(file.path(out.dir, "_CheckedInputs", "CASTmetadata.rds"))
+data_CASTmeta <- readRDS(file.path(out.dir, dn_checked_sk, "CASTmetadata.rds"))
 data_CASTmeta <- data_CASTmeta %>%
   tidyr::pivot_wider(names_from = Variable, values_from = Value)
 
 ## Read loaded.rds ####
-data_loaded <- readRDS(file.path(out.dir, "_CheckedInputs", "loaded.rds"))
+data_loaded <- readRDS(file.path(out.dir, dn_checked_sk, "loaded.rds"))
 loaded      <- as.character(data_loaded$Object)
 
 # Set up booleans for different data types available
@@ -299,6 +300,8 @@ boo.meas  <- FALSE
 boo.model <- FALSE
 boo.WS    <- FALSE
 for (l in seq_along(loaded)) {
+  msg <- paste0("booleans, ", l, "/", length(loaded))
+  message(msg)
   object <- loaded[l]
   if (grepl("chem", object) == TRUE)  {
     boo.meas  <- TRUE
@@ -319,6 +322,17 @@ for (l in seq_along(loaded)) {
   if (grepl("WS", object) == TRUE) { boo.WS <- TRUE }
 }
 rm(l, object, data_loaded)
+if(boo_Shiny) {
+  browser()
+  # EWL, testing
+  data_CASTmeta$calcRelAbund <- TRUE
+  data_CASTmeta$r2_cutoff <- 0.75
+  data_CASTmeta$p.val_cutoff <- 0.05
+  data_CASTmeta$outcaseColName <- "A_col"
+  data_CASTmeta$outcaseLabel <- "A_label"
+  data_CASTmeta$incaseColName <- "B_col"
+  data_CASTmeta$incaseLabel <- "B_label"
+}## boo_Shiny ~ testing
 
 ## Get variables ####
 ### Response data ####
@@ -337,7 +351,7 @@ for (b in seq_along(biocommlist)) {
   if (bio == "fish") {
     fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
   }
-}
+}## FOR ~ b
 
 ### Stressor data ####
 removeOutliers  <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
@@ -377,9 +391,10 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
+  browser()
 }## IF ~ boo_Shiny ~ END
 
-list.SiteData <- prepSiteData(out.dir = file.path(out.dir, "_CheckedInputs"))
+list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk))
 data_Sites    <- list.SiteData$site
 data_cluster  <- list.SiteData$cluster
 refSites      <- list.SiteData$refSites
@@ -449,7 +464,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 if (boo.meas) {
-  list.measStress   <- prepMeasStressorData(in.dir = file.path(out.dir, "_CheckedInputs"),
+  list.measStress   <- prepMeasStressorData(in.dir = file.path(out.dir, dn_checked_sk),
                                             out.dir = out.dir,
                                             fn.data = paste0(data.meas, ".rds"),
                                             fn.meta = paste0(meta.meas, ".rds"),
@@ -475,7 +490,7 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 if (boo.model) {
-  list.modStress     <- prepModStressorData(in.dir = file.path(out.dir, "_CheckedInputs"),
+  list.modStress     <- prepModStressorData(in.dir = file.path(out.dir, dn_checked_sk),
                                             out.dir = out.dir,
                                             fn.data = paste0(data.meas, ".rds"),
                                             fn.meta = paste0(meta.meas, ".rds"),
@@ -551,8 +566,8 @@ if (boo.meas && boo.model) {
 
 # If using, get WS stressor data
 if (boo.WS) {
-  data_stressorWS     <- readRDS(file.path(out.dir, "_CheckedInputs", "data_stressorWS.rds"))
-  data_stressorinfoWS <- readRDS(file.path(out.dir, "_CheckedInputs",
+  data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
+  data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
                                            "data_stressorinfoWS.rds"))
 }
 
@@ -581,7 +596,7 @@ for (b in seq_along(biocommlist)) {
     # Read bmi data files
     message("Reading BMI data files")
     boo.bmi <- TRUE
-    list.bmiData <- prepRespData(out.dir  = file.path(out.dir, "_CheckedInputs"),
+    list.bmiData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                  bio      = "bmi",
                                  loaded   = loaded,
                                  useBC    = useBC,
@@ -607,7 +622,7 @@ for (b in seq_along(biocommlist)) {
     # Read alg data files
     message("Reading alg data files")
     boo.alg <- TRUE
-    list.algData <- prepRespData(out.dir  = file.path(out.dir, "_CheckedInputs"),
+    list.algData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                  bio      = "alg",
                                  loaded   = loaded,
                                  useBC    = useBC,
@@ -633,7 +648,7 @@ for (b in seq_along(biocommlist)) {
     # Read fish data files
     message("Reading fish data files")
     boo.fish <- TRUE
-    list.fishData <- prepRespData(out.dir  = file.path(out.dir, "_CheckedInputs"),
+    list.fishData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                   bio      = "fish",
                                   loaded   = loaded,
                                   useBC    = useBC,
@@ -727,7 +742,7 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 #
-df_targets <- readRDS(file.path(out.dir, "_CheckedInputs", "df_targets.rds"))
+df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
 
 ### Evaluate each target site
 ## Use this for debugging
