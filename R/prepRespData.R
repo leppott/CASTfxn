@@ -32,11 +32,13 @@ prepRespData <- function(out.dir,
                          useBC,
                          bioIndex) {
   # Global Bindings
-  bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <- 
-    UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <- 
-    CutoffValue <- InclusiveIndicator <- calcRelAbund <- NumInd <- 
-    SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <- 
-    PctInd <- PctTaxa <- NULL
+  # bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <- 
+  #   UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <- 
+  #   CutoffValue <- InclusiveIndicator <- calcRelAbund <- NumInd <- 
+  #   SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <- 
+  #   PctInd <- PctTaxa <- NULL
+  
+  not_all_na <- function(x) {!all(is.na(x))}
   
   # Debug
   boo.debug <- FALSE
@@ -180,7 +182,7 @@ prepRespData <- function(out.dir,
                          PctTaxa = round(1 / SampleTotTaxa, 5)) %>%
         dplyr::ungroup()
     } # end if calcRelAbund == TRUE
-    data_bioCounts <- dplyr::select(data_bioCounts, StationID, RespSampleID,
+    data_bioCounts <- data_bioCounts %>% dplyr::select(StationID, RespSampleID,
                                     RespSampleDate, TaxonID, NumInd, NumTaxa,
                                     PctInd, PctTaxa)
   }

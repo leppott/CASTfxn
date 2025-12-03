@@ -60,30 +60,30 @@ getQualSites <- function(TargetSiteID,
                          dir_sub = "SiteInfo") {##FUNCTION.START
   
   # Global Bindings
-  bioComm <- data_bioCoOccur <- bioIndex <- list.CompSites <- StationID <- 
-    Quality <- IncaseCol <- OutcaseCol <- StressSampleDate <- RespSampleDate <- 
-    StressSampleID <- RespSampleID <- RefSiteFlag <- IncaseYN <- OutcaseYN <- 
-    BetterThan <- IncaseSamples <- IncaseGood <- IncaseBad <- OutcaseSamples <- 
-    OutcaseGood <- OutcaseBad <- TotalSamples <- TotalSamplesGood <- 
-    TotalSamplesBad <- RefSamples <- RefSamplesGood <- RefSamplesBad <-
-    rowname <- V1 <- Label <- getQualSites <- InsideCaseSamples <- 
-    OutsideCaseSamples <- AllSamples <- ReferenceSamples <- NULL
+  # bioComm <- data_bioCoOccur <- bioIndex <- list.CompSites <- StationID <- 
+  #   Quality <- IncaseCol <- OutcaseCol <- StressSampleDate <- RespSampleDate <- 
+  #   StressSampleID <- RespSampleID <- RefSiteFlag <- IncaseYN <- OutcaseYN <- 
+  #   BetterThan <- IncaseSamples <- IncaseGood <- IncaseBad <- OutcaseSamples <- 
+  #   OutcaseGood <- OutcaseBad <- TotalSamples <- TotalSamplesGood <- 
+  #   TotalSamplesBad <- RefSamples <- RefSamplesGood <- RefSamplesBad <-
+  #   rowname <- V1 <- Label <- getQualSites <- InsideCaseSamples <- 
+  #   OutsideCaseSamples <- AllSamples <- ReferenceSamples <- NULL
   
   # Debug
-  boo_DEBUG <- FALSE
-
-  if (boo_DEBUG == TRUE) {
-    TargetSiteID = TargetSiteID
-    biocomm = bioComm
-    df_qual = data_bioCoOccur
-    colBio = bioIndex
-    compSites = list.CompSites$comp.sites
-    allSites = list.CompSites$all.sites
-    refSites = refSites
-    stressors = stressors
-    dir_results = dir_results
-    dir_sub = "SiteInfo"
-  }
+  # boo_DEBUG <- FALSE
+  # 
+  # if (boo_DEBUG == TRUE) {
+  #   TargetSiteID = TargetSiteID
+  #   biocomm = bioComm
+  #   df_qual = data_bioCoOccur
+  #   colBio = bioIndex
+  #   compSites = list.CompSites$comp.sites
+  #   allSites = list.CompSites$all.sites
+  #   refSites = refSites
+  #   stressors = stressors
+  #   dir_results = dir_results
+  #   dir_sub = "SiteInfo"
+  # }
   #
   # Define pipe
   `%>%` <- dplyr::`%>%`
@@ -103,12 +103,14 @@ getQualSites <- function(TargetSiteID,
   if ("Degraded" %in% target.quals) {
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID & Quality == "Degraded") %>%
-      dplyr::summarise(max := max(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(max = max(get(colBio), na.rm = TRUE), .groups = "drop_last")
+      #dplyr::summarise(max := max(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$max)
   } else { #
     qual.targ <- df_qual %>%
       dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::summarise(min := min(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
+      dplyr::summarise(min = min(get(colBio), na.rm = TRUE), .groups = "drop_last")
+      #dplyr::summarise(min := min(dplyr::.data[[colBio]], na.rm = TRUE), .groups = "drop_last")
     qual.targ <- as.numeric(qual.targ$min)
   }
 

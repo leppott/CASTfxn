@@ -81,10 +81,10 @@ checkInputs <- function(dir.uploaded,
     stop("ERROR: 'fn.inputcheck' does not exist.")
   } ## IF ~ qc_inputcheck
   #
-  qc_df_targets <- is.null(df_targets)
-  if (qc_df_targets) {
-    stop("ERROR: 'df_targets' does not exist.")
-  } ## IF ~ qc_df_targets
+  # qc_df_targets <- is.null(df_targets)
+  # if (qc_df_targets) {
+  #   stop("ERROR: 'df_targets' does not exist.")
+  # } ## IF ~ qc_df_targets
   
   # dir.uploaded <- in.dir
 

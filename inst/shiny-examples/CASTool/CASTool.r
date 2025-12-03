@@ -394,7 +394,10 @@ if (boo_Shiny == TRUE) {
   browser()
 }## IF ~ boo_Shiny ~ END
 
-list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk))
+list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk), 
+                              outcaseLabel = outcaseLabel, 
+                              incaseColName = incaseColName, 
+                              useBC = useBC)
 data_Sites    <- list.SiteData$site
 data_cluster  <- list.SiteData$cluster
 refSites      <- list.SiteData$refSites
@@ -719,7 +722,8 @@ if (boo_Shiny == TRUE) {
 data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
                                        df.stressInfo = data_stressInfo,
                                        df.resp       = data_respTrim,
-                                       df.sites      = data_Sites)
+                                       df.sites      = data_Sites, 
+                                       incaseColName = incaseColName)
 # Returns: data_sampSummary (df.sampSummary)
 # Colnames include: StationID, COMID, OutcaseCol, IncaseCol, SampleDate,
 # ChemistrySampleID, FieldSampleID, HabitatSampleID, ModeledSampleID,
@@ -1135,7 +1139,8 @@ for (site in seq_along(1:nrow(df_targets))) {
                       dir_sub           = "SiteInfo",
                       df_SampSummary    = data_sampSummary,
                       biocommlist       = biocommlist,
-                      boo_plot          = TRUE)
+                      boo_plot          = TRUE, 
+                      dir_results = out.dir)
     
 
   }
@@ -1147,7 +1152,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                 df_stressInfo = data_stressInfo,
                 df_Sites      = data_Sites,
                 useBC         = FALSE,
-                siteDetects   = siteDetectsAll,
+                siteDetectsAll   = siteDetectsAll,
                 compSites     = list.CompSites$comp.sites,
                 allSites      = list.CompSites$all.sites,
                 dir_results   = dir_results)
@@ -1380,7 +1385,8 @@ for (site in seq_along(1:nrow(df_targets))) {
                                           plotunits     = plot_units,
                                           dir_plots     = dir_results,
                                           dir_sub       = "_WoE",
-                                          boo_plot      = boo.plot.user)
+                                          boo_plot      = boo.plot.user, 
+                                          incaseLabel   = incaseLabel)
 
       df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
       notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
@@ -1690,7 +1696,8 @@ for (site in seq_along(1:nrow(df_targets))) {
   }
 
   getReport(TargetSiteID,
-            biocomms       = biocommlist,
+            biocommlist    = biocommlist,
+            regionName     = region,
             primeIndex     = bmiIndexGp,
             removeOutliers = removeOutliers,
             samplim        = samplim,
@@ -1710,8 +1717,7 @@ for (site in seq_along(1:nrow(df_targets))) {
             dir_data       = dir_data,
             dir_results    = dir_results,
             report_type    = "full",
-            report_format  = "html",
-            dir_rmd        = dir_rmd)
+            report_format  = "html")
 
   dfGaps <- read.table(file.path(dir_results, TargetSiteID,
                                  paste0(TargetSiteID,"_datagaps.tab")),

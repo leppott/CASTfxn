@@ -19,10 +19,7 @@
 #' # None at this time 
 #' @export
 #'
-prepSiteData <- function(out.dir) {
-  
-  # Global Bindings
-  StationID <- outcaseLabel <- incaseColName <- useBC <- NULL
+prepSiteData <- function(out.dir, outcaseLabel = NULL, incaseColName = NULL, useBC = NULL) {
 
   # define pipe
   `%>%` <- dplyr::`%>%`

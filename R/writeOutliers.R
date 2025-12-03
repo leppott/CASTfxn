@@ -31,28 +31,28 @@ writeOutliers <- function(TargetSiteID,
                           df_outliers,
                           df_stressInfo,
                           df_Sites,
-                          siteDetects,
+                          siteDetectsAll,
                           compSites,
                           useBC = FALSE,
                           allSites,
                           dir_results = file.path(getwd(), "Results")) {
 
   # Global Bindings
-  data_outliers <- data_stressInfo <- siteDetectsAll <- list.CompSites <- 
-    StationID <- TransfResult <- Outlier <- StdParamName <- NULL
+  # data_outliers <- data_stressInfo <- siteDetectsAll <- list.CompSites <- 
+  #   StationID <- TransfResult <- Outlier <- StdParamName <- NULL
     
   # Debug  
-  boo.debug = FALSE
-
-  if (boo.debug) {
-    df_outliers = data_outliers
-    df_stressInfo = data_stressInfo
-    TargetSiteID = TargetSiteID
-    siteDetects = siteDetectsAll
-    compSites = list.CompSites$comp.sites
-    allSites = list.CompSites$all.sites
-    dir_results = dir_results
-  }
+  # boo.debug = FALSE
+  # 
+  # if (boo.debug) {
+  #   df_outliers = data_outliers
+  #   df_stressInfo = data_stressInfo
+  #   TargetSiteID = TargetSiteID
+  #   siteDetects = siteDetectsAll
+  #   compSites = list.CompSites$comp.sites
+  #   allSites = list.CompSites$all.sites
+  #   dir_results = dir_results
+  # }
 
   # LCN patch fix to remove dependence on hardcoded bmi_dataBioCoOccur
   if(useBC == TRUE){

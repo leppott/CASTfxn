@@ -95,38 +95,39 @@ getCoOccur <- function(TargetSiteID,
                        plotunits = "in",
                        dir_plots = dir_results,
                        dir_sub = "_WoE",
-                       boo_plot = TRUE) {
+                       boo_plot = TRUE, 
+                       incaseLabel = NULL) {
   
   # Global Bindings
-  df_PairedStressResp <- siteDetectsAll <- data_stressInfo <- 
-    list.CompSites <- bioComm <- bioIndex <- Type <- StdParamName <- Stressor <- 
-    StationID <- StressSampleID <- StressSampleDate <- IncaseCol <- 
-    OutcaseCol <- RespSampleID <- RespSampleDate <- RefSiteFlag <- BetterThan <-
-    Quality <- StressorValue <- NotNA <- DirIncStress <- LogTransf <- Label <-
-    incaseLabel <- Sc_Box <- bioIndexName <- LoE <- Score <- SSIndex <- NULL
+  # df_PairedStressResp <- siteDetectsAll <- data_stressInfo <- 
+  #   list.CompSites <- bioComm <- bioIndex <- Type <- StdParamName <- Stressor <- 
+  #   StationID <- StressSampleID <- StressSampleDate <- IncaseCol <- 
+  #   OutcaseCol <- RespSampleID <- RespSampleDate <- RefSiteFlag <- BetterThan <-
+  #   Quality <- StressorValue <- NotNA <- DirIncStress <- LogTransf <- Label <-
+  #   incaseLabel <- Sc_Box <- bioIndexName <- LoE <- Score <- SSIndex <- NULL
 
   boo_DEBUG <- FALSE
 
-  if (boo_DEBUG==TRUE) {
-    TargetSiteID = TargetSiteID
-    df_data = df_PairedStressResp
-    detects = siteDetectsAll
-    df_stressinfo = data_stressInfo
-    compsites = list.CompSites$comp.sites
-    biocomm = bioComm
-    colBio = bioIndex
-    pHlimLow = pHlimLow
-    pHlimHigh = pHlimHigh
-    DOlim = DOlim
-    plotvars = data_plotvars
-    plotdpi = 600
-    plotH = 6
-    plotW = 8
-    plotunits = "in"
-    dir_plots = dir_results
-    dir_sub = "_WoE"
-    boo_plot = TRUE
-  }
+  # if (boo_DEBUG==TRUE) {
+  #   TargetSiteID = TargetSiteID
+  #   df_data = df_PairedStressResp
+  #   detects = siteDetectsAll
+  #   df_stressinfo = data_stressInfo
+  #   compsites = list.CompSites$comp.sites
+  #   biocomm = bioComm
+  #   colBio = bioIndex
+  #   pHlimLow = pHlimLow
+  #   pHlimHigh = pHlimHigh
+  #   DOlim = DOlim
+  #   plotvars = data_plotvars
+  #   plotdpi = 600
+  #   plotH = 6
+  #   plotW = 8
+  #   plotunits = "in"
+  #   dir_plots = dir_results
+  #   dir_sub = "_WoE"
+  #   boo_plot = TRUE
+  # }
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -366,9 +367,12 @@ getCoOccur <- function(TargetSiteID,
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
     xseg <- i.Group + 0.5
 
-    p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
-                                                x = IncaseCol,
-                                                group = IncaseCol)) +
+# p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
+#                                                 x = IncaseCol,
+#                                                 group = IncaseCol)) +
+      p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = get(stressname),
+                                                  x = IncaseCol,
+                                                  group = IncaseCol)) +
       ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
                             staplewidth = 0.5) +
       ggplot2::coord_flip() +

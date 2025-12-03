@@ -51,25 +51,26 @@
 #' @examples
 #' # None at this time 
 #' @export
-getAllSamplesTable <- function(df.stress,
-                               df.stressInfo,
-                               df.resp,
-                               df.sites) {
+getAllSamplesTable <- function(df.stress = NULL,
+                               df.stressInfo = NULL,
+                               df.resp = NULL,
+                               df.sites = NULL,
+                               incaseColName = NULL) {
   
   # Global Bindings
-  data_Stress <- data_stressInfo <- data_respTrim <- StressSampleDate <-
-    StressSampleID <- SourceGroup <- StdParamName <- RespSampleDate <- 
-    RespSampleID <- ModeledSampleID <- incaseColName <- data_Sites <- 
-    StationID <- Label <- Type <- biocomm <- SampleDate <- NULL
+  # data_Stress <- data_stressInfo <- data_respTrim <- StressSampleDate <-
+  #   StressSampleID <- SourceGroup <- StdParamName <- RespSampleDate <- 
+  #   RespSampleID <- ModeledSampleID <- incaseColName <- data_Sites <- 
+  #   StationID <- Label <- Type <- biocomm <- SampleDate <- NULL
 
-  boo.debug = FALSE
-
-  if (boo.debug) {
-    df.stress <- data_Stress
-    df.stressInfo <- data_stressInfo
-    df.resp <- data_respTrim
-    df.sites <- data_Sites
-  }
+  # boo.debug = FALSE
+  # 
+  # if (boo.debug) {
+  #   df.stress <- data_Stress
+  #   df.stressInfo <- data_stressInfo
+  #   df.resp <- data_respTrim
+  #   df.sites <- data_Sites
+  # }
 
   # define pipe
   `%>%` <- dplyr::`%>%`

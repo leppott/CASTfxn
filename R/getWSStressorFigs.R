@@ -42,54 +42,57 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               plotdpi = 600,
                               plotH = 6,
                               plotW = 8,
-                              plotunits = "in") { # FUN: Start
+                              plotunits = "in", 
+                              dir_results = NULL) { # FUN: Start
   
   # Global Bindings
-  data_stressorWS <- data_stressorinfoWS <- dir_results <- 
-    StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <- useBC <-
-    mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
-    yLoc <- Label <- TargetAboveMedian <- NULL
+  # data_stressorWS <- data_stressorinfoWS <- dir_results <- 
+  #   StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <- useBC <-
+  #   mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
+  #   yLoc <- Label <- TargetAboveMedian <- NULL
                                 
   # Debug
-  boo.debug <- FALSE
-  if (boo.debug) {
-    TargetSiteID      <- TargetSiteID
-    df_WSData         <- data_stressorWS
-    df_WSInfo         <- data_stressorinfoWS
-    df_Sites          <- data_Sites
-    comp.reaches      <- list.CompSites$comp.reaches
-    TargetCOMID       <- list.CompSites$TargetCOMID
-    useAllCompReaches <- useAllCompReaches
-    useBC             <- FALSE
-    dir_sub           <- "SiteInfo"
-    df_SampSummary    <- data_sampSummary
-    biocommlist       <- biocommlist
-    boo_plot          <- TRUE
-    plotdpi           <- 600
-    plotH             <- 6
-    plotW             <- 8
-    plotunits         <- "in"
-  }
+  # boo.debug <- FALSE
+  # if (boo.debug) {
+  #   TargetSiteID      <- TargetSiteID
+  #   df_WSData         <- data_stressorWS
+  #   df_WSInfo         <- data_stressorinfoWS
+  #   df_Sites          <- data_Sites
+  #   comp.reaches      <- list.CompSites$comp.reaches
+  #   TargetCOMID       <- list.CompSites$TargetCOMID
+  #   useAllCompReaches <- useAllCompReaches
+  #   useBC             <- FALSE
+  #   dir_sub           <- "SiteInfo"
+  #   df_SampSummary    <- data_sampSummary
+  #   biocommlist       <- biocommlist
+  #   boo_plot          <- TRUE
+  #   plotdpi           <- 600
+  #   plotH             <- 6
+  #   plotW             <- 8
+  #   plotunits         <- "in"
+  # }
   
   # define pipe
   `%>%` <- dplyr::`%>%`
 
   biocommlist <- toupper(biocommlist)
 
-  # Write results directory ----
-  out.dir <- dirname(dir_results)
-  out.folders <- c(out.dir, basename(dir_results), TargetSiteID, dir_sub)
-
-  for (i in 1:length(out.folders)) {
-    if (i == 1) {
-      dir_path <- file.path(out.folders[i])
-    } else {
-      dir_path <- file.path(dir_path, out.folders[i])
-    }
-    if (dir.exists(dir_path) == FALSE) {
-      dir.create(dir_path)
-    }
-  }
+  # # Write results directory ----
+  # out.dir <- dirname(dir_results)
+  # out.folders <- c(out.dir, basename(dir_results), TargetSiteID, dir_sub)
+  # 
+  # for (i in 1:length(out.folders)) {
+  #   if (i == 1) {
+  #     dir_path <- file.path(out.folders[i])
+  #   } else {
+  #     dir_path <- file.path(dir_path, out.folders[i])
+  #   }
+  #   if (dir.exists(dir_path) == FALSE) {
+  #     dir.create(dir_path)
+  #   }
+  # }
+  
+  dir_path <- file.path(dir_results, TargetSiteID, dir_sub)
   
   # LCN 9/23/25 patch fix to remove dependency on hard coded data_bmiCoOccur
   if(useBC == TRUE){

@@ -64,7 +64,8 @@
 #
 #' @export
 getReport <- function(TargetSiteID,
-                      biocomms,
+                      biocommlist,
+                      regionName,
                       primeIndex = bmiIndexGp,
                       removeOutliers,
                       samplim,
@@ -88,14 +89,14 @@ getReport <- function(TargetSiteID,
                       dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
                       ) { ##FUNCTION.START
   # Global Bindings
-  biocommlist <- regionName <- fn.cluster <- NULL
+  #biocommlist <- regionName <- fn.cluster <- NULL
     
   # Debug
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
   if (boo_DEBUG) {
     TargetSiteID = TargetSiteID
-    biocomms = biocommlist
+    biocommlist = biocommlist
     useBMI = useBMI
     useAlg = useAlg
     useFish = useFish
@@ -170,7 +171,7 @@ getReport <- function(TargetSiteID,
                                     bmiIndex       = bmiIndex,
                                     algIndex       = algIndex,
                                     fishIndex      = fishIndex,
-                                    clusterfile    = basename(fn.cluster),
+                                    #clusterfile    = basename(fn.cluster),
                                     dir_results    = dir_results),
                       quiet = TRUE)
   } else {
