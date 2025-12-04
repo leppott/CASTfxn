@@ -308,10 +308,16 @@ if (boo_Shiny == TRUE) {
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
-  write.table(TableOne, file.path(out.dir, region, "Results", "TableOne.tab"),
+  write.table(TableOne, file.path(out.dir, 
+                                  region, 
+                                  "Results", 
+                                  "TableOne.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   TableTwo    <- list.Tables$TableTwo
-  write.table(TableTwo, file.path(out.dir, region, "Results", "TableTwo.tab"),
+  write.table(TableTwo, file.path(out.dir, 
+                                  region, 
+                                  "Results", 
+                                  "TableTwo.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   rm(list.Tables, TableOne, TableTwo)
   # 2025-12-01, EWL, in Shiny no longer CSV files but RDS, won't work
@@ -358,17 +364,6 @@ for (l in seq_along(loaded)) {
   if (grepl("WS", object) == TRUE) { boo.WS <- TRUE }
 }
 rm(l, object, data_loaded)
-if(boo_Shiny) {
-  browser()
-  # EWL, testing
-  data_CASTmeta$calcRelAbund <- TRUE
-  data_CASTmeta$r2_cutoff <- 0.75
-  data_CASTmeta$p.val_cutoff <- 0.05
-  data_CASTmeta$outcaseColName <- "A_col"
-  data_CASTmeta$outcaseLabel <- "A_label"
-  data_CASTmeta$incaseColName <- "B_col"
-  data_CASTmeta$incaseLabel <- "B_label"
-}## boo_Shiny ~ testing
 
 ## Get variables ####
 ### Response data ####
@@ -401,11 +396,11 @@ if (boo.meas) {
   pHlimHigh     <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
   lagdays       <- as.integer(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
                                                                       lagdays), ", ")))
-}
+}## IF ~ boo.meas
 
 if (boo.WS) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
-}
+}## IF ~ boo.WS
 
 ### Site variables ####
 datum          <- as.character(dplyr::select(data_CASTmeta, datum))
@@ -427,8 +422,13 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  browser()
+  
+  
+browser()
+# Erik, fails here with prepSiteData, outcaseColName not found
 }## IF ~ boo_Shiny ~ END
+
+
 
 list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk))
 data_Sites    <- list.SiteData$site
