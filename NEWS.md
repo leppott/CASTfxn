@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-04 15:57:57.734209
+    #> Last Update: 2025-12-04 16:08:01.371725
 
 # Planned Updates
 
@@ -27,7 +27,7 @@ NEWS
 
 ## Changes in version 0.2.3.9003 (2025-12-04)
 
-- fixe: Updates in skeleton code for Shiny
+- fix: Updates in skeleton code for Shiny
 
 ## Changes in version 0.2.3.9002 (2025-12-02)
 

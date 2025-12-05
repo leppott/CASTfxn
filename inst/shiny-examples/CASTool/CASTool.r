@@ -41,46 +41,6 @@
 # debug.person <- "Erik" # Ann, Erik, Laura
 # dn_checked_sk <- "_CheckedInputs" # Comment out and define in Shiny App
 
-# if (boo_Shiny == FALSE) {
-#   # prompt user for path to input/output data directories
-#   # ** Run one line at a time **
-#   # Else next line of code is taken as the response and it fails
-#   # in.dir        <- readline(prompt = "Enter input data file directory path: ")
-#   # out.dir       <- readline(prompt = "Enter output file directory path: ")
-#   # region        <- readline(prompt = "Enter region name: ")
-#   # Use tcltk instead
-#   in.dir <- tcltk::tk_choose.dir(default = getwd(),
-#                                  caption = "Enter input data file directory path:")
-#   out.dir <- tcltk::tk_choose.dir(default = getwd(),
-#                                  caption = "Enter output file directory path: ")
-#   # get user value for region
-#   # code help from Bing CoPilot, 20250924
-#   ## Create a variable to store the input
-#   input_var <- tcltk::tclVar("")
-#   ## Create a top-level window
-#   tt <- tcltk::tktoplevel()
-#   tcltk::tkwm.title(tt, "Enter a Value")
-#   ## Create label and entry widgets
-#   tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), padx = 10, pady = 5)
-#   entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
-#   tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
-#   ## Function to close the window
-#   onOK <- function() {
-#     tcltk::tkdestroy(tt)
-#   }
-#   ## OK button
-#   ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
-#   tcltk::tkgrid(ok_button, padx = 10, pady = 10)
-#   ## Wait for user to respond
-#   tcltk::tkwait.window(tt)
-#   ## Get the value
-#   region <- tcltk::tclvalue(input_var)
-#   #
-#   in.dir        <- gsub("\\\\", "/", in.dir)
-#   out.dir       <- gsub("\\\\", "/", out.dir)
-#   boo.plot.user <- TRUE
-# }## IF ~ boo_Shiny == FALSE
-
 if(boo_Shiny == FALSE){
   baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
   if(rlang::is_empty(baseDataInd)==FALSE){
@@ -92,6 +52,81 @@ if(boo_Shiny == FALSE){
   }
   library(CASToolBaseDataPckg)
 }
+# if (boo_Shiny == FALSE) {
+#   # prompt user for path to input/output data directories
+# 
+#   choose_method <- "tcltk" 
+#   # user_readline (fails when paste more than one line, ok is 'source()'
+#   # user_function (same as above) [not for region]
+#   # base (win only)
+#   # tcltk (cross-platform but dialog box opens behind RStudio window)
+# 
+#   if (choose_method == "user_readline") {
+#     # ** Run one line at a time **
+#     # Else next line of code is taken as the response and it fails
+#     # if wrap in function call (help from BingCopilot)
+#     in.dir        <- readline(prompt = "Enter input data file directory path: ")
+#     out.dir       <- readline(prompt = "Enter output file directory path: ")
+#     region        <- readline(prompt = "Enter region name: ")
+#   } else if (choose_method == "user_function") {
+#     # still have same issue unless put all requests into a single function
+#     get_info_3 <- function() {
+#       in.dir  <- get_user_input(input_default = tempdir(),
+#                                 msg_prompt = "Enter directory path, input data: ")
+#       out.dir <- get_user_input(input_default = tempdir(),
+#                                 msg_prompt = "Enter directory path, output data: ")
+#       region  <- get_user_input(input_default = "WA",
+#                                 msg_prompt = "Enter region name: ")
+#       list(in.dir = in.dir, out.dir = out.dir, region = region)
+#     }## FUNCTION ~ get_info_3
+#     ls_info_3 <- get_info_3()
+#     in.dir <- ls_info_3$in.dir
+#     out.dir <- ls_info_3$out.dir
+#     region <- ls_info_3$region
+#   } else if (choose_method == "base") {
+#     # utils::choose.files() # does not allow copy and paste, windows only
+#     # base::file.choose() # no multi file selection, only single file (win/mac)
+#     in.dir <- utils::choose.dir(default = getwd(),
+#                                 caption = "Enter input data file directory path:")
+#     out.dir <- utils::choose.dir(default = getwd(),
+#                                  caption = "Enter output file directory path: ")
+#     # region <- "", cannot do without readlines, tcltk, or another package
+#   } else if (choose_method == "tcltk") {
+#     # Use tcltk instead
+#     in.dir <- tcltk::tk_choose.dir(default = getwd(),
+#                                    caption = "Enter input data file directory path:")
+#     out.dir <- tcltk::tk_choose.dir(default = getwd(),
+#                                     caption = "Enter output file directory path: ")
+#     # get user value for region
+#     # code help from Bing CoPilot, 20250924
+#     ## Create a variable to store the input
+#     input_var <- tcltk::tclVar("")
+#     ## Create a top-level window
+#     tt <- tcltk::tktoplevel()
+#     tcltk::tkwm.title(tt, "Enter a Value")
+#     ## Create label and entry widgets
+#     tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), 
+#                   padx = 10, pady = 5)
+#     entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
+#     tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
+#     ## Function to close the window
+#     onOK <- function() {
+#       tcltk::tkdestroy(tt)
+#     }
+#     ## OK button
+#     ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
+#     tcltk::tkgrid(ok_button, padx = 10, pady = 10)
+#     ## Wait for user to respond
+#     tcltk::tkwait.window(tt)
+#     ## Get the value
+#     region <- tcltk::tclvalue(input_var)
+#   } ## IF ~ choose_method
+#   
+#   #
+#   in.dir        <- gsub("\\\\", "/", in.dir)
+#   out.dir       <- gsub("\\\\", "/", out.dir)
+#   boo.plot.user <- TRUE
+# }## IF ~ boo_Shiny == FALSE
 
 # define pipe
 `%>%` <- dplyr::`%>%`
@@ -284,6 +319,7 @@ if (boo_Shiny == TRUE) {
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
+
   write.table(TableOne, file.path(out.dir, region, "TableOne.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   TableTwo    <- list.Tables$TableTwo
@@ -334,17 +370,6 @@ for (l in seq_along(loaded)) {
   if (grepl("WS", object) == TRUE) { boo.WS <- TRUE }
 }
 rm(l, object, data_loaded)
-if(boo_Shiny) {
-  browser()
-  # EWL, testing
-  data_CASTmeta$calcRelAbund <- TRUE
-  data_CASTmeta$r2_cutoff <- 0.75
-  data_CASTmeta$p.val_cutoff <- 0.05
-  data_CASTmeta$outcaseColName <- "A_col"
-  data_CASTmeta$outcaseLabel <- "A_label"
-  data_CASTmeta$incaseColName <- "B_col"
-  data_CASTmeta$incaseLabel <- "B_label"
-}## boo_Shiny ~ testing
 
 ## Get variables ####
 ### Response data ####
@@ -377,11 +402,12 @@ if (boo.meas) {
   pHlimHigh     <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
   lagdays       <- as.integer(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
                                                                       lagdays), ", ")))
-}
+}## IF ~ boo.meas
 
 # if (boo.WS) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
 # }
+
 
 ### Site variables ####
 datum          <- as.character(dplyr::select(data_CASTmeta, datum))
@@ -403,13 +429,17 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  browser()
+  
+  
+browser()
+# Erik, fails here with prepSiteData, outcaseColName not found
 }## IF ~ boo_Shiny ~ END
 
 list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk), 
                               outcaseLabel = outcaseLabel, 
                               incaseColName = incaseColName, 
                               useBC = useBC)
+
 data_Sites    <- list.SiteData$site
 data_cluster  <- list.SiteData$cluster
 refSites      <- list.SiteData$refSites
