@@ -69,39 +69,39 @@ getBioStressorResponses <- function(TargetSiteID,
                                     boo_plot = TRUE) {##FUNCTION.START
   
   # Global Bindings
-  df_stressorMetadata <- 
-    bioMetricInfo <- bioMetricData <- df_PairedStressResp <- bioComm <- 
-    bioIndex <- plot_dpi <- plot_H <- plot_W <- plot_units <- dir_results <- 
-    Type <- StationID <- StressSampleID <- RespSampleID <- Quality <- 
-    RefSiteFlag <- Stressor <- Response <- lwr <- upr <- StressSampleDate <- 
-    RespSampleDate <- stressVal <- respVal <- n_site <- n_comp <- 
-    SRLin_Score_inside <- SRLin_Score_outside <- estimate <- LoE <- 
-    bioIndexName <- StressorValue <- Score <- list.SiteSummary <- NULL
-
-  boo.DEBUG <- FALSE
-
-  if (boo.DEBUG == TRUE) {
-    TargetSiteID = TargetSiteID
-    df_stressinfo = df_stressorMetadata
-    df_respinfo = bioMetricInfo
-    df_respdata = bioMetricData
-    df_datapaired = df_PairedStressResp
-    biocomm = bioComm
-    bioindex = bioIndex
-    min_cases = samplim
-    p.val_cutoff = 0.05
-    r2_cutoff = 0.2
-    plotvars = data_plotvars
-    refOutline = refOutline_col
-    plotdpi = plot_dpi
-    plotH = plot_H
-    plotW = plot_W
-    plotunits = plot_units
-    dir_plots = dir_results
-    dir_sub = "_WoE"
-    boo_pred_warn = TRUE
-    boo_plot = TRUE
-  }
+  # df_stressorMetadata <- 
+  #   bioMetricInfo <- bioMetricData <- df_PairedStressResp <- bioComm <- 
+  #   bioIndex <- plot_dpi <- plot_H <- plot_W <- plot_units <- dir_results <- 
+  #   Type <- StationID <- StressSampleID <- RespSampleID <- Quality <- 
+  #   RefSiteFlag <- Stressor <- Response <- lwr <- upr <- StressSampleDate <- 
+  #   RespSampleDate <- stressVal <- respVal <- n_site <- n_comp <- 
+  #   SRLin_Score_inside <- SRLin_Score_outside <- estimate <- LoE <- 
+  #   bioIndexName <- StressorValue <- Score <- list.SiteSummary <- NULL
+  # 
+  # boo.DEBUG <- FALSE
+  # 
+  # if (boo.DEBUG == TRUE) {
+  #   TargetSiteID = TargetSiteID
+  #   df_stressinfo = df_stressorMetadata
+  #   df_respinfo = bioMetricInfo
+  #   df_respdata = bioMetricData
+  #   df_datapaired = df_PairedStressResp
+  #   biocomm = bioComm
+  #   bioindex = bioIndex
+  #   min_cases = samplim
+  #   p.val_cutoff = 0.05
+  #   r2_cutoff = 0.2
+  #   plotvars = data_plotvars
+  #   refOutline = refOutline_col
+  #   plotdpi = plot_dpi
+  #   plotH = plot_H
+  #   plotW = plot_W
+  #   plotunits = plot_units
+  #   dir_plots = dir_results
+  #   dir_sub = "_WoE"
+  #   boo_pred_warn = TRUE
+  #   boo_plot = TRUE
+  # }
 
   # Correlation file output header row
   cn_cor_pref <- c("StationID", "biocomm", "stressName", "stressLabel",

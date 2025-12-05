@@ -307,7 +307,8 @@ cause of impairment.The variables for which the targe site value exceeded the me
 of comparator sites are outlined below. 
 
 ```{r ws stressor, echo = FALSE}
-fn_WSStressorSum <- file.path(dir_results, TargetSiteID, "SiteInfo", paste0(TargetSiteID, "WSStressHigh.csv"))
+if(boo.WS == TRUE){
+  fn_WSStressorSum <- file.path(dir_results, TargetSiteID, "SiteInfo", paste0(TargetSiteID, "WSStressHigh.csv"))
 
 WSStressorSum <- read.csv(fn_WSStressorSum) %>% 
   dplyr::mutate(Comparator.Median = round(Comparator.Median, 3), Target.Site.Value = round(Target.Site.Value, 3)) %>% 
@@ -348,6 +349,10 @@ tblColNames <- colnames(WSStressorSum)
                filter = 'none',
                rownames = FALSE) %>%
    DT::formatStyle(columns = colnames(WSStressorSum), fontSize = '85%')
+} else{
+  cat("Watershed stressor analyses not requested or data not provided.")
+}
+
 ```
 
 ``` {r BMIresults, child=if ("bmi" %in% biocommlist) 'BMI.rmd'}

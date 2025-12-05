@@ -86,7 +86,8 @@ getReport <- function(TargetSiteID,
                       dir_results = normalizePath(file.path(".", "Results")),
                       report_type = "full",
                       report_format = "html",
-                      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+                      dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+                      boo.WS
                       ) { ##FUNCTION.START
   # Global Bindings
   #biocommlist <- regionName <- fn.cluster <- NULL
@@ -172,7 +173,8 @@ getReport <- function(TargetSiteID,
                                     algIndex       = algIndex,
                                     fishIndex      = fishIndex,
                                     #clusterfile    = basename(fn.cluster),
-                                    dir_results    = dir_results),
+                                    dir_results    = dir_results, 
+                                    boo.WS         = boo.WS),
                       quiet = TRUE)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"

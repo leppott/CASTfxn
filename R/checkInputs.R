@@ -38,8 +38,7 @@ checkInputs <- function(dir.uploaded,
                         dir.out,
                         fn.inputcheck = system.file("extdata", 
                                                     "CASTool_InputCheck.xlsx",
-                                                    package = "CASTfxn"),
-                        df_targets = NULL) {
+                                                    package = "CASTfxn")) {
   
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -123,19 +122,27 @@ checkInputs <- function(dir.uploaded,
                   "WatershedValue", "Year", "LogTransf", "UseInStressorID",
                   "ResultValue", "NumInd", "CutoffValue", "WatershedValue", "Year")
     date.cols <- c("StressSampleDate", "RespSampleDate")
+    geo.cols <- c("geometry", "GEOMETRY", "Geometry")
+    accept.blank.cols <- c( "SSIndex", "SSTVname.bmi",
+                            "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
+                            "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish")
 
     for (c in seq_along(obj.cols)) {
 
       col <- obj.cols[c]
       col.class <- class(df.obj[[col]])
 
-      if (col.class == "character" && col %in% text.cols) {
+      if (col %in% accept.blank.cols && all(is.na(df.obj[[col]]))) {
         # object col type matches
+        errors <- "pass"
+      } else if(col %in% geo.cols){ # don't check class of geometry column TODO: improvement
         errors <- "pass"
       } else if (col.class %in% c("integer", "numeric") && col %in% num.cols) {
         # object col type matches
         errors <- "pass"
-      } else {
+      } else if (col.class == "character" && col %in% text.cols){
+        errors <- "pass"
+      }  else {
         # By default, either a number or a date stored as text, possibly erroneously
         if (col %in% num.cols) {
           message(paste0(col, " is expected to be numeric, but is not"))
@@ -145,7 +152,9 @@ checkInputs <- function(dir.uploaded,
           result <- tryCatch(
             {
               df.obj <- df.obj |>
-                dplyr::mutate({{col}} := lubridate::parse_date_time(dplyr::.data[[col]],
+                # dplyr::mutate({{col}} := lubridate::parse_date_time(dplyr::.data[[col]],
+                #                                                     orders = c("ymd", "mdy", "dmy")) |>
+                dplyr::mutate({{col}} := lubridate::parse_date_time(get(col),
                                          orders = c("ymd", "mdy", "dmy")) |> # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date. 
                             lubridate::date())
             },
@@ -187,7 +196,6 @@ checkInputs <- function(dir.uploaded,
   # fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
   #    defined in input of function
   input_check <- readxl::read_xlsx(fn.inputcheck, sheet = "data", na = "")
-  fn.paired <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
   paired_check <- readxl::read_xlsx(fn.inputcheck, sheet = "paired", na = "") |>
     tibble::rowid_to_column("UID")
 
@@ -214,6 +222,10 @@ checkInputs <- function(dir.uploaded,
                        by.y = "Variable", all.x = TRUE)
   input_check$Uploaded <- 0
 
+  cluster_graphic.fn <- CASTmetadata %>% 
+    dplyr::filter(Variable == "fn.cluster.graphic") %>% 
+    dplyr::pull(Value)
+  
   # Check fatal errors ----
   ## Check definition status ----
   # All required files must be defined. If not, generate a fatal error.
@@ -225,10 +237,19 @@ checkInputs <- function(dir.uploaded,
     msg <- paste0(req.not.defined, " are not defined and likely not uploaded.")
     stop(msg)
   }
-
+  
   ## Check load status ----
   loaded <- input_check[0, ]
   not.loaded <- input_check[0, ]
+  
+  helperImport <- as.logical(CASTmetadata$Value[CASTmetadata$Variable == "helperImport"])
+  
+  if(helperImport == TRUE){
+    input_check_cluster <- input_check %>% dplyr::filter(Object == "data_cluster")
+  } else{
+    input_check_cluster <- NULL
+  }
+  
   input_check <- dplyr::filter(input_check, !is.na(Value)) # Minus not defined
   for (i in 1:nrow(input_check)) {
     fn <- input_check$Value[i]
@@ -320,22 +341,39 @@ checkInputs <- function(dir.uploaded,
   }
 
   # End fatal error checks ----
-  rm(paired.fns, paired_check, fn, fn.inputcheck, fn.metadata, fn.paired,
+  rm(paired.fns, paired_check, fn, fn.inputcheck, fn.metadata, 
      not.loaded, i, cont.fns, not.defined)
 
   # Read all loaded files ----
   df.reqd.obj.cols <- data.frame("Object" = as.character(),
                         "Result" = as.character())
 
-  for (j in 1:nrow(loaded)) {
+  for (j in 1:nrow(loaded)) { 
     
     object <- loaded$Object[j]
     fn <- loaded$Value[j]
     desc <- loaded$Description[j]
-    assign(object, readCASToolData(file.path(dir.uploaded, fn),
-                                   NAs = c("", "NA", "na", "N/A", "n/a")))
+    
+    if(tolower(tools::file_ext(fn)) != "rda"){
+      assign(object, readCASToolData(file.path(dir.uploaded, fn),
+                                     NAs = c("", "NA", "na", "N/A", "n/a")))
+    } else{
+      readCASToolData(file.path(dir.uploaded, fn))
+    }
+    
     ## Check required columns ----
-    reqd.cols <- stringr::str_split_1(loaded$ReqCols[loaded$Object == object], ", ")
+    if(is.na(loaded$ReqCols[loaded$Object == object])){
+      df.reqd.obj.cols <- rbind(df.reqd.obj.cols,
+                                data.frame(object = object, 
+                                           reqd.v.act.cols = "Missing columns: "))
+      df.coltypes.tmp <- data.frame(object = object, col = NA, errors = "pass")
+      df.reqd.coltypes <- rbind(df.reqd.coltypes, df.coltypes.tmp)
+      
+      next
+    } else{
+      reqd.cols <- stringr::str_split_1(loaded$ReqCols[loaded$Object == object], ", ")
+    }
+    
     if ("*SSTV" %in% reqd.cols) {
       next # These will be checked below
     }
@@ -383,7 +421,74 @@ checkInputs <- function(dir.uploaded,
   #
   #     }
   # }
-
+  
+  # Import files from helper packages
+  region <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "region"])
+  
+  if(helperImport == TRUE){
+    data("available_regions")
+    regionAvailable <- region %in% available_regions$Region
+    
+    if(regionAvailable == TRUE){
+      msg <- "Downloading files for requested region from the CASTool helper packages."
+      
+      clusterNum <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "clusterNumber"])
+      if(is.na(clusterNum) == TRUE){
+        msg <- "Number of clusters requested from the CASTool helper packages is required. Please add to metadata"
+        stop(msg)
+      }
+      
+      boundary <- CASToolBaseDataPckg::retrieve_boundary(region)
+      reaches <- CASToolBaseDataPckg::retrieve_reaches(region)
+      data_cluster <- CASToolClusterPckg::retrieve_clust_data(region, clusterNum)
+      cluster_graphic <- CASToolClusterPckg::retrieve_clust_fig(region, clusterNum)
+      
+      extra.coltypes <- data.frame(
+        object = c(
+          "boundary",
+          "reaches",
+          "data_cluster",
+          "data_cluster",
+          "cluster_graphic"
+        ),
+        col = c("geometry", "geometry", "COMID", "ClusterID", NA),
+        errors = rep("pass", 5)
+      )
+      
+      df.reqd.coltypes <- df.reqd.coltypes %>% dplyr::bind_rows(extra.coltypes)
+      
+      extra.objcols <- data.frame(
+        object = c("boundary", "reaches", "data_cluster", "cluster_graphic"),
+        reqd.v.act.cols = rep("Missing columns: ", 4)
+      )
+      
+      df.reqd.obj.cols <- df.reqd.obj.cols %>% dplyr::bind_rows(extra.objcols)
+      
+      message(msg)
+    } else{
+      msg <- "Requested region is not available in the CASTool helper packages. Check that region name is identical to a value in https://github.com/laura-naslund/CASToolBaseDataPckg?tab=readme-ov-file#currently-available-regions. If the region is not available, please provide a boundary, reaches, cluster, and cluster graphic file."
+      stop(msg)
+    }
+    
+  } else{
+    if(exists("boundary") == FALSE){
+      msg <- "Boundary file not found. Please provide."
+      stop(msg)
+    }
+    if(exists("reaches") == FALSE){
+      msg <- "Reaches file not found. Please provide."
+      stop(msg)
+    }
+    if(exists("data_cluster") == FALSE){
+      msg <- "Cluster file not found. Please provide."
+      stop(msg)
+    }
+    if(exists("cluster_graphic") == FALSE){
+      msg <- "Cluster graphic file not found. Please provide."
+      stop(msg)
+    }
+  }
+  
   if (exists("data_chemInfo")) {
     if (exists("data_bmiMasterTaxa")) {
       object <- "data_bmiMasterTaxa"
@@ -518,15 +623,15 @@ checkInputs <- function(dir.uploaded,
   sites.not.target <- compare.fk.pk(unq.sites, unq.targets)
   nsites.not.target <- length(sites.not.target)
 
-  if (nsites.not.target == 0) {
+  if (ntarg.not.sites == 0) {
     pk.issues <- "All StationIDs are in FileTwo"
   } else {
-    pk.issues <- paste0(nsites.not.target, " StationIDs are not in FileTwo")
+    pk.issues <- paste0(ntarg.not.sites, " StationIDs are not in FileTwo")
   }
-  if (ntarg.not.sites == 0) {
+  if (nsites.not.target == 0) {
     fk.issues <- "All StationIDs are in FileOne"
   } else {
-    fk.issues <- paste0(ntarg.not.sites, " StationIDs are not in FileOne")
+    fk.issues <- paste0(nsites.not.target, " StationIDs are not in FileOne")
   }
 
   df.relational.checks <- rbind(df.relational.checks,
@@ -1341,9 +1446,28 @@ checkInputs <- function(dir.uploaded,
 
   # Prepare outputs ----
   ## TableOne: Summary of file inputs ----
+
+  
+  
+  if(!is.null(input_check_cluster)){
+     object_pk_merge <- input_check[, c("Object", "PrimaryKey")] %>% 
+       dplyr::bind_rows(input_check_cluster[, c("Object", "PrimaryKey")])
+  } else{
+    object_pk_merge <- input_check[, c("Object", "PrimaryKey")]
+  }
+  
   df.reqd.obj.cols <- merge(df.reqd.obj.cols,
-                            input_check[, c("Object", "PrimaryKey")],
+                            object_pk_merge,
                             all.x = TRUE)
+  
+  # if(helperImport == TRUE){
+  #   helper_files <- data.frame(
+  #     Object = c("boundary", "reaches", "data_cluster", "cluster_graphic"),
+  #     FilePath = c("helperPckg", "helperPckg", "helperPckg", "helperPckg")
+  #   )
+  # }
+  # 
+  # df.reqd.obj.cols <- df.reqd.obj.cols %>% dplyr::bind_rows(helper_files)
 
   df.uniquePKs <- df.uniquePKs |>
     dplyr::group_by(Object) |>
@@ -1359,17 +1483,18 @@ checkInputs <- function(dir.uploaded,
     dplyr::select(FilePath, Object, ExpectedColumns, ExpectedDatatypes,
                   PrimaryKey, Observations)
   rm(df.reqd.obj.cols)
+  
+  df.TableOne <- df.TableOne %>% dplyr::mutate(FilePath = dplyr::if_else(is.na(FilePath), "helper package", FilePath))
 
   ## TableTwo: Relational integrity ----
-  df.TableTwo <- df.relational.checks |>
-    dplyr::rename(`FileOne (One)` = FileOne,
-                  `FileTwo (Many)` = FileTwo)
+  df.TableTwo <- df.relational.checks 
+    # dplyr::rename(`FileOne (One)` = FileOne,
+    #               `FileTwo (Many)` = FileTwo)
 
   rm(input_check)
 
   # Write results directory ----
-  region <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "region"])
-  out.folders <- c(dir.out, region, "Results", "_CheckedInputs")
+  out.folders <- c(dir.out, region, "_CheckedInputs")
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
@@ -1388,14 +1513,25 @@ checkInputs <- function(dir.uploaded,
   saveRDS(CASTmetadata, file.path(dir.out, "CASTmetadata.rds"))
   saveRDS(loaded, file.path(dir.out, "loaded.rds"))
 
-  objects <- df.TableOne$Object
-  for (o in seq_along(objects)) {
+  objects <- setdiff(df.TableOne$Object, "cluster_graphic")
+  
+  for (o in seq_along(unique(objects))) {
     objName <- objects[o]
     fn <- paste0(objName, ".rds")
     saveRDS(get(objName), file.path(dir.out, fn))
+  }
+  
+  if(is.na(cluster_graphic.fn)==FALSE){
+    file.copy(file.path(dir.uploaded, cluster_graphic.fn), 
+              file.path(dir.out, "cluster_graphic.png"))
+  } else{
+    
+    file.copy(CASToolClusterPckg::retrieve_clust_fig(region, clusterNum),
+              file.path(dir.out, "cluster_graphic.png"))
   }
 
   myTables <- list(TableOne = df.TableOne, TableTwo = df.TableTwo)
   return(myTables)
 
 }
+

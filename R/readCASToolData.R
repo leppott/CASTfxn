@@ -32,23 +32,28 @@ readCASToolData <- function(fn, NAs) {##FUNCTION.START
                           na.strings = NAs, 
                           strip.white = TRUE,
                           stringsAsFactors = FALSE)
+    return(df)
   } else if (tolower(tools::file_ext(fn)) %in% c("txt", "tab")) {
     df <- utils::read.delim(fn, 
                             header = TRUE, 
                             na.strings = NAs, 
                             strip.white = TRUE,
                             stringsAsFactors = FALSE)
+    return(df)
   } else if (tolower(tools::file_ext(fn) %in% c("xls", "xlsx"))) {
     df <- readxl::read_excel(fn, 
                              col_names = TRUE, 
                              skip = 0, 
                              trim_ws = TRUE,
                              na = NAs)
+    return(df)
+  } else if (tolower(tools::file_ext(fn)) == "rda"){
+    load(fn, envir = .GlobalEnv)
+  } else if(tolower(tools::file_ext(fn)) %in% c("png", "jpg", "jpeg")){
+    df <- magick::image_read(fn) 
+    return(df)
   } else {
     message("File format not recognized.")
   }
-
-  return(df)
-
 }
 

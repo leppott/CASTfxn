@@ -63,29 +63,29 @@ getSiteMap <- function(sp_outline,
                        dir_map_rmd) {
   
   # Global Bindings
-  STATE.shp <- NHD.STATE <- data_Sites <- list.CompSites <- data_plotvars <- 
-    refOutline_col <- StationID <- Longitude <- Latitude <- RefSiteFlag <- 
-    COMID <- IncaseCol <- OutcaseCol <- Case <- geometry <- NULL
+  # STATE.shp <- NHD.STATE <- data_Sites <- list.CompSites <- data_plotvars <- 
+  #   refOutline_col <- StationID <- Longitude <- Latitude <- RefSiteFlag <- 
+  #   COMID <- IncaseCol <- OutcaseCol <- Case <- geometry <- NULL
   
   # Debug
-  boo_DEBUG <- FALSE
-
-  if (boo_DEBUG == TRUE) {
-    sp_outline <- STATE.shp
-    sp_flowline <- NHD.STATE
-    region <- region
-    datum <- datum
-    df_sites <- data_Sites
-    allSites <- list.CompSites$all.sites
-    compSites <- list.CompSites$comp.sites
-    TargetSiteID <- TargetSiteID
-    useBC <- FALSE
-    plotvars = data_plotvars
-    refOutline = refOutline_col
-    dir_results <- dir_results
-    dir_sub <- "SiteInfo"
-    dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
-  }
+  # boo_DEBUG <- FALSE
+  # 
+  # if (boo_DEBUG == TRUE) {
+  #   sp_outline <- STATE.shp
+  #   sp_flowline <- NHD.STATE
+  #   region <- region
+  #   datum <- datum
+  #   df_sites <- data_Sites
+  #   allSites <- list.CompSites$all.sites
+  #   compSites <- list.CompSites$comp.sites
+  #   TargetSiteID <- TargetSiteID
+  #   useBC <- FALSE
+  #   plotvars = data_plotvars
+  #   refOutline = refOutline_col
+  #   dir_results <- dir_results
+  #   dir_sub <- "SiteInfo"
+  #   dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+  # }
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -238,20 +238,20 @@ getSiteMap <- function(sp_outline,
   sp_outside <- subset(sp_sites, Case == "Outside the case")
   sp_inside <- subset(sp_sites, Case == "Inside the case")
   sp_targetsite <- subset(sp_sites, Case == "Target")
-
+  
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "white") + # LCN changed fill color from grey80
     tmap::tm_shape(sp_flowline) +
     tmap::tm_lines(lwd = 0.5, #palette = mag.vec,
                    col = "ClusterID",
-                   col.scale = tmap::tm_scale_discrete(values = "viridis"),
+                   col.scale = tmap::tm_scale(values = "viridis"),
                    col.legend = tmap::tm_legend(title = "ClusterID",
                                           orientation = "portrait")) +
     tmap::tm_shape(sp_outside) +
-    tmap::tm_symbols(fill = outsideFill, col = "grey15", shape = outsideShape,
+    tmap::tm_symbols(fill = outsideFill, col = "grey50", shape = outsideShape,
                      size = outsideSize) +
     tmap::tm_shape(sp_inside) +
-    tmap::tm_symbols(fill = insideFill, col = "grey15", shape = insideShape,
+    tmap::tm_symbols(fill = insideFill, col = "grey50", shape = insideShape,
                      size = insideSize)
 
   if (nrow(sp_refsites) > 0) {
@@ -260,7 +260,7 @@ getSiteMap <- function(sp_outline,
       tmap::tm_symbols(col = refOutline, fill = "grey40", fill_alpha = 0, size = 0.4) +
       # LCN added fill_alpha = 0 and changed size from 0.25
       tmap::tm_add_legend(type = 'symbols',
-                          col = c("grey15", "grey15", refOutline, "grey15"),
+                          col = c("grey50", "grey50", refOutline, "grey50"),
                           fill = c(outsideFill, insideFill, "grey40", targetFill),
                           fill_alpha = c(1,1,0,1), # LCN added for consistency with plot
                           shape = c(outsideShape, insideShape, 21, targetShape),
@@ -269,7 +269,7 @@ getSiteMap <- function(sp_outline,
                           title = "", orientation = "portrait", reverse = TRUE)
   } else {
     state.map <- state.map +
-      tmap::tm_add_legend(type = 'symbols', col = "grey15",
+      tmap::tm_add_legend(type = 'symbols', col = "grey50",
                           fill = c(outsideFill, insideFill, targetFill),
                           shape = c(outsideShape, insideShape, targetShape),
                           title = "Sites", orientation = "portrait",
@@ -278,7 +278,7 @@ getSiteMap <- function(sp_outline,
   }
   state.map <- state.map  +
     tmap::tm_shape(sp_targetsite) +
-    tmap::tm_symbols(fill = targetFill, col = "grey15", shape = targetShape,
+    tmap::tm_symbols(fill = targetFill, col = "grey50", shape = targetShape,
                      size = targetSize) +
     tmap::tm_shape(sp_outline) +
     tmap::tm_borders(col = "black", lwd = 1) +
@@ -287,7 +287,7 @@ getSiteMap <- function(sp_outline,
                     legend.outside = TRUE, legend.outside.position = "bottom") +
     tmap::tm_title(region)
 
-  tmap::tmap_save(state.map, fn_Map, , width = map.width, height = map.height,
+  tmap::tmap_save(state.map, fn_Map, width = map.width, height = map.height,
                   units = "in", dpi = 600)
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

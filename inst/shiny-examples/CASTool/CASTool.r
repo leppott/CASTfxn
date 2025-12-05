@@ -41,45 +41,57 @@
 # debug.person <- "Erik" # Ann, Erik, Laura
 # dn_checked_sk <- "_CheckedInputs" # Comment out and define in Shiny App
 
-if (boo_Shiny == FALSE) {
-  # prompt user for path to input/output data directories
-  # ** Run one line at a time **
-  # Else next line of code is taken as the response and it fails
-  # in.dir        <- readline(prompt = "Enter input data file directory path: ")
-  # out.dir       <- readline(prompt = "Enter output file directory path: ")
-  # region        <- readline(prompt = "Enter region name: ")
-  # Use tcltk instead
-  in.dir <- tcltk::tk_choose.dir(default = getwd(),
-                                 caption = "Enter input data file directory path:")
-  out.dir <- tcltk::tk_choose.dir(default = getwd(),
-                                 caption = "Enter output file directory path: ")
-  # get user value for region
-  # code help from Bing CoPilot, 20250924
-  ## Create a variable to store the input
-  input_var <- tcltk::tclVar("")
-  ## Create a top-level window
-  tt <- tcltk::tktoplevel()
-  tcltk::tkwm.title(tt, "Enter a Value")
-  ## Create label and entry widgets
-  tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), padx = 10, pady = 5)
-  entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
-  tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
-  ## Function to close the window
-  onOK <- function() {
-    tcltk::tkdestroy(tt)
+# if (boo_Shiny == FALSE) {
+#   # prompt user for path to input/output data directories
+#   # ** Run one line at a time **
+#   # Else next line of code is taken as the response and it fails
+#   # in.dir        <- readline(prompt = "Enter input data file directory path: ")
+#   # out.dir       <- readline(prompt = "Enter output file directory path: ")
+#   # region        <- readline(prompt = "Enter region name: ")
+#   # Use tcltk instead
+#   in.dir <- tcltk::tk_choose.dir(default = getwd(),
+#                                  caption = "Enter input data file directory path:")
+#   out.dir <- tcltk::tk_choose.dir(default = getwd(),
+#                                  caption = "Enter output file directory path: ")
+#   # get user value for region
+#   # code help from Bing CoPilot, 20250924
+#   ## Create a variable to store the input
+#   input_var <- tcltk::tclVar("")
+#   ## Create a top-level window
+#   tt <- tcltk::tktoplevel()
+#   tcltk::tkwm.title(tt, "Enter a Value")
+#   ## Create label and entry widgets
+#   tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), padx = 10, pady = 5)
+#   entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
+#   tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
+#   ## Function to close the window
+#   onOK <- function() {
+#     tcltk::tkdestroy(tt)
+#   }
+#   ## OK button
+#   ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
+#   tcltk::tkgrid(ok_button, padx = 10, pady = 10)
+#   ## Wait for user to respond
+#   tcltk::tkwait.window(tt)
+#   ## Get the value
+#   region <- tcltk::tclvalue(input_var)
+#   #
+#   in.dir        <- gsub("\\\\", "/", in.dir)
+#   out.dir       <- gsub("\\\\", "/", out.dir)
+#   boo.plot.user <- TRUE
+# }## IF ~ boo_Shiny == FALSE
+
+if(boo_Shiny == FALSE){
+  baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
+  if(rlang::is_empty(baseDataInd)==FALSE){
+    pakInd <- setdiff("pak", .packages(all.available = TRUE))
+    if(rlang::is_empty(pakInd)==FALSE){
+      install.packages("pak")
+    }
+    pak::pak("laura-naslund/CASToolBaseDataPckg")
   }
-  ## OK button
-  ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
-  tcltk::tkgrid(ok_button, padx = 10, pady = 10)
-  ## Wait for user to respond
-  tcltk::tkwait.window(tt)
-  ## Get the value
-  region <- tcltk::tclvalue(input_var)
-  #
-  in.dir        <- gsub("\\\\", "/", in.dir)
-  out.dir       <- gsub("\\\\", "/", out.dir)
-  boo.plot.user <- TRUE
-}## IF ~ boo_Shiny == FALSE
+  library(CASToolBaseDataPckg)
+}
 
 # define pipe
 `%>%` <- dplyr::`%>%`
@@ -92,7 +104,7 @@ data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outside
                             "Shape" = c(24, 21, 25, 21, 25),
                             "Size" = c(1.75, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#26F7FD" # LCN changed from "#009E73"
+refOutline_col <- "#000000" #"#26F7FD" # LCN changed from "#009E73"
 # Note: this change may not be colorblind-friendly
 # check site map using https://www.color-blindness.com/coblis-color-blindness-simulator/
 
@@ -272,10 +284,10 @@ if (boo_Shiny == TRUE) {
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
-  write.table(TableOne, file.path(out.dir, region, "Results", "TableOne.tab"),
+  write.table(TableOne, file.path(out.dir, region, "TableOne.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   TableTwo    <- list.Tables$TableTwo
-  write.table(TableTwo, file.path(out.dir, region, "Results", "TableTwo.tab"),
+  write.table(TableTwo, file.path(out.dir, region, "TableTwo.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   rm(list.Tables, TableOne, TableTwo)
   # 2025-12-01, EWL, in Shiny no longer CSV files but RDS, won't work
@@ -284,7 +296,7 @@ if (boo_Shiny == TRUE) {
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 03, Select region variables ####
 # Progress, 03
-out.dir <- file.path(out.dir, region, "Results")
+out.dir <- file.path(out.dir, region)
 
 ## Load CASTool_Metadata ####
 data_CASTmeta <- readRDS(file.path(out.dir, dn_checked_sk, "CASTmetadata.rds"))
@@ -367,9 +379,9 @@ if (boo.meas) {
                                                                       lagdays), ", ")))
 }
 
-if (boo.WS) {
+# if (boo.WS) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
-}
+# }
 
 ### Site variables ####
 datum          <- as.character(dplyr::select(data_CASTmeta, datum))
@@ -404,54 +416,7 @@ refSites      <- list.SiteData$refSites
 rm(list.SiteData)
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Get GIS files ####
-# TODO: Decide exactly how this is going to happen.
-# fn.outline <- file.path(localdir, "NHDPlus", "gadm41_USA_shp", "gadm41_USA_1.shp")
 
-# Required user-designated options
-# LCN this code only handles if region is a state name or abbreviation
-# TODO: is this necessary anymore? Region is in the _CASTool_Metadata.xlsx file
-# Determine how to obtain the shapefile
-# if (region %in% state.abb) {
-#   regionName        <- state.name[which(state.abb == region)]
-# } else if (region %in% state.name) {
-#   regionName        <- region
-#   region            <- state.abb[which(state.name == regionName)]
-# } else if (region == "WA_LCN") {
-#   regionName <- "WA"
-# } else {
-#   # region is not a standard, accepted region (e.g., SMC)
-#   # this will affect watershed-scale stressors and maps
-#   if (region == "SMC") {
-#     outline  <- poly.smc.proj
-#     flowline <- lines.flowline.proj
-#   }
-# }
-# message("Loading GIS files.")
-# if (boo_Shiny == TRUE) {
-#   # 2020-09-09, use RDA saved version
-#   # NOT sure how to handle this # ARL 2025-04-13
-#   outline  <- poly.smc.proj
-#   flowline <- lines.flowline.proj
-# } else {
-#   # fn.outline moved to the top with other hard-coded file locations
-#   STATE.shp <- sf::read_sf(fn.outline) %>%
-#     dplyr::filter(NAME_1 == regionName) %>%
-#     sf::st_transform(crs = 5070) %>%
-#     sf::st_buffer(300)
-#   NHD.STATE <- nhdplusTools::get_nhdplus(AOI = STATE.shp) %>%
-#     dplyr::filter(ftype %in% c("StreamRiver", "ArtificialPath", "Connector",
-#                                "CanalDitch", "Drainageway")) %>%
-#     dplyr::select(comid, geometry) %>%
-#     dplyr::rename(COMID = comid)
-# NHD.STATE <- dplyr::left_join(NHD.STATE, data_cluster, by = "COMID")
-# ## Remove reaches without clusterIDs
-# NHD.STATE <- NHD.STATE[!is.na(NHD.STATE$ClusterID), ]
-# ## Select only required columns
-# NHD.STATE <- dplyr::select(NHD.STATE, COMID, ClusterID, geometry)
-# }## IF ~ boo_Shiny ~ END
-# rm(fn.outline)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 05, Measured data and metadata ####
@@ -1003,59 +968,30 @@ for (site in seq_along(1:nrow(df_targets))) {
 
   
   # Create site map
-  if(debug.person == "Laura"){
-    # if(require(CASToolClusterPckg)!=TRUE){
-    #   if(require(pak)!=TRUE){
-    #     install.packages("pak")
-    #   }
-    #   pak::pak("laura-naslund/CASToolClusterPckg")
-    # }
-    # 
-    # library(CASToolClusterPckg)
-    
-    STATE.shp <- retrieve_boundary(region)
-    
-    NHD.STATE <- nhdplusTools::get_nhdplus(AOI = STATE.shp) %>%
-          dplyr::filter(ftype %in% c("StreamRiver", "ArtificialPath", "Connector",
-                                     "CanalDitch", "Drainageway")) %>%
-          dplyr::select(comid, geometry) %>%
-          dplyr::rename(COMID = comid)
-      NHD.STATE <- dplyr::left_join(NHD.STATE, data_cluster, by = "COMID")
-      ## Remove reaches without clusterIDs
-      NHD.STATE <- NHD.STATE[!is.na(NHD.STATE$ClusterID), ]
-      ## Select only required columns
-      NHD.STATE <- dplyr::select(NHD.STATE, COMID, ClusterID, geometry)
-
-      getSiteMap(sp_outline   = STATE.shp,
-                 sp_flowline  = NHD.STATE,
-                 region       = region,
-                 datum        = datum,
-                 df_sites     = data_Sites,
-                 allSites     = list.CompSites$all.sites,
-                 compSites    = list.CompSites$comp.sites,
-                 TargetSiteID = TargetSiteID,
-                 useBC        = useBC,
-                 plotvars     = data_plotvars,
-                 refOutline   = refOutline_col,
-                 dir_results  = dir_results,
-                 dir_sub      = "SiteInfo",
-                 dir_map_rmd  = dir_rmd)
-  }
+  boundary <- readRDS(file.path(out.dir, dn_checked_sk, "boundary.rds"))
+  reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) %>% 
+    dplyr::mutate(COMID = as.character(COMID))
+  flowline <- reaches %>% 
+    dplyr::left_join(data_cluster %>% 
+                       dplyr::mutate(COMID = as.character(COMID), 
+                              ClusterID = as.factor(ClusterID)), 
+                     by = "COMID")
   
-  # getSiteMap(sp_outline   = STATE.shp,
-  #            sp_flowline  = NHD.STATE,
-  #            region       = regionName,
-  #            datum        = datum,
-  #            df_sites     = data_Sites,
-  #            allSites     = list.CompSites$all.sites,
-  #            compSites    = list.CompSites$comp.sites,
-  #            TargetSiteID = TargetSiteID,
-  #            useBC        = useBC,
-  #            plotvars     = data_plotvars,
-  #            refOutline   = refOutline_col,
-  #            dir_results  = dir_results,
-  #            dir_sub      = "SiteInfo",
-  #            dir_map_rmd  = dir_rmd)
+  
+  getSiteMap(sp_outline   = boundary,
+             sp_flowline  = flowline,
+             region       = region,
+             datum        = datum,
+             df_sites     = data_Sites,
+             allSites     = list.CompSites$all.sites,
+             compSites    = list.CompSites$comp.sites,
+             TargetSiteID = TargetSiteID,
+             useBC        = useBC,
+             plotvars     = data_plotvars,
+             refOutline   = refOutline_col,
+             dir_results  = dir_results,
+             dir_sub      = "SiteInfo",
+             dir_map_rmd  = file.path(system.file(package = "CASTfxn"), "rmd"))
   # Prints static map (.png)
 
   msg <- "getSiteInfo, getWSstressorFigs, and getSiteMap are complete."
@@ -1717,7 +1653,8 @@ for (site in seq_along(1:nrow(df_targets))) {
             dir_data       = dir_data,
             dir_results    = dir_results,
             report_type    = "full",
-            report_format  = "html")
+            report_format  = "html", 
+            boo.WS = boo.WS)
 
   dfGaps <- read.table(file.path(dir_results, TargetSiteID,
                                  paste0(TargetSiteID,"_datagaps.tab")),
