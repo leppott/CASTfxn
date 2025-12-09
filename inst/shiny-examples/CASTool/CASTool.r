@@ -30,9 +30,9 @@ boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
-in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Data" # File path of data directory
-out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Results" # File path of results directory
-region <- "DEPied" # Name of region 
+in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
+out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
+region <- "Washington" # Name of region 
 
 if(boo_Shiny == FALSE){
   devtools::load_all()

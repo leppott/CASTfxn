@@ -154,7 +154,7 @@ getBioStressorResponses <- function(TargetSiteID,
   df_SiteData <- df_datapaired[df_datapaired$StationID == TargetSiteID, ]
   df_CompData <- df_datapaired[df_datapaired$IncaseYN == 1, ]
   df_AllData <- df_datapaired[df_datapaired$OutcaseYN == 1 & df_datapaired$IncaseYN == 0, ]
-  df_AllData <- unique(rbind(df_SiteData, df_AllData))
+  df_AllData_wSite <- unique(rbind(df_SiteData, df_AllData))
 
   df_CompNotDeg <- df_CompData[df_CompData$Quality == "Not degraded", ]
   df_AllNotDeg <- df_AllData[df_AllData$Quality == "Not degraded", ]
@@ -263,13 +263,16 @@ getBioStressorResponses <- function(TargetSiteID,
       # QC
       if (nrow(df_plot_all) < min_cases) {
         txt.score <- paste0("< ", min_cases, " cases")
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
-                             " (", p, "/", p.len, "), ", respName, " (", q,
-                             "/", q.len, "); score = ", txt.score)
-        message(msg.status)
+        # msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
+        #                      " (", p, "/", p.len, "), ", respName, " (", q,
+        #                      "/", q.len, "); score = ", txt.score)
+        # message(msg.status)
         gapcomment <- txt.score
         gaps <- cbind.data.frame("getBioStressorResponse",
-                                 "Number of complete cases (outside case)",
+                                 paste0("Number of complete cases (outside case); stressor: ",
+                                        stressName, 
+                                        "; response: ", 
+                                        respName),
                                  nrow(df_plot_all),
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -277,17 +280,19 @@ getBioStressorResponses <- function(TargetSiteID,
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps) # LCN changed 20250917 to accomodate change in file structure
         utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
-        next
-      }
-      if (sum(is.na(df_plot_all[[stressName]])) == nrow(df_plot_all)) {
+        #next
+      } else if (sum(is.na(df_plot_all[[stressName]])) == nrow(df_plot_all)) {
         txt.score <- "stressors all NA or NAN"
-        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
-                             " (", p, "/", p.len, "), ", respName, " (", q,
-                             "/", q.len, "); score = ", txt.score)
-        message(msg.status)
+        # msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
+        #                      " (", p, "/", p.len, "), ", respName, " (", q,
+        #                      "/", q.len, "); score = ", txt.score)
+        # message(msg.status)
         gapcomment <- txt.score
         gaps <- cbind.data.frame("getBioStressorResponse",
-                                 "No stressor data (outside case)",
+                                 paste0("No stressor data (outside case)",
+                                        stressName, 
+                                        "; response: ", 
+                                        respName),
                                  nrow(df_plot_all),
                                  gapcomment)
         colnames(gaps) <- c("fxnname", "condition", "result", "comment")
@@ -295,7 +300,7 @@ getBioStressorResponses <- function(TargetSiteID,
         fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
         utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                     row.names = FALSE, sep = "\t")
-        next
+        #next
       }
 
       df_plot_all_ref <- df_plot_all %>%
@@ -324,7 +329,7 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_site <- df_plot_site[stats::complete.cases(df_plot_site), ]
 
       # Check for missing data and write to data gaps file
-      if ((nrow(df_plot_all) > 0) == FALSE) { # SHOULD NEVER HAPPEN
+      if ((nrow(df_plot_all) > 0) == FALSE) { 
         gapcomment <- "No stressor data available for any sites in the outside-the-case dataset."
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
@@ -686,40 +691,49 @@ getBioStressorResponses <- function(TargetSiteID,
         message(msg.status)
       } ##IF~nrow(df_plot_site)~END
 
+      
       # Rename columns to generic "Stressor" and "Response" for easier plotting
-      df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
-                                   Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-      xmin_all <- unique(min(df_plot_all$Stressor))
-      xmax_all <- unique(max(df_plot_all$Stressor))
-      df_plot_all_ref <- dplyr::rename(df_plot_all_ref, Stressor = {{stressName}},
-                                       Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-      model_all_val <- dplyr::rename(model_all_val, Stressor = {{stressName}},
+      if(boo_all == TRUE){
+        df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
                                      Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
-      df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
-                                  Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-      xmin_cl <- unique(min(df_plot_cl$Stressor))
-      xmax_cl <- unique(max(df_plot_cl$Stressor))
-      df_plot_cl_ref <- dplyr::rename(df_plot_cl_ref, Stressor = {{stressName}},
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+        xmin_all <- unique(min(df_plot_all$Stressor))
+        xmax_all <- unique(max(df_plot_all$Stressor))
+        df_plot_all_ref <- dplyr::rename(df_plot_all_ref, Stressor = {{stressName}},
+                                         Response = {{respName}}) %>%
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+        model_all_val <- dplyr::rename(model_all_val, Stressor = {{stressName}},
+                                       Response = {{respName}}) %>%
+          dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
+        
+        boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor), ]) > 0,
+                                  TRUE, FALSE)
+      }
+      
+      if(boo_corr){
+        df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
+                                    Response = {{respName}}) %>%
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+        xmin_cl <- unique(min(df_plot_cl$Stressor))
+        xmax_cl <- unique(max(df_plot_cl$Stressor))
+        df_plot_cl_ref <- dplyr::rename(df_plot_cl_ref, Stressor = {{stressName}},
+                                        Response = {{respName}}) %>%
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+        model_cl_val <- dplyr::rename(model_cl_val, Stressor = {{stressName}},
                                       Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-      model_cl_val <- dplyr::rename(model_cl_val, Stressor = {{stressName}},
-                                    Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
-      df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
-                                    Response = {{respName}}) %>%
-        dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+          dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
+        df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
+                                      Response = {{respName}}) %>%
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+        
+        boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor), ]) > 0,
+                                  TRUE, FALSE)
+        boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref[!is.na(df_plot_cl_ref$Stressor), ]) > 0,
+                                  TRUE, FALSE)
+      }
+      
 
       ## Plot, inputs ####
-      boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor), ]) > 0,
-                                TRUE, FALSE)
-      boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor), ]) > 0,
-                                TRUE, FALSE)
-      boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref[!is.na(df_plot_cl_ref$Stressor), ]) > 0,
-                                TRUE, FALSE)
       boo_plot_targ   <- ifelse(nrow(df_plot_site[!is.na(df_plot_site$Stressor), ]) > 0,
                                 TRUE, FALSE)
 
@@ -763,7 +777,7 @@ getBioStressorResponses <- function(TargetSiteID,
       qualtext <- "not degraded*"
       # str_caption_qual <- "*Samples rated not degraded."
       # str_caption_all <- paste0(str_caption_all, "\n", str_caption_qual)
-      leg_all_ref <- paste0("outside-the-case", qualtext)
+      leg_all_ref <- paste0("outside-the-case ", qualtext)
       # str_caption_cl <- paste0(str_caption_cl, "\n", str_caption_qual)
       leg_cl_ref <- paste0("inside-the-case ", qualtext)
 
@@ -772,7 +786,7 @@ getBioStressorResponses <- function(TargetSiteID,
       # skip plot if no data for target site
       if (boo.Plot == TRUE) { ##IF.boo.Plot.START
         # ggplot, main
-        if (exists("model_all_val") & exists("df_plot_all")) {
+        if (boo_all & exists("model_all_val") & exists("df_plot_all")) {
           # Linear model (all data)
           p_SR_all <- ggplot2::ggplot() +
             ggplot2::geom_smooth(data = model_all_val,
@@ -813,7 +827,7 @@ getBioStressorResponses <- function(TargetSiteID,
             ggplot2::scale_shape_manual(name = "Quality",
                                         breaks = c("Degraded", "Not degraded"),
                                         values = bio_shape_out, drop = FALSE)
-        } #END regression and points
+        
 
         # ggplot, point subsets
         # if (boo_plot_ref == TRUE) { ##IF~boo_plot_ref~START
@@ -882,8 +896,10 @@ getBioStressorResponses <- function(TargetSiteID,
                           units = plotunits, dpi = plotdpi)
         } ## IF ~ boo_plot ~ END
 
+      } #END outside regression and points
+        
         ## Plot, inside ####
-        if (boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
+        if (boo_corr & boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
           # Regression, cluster
           if (exists("model_cl_val") & exists("df_plot_cl")) {
             # Linear model (cluster)
