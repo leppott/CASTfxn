@@ -247,12 +247,19 @@ getSiteMap <- function(sp_outline,
                    col.scale = tmap::tm_scale(values = "viridis"),
                    col.legend = tmap::tm_legend(title = "ClusterID",
                                           orientation = "portrait")) +
-    tmap::tm_shape(sp_outside) +
-    tmap::tm_symbols(fill = outsideFill, col = "grey50", shape = outsideShape,
-                     size = outsideSize) +
+    # tmap::tm_shape(sp_outside) +
+    # tmap::tm_symbols(fill = outsideFill, col = "grey50", shape = outsideShape,
+    #                  size = outsideSize) +
     tmap::tm_shape(sp_inside) +
     tmap::tm_symbols(fill = insideFill, col = "grey50", shape = insideShape,
                      size = insideSize)
+  
+  if(nrow(sp_outside) > 0){
+    state.map <- state.map +
+      tmap::tm_shape(sp_outside) +
+      tmap::tm_symbols(fill = outsideFill, col = "grey50", shape = outsideShape,
+                       size = outsideSize)
+  }
 
   if (nrow(sp_refsites) > 0) {
     state.map <- state.map +
