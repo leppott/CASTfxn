@@ -24,23 +24,21 @@
 # external/CASTool.R
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+# Define global variables
+boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo.debug <- FALSE # Whether to run the code in debug mode
+dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
+boo.plot.user <- TRUE # Whether to generate line of evidence plots
+
+in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Data" # File path of data directory
+out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Results" # File path of results directory
+region <- "DEPied" # Name of region 
+
+if(boo_Shiny == FALSE){
+  devtools::load_all()
+}
+
 # Packages ----
-# library(tidyverse) #LCN added
-# library(CASTfxn)
-# if(require(CASToolClusterPckg)!=TRUE){
-#   if(require(pak)!=TRUE){
-#     install.packages("pak")
-#   }
-#   pak::pak("laura-naslund/CASToolClusterPckg")
-# }
-# library(CASToolClusterPckg)
-
-# Global Variables ----
-# boo_Shiny <- TRUE # Comment out and define in Shiny App
-# boo.debug <- TRUE # Comment out and define in Shiny App
-# debug.person <- "Erik" # Ann, Erik, Laura
-# dn_checked_sk <- "_CheckedInputs" # Comment out and define in Shiny App
-
 if(boo_Shiny == FALSE){
   baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
   if(rlang::is_empty(baseDataInd)==FALSE){
@@ -52,85 +50,9 @@ if(boo_Shiny == FALSE){
   }
   library(CASToolBaseDataPckg)
 }
-# if (boo_Shiny == FALSE) {
-#   # prompt user for path to input/output data directories
-# 
-#   choose_method <- "tcltk" 
-#   # user_readline (fails when paste more than one line, ok is 'source()'
-#   # user_function (same as above) [not for region]
-#   # base (win only)
-#   # tcltk (cross-platform but dialog box opens behind RStudio window)
-# 
-#   if (choose_method == "user_readline") {
-#     # ** Run one line at a time **
-#     # Else next line of code is taken as the response and it fails
-#     # if wrap in function call (help from BingCopilot)
-#     in.dir        <- readline(prompt = "Enter input data file directory path: ")
-#     out.dir       <- readline(prompt = "Enter output file directory path: ")
-#     region        <- readline(prompt = "Enter region name: ")
-#   } else if (choose_method == "user_function") {
-#     # still have same issue unless put all requests into a single function
-#     get_info_3 <- function() {
-#       in.dir  <- get_user_input(input_default = tempdir(),
-#                                 msg_prompt = "Enter directory path, input data: ")
-#       out.dir <- get_user_input(input_default = tempdir(),
-#                                 msg_prompt = "Enter directory path, output data: ")
-#       region  <- get_user_input(input_default = "WA",
-#                                 msg_prompt = "Enter region name: ")
-#       list(in.dir = in.dir, out.dir = out.dir, region = region)
-#     }## FUNCTION ~ get_info_3
-#     ls_info_3 <- get_info_3()
-#     in.dir <- ls_info_3$in.dir
-#     out.dir <- ls_info_3$out.dir
-#     region <- ls_info_3$region
-#   } else if (choose_method == "base") {
-#     # utils::choose.files() # does not allow copy and paste, windows only
-#     # base::file.choose() # no multi file selection, only single file (win/mac)
-#     in.dir <- utils::choose.dir(default = getwd(),
-#                                 caption = "Enter input data file directory path:")
-#     out.dir <- utils::choose.dir(default = getwd(),
-#                                  caption = "Enter output file directory path: ")
-#     # region <- "", cannot do without readlines, tcltk, or another package
-#   } else if (choose_method == "tcltk") {
-#     # Use tcltk instead
-#     in.dir <- tcltk::tk_choose.dir(default = getwd(),
-#                                    caption = "Enter input data file directory path:")
-#     out.dir <- tcltk::tk_choose.dir(default = getwd(),
-#                                     caption = "Enter output file directory path: ")
-#     # get user value for region
-#     # code help from Bing CoPilot, 20250924
-#     ## Create a variable to store the input
-#     input_var <- tcltk::tclVar("")
-#     ## Create a top-level window
-#     tt <- tcltk::tktoplevel()
-#     tcltk::tkwm.title(tt, "Enter a Value")
-#     ## Create label and entry widgets
-#     tcltk::tkgrid(tcltk::tklabel(tt, text = "Enter region name: "), 
-#                   padx = 10, pady = 5)
-#     entry_widget <- tcltk::tkentry(tt, textvariable = input_var, width = 30)
-#     tcltk::tkgrid(entry_widget, padx = 10, pady = 5)
-#     ## Function to close the window
-#     onOK <- function() {
-#       tcltk::tkdestroy(tt)
-#     }
-#     ## OK button
-#     ok_button <- tcltk::tkbutton(tt, text = "OK", command = onOK)
-#     tcltk::tkgrid(ok_button, padx = 10, pady = 10)
-#     ## Wait for user to respond
-#     tcltk::tkwait.window(tt)
-#     ## Get the value
-#     region <- tcltk::tclvalue(input_var)
-#   } ## IF ~ choose_method
-#   
-#   #
-#   in.dir        <- gsub("\\\\", "/", in.dir)
-#   out.dir       <- gsub("\\\\", "/", out.dir)
-#   boo.plot.user <- TRUE
-# }## IF ~ boo_Shiny == FALSE
 
 # define pipe
 `%>%` <- dplyr::`%>%`
-# not_all_na <- function(x) {!all(is.na(x))}
 
 ## Color assignments ####
 # Based on ito_seven from ggpubfigs
@@ -139,9 +61,7 @@ data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outside
                             "Shape" = c(24, 21, 25, 21, 25),
                             "Size" = c(1.75, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#000000" #"#26F7FD" # LCN changed from "#009E73"
-# Note: this change may not be colorblind-friendly
-# check site map using https://www.color-blindness.com/coblis-color-blindness-simulator/
+refOutline_col <- "#000000" 
 
 ## Other plot variables ####
 plot_dpi <- 600
@@ -172,128 +92,7 @@ if (boo_Shiny == TRUE) {
   wd          <- getwd()
   dir_data    <- dn_data
   dir_results <- dn_results
-} else {# Not using shiny app
-  #
-  # in global in shiny
-  # not_all_na <- function(x) {!all(is.na(x))}
-  ## Ann ----
-  if (boo.debug == TRUE & debug.person == "Ann") {
-
-    wd <- "C:/Users/ann.lincoln/Documents" # ARL 2025-01-13
-    gitpath <- file.path(wd, "GitHub", "CASTfxn", "R") # ARL 2023-05-22
-    dir_rmd <- file.path(wd, "GitHub", "CASTfxn", "inst", "rmd") # ARL 2023-05-22
-
-    # localdir <- file.path(wd, "CASTool_DATA")
-    # in.dir <- file.path(localdir, "UploadedData_Test")
-
-    ### source functions ----
-    # sourcing so can use updates without reinstalling the package
-    ## All data
-    source(file.path(gitpath, "readCASToolData.R"))
-    source(file.path(gitpath, "checkInputs.R"))
-    source(file.path(gitpath, "prepSiteData.R"))
-    source(file.path(gitpath, "prepMeasStressorData.R"))
-    source(file.path(gitpath, "prepModStressorData.R"))
-    source(file.path(gitpath, "getOutliers.R"))
-    source(file.path(gitpath, "prepRespData.R"))
-    source(file.path(gitpath, "getCoOccurDataset.R"))
-    source(file.path(gitpath, "getAllSamplesTable.R"))
-    ## Target site & inside/outside case
-    source(file.path(gitpath, "getComparators.R"))
-    source(file.path(gitpath, "getSiteInfo.R"))
-    source(file.path(gitpath, "getWSStressorFigs.R"))
-    source(file.path(gitpath, "getSiteMap.R"))
-    source(file.path(gitpath, "writeOutliers.R"))
-    # source(file.path(gitpath, "getClusterInfo.R")) # no longer used
-    source(file.path(gitpath, "getAvailableDataTypes.R"))
-    # source(file.path(gitpath, "getStressorList.R")) # no longer used
-    source(file.path(gitpath, "getQualSites.R"))
-    # source(file.path(gitpath, "getDataSets.R")) # no longer used
-    ### Evaluate lines of evidence
-    source(file.path(gitpath, "getCoOccur.R"))
-    source(file.path(gitpath, "getTimeSeq.R"))
-    source(file.path(gitpath, "getSufficiency.R"))
-    source(file.path(gitpath, "getBioStressorResponses.R"))
-    source(file.path(gitpath, "getVerifiedPredictions.R"))
-    source(file.path(gitpath, "getVPSSI.R"))
-    ### Summarize findings
-    source(file.path(gitpath, "getWoE.R"))
-    source(file.path(gitpath, "getReport.R"))
-    ## Summarize findings for all test sites
-    # source(file.path(gitpath, "getSummaryAllSites.R"))
-    #}
-    # Erik ----
-  } else if (boo.debug == TRUE & debug.person == "Erik") {
-    # library(CASTfxn)
-    # gitpath <- file.path(system.file(package = "CASTfxn"), "R")
-    dir_rmd <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
-    # wd <- "C:/Users/Erik.Leppo/OneDrive - Tetra Tech, Inc/MyDocs_OneDrive/GitHub/CASTfxn/inst/shiny-examples/CAST_SMC"
-    wd <- "C:\\Users\\Erik.Leppo\\Documents\\GitHub\\CAST_Shiny\\apps\\CASTool_USEPA"
-    dir_data <- file.path(wd, "Data")
-    dir_results <- file.path(wd, "Results")
-    site <- "SMC04134"
-    TargetSiteID <- site
-    b <- 1
-    ## Laura ----
-  } else if (boo.debug == TRUE & debug.person == "Laura") {
-    #LCN file paths
-    # region <- "WA"
-    wd <-  "C:/Users/lnaslund/Documents"
-    gitpath <- file.path(wd, "CASTfxn_AnnFinal" , "R")
-    dir_rmd <- file.path(wd, "CASTfxn_AnnFinal",  "inst", "rmd")
-    localdir <- file.path(wd, "CASTool_Data", "20250711_FinalInputDataFormat")
-    dir_data <- file.path(localdir, "Data")
-    dir_results <- file.path(localdir, "Results")
-
-    source(file.path(gitpath, "readCASToolData.R"))
-    source(file.path(gitpath, "checkInputs.R"))
-    source(file.path(gitpath, "prepSiteData.R"))
-    source(file.path(gitpath, "prepMeasStressorData.R"))
-    source(file.path(gitpath, "prepModStressorData.R"))
-    source(file.path(gitpath, "getOutliers.R"))
-    source(file.path(gitpath, "prepRespData.R"))
-    source(file.path(gitpath, "getCoOccurDataset.R"))
-    source(file.path(gitpath, "getAllSamplesTable.R"))
-    ## Target site & inside/outside case
-    source(file.path(gitpath, "getComparators.R"))
-    source(file.path(gitpath, "getSiteInfo.R"))
-    source(file.path(gitpath, "getWSStressorFigs.R"))
-    source(file.path(gitpath, "getSiteMap.R"))
-    source(file.path(gitpath, "writeOutliers.R"))
-    # source(file.path(gitpath, "getClusterInfo.R")) # no longer used
-    source(file.path(gitpath, "getAvailableDataTypes.R"))
-    # source(file.path(gitpath, "getStressorList.R")) # no longer used
-    source(file.path(gitpath, "getQualSites.R"))
-    # source(file.path(gitpath, "getDataSets.R")) # no longer used
-    ### Evaluate lines of evidence
-    source(file.path(gitpath, "getCoOccur.R"))
-    source(file.path(gitpath, "getTimeSeq.R"))
-    source(file.path(gitpath, "getSufficiency.R"))
-    source(file.path(gitpath, "getBioStressorResponses.R"))
-    source(file.path(gitpath, "getVerifiedPredictions.R"))
-    source(file.path(gitpath, "getVPSSI.R"))
-    ### Summarize findings
-    source(file.path(gitpath, "getWoE.R"))
-    source(file.path(gitpath, "getReport.R"))
-  } else {#boo.debug == FALSE
-    # Install CASTfxn package
-    # library(CASTfxn)
-    # Set local directory info
-    wd <- file.path(".")
-    dir_data <- file.path(wd, "Data")
-    dir_results <- file.path(wd, "Results")
-    boo.plot.user <- TRUE
-    
-    #C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data
-  }
-  #
-}## IF ~ boo_Shiny ~ END
-
-msg <- paste0("debug = ", boo.debug
-              , ifelse(boo.debug == FALSE
-                       , ""
-                       , paste0(", person = ", debug.person)))
-message(msg)
+} 
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
@@ -308,14 +107,6 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
-  # # prompt user for path to input/output data directories
-  # in.dir        <- readline(prompt = "Enter input data file directory path: ")
-  # out.dir       <- readline(prompt = "Enter output file directory path: ")
-  # region        <- readline(prompt = "Enter region name: ")
-  # in.dir        <- gsub("\\\\", "/", in.dir)
-  # out.dir       <- gsub("\\\\", "/", out.dir)
-  # boo.plot.user <- TRUE
-  
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
@@ -326,7 +117,6 @@ if (boo_Shiny == TRUE) {
   write.table(TableTwo, file.path(out.dir, region, "TableTwo.tab"),
               sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
   rm(list.Tables, TableOne, TableTwo)
-  # 2025-12-01, EWL, in Shiny no longer CSV files but RDS, won't work
 }## IF ~ boo_Shiny ~ END
 
 #~~~~~~~~~~~~~~~~~~~~~~~
@@ -373,20 +163,20 @@ rm(l, object, data_loaded)
 
 ## Get variables ####
 ### Response data ####
-biocommlist <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, biocommlist), ", "))
+biocommlist <- data_CASTmeta %>% dplyr::pull(biocommlist) %>% stringr::str_split(", |,") %>% unlist()
 # Bio responses
 for (b in seq_along(biocommlist)) {
   bio <- tolower(biocommlist[b])
   calcRelAbund       <- as.logical(dplyr::select(data_CASTmeta, calcRelAbund))
   if (bio == "bmi") {
-    bmiIndexGp       <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, bmiIndexGp), ", "))
+    bmiIndexGp       <- data_CASTmeta %>% dplyr::pull(bmiIndexGp) %>% stringr::str_split(", |,") %>% unlist()
     useBC            <- as.logical(dplyr::select(data_CASTmeta, useBC))
   }
   if (bio == "alg") {
-    algIndexGp       <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, algIndexGp), ", "))
+    algIndexGp       <- data_CASTmeta %>% dplyr::pull(algIndexGp) %>% stringr::str_split(", |,") %>% unlist()
   }
   if (bio == "fish") {
-    fishIndexGp      <- unlist(stringr::str_split(dplyr::select(data_CASTmeta, fishIndexGp), ", "))
+    fishIndexGp       <- data_CASTmeta %>% dplyr::pull(fishIndexGp) %>% stringr::str_split(", |,") %>% unlist()
   }
 }## FOR ~ b
 
@@ -430,9 +220,6 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
   
-  
-browser()
-# Erik, fails here with prepSiteData, outcaseColName not found
 }## IF ~ boo_Shiny ~ END
 
 list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk), 
@@ -749,11 +536,12 @@ if (boo_Shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$Station,
                            "Chosen by"    = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
-} else if (boo.debug == TRUE & debug.person == "Ann") {
-  # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
-  msg <- paste0("Number of target sites = ", nrow(df_targets))
-  message(msg)
-}
+} 
+# else if (boo.debug == TRUE & debug.person == "Ann") {
+#   # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
+#   msg <- paste0("Number of target sites = ", nrow(df_targets))
+#   message(msg)
+# }
 rm(msg)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
@@ -772,26 +560,6 @@ if (boo_Shiny == TRUE) {
 # FOR ~ site ~ START ####
 for (site in seq_along(1:nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
-  # if (boo.debug == TRUE & debug.person == "Ann") {
-  # For debugging purposes only # these need to be - in LCN version of files
-  # if (region == "WA") {
-  # TargetSiteID <- "BIO06600_BURP15"   # No degraded samples (6 of them)
-  # TargetSiteID <- "ERR06600_005995"   # Assigned new COMID; removed all detected stressors
-  # TargetSiteID <- "PSS05515_007726"   # All samples degraded; low DO
-  # TargetSiteID <- "RSM06600_007971"   # No degraded samples
-  # TargetSiteID <- "WAM06600_000586"   # All samples degraded; Temp (tests getVerifiedPredictions.R)
-  # TargetSiteID <- "WAM06600_012453"   # Two of two samples degraded; extremely low DO
-  # TargetSiteID <- "WAM06600_005424"   # One sample, degraded, response sample date > stress sample date
-  # TargetSiteID <- "WAM06600_034707"   # One sample, degraded, stress sample date > response sample date
-  # TargetSiteID <- "WAM06600_003688"   # One of two samples degraded
-  # TargetSiteID <- "WAM06600-003688"   # One of two samples degraded
-  # LCN version of files uses - instead of _
-  # } else if (region == "OR") {
-  #
-  # } else {
-  # Different state here
-  #   }
-  # }
 
   if (is.na(TargetSiteID)) {
     next
@@ -841,21 +609,6 @@ for (site in seq_along(1:nrow(df_targets))) {
   # BC matrices for different biocomms, then this must move into the biocomm
   # loop or it needs to be run more than once for each biocomm here, since
   # it's used in getSiteInfo immediately afterward.
-  # list.CompSites <- getComparators(TargetSiteID = TargetSiteID,
-  #                                  df_sites = data_Sites,
-  #                                  df_cluster = data_cluster,
-  #                                  df_bioCoOccur = data_bmiCoOccur,
-  #                                  bioIndex = bmiIndexGp,
-  #                                  useBC = useBC,
-  #                                  df_bcdist = data_BCdist,
-  #                                  bc_cutoff = 0.05,
-  #                                  outcaseColName = outcaseColName,
-  #                                  outcaseLabel = outcaseLabel,
-  #                                  incaseColName = incaseColName,
-  #                                  incaseLabel = incaseLabel,
-  #                                  useAllCompReaches = useAllCompReaches,
-  #                                  dir_results = dir_results,
-  #                                  dir_sub = "SiteInfo")
   
   compSitesList <- list()
     
@@ -1083,17 +836,6 @@ for (site in seq_along(1:nrow(df_targets))) {
   rm(noStressors, noResponses)
 
   if (boo.WS) {
-    # getWSStressorFigs(TargetSiteID      = TargetSiteID,
-    #                   df_WSData         = data_stressorWS,
-    #                   df_WSInfo         = data_stressorinfoWS,
-    #                   comp.reaches      = list.CompSites$comp.reaches,
-    #                   TargetCOMID       = list.CompSites$TargetCOMID,
-    #                   useAllCompReaches = useAllCompReaches,
-    #                   dir_sub           = "SiteInfo",
-    #                   df_SampSummary    = data_sampSummary,
-    #                   biocommlist       = biocommlist,
-    #                   boo_plot          = TRUE)
-    
     getWSStressorFigs(TargetSiteID      = TargetSiteID,
                       df_WSData         = data_stressorWS,
                       df_WSInfo         = data_stressorinfoWS,
@@ -1107,8 +849,6 @@ for (site in seq_along(1:nrow(df_targets))) {
                       biocommlist       = biocommlist,
                       boo_plot          = TRUE, 
                       dir_results = out.dir)
-    
-
   }
   
   # Write target site outliers, comparator site outliers (inside the case),
@@ -1128,10 +868,10 @@ for (site in seq_along(1:nrow(df_targets))) {
   message(msg)
 
   # FOR ~ b ~ START ####
-  if (boo.debug == TRUE & debug.person == "Erik") {
-    # 1 = bmi, 2 = alg, 3 = fish
-    biocommlist <- "alg"
-  }
+  # if (boo.debug == TRUE & debug.person == "Erik") {
+  #   # 1 = bmi, 2 = alg, 3 = fish
+  #   biocommlist <- "alg"
+  # }
 
   for (b in seq_along(biocommlist)) {
 
@@ -1410,9 +1150,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                dir_results   = dir_results,
                                dir_sub       = "_WoE",
                                boo_plot      = boo.plot.user)
-    # TODO: why are there missing values or values outside the scale range in getTimeSeq?
-    # Getting many warnings (45 for site WAM06600_000586)
-
+    
     if (nrow(df_TS_scores) != 0) {
       df_LoE <- rbind(df_LoE, df_TS_scores)
     }
@@ -1711,20 +1449,6 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-
-# getSummaryAllSites(biocommlist = biocommlist,
-#                    bmiIndex    = bmiIndex,
-#                    algIndex    = NULL,
-#                    fishIndex   = NULL,
-#                    dir_data    = dir_data,
-#                    dir_results = dir_results,
-#                    dir_sub     = "WoE",
-#                    df_sites    = NULL)
-
-# msg <- "getSummaryAllSites is complete."
-# message(msg)
-
-# rm(list=ls())
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, END ####

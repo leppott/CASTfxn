@@ -474,6 +474,12 @@ getCoOccur <- function(TargetSiteID,
     fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
                                         "_DetectsNotEvalFurther.tab"))
     utils::write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
+  } else{
+    df.NE <- data.frame("temp" = character())
+    names(df.NE) <- paste0(biocomm, "_NotEvaluated")
+    fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
+                                        "_DetectsNotEvalFurther.tab"))
+    utils::write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
   } ### End no stressors statement
 
   # Prep df.scores for export to include in df_LoEs
