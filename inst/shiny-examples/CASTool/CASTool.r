@@ -30,9 +30,9 @@ boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
-in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Data" # File path of data directory
-out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Results" # File path of results directory
-region <- "DEPied" # Name of region
+in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
+out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
+region <- "Washington" # Name of region
 
 if(boo_Shiny == FALSE){
   devtools::load_all()
@@ -213,7 +213,7 @@ outcaseLabel   <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
 incaseColName  <- as.character(dplyr::select(data_CASTmeta, incaseColName))
 incaseLabel    <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
 
-rm(b, bio, data_CASTmeta)
+rm(b, bio)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 04, Site data files ####
@@ -366,13 +366,13 @@ if (boo.WS == TRUE & helperImport == FALSE) {
   fn.WSstressor.Info <- as.character(dplyr::select(data_CASTmeta, fn.WSstressor.Info))
 
   if(file.exists(file.path(in.dir, fn.WSstressor.Data))){
-    data_stressorWS <- readCASToolData(fn.WSstressor.Data)
+    data_stressorWS <- readCASToolData(file.path(in.dir, fn.WSstressor.Data), NAs = c("", "NA"))
   } else{
     message("Watershed stressor data not found in input files")
   }
 
   if(file.exists(file.path(in.dir, fn.WSstressor.Info))){
-    data_stressorinfoWS <- readCASToolData(fn.WSstressor.Info)
+    data_stressorinfoWS <- readCASToolData(file.path(in.dir, fn.WSstressor.Info), NAs = c("", "NA"))
   } else{
     message("Watershed stressor metdata not found in input files")
   }
