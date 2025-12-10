@@ -46,7 +46,7 @@
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getQualSites <- function(TargetSiteID,
                          biocomm,
@@ -58,32 +58,32 @@ getQualSites <- function(TargetSiteID,
                          stressors,
                          dir_results = dir_results,
                          dir_sub = "SiteInfo") {##FUNCTION.START
-  
+
   # Global Bindings
-  # bioComm <- data_bioCoOccur <- bioIndex <- list.CompSites <- StationID <- 
-  #   Quality <- IncaseCol <- OutcaseCol <- StressSampleDate <- RespSampleDate <- 
-  #   StressSampleID <- RespSampleID <- RefSiteFlag <- IncaseYN <- OutcaseYN <- 
-  #   BetterThan <- IncaseSamples <- IncaseGood <- IncaseBad <- OutcaseSamples <- 
-  #   OutcaseGood <- OutcaseBad <- TotalSamples <- TotalSamplesGood <- 
-  #   TotalSamplesBad <- RefSamples <- RefSamplesGood <- RefSamplesBad <-
-  #   rowname <- V1 <- Label <- getQualSites <- InsideCaseSamples <- 
-  #   OutsideCaseSamples <- AllSamples <- ReferenceSamples <- NULL
-  
+  bioComm <- data_bioCoOccur <- bioIndex <- list.CompSites <- StationID <-
+    Quality <- IncaseCol <- OutcaseCol <- StressSampleDate <- RespSampleDate <-
+    StressSampleID <- RespSampleID <- RefSiteFlag <- IncaseYN <- OutcaseYN <-
+    BetterThan <- IncaseSamples <- IncaseGood <- IncaseBad <- OutcaseSamples <-
+    OutcaseGood <- OutcaseBad <- TotalSamples <- TotalSamplesGood <-
+    TotalSamplesBad <- RefSamples <- RefSamplesGood <- RefSamplesBad <-
+    rowname <- V1 <- Label <- getQualSites <- InsideCaseSamples <-
+    OutsideCaseSamples <- AllSamples <- ReferenceSamples <- BioComm <- NULL
+
   # Debug
-  # boo_DEBUG <- FALSE
-  # 
-  # if (boo_DEBUG == TRUE) {
-  #   TargetSiteID = TargetSiteID
-  #   biocomm = bioComm
-  #   df_qual = data_bioCoOccur
-  #   colBio = bioIndex
-  #   compSites = list.CompSites$comp.sites
-  #   allSites = list.CompSites$all.sites
-  #   refSites = refSites
-  #   stressors = stressors
-  #   dir_results = dir_results
-  #   dir_sub = "SiteInfo"
-  # }
+  boo_DEBUG <- FALSE
+  #
+  if (boo_DEBUG == TRUE) {
+    TargetSiteID = TargetSiteID
+    biocomm = bioComm
+    df_qual = data_bioCoOccur
+    colBio = bioIndex
+    compSites = list.CompSites$comp.sites
+    allSites = list.CompSites$all.sites
+    refSites = refSites
+    stressors = stressors
+    dir_results = dir_results
+    dir_sub = "SiteInfo"
+  }
   #
   # Define pipe
   `%>%` <- dplyr::`%>%`
@@ -118,7 +118,7 @@ getQualSites <- function(TargetSiteID,
 
   df_qual <- dplyr::select(df_qual, StationID, IncaseCol, OutcaseCol, StressSampleDate,
                            RespSampleDate, StressSampleID, RespSampleID, BioComm,
-                           RefSiteFlag, IncaseYN, OutcaseYN, BetterThan, 
+                           RefSiteFlag, IncaseYN, OutcaseYN, BetterThan,
                            dplyr::all_of(colBio),
                            Quality, dplyr::all_of(stressors))
 

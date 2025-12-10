@@ -45,7 +45,7 @@
 #'         target site scores for inside-the-case and outside-the-case.
 #'
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getBioStressorResponses <- function(TargetSiteID,
                                     df_stressinfo,
@@ -67,41 +67,44 @@ getBioStressorResponses <- function(TargetSiteID,
                                     dir_sub = "_WoE",
                                     boo_pred_warn = TRUE,
                                     boo_plot = TRUE) {##FUNCTION.START
-  
+
+  `:=` <- data.table::`:=`
+
   # Global Bindings
-  # df_stressorMetadata <- 
-  #   bioMetricInfo <- bioMetricData <- df_PairedStressResp <- bioComm <- 
-  #   bioIndex <- plot_dpi <- plot_H <- plot_W <- plot_units <- dir_results <- 
-  #   Type <- StationID <- StressSampleID <- RespSampleID <- Quality <- 
-  #   RefSiteFlag <- Stressor <- Response <- lwr <- upr <- StressSampleDate <- 
-  #   RespSampleDate <- stressVal <- respVal <- n_site <- n_comp <- 
-  #   SRLin_Score_inside <- SRLin_Score_outside <- estimate <- LoE <- 
-  #   bioIndexName <- StressorValue <- Score <- list.SiteSummary <- NULL
-  # 
-  # boo.DEBUG <- FALSE
-  # 
-  # if (boo.DEBUG == TRUE) {
-  #   TargetSiteID = TargetSiteID
-  #   df_stressinfo = df_stressorMetadata
-  #   df_respinfo = bioMetricInfo
-  #   df_respdata = bioMetricData
-  #   df_datapaired = df_PairedStressResp
-  #   biocomm = bioComm
-  #   bioindex = bioIndex
-  #   min_cases = samplim
-  #   p.val_cutoff = 0.05
-  #   r2_cutoff = 0.2
-  #   plotvars = data_plotvars
-  #   refOutline = refOutline_col
-  #   plotdpi = plot_dpi
-  #   plotH = plot_H
-  #   plotW = plot_W
-  #   plotunits = plot_units
-  #   dir_plots = dir_results
-  #   dir_sub = "_WoE"
-  #   boo_pred_warn = TRUE
-  #   boo_plot = TRUE
-  # }
+  df_stressorMetadata <-
+    bioMetricInfo <- bioMetricData <- df_PairedStressResp <- bioComm <-
+    bioIndex <- plot_dpi <- plot_H <- plot_W <- plot_units <- dir_results <-
+    Type <- StationID <- StressSampleID <- RespSampleID <- Quality <-
+    RefSiteFlag <- Stressor <- Response <- lwr <- upr <- StressSampleDate <-
+    RespSampleDate <- stressVal <- respVal <- n_site <- n_comp <-
+    SRLin_Score_inside <- SRLin_Score_outside <- estimate <- LoE <-
+    bioIndexName <- StressorValue <- Score <- list.SiteSummary <- samplim <-
+    data_plotvars <- refOutline_col <- Estimate <- NULL
+
+  boo.DEBUG <- FALSE
+
+  if (boo.DEBUG == TRUE) {
+    TargetSiteID = TargetSiteID
+    df_stressinfo = df_stressorMetadata
+    df_respinfo = bioMetricInfo
+    df_respdata = bioMetricData
+    df_datapaired = df_PairedStressResp
+    biocomm = bioComm
+    bioindex = bioIndex
+    min_cases = samplim
+    p.val_cutoff = 0.05
+    r2_cutoff = 0.2
+    plotvars = data_plotvars
+    refOutline = refOutline_col
+    plotdpi = plot_dpi
+    plotH = plot_H
+    plotW = plot_W
+    plotunits = plot_units
+    dir_plots = dir_results
+    dir_sub = "_WoE"
+    boo_pred_warn = TRUE
+    boo_plot = TRUE
+  }
 
   # Correlation file output header row
   cn_cor_pref <- c("StationID", "biocomm", "stressName", "stressLabel",
@@ -270,8 +273,8 @@ getBioStressorResponses <- function(TargetSiteID,
         gapcomment <- txt.score
         gaps <- cbind.data.frame("getBioStressorResponse",
                                  paste0("Number of complete cases (outside case); stressor: ",
-                                        stressName, 
-                                        "; response: ", 
+                                        stressName,
+                                        "; response: ",
                                         respName),
                                  nrow(df_plot_all),
                                  gapcomment)
@@ -290,8 +293,8 @@ getBioStressorResponses <- function(TargetSiteID,
         gapcomment <- txt.score
         gaps <- cbind.data.frame("getBioStressorResponse",
                                  paste0("No stressor data (outside case)",
-                                        stressName, 
-                                        "; response: ", 
+                                        stressName,
+                                        "; response: ",
                                         respName),
                                  nrow(df_plot_all),
                                  gapcomment)
@@ -329,7 +332,7 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_site <- df_plot_site[stats::complete.cases(df_plot_site), ]
 
       # Check for missing data and write to data gaps file
-      if ((nrow(df_plot_all) > 0) == FALSE) { 
+      if ((nrow(df_plot_all) > 0) == FALSE) {
         gapcomment <- "No stressor data available for any sites in the outside-the-case dataset."
         gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
                                  gapcomment)
@@ -691,7 +694,7 @@ getBioStressorResponses <- function(TargetSiteID,
         message(msg.status)
       } ##IF~nrow(df_plot_site)~END
 
-      
+
       # Rename columns to generic "Stressor" and "Response" for easier plotting
       if(boo_all == TRUE){
         df_plot_all <- dplyr::rename(df_plot_all, Stressor = {{stressName}},
@@ -705,11 +708,11 @@ getBioStressorResponses <- function(TargetSiteID,
         model_all_val <- dplyr::rename(model_all_val, Stressor = {{stressName}},
                                        Response = {{respName}}) %>%
           dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
-        
+
         boo_plot_ref    <- ifelse(nrow(df_plot_all_ref[!is.na(df_plot_all_ref$Stressor), ]) > 0,
                                   TRUE, FALSE)
       }
-      
+
       if(boo_corr){
         df_plot_cl <- dplyr::rename(df_plot_cl, Stressor = {{stressName}},
                                     Response = {{respName}}) %>%
@@ -725,13 +728,13 @@ getBioStressorResponses <- function(TargetSiteID,
         df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
                                       Response = {{respName}}) %>%
           dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
-        
+
         boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor), ]) > 0,
                                   TRUE, FALSE)
         boo_plot_cl_ref <- ifelse(nrow(df_plot_cl_ref[!is.na(df_plot_cl_ref$Stressor), ]) > 0,
                                   TRUE, FALSE)
       }
-      
+
 
       ## Plot, inputs ####
       boo_plot_targ   <- ifelse(nrow(df_plot_site[!is.na(df_plot_site$Stressor), ]) > 0,
@@ -827,7 +830,7 @@ getBioStressorResponses <- function(TargetSiteID,
             ggplot2::scale_shape_manual(name = "Quality",
                                         breaks = c("Degraded", "Not degraded"),
                                         values = bio_shape_out, drop = FALSE)
-        
+
 
         # ggplot, point subsets
         # if (boo_plot_ref == TRUE) { ##IF~boo_plot_ref~START
@@ -897,7 +900,7 @@ getBioStressorResponses <- function(TargetSiteID,
         } ## IF ~ boo_plot ~ END
 
       } #END outside regression and points
-        
+
         ## Plot, inside ####
         if (boo_corr & boo_plot_cl == TRUE) { ##IF~boo_plot_cl~START
           # Regression, cluster

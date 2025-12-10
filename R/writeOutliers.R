@@ -18,14 +18,16 @@
 #' @param TargetSiteID Site ID
 #' @param df_outliers Dataframe containing any stressor values identified outliers. Default = "data_outliers"
 #' @param df_stressInfo Dataframe containing stressor metadata. Default = data_stressInfo
-#' @param siteDetects All stressors ever detected in any target site samples.
+#' @param df_Sites x
+#' @param siteDetectsAll All stressors ever detected in any target site samples.
 #' @param compSites Vector containing comparator site identifiers (inside the case).
+#' @param useBC x
 #' @param allSites Vector containing all "outside the case" identifiers
 #' @param dir_results directory for results; Default = ./Results
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 writeOutliers <- function(TargetSiteID,
                           df_outliers,
@@ -38,46 +40,46 @@ writeOutliers <- function(TargetSiteID,
                           dir_results = file.path(getwd(), "Results")) {
 
   # Global Bindings
-  # data_outliers <- data_stressInfo <- siteDetectsAll <- list.CompSites <- 
-  #   StationID <- TransfResult <- Outlier <- StdParamName <- NULL
-    
-  # Debug  
-  # boo.debug = FALSE
-  # 
-  # if (boo.debug) {
-  #   df_outliers = data_outliers
-  #   df_stressInfo = data_stressInfo
-  #   TargetSiteID = TargetSiteID
-  #   siteDetects = siteDetectsAll
-  #   compSites = list.CompSites$comp.sites
-  #   allSites = list.CompSites$all.sites
-  #   dir_results = dir_results
-  # }
+  data_outliers <- data_stressInfo <- list.CompSites <-
+    StationID <- TransfResult <- Outlier <- StdParamName <- IncaseCol <-  NULL
+
+  # Debug
+  boo.debug = FALSE
+  #
+  if (boo.debug) {
+    df_outliers = data_outliers
+    df_stressInfo = data_stressInfo
+    TargetSiteID = TargetSiteID
+    siteDetects = siteDetectsAll
+    compSites = list.CompSites$comp.sites
+    allSites = list.CompSites$all.sites
+    dir_results = dir_results
+  }
 
   # LCN patch fix to remove dependence on hardcoded bmi_dataBioCoOccur
   if(useBC == TRUE){
     compSites <- compSites
     allSites <- allSites
   } else{
-    TargetSiteCluster <- df_Sites %>% 
-      dplyr::filter(StationID == TargetSiteID) %>% 
+    TargetSiteCluster <- df_Sites %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::pull(IncaseCol)
-    
-    compSites <- df_Sites %>% 
-      dplyr::filter(IncaseCol == TargetSiteCluster) %>% 
+
+    compSites <- df_Sites %>%
+      dplyr::filter(IncaseCol == TargetSiteCluster) %>%
       dplyr::pull(StationID)
-    
-    allSites <- df_Sites %>% 
-      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>% 
+
+    allSites <- df_Sites %>%
+      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>%
       dplyr::pull(StationID)
   }
-  
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 
   # Log removed or not removed outliers as data gaps
   data_OutliersLabeled <- merge(df_outliers,
-                                data_stressInfo[, c("StdParamName", "Label")],
+                                df_stressInfo[, c("StdParamName", "Label")],
                                 by = "StdParamName", all.x =  TRUE)
   siteOutliers <- data_OutliersLabeled %>%
     dplyr::filter(StationID == TargetSiteID) %>%

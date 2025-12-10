@@ -3,34 +3,37 @@
 #' @description Get watershed stressor figures
 #'
 #' @details Create watershed stressor figures
-#' 
+#'
 #' @param TargetSiteID Site ID
 #' @param df_WSData xyz
 #' @param df_WSInfo xyz
+#' @param df_Sites xyz
 #' @param comp.reaches xyz
 #' @param TargetCOMID xyz
 #' @param useAllCompReaches xyz
-#' @param dir_sub Subdirectory for outputs from this function. 
+#' @param useBC xyz
+#' @param dir_sub Subdirectory for outputs from this function.
 #' Default = "SiteInfo"
 #' @param df_SampSummary xyz
 #' @param biocommlist xyz
-#' @param boo_plot Flag declaring whether the plots should be saved or not. 
+#' @param boo_plot Flag declaring whether the plots should be saved or not.
 #' Default = TRUE.
 #' @param plotdpi standardized plot dpi. Default = 600
 #' @param plotH standardized plot height. Default = 6
 #' @param plotW standardized plot width. Default = 8
 #' @param plotunits units for plot height and width. Default = "in"
-#' 
+#' @param dir_results
+#'
 #' @return xyz
-#' 
+#'
 #' @examples
-#' # None at this time 
-#' 
+#' # None at this time
+#'
 #' @export
 getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               df_WSData = NULL,
                               df_WSInfo = NULL,
-                              df_Sites = NULL, 
+                              df_Sites = NULL,
                               comp.reaches = list.CompSites$comp.reaches,
                               TargetCOMID = list.CompSites$TargetCOMID,
                               useAllCompReaches = useAllCompReaches,
@@ -42,36 +45,37 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               plotdpi = 600,
                               plotH = 6,
                               plotW = 8,
-                              plotunits = "in", 
-                              dir_results = NULL) { # FUN: Start
-  
+                              plotunits = "in",
+                              dir_results) { # FUN: Start
+
   # Global Bindings
-  # data_stressorWS <- data_stressorinfoWS <- dir_results <- 
-  #   StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <- useBC <-
-  #   mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
-  #   yLoc <- Label <- TargetAboveMedian <- NULL
-                                
+  data_stressorWS <- data_stressorinfoWS <-
+    StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <-
+    mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
+    yLoc <- Label <- TargetAboveMedian <- list.CompSites <-
+    data_Sites <- IncaseCol <- NULL
+
   # Debug
-  # boo.debug <- FALSE
-  # if (boo.debug) {
-  #   TargetSiteID      <- TargetSiteID
-  #   df_WSData         <- data_stressorWS
-  #   df_WSInfo         <- data_stressorinfoWS
-  #   df_Sites          <- data_Sites
-  #   comp.reaches      <- list.CompSites$comp.reaches
-  #   TargetCOMID       <- list.CompSites$TargetCOMID
-  #   useAllCompReaches <- useAllCompReaches
-  #   useBC             <- FALSE
-  #   dir_sub           <- "SiteInfo"
-  #   df_SampSummary    <- data_sampSummary
-  #   biocommlist       <- biocommlist
-  #   boo_plot          <- TRUE
-  #   plotdpi           <- 600
-  #   plotH             <- 6
-  #   plotW             <- 8
-  #   plotunits         <- "in"
-  # }
-  
+  boo.debug <- FALSE
+  if (boo.debug) {
+    TargetSiteID      <- TargetSiteID
+    df_WSData         <- data_stressorWS
+    df_WSInfo         <- data_stressorinfoWS
+    df_Sites          <- data_Sites
+    comp.reaches      <- list.CompSites$comp.reaches
+    TargetCOMID       <- list.CompSites$TargetCOMID
+    useAllCompReaches <- useAllCompReaches
+    useBC             <- FALSE
+    dir_sub           <- "SiteInfo"
+    df_SampSummary    <- data_sampSummary
+    biocommlist       <- biocommlist
+    boo_plot          <- TRUE
+    plotdpi           <- 600
+    plotH             <- 6
+    plotW             <- 8
+    plotunits         <- "in"
+  }
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 
@@ -80,7 +84,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   # # Write results directory ----
   # out.dir <- dirname(dir_results)
   # out.folders <- c(out.dir, basename(dir_results), TargetSiteID, dir_sub)
-  # 
+  #
   # for (i in 1:length(out.folders)) {
   #   if (i == 1) {
   #     dir_path <- file.path(out.folders[i])
@@ -91,20 +95,20 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   #     dir.create(dir_path)
   #   }
   # }
-  
+
   dir_path <- file.path(dir_results, TargetSiteID, dir_sub)
-  
+
   # LCN 9/23/25 patch fix to remove dependency on hard coded data_bmiCoOccur
   if(useBC == TRUE){
     comp.reaches <- comp.reaches
   } else{
-    TargetSiteCluster <- df_Sites %>% 
-      dplyr::filter(StationID == TargetSiteID) %>% 
+    TargetSiteCluster <- df_Sites %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::pull(IncaseCol)
-    
-    comp.reaches <- df_Sites %>% 
+
+    comp.reaches <- df_Sites %>%
       dplyr::filter(IncaseCol == TargetSiteCluster) %>%
-      dplyr::distinct(COMID) %>% 
+      dplyr::distinct(COMID) %>%
       dplyr::pull(COMID)
   }
 
@@ -174,7 +178,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
       str_title <- paste0(TargetSiteID, ": Site watershed-scale stressors")
 
       high_stress <- NULL # LCN added 20250918
-      
+
       for (i in seq_along(vars.site)) { # StreamCatVar (no year--Metric includes year)
         print(paste0("Prepping ", vars.site[i]))
         plotvar <- vars.site[i]
@@ -189,24 +193,24 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
         df.plot.comp <- dplyr::filter(data_compbkgd, StreamCatVar == plotvar) %>%
           dplyr::filter(!is.na(WatershedValue))
         dataYears <- sort(unique(df.plot.comp$Year))
-        
+
         # LCN added 20250918
-        target_val <- df.plot.comp %>% 
+        target_val <- df.plot.comp %>%
           dplyr::filter(COMID == TargetCOMID) %>%
           dplyr::rename("TargetValue" = "WatershedValue") %>%
           dplyr::select(TargetValue, Year)
-        
+
         options(dplyr.summarise.inform = FALSE)
-        
-        median_temp <- df.plot.comp %>% 
-          dplyr::group_by(StreamCatVar, Year) %>% 
+
+        median_temp <- df.plot.comp %>%
+          dplyr::group_by(StreamCatVar, Year) %>%
           dplyr::summarize(WatershedValueMedian = stats::median(WatershedValue))  %>%
           dplyr::ungroup() %>%
           dplyr::full_join(target_val, by = "Year") %>%
           dplyr::mutate(TargetAboveMedian = TargetValue > WatershedValueMedian)
-        
+
         high_stress <- high_stress %>% dplyr::bind_rows(median_temp)
-        
+
 
         if (length(dataYears) > 0) { # Plot data with years
 
@@ -293,11 +297,11 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
           }
 
           if (boo_plot) {
-            ggplot2::ggsave(fn.bkgplot, 
-                            p.boxtime, 
-                            dpi = plotdpi, 
+            ggplot2::ggsave(filename = fn.bkgplot,
+                            plot = p.boxtime,
+                            dpi = plotdpi,
                             width = plotW,
-                            height = 1.5 * plotH, 
+                            height = 1.5 * plotH,
                             units = plotunits)
           }## IF ~ boo_plot ~ END
 
@@ -340,26 +344,25 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                                size = 2.3, color = "red", nudge_y = ymax * 0.02,
                                nudge_x = 0)
           if(boo_plot){
-            ggplot2::ggsave(fn.bkgplot, 
-                            p.box, 
-                            dpi = plotdpi, 
+            ggplot2::ggsave(filename = fn.bkgplot,
+                            plot = p.box,
+                            dpi = plotdpi,
                             width = plotW,
-                            height = plotH, 
+                            height = plotH,
                             units = plotunits)
           }## IF ~ boo_plot ~ END
         }## If/else for graphs ends
       }## for loop over variables ends
     } # End background data portion
   } # End WS data check
-  
+
   high_stress <- high_stress %>%
-    dplyr::bind_rows(median_temp) %>% 
-    dplyr::left_join(df_WSInfo, by = "StreamCatVar") %>% 
-    dplyr::select(Label, Year, WatershedValueMedian, TargetValue, TargetAboveMedian) %>% 
+    dplyr::left_join(df_WSInfo, by = c("StreamCatVar", "Year")) %>%
+    dplyr::select(Label, Year, WatershedValueMedian, TargetValue, TargetAboveMedian) %>%
     dplyr::rename("Watershed Stressor" = "Label", "Comparator Median" = "WatershedValueMedian", "Target Site Value" = "TargetValue") %>%
-    dplyr::filter(TargetAboveMedian == TRUE) %>% 
+    dplyr::filter(TargetAboveMedian == TRUE) %>%
     dplyr::select(-TargetAboveMedian)
-  
+
   utils::write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
-    
+
 } # End FUN

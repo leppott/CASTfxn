@@ -22,6 +22,7 @@
 #' @param loaded x
 #' @param useBC x
 #' @param bioIndex x
+#' @param calcRelAbund x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
@@ -30,16 +31,17 @@ prepRespData <- function(out.dir,
                          bio,
                          loaded,
                          useBC,
-                         bioIndex) {
+                         bioIndex,
+                         calcRelAbund) {
   # Global Bindings
-  # bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <- 
-  #   UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <- 
-  #   CutoffValue <- InclusiveIndicator <- calcRelAbund <- NumInd <- 
-  #   SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <- 
-  #   PctInd <- PctTaxa <- NULL
-  
+  bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <-
+    UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <-
+    CutoffValue <- InclusiveIndicator <-NumInd <-
+    SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <-
+    PctInd <- PctTaxa <- NULL
+
   not_all_na <- function(x) {!all(is.na(x))}
-  
+
   # Debug
   boo.debug <- FALSE
   if (boo.debug) {
@@ -48,7 +50,7 @@ prepRespData <- function(out.dir,
     useBC    <- useBC
     bioIndex <- bioIndexGp
   }
-  
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 
@@ -71,7 +73,7 @@ prepRespData <- function(out.dir,
     if (("data_algMasterTaxa" %in% loaded) && ("data_algCounts" %in% loaded)) {
       data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_algMasterTaxa.rds"))
       data_bioCounts      <- readRDS(file.path(out.dir, "data_algCounts.rds"))
-    } 
+    }
   }
   if (bio == "fish") {
     data_bioMetrics       <- readRDS(file.path(out.dir, "data_fishMetrics.rds"))
@@ -188,14 +190,14 @@ prepRespData <- function(out.dir,
   }
 
   # Get Master Taxa file - Done above
-  
+
   if(exists("data_bioMasterTaxa")==FALSE){
     data_bioMasterTaxa <- NA
   }
   if(exists("data_bioCounts")==FALSE){
     data_bioCounts <- NA
   }
-  
+
 
   myRespData <- list(data_bioMetrics = data_bioMetrics,
                      data_bioMetricsInfo = data_bioMetricsInfo,

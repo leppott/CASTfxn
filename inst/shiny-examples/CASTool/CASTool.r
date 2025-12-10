@@ -30,9 +30,9 @@ boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
-in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
-out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
-region <- "Washington" # Name of region 
+in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Data" # File path of data directory
+out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DEPied/Results" # File path of results directory
+region <- "DEPied" # Name of region
 
 if(boo_Shiny == FALSE){
   devtools::load_all()
@@ -53,6 +53,7 @@ if(boo_Shiny == FALSE){
 
 # define pipe
 `%>%` <- dplyr::`%>%`
+`:=` <- data.table::`:=`
 
 ## Color assignments ####
 # Based on ito_seven from ggpubfigs
@@ -61,7 +62,7 @@ data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outside
                             "Shape" = c(24, 21, 25, 21, 25),
                             "Size" = c(1.75, 0.8, 1, 0.8, 1),
                             "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#000000" 
+refOutline_col <- "#000000"
 
 ## Other plot variables ####
 plot_dpi <- 600
@@ -92,7 +93,7 @@ if (boo_Shiny == TRUE) {
   wd          <- getwd()
   dir_data    <- dn_data
   dir_results <- dn_results
-} 
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
@@ -133,10 +134,16 @@ data_CASTmeta <- data_CASTmeta %>%
 data_loaded <- readRDS(file.path(out.dir, dn_checked_sk, "loaded.rds"))
 loaded      <- as.character(data_loaded$Object)
 
+### Helper import boolean
+helperImport <- data_CASTmeta %>% dplyr::pull(helperImport) %>% as.logical()
+
+### WS boolean
+boo.WS <- data_CASTmeta %>% dplyr::pull(exploreWSStressor) %>% as.logical()
+
 # Set up booleans for different data types available
 boo.meas  <- FALSE
 boo.model <- FALSE
-boo.WS    <- FALSE
+boo.WS.loaded    <- FALSE
 for (l in seq_along(loaded)) {
   msg <- paste0("booleans, ", l, "/", length(loaded))
   message(msg)
@@ -157,7 +164,7 @@ for (l in seq_along(loaded)) {
       data.mod <- object
     }
   }
-  if (grepl("WS", object) == TRUE) { boo.WS <- TRUE }
+  if (grepl("WS", object) == TRUE) { boo.WS.loaded <- TRUE }
 }
 rm(l, object, data_loaded)
 
@@ -219,12 +226,12 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  
+
 }## IF ~ boo_Shiny ~ END
 
-list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk), 
-                              outcaseLabel = outcaseLabel, 
-                              incaseColName = incaseColName, 
+list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk),
+                              outcaseLabel = outcaseLabel,
+                              incaseColName = incaseColName,
                               useBC = useBC)
 
 data_Sites    <- list.SiteData$site
@@ -350,10 +357,50 @@ if (boo.meas && boo.model) {
 }
 
 # If using, get WS stressor data
-if (boo.WS) {
+if (boo.WS & boo.WS.loaded) {
   data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
   data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
                                            "data_stressorinfoWS.rds"))
+
+  if("comid" %in% names(data_stressorWS)){
+    data_stressorWS <- data_stressorWS %>% dplyr::rename("COMID" = "comid")
+  }
+
+} else if(boo.WS == TRUE & boo.WS.loaded == FALSE & helperImport == FALSE){
+  message("Watershed stressor data not found in input data files")
+
+} else if(boo.WS == TRUE & boo.WS.loaded == FALSE & helperImport == TRUE){
+
+  ## get cluster package if necessary
+  if(boo_Shiny == FALSE){
+    wsDataInd <- setdiff("CASToolWSStressorPckg", .packages(all.available = TRUE))
+    if(rlang::is_empty(wsDataInd)==FALSE){
+      pakInd <- setdiff("pak", .packages(all.available = TRUE))
+      if(rlang::is_empty(pakInd)==FALSE){
+        install.packages("pak")
+      }
+      pak::pak("laura-naslund/CASToolWSStressorPckg")
+    }
+    library(CASToolWSStressorPckg)
+  }
+
+  ## check that region available
+  utils::data("available_regions", package = "CASToolBaseDataPckg")
+  regionAvailable <- region %in% available_regions$Region
+
+  if(regionAvailable == TRUE){
+    message("Downloading watershed stressor data from helper package.")
+
+    data_stressorWS <- retrieve_stressor_data(region)
+    data_stressorinfoWS <- retrieve_stressor_info(region)
+
+    if("comid" %in% names(data_stressorWS)){
+      data_stressorWS <- data_stressorWS %>% dplyr::rename("COMID" = "comid")
+    }
+
+  } else{
+    message("Watershed stressor data not available for the specified region. ")
+  }
 }
 
 # Bio responses
@@ -385,7 +432,8 @@ for (b in seq_along(biocommlist)) {
                                  bio      = "bmi",
                                  loaded   = loaded,
                                  useBC    = useBC,
-                                 bioIndex = bmiIndexGp)
+                                 bioIndex = bmiIndexGp,
+                                 calcRelAbund = calcRelAbund)
     data_bmiMetrics     <- list.bmiData$data_bioMetrics
     data_bmiMetricsInfo <- list.bmiData$data_bioMetricsInfo
     data_bmiCounts      <- list.bmiData$data_bioCounts
@@ -401,7 +449,7 @@ for (b in seq_along(biocommlist)) {
     data_respTrim <- rbind(data_respTrim,
                            data_bmiCoOccur[, c("StationID", "RespSampleID",
                                                "RespSampleDate", "BioComm")] %>%
-                             dplyr::mutate(biocomm = "BMISampleID")) 
+                             dplyr::mutate(biocomm = "BMISampleID"))
   } # end BMI
   if (bio == "alg") {
     # Read alg data files
@@ -421,13 +469,13 @@ for (b in seq_along(biocommlist)) {
     data_algCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
                                          df_stress = data_Stress,
                                          biocomm   = "alg",
-                                         df_resp   = data_algMetrics, # LCN 9/22/25 changed from data_bmiMetrics 
+                                         df_resp   = data_algMetrics, # LCN 9/22/25 changed from data_bmiMetrics
                                          index     = algIndexGp,
                                          lagdays   = lagdays)
     data_respTrim <- rbind(data_respTrim,
                            data_algCoOccur[, c("StationID", "RespSampleID",
                                                "RespSampleDate", "BioComm")]%>%
-                             dplyr::mutate(biocomm = "AlgSampleID")) 
+                             dplyr::mutate(biocomm = "AlgSampleID"))
   } # end ALG
   if (bio == "fish") {
     # Read fish data files
@@ -453,7 +501,7 @@ for (b in seq_along(biocommlist)) {
     data_respTrim <- rbind(data_respTrim,
                            data_fishCoOccur[, c("StationID", "RespSampleID",
                                                 "RespSampleDate", "BioComm")] %>%
-                             dplyr::mutate(biocomm = "FishSampleID")) 
+                             dplyr::mutate(biocomm = "FishSampleID"))
   } # end FISH
 
 }
@@ -504,7 +552,7 @@ if (boo_Shiny == TRUE) {
 data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
                                        df.stressInfo = data_stressInfo,
                                        df.resp       = data_respTrim,
-                                       df.sites      = data_Sites, 
+                                       df.sites      = data_Sites,
                                        incaseColName = incaseColName)
 # Returns: data_sampSummary (df.sampSummary)
 # Colnames include: StationID, COMID, OutcaseCol, IncaseCol, SampleDate,
@@ -536,7 +584,7 @@ if (boo_Shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$Station,
                            "Chosen by"    = NA, "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
-} 
+}
 # else if (boo.debug == TRUE & debug.person == "Ann") {
 #   # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
 #   msg <- paste0("Number of target sites = ", nrow(df_targets))
@@ -609,12 +657,12 @@ for (site in seq_along(1:nrow(df_targets))) {
   # BC matrices for different biocomms, then this must move into the biocomm
   # loop or it needs to be run more than once for each biocomm here, since
   # it's used in getSiteInfo immediately afterward.
-  
+
   compSitesList <- list()
-    
+
   for(b in seq_along(biocommlist)){
     bio <- tolower(biocommlist[b])
-    
+
     if(bio == "bmi"){
       list.CompSites.bmi <- getComparators(TargetSiteID = TargetSiteID,
                                        df_sites = data_Sites,
@@ -670,10 +718,10 @@ for (site in seq_along(1:nrow(df_targets))) {
       compSitesList[[bio]] <- list.CompSites.fish
     }
   }
-  
+
   # just chooses the first biocomm as list.CompSites, which shouldn't matter unless potentially useBC = TRUE
   list.CompSites <- compSitesList[[1]]
-  
+
   # Returns: list.CompSites$TargetCOMID (Reach on which target site is located)
   #          list.CompSites$comp.sites (vector of unique inside-the-case sites
   #          regardless of useBC)
@@ -732,35 +780,38 @@ for (site in seq_along(1:nrow(df_targets))) {
               dir_sub        = "SiteInfo",
               boo_plot       = TRUE)
 
-  # if (boo.WS) {
-  #   getWSStressorFigs(TargetSiteID      = TargetSiteID,
-  #                     df_WSData         = data_stressorWS,
-  #                     df_WSInfo         = data_stressorinfoWS,
-  #                     comp.reaches      = list.CompSites$comp.reaches,
-  #                     TargetCOMID       = list.CompSites$TargetCOMID,
-  #                     useAllCompReaches = useAllCompReaches,
-  #                     dir_sub           = "SiteInfo",
-  #                     df_SampSummary    = data_sampSummary,
-  #                     biocommlist       = biocommlist,
-  #                     boo_plot          = TRUE,
-  #                     plotdpi           = plot_dpi,
-  #                     plotH             = plot_H,
-  #                     plotW             = plot_W,
-  #                     plotunits         = plot_units)
-  # }
+  if (boo.WS) {
+    getWSStressorFigs(TargetSiteID      = TargetSiteID,
+                      df_WSData         = data_stressorWS,
+                      df_WSInfo         = data_stressorinfoWS,
+                      df_Sites          = data_Sites,
+                      comp.reaches      = list.CompSites$comp.reaches,
+                      TargetCOMID       = list.CompSites$TargetCOMID,
+                      useAllCompReaches = useAllCompReaches,
+                      useBC             = useBC,
+                      dir_sub           = "SiteInfo",
+                      df_SampSummary    = data_sampSummary,
+                      biocommlist       = biocommlist,
+                      boo_plot          = TRUE,
+                      plotdpi           = plot_dpi,
+                      plotH             = plot_H,
+                      plotW             = plot_W,
+                      plotunits         = plot_units,
+                      dir_results       = out.dir)
+  }
 
-  
+
   # Create site map
   boundary <- readRDS(file.path(out.dir, dn_checked_sk, "boundary.rds"))
-  reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) %>% 
+  reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) %>%
     dplyr::mutate(COMID = as.character(COMID))
-  flowline <- reaches %>% 
-    dplyr::left_join(data_cluster %>% 
-                       dplyr::mutate(COMID = as.character(COMID), 
-                              ClusterID = as.factor(ClusterID)), 
+  flowline <- reaches %>%
+    dplyr::left_join(data_cluster %>%
+                       dplyr::mutate(COMID = as.character(COMID),
+                              ClusterID = as.factor(ClusterID)),
                      by = "COMID")
-  
-  
+
+
   getSiteMap(sp_outline   = boundary,
              sp_flowline  = flowline,
              region       = region,
@@ -835,22 +886,6 @@ for (site in seq_along(1:nrow(df_targets))) {
   } ### End no stressors statement GO TO NEXT SITE
   rm(noStressors, noResponses)
 
-  if (boo.WS) {
-    getWSStressorFigs(TargetSiteID      = TargetSiteID,
-                      df_WSData         = data_stressorWS,
-                      df_WSInfo         = data_stressorinfoWS,
-                      df_Sites          = data_Sites,
-                      comp.reaches      = list.CompSites$comp.reaches,
-                      TargetCOMID       = list.CompSites$TargetCOMID,
-                      useAllCompReaches = useAllCompReaches,
-                      useBC             = FALSE,
-                      dir_sub           = "SiteInfo",
-                      df_SampSummary    = data_sampSummary,
-                      biocommlist       = biocommlist,
-                      boo_plot          = TRUE, 
-                      dir_results = out.dir)
-  }
-  
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
   writeOutliers(TargetSiteID  = TargetSiteID,
@@ -858,7 +893,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                 df_stressInfo = data_stressInfo,
                 df_Sites      = data_Sites,
                 useBC         = FALSE,
-                siteDetectsAll   = siteDetectsAll,
+                siteDetectsAll= siteDetectsAll,
                 compSites     = list.CompSites$comp.sites,
                 allSites      = list.CompSites$all.sites,
                 dir_results   = dir_results)
@@ -884,9 +919,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       bioMetricInfo   <- data_bmiMetricsInfo
       bioTaxaData     <- data_bmiCounts
       bioMasterTaxa   <- data_bmiMasterTaxa
-      
+
       list.CompSites <- list.CompSites.bmi
-      
+
       # colBio <- bmiIndex
     } else if ((bioComm == "alg") && (useAlg == TRUE)) {
       data_bioCoOccur <- data_algCoOccur
@@ -895,9 +930,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       bioMetricInfo   <- data_algMetricsInfo
       bioTaxaData     <- data_algCounts
       bioMasterTaxa   <- data_algMasterTaxa
-      
+
       list.CompSites <- list.CompSites.alg
-      
+
       # colBio <- algIndex
     } else if ((bioComm == "fish") && (useFish == TRUE)) {
       data_bioCoOccur <- data_fishCoOccur
@@ -906,9 +941,9 @@ for (site in seq_along(1:nrow(df_targets))) {
       bioMetricInfo   <- data_fishMetricsInfo
       bioTaxaData     <- data_fishCounts
       bioMasterTaxa   <- data_fishMasterTaxa
-      
+
       list.CompSites <- list.CompSites.fish
-      
+
       # colBio <- fishIndex
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
@@ -1091,7 +1126,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                           plotunits     = plot_units,
                                           dir_plots     = dir_results,
                                           dir_sub       = "_WoE",
-                                          boo_plot      = boo.plot.user, 
+                                          boo_plot      = boo.plot.user,
                                           incaseLabel   = incaseLabel)
 
       df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
@@ -1150,7 +1185,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                dir_results   = dir_results,
                                dir_sub       = "_WoE",
                                boo_plot      = boo.plot.user)
-    
+
     if (nrow(df_TS_scores) != 0) {
       df_LoE <- rbind(df_LoE, df_TS_scores)
     }
@@ -1325,7 +1360,7 @@ for (site in seq_along(1:nrow(df_targets))) {
                                    plotunits        = plot_units,
                                    dir_plots        = dir_results,
                                    dir_sub          = "_WoE",
-                                   boo_plot         = boo.plot.user) 
+                                   boo_plot         = boo.plot.user)
 
         if (nrow(df_VPSSIscores) != 0) { # LCN changed 20250917
           df_LoE <- rbind(df_LoE, df_VPSSIscores)
@@ -1368,7 +1403,7 @@ for (site in seq_along(1:nrow(df_targets))) {
            dfLoE        = df_LoE,
            dfStress     = df_stressorMetadata,
            dir_results  = dir_results,
-           dir_WoE      = "_WoE", 
+           dir_WoE      = "_WoE",
            plotdpi = plot_dpi,
            plotH = plot_H,
            plotW = plot_W,
@@ -1421,7 +1456,7 @@ for (site in seq_along(1:nrow(df_targets))) {
             dir_data       = dir_data,
             dir_results    = dir_results,
             report_type    = "full",
-            report_format  = "html", 
+            report_format  = "html",
             boo.WS = boo.WS)
 
   dfGaps <- read.table(file.path(dir_results, TargetSiteID,

@@ -88,46 +88,48 @@ getCoOccur <- function(TargetSiteID,
                        pHlimLow = 5,
                        pHlimHigh = 9,
                        DOlim = 6,
-                       plotvars = data_plotvars,
+                       plotvars,
                        plotdpi = 600,
                        plotH = 6,
                        plotW = 8,
                        plotunits = "in",
-                       dir_plots = dir_results,
+                       dir_plots,
                        dir_sub = "_WoE",
-                       boo_plot = TRUE, 
+                       boo_plot = TRUE,
                        incaseLabel = NULL) {
-  
+
+  `:=` <- data.table::`:=`
+
   # Global Bindings
-  # df_PairedStressResp <- siteDetectsAll <- data_stressInfo <- 
-  #   list.CompSites <- bioComm <- bioIndex <- Type <- StdParamName <- Stressor <- 
-  #   StationID <- StressSampleID <- StressSampleDate <- IncaseCol <- 
-  #   OutcaseCol <- RespSampleID <- RespSampleDate <- RefSiteFlag <- BetterThan <-
-  #   Quality <- StressorValue <- NotNA <- DirIncStress <- LogTransf <- Label <-
-  #   incaseLabel <- Sc_Box <- bioIndexName <- LoE <- Score <- SSIndex <- NULL
+  df_PairedStressResp <- siteDetectsAll <- data_stressInfo <-
+    list.CompSites <- bioComm <- bioIndex <- Type <- StdParamName <- Stressor <-
+    StationID <- StressSampleID <- StressSampleDate <- IncaseCol <-
+    OutcaseCol <- RespSampleID <- RespSampleDate <- RefSiteFlag <- BetterThan <-
+    Quality <- StressorValue <- NotNA <- DirIncStress <- LogTransf <- Label <-
+    incaseLabel <- Sc_Box <- bioIndexName <- LoE <- Score <- SSIndex <- NULL
 
   boo_DEBUG <- FALSE
 
-  # if (boo_DEBUG==TRUE) {
-  #   TargetSiteID = TargetSiteID
-  #   df_data = df_PairedStressResp
-  #   detects = siteDetectsAll
-  #   df_stressinfo = data_stressInfo
-  #   compsites = list.CompSites$comp.sites
-  #   biocomm = bioComm
-  #   colBio = bioIndex
-  #   pHlimLow = pHlimLow
-  #   pHlimHigh = pHlimHigh
-  #   DOlim = DOlim
-  #   plotvars = data_plotvars
-  #   plotdpi = 600
-  #   plotH = 6
-  #   plotW = 8
-  #   plotunits = "in"
-  #   dir_plots = dir_results
-  #   dir_sub = "_WoE"
-  #   boo_plot = TRUE
-  # }
+  if (boo_DEBUG==TRUE) {
+    TargetSiteID = TargetSiteID
+    df_data = df_PairedStressResp
+    detects = siteDetectsAll
+    df_stressinfo = data_stressInfo
+    compsites = list.CompSites$comp.sites
+    biocomm = bioComm
+    colBio = bioIndex
+    pHlimLow = pHlimLow
+    pHlimHigh = pHlimHigh
+    DOlim = DOlim
+    plotvars = plotvars
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
+    dir_plots = dir_plots
+    dir_sub = "_WoE"
+    boo_plot = TRUE
+  }
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -174,7 +176,7 @@ getCoOccur <- function(TargetSiteID,
 
   # Start evaluation ----
   # Prep metadata, 20250330 --
-  df_stressinfo <- dplyr::rename(df_stressinfo, Stressor = StdParamName) %>%
+  df_stressinfo <- dplyr::rename(df_stressinfo, "Stressor" = "StdParamName") %>%
     dplyr::filter(Stressor %in% detects)
   colStressors <- as.vector(unlist(df_stressinfo$Stressor))
 
@@ -465,7 +467,7 @@ getCoOccur <- function(TargetSiteID,
 
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+      fn.gaps <- file.path(dir_path, fn.gaps)
       utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                   row.names = FALSE, sep = "\t")
     }

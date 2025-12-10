@@ -79,7 +79,7 @@ getSufficiency <- function(TargetSiteID,
                            df_stressinfo,
                            biocomm,
                            colBio,
-                           plotvars = data_plotvars,
+                           plotvars,
                            plotdpi = 600,
                            plotH = 6,
                            plotW = 8,
@@ -87,14 +87,16 @@ getSufficiency <- function(TargetSiteID,
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "_WoE",
                            boo_plot = TRUE) {##FUNCTION.START
-  
+
+  `:=` <- data.table::`:=`
+
   # Global Bindings
-  df_PairedStressResp <- list.CompSites <- df_stressorMetadata <- bioComm <- 
-    bioIndex <- dir_results <- boo_plot_user <- Type <- StationID <- 
-    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <- 
-    Quality <- Stressor <- LogTransf <- Label <- y <- y.name <- x <- 
-    StressorCode <- StressorValue <- n <- SRpred_Deg <- Sc_SRlog <- 
-    bioIndexName <- LoE <- Score <- NULL
+  df_PairedStressResp <- list.CompSites <- df_stressorMetadata <- bioComm <-
+    bioIndex <- dir_results <- boo_plot_user <- Type <- StationID <-
+    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <-
+    Quality <- Stressor <- LogTransf <- Label <- y <- y.name <- x <-
+    StressorCode <- StressorValue <- n <- SRpred_Deg <- Sc_SRlog <-
+    bioIndexName <- LoE <- Score <- BioComm <- NULL
 
   # Debug
   boo_DEBUG <- FALSE
@@ -106,7 +108,7 @@ getSufficiency <- function(TargetSiteID,
     df_stressinfo = df_stressorMetadata
     biocomm = bioComm
     colBio = bioIndex
-    plotvars = data_plotvars
+    plotvars = plotvars
     plotdpi = 600
     plotH = 6
     plotW = 8
@@ -223,7 +225,7 @@ getSufficiency <- function(TargetSiteID,
 
     df.score.j <- df_data %>%
       dplyr::select(StationID, StressSampleID, StressSampleDate,
-                    RespSampleID, RespSampleDate, Quality, 
+                    RespSampleID, RespSampleDate, Quality,
                     dplyr::all_of(colBio),
                     dplyr::all_of(str)) %>%
       dplyr::filter(StationID == TargetSiteID) %>%
@@ -291,7 +293,7 @@ getSufficiency <- function(TargetSiteID,
                       SRpred_Deg = j_SR_predict,
                       Sc_SRlog = j_SR_score) %>%
         dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                      RespSampleDate, dplyr::all_of(colBio), Quality, 
+                      RespSampleDate, dplyr::all_of(colBio), Quality,
                       StressorCode,
                       StressorValue, n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
@@ -378,7 +380,7 @@ getSufficiency <- function(TargetSiteID,
     dplyr::select(!StressorCode) %>%
     dplyr::rename(Stressor = Label) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
-                  RespSampleDate, BioComm, dplyr::all_of(colBio), Quality, 
+                  RespSampleDate, BioComm, dplyr::all_of(colBio), Quality,
                   Stressor,
                   StressorValue, n, SRpred_Deg, Sc_SRlog)
 
@@ -388,7 +390,7 @@ getSufficiency <- function(TargetSiteID,
                      col.names = TRUE, row.names = FALSE, sep = "\t")
 
   df_SuffScores <- df.scores %>%
-    dplyr::rename(bioComm = BioComm, bioIndex = dplyr::all_of(colBio), 
+    dplyr::rename(bioComm = BioComm, bioIndex = dplyr::all_of(colBio),
                   Score = Sc_SRlog) %>%
     dplyr::mutate(LoE = "Suff", bioIndexName := {{colBio}}) %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,

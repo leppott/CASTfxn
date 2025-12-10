@@ -15,20 +15,6 @@
 #'
 #' Requires packages dplyr, tidyr
 #'
-#' Required objects:
-#'
-#' * data_Sites containing minimally these columns:
-#'   StationID, COMID, OutcaseCol, IncaseCol
-#'
-#' * data_Stress containing minimally these columns:
-#'   StationID, StressSampleID, StressSampleDate, StdParamName
-#'
-#' * data_respTrim containing minimally these columns:
-#'   StationID, RespSampleID, RespSampleDate, biocomm
-#'
-#' * out.dir: the directory to which to write the final all sites summary;
-#'   the same as the data input directory, ideally, although may be elsewhere
-#'
 #' @param df.stress dataframe containing stressor data for all sites, including
 #'                  measured or observed quantitative water chemistry and quality,
 #'                  physical habitat data, and modeled data.
@@ -39,6 +25,8 @@
 #' @param df.resp dataframe containing all response samples obtained from a site,
 #'                including multiple biological communities, if sampled.
 #' @param df.sites dataframe containing StationID, COMID, IncaseCol, and OutcaseCol
+#' @param incaseColName Name of column in the sites file that indicates a site
+#'   is inside the case
 #'
 #' @return A dataframe of site sample information sorted by StationID and SampleDate
 #'         (both ascending), along with COMID, OutcaseCol, IncaseCol, and identifiers
@@ -49,28 +37,28 @@
 #'         are omitted.
 #'
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getAllSamplesTable <- function(df.stress = NULL,
                                df.stressInfo = NULL,
                                df.resp = NULL,
                                df.sites = NULL,
                                incaseColName = NULL) {
-  
-  # Global Bindings
-  # data_Stress <- data_stressInfo <- data_respTrim <- StressSampleDate <-
-  #   StressSampleID <- SourceGroup <- StdParamName <- RespSampleDate <- 
-  #   RespSampleID <- ModeledSampleID <- incaseColName <- data_Sites <- 
-  #   StationID <- Label <- Type <- biocomm <- SampleDate <- NULL
 
-  # boo.debug = FALSE
-  # 
-  # if (boo.debug) {
-  #   df.stress <- data_Stress
-  #   df.stressInfo <- data_stressInfo
-  #   df.resp <- data_respTrim
-  #   df.sites <- data_Sites
-  # }
+  # Global Bindings
+  data_Stress <- data_stressInfo <- data_respTrim <- StressSampleDate <-
+    StressSampleID <- SourceGroup <- StdParamName <- RespSampleDate <-
+    RespSampleID <- ModeledSampleID <- data_Sites <-
+    StationID <- Label <- Type <- biocomm <- SampleDate <- NULL
+
+  boo.debug = FALSE
+
+  if (boo.debug) {
+    df.stress <- data_Stress
+    df.stressInfo <- data_stressInfo
+    df.resp <- data_respTrim
+    df.sites <- data_Sites
+  }
 
   # define pipe
   `%>%` <- dplyr::`%>%`

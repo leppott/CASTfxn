@@ -115,8 +115,8 @@ getClusterInfo <- function(TargetSiteID
                            , dir_sub="ClusterInfo"
                            ) {##FUNCTION.START
   # Global Bindings
-  outcaseID <- localdir <- Cluster <- var <- NULL
-  
+  outcaseID <- localdir <- Cluster <- var <- list.SiteSummary <- NULL
+
   boo_DEBUG <- FALSE
   #
   if (boo_DEBUG == TRUE) {
@@ -130,7 +130,7 @@ getClusterInfo <- function(TargetSiteID
     dir_results = file.path(localdir, "Results")
     dir_sub = "ClusterInfo"
   }##IF~boo_DEBUG~END
-  
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 

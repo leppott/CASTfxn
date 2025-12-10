@@ -37,13 +37,13 @@
 #' not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotvars.
 #' @param refSiteCol Default color outline for reference sites, used for standardization.
 #' Default = refOutline_col.
-#' @param plotdpi Default dpi for plots, used for standardization. 
+#' @param plotdpi Default dpi for plots, used for standardization.
 #' Default = plot_dpi. 600
-#' @param plotH Default height for plots, used for standardization. 
+#' @param plotH Default height for plots, used for standardization.
 #' Default = plot_H. 6
-#' @param plotW Default width for plots, used for standardization. 
+#' @param plotW Default width for plots, used for standardization.
 #' Default = plot_W. 8
-#' @param plotunits Default units for plots, used for standardization. 
+#' @param plotunits Default units for plots, used for standardization.
 #' Default = plot_units. "in"
 #' @param dir_photo directory containing all site photos (for every site in the data set).
 #' Default is file.path(getwd(), "Data", "Photos").
@@ -81,8 +81,8 @@ getSiteInfo <- function(TargetSiteID,
                         IncaseLabel = NULL,
                         OutcaseLabel = NULL,
                         useBC = FALSE,
-                        plotvars = data_plotvars,
-                        refSiteCol = refOutline_col,
+                        plotvars,
+                        refSiteCol,
                         plotdpi = 600,
                         plotH = 6,
                         plotW = 8,
@@ -91,14 +91,14 @@ getSiteInfo <- function(TargetSiteID,
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
                         boo_plot = TRUE) {##FUNCTION.START
-  
+
   # Global Bindings
-   list.CompSites <- data_Sites <- data_sampSummary <- 
-    data_bmiMetrics <- bmiIndexGp <- data_algMetrics <- algIndexGp <- 
-    data_fishMetrics <- fishIndexGp <- outcaseLabel <- incaseLabel <- in.dir <- 
-    region <- StationID <- Latitude <- Longitude <- RefSiteFlag <- COMID <- 
-    OutcaseCol <- IncaseCol <- SampleDate <- SampleType <- yLoc <- 
-    df_algMetrics <- df_fishMetrics <- Quality <- Index <- Samples <- 
+   list.CompSites <- data_Sites <- data_sampSummary <-
+    data_bmiMetrics <- bmiIndexGp <- data_algMetrics <- algIndexGp <-
+    data_fishMetrics <- fishIndexGp <- outcaseLabel <- incaseLabel <- in.dir <-
+    region <- StationID <- Latitude <- Longitude <- RefSiteFlag <- COMID <-
+    OutcaseCol <- IncaseCol <- SampleDate <- SampleType <- yLoc <-
+    df_algMetrics <- df_fishMetrics <- Quality <- Index <- Samples <-
     RespSampleID <- RespSampleDate <- Score <- Case <- NULL
 
   # DEBUG
@@ -121,12 +121,12 @@ getSiteInfo <- function(TargetSiteID,
     OutcaseLabel   = outcaseLabel
     IncaseLabel    = incaseLabel
     useBC          = FALSE
-    plotvars       = data_plotvars
+    plotvars       = plotvars
     plotdpi        = 600
     plotH          = 6
     plotW          = 8
     plotunits      = "in"
-    refSiteCol     = refOutline_col
+    refSiteCol     = refSiteCol
     dir_photo      = file.path(in.dir, region, "Photos")
     dir_results    = dir_results
     dir_sub        = "SiteInfo"
@@ -253,25 +253,25 @@ getSiteInfo <- function(TargetSiteID,
 
     # Prep bio data for plotting
     targetBioMetrics <- dplyr::filter(bioMetricData, StationID == TargetSiteID)
-    
+
     # LCN 9/23/25 patch to remove dependence on hardcoded data_bmiCoOccur
     if(useBC == TRUE){
       allBioMetrics <- bioMetricData %>%
         dplyr::filter(!(StationID %in% comp.sites))
     } else{
-      allBioMetrics <- bioMetricData %>% 
-        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>% 
-        dplyr::filter(is.na(IncaseCol) | IncaseCol != myIncaseID) %>% 
+      allBioMetrics <- bioMetricData %>%
+        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>%
+        dplyr::filter(is.na(IncaseCol) | IncaseCol != myIncaseID) %>%
         dplyr::select(-IncaseCol)
     }
-    
+
     allBioMetrics <- rbind(targetBioMetrics, allBioMetrics)
 
     allBioMetrics <- allBioMetrics %>%
       dplyr::mutate(Quality = as.character(Quality),
                     Case = "Outside the case")
     allBioMetrics <- allBioMetrics %>%
-      tidyr::pivot_longer(cols = dplyr::all_of(bioIndexGp), 
+      tidyr::pivot_longer(cols = tidyselect::all_of(bioIndexGp),
                           names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
@@ -297,22 +297,22 @@ getSiteInfo <- function(TargetSiteID,
     if(useBC == TRUE){
       compBioMetrics <- bioMetricData %>%
         dplyr::filter(StationID %in% comp.sites)%>%
-        dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
+        dplyr::select(StationID, RespSampleID, RespSampleDate, tidyselect::all_of(bioIndexGp),
                       Quality) %>%
         dplyr::mutate(Quality = as.character(Quality))
     } else{
-      compBioMetrics <- bioMetricData %>% 
-        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>% 
+      compBioMetrics <- bioMetricData %>%
+        dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>%
         dplyr::filter(IncaseCol == myIncaseID) %>%
-        dplyr::select(StationID, RespSampleID, RespSampleDate, all_of(bioIndexGp),
+        dplyr::select(StationID, RespSampleID, RespSampleDate, tidyselect::all_of(bioIndexGp),
                       Quality) %>%
         dplyr::mutate(Quality = as.character(Quality))
     }
-    
+
 
 
     compBioMetrics <- compBioMetrics %>%
-      tidyr::pivot_longer(cols = dplyr::all_of(bioIndexGp), names_to = "Index",
+      tidyr::pivot_longer(cols = tidyselect::all_of(bioIndexGp), names_to = "Index",
                           values_to = "Score") %>%
       dplyr::mutate(Quality = ifelse(StationID == TargetSiteID, "Target", Quality),
                     Quality = factor(Quality, levels = c("Target",
@@ -357,8 +357,8 @@ getSiteInfo <- function(TargetSiteID,
                       (nrow(compBioMetrics) - nrow(myBioSamps)),
                       " from ", (length(unique(compBioMetrics$StationID)) - 1), " sites)") # :CN 9/23/25 changed from length(comp.sites)
 
-    
-    
+
+
     if(bioComm == "bmi"){
       str_title <- "Benthic macroinvertebrate index scores"
     }
@@ -425,7 +425,7 @@ getSiteInfo <- function(TargetSiteID,
     have.photos <- FALSE
     for (l in 1:length(photofiles)) {
       photoname <- photofiles[l]
-      if (stringr::str_detect(photoname, dplyr::all_of(TargetSiteID)) == TRUE) {
+      if (stringr::str_detect(photoname, tidyselect::all_of(TargetSiteID)) == TRUE) {
         file.copy(file.path(dir_photo, photoname),
                   file.path(dir_path, "Photos", photoname))
         message(paste0(photoname, " copied."))

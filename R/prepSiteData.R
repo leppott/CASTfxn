@@ -11,23 +11,30 @@
 #' @details Retrieves saved site and cluster objects from their respective rds files.
 #'
 #' @param out.dir directory where all rds files are stored
+#' @param outcaseLabel x
+#' @param incaseColName x
+#' @param useBC x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
+#' @importFrom rlang .data
 #' @export
 #'
-prepSiteData <- function(out.dir, outcaseLabel = NULL, incaseColName = NULL, useBC = NULL) {
+prepSiteData <- function(out.dir,
+                         outcaseLabel = NULL,
+                         incaseColName = NULL,
+                         useBC = NULL) {
 
   # define pipe
   `%>%` <- dplyr::`%>%`
-  
+
   data_Sites <- readRDS(file.path(out.dir, "data_Sites.rds"))
   data_cluster <- readRDS(file.path(out.dir, "data_cluster.rds"))
   data_Sites <- data_Sites %>%
-    dplyr::mutate(StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+    dplyr::mutate(StationID = stringr::str_replace_all(.data$StationID, "[:punct:]", "_"))
 
   if (!("ClusterID" %in% colnames(data_Sites))) {
     data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)

@@ -22,6 +22,7 @@
 #' index and metric values, regardless of matching status
 #' @param df_respinfo dataframe containing response metadata, specifically "Label"
 #' @param df_stressinfo dataframe containing stressor metadata, specifically "Label"
+#' @param df_paired x
 #' @param plotdpi Standardized dpi value for graphics. Default = plot_dpi. 600
 #' @param plotH Standardized height value for graphics. Default = plot_H. 6
 #' @param plotW Standardized width value for graphics. Default = plot_W. 8
@@ -36,7 +37,7 @@
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getTimeSeq <- function(TargetSiteID,
                        biocomm,
@@ -55,11 +56,11 @@ getTimeSeq <- function(TargetSiteID,
                        boo_plot = TRUE) {##FUNCTION.START
 
   # Global Bindings
-  bioComm <- bioIndex <- data_Stress <- bioMetricData <- data_bmiMetricsInfo <- 
-    df_stressorMetadata <- StressSampleDate <- StationID <- RespSampleDate <- 
-    StressSampleID <- RespSampleID <- Quality <- Value <- type <- SampleDate <- 
+  bioComm <- bioIndex <- data_Stress <- bioMetricData <- data_bmiMetricsInfo <-
+    df_stressorMetadata <- StressSampleDate <- StationID <- RespSampleDate <-
+    StressSampleID <- RespSampleID <- Quality <- Value <- type <- SampleDate <-
     bioIndexName <- StressorValue <- Stressor <- LogTransf <- Label <- NULL
-        
+
   # Debug
   boo_DEBUG <- FALSE
 
@@ -132,26 +133,26 @@ getTimeSeq <- function(TargetSiteID,
                 row.names = FALSE, sep = "\t")
   } # End modeled data write to data gaps
 
-  data_paired <- df_paired %>% 
-    dplyr::filter(StationID == TargetSiteID) %>% 
-    dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID, 
-                  RespSampleID, Quality, dplyr::all_of(stressors)) %>% 
-    dplyr::left_join(df_resp %>% dplyr::select(StationID, RespSampleID, 
-                                               RespSampleDate, dplyr::all_of(metrics)), 
+  data_paired <- df_paired %>%
+    dplyr::filter(StationID == TargetSiteID) %>%
+    dplyr::select(StationID, StressSampleDate, RespSampleDate, StressSampleID,
+                  RespSampleID, Quality, dplyr::all_of(stressors)) %>%
+    dplyr::left_join(df_resp %>% dplyr::select(StationID, RespSampleID,
+                                               RespSampleDate, dplyr::all_of(metrics)),
                      by = c("StationID", "RespSampleID", "RespSampleDate"))
   # LCN 20250916 not doing anything with modeled stressors. I'm fine if they are included, they just won't be informative plots.
-  
+
   # df_stress <- df_stress %>%
   #   dplyr::filter(!is.na(StressSampleDate)) %>%   # Eliminate modeled stressors which are not time-bound
   #   dplyr::select(StationID, StressSampleID, StressSampleDate, dplyr::all_of(stressors)) %>%
   #   dplyr::select_if(not_all_na)
-  # 
+  #
   # stressors <- intersect(stressors, colnames(df_stress))
-  # 
+  #
   # df_resp <- df_resp %>%
   #   dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, dplyr::all_of(metrics)) %>%
   #   dplyr::select_if(not_all_na)
-  # 
+  #
   # metricData <- intersect(metrics, colnames(df_resp))
 
   count = 1
@@ -261,7 +262,7 @@ getTimeSeq <- function(TargetSiteID,
   #                       values_to = "StressorValue", values_drop_na = TRUE)
   # df_resp <- dplyr::select(df_resp, StationID, RespSampleID, RespSampleDate,
   #                          dplyr::all_of(bioIndexGp), Quality)
-  # 
+  #
   # df_TS_scores <- merge(df_stress, df_resp,
   #                       by.x = c("StationID", "StressSampleDate"),
   #                       by.y = c("StationID", "RespSampleDate"),
@@ -273,11 +274,11 @@ getTimeSeq <- function(TargetSiteID,
   #                 bioIndexName := {{bioindex}},
   #                 bioComm := {{biocomm}}) %>%
   #   dplyr::rename(bioIndex := {{bioindex}})
-  # 
+  #
   # df_TS_scores <- merge(df_TS_scores,
   #                       df_stressinfo[, c("Stressor", "LogTransf", "Label")],
   #                       by = "Stressor", all.x = TRUE)
-  # 
+  #
   # df_TS_scores <- df_TS_scores %>%
   #   dplyr::mutate(Label = ifelse(LogTransf == 1,
   #                                paste0("Log1p ", Label),
@@ -289,21 +290,21 @@ getTimeSeq <- function(TargetSiteID,
   #                 RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
   #                 Label, StressorValue, LoE, Score) %>%
   #   dplyr::rename(Stressor = Label)
-  # 
-  
-  df_TS_scores <- data_paired %>% 
+  #
+
+  df_TS_scores <- data_paired %>%
     tidyr::pivot_longer(cols = dplyr::all_of(stressors), names_to = "Stressor",
-                        values_to = "StressorValue") %>% 
+                        values_to = "StressorValue") %>%
     tidyr::pivot_longer(cols = dplyr::all_of(metrics), names_to = "bioIndexName",
-                        values_to = "bioIndex") %>% 
-    dplyr::filter(bioIndexName == bioindex, !is.na(StressorValue)) %>% 
-    dplyr::mutate(bioComm = biocomm, LoE = "TS", Score = "NE") %>% 
+                        values_to = "bioIndex") %>%
+    dplyr::filter(bioIndexName == bioindex, !is.na(StressorValue)) %>%
+    dplyr::mutate(bioComm = biocomm, LoE = "TS", Score = "NE") %>%
     dplyr::left_join(df_stressinfo %>% dplyr::select(Stressor, LogTransf, Label),
-                     by = "Stressor") %>% 
+                     by = "Stressor") %>%
     dplyr::mutate(Label = ifelse(LogTransf == 1,
                           paste0("Log1p ", Label),
-                          Label)) %>% 
-    dplyr::select(-Stressor, -LogTransf) %>% 
+                          Label)) %>%
+    dplyr::select(-Stressor, -LogTransf) %>%
     dplyr::rename(Stressor = Label)
 
   return(df_TS_scores)

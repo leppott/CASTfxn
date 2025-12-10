@@ -26,14 +26,14 @@
 #'
 # @keywords
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getOutliers <- function(df_data,
                         df_meta,
-                        dir_plots = file.path(getwd(), "Results")) {##FUNCTION.START
-  
+                        dir_plots) {##FUNCTION.START
+
   # Global Bindings
-  data_Stress <- data_stressInfo <- out.dir <- StdParamName <- LogTransf <- 
+  data_Stress <- data_stressInfo <- out.dir <- StdParamName <- LogTransf <-
     ResultValue <- TransfResult <- IQRmethod <- SDmethod <- NULL
 
   # Debug

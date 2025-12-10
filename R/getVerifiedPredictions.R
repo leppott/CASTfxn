@@ -33,7 +33,7 @@
 #' @return Results text file and png files to "Results" "VerifiedPredictions" folder
 #' in working directory of box plots
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 #'
 getVerifiedPredictions <- function(TargetSiteID,
@@ -44,7 +44,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    df_bioTaxaData,
                                    df_MasterTaxa,
                                    colBio,
-                                   plotvars = data_plotvars,
+                                   plotvars,
                                    plotdpi = 600,
                                    plotH = 6,
                                    plotW = 8,
@@ -53,39 +53,41 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    dir_sub = "_WoE",
                                    boo_plot = TRUE) {##FUNCTION.START
 
+  `:=` <- data.table::`:=`
+
   # Global Bindings
-  # df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioTaxaData <- 
-  #   bioMasterTaxa <- bioIndexGp <- dir_results <- boo.plot.user <- SSTVname <- 
-  #   SensMin <- SensMax <- Stressor <- LogTransf <- Label <- TaxonID <-
-  #   IncaseYN <- Quality <- StationID <- IncaseCol <- StressSampleID <- 
-  #   StressSampleDate <- RespSampleID <- RespSampleDate <- RefSiteFlag <- 
-  #   BetterThan <- sstv.sensall <- sstv.sensmaxLabel <- Group <- NumInd <- 
-  #   PctInd <- PctTaxa <- NumInds <- PctInds <- NumTaxa <- variable <- value <- 
-  #   Min <- q25 <- q50 <- q75 <- Max <- StressorLabel <- StressorValue <- 
-  #   Response <- ResponseValue <- Score <- Scores <- Type <- OverallMax <- 
-  #   bioIndex <- bioIndexName <- LoE <- NULL
-  
+  df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioTaxaData <-
+    bioMasterTaxa <- bioIndexGp <- dir_results <- boo.plot.user <- SSTVname <-
+    SensMin <- SensMax <- Stressor <- LogTransf <- Label <- TaxonID <-
+    IncaseYN <- Quality <- StationID <- IncaseCol <- StressSampleID <-
+    StressSampleDate <- RespSampleID <- RespSampleDate <- RefSiteFlag <-
+    BetterThan <- sstv.sensall <- sstv.sensmaxLabel <- Group <- NumInd <-
+    PctInd <- PctTaxa <- NumInds <- PctInds <- NumTaxa <- variable <- value <-
+    Min <- q25 <- q50 <- q75 <- Max <- StressorLabel <- StressorValue <-
+    Response <- ResponseValue <- Score <- Scores <- Type <- OverallMax <-
+    bioIndex <- bioIndexName <- LoE <- BioComm <- NULL
+
   # # Debugging
-  # boo.DEBUG <- FALSE
+  boo.DEBUG <- FALSE
   # #
-  # if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
-  #   TargetSiteID = TargetSiteID
-  #   stressors.sstv = stressors.sstv
-  #   df_stressinfo = df_stressorMetadata
-  #   df_paired = df_PairedStressResp
-  #   biocomm = bioComm
-  #   df_bioTaxaData = bioTaxaData
-  #   df_MasterTaxa = bioMasterTaxa
-  #   colBio = bioIndexGp
-  #   plotvars = data_plotvars
-  #   plotdpi = 600
-  #   plotH = 6
-  #   plotW = 8
-  #   plotunits = "in"
-  #   dir_plots = dir_results
-  #   dir_sub = "_WoE"
-  #   boo_plot = boo.plot.user
-  # }##IF.boo.DEBUG.END
+  if (boo.DEBUG == TRUE) {##IF.boo.DEBUG.START
+    TargetSiteID = TargetSiteID
+    stressors.sstv = stressors.sstv
+    df_stressinfo = df_stressorMetadata
+    df_paired = df_PairedStressResp
+    biocomm = bioComm
+    df_bioTaxaData = bioTaxaData
+    df_MasterTaxa = bioMasterTaxa
+    colBio = bioIndexGp
+    plotvars = plotvars
+    plotdpi = 600
+    plotH = 6
+    plotW = 8
+    plotunits = "in"
+    dir_plots = dir_results
+    dir_sub = "_WoE"
+    boo_plot = boo.plot.user
+  }##IF.boo.DEBUG.END
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -203,9 +205,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         dplyr::filter(IncaseYN == 1) %>%
         dplyr::mutate(Quality = forcats::fct_expand(Quality, "Target")) %>%
         dplyr::select(StationID, IncaseCol, StressSampleID, StressSampleDate,
-                      RespSampleID, RespSampleDate, BioComm, 
+                      RespSampleID, RespSampleDate, BioComm,
                       dplyr::all_of(colBio),
-                      RefSiteFlag, Quality, BetterThan, 
+                      RefSiteFlag, Quality, BetterThan,
                       dplyr::all_of(stressors.sstv))
       nTargetSamples <- nrow(df_stress.sstv[df_stress.sstv$StationID == TargetSiteID,])
 
@@ -463,7 +465,7 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_tbl_scores <- df_tbl_scores %>%
           dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                         RespSampleDate, IncaseCol, BioComm, dplyr::all_of(colBio),
-                        Quality, dplyr::all_of(stressor), Group, Label, 
+                        Quality, dplyr::all_of(stressor), Group, Label,
                         variable, value,
                         Min, q25, q50, q75, Max) %>%
           dplyr::rename(StressorValue = {{stressor}},

@@ -43,9 +43,9 @@
 #' @return A png map to a subdirectory "SiteInfo" in the folder named by the SiteID
 #' in the user supplied dir_results folder (default is "Results" folder in the
 #' working directory).
-#' 
+#'
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getSiteMap <- function(sp_outline,
                        sp_flowline,
@@ -61,31 +61,31 @@ getSiteMap <- function(sp_outline,
                        dir_results = file.path(getwd(), "Results"),
                        dir_sub = "SiteInfo",
                        dir_map_rmd) {
-  
+
   # Global Bindings
-  # STATE.shp <- NHD.STATE <- data_Sites <- list.CompSites <- data_plotvars <- 
-  #   refOutline_col <- StationID <- Longitude <- Latitude <- RefSiteFlag <- 
-  #   COMID <- IncaseCol <- OutcaseCol <- Case <- geometry <- NULL
-  
+  STATE.shp <- NHD.STATE <- data_Sites <- list.CompSites <- data_plotvars <-
+    refOutline_col <- StationID <- Longitude <- Latitude <- RefSiteFlag <-
+    COMID <- IncaseCol <- OutcaseCol <- Case <- geometry <- NULL
+
   # Debug
-  # boo_DEBUG <- FALSE
-  # 
-  # if (boo_DEBUG == TRUE) {
-  #   sp_outline <- STATE.shp
-  #   sp_flowline <- NHD.STATE
-  #   region <- region
-  #   datum <- datum
-  #   df_sites <- data_Sites
-  #   allSites <- list.CompSites$all.sites
-  #   compSites <- list.CompSites$comp.sites
-  #   TargetSiteID <- TargetSiteID
-  #   useBC <- FALSE
-  #   plotvars = data_plotvars
-  #   refOutline = refOutline_col
-  #   dir_results <- dir_results
-  #   dir_sub <- "SiteInfo"
-  #   dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
-  # }
+  boo_DEBUG <- FALSE
+
+  if (boo_DEBUG == TRUE) {
+    sp_outline <- STATE.shp
+    sp_flowline <- NHD.STATE
+    region <- region
+    datum <- datum
+    df_sites <- data_Sites
+    allSites <- list.CompSites$all.sites
+    compSites <- list.CompSites$comp.sites
+    TargetSiteID <- TargetSiteID
+    useBC <- FALSE
+    plotvars = data_plotvars
+    refOutline = refOutline_col
+    dir_results <- dir_results
+    dir_sub <- "SiteInfo"
+    dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+  }
 
   # define pipe
   `%>%` <- dplyr::`%>%`
@@ -147,25 +147,25 @@ getSiteMap <- function(sp_outline,
 
   # LCN 9/23/25 jury rigged solution to remove dependence on hardcoded data_bmiCoOccur
   # Does IncaseCol work if useBC == TRUE?
-  
+
   if(useBC == TRUE){
     compSites <- compSites
     allSites <- allSites
   } else{
-    TargetSiteCluster <- df_sites %>% 
-      dplyr::filter(StationID == TargetSiteID) %>% 
+    TargetSiteCluster <- df_sites %>%
+      dplyr::filter(StationID == TargetSiteID) %>%
       dplyr::pull(IncaseCol)
-    
-    compSites <- df_sites %>% 
-      dplyr::filter(IncaseCol == TargetSiteCluster) %>% 
+
+    compSites <- df_sites %>%
+      dplyr::filter(IncaseCol == TargetSiteCluster) %>%
       dplyr::pull(StationID)
-    
-    allSites <- df_sites %>% 
-      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>% 
+
+    allSites <- df_sites %>%
+      dplyr::filter(is.na(IncaseCol) | IncaseCol != TargetSiteCluster) %>%
       dplyr::pull(StationID)
   }
-  
-  
+
+
   # Get sites (if datum is specified in the metadata, transform to WGS84,
   # otherwise, assume wGS84)
   # Subset ref sites, outside case sites, inside case sites, and target site
@@ -199,10 +199,10 @@ getSiteMap <- function(sp_outline,
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (grepl("\\d*", datum)) {
-    if(class(datum)=="character"){
+    if(inherits(datum, "character")){
       datum <- as.numeric(datum)
     }
-    
+
     sp_sites <- sf::st_as_sf(df_sites, crs = datum,
                              coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
@@ -238,7 +238,7 @@ getSiteMap <- function(sp_outline,
   sp_outside <- subset(sp_sites, Case == "Outside the case")
   sp_inside <- subset(sp_sites, Case == "Inside the case")
   sp_targetsite <- subset(sp_sites, Case == "Target")
-  
+
   state.map <- tmap::tm_shape(sp_outline, bbox = ggmap_bbox) +
     tmap::tm_polygons(fill = "white") + # LCN changed fill color from grey80
     tmap::tm_shape(sp_flowline) +
@@ -253,7 +253,7 @@ getSiteMap <- function(sp_outline,
     tmap::tm_shape(sp_inside) +
     tmap::tm_symbols(fill = insideFill, col = "grey50", shape = insideShape,
                      size = insideSize)
-  
+
   if(nrow(sp_outside) > 0){
     state.map <- state.map +
       tmap::tm_shape(sp_outside) +

@@ -36,7 +36,7 @@
 #' in working directory of box plots
 #'
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getVPSSI <- function(TargetSiteID,
                      stressors.ssi,
@@ -46,7 +46,7 @@ getVPSSI <- function(TargetSiteID,
                      df_bioMetricData,
                      df_bioMetricInfo,
                      colBio,
-                     plotvars = data_plotvars,
+                     plotvars,
                      plotdpi = 600,
                      plotH = 6,
                      plotW = 8,
@@ -56,15 +56,15 @@ getVPSSI <- function(TargetSiteID,
                      boo_plot = TRUE) {
 
   # Global Bindings
-  df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioMetricData <- 
-    bioMetricInfo <- bioIndex <- dir_results <- boo_plot_user <- Type <- 
-    Stressor <- SSIndex <- Label <- LogTransf <- MetricName <- StationID <- 
-    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <- 
-    IncaseYN <- IncaseCol <- Quality <- SSIValue <- SSIqual <- StressorValue <- 
-    n <- VPpred_Deg <- Sc_VPlog <- y <- y.name <- x <- Sc_VPSSI_box <- Min <- 
-    q25 <- q50 <- q75 <- Max <- TransfValue <- incaseLabel <- bioIndexName <- 
-    LoE <- Score <- NULL
-  
+  df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioMetricData <-
+    bioMetricInfo <- bioIndex <- dir_results <- boo_plot_user <- Type <-
+    Stressor <- SSIndex <- Label <- LogTransf <- MetricName <- StationID <-
+    StressSampleID <- StressSampleDate <- RespSampleID <- RespSampleDate <-
+    IncaseYN <- IncaseCol <- Quality <- SSIValue <- SSIqual <- StressorValue <-
+    n <- VPpred_Deg <- Sc_VPlog <- y <- y.name <- x <- Sc_VPSSI_box <- Min <-
+    q25 <- q50 <- q75 <- Max <- TransfValue <- incaseLabel <- bioIndexName <-
+    LoE <- Score <- BioComm <- NULL
+
   # Debugging
   boo.DEBUG <- FALSE
   #
@@ -77,7 +77,7 @@ getVPSSI <- function(TargetSiteID,
     df_bioMetricData = bioMetricData
     df_bioMetricInfo = bioMetricInfo
     colBio = bioIndex
-    plotvars = data_plotvars
+    plotvars = plotvars
     plotdpi = 600
     plotH = 6
     plotW = 8
@@ -147,7 +147,7 @@ getVPSSI <- function(TargetSiteID,
 
     info.ssi <- df_bioMetricInfo %>%
       dplyr::filter(MetricName %in% unique(info.stress$SSIndex))
-    
+
     if(nrow(info.ssi)==0){
       return(data.frame())
     }
@@ -163,15 +163,15 @@ getVPSSI <- function(TargetSiteID,
       ssi.stressors <- info.stress$Stressor[info.stress$SSIndex == ssi.name]
       df.targetdata <- df_paired %>%
         dplyr::filter(StationID == TargetSiteID) %>%
-        dplyr::select(StationID, 
+        dplyr::select(StationID,
                       StressSampleID,
-                      StressSampleDate, 
+                      StressSampleDate,
                       RespSampleID,
-                      RespSampleDate, 
+                      RespSampleDate,
                       dplyr::all_of(ssi.stressors)) %>%
         tidyr::pivot_longer(cols = dplyr::all_of(ssi.stressors),
                             names_to = "Stressor",
-                            values_to = "TransfValue", 
+                            values_to = "TransfValue",
                             values_drop_na = TRUE)
 
       ## QC data availability ----
@@ -203,17 +203,17 @@ getVPSSI <- function(TargetSiteID,
       df_plot <- dplyr::mutate(df.data, BioComm = {{biocomm}},
                                SSIndex = {{ssi.name}}) %>%
         dplyr::rename(SSIValue = {{ssi.name}}) %>%
-        dplyr::select(StationID, 
-                      IncaseCol, 
-                      StressSampleID, 
+        dplyr::select(StationID,
+                      IncaseCol,
+                      StressSampleID,
                       StressSampleDate,
-                      RespSampleID, 
-                      RespSampleDate, 
-                      BioComm, 
+                      RespSampleID,
+                      RespSampleDate,
+                      BioComm,
                       dplyr::all_of(colBio),
-                      Quality, 
-                      SSIndex, 
-                      SSIValue, 
+                      Quality,
+                      SSIndex,
+                      SSIValue,
                       dplyr::all_of(ssi.stressors)) %>%
         dplyr::filter(!is.na(SSIndex))
 
@@ -221,7 +221,7 @@ getVPSSI <- function(TargetSiteID,
       if (!is.na(ssi.cutoff)) {
 
         message(paste0(ssi.name, " has a cutoff value."))
-        
+
         # Prep data for logistic regression and scoring
         # if (ssi.inclind == "≤" | ssi.inclind == "<=") {
         if (ssi.inclind == "\u2264" | ssi.inclind == "<=") {
@@ -336,26 +336,26 @@ getVPSSI <- function(TargetSiteID,
           j_values_scores <- cbind(j_values, j_VPlog_predict, j_VPlog_score) %>%
             dplyr::rename(StressorValue = x,
                           VPpred_Deg = j_VPlog_predict,
-                          Sc_VPlog = j_VPlog_score) %>% 
+                          Sc_VPlog = j_VPlog_score) %>%
             dplyr::distinct() # LCN added 20250917. If there are multiple observations with the same stressor value, it will result in an expansion of the merged dataframe with duplicate observations.
 
           df_plot.log_target <- df_plot %>%
             dplyr::filter(StationID == TargetSiteID) %>%
-            dplyr::select(StationID, 
-                          StressSampleID, 
+            dplyr::select(StationID,
+                          StressSampleID,
                           StressSampleDate,
                           RespSampleID,
-                          RespSampleDate, 
+                          RespSampleDate,
                           SSIndex,
-                          SSIValue, 
-                          SSIqual, 
+                          SSIValue,
+                          SSIqual,
                           dplyr::all_of(str))
 
           df_plot.log_target <- merge(df_plot.log_target, j_values_scores,
                                       by.x = str, by.y = "StressorValue")
 
           df_plot.log_target <- df_plot.log_target %>%
-            tidyr::pivot_longer(cols = dplyr::all_of(str), 
+            tidyr::pivot_longer(cols = dplyr::all_of(str),
                                 names_to = "Stressor",
                                 values_to = "StressorValue") %>%
             dplyr::mutate(BioComm = biocomm,
@@ -491,23 +491,23 @@ getVPSSI <- function(TargetSiteID,
           dplyr::mutate(Sc_VPSSI_box = dplyr::case_when(SSIValue > q50 ~ -1,
                                                         SSIValue < q25 ~ 1,
                                                         TRUE ~ 0)) %>%
-          dplyr::select(StationID, 
-                        IncaseCol, 
-                        StressSampleID, 
+          dplyr::select(StationID,
+                        IncaseCol,
+                        StressSampleID,
                         StressSampleDate,
-                        RespSampleID, 
-                        RespSampleDate, 
-                        BioComm, 
+                        RespSampleID,
+                        RespSampleDate,
+                        BioComm,
                         dplyr::all_of(colBio),
-                        Quality, 
-                        SSIndex, 
+                        Quality,
+                        SSIndex,
                         SSIValue,
-                        Sc_VPSSI_box, 
-                        n, 
+                        Sc_VPSSI_box,
+                        n,
                         Min,
                         q25,
                         q50,
-                        q75, 
+                        q75,
                         Max)
 
         # Identify the position of score labels relative to the arrow
@@ -524,23 +524,23 @@ getVPSSI <- function(TargetSiteID,
           dplyr::mutate(Sc_VPSSI_box = dplyr::case_when(SSIValue < q50 ~ -1,
                                                         SSIValue > q75 ~ 1,
                                                         TRUE ~ 0)) %>%
-          dplyr::select(StationID, 
-                        IncaseCol, 
-                        StressSampleID, 
+          dplyr::select(StationID,
+                        IncaseCol,
+                        StressSampleID,
                         StressSampleDate,
                         RespSampleID,
                         RespSampleDate,
-                        BioComm, 
+                        BioComm,
                         dplyr::all_of(colBio),
                         Quality,
-                        SSIndex, 
-                        SSIValue, 
-                        Sc_VPSSI_box, 
-                        n, 
+                        SSIndex,
+                        SSIValue,
+                        Sc_VPSSI_box,
+                        n,
                         Min,
                         q25,
                         q50,
-                        q75, 
+                        q75,
                         Max)
 
         # Identify the position of score labels relative to the arrow
@@ -560,22 +560,22 @@ getVPSSI <- function(TargetSiteID,
                            by = c("StationID", "StressSampleID", "StressSampleDate",
                                   "RespSampleID", "RespSampleDate"))
       df.scores.i <- df.scores.i %>%
-        dplyr::select(StationID, 
-                      IncaseCol, 
+        dplyr::select(StationID,
+                      IncaseCol,
                       StressSampleID,
                       StressSampleDate,
                       RespSampleID,
-                      RespSampleDate, 
-                      BioComm, 
+                      RespSampleDate,
+                      BioComm,
                       dplyr::all_of(colBio),
-                      Quality, 
-                      Stressor, 
+                      Quality,
+                      Stressor,
                       TransfValue,
-                      SSIndex, 
+                      SSIndex,
                       SSIValue,
                       Sc_VPSSI_box,
-                      n, 
-                      Min, 
+                      n,
+                      Min,
                       q25,
                       q50,
                       q75,

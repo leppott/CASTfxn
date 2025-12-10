@@ -21,7 +21,7 @@
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
 #' @param TargetSiteID SiteID
-#' @param biocomms x
+#' @param biocommlist x
 #' @param primeIndex x
 #' @param removeOutliers Default = TRUE
 #' @param samplim x
@@ -43,6 +43,7 @@
 #' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
+#' @param boo.WS x
 #'
 # @param probsHigh Default = 0.75
 # @param probsLow Default = 0.25
@@ -66,7 +67,7 @@
 getReport <- function(TargetSiteID,
                       biocommlist,
                       regionName,
-                      primeIndex = bmiIndexGp,
+                      primeIndex,
                       removeOutliers,
                       samplim,
                       r2_cutoff,
@@ -91,7 +92,7 @@ getReport <- function(TargetSiteID,
                       ) { ##FUNCTION.START
   # Global Bindings
   #biocommlist <- regionName <- fn.cluster <- NULL
-    
+
   # Debug
   boo_DEBUG <- FALSE
   DEBUG_person <- "Ann"
@@ -173,7 +174,7 @@ getReport <- function(TargetSiteID,
                                     algIndex       = algIndex,
                                     fishIndex      = fishIndex,
                                     #clusterfile    = basename(fn.cluster),
-                                    dir_results    = dir_results, 
+                                    dir_results    = dir_results,
                                     boo.WS         = boo.WS),
                       quiet = TRUE)
   } else {
