@@ -143,7 +143,7 @@ boo.WS <- data_CASTmeta %>% dplyr::pull(exploreWSStressor) %>% as.logical()
 # Set up booleans for different data types available
 boo.meas  <- FALSE
 boo.model <- FALSE
-boo.WS.loaded    <- FALSE
+# boo.WS.loaded    <- FALSE
 for (l in seq_along(loaded)) {
   msg <- paste0("booleans, ", l, "/", length(loaded))
   message(msg)
@@ -164,7 +164,7 @@ for (l in seq_along(loaded)) {
       data.mod <- object
     }
   }
-  if (grepl("WS", object) == TRUE) { boo.WS.loaded <- TRUE }
+  # if (grepl("WS", object) == TRUE) { boo.WS.loaded <- TRUE }
 }
 rm(l, object, data_loaded)
 
@@ -357,19 +357,31 @@ if (boo.meas && boo.model) {
 }
 
 # If using, get WS stressor data
-if (boo.WS & boo.WS.loaded) {
-  data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
-  data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
-                                           "data_stressorinfoWS.rds"))
+if (boo.WS == TRUE & helperImport == FALSE) {
+  # data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
+  # data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
+  #                                          "data_stressorinfoWS.rds"))
+
+  fn.WSstressor.Data <- as.character(dplyr::select(data_CASTmeta, fn.WSstressor.Data))
+  fn.WSstressor.Info <- as.character(dplyr::select(data_CASTmeta, fn.WSstressor.Info))
+
+  if(file.exists(file.path(in.dir, fn.WSstressor.Data))){
+    data_stressorWS <- readCASToolData(fn.WSstressor.Data)
+  } else{
+    message("Watershed stressor data not found in input files")
+  }
+
+  if(file.exists(file.path(in.dir, fn.WSstressor.Info))){
+    data_stressorinfoWS <- readCASToolData(fn.WSstressor.Info)
+  } else{
+    message("Watershed stressor metdata not found in input files")
+  }
 
   if("comid" %in% names(data_stressorWS)){
     data_stressorWS <- data_stressorWS %>% dplyr::rename("COMID" = "comid")
   }
 
-} else if(boo.WS == TRUE & boo.WS.loaded == FALSE & helperImport == FALSE){
-  message("Watershed stressor data not found in input data files")
-
-} else if(boo.WS == TRUE & boo.WS.loaded == FALSE & helperImport == TRUE){
+} else if(boo.WS == TRUE & helperImport == TRUE){
 
   ## get cluster package if necessary
   if(boo_Shiny == FALSE){
