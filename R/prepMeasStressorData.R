@@ -102,6 +102,8 @@ prepMeasStressorData <- function(in.dir,
       dplyr::filter(Outlier == "Outlier")
     data_chemAll <- data_chemAll %>%
       dplyr::filter(Outlier %in% c("Good", "NE"))
+  } else {
+    data_measoutliers <- NULL
   }
 
   data_chemAll <- data_chemAll %>%

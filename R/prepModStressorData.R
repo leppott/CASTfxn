@@ -98,6 +98,8 @@ prepModStressorData <- function(in.dir,
       dplyr::filter(Outlier == "Outlier")
     data_modelAll <- data_modelAll %>%
       dplyr::filter(Outlier %in% c("Good", "NE"))
+  } else {
+    data_modeloutliers <- NULL
   }
 
   data_modelAll <- data_modelAll %>%

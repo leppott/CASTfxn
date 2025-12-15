@@ -37,6 +37,15 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9014 (2025-12-15)
+
+* fix: Add extra statement to ensure the prepMeasStressorData output (data_measoutliers) is always defined
+* fix: Add extra statement to ensure the prepModStressorData output (data_modeloutliers) is always defined
+* refactor: Update step progress messages in CASTool.r
+* fix: Add check for is.na() for removeOutliers at step 7 in skeleton code
+* fix: Add check for boo.WS and helperImport to convert NA to FALSE
+* refactor: Updates to CASTool.R (skeleton code) for Shiny
+
 ## Changes in version 0.2.3.9013 (2025-12-15)
 
 * fix: Update prepMeasStressorData to account for NA in check on removeOutliers
