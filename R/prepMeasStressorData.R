@@ -97,7 +97,7 @@ prepMeasStressorData <- function(in.dir,
   rm(data_measOutliers, params2use)
 
   ## Average duplicate data -- remove outliers first, if desired
-  if (removeOutliers) {
+  if (!is.na(removeOutliers) & removeOutliers == TRUE) {
     data_measoutliers <- data_chemAll %>%
       dplyr::filter(Outlier == "Outlier")
     data_chemAll <- data_chemAll %>%

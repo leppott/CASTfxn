@@ -235,24 +235,17 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-browser()
-out.dir
-dn_checked_sk
-outcaseLabel
-incaseColName
-useBC
+
 list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk),
                               outcaseLabel = outcaseLabel,
                               incaseColName = incaseColName,
-                              useBC = useBC)
+                              useBC = useBC,
+                              outcaseColName = outcaseColName)
 
 data_Sites    <- list.SiteData$site
 data_cluster  <- list.SiteData$cluster
 refSites      <- list.SiteData$refSites
 rm(list.SiteData)
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 05, Measured data and metadata ####
@@ -266,7 +259,7 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-
+browser()
 if (boo.meas) {
   list.measStress   <- prepMeasStressorData(in.dir = file.path(out.dir, dn_checked_sk),
                                             out.dir = out.dir,

@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-15 09:50:09.625572
+    #> Last Update: 2025-12-15 10:44:00.471822
 
 # Planned Updates
 
@@ -24,6 +24,11 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3.9013 (2025-12-15)
+
+- fix: Update prepMeasStressorData to account for NA in check on
+  removeOutliers
 
 ## Changes in version 0.2.3.9012 (2025-12-15)
 
