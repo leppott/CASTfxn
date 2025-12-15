@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">CASTfxn</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3.9012</span>
       </span>
     </div>
 
@@ -42,9 +42,6 @@
       <a href="../articles/Elevation_Vignette.html">Elevation Vignette</a>
     </li>
   </ul></li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/leppott/CASTfxn/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -74,8 +71,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkInputs</span><span class="op">(</span></span>
 <span>  <span class="va">dir.uploaded</span>,</span>
 <span>  <span class="va">dir.out</span>,</span>
-<span>  fn.inputcheck <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CASTool_InputCheck.xlsx"</span>, package <span class="op">=</span> <span class="st">"CASTfxn"</span><span class="op">)</span>,</span>
-<span>  df_targets <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  fn.inputcheck <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CASTool_InputCheck.xlsx"</span>, package <span class="op">=</span> <span class="st">"CASTfxn"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,20 +92,14 @@
 files, columns, types, and relationships.
 Default is extdata/CASTool_InputCheck.xlsx</p></dd>
 
-
-<dt id="arg-df-targets">df_targets<a class="anchor" aria-label="anchor" href="#arg-df-targets"></a></dt>
-<dd><p>data frame with single column (TargetSiteID) of target
-sites</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of objects to be used in the CASTool.</p>
+    <p>A list of input check tables to be used in the CASTool.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Reviews each uploaded file against both user-input data (either via
-the shiny app or contained in the CASToolMetadata.xlsx file) to evaluate 1)
+    <p>Reviews each uploaded file against both user-input data to evaluate 1)
 if the file exists, 2) if it contains the required columns (which requires
 that they be named correctly), 3) whether datatypes meet requirements.</p>
 <p>If any required files do not exist, return the list of missing files and shut
@@ -122,7 +112,7 @@ path.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># None at this time </span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># None at this time</span></span></span>
 </code></pre></div>
     </div>
   </div>
