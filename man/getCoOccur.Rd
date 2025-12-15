@@ -15,14 +15,15 @@ getCoOccur(
   pHlimLow = 5,
   pHlimHigh = 9,
   DOlim = 6,
-  plotvars = data_plotvars,
+  plotvars,
   plotdpi = 600,
   plotH = 6,
   plotW = 8,
   plotunits = "in",
-  dir_plots = dir_results,
+  dir_plots,
   dir_sub = "_WoE",
-  boo_plot = TRUE
+  boo_plot = TRUE,
+  incaseLabel = NULL
 )
 }
 \arguments{

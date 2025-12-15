@@ -13,7 +13,7 @@ getVPSSI(
   df_bioMetricData,
   df_bioMetricInfo,
   colBio,
-  plotvars = data_plotvars,
+  plotvars,
   plotdpi = 600,
   plotH = 6,
   plotW = 8,
@@ -70,5 +70,5 @@ Get verified predictions.
 Required packages: dplyr, ggplot2, grid, stringr, tidyr
 }
 \examples{
-# None at this time 
+# None at this time
 }

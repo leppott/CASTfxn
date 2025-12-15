@@ -25,21 +25,20 @@
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
-in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
-out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
-region <- "Washington" # Name of region
-
 if(boo_Shiny == FALSE){
+  # User edits these lines
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
+  region <- "Washington" # Name of region
+  #
   devtools::load_all()
-}
-
-# Packages ----
-if(boo_Shiny == FALSE){
+  #
+  # Packages ----
   baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
   if(rlang::is_empty(baseDataInd)==FALSE){
     pakInd <- setdiff("pak", .packages(all.available = TRUE))
@@ -205,13 +204,22 @@ if (boo.meas) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
 # }
 
-
 ### Site variables ####
-datum          <- as.character(dplyr::select(data_CASTmeta, datum))
-outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
-outcaseLabel   <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
-incaseColName  <- as.character(dplyr::select(data_CASTmeta, incaseColName))
-incaseLabel    <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
+if (boo_Shiny) {
+  # should be single entries so should be ok
+  datum          <- as.character(dplyr::pull(data_CASTmeta, datum))
+  outcaseColName <- as.character(dplyr::pull(data_CASTmeta, outcaseColName))
+  outcaseLabel   <- as.character(dplyr::pull(data_CASTmeta, outcaseLabel))
+  incaseColName  <- as.character(dplyr::pull(data_CASTmeta, incaseColName))
+  incaseLabel    <- as.character(dplyr::pull(data_CASTmeta, incaseLabel))
+} else {
+  # doesn't work in Shiny as produces a list
+  datum          <- as.character(dplyr::select(data_CASTmeta, datum))
+  outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
+  outcaseLabel   <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
+  incaseColName  <- as.character(dplyr::select(data_CASTmeta, incaseColName))
+  incaseLabel    <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
+}## IF ~ boo_Shiny
 
 rm(b, bio)
 
@@ -226,9 +234,13 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-
 }## IF ~ boo_Shiny ~ END
-
+browser()
+out.dir
+dn_checked_sk
+outcaseLabel
+incaseColName
+useBC
 list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk),
                               outcaseLabel = outcaseLabel,
                               incaseColName = incaseColName,

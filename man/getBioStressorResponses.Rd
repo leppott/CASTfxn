@@ -89,5 +89,5 @@ Biological (BMI, Algae, or Fish) stressor linear regressions.
 Requires packages dplyr, ggplot2, stringr, tidyr
 }
 \examples{
-# None at this time 
+# None at this time
 }

@@ -4,7 +4,7 @@
 \alias{getOutliers}
 \title{Identifies Stressor Outliers}
 \usage{
-getOutliers(df_data, df_meta, dir_plots = file.path(getwd(), "Results"))
+getOutliers(df_data, df_meta, dir_plots)
 }
 \arguments{
 \item{df_data}{dataframe containing all stressor data values}
@@ -31,5 +31,5 @@ In addition to flagging likely outliers (by both 3x IQR and 6X sd),
 Uses the libraries dplyr and ggplot2.
 }
 \examples{
-# None at this time 
+# None at this time
 }

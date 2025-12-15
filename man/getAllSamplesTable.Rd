@@ -4,7 +4,13 @@
 \alias{getAllSamplesTable}
 \title{Sample Summary}
 \usage{
-getAllSamplesTable(df.stress, df.stressInfo, df.resp, df.sites)
+getAllSamplesTable(
+  df.stress = NULL,
+  df.stressInfo = NULL,
+  df.resp = NULL,
+  df.sites = NULL,
+  incaseColName = NULL
+)
 }
 \arguments{
 \item{df.stress}{dataframe containing stressor data for all sites, including
@@ -20,6 +26,9 @@ associated stressor-specific tolerance values or indices.}
 including multiple biological communities, if sampled.}
 
 \item{df.sites}{dataframe containing StationID, COMID, IncaseCol, and OutcaseCol}
+
+\item{incaseColName}{Name of column in the sites file that indicates a site
+is inside the case}
 }
 \value{
 A dataframe of site sample information sorted by StationID and SampleDate
@@ -40,21 +49,7 @@ sample dates, and sample identifiers collected at the site on those dates,
 organized by type
 
 Requires packages dplyr, tidyr
-
-Required objects:
-
-* data_Sites containing minimally these columns:
-  StationID, COMID, OutcaseCol, IncaseCol
-
-* data_Stress containing minimally these columns:
-  StationID, StressSampleID, StressSampleDate, StdParamName
-
-* data_respTrim containing minimally these columns:
-  StationID, RespSampleID, RespSampleDate, biocomm
-
-* out.dir: the directory to which to write the final all sites summary;
-  the same as the data input directory, ideally, although may be elsewhere
 }
 \examples{
-# None at this time 
+# None at this time
 }

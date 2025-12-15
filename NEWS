@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-04 15:57:57.734209
+    #> Last Update: 2025-12-15 09:50:09.625572
 
 # Planned Updates
 
@@ -25,9 +25,14 @@ NEWS
 
 # Version History
 
+## Changes in version 0.2.3.9012 (2025-12-15)
+
+- fix: Add outcaseColName to prepSiteData function inputs
+- refactor: Minor edits to CASTool.r for troubleshooting in Shiny
+
 ## Changes in version 0.2.3.9003 (2025-12-04)
 
-- fixe: Updates in skeleton code for Shiny
+- fix: Updates in skeleton code for Shiny
 
 ## Changes in version 0.2.3.9002 (2025-12-02)
 

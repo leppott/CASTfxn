@@ -21,8 +21,8 @@ getSiteInfo(
   IncaseLabel = NULL,
   OutcaseLabel = NULL,
   useBC = FALSE,
-  plotvars = data_plotvars,
-  refSiteCol = refOutline_col,
+  plotvars,
+  refSiteCol,
   plotdpi = 600,
   plotH = 6,
   plotW = 8,
@@ -76,16 +76,16 @@ not degraded, degraded, inside-the-case, outside-the-case). Default = data_plotv
 \item{refSiteCol}{Default color outline for reference sites, used for standardization.
 Default = refOutline_col.}
 
-\item{plotdpi}{Default dpi for plots, used for standardization. 
+\item{plotdpi}{Default dpi for plots, used for standardization.
 Default = plot_dpi. 600}
 
-\item{plotH}{Default height for plots, used for standardization. 
+\item{plotH}{Default height for plots, used for standardization.
 Default = plot_H. 6}
 
-\item{plotW}{Default width for plots, used for standardization. 
+\item{plotW}{Default width for plots, used for standardization.
 Default = plot_W. 8}
 
-\item{plotunits}{Default units for plots, used for standardization. 
+\item{plotunits}{Default units for plots, used for standardization.
 Default = plot_units. "in"}
 
 \item{dir_photo}{directory containing all site photos (for every site in the data set).

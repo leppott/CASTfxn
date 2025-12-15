@@ -9,7 +9,7 @@ writeOutliers(
   df_outliers,
   df_stressInfo,
   df_Sites,
-  siteDetects,
+  siteDetectsAll,
   compSites,
   useBC = FALSE,
   allSites,
@@ -23,9 +23,13 @@ writeOutliers(
 
 \item{df_stressInfo}{Dataframe containing stressor metadata. Default = data_stressInfo}
 
-\item{siteDetects}{All stressors ever detected in any target site samples.}
+\item{df_Sites}{x}
+
+\item{siteDetectsAll}{All stressors ever detected in any target site samples.}
 
 \item{compSites}{Vector containing comparator site identifiers (inside the case).}
+
+\item{useBC}{x}
 
 \item{allSites}{Vector containing all "outside the case" identifiers}
 
@@ -43,6 +47,6 @@ outside-the-case samples.
 Uses the library dplyr.
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}

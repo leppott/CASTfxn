@@ -4,7 +4,7 @@
 \alias{prepRespData}
 \title{prepSiteData}
 \usage{
-prepRespData(out.dir, bio, loaded, useBC, bioIndex)
+prepRespData(out.dir, bio, loaded, useBC, bioIndex, calcRelAbund)
 }
 \arguments{
 \item{out.dir}{directory where all rds files are stored}
@@ -16,6 +16,8 @@ prepRespData(out.dir, bio, loaded, useBC, bioIndex)
 \item{useBC}{x}
 
 \item{bioIndex}{x}
+
+\item{calcRelAbund}{x}
 }
 \value{
 A list containing data_Sites and data_cluster to be used in the CASTool.

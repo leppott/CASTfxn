@@ -11,7 +11,7 @@ getSufficiency(
   df_stressinfo,
   biocomm,
   colBio,
-  plotvars = data_plotvars,
+  plotvars,
   plotdpi = 600,
   plotH = 6,
   plotW = 8,

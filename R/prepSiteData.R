@@ -14,6 +14,7 @@
 #' @param outcaseLabel x
 #' @param incaseColName x
 #' @param useBC x
+#' @param outcaseColName x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
@@ -26,7 +27,8 @@
 prepSiteData <- function(out.dir,
                          outcaseLabel = NULL,
                          incaseColName = NULL,
-                         useBC = NULL) {
+                         useBC = NULL,
+                         outcaseColName = NULL) {
 
   # define pipe
   `%>%` <- dplyr::`%>%`

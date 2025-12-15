@@ -20,7 +20,8 @@ getWSStressorFigs(
   plotdpi = 600,
   plotH = 6,
   plotW = 8,
-  plotunits = "in"
+  plotunits = "in",
+  dir_results
 )
 }
 \arguments{
@@ -30,20 +31,24 @@ getWSStressorFigs(
 
 \item{df_WSInfo}{xyz}
 
+\item{df_Sites}{xyz}
+
 \item{comp.reaches}{xyz}
 
 \item{TargetCOMID}{xyz}
 
 \item{useAllCompReaches}{xyz}
 
-\item{dir_sub}{Subdirectory for outputs from this function. 
+\item{useBC}{xyz}
+
+\item{dir_sub}{Subdirectory for outputs from this function.
 Default = "SiteInfo"}
 
 \item{df_SampSummary}{xyz}
 
 \item{biocommlist}{xyz}
 
-\item{boo_plot}{Flag declaring whether the plots should be saved or not. 
+\item{boo_plot}{Flag declaring whether the plots should be saved or not.
 Default = TRUE.}
 
 \item{plotdpi}{standardized plot dpi. Default = 600}
@@ -53,6 +58,8 @@ Default = TRUE.}
 \item{plotW}{standardized plot width. Default = 8}
 
 \item{plotunits}{units for plot height and width. Default = "in"}
+
+\item{dir_results}{}
 }
 \value{
 xyz
@@ -64,6 +71,6 @@ Get watershed stressor figures
 Create watershed stressor figures
 }
 \examples{
-# None at this time 
+# None at this time
 
 }

@@ -8,13 +8,13 @@ getWoE(
   TargetSiteID,
   biocomm,
   dfLoE,
-  dfStress = df_stressorMetadata,
-  dir_results = file.path(getwd(), "Results"),
+  dfStress,
+  dir_results,
   dir_WoE = "_WoE",
-  plotdpi = plot_dpi,
-  plotH = plot_H,
-  plotW = plot_W,
-  plotunits = plot_units,
+  plotdpi,
+  plotH,
+  plotW,
+  plotunits,
   boo_plot = TRUE
 )
 }
@@ -26,7 +26,21 @@ getWoE(
 \item{dfLoE}{Dataframe containing the lines of evidence scores for each
 stressor and sample in long form.}
 
+\item{dfStress}{x}
+
 \item{dir_results}{Directory to save tables. Default = working directory and Results.}
+
+\item{plotdpi}{x}
+
+\item{plotH}{x}
+
+\item{plotW}{x}
+
+\item{plotunits}{x}
+
+\item{boo_plot}{x}
+
+\item{dir_WOE}{x}
 }
 \value{
 Two tab-delimited tables containing weight of evidence information:
@@ -47,6 +61,6 @@ Stressor-based weight of evidence for the stressor as a cause of impairment
 Uses the packages dplyr and tidyr.
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}

@@ -4,10 +4,24 @@
 \alias{prepSiteData}
 \title{prepSiteData}
 \usage{
-prepSiteData(out.dir)
+prepSiteData(
+  out.dir,
+  outcaseLabel = NULL,
+  incaseColName = NULL,
+  useBC = NULL,
+  outcaseColName = NULL
+)
 }
 \arguments{
 \item{out.dir}{directory where all rds files are stored}
+
+\item{outcaseLabel}{x}
+
+\item{incaseColName}{x}
+
+\item{useBC}{x}
+
+\item{outcaseColName}{x}
 }
 \value{
 A list containing data_Sites and data_cluster to be used in the CASTool.
@@ -19,6 +33,6 @@ Prepare site data for CASTool, adding ClusterID, if needed
 Retrieves saved site and cluster objects from their respective rds files.
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}

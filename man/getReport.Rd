@@ -6,8 +6,9 @@
 \usage{
 getReport(
   TargetSiteID,
-  biocomms,
-  primeIndex = bmiIndexGp,
+  biocommlist,
+  regionName,
+  primeIndex,
   removeOutliers,
   samplim,
   r2_cutoff,
@@ -27,13 +28,14 @@ getReport(
   dir_results = normalizePath(file.path(".", "Results")),
   report_type = "full",
   report_format = "html",
-  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd")
+  dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
+  boo.WS
 )
 }
 \arguments{
 \item{TargetSiteID}{SiteID}
 
-\item{biocomms}{x}
+\item{biocommlist}{x}
 
 \item{primeIndex}{x}
 
@@ -76,6 +78,8 @@ getReport(
 \item{report_format}{Requested report output format (html or word).  Default = html}
 
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
+
+\item{boo.WS}{x}
 }
 \value{
 A report for the provided SiteID in the provided format (html or word)

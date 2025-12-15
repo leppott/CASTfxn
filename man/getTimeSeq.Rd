@@ -38,6 +38,8 @@ index and metric values, regardless of matching status}
 
 \item{df_stressinfo}{dataframe containing stressor metadata, specifically "Label"}
 
+\item{df_paired}{x}
+
 \item{plotdpi}{Standardized dpi value for graphics. Default = plot_dpi. 600}
 
 \item{plotH}{Standardized height value for graphics. Default = plot_H. 6}
@@ -68,6 +70,6 @@ Improvements: Add scoring.
 Uses the packages dplyr, ggplot2, lubridate, tidyr
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}
