@@ -208,8 +208,19 @@ if (boo.meas) {
   DOlim         <- as.numeric(dplyr::select(data_CASTmeta, DOlim))
   pHlimLow      <- as.numeric(dplyr::select(data_CASTmeta, pHlimLow))
   pHlimHigh     <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
-  lagdays       <- as.integer(unlist(stringr::str_split(dplyr::select(data_CASTmeta,
-                                                                      lagdays), ", ")))
+  # 20251216, QC
+  # remove white space since free text so can split on just ","
+  # replace select with pull
+  lagdays       <- as.integer(
+    unlist(
+      stringr::str_split(
+        gsub(" ", 
+             "",
+             dplyr::pull(data_CASTmeta, lagdays)
+             ),
+        ",")
+      )
+  )
 }## IF ~ boo.meas
 
 # if (boo.WS) {
@@ -466,6 +477,7 @@ for (b in seq_along(biocommlist)) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
+    browser()
   }## IF ~ boo_Shiny ~ END
 
   if (bio == "bmi") {
@@ -473,6 +485,7 @@ for (b in seq_along(biocommlist)) {
     message("Reading BMI data files")
     boo.bmi <- TRUE
     useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
+    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
     list.bmiData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                  bio      = "bmi",
                                  loaded   = loaded,
@@ -493,12 +506,12 @@ for (b in seq_along(biocommlist)) {
                                          lagdays   = lagdays)
 browser()
     # comment out, 20251215, so can keep moving
-    # data_respTrim <- rbind(data_respTrim,
-    #                        data_bmiCoOccur[, c("StationID", 
-    #                                            "RespSampleID",
-    #                                            "RespSampleDate", 
-    #                                            "BioComm")] %>%
-    #                          dplyr::mutate(biocomm = "BMISampleID"))
+    data_respTrim <- rbind(data_respTrim,
+                           data_bmiCoOccur[, c("StationID",
+                                               "RespSampleID",
+                                               "RespSampleDate",
+                                               "BioComm")] %>%
+                             dplyr::mutate(biocomm = "BMISampleID"))
   } # end BMI
   if (bio == "alg") {
     # Read alg data files
@@ -608,8 +621,9 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+  
 browser()
+}## IF ~ boo_Shiny ~ END
 data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
                                        df.stressInfo = data_stressInfo,
                                        df.resp       = data_respTrim,
@@ -635,10 +649,11 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
+  browser()
 }## IF ~ boo_Shiny ~ END
 #
 df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
-browser()
+
 ### Evaluate each target site
 ## Use this for debugging
 if (boo_Shiny == TRUE) {
@@ -664,8 +679,9 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
+  browser()
 }## IF ~ boo_Shiny ~ END
-browser()
+
 # FOR ~ site ~ START ####
 for (site in seq_along(1:nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
@@ -1546,7 +1562,7 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 # Nothing here, 20251215, still a section?
-browser()
+
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, END ####
 # external/RPPTool_CA.R
