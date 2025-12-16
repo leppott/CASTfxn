@@ -25,15 +25,15 @@
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Data" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/20250711_FinalInputDataFormat/Results" # File path of results directory
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Data" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Results" # File path of results directory
   region <- "Washington" # Name of region
   #
   devtools::load_all()
@@ -214,7 +214,7 @@ if (boo.meas) {
   lagdays       <- as.integer(
     unlist(
       stringr::str_split(
-        gsub(" ", 
+        gsub(" ",
              "",
              dplyr::pull(data_CASTmeta, lagdays)
              ),
@@ -352,22 +352,22 @@ if (boo.meas && boo.model) {
   rm(data_chemInfo, data_modelInfo)
   rm(chemMetaNames, modelMetaNames, extraNames, newCol, e)
 
-  data_stressInfo <- dplyr::distinct(data_stressInfo, 
-                                     StdParamName, 
+  data_stressInfo <- dplyr::distinct(data_stressInfo,
+                                     StdParamName,
                                      Label,
-                                     LogTransf, 
-                                     UseInStressorID, 
+                                     LogTransf,
+                                     UseInStressorID,
                                      DirIncStress,
                                      SSTVname.bmi,
                                      SensMax.bmi,
                                      SensMin.bmi,
                                      SSTVname.alg,
-                                     SensMax.alg, 
+                                     SensMax.alg,
                                      SensMin.alg,
-                                     SSTVname.fish, 
-                                     SensMax.fish, 
+                                     SSTVname.fish,
+                                     SensMax.fish,
                                      SensMin.fish,
-                                     SSIndex, 
+                                     SSIndex,
                                      SourceGroup)
   # Combine data
   data_Stress     <- rbind(data_chemRaw, data_modelRaw)
@@ -504,7 +504,7 @@ for (b in seq_along(biocommlist)) {
                                          df_resp   = data_bmiMetrics,
                                          index     = bmiIndexGp,
                                          lagdays   = lagdays)
-browser()
+#browser()
     # comment out, 20251215, so can keep moving
     data_respTrim <- rbind(data_respTrim,
                            data_bmiCoOccur[, c("StationID",
@@ -572,9 +572,9 @@ browser()
 
 # QC, 20251225
 # fails, if not all col names present
-col2check_data_respTrim <- c("StationID", 
-                             "RespSampleID", 
-                             "RespSampleDate", 
+col2check_data_respTrim <- c("StationID",
+                             "RespSampleID",
+                             "RespSampleDate",
                              "biocomm")
 if(sum(col2check_data_respTrim %in% names(data_respTrim)) ==
    length(col2check_data_respTrim)) {
@@ -621,7 +621,7 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  
+
 browser()
 }## IF ~ boo_Shiny ~ END
 data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
