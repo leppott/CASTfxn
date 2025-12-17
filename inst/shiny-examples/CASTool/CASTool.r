@@ -25,7 +25,7 @@
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
@@ -76,7 +76,7 @@ if (boo_Shiny == TRUE) {
   ### 00, Initialize----
   prog_cnt <- 0
   # Number of increments
-  prog_n <- 25
+  prog_n <- 22
   prog_sleep <- 0.25
   #
   prog_det <- "Set up"
@@ -88,7 +88,7 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
   #
   # gitpath     <- file.path("external", "R")  # used in getReport
-  dir_rmd     <- file.path(system.file(package = "CASTfxn"), "inst", "rmd")
+  dir_rmd     <- file.path(system.file(package = "CASTfxn"), "rmd")
   wd          <- getwd()
   dir_data    <- dn_data
   dir_results <- dn_results
@@ -477,7 +477,6 @@ for (b in seq_along(biocommlist)) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-    browser()
   }## IF ~ boo_Shiny ~ END
 
   if (bio == "bmi") {
@@ -504,8 +503,6 @@ for (b in seq_along(biocommlist)) {
                                          df_resp   = data_bmiMetrics,
                                          index     = bmiIndexGp,
                                          lagdays   = lagdays)
-#browser()
-    # comment out, 20251215, so can keep moving
     data_respTrim <- rbind(data_respTrim,
                            data_bmiCoOccur[, c("StationID",
                                                "RespSampleID",
@@ -543,7 +540,6 @@ for (b in seq_along(biocommlist)) {
     # Read fish data files
     message("Reading fish data files")
     boo.fish <- TRUE
-    browser()
     list.fishData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                   bio      = "fish",
                                   loaded   = loaded,
@@ -570,7 +566,7 @@ for (b in seq_along(biocommlist)) {
 
 }## FOR ~ b
 
-# QC, 20251225
+# QC, 20251215
 # fails, if not all col names present
 col2check_data_respTrim <- c("StationID",
                              "RespSampleID",
@@ -621,8 +617,6 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-
-browser()
 }## IF ~ boo_Shiny ~ END
 data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
                                        df.stressInfo = data_stressInfo,
@@ -649,7 +643,6 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  browser()
 }## IF ~ boo_Shiny ~ END
 #
 df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
@@ -657,16 +650,18 @@ df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
 ### Evaluate each target site
 ## Use this for debugging
 if (boo_Shiny == TRUE) {
-  df_targets <- data.frame("TargetSiteID" = input$Station,
-                           "Chosen by"    = NA, "Comment" = NA)
+  df_targets <- data.frame("TargetSiteID" = input$si_checked_sites_targ,
+                           "Chosen by" = NA, 
+                           "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
+  # ok since Shiny only works on 1 sites
 }
 # else if (boo.debug == TRUE & debug.person == "Ann") {
 #   # df_targets <- dplyr::filter(df_targets, TargetSiteID == "BIO06600_BURP15")
 #   msg <- paste0("Number of target sites = ", nrow(df_targets))
 #   message(msg)
+#   rm(msg)
 # }
-rm(msg)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 11, Main Code ####
@@ -679,7 +674,6 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-  browser()
 }## IF ~ boo_Shiny ~ END
 
 # FOR ~ site ~ START ####
@@ -741,6 +735,10 @@ for (site in seq_along(1:nrow(df_targets))) {
     bio <- tolower(biocommlist[b])
 
     if(bio == "bmi"){
+      # QC
+      if (!exists("data_BCdist")) {
+        data_BCdist <- NULL
+      }## IF ~ exists(data_BCdist)
       list.CompSites.bmi <- getComparators(TargetSiteID = TargetSiteID,
                                        df_sites = data_Sites,
                                        df_cluster = data_cluster,
@@ -1506,11 +1504,13 @@ for (site in seq_along(1:nrow(df_targets))) {
   #
   # Shiny add ons
   if (boo_Shiny == TRUE) {
-    report_type <- "preliminary"
+    report_type <- "summary" # summary preliminary
   } else {
     report_type <- "summary"
-  }
-
+  }## IF ~ boo_Shiny
+browser()
+# getwd()
+# list.files()
   getReport(TargetSiteID,
             biocommlist    = biocommlist,
             regionName     = region,
@@ -1530,19 +1530,24 @@ for (site in seq_along(1:nrow(df_targets))) {
             useBMI         = useBMI,
             useAlg         = useAlg,
             useFish        = useFish,
-            dir_data       = dir_data,
-            dir_results    = dir_results,
+            dir_data       = normalizePath(dir_data),
+            dir_results    = normalizePath(dir_results),
             report_type    = "full",
             report_format  = "html",
             boo.WS = boo.WS)
-
-  dfGaps <- read.table(file.path(dir_results, TargetSiteID,
-                                 paste0(TargetSiteID,"_datagaps.tab")),
-                       header = TRUE, sep = "\t")
+browser()
+  dfGaps <- read.table(file.path(dir_results, 
+                                 TargetSiteID,
+                                 paste0(TargetSiteID, "_datagaps.tab")),
+                       header = TRUE, 
+                       sep = "\t")
   dfGaps <- unique(dfGaps)
-  write.table(dfGaps, file.path(dir_results, TargetSiteID,
-                                paste0(TargetSiteID,"_datagaps.tab")),
-              append = FALSE, col.names = TRUE, row.names = FALSE,
+  write.table(dfGaps, file.path(dir_results, 
+                                TargetSiteID,
+                                paste0(TargetSiteID, "_datagaps.tab")),
+              append = FALSE, 
+              col.names = TRUE, 
+              row.names = FALSE,
               sep = "\t")
 
 } ### End TargetSite loop # not used in Shiny
@@ -1550,17 +1555,17 @@ for (site in seq_along(1:nrow(df_targets))) {
 
 rm(site)
 
-# 23 getSummaryAllSites ####
+# 23 getSummaryAllSites 
 # Progress, 29
-if (boo_Shiny == TRUE) {
-  prog_det <- "getSummaryAllSites"
-  prog_cnt <- prog_cnt + 1
-  prog_msg <- paste0("Step ", prog_cnt)
-  prog_inc <- 1 / prog_n
-  incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(prog_sleep)
-  message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+# if (boo_Shiny == TRUE) {
+#   prog_det <- "getSummaryAllSites"
+#   prog_cnt <- prog_cnt + 1
+#   prog_msg <- paste0("Step ", prog_cnt)
+#   prog_inc <- 1 / prog_n
+#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
+#   Sys.sleep(prog_sleep)
+#   message(paste(prog_msg, prog_det, sep = "; "))
+# }## IF ~ boo_Shiny ~ END
 # Nothing here, 20251215, still a section?
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

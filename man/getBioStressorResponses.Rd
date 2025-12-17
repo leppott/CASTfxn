@@ -65,13 +65,13 @@ not degraded, degraded, inside-the-case, and outside-the-case)}
 
 \item{plotunits}{stardardized units for all plots}
 
-\item{dir_plots}{Directory to save plots. Default = working directory and Results.}
-
 \item{dir_sub}{Subdirectory for outputs from this function. Default = "StressorResponse"}
 
 \item{boo_pred_warn}{Should warnings for prediction be suppressed. Default = TRUE.}
 
 \item{boo_plot}{Boolean value to save plots. Default = TRUE.}
+
+\item{ss}{Directory to save plots. Default = working directory and Results.}
 }
 \value{
 Writes one or more graphics depicting stressor-response relationships,

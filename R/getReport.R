@@ -39,7 +39,7 @@
 #' @param useAlg boolean to use Algae.
 #' @param useFish boolean to use Fish
 #' @param dir_data Absolute path to data.  Default = /Data
-#' @param dir_results Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.
+#' @param dir_results Absolute path with subfolders named by SiteID.  Default = Results folder in working directory.
 #' @param report_type Requested report type (all or summary).  Default = summary
 #' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
