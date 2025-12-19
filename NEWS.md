@@ -1,0 +1,2897 @@
+NEWS
+================
+<Erik.Leppo@tetratech.com>
+
+<!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
+
+    #> Last Update: 2025-12-19 15:55:35.608939
+
+# Planned Updates
+
+- None at this time.
+
+# Future Updates
+
+- Convert site map to ggplot.
+
+- input file data.SSTV.totabund for the function
+  getStressorSpecificRegressions.
+
+- StreamCat data. Boxplots with jitter points.
+
+- getBioStressorResponses
+
+  - Add stressor response plot from getCoOccur
+
+# Version History
+
+## Changes in version 0.2.3.9018 (2025-12-19)
+
+- refactor: Add cluster fig to report_results_full
+- refactor: Edits to CASTool.R for use with Shiny app
+- refactor: Edit to Report_Results_full.rmd
+  - region to regionName to match getReport parameters
+
+## Changes in version 0.2.3.9017 (2025-12-16)
+
+- docs: Add packages to DESCRIPTION
+  - CASToolClusterPckg,
+  - CASToolWSStressorPckg
+  - CASToolBaseDataPckg
+- refactor: Updates to CASTool.r for use in Shiny
+
+## Changes in version 0.2.3.9016 (2025-12-16)
+
+fix: getBioStressorResponses file paths
+
+## Changes in version 0.2.3.9015 (2025-12-16)
+
+- fix: Update CASTool.r for step 8 and 9
+
+## Changes in version 0.2.3.9014 (2025-12-15)
+
+- fix: Add extra statement to ensure the prepMeasStressorData output
+  (data_measoutliers) is always defined
+- fix: Add extra statement to ensure the prepModStressorData output
+  (data_modeloutliers) is always defined
+- refactor: Update step progress messages in CASTool.r
+- fix: Add check for is.na() for removeOutliers at step 7 in skeleton
+  code
+- fix: Add check for boo.WS and helperImport to convert NA to FALSE
+- refactor: Updates to CASTool.R (skeleton code) for Shiny
+
+## Changes in version 0.2.3.9013 (2025-12-15)
+
+- fix: Update prepMeasStressorData to account for NA in check on
+  removeOutliers
+
+## Changes in version 0.2.3.9012 (2025-12-15)
+
+- fix: Add outcaseColName to prepSiteData function inputs
+- refactor: Minor edits to CASTool.r for troubleshooting in Shiny
+
+## Changes in version 0.2.3.9003 (2025-12-04)
+
+- fix: Updates in skeleton code for Shiny
+
+## Changes in version 0.2.3.9002 (2025-12-02)
+
+- refactor: Add options for inputs to skeleton code
+  - Keep tcltk as default
+
+## Changes in version 0.2.3.9001 (2025-12-01)
+
+- fix: Updates to skeleton code for use with Shiny app
+  - Directories for Shiny use
+  - Move check files inside boo_shiny == FALSE
+    - Files are RDS and no longer available for checkInputs()
+  - dn_checked_sk variable for “\_CheckedInputs”
+  - Add dummy variables and browser for testing within Shiny
+
+## Changes in version 0.2.3 (2025-11-26)
+
+- refactor: Bump version number after merging lcn branch
+  - Multiple fixes in skeleton code
+
+## Changes in version 0.2.2.9017 (2025-10-09)
+
+- fix: Change column check procedure in checkInputs, Issue \#92
+
+## Changes in version 0.2.2.9016 (2025-10-09)
+
+- refactor: Add \*.proj to .gitignore
+- refactor: Add error checking for input parameters for checkInputs
+
+## Changes in version 0.2.2.9015 (2025-10-08)
+
+- refactor: Update skeleton code withProgress variables
+- style: Edits to checkInputs
+- refactor: Add CASTool_InputCheck.xlsx to inst
+- fix: Update checkInputs function
+  - Add extra variable for CheckInputs file
+  - Remove referenced to in.dir in code
+  - Added check for function inputs but did not add stop code
+- refactor: Update skeleton code to run check files only when in the
+  console
+
+## Changes in version 0.2.2.9014 (2025-10-07)
+
+- fix: Update function defaults to values not variables
+  - plot_dpi, plot_H, plot_W, plot_units
+    - getCoOccur
+    - getSiteInfo
+    - getSufficiency
+    - getTimeSeq
+    - getVPSSI
+    - getVerifiedPredictions fix: Add function variables
+  - plot_dpi, plot_H, plot_W, plot_units
+    - getWSStressorFigs docs: Update function documentation
+  - getWSStressorFigs
+
+## Changes in version 0.2.2.9013 (2025-10-07)
+
+- refactor: Add missing package name
+  - all_of
+  - .data
+
+## Changes in version 0.2.2.9012 (2025-09-24)
+
+- docs: Add tcltk to Suggests in DESCRIPTION
+
+## Changes in version 0.2.2.9011 (2025-09-24)
+
+- refactor: Skeleton code user inputs to tcltk instead of prompt
+
+## Changes in version 0.2.2.9010 (2025-09-24)
+
+- docs: Add missing packages to DESCRIPTION that are used in skeleton
+  code
+- refactor: Updates to skeleton code for use in Shiny
+
+## Changes in version 0.2.2.9009 (2025-09-24)
+
+- refactor: Add Global Bindings per Check Package, all functions
+- refactor: Update example for getElev to remove error
+  - wrong direction slash for donttest
+- refactor: Add example section of missing, none at this time
+- refactor: Add missing package name
+  - all_of
+  - any_of
+  - ends_with
+  - everything
+  - across
+  - where
+  - desc
+  - str_detect
+- docs: Update LICENSE file and DESCRIPTION
+
+## Changes in version 0.2.2.9008 (2025-09-23)
+
+- refactor: Remove non-ASCII characters from data objects
+  - data_BMIMasterTaxa
+- refactor: Replace non-ASCII \<= and \>= with unicode 264 and 265
+  - getVPSSI.R
+  - prepRespData.R
+- refactor: Add to .Rbuildignore
+  - data-raw
+  - \_junk
+  - NEWS.rmd
+  - README.Rmd
+  - \_plkdown.yml
+  - codecov.yml
+- refactor: Update data.R
+  - data_BMIMasterTaxa
+  - df.sites.map
+
+## Changes in version 0.2.2.9007 (2025-09-22)
+
+- fix: Update data_CoOccur_CA for non-ASCII characters
+- docs: Update data variable names in data.R
+
+## Changes in version 0.2.2.9006 (2025-09-21)
+
+- docs: Update data variable names in data.R
+  - incomplete
+- docs: Remove dontrun from checkinputs in example
+- docs: Remove unused packages from DESCRIPTION
+  - reshape2
+
+## Changes in version 0.2.2.9005 (2025-09-19)
+
+- docs: Update functions examples when blank
+- docs: Update documentation for datasets
+  - data_303d
+- docs: Update parameters for function documentation
+  - checkInputs
+  - getAvailableDataTypes
+  - getBioStressorResponses
+  - getClusterInfo
+  - getDataSets
+  - getReport
+  - getSiteInfo
+  - getSiteMap
+  - getStreamCatData
+  - getStressorList
+  - getSummaryAllSites
+  - getVerifiedPredictions
+  - prepMeasStressorData
+  - prepModStressorData
+  - prepRespData
+- docs: Update DESCRIPTION
+  - Add missing imports
+    - StreamCatTools
+    - forcats
+    - purrr
+    - scales
+    - sf
+    - tibble
+    - tmap
+    - viridis
+  - Move unused imports to Suggests
+    - DT
+    - RColorBrewer
+    - corrplot
+    - ggrepel
+    - ggthemes
+    - grDevices
+    - graphics
+    - gridExtra
+    - knitr
+    - leaflet
+    - maps
+    - raster
+    - reshape
+    - reshape2
+    - shinyFiles
+    - shinyjs
+    - wrapr
+- docs: Add missing package references to function names
+- docs: Define pipe where missing in functions
+- docs: Update data variable names in data.R
+  - incomplete
+
+## Changes in version 0.2.2.9004 (2025-09-19)
+
+- docs: Update all Vignette chucks to eval=FALSE
+  - OLD functions
+- fix: Renamed master branch from base to main
+  - Actions were not triggering
+- tests: Update GitHub Actions
+  - pkgdown
+  - test-coverage
+
+## Changes in version 0.2.2.9003 (2025-09-19)
+
+- refactor: Updates suggested by CodeFactor
+  - getClusterInfo, line 197, remove unnecessary c()
+  - getOutliers, line 131, ::: to :: for case_when
+- refactor: getOutliers, Remove blank keywords
+- refactor: getStreamCatData, result to return
+- refactor: CASTfxn, docType comment out (deprecated)
+- test: Add GitHub Action for check
+- docs: Update Readme with check badge
+
+## Changes in version 0.2.2.9002 (2025-09-04)
+
+- docs: Remove deprecated packages from DESCRIPTION imports
+  - Needed for older Shiny apps
+    - maptools, rgdal, rgeos
+
+## Changes in version 0.2.2.9001 (2025-09-04)
+
+- refactor: Move Shiny apps to their own repo, CAST_Shiny
+- docs: Update README section on Shiny
+
+## Changes in version 0.2.1.9003 (2025-09-04)
+
+- docs: Update DESCRIPTION
+  - Add Laura Naslund as contributor
+  - Update version number
+- docs: Update NEWS and README as RMD in repo
+- docs: Update README with install code snippets for potential install
+  issues
+
+## Changes in version 0.1.1.9004 (2021-05-28)
+
+- docs: Minor spelling fixes, devtools::spell_check()
+- docs: Updates to README
+  - devtools::install_github() to remotes::install_github()
+- ci: Add codecov.yml to allow for access to repo by codecov
+- style: Fix some of the items from codefactor.
+- ci: Remove .travis.yml
+
+## Changes in version 0.1.1.9003 (2021-04-30)
+
+- refactor: Shiny CASTool
+  - Change browseURL (does not work on server) to download button
+
+## Changes in version 0.1.1.9002 (2021-04-30)
+
+- refactor: Shiny CASTool
+  - Move map selection choice on calculation tab to above pull down
+  - Move results summary report to new window triggered via button
+  - Remove results tab panel
+  - Add results error page in case results diplayed before finished
+    calculating
+  - Disable results buttons (report and download) when click calculate
+  - Add elapsed time to console after calculation
+
+## Changes in version 0.1.1.9001 (2021-04-30)
+
+- docs: Revise version number to 0.1.1 to incorporate host of changes.
+- docs: Hex stickers for CAST and RPP
+- data: New Process files in data-raw
+
+## interim changes
+
+not tracked well.
+
+## Changes in Version 0.1.0.9363 (2021-04-07)
+
+- feature: Add second version of CASTool Shiny
+  - HTML results preloaded
+  - Calculate only if want rest of results
+- docs: README
+  - Add logos, CAST and RPP
+  - Add/update badges
+
+## Changes in Version 0.1.0.9362 (2020-12-08)
+
+- Simplify SMC watersheds (keep 5%).
+- Use in both Shiny Apps (global.R).
+
+## Changes in Version 0.1.0.9361 (2020-11-18)
+
+- selectInput to selectizeInput for COMID and StationID pull downs.
+  - RPPTool
+    - Define variable in global.R
+    - tab_RPP_Calc.R
+    - tab_Map_Reach.R
+    - tab_Map_Station.R
+  - CASTool
+    - Define variable in global.R
+    - tab_RPP_Calc.R
+
+## Changes in Version 0.1.0.9360 (2020-11-17)
+
+- CASTool
+  - server.R
+    - Removed old/unused code.
+    - output\$Results_html, modified to capture last file if more than
+      one.
+    - Message for getCoOccur, remove 2nd “r”, step 23.
+  - tab_CAST_calc.R
+    - Add results text about avoiding app errors.
+    - Added SiteID from map selection below pull down for SiteID for
+      calculation.
+
+## Changes in Version 0.1.0.9359 (2020-11-17)
+
+- getStressorList.R
+  - Replace “wd, Results” with dir_results in one instance.
+
+## Changes in Version 0.1.0.9358 (2020-11-16)
+
+- CASTool
+  - Server.R
+    - Modified boo.debug to FALSE
+    - CASTool skeleton mod (below).
+  - \_CA.R
+    - Modified df_targets for boo_Shiny == TRUE
+
+## Changes in Version 0.1.0.9357 (2020-11-16)
+
+- getSummaryAllSites.R
+  - Modify biocomm in normalize path to toupper(biocomm).
+    - Issue with running on shinyapps.io (i.e., Linux).
+
+## Changes in Version 0.1.0.9356 (2020-11-12)
+
+- RPPTool
+  - Server.r
+    - Update file displayed as results table.
+
+## Changes in Version 0.1.0.9355 (2020-11-12)
+
+- RPPTool
+  - Server.r
+    - Update file displayed as results table.
+
+## Changes in Version 0.1.0.9354 (2020-11-03)
+
+- CASTool_CA.r
+  - Keep only 1 copy in the shiny app. Remove from /inst/extdata.
+- CASTool
+  - Update skeleton (both copies) and server.R
+    - Use boo_plot_user in getTimeSeq()
+    - Step 27, dir_rmd (drop git_path use dir_rmd only).
+
+## Changes in Version 0.1.0.9353 (2020-11-02)
+
+- CASTool_CA.r
+  - Copy from shiny to main package directory.
+- CASTool
+  - global.r
+    - Remove target site from top of pull down list.
+  - Update skeleton (both copies) and server.R
+    - Use boo_plot_user in functions.
+
+## Changes in Version 0.1.0.9352 (2020-11-02)
+
+- CASTool
+  - Modified the CASTool_CA.R (skeleton code) for use with Shiny.
+    - Same mods did for RPPTool.
+    - Use latest code version of skeleton from
+    - Update both versions in the package:
+    - inst-examples
+    - inst
+
+## Changes in Version 0.1.0.9351 (2020-10-29)
+
+- RPPTool
+  - tab_RPP_Calc.R
+    - Move map siteID and COMID above calc pull down.
+    - When below is hidden when typing into the box.
+  - Add SMC_TestCOMIDs.xlsx
+    - Limit pull down lists to only COMID with data.  
+    - Avoids trying to calc sites with no data.
+  - server.R
+    - Add extra step after skeleton code (and before zip).
+    - Check for “no data” and create plots.
+
+## Changes in Version 0.1.0.9350 (2020-10-29)
+
+- RPPTool and CASTool
+  - Set pull down “selected” to targeted\[1\] for maps (site and reach)
+    and calc tabs.
+
+## Changes in Version 0.1.0.9349 (2020-10-29)
+
+- RPPTool
+  - server.R
+    - Change results table from “RPPTool_AllScoresSummary” to
+      “RPPTool_AllConnectedReaches”.
+    - Want only results related to the target reach not all the results.
+  - tab_Disclaimer
+    - “City” to “City of San Diego”
+  - Site and Reach pull downs remove target sites at top of list.
+- CASTool
+  - tab_Disclaimer
+    - “City” to “City of San Diego”
+  - tab_CAST_Calc.
+    - SiteID pull down change to mySites (so have a sorted list).
+  - Site pull downs remove target sites at top of list.
+    - Calc tab change to sorted list (same as map).
+
+## Changes in Version 0.1.0.9348 (2020-10-22)
+
+- v0.1.0.9282
+- Converted from rgdal to simple features for map data, added
+  getSiteMap, clarified debugging statement prior to iterating over test
+  sites, removed map-related arguments from getSiteInfo.
+- inst/extdata/CASTool_CA.r
+
+## Changes in Version 0.1.0.9347 (2020-10-22)
+
+- v0.1.0.9001
+- Replacement for Map_Leaflet.rmd that uses the simple features spatial
+  data.
+- inst/rmd/Map_Leaflet2.rmd
+
+## Changes in Version 0.1.0.9346 (2020-10-22)
+
+- v0.1.0.9280
+- Fixed warning for dplyr::summarize() by adding .groups=“drop_last”
+  argument.
+- inst/rmd/Report_Results_summary.rmd
+
+## Changes in Version 0.1.0.9345 (2020-10-22)
+
+- v0.1.0.9336
+- Commented out mapping procedure (prior to eliminating it entirely).
+  May fold in getSiteMap, if desired.
+- R/getSiteInfo.R
+
+## Changes in Version 0.1.0.9344 (2020-10-22)
+
+- v0.1.0.9001
+- Fully revised and streamlined map generation. Uses simple features
+  package and ggplot2.
+- R/getSiteMap.R
+
+## Changes in Version 0.1.0.9343 (2020-10-21)
+
+- v0.1.0.9326
+- Reset debug flag
+- R/getStressorList.R
+
+## Changes in Version 0.1.0.9342 (2020-10-21)
+
+- v0.1.0.9325
+- Updated directory structure based on local vs. remote (shiny)
+  execution
+- R/getStressorList.R
+
+## Changes in Version 0.1.0.9341 (2020-10-21)
+
+- v0.1.0.9324
+- Merged changes
+- R/getStressorList.R
+
+## Changes in Version 0.1.0.9340 (2020-10-21)
+
+- v0.1.0.9318
+- Eliminated duplication of output rows.
+- R/getSummaryAllSites.R
+
+## Changes in Version 0.1.0.9339 (2020-10-21)
+
+- v0.1.0.9281
+- Minor changes for quick navigation and debugging.
+- inst/extdata/CASTool_CA.r
+
+## Changes in Version 0.1.0.9338 (2020-10-21)
+
+- RPPTool
+  - Add Connections map to results. It has background and labels for
+    each reach.
+  - Tweak calc tab text for Reach Map COMID.
+  - Results tab; add extra lines after images to avoid overlap.
+
+## Changes in Version 0.1.0.9337 (2020-10-20)
+
+- RPPTool
+  - Modified Calc tab to show selected COMID from Stations Map and Reach
+    Map.
+
+## Changes in Version 0.1.0.9336 (2020-10-19)
+
+- RPPTool
+  - Update functions.
+  - Move functions from to
+  - server.R
+    - Update skeleton code.
+  - global.R
+    - Update location of sourced functions.
+    - Add source for addMunicipality.R
+  - drawAllScoresPlot.R
+    - Update for if dfWoE is null when not using CAST results.
+
+## Changes in Version 0.1.0.9335 (2020-10-13)
+
+- getSiteInfo.R
+  - Static map. Revise “points” references.
+- CASTool
+  - Map_Leaflet.rmd
+    - Static map, update filename.
+
+## Changes in Version 0.1.0.9334 (2020-10-13)
+
+- CASTool
+  - server.R
+    - Move Map_Leaflet.rmd to ‘rmd’ subfolder.
+  - Map_Leaflet.rmd
+    - Static map, update filename.
+
+## Changes in Version 0.1.0.9333 (2020-10-10)
+
+- CASTool
+  - server.R
+    - Modify static map; flow lines used the polygon layer.
+- Map_Leaflet.rmd
+  - Change jpg to png for static map.
+
+## Changes in Version 0.1.0.9332 (2020-10-01)
+
+- RPPTool
+  - server.R
+    - Update skeleton code revised to account for reaches not in
+      network, isolated reaches, and coastline reaches.
+
+## Changes in Version 0.1.0.9331 (2020-10-01)
+
+- CASTool
+  - server.R
+    - Display results HTML after calculation.
+
+## Changes in Version 0.1.0.9330 (2020-09-30)
+
+- RPPTool
+  - server.R
+    - Copy uploaded files to the Data folder.
+
+## Changes in Version 0.1.0.9329 (2020-09-30)
+
+- RPPTool
+  - server.R
+    - Results, reactive map and score images and table.
+
+## Changes in Version 0.1.0.9328 (2020-09-29)
+
+- RPPTool repo updates.
+  - getConnectivity.R
+  - Map_Leaflet.RMD
+  - RPPTool_CA.R
+  - udpateAllScoresTable.R
+  - server.R
+
+## Changes in Version 0.1.0.9327 (2020-09-29)
+
+- updateAllScoresTable.R
+  - Normalize (0:1) indicator wtds by wt.
+  - Formatting.
+- drawAllScoresPlot.R
+  - Formatting.
+
+## Changes in Version 0.1.0.9326 (2020-09-28)
+
+CASTool + global.R - Remove targeted site from pull down list.
+
+## Changes in Version 0.1.0.9325 (2020-09-28)
+
+- RPPTool
+  - server.R
+    - Remove SubIndex weights.
+    - Indicator weights, move into columns
+
+## Changes in Version 0.1.0.9324 (2020-09-28)
+
+- CASTool
+  - server.R
+    - usePlots check box.
+
+## Changes in Version 0.1.0.9323 (2020-09-28)
+
+- CASTool
+  - server.R
+    - Modify so plots don’t save.
+- Modify functions to allow for save/no-save of plots
+  - getBioStressorResponses
+  - getClusterInfo
+  - getCoOccur
+  - getSiteInfo
+  - getStressorList
+  - getTimeSeq
+  - getVerifiedPredictions
+
+## Changes in Version 0.1.0.9322 (2020-09-28)
+
+- RPPTool
+  - server.R
+
+## Changes in Version 0.1.0.9321 (2020-09-24)
+
+- RPPTool
+  - server.R
+    - Run UpdateAllScores if any “weights” change from default of 1.
+    - Prior to running the skeleton code.
+
+## Changes in Version 0.1.0.9321 (2020-09-24)
+
+- RPPTool
+  - getThreatScores.R
+    - Modify useFireHazard munging.
+
+## Changes in Version 0.1.0.9320 (2020-09-24)
+
+- RPPTool
+  - server.R
+    - Remove rm(fn_plannedLU). Step 10, line 1707
+  - RPPTool_CA.R (skeleton)
+    - Remove rm(fn_plannedLU). Step 10, line 483
+- CASTool
+  - server.R
+    - Modifications to add CASTool files into a folder for use with
+      RPPTool shiny.
+
+## Changes in Version 0.1.0.9319 (2020-09-23)
+
+- RPPTool
+  - server.R
+    - Typo
+  - print to message
+    - getThreatScores
+    - getScaledStressors
+    - getOpportunityScores
+    - getConnectivity
+    - drawBarPlot
+
+## Changes in Version 0.1.0.9318 (2020-09-23)
+
+- CASTool
+  - server.R
+    - Clean up unused code.
+  - global.R
+    - targ_SiteID to NA
+
+## Changes in Version 0.1.0.9317 (2020-09-23)
+
+- getSummaryAllSites.R
+  - Additional message output.
+  - Tweak file paths.
+  - Modify logic for first time through loop.
+- CASTool
+  - server.R
+
+## Changes in Version 0.1.0.9316 (2020-09-23)
+
+- getSummaryAllSites.R
+  - Additional message output.
+- getStressorList
+  - Replace print with message.
+- getReport
+  - Replace print with message.
+- getSiteInfo
+  - Replace print with message.
+
+## Changes in Version 0.1.0.9315 (2020-09-22)
+
+- CASTool shiny
+  - SMCMeasStressInfoFinal.tab
+    - Convert micro symbol to “u”.
+    - Had a mix of symbol and u and the symbol was causing issues with
+      deployment on shinyapps.io.
+
+## Changes in Version 0.1.0.9314 (2020-09-21)
+
+- RPPTool shiny
+  - Update functions in external directory with license terms.
+
+## Changes in Version 0.1.0.9313 (2020-09-21)
+
+- getCoOccur.R
+  - Change jpg to png as output.
+
+## Changes in Version 0.1.0.9312 (2020-09-18)
+
+- Added license terms. 9279
+
+## Changes in Version 0.1.0.9311 (2020-09-18)
+
+- Added license terms. 9279
+
+## Changes in Version 0.1.0.9310 (2020-09-18)
+
+- Added license terms. 9231
+
+## Changes in Version 0.1.0.9309 (2020-09-18)
+
+- Added license terms. 9279
+
+## Changes in Version 0.1.0.9308 (2020-09-18)
+
+- Added license terms. 9279
+
+## Changes in Version 0.1.0.9307 (2020-09-18)
+
+- Added license terms. 9257
+
+## Changes in Version 0.1.0.9306 (2020-09-18)
+
+- Added license terms. 9262
+
+## Changes in Version 0.1.0.9305 (2020-09-18)
+
+- Added license terms. 9292
+
+## Changes in Version 0.1.0.9304 (2020-09-18)
+
+- Added license terms. 9290
+
+## Changes in Version 0.1.0.9303 (2020-09-18)
+
+- Added license terms. 9260
+
+## Changes in Version 0.1.0.9302 (2020-09-18)
+
+- Added license terms. 9289
+
+## Changes in Version 0.1.0.9301 (2020-09-18)
+
+- Added license terms. 9280
+
+## Changes in Version 0.1.0.9300 (2020-09-18)
+
+- Added license terms. 9246
+
+## Changes in Version 0.1.0.9299 (2020-09-18)
+
+- Added license terms. 9247
+
+## Changes in Version 0.1.0.9298 (2020-09-18)
+
+- Added license terms. 9110
+
+## Changes in Version 0.1.0.9297 (2020-09-18)
+
+- Added license terms. 9241
+
+## Changes in Version 0.1.0.9296 (2020-09-18)
+
+- Added license terms. 9235
+
+## Changes in Version 0.1.0.9295 (2020-09-18)
+
+- Added license terms. 9260
+
+## Changes in Version 0.1.0.9294 (2020-09-18)
+
+- Added license terms. 9245
+
+## Changes in Version 0.1.0.9293 (2020-09-18)
+
+- Added license terms. 9045
+
+## Changes in Version 0.1.0.9292 (2020-09-18)
+
+- Added license terms. 9262
+
+## Changes in Version 0.1.0.9291 (2020-09-18)
+
+- getSummaryAllSites.R
+  - list.dirs instead of list.files.
+- CASTool
+  - Minor edits.  
+  - Shiny app complete.
+- RPPTool
+  - Minor edits.  
+  - Shiny app still work to be done.
+
+## Changes in Version 0.1.0.9290 (2020-09-16)
+
+- RPPTool
+  - mods for shiny.
+
+## Changes in Version 0.1.0.9289 (2020-09-14)
+
+- CASTool
+  - Add more console messages showing status.
+- getStressorList
+  - Modify directory references.
+
+## Changes in Version 0.1.0.9288 (2020-09-14)
+
+- getSiteInfo.R
+  - Add dir_map_rmd as input parameter.
+
+## Changes in Version 0.1.0.9287 (2020-09-14)
+
+- RPPTool
+  - Update server.R with skeleton code revisions.
+  - Update other function files.
+  - Keep all inputs on single tab.
+  - Turn off stressor weights.
+  - Ensure all functions in /external are sourced in global.R
+  - Add data/BCG_ProportionalOdds_20200113.xlsx
+  - external directory, Copy RMD from inst/rmd
+    - Map_Leaflet.rmd
+- CASTool
+  - Data/SMCClusterInfo.tab, updated version.
+  - external directory, Copy RMD from inst/rmd
+    - Report_Results_overall.rmd
+    - Report_Results_summary.rmd
+
+## Changes in Version 0.1.0.9286 (2020-09-10)
+
+- RPPTool
+  - RPPTool_CA.R, Add Shiny code.
+  - Add sourced scripts.
+  - server.R
+    - Add in skeleton code.
+- DESCRIPTION
+  - Add lubridate
+- Add Data/NHDPlusNetwork.xlsx
+
+## Changes in Version 0.1.0.9285 (2020-09-10)
+
+- RPPTool
+  - global.R
+    - Change read statement directory for rda files
+
+## Changes in Version 0.1.0.9284 (2020-09-10)
+
+- RPPTool
+  - global.R
+    - Change read statement for SMCSitesFinal to work on shinyapps.io.
+
+## Changes in Version 0.1.0.9283 (2020-09-09)
+
+- CASTool
+  - server.R
+    - Update messages and add progress messages for getCoOccurrence (BMI
+      and Alg).
+
+## Changes in Version 0.1.0.9282 (2020-09-09)
+
+- CASTool
+  - server.R
+    - Add message output for testing on shinyapps.io.
+
+## Changes in Version 0.1.0.9281 (2020-09-09)
+
+- CASTool
+  - global.R
+    - Reinstate “.” and change SMCSitesFinal read line.
+
+## Changes in Version 0.1.0.9280 (2020-09-09)
+
+- CASTool
+  - global.R
+    - Modify file.path to not use “.”
+
+## Changes in Version 0.1.0.9279 (2020-09-09)
+
+- Logos
+  - Add hi-res logos to each Shiny app in www folder
+  - Test logo in Shiny apps in ui.R
+  - Remove raw-data hexSticker code and old logos.
+- CASTool
+  - server.R, run_ALL2
+    - Load RDA rather than SHP files for mapping. Saves ~ 25 seconds.
+- getSiteInfo
+  - Add extra condition for photo directory but no photo files.
+- getReport
+  - Fill in description for 2 parameters.
+
+## Changes in Version 0.1.0.9278 (2020-09-08)
+
+- getReport.R
+  - Add SiteQual2Print as parameter.
+  - Change dir_results default.
+- CAST server.R
+  - Add siteQual2Print as input for getReport.
+- Rename CAST to CASTool
+- Rename RPP to RPPTool
+
+## Changes in Version 0.1.0.9277 (2020-09-02)
+
+- Replace data file SMCSitesFinal.tab.
+- Shiny RPP, server.R
+  - TargetSiteID to TargetCOMID.
+  - Split up user inputs.
+
+## Changes in Version 0.1.0.9276 (2020-08-31)
+
+- Update version numbers in NEWS, DESCRIPTION
+  - In Shiny apps use date.
+
+## Changes in Version 0.1.0.9275 (2020-08-31)
+
+- Multiple changes in RPP Shiny app.
+  - Added as pull request from 20200831 branch.
+- Shiny CAST_SMC
+  - Revised data.
+  - Small tweaks
+    - CASTool_CA.R
+    - server.R
+- Shiny CAST_SMC, server.R
+  - Enable map zoom on station select.
+- Update README.
+
+## Changes in Version 0.1.0.9274 (2020-08-31)
+
+- CASTool_CA.R
+  - Change from file.path(wd, “Results”… to file.path(dir_results…
+
+## Changes in Version 0.1.0.9273 (2020-08-28)
+
+- getSiteInfo.R
+  - Set boo_DEBUG \<- FALSE
+- getStressorList.R
+  - Add na.rm=TRUE to geom_jitter to avoid warning about missing points.
+- CASTool_CA.R
+  - Modify skeleton code for debugging.
+
+## Changes in Version 0.1.0.9272 (2020-08-28)
+
+- Update NEWS with yesterday’s changes.
+
+## Changes in Version 0.1.0.9271 (2020-08-27)
+
+- v0.1.0.9003 …
+- Updated to reflect changes in dplyr::arrange()
+- Commented out CASTfxn Package version until I can install it
+
+## Changes in Version 0.1.0.9270 (2020-08-27)
+
+- v0.1.0.9263 …
+- Updates to address changes to dplyr::summarise() and dplyr::mutate();
+  - changes to allow missing modified streams and 303d-list files;
+  - changes to use dir_results instead of wd, “Results” so there’s only
+    one location to specify the results directory and it doesn’t have to
+    be the working directory.
+
+## Changes in Version 0.1.0.9269 (2020-08-27)
+
+- v0.1.0.9261 …
+- Changes to standardize debugging results directory;
+  - updates to account for changes in the new version of dplyr
+
+## Changes in Version 0.1.0.9268 (2020-08-27)
+
+- v0.1.0.9263 …
+- Updated code to reflect changes in new dplyr version regarding
+  summarise() and mutate()
+
+## Changes in Version 0.1.0.9267 (2020-08-27)
+
+- v0.1.0.9256 …
+- Adjusted dplyr::summarise() to reflect new version of dplyr package;
+  - rewrote lines to identify whether or not the parameter should be
+    log10 transformed
+
+## Changes in Version 0.1.0.9266 (2020-08-27)
+
+- v0.1.0.9247 …
+- added any to vector comparison and adjusted dplyr::summarise() to
+  reflect updates to the dplyr package
+
+## Changes in Version 0.1.0.9265 (2020-08-27)
+
+- v0.1.0.9263 …
+- Revised to allow NULL for data_mods and data_303d;
+  - adjusted directories to reflect the directory variables as stated in
+    the skeleton code ONLY in the debugging statement.
+
+## Changes in Version 0.1.0.9264 (2020-08-27)
+
+- v0.1.0.9246 …
+- Updated dplyr::summarise()
+
+## Changes in Version 0.1.0.9263 (2020-08-27)
+
+- v0.1.0.9244 …
+- updated dplyr::summarise()
+
+## Changes in Version 0.1.0.9262 (2020-08-27)
+
+- Post merge update.
+- getSiteInfo.R
+  - wd/“Results” to dir_results
+  - Parameter AlgIndexGpGp to AlgIndexGp
+  - df_bkginfo to data_bkginfo
+- CAST_SMC Shiny
+  - server.R (CAST_SMC)
+    - Update Run_ALL to Run_ALL2 with skeleton code.
+    - Compared code chunks via <https://text-compare.com/>
+  - Update Help section.
+- getWoE.R
+  - Outlining.
+
+## Changes in Pull Request 88.9001 (2020-08-21)
+
+- CASTool_CA.r
+  - Move from R/ to inst/extdata/
+  - Change gitpath from local PC to system.file
+  - Comment out source for package functions.
+  - wd to getwd()
+
+## Changes in Version 0.1.0.9260 (2020-08-20)
+
+- Shiny CAST_SMC
+  - Add help file and make active.
+    - Create RMD and create file in data-raw folder.
+  - Make Map legend key file active.
+
+## Changes in Version 0.1.0.9259 (2020-08-19)
+
+- GGplots, add na.rm = TRUE for geom\_\* and \*\_smooth. Issue \#87
+  - getBioStressorResponses.
+  - getCoOccur
+    - Formatting only. Already included na.rm.
+- Fixes from merge.
+  - getSummaryAllSites.R
+    - Reference to local directory included in merge.
+  - getTimeSeq
+    - Duplicate “stressors” parameter
+- runShinyExamples.R
+  - Update for current names of Shiny apps in package.
+- getWoE.R
+  - Parameters didn’t match the function.
+
+## Changes in Version 0.1.0.9258 (2020-08-17)
+
+- Rebuild and repost.
+
+## Changes in Version 0.1.0.9257 (2020-08-17)
+
+- Merged 201909_ARL branch as pull request \#86.
+
+## Changes in Version 0.1.0.9256 (2020-08-17)
+
+- Tweak to Shiny app CAST_SMC
+
+## Changes in Version 0.1.0.9255 (2020-08-15)
+
+- dplyr::summarize(), add .groups = “drop_last”
+  - Shiny app CAST_SMC
+  - Shiny app RPP_SMC
+
+## Changes in Version 0.1.0.9254 (2020-08-14)
+
+- Shiny
+  - CAST_SMC
+    - Fix map by disabling plot legend explanation.
+  - Remove unused Shiny apps
+    - CAST_Map_COMID
+    - CAST_Map_StationID
+
+## Changes in Version 0.1.0.9253 (2020-08-11)
+
+- Shiny, RPP_SMC
+  - Targeted SiteID and COMID to top of pick lists.
+- Shiny, RPP_CAST
+  - Targeted SiteID to top of pick lists.
+
+## Changes in Version 0.1.0.9252 (2020-08-11)
+
+- Vignettes
+  - CASTfxn, not working
+  - Slight tweaks to Analysis and Elevation.
+- Shiny, RPP_SMC
+  - Station map shows corresponding COMID for selected StationID.
+- Shiny, RPP_CAST
+  - Attempt to fix station map
+
+## Changes in Version 0.1.0.9251 (2020-07-31)
+
+- File clean up.
+- Add version numbers to titles of Shiny apps (RPP_SMC and CAST_SMC).
+
+## Changes in Version 0.1.0.9250 (2020-05-04)
+
+- Shiny app, RPP_SMC
+  - Rework visual design.
+  - Include Stations map as a tab.
+  - Include Reach map as a tab.
+  - Other tweaks.
+
+## Changes in Version 0.1.0.9249 (2020-04-23)
+
+- Shiny app, RPP_SMC
+  - Add user inputs.
+  - Currate included data.
+
+## Changes in Version 0.1.0.9248 (2020-04-20)
+
+- Report_Results_summary.rmd
+  - Replace CSCI and MMIdiatom with bmiIndex and algIndex.
+  - arrange\_ to arrange (line 271) to avoid deprecation message.
+- getReport
+  - Define pipe so can be used in RMD.
+  - Additional input parameters
+    - dir_data
+    - bmiIndex
+    - algIndex
+  - Modify message for missing RMD.
+  - Formatting to avoid error when render the RMD.
+- CAST_SMC
+  - server.R
+    - Update call to getReport()
+- getSummaryAllSites.R
+  - print() to message()
+  - Replace list.files() and checks for files with list.dirs().
+  - Fix formatting on an if else statement.
+- Shiny CAST_COMID
+  - Stream reaches not showing, uncommented that section.
+
+## Changes in Version 0.1.0.9247 (2020-04-15)
+
+- Shiny map apps CAST_Map_StationID and CAST_MAP_COMID
+  - Add mini map
+
+## Changes in Version 0.1.0.9246 (2020-04-14)
+
+- getSiteInfo.R
+  - Clear warning about only first element used.
+- getBioStressorResponses
+  - Add “formula = y ~ x” to avoid message.
+
+## Changes in Version 0.1.0.9245 (2020-04-13)
+
+- getReport.R
+  - Add “useBC” and “lagdays” as input parameters.
+- getQualSites.R
+  - Fix working directory reference.
+- Shiny CAST_SMC
+  - server.R, Run_ALL
+    - Add “stringsAsFactors = FALSE” to read.delim().
+  - dplyr::select
+    - Add “all_of”. More tidyverse stuff.
+- Report_Results_summary.rmd
+  - Comment out lines without inputs.
+    - siteQual2Plot
+    - DOlim
+    - pHlimLow
+    - pHlimHigh
+- SiteInfo.R
+  - Modify is.na to avoid more tidyverse corruption.
+    - is.na(df.temp\$StudyYear)
+    - is.na(df.temp\[, “StudyYear”, TRUE\])
+- getOutliers.R
+  - Get rid of ‘NaN’ introduced warning.
+    - Add filter for LogTranf == 1 and ResultValue \<= 0.
+
+## Changes in Version 0.1.0.9244 (2020-04-10)
+
+- getVerifiedPredictions
+  - Update with drop = TRUE to deal with tidyverse corruption of data
+    formats.
+- runShinyExamples.R
+  - Update examples, details, and default (CAST_SMC).
+- Shiny_SMC
+  - Change order of tabs to have Console first.
+  - Copy disclaimer to sidebar.
+  - Rename Disclaimer_Key to Legend_Key.
+    - Minor edits.
+
+## Changes in Version 0.1.0.9243 (2020-04-09)
+
+- 2020-04-09, found missing from GitHub. Reloaded version from
+  2020-02-05.
+- Updates to CAST_SMC shiny.
+  - Code tweaks.
+  - Test sites to top of SMCSitesFinal.tab
+  - Suppress warning for readOGR.
+  - Update Disclaimer to most recent version.
+  - Update progress bar.
+- Declare additional parameters and fix working directory references.
+  - getSiteInfo
+  - getQualSites
+  - getClusterInfo
+  - getTimeSeq
+  - getBioStressorResponses
+  - getVerifiedPredictions
+  - getWoE
+- Send print to message
+  - getSiteInfo
+  - getTimeSeq
+  - getVerifiedPrecitions
+  - getWoE
+- ggplot add na.rm
+  - getTimeSeq
+
+## Changes in Version 0.1.0.9242 (2020-02-03)
+
+- Update data in Shiny_SMC folder.
+  - Data from collaborator’s most recent version.
+
+## Changes in Version 0.1.0.9241 (2020-01-30)
+
+- Fixes to Shiny Apps
+  - CAST_Map_StationID
+    - Renamed from SiteID to StationID.
+  - CAST_SMC
+    - Partial fix. Runs but not completely.
+
+## Changes in Version 0.1.0.9240 (2020-01-27)
+
+- Create new package after merging branches and resolving conflicts.
+
+## Changes in Version 0.1.0.9239 (2019-10-07, ARL)
+
+- General
+  - Minor bug fixes arising from system test to various functions
+- getSummaryAllSites
+  - Summarizes WoE from all target sites in the results folder
+
+## Changes in Version 0.1.0.9238 (2019-10-01, ARL)
+
+- General
+  - Standardized variable and column names to minimize confusion
+- getStressorList
+  - Adjusted for using only one cluster rathern than multiple options
+  - Adjusted graphs to display quality type instead of “all ref” always
+- getCoOccurDataSet
+  - Generalized “CSCI” or “IBI” to be contents of variable “index”
+- getBioStressorResponses
+  - Adjusted graphs to display quality type instead of “all ref” always
+
+## Changes in Version 0.1.0.9237 (2019-09-27, ARL)
+
+- SMCClusterData.tab
+  - Removed extraneous columns (clust_land, clust_noland, TempWS,
+    PrecipWs)
+- Map_Leaflet.rmd
+  - Adjusted calls that relied on multiple cluster options to just one
+    cluster
+- getSiteInfo
+  - Adjusted for using only one cluster rather than multiple options
+- getClusterInfo
+  - Adjusted for using only one cluster rather than multiple options
+  - Adjusted graph to display quality type instead of “all ref” always
+  - Adjusted graph title to be more descriptive
+  - Added caption to better describe quality type
+
+## Changes in Version 0.1.0.9236 (2019-9-26)
+
+- getComparators, new function
+  - Uses cluster identification as base comparator set
+  - Adds BC dissimilarity distance matrix if useBC = TRUE
+  - Identifies a minimum of 30 comparator sites from sites having \<=
+    bc.cutoff value dissimilarity; exceeds cutoff if \<30 sites meet
+    criteria; uses all sites meeting criteria, even if \>30.
+- getCoOccurDataset, new function
+  - Identifies paired stressor/response data with a user- specified lag
+    time (default = 0) and creates a data set.
+  - This dataset is generated prior to selecting stressors for analysis
+    as potential causes of impairment.
+  - Biocomm-specific, but inclusive of measured/modeled data.
+  - Part of the data prep part of the CASTool.
+- getDataGaps, new function
+  - Assembles data gaps identified by other functions into a single
+    table.
+- getDataSets, new function
+  - Similar to getCoOccurDataset, but filtered for only stressors that
+    will be used in further analyses to evaluate evidence for causality.
+- getQualSites, new function
+  - Identifies sites, reaches and samples representing reference
+    conditions, as identified by the regulatory authority and specified
+    in the Sites data file; sites considered to be not degraded, also as
+    identified by the regulatory authority’s numerical threshold for
+    “degraded”; and sites having samples with “better” quality than the
+    worst quality target site sample.
+- getSiteBackground, new function
+  - Identifies StreamCat data illustrative of anthropogenic activity
+    that might be found to relate to causal agents. Although it makes no
+    claims about these agents, barplots of their values are presented at
+    multiple scales, if available.
+  - Moves site files from a data folder repository into the target site
+    results folder.
+- getTimeSeq, new function
+  - Prepares barplots of stressor/response values over time, with each
+    stressor/response pair graphed separately, one atop the other.
+- getWoE, new function
+  - Pulls together the weight of evidence findings from each separate
+    line of evidence evaluated for the target site and biological
+    community.
+
+## Changes in Version 0.1.0.9235 (2019-9-05)
+
+# \# Changes in Version 0.1.0.9235.007 (2020-01-27)
+
+- Disclaimer_Key
+
+  - Move creation to data-raw
+
+  - Move file location folder from data to www.
+
+- NEWS - modify structure.
+
+# Changes in Version 0.1.0.9235.006 (2019-11-06)
+
+- Add package down website.
+  - Partial.
+
+# Changes in Version 0.1.0.9235.005 (2019-10-29)
+
+- Shiny_SMC
+  - Move Results back out of www folder.
+  - Function to copy Results to www.
+  - Add function to end of Run_All.
+  - Remove wwwin global.
+  - ObserveEvent on StationID for CopyResults.
+
+# Changes in Version 0.1.0.9235.004 (2019-10-28)
+
+- Shiny_SMC
+  - Move Results to www folder.
+  - Add PDF viewer to each tab.
+
+# Changes in Version 0.1.0.9235.003 (2019-10-28)
+
+- Shiny, Disclaimer_Key.HTML
+  - toc_depth from 3 to 2.
+    - Takes up less space.
+
+# Changes in Version 0.1.0.9235.002 (2019-10-28)
+
+- Updates for state of files as of COB 10-24.
+
+# Changes in Version 0.1.0.9235.001 (2019-10-28)
+
+- New Branch on GitHub (201910_Shiny_SMC)
+- Roll back to 2019-10-24 close of business edits.
+- Keep branch code for Shiny app modifications while also have a branch
+  for code edits. Will merge later.
+
+# Changes in Version 0.1.0.9235 (2019-09-05)
+
+## Changes in Version 0.1.0.9236 (2019-10-22)
+
+- Update Shiny app CAST_SMC.
+  - Add data.
+  - Modify to use SMC data.
+- DESCRIPTION, packages under IMPORTS
+  - Add
+    - readxl
+    - tidyr
+    - shinyFiles
+  - Remove
+    - RgoogleMaps
+
+## Changes in Version 0.1.0.9235 (2019-09-05)
+
+- getStressorList, Issue \#82
+  - Add “DirIncStress” to chem.info (raw data).
+  - Use new parameter to decide on how to deal with probsHi and probsLo.
+  - Previously looked only for “DO” or “pH”.
+- getCoOccur, Issue \#82
+  - Update example to use data.chem.info\$DirIncStress to get
+    col.Stressors.InvSc input.
+
+# Changes in Version 0.1.0.9234 (2019-09-05)
+
+- getStressorList, Issue \#81
+  - File save, remove row names (line 372).
+
+## Changes in Version 0.1.0.9233 (2019-09-05)
+
+- getCoOccur
+  - Modify “pH” in defaults for col.Stressor.InvSc.
+
+# Changes in Version 0.1.0.9232 (2019-07-11)
+
+- Shiny, map
+  - Update map data for SMC.
+
+# Changes in Version 0.1.0.9231 (2019-07-11)
+
+- Shiny, map, 2 versions, COMID and SiteID
+
+# Changes in Version 0.1.0.9230 (2019-06-26)
+
+- Working on Shiny app. Incomplete. Issue \#30.
+  - Renamed CAST_v3 to CAST_AZ
+  - Nearly complete.
+  - Removed CAST_v1 and CAST_v2.
+- getClusterInfo
+  - Tweaks for Shiny App
+  - Formatting.
+  - boo_DEBUG for testings.
+
+# Changes in Version 0.1.0.9229 (2019-06-24)
+
+- getClusterInfo, Issue \#76
+  - Add data.cluster as input parameter.
+
+# Changes in Version 0.1.0.9229 (2019-06-24)
+
+- getClusterInfo, Issue \#80
+  - Add TargetSiteID as input parameter.
+
+# Changes in Version 0.1.0.9228 (2019-06-24)
+
+- getBioStressorResponses, Issue \#79
+  - Suppress warnings for “predict”.
+
+# Changes in Version 0.1.0.9227 (2019-06-24)
+
+- Working on Shiny app. Incomplete. Issue \#30.
+- getSiteInfo, Issue \#78
+  - Update code to use function variable map_proj instead of example
+    variable my.aea.
+
+# Changes in Version 0.1.0.9226 (2019-06-06)
+
+- getBioStressorResponses, Issue \#75
+  - Modify lm() sections.
+    - Convert NAN/Inf to NA
+    - na.action inside of lm()
+
+# Changes in Version 0.1.0.9225 (2019-06-06)
+
+- Update ShinyApp included in package, Issue \#30
+  - runShinyExample
+    - Use CAST_v3
+  - Add shinyjs to DESCRIPTION Imports
+  - Still working
+- Update console feedback to messages, Issue \#73
+  - So can trap in Shiny app and display to user.
+  - getCluster.R
+  - getBioStressorResponses
+- Add output directory to Return section of help file.
+  - getSiteInfo
+  - getClusterInfo
+  - getCoOccur
+  - getVerifiedPredictions
+
+# Changes in Version 0.1.0.9224 (2019-05-31)
+
+- Add testing, Issue \#72.
+
+# Changes in Version 0.1.0.9223 (2019-05-31)
+
+- runShinyExample, Issue 30
+  - Added additional Shiny Apps to the package.
+    - CAST_MapSelection, was already in the package
+    - CAST_v1, original design
+    - CAST_v2, for testing of new app
+  - Added parameter to function to run the different Shiny apps.
+
+# Changes in Version 0.1.0.9222 (2019-05-20)
+
+- getCoOccur
+  - Modify scoring on box plot for DO and pH, Issue \#70
+  - Add new input variable for those with inverse scoring.
+    - Use 25/50 instead of 50/75 as scoring threshold quantiles.
+    - Scores are 1/0/-1 instead of -1/0/1
+  - Modify scoring threshold quantiles on box plot.
+
+# Changes in Version 0.1.0.9221 (2019-05-20)
+
+- getCoOccur
+  - Modify scores for SR plot (plot2), Issue \#71
+  - Scores are in ascending order so Stressor Response plot matches Box
+    plot.
+  - Scores file output is now ordered by Param_Value instead of IBI.
+- DESCRIPTION
+  - Removed “StagedInstall: yes”
+
+# Changes in Version 0.1.0.9220 (2019-05-16)
+
+- Changes for R 3.6.0 devtools, Issue \#65
+  - Readme
+    - Rebuild.
+
+# Changes in Version 0.1.0.9219 (2019-05-16)
+
+- Changes for R 3.6.0 devtools, Issue \#65
+  - Readme
+    - Fix misspelling in installation example.
+
+## Changes in Version 0.1.0.9218 (2019-05-16)
+
+- Changes for R 3.6.0 devtools, Issue \#65
+  - Readme
+    - Moved install code inside of code box.
+    - Added “help” section.
+    - Updated badges, <https://github.com/Naereen/badges>
+
+# Changes in Version 0.1.0.9217 (2019-05-16)
+
+- Changes for R 3.6.0 devtools, Issue \#65
+  - Need extra line for install from GitHub. Update readme.
+    - Sys.setenv(“TAR” = “internal”)
+- GitHub badges
+  - Added Maintained to Readme.
+  - <https://github.com/Naereen/badges>
+
+# Changes in Version 0.1.0.9216 (2019-05-16)
+
+- Changes for R 3.6.0 staged install, Issue \#65
+  - Do not store package directory to any object. Always call with
+    system.file.
+    - getReport.R
+    - getSiteInfo.R
+- DESCRIPTION, Issue \#69
+  - Update for package changes that are no longer used in CASTfxn.
+    - replyr, remove from Imports, package in maintenance mode
+    - pryr, removed from Suggests, used prior to conversion to all
+      ggplot2 plots.
+
+# Changes in Version 0.1.0.9215 (2019-05-16)
+
+- getBioStressorResponse
+  - Modify correlation file output, Issue \#68
+    - Update QC check for new “n” column.
+
+# Changes in Version 0.1.0.9214 (2019-05-15)
+
+- getVerifiedPredictions
+  - Add biocomm as input.
+    - help file
+    - example
+    - function code
+  - Score file modifications, Issue \#68
+    - Add “n”.
+    - Rename (include biocomm)
+- getBioStressorResponse
+  - Score file modifications, Issue \#68
+    - Correlations file, add “n”.
+
+# Changes in Version 0.1.0.9213 (2019-05-14)
+
+- getVerifiedPredictions
+  - Update description Value.
+
+# Changes in Version 0.1.0.9212 (2019-05-13)
+
+- getVerifiedPredictions, Issue \#57
+  - Add “n” to plot in caption.
+  - Add scoring boundaries.
+  - Add scores to the plot caption.
+    - In ascending order to match plot (left to right).
+  - Modify scores output file. Issue \#61
+  - Error/stop message for no “worse” bio sites for comparison.
+
+# Changes in Version 0.1.0.9211 (2019-05-10)
+
+- getVerifiedPredictions, Issue \#57
+  - Add better bio, degraded = no points to the plot
+
+# Changes in Version 0.1.0.9210 (2019-05-09)
+
+- getReport fails, Issue \#67
+  - Update for changes in BioStressorResponses scores output, Issue \#58
+
+# Changes in Version 0.1.0.9209 (2019-05-06)
+
+- Fixes after running “check” in RStudio.
+  - Add package reference to functions that are not base package
+    functions.
+    - importFrom(“grDevices”, “pdf”)
+    - importFrom(“graphics”, “plot”)
+    - importFrom(“stats”, “lm”, “predict”, “var”)
+    - importFrom(“utils”, “flush.console”, “read.delim”)
+  - examples lines wider than 100 characters
+    - getBioMatches
+    - getBioStressorResponses
+    - getChemDataSubsets
+    - getClusterInfo
+    - getSSDplot
+    - getSiteInfo
+    - getStressorList
+    - getVerifiedPredictions
+  - Document data
+    - data_CoOccur_AZ_Lo
+- R v3.6.0., StagedInstall, Issue \#65
+  - DESCRIPTION
+    - StagedInstall: yes
+
+# Changes in Version 0.1.0.9208 (2019-05-06)
+
+- getBioStressorResponse, Issue \#58.
+  - 2nd Score.
+  - Add scores to plot.
+  - Rework output table.
+- Add SiteID to all text file outputs, Issue \#66
+  - getBioStressorResponse
+    - SRCKN001.61.SR.BMI.Scores.txt
+
+# Changes in Version 0.1.0.9207 (2019-05-02)
+
+- getSSDplot
+  - Add na.rm=TRUE to ggplot references to avoid warning messages, Issue
+    \#56.
+
+# Changes in Version 0.1.0.9206 (2019-05-02)
+
+- R v3.6.0., StagedInstall, Issue \#65
+  - DESCRIPTION
+    - StagedInstall: no
+  - Use system.file(package=““) without saving to a variable.
+    - runShinyExample.R
+    - getReport.R
+    - getSiteInfo.R
+- getSiteInfo
+  - Update leaflet map RMD with SiteInfo subdirectory for static map.
+    Issue \#64
+
+# Changes in Version 0.1.0.9205 (2019-05-01)
+
+- Shiny App, Issue \#30.
+  - Add COMID select with map.
+- Sub-directories by function, Issue \#64
+  - Report and most functions.
+
+# Changes in Version 0.1.0.9204 (2019-04-26)
+
+- getBioStressorResponses
+  - Tweaks trying to find why fails for a user.
+    - Formatting in code.
+    - Algae example.
+    - QC check on cor file header add “biocomm”.
+
+# Changes in Version 0.1.0.9203 (2019-04-25)
+
+- biocomm name on file scoring outputs, Issue \#64.
+  - getBioStressorResponses.
+    - Add to table outputs.
+  - getCoOccur
+    - Add as input.
+    - Add to txt output filenames.
+    - Add to table outputs.
+  - getStressorList
+    - Add as input.
+    - Add to txt output filenames.
+    - Did **not** add to table outputs.
+  - getReport
+    - Modify RMD for new file names.
+    - Add DT for tables.
+- Add DT package to DESCRIPTION IMPORTS.
+
+# Changes in Version 0.1.0.9202 (2019-04-25)
+
+- Remove function getRegPlotSet, Issue \#63.
+
+# Changes in Version 0.1.0.9201 (2019-04-23)
+
+- Remove unused inputs, Issue \#60
+  - getVerifiedPredictions
+    - predint
+    - varLegLoc
+  - getBioStressorResponses
+    - predint
+    - varLegLoc
+
+# Changes in Version 0.1.0.9200 (2019-04-23)
+
+- getVerifiedPredictions
+  - Make inputs more generic, Issue \#59
+    - “bmi” to “bio”.
+
+# Changes in Version 0.1.0.9199 (2019-04-23)
+
+- getCoOccur
+  - Example 2 (AZ) site to SRCKN001.61 to match other examples.
+
+# Changes in Version 0.1.0.9198 (2019-04-23)
+
+- getBioStressorResponses
+  - Scoring. No slope score to zero.
+
+# Changes in Version 0.1.0.9197 (2019-04-23)
+
+- Declare “directory” as a required input.
+  - getStressorList
+  - getBioStressorResponses
+  - getVerifiedPredictions
+  - getClusterInfo
+- getVerifiedPredictions
+  - Rename function.
+    - Earlier update only did file name.
+- getBioMatches
+  - Update names in output.
+
+# Changes in Version 0.1.0.9196 (2019-04-22)
+
+- getBioMatches
+  - Missing inputs:
+    - data.stress.raw
+    - data.bioMetrics
+    - list.SiteSummary
+    - data.SampSummary
+    - data.chem.raw
+  - Update documentation.
+  - Update examples.
+  - Update code; bio instead of bmi and alg.
+- Update examples for changes to getBioMatches
+  - CASTfxn_Vignette.RMD
+
+# Changes in Version 0.1.0.9195 (2019-04-22)
+
+- Rename getStressorSpecificRegressions to getVerifiedPredictions
+  - getStressorSpecificRegressions.R
+  - CASTfxn_Vignette.RMD
+  - Analysis.RMD
+- CASTfxn_Vignette.RMD
+  - Update examples for updates in functions.
+
+# Changes in Version 0.1.0.9194 (2019-04-22)
+
+- Remove old deprecated functions.
+
+# Changes in Version 0.1.0.9193 (2019-04-18)
+
+- getBioStressorResponses
+  - Set minimum number of cluster samples 3 rather than 1.
+    - predict and corr.test were failing with only 2 records.
+
+# Changes in Version 0.1.0.9192 (2019-04-18)
+
+- getCoOccur
+  - Allow for special characters (e.g., %) in stressors.
+  - Error message for stressors not in input data.
+
+# Changes in Version 0.1.0.9191 (2019-04-17)
+
+- getCoOccur
+  - Attempt to remove warning messages from plot 1 (p1).
+    - If skip geom_jitter the plot is missing parts so leave alone.
+
+# Changes in Version 0.1.0.9190 (2019-04-17)
+
+- getBioStressorResponses
+  - Update regression plot with 2nd regression line. Issue \#55.
+
+# Changes in Version 0.1.0.9189 (2019-04-16)
+
+- getCoOccur
+  - Unwind removing Stressor plot. Keep for now. Issue \#54.
+  - Make edits to p2 to avoid warnings; Issue \#56.
+
+# Changes in Version 0.1.0.9188 (2019-04-16)
+
+- Add na.rm=TRUE to ggplot statements to avoid warnings; Issue \#56.
+  - getCoOccur
+
+# Changes in Version 0.1.0.9187 (2019-04-16)
+
+- getCoOccur
+  - Remove stressor plot (p2). Issue \#54
+
+# Changes in Version 0.1.0.9186 (2019-04-15)
+
+- getBioStressorResponses
+  - Fix ‘df.corr’ object not found.
+    - Previously renamed df.corr to df.corr_cl. Missed a reference.
+
+# Changes in Version 0.1.0.9185 (2019-04-15)
+
+- getCoOccur
+  - NA for stressor values.
+    - Parameter was being skipped if no stressor values (i.e., all NA).
+    - Output NA to scores file.
+    - Message to console.
+
+# Changes in Version 0.1.0.9184 (2019-04-12)
+
+- getBioStressorResponses
+  - Minor edits to 0.1.0.9083 changes (r2).
+  - Check for missing stressors.
+    - Remove from stressor list.
+    - Warning for those requested but missing from data.
+
+# Changes in Version 0.1.0.9183 (2019-04-12)
+
+- getBioStressorResponses
+  - Modify linear regression plot, Issue \#55.
+  - Incomplete. Still need 2nd regression for just the cluster.
+
+# Changes in Version 0.1.0.9182 (2019-04-12)
+
+- Move the SR plot from getCoOccur to getBioStressorResponses, Issue
+  \#54.
+  - Prepare code, did not make changes.
+
+# Changes in Version 0.1.0.9181 (2019-04-12)
+
+- getBioStressorResponses
+  - Update stop message for no response data.
+
+# Changes in Version 0.1.0.9180 (2019-04-12)
+
+- make.names; undo edits for TargetSiteID in names for folders and
+  files.
+  - Some start with numbers and that is ok.
+  - getBioStressorResponses
+  - getClusterInfo
+  - getCoOccur
+  - getStressorList
+  - getStressorSpecificRegressions
+- getCoOccur
+  - Boxplot not saving to TargetSiteID folder (line 414).
+
+# Changes in Version 0.1.0.9179 (2019-04-11)
+
+- getBioStressorResponses
+  - Line 262-267 QC check failed.
+    - Move declaration into previous if/then by biocomm.
+- Use make.names for ggsave exports of plots by variable.
+  - getBioStressorResponses
+  - getStressorSpecificRegressions
+  - getCoOccur
+  - getClusterInfo
+
+# Changes in Version 0.1.0.9178 (2019-03-22)
+
+- getBioStressorResponses
+  - End if no site response data (list.MatchBioData\$site.a.rsp).
+
+# Changes in Version 0.1.0.9177 (2019-03-22)
+
+- getCoOccur
+  - End message for no data rather than error crash.
+  - ID.plot to TargetSiteID
+    - For consistency among functions.
+  - dir.plots parameter not being used. Modify code to use it.
+  - Example, remove “c” from col.ID.
+
+# Changes in Version 0.1.0.9176 (2019-03-21)
+
+- Report_Results_summary
+  - lines 155-175, SR.BMI.Scores. read statement corrected.
+
+# Changes in Version 0.1.0.9175 (2019-03-21)
+
+- Report_Results_summary
+  - lines 132-152, SR.BMI.Corrs. read statement corrected.
+
+# Changes in Version 0.1.0.9174 (2019-03-15)
+
+- Report_Results_summary
+  - Update show CoOccur for uneven box and SR plots.
+
+# Changes in Version 0.1.0.9173 (2019-03-15)
+
+- Report_Results_summary
+  - Show SSTV plots.
+  - Update show CoOccur for no data.
+
+# Changes in Version 0.1.0.9172 (2019-03-15)
+
+- Report_Results_summary
+  - Show CoOccurrence plots.
+
+# Changes in Version 0.1.0.9171 (2019-03-13)
+
+- getBioStressorResponses
+  - Modify QC check for header for correlation plot data.
+    - Resave file.
+- Report_Results_summary
+  - Make same modification as getBioStressorResponses.
+
+# Changes in Version 0.1.0.9171 (2019-03-13)
+
+- getBioStressorResponses
+  - Add QC check for header for correlation plot data.
+
+# Changes in Version 0.1.0.9170 (2019-03-11)
+
+- getStressorSpecificRegressions
+  - Add ref.sites as a required input parameter.
+- Add na.rm=TRUE to fun.aggregate=mean for dcast statements.
+  - getBioStressorResponses.R
+  - Report_Results_summary.rmd
+
+# Changes in Version 0.1.0.9169 (2019-03-11)
+
+- Assign cluster in “algae” example.
+- getBioStressorResponses
+  - Update scores text file output for header row.
+    - If case 1 didn’t have results the file didn’t have a header row.
+    - And the report would fail.
+- getReport
+  - Report_Results_summary.rmd
+    - Update dcast statement to include fun.aggregate = mean.
+
+# Changes in Version 0.1.0.9168 (2019-03-08)
+
+- Modify QC procedures for plotting missing categories of data.
+  - getStressorRef
+  - getClusterInfo  
+  - getBioMatches  
+  - getBioStressorResponses
+
+# Changes in Version 0.1.0.9167 (2019-03-08)
+
+- Assign data.cluster based on information in data_Sites.
+  - Modify examples in each function.
+    - getSiteInfo
+    - getChemDataSubsets
+    - getBioMatches
+    - getBioStressorResponses
+    - getClusterInfo
+    - getStressorList
+    - getStressorSpecificRegressions
+
+# Changes in Version 0.1.0.9166 (2019-03-07)
+
+- getBioStressorResponses
+  - Fix errors from testing.
+    - Remove extra brackets for sections.
+    - Add extra QC on correlation plot.
+    - Output item message for ones skipped.
+
+# Changes in Version 0.1.0.9165 (2019-03-05)
+
+- getStressorList
+  - Fails when have no reference sites.
+    - Change trigger for plotting ref sites.
+
+# Changes in Version 0.1.0.9164 (2019-03-05)
+
+- getStressorSpecificRegressions.R
+  - Revised plot output. Issue \#50 and 44.
+  - Old function R file renamed (prefixed with “z\_”) and marked with
+    keyword “internal”.
+  - Remove stressor loop. Always sens and tol taxa.
+- Data
+  - Rebuild all data from raw data files using processing scripts.
+  - Use dataset received 2019-02-27.
+- getSSDplot
+  - Update example to ‘print’ plots.
+- getCoOccur
+  - cluster to comparator.
+    - Variables in function only.
+- getBioStressorResponses
+  - Ensure Alg version works, Issue \#46
+  - Update example to remove bad response variables, Issue \#46
+- DESCRIPTION
+  - Move pryr package from imports to suggests. Issue \#52.
+
+# Changes in Version 0.1.0.9163 (2019-02-26)
+
+- getClusterInfo.R
+  - Fix y-axis label the same for all plots, Issue \#48.
+
+# Changes in Version 0.1.0.9162 (2019-02-19)
+
+- getStressorSpecificRegressions.
+  - ggplot graphics, Issue \#41.
+  - Started but unfinished.
+  - Other changes proposed to this function.
+
+# Changes in Version 0.1.0.9161 (2019-02-18)
+
+- Add geom_blank for ggplots where may not have a data group (e.g.,
+  cluster ref).  
+- Use same structure as in getBioStressorResponses.
+  - getStressorList
+  - getClusterInfo
+
+# Changes in Version 0.1.0.9160 (2019-02-15)
+
+- getStressorList
+  - Change “box” plots to ggplot. Issue \#41.
+  - Remove importFrom pryr “%\<a-%”.
+
+# Changes in Version 0.1.0.9159 (2019-02-15)
+
+- getRegPlotSet
+  - Mark functions as keyword internal so not in the help list
+
+# Changes in Version 0.1.0.9158 (2019-02-15)
+
+- getBioStressorResponses
+  - Remove importFrom pryr “%\<a-%”.
+    - No longer needed with gglot graphics.
+
+# Changes in Version 0.1.0.9157 (2019-02-15)
+
+- getClusterInfo
+  - Updated plot title to match old graphic. Issue \#41.
+
+# Changes in Version 0.1.0.9156 (2019-02-14)
+
+- getClusterInfo
+  - Convert to ggplot. Issue \#41.
+
+# Changes in Version 0.1.0.9155 (2019-02-14)
+
+- getBioStressorResponse
+  - Fix plot error when missing a subset of data. Issue \#43.
+
+# Changes in Version 0.1.0.9154 (2019-02-11)
+
+- getBioStressorResponse
+  - Fix PDF output after conversion to ggplot.
+
+# Changes in Version 0.1.0.9153 (2019-02-08)
+
+- getBioStressorResponse
+  - Add ref.sites as an input.
+  - Update to ggplot, Issue \#7
+  - Edit code for clarity
+
+# Changes in Version 0.1.0.9152 (2019-02-07)
+
+- getClusterInfo
+  - Fixed siteClusters v. site.Clusters as a parameter.
+
+# Changes in Version 0.1.0.9151 (2019-02-07)
+
+- getBioStressorResponses, Issue \#7
+  - Convert plot to ggplot
+    - Test mode so not active.
+
+# Changes in Version 0.1.0.9150 (2019-02-06)
+
+- getSiteInfo, Issue \#32 and Issue \#4
+  - Add required objects to function input arguments.
+  - Update example code
+    - getBioMatches
+    - getBioStressorResponses
+    - getChemDataSubsets
+    - getClusterInfo
+    - getSiteInfo
+    - getStressorList
+    - getStressorSpecificRegressions
+  - Remove required columns in data.cluster input. Issue \#32.
+    - W\_\_\_AGRIC
+    - W\_\_\_URBAN
+    - W\_\_\_FOREST
+  - leaflet map, Issue \#42
+    - Change addProviderTiles
+    - Rename file and move inside Station folder.
+  - ggplot map, Issue \#14
+    - Started but did not finish.
+    - Left code in as comments.
+    - Map takes 10 to 15 seconds with ggplot.
+
+# Changes in Version 0.1.0.9149 (2019-02-06)
+
+- getStressorList
+  - Error with NA reporting. Issue \#38.
+    - Added extra is.na in getChemDataSubsets.
+- getChemDataSubsets
+  - Fix error with NA reporting. Issue \#38
+  - Add in required parameters. Issue \#4
+- Update examples
+  - getBioMatches
+  - getBioStressorResponses
+  - getChemDataSubsets
+  - getClusterInfo
+  - getStressorList
+  - getStressorSpecificRegressions
+
+# Changes in Version 0.1.0.9148 (2019-02-05)
+
+- Merget getBMIStressorRespones and getAlgStressorResponses into a
+  single function, Issue \#34
+  - getBioStressorResponses
+  - Deprecated BMI and Alg version with keyword internal.
+
+# Changes in Version 0.1.0.9147 (2019-02-05)
+
+- Merge getBMIMatches and getAlgMatches into single function, Issue
+  \#33.
+  - getBioMatches
+  - Deprecated BMI and Alg version with keyword internal.
+
+# Changes in Version 0.1.0.9146 (2019-02-04)
+
+- Remove clustertype, Issue \#31
+  - Function inputs.
+    - getSiteInfo
+    - getClugerInfo
+    - getChemDataSubsets
+  - Function examples.
+    - getAlgmatches
+    - getAlgStressorResponses
+    - getBMImatches
+    - getBMIStressorResponses
+    - getChemDataSubsets
+    - getClusterInfo
+    - getSiteInfo
+    - getSTressorList
+    - getStressorSpecificRegressions
+  - Vignettes
+    - CASTfxn_Vignette
+    - Analysis
+
+# Changes in Version 0.1.0.9145 (2019-02-04)
+
+- Remove useLU, Issue \#31
+  - Function inputs.
+    - getSiteInfo
+    - getChemDataSubsets
+    - getClusterInfo
+    - getStressorList
+  - Function examples.
+    - getAlgmatches
+    - getAlgStressorResponses
+    - getBMIMatches
+    - getMBIStressorResponses
+    - getChemDataSubsets
+    - getClusterInfo
+    - getSiteInfo
+    - getStressorList
+    - getStressoSpecificRegressions
+  - Vignettes
+    - CASTfxn_Vignette
+    - Analysis
+
+# Changes in Version 0.1.0.9144 (2019-02-01)
+
+- Add shiny to DESCRIPTION
+
+# Changes in Version 0.1.0.9143 (2019-02-01)
+
+- Add Shiny. Issue \#30.
+  - Added demo app (default, not CAST).
+  - Added runShinyExample function to launch Shiny.
+    - Includes links in help file to Shiny.io app online.
+
+# Changes in Version 0.1.0.9142 (2019-02-01)
+
+- getCoOccur.R, Issue \#25
+  - Add individual plots as jpg.
+    - Use ggsave instead of jpeg (as with other functions).
+
+# Changes in Version 0.1.0.9141 (2019-01-31)
+
+- getCoOccur.R, Issue \#25
+  - Details
+    - Use lowest biological condition score in box plots.
+    - **Bold** section headers in details.
+    - Changes to output (see below).
+  - logistic regression
+    - Ensure using Degraded Yes/No instead of Degraded/Reference.
+  - Output
+    - Save individuals JPG files as well as PDF.
+  - Example
+    - Modify example to be “Example 1, CA”.
+    - Add “Example 2, AZ hi”.
+  - Remove date from file names.
+  - Use loweest biological score for a site.
+    - Was mean.
+  - Box plot.
+    - Add scoring lines (as in SR plot).
+    - Update text (make multiline).
+  - Stressor Response (SR) Curve plot
+    - Generate scores.
+    - Save scores.
+    - Add scores to plot.
+- data
+  - Modify data_CoOccur to be data_CoOccur_CA
+  - Add data_CoOccur_AZ_Hi
+
+# Changes in Version 0.1.0.9140 (2019-01-24)
+
+- getCoOccur.R, Issue \#25
+  - Add debugging.
+  - Rework factor of Bio.Deg to ensure always in the same order.
+  - Box plot
+    - Remove y-axis elements (was confusing).
+    - Remove x-axis quotes around parameter name.
+    - Modify shape and color of jitter points for use in legend.
+    - Update legend.
+    - Update y-axis so scaling matches Curve plot when combined in
+      output.
+  - Curve plot
+    - Update points and legend to match box plot.
+
+# Changes in Version 0.1.0.9139 (2019-01-18)
+
+- Overall Report
+  - getReport.R
+  - inst/rmd/Report_Results_overall.rmd
+
+# Changes in Version 0.1.0.9138 (2019-01-17)
+
+- getReport
+  - Modified QC check for “summary” report.
+- Report_Results_summary.rmd
+  - Minor tweaks.
+  - BMI.SR plots show all with p value \< 0.05.
+
+# Changes in Version 0.1.0.9137 (2019-01-11)
+
+- Update logtransf, Issue \#23
+  - getStressorSpecificResponses
+    - Slightly different code. Use example from getStressorList.
+
+# Changes in Version 0.1.0.9136 (2019-01-10)
+
+- Update logtransf, Issue \#23
+  - getAlgStressorResponses
+  - getBMIStressorResponses
+
+# Changes in Version 0.1.0.9135 (2019-01-10)
+
+- getStressorList
+  - Add LogTransf to output. Issue \#23
+
+# Changes in Version 0.1.0.9134 (2019-01-10)
+
+- Misnumbered v0.1.0.9033 as 9032
+
+# Changes in Version 0.1.0.9133 (2019-01-10)
+
+- getBMIStressorResponses
+  - Ensure certain variables are not log transformed. Issue \#24.
+    - DO, pH, temperature, flow
+  - Tweak plot output from changes made in previous update. Issue \#23
+
+# Changes in Version 0.1.0.9132 (2019-01-10)
+
+- getBMIStressorResponses
+  - Fix duplicate output to console. Issue \#23.
+
+# Changes in Version 0.1.0.9131 (2019-01-07)
+
+- getSiteInfo
+  - Map_Leaflet.rmd missing
+  - inst/RMD was mistakenly in .gitignore
+
+# Changes in Version 0.1.0.9130 (2018-12-18)
+
+- getSiteInfo
+  - Add a leaflet map output as HTML (R Notebook).
+
+# Changes in Version 0.1.0.9129 (2018-12-18)
+
+- getAlgStressorResponses
+  - Add PDF of plots.
+
+# Changes in Version 0.1.0.9128 (2018-12-18)
+
+- Update getReport template RMD for Algae corrplot.
+  - \_Results_summary.rmd
+
+# Changes in Version 0.1.0.9127 (2018-12-18)
+
+- Update data documentation
+  - data_AlgCounts
+  - data_AlgMasterTaxa
+  - data_AlgMetrics
+- getAlgStressorResponses
+- data_AlgMetrics
+  - Alg.Metrics.SampID to Algae.Metrics.SampID
+
+# Changes in Version 0.1.0.9126 (2018-12-14)
+
+- getAlgStressorResponses
+  - Update with changes made to getBMIStressorResponses
+- Update Algae Data
+  - data_AlgMetrics
+  - data_AlgMasterTaxa
+  - data_Algcounts
+
+# Changes in Version 0.1.0.9125 (2018-12-14)
+
+- Vignette Update
+  - CASTfxn
+    - Change name shown in help file.
+  - Add vignette for “anlaysis”.
+    - Run all functions example.
+- Correlation output file column names.
+  - getBMIStressorResponses.R
+  - getStressorSpecificRegressions.R
+  - getAlgStressorResponses.R
+
+# Changes in Version 0.1.0.9124 (2018-12-13)
+
+- getSSDplot
+  - Add example to save created plot.
+- getReport
+  - Tweak summary report for names change of SSTV correlations file.
+
+# Changes in Version 0.1.0.9123 (2018-12-12)
+
+- getStressorSpecificRegressions
+  - Modify inputs.
+  - Add master taxa list.
+  - Replace SampleID with BMI.Metrics.SampID
+  - Limit data with unique so only get one instance.
+  - Add user feedback for progress.
+- Add master taxa data file.
+  - Process raw data.
+  - Data description.
+
+# Changes in Version 0.1.0.9122 (2018-12-11)
+
+- getBMIStressors
+  - Update input variables.
+  - Rename text output files to match other function outputs.
+- Report_Results_summary.rmd
+  - Update for change in text file outputs from getBMIStressors.
+
+# Changes in Version 0.1.0.9121 (2018-12-10)
+
+- getBMIStressors
+  - Fix error in df.CorrTable creation.
+
+# Changes in Version 0.1.0.9120 (2018-12-06)
+
+- Modify plots to output a combined PDF as well as individual JPG files.
+  Issue \#19.
+  - .SSTV.
+    - getStressorSpecificRegressions
+- getStressorSpecificRegressions
+  - Change data.chem.info2 to data.chem.info.
+  - Add required objects as function inputs.
+- Fix duplicated first line in txt output for stressor responses. Issue
+  \#17
+  - getBMIStressorResponses
+  - getStressorSpecificRegressions
+  - getAlgStressorResponses
+
+# Changes in Version 0.1.0.9119 (2018-12-06)
+
+- Modify plots to output a combined PDF as well as individual JPG files.
+  Issue \#19.
+  - .SR.BMI.
+    - getBMIStressorResponse
+
+# Changes in Version 0.1.0.9119 (2018-12-06)
+
+- Modify plots to output a combined PDF as well as individual JPG files.
+  Issue \#19.
+  - .cluster.
+    - getClusterInfo
+  - .SR.BMI.
+    - getBMIStressorResponse
+  - .SR.Alg.
+    - getAlgStressorResponse
+  - .SSTV.
+    - getStressorSpecificRegressions
+
+# Changes in Version 0.1.0.9118 (2018-12-06)
+
+- Modify plots to output a combined PDF as well as individual JPG files.
+  Issue \#19.
+  - .boxes.
+    - getStressorList
+- Added pryr package to aid in capture of plots for use in PDF output.
+
+# Changes in Version 0.1.0.9117 (2018-12-05)
+
+- Report
+  - Add CoOccurrence table.
+  - Add ChemPctRank table.
+  - Only “summary” report.
+    - Stop message for “all” report.
+
+# Changes in Version 0.1.0.9116 (2018-12-05)
+
+- getReport
+  - Modify summary report to check if file exists
+- getCoOccur
+  - Modify user feedback to include overall item number; Issue \#18
+  - Modify file outputs to use “dot” delimiter to match other file
+    outputs in package.
+  - TSV to TXT for scores to match other data file outputs.
+
+# Changes in Version 0.1.0.9115 (2018-11-13)
+
+- getReport
+  - Function to output report.
+  - All and Summary reports.
+    - Report_Results.RMD to Report_Results_All.RMD
+    - Add Report_Results_Summary.RMD
+- DESCRIPTION
+  - Add rmarkdown to IMPORTS
+
+# Changes in Version 0.1.0.9114 (2018-11-12)
+
+- getBMIStressorResponses
+  - Update jpg file name output. Issue \#16.
+    - Missing “dot” between SiteID and BMI.SR.
+
+# Changes in Version 0.1.0.9113 (2018-11-12)
+
+- Report_Results.rmd
+  - New results report.
+
+# Changes in Version 0.1.0.9112 (2018-10-17)
+
+- data.R
+  - Remove non-ASCII characters so the package will build properly.
+  - Chemical names and units combinations were the culprit; n=334.
+
+# Changes in Version 0.1.0.9111 (2018-10-17)
+
+- Elevation Vignette.
+
+# Changes in Version 0.1.0.9110 (2018-10-16)
+
+- data.R
+  - data_SSD_generator, correct typo. Issue \#11.
+  - Add more details to other data sets.
+
+# Changes in Version 0.1.0.9109 (2018-10-16)
+
+- Add getElev function.
+
+# Changes in Version 0.1.0.9108 (2018-10-10)
+
+- Vignette.
+  - Fix errors.
+- DESCRIPTION
+  - Change R Depends from 2.1.0 to 2.10
+  - Add Imports for sp and stringr
+- Add utils:: for missing cases:
+  - flush.console
+  - write.table
+- Non-standard names
+  - getStressorList
+    - boxes.water quality.x.jpg
+    - Use make.names when build file names.
+    - Don’t need to adjust data.
+  - Occurs in raw data; AZChemInfoFinal.tab
+    - Category
+
+# Changes in Version 0.1.0.9107 (2018-10-10)
+
+- getSiteInfo
+  - Add user defined “Results” folder. Issue \#13
+  - Check for it and if not present create it.
+  - Makes the function more generic. Issue \#4
+
+# Changes in Version 0.1.0.9106 (2018-10-10)
+
+- Merged Vignette branch (v0.1.0.9104) in previous committ (0.1.0.9105).
+- Added project to TravisCI.
+- ReadMe
+  - Add badges.
+
+# Changes in Version 0.1.0.9104 (2018-08-02)
+
+- getCoOccur
+  - Update save directory code.
+
+# Changes in Version 0.1.0.9103 (2018-08-02)
+
+- DESCRIPTION
+  - Add authors in plain text
+- CASTfxn.R
+  - Revise with names of functions.
+- Vignette
+  - Add output descriptions.
+- getStressorList
+  - Add dot to filename of output after SiteID
+  - SiteID.chem.pctrank.txt
+- getClusterInfo
+  - Added “.cluster.” after SiteID to output plot names.
+
+# Changes in Version 0.1.0.9102 (2018-07-11)
+
+- getBMIStressorResponses
+  - More detailed console message.
+- getStressorSpecificRegressions.
+  - Modify QC check for horizontal and vertical lines.
+  - Fix error with inset value for legend by using as.numeric.
+
+# Changes in Version 0.1.0.9101 (2018-07-10)
+
+- getClusterInfo
+  - Add QC print output to code.
+  - Added QC check to ensure Y data for box plot is not all NA or is not
+    non-numeric.
+
+# Changes in Version 0.1.0.9100 (2018-07-10)
+
+- Use Ann’s fork of CASTfxn as basis for fork in my repository.
+- Jumping ahead to version “9100” to differentiate.
+- Update NEWS
+- getBMImatches
+  - lines 85:86
+  - Missing closing paren for print.
+- getclusterInfo
+  - lines 95:96
+  - Missing a comma in paste.
+- getStressorSpecificRegressions
+  - lines 128:129
+  - Missing closing paren for print.
+- TargetSiteID
+  - Used in functions but is not a parameter.  
+  - Assumed in the global environment.
+  - QC checks fail.
+  - Parameter in function call, example, and stop message if doesn’t
+    exist.
+  - Add to the following functions:
+  - getBMImatches (lines 85:86) \[really just missing a parenthesis\]
+  - getClusterInfo (lines 95:96)
+- Will need to follow up with examples in other functions.
+
+# Changes in Version 0.1.0.9044 (2017-06-22)
+
+- Add dataset “data_Cluster_Lo”.
+  - Add to data-raw and to data.R
+- Add “ElevCategory” (HI or LO) to each data file in data-raw.
+  - data_303d
+  - data_AlgMetrics
+  - data_BMIMetrics
+  - data_BMIRelAbund
+  - data_BMIcounts
+  - data_Chem
+  - data_Cluster_Hi
+  - data_Cluster_Lo
+  - data_ReachMod
+  - data_SampSummary
+  - data_Sites
+- Files not modified:
+  - data_ChemInfo
+  - data_CoOccur
+  - data_GIS_Flow_HI
+  - data_GIS_Flow_LO
+  - data_GIS_AZ_Outline
+  - data_SSD
+  - data_SSD_generator
+  - data_SSD_permethrin
+
+# Changes in Version 0.1.0.9043 (2017-06-21)
+
+- getBMIStressorResponses
+  - Review for scoring.
+  - Change loop variable from r to q to avoid conflict with r and r2.
+
+# Changes in Version 0.1.0.9042 (2017-06-21)
+
+- getCoOccur
+  - Fix help file with too wide text.
+
+# Changes in Version 0.1.0.9041 (2017-06-21)
+
+- getSSDplot examples.
+  - Assign return plots to variables.
+  - Additional example to demonstrate adding points to the plot.
+
+# Changes in Version 0.1.0.9040 (2017-06-21)
+
+- Scoring output.
+  - getCoOccur
+
+# Changes in Version 0.1.0.9039 (2017-06-20)
+
+- Rename 2 functions with “get” to match others.
+  - CoOccur
+  - SSD
+  - Update vignette.
+
+# Changes in Version 0.1.0.9038 (2017-06-20)
+
+- Update examples. Issue \#5.
+  - getStressorSpecificRegressions
+  - Use BMIRelAbund.rda for data.SSTV.totabund
+  - Replace BenSampID with BMI.Metrics.SampID
+  - Not finished. Not working.
+- Add data file; BMIRelAbund.rda
+  - Include in data-raw and Data.R
+  - Data for data.SSTV.totabund in getStressorSpecificRegressions.
+
+# Changes in Version 0.1.0.9037 (2017-06-16)
+
+- Update examples. Issue \#5.
+  - getAlgStressorReponses
+
+# Changes in Version 0.1.0.9036 (2017-06-16)
+
+- Update examples. Issue \#5.
+  - getAlgMatches
+
+# Changes in Version 0.1.0.9035 (2017-06-16)
+
+- Update examples. Issue \#5.
+  - getStressorSpecificRegressions
+  - Need input file data.SSTV.totabund
+
+# Changes in Version 0.1.0.9034 (2017-06-15)
+
+- Update examples. Issue \#5.
+  - getBMIStressorResponses
+
+# Changes in Version 0.1.0.9033 (2017-06-15)
+
+- Update examples. Issue \#5.
+  - getBMImatches
+
+# Changes in Version 0.1.0.9032 (2017-06-15)
+
+- Update examples. Issue \#5.
+  - getClusterInfo
+
+# Changes in Version 0.1.0.9031 (2017-06-15)
+
+- Update examples. Issue \#5.
+  - getStressorList
+- Add subdir check to functions that use “Results” subdire.
+  - getSiteInfo
+  - getChemDataSubsets
+  - getStressorList
+  - getClusterInfo
+  - getAlgStressorResponses
+  - getBMIStressorResponses
+  - getStressorSpecificRegressions
+
+# Changes in Version 0.1.0.9030 (2017-06-15)
+
+- Update examples. Issue \#5.
+  - getChemDataSubsets
+- Update data.R.
+  - data_Chem
+  - data_ChemInfo (update data with GroupName)
+  - data_Cluster_Hi
+
+# Changes in Version 0.1.0.9029 (2017-06-15)
+
+- Add vignette.
+  - Add package `imager` to Suggests in DESCRIPTION.
+  - Basic outline.
+  - getSiteInfo function.
+
+# Changes in Version 0.1.0.9028 (2017-06-14)
+
+- GIS data.
+  - Standardize projection for GIS layers.
+  - getSiteInfo; modify plot and projection used for layers.
+- getSiteInfo
+  - modify “cluster” data column.
+- Examples, change clustertype “H6” to “5”
+  - getAlgMatches
+  - getAlgStressorResponse
+  - getBMIMatches
+  - getBMIStressorResponses
+  - getCheDataSubsests
+  - getClsuterInfo
+  - getSiteInfo
+  - getStressorList
+  - getStressorSpecificRegressions
+- data_Sites
+  - Modify reference to match code.
+
+# Changes in Version 0.1.0.9027 (2017-06-14)
+
+- Add GIS data.
+  - data.R
+  - data_GIS_Flow_HI
+  - data_GIS_Flow_LO
+  - data_GIS_AZ_Outline
+- Update getSiteInfo map.
+  - Uncomment map code.
+  - Change graphics::plot to sp::plot.
+- Revised data_SampSummary.
+- Revise SampIDs in other files to match format in SampSummary.
+  - data_AlgMetrics
+  - data_BMIcounts
+  - data_BMIMetrics
+  - data_Chem
+
+# Changes in Version 0.1.0.9026 (2017-06-12)
+
+- Add data_BMIcounts.
+  - Update data.R.
+  - Update getStressorSpecificRegressions example.
+
+# Changes in Version 0.1.0.9025 (2017-06-12)
+
+- Modify examples for TargetSite and getSiteInfo. Issue \#5
+  - getAlgmatches, getAlgStressorResponses, getBMImatches,
+    getBMIStressorResponses , getClusterInfo, getStressorList,
+    getStressorSpecificRegressions.
+- Modify examples for file imports vs. included datasets. Issue \#5
+  - getAlgmatches, getBMImatches, getClusterInfo,
+    getStressorSpecificRegressions
+
+# Changes in Version 0.1.0.9024 (2017-06-12)
+
+- getChemDataSubset
+  - default useLU to FALSE.
+  - Error if no cluster information. Added “stop” condition.
+
+# Changes in Version 0.1.0.9023 (2017-06-11)
+
+- Update example in getChemDataSubset. Issue \#5.
+  - Create data_ChemInfo
+  - Create data_Chem
+  - Remove “dontrun” in example.
+
+# Changes in Version 0.1.0.9022 (2017-06-11)
+
+- Add AZ data to “data-raw” and “data”. Issue \#5.
+- getSiteInfo.R
+  - Add example datasets (include description in data.R)
+  - Turn off mapping.
+  - Turn off “donotrun” in example.
+
+# Changes in Version 0.1.0.9021 (2017-06-08)
+
+- Add data requirements to “get” functions in the “details” section.
+  - Include column names for required imports
+- Add helper function getRegPlotSet.
+- Add examples but mark as “dont’ run”. Issue \#5.
+- Add function getAlgMatches.
+  - Include return value.
+
+## Changes in Version 0.1.0.9020 (2017-06-07)
+
+- SSDplot
+  - Add 3rd dataset so can QC against USEPA ssd generator Excel file.
+  - Change proportion formula; rank-0.05 to rank-0.5 to match USEPA
+  - Change “Species” to “Taxa” in 2 locations in the code.
+
+## Changes in Version 0.1.0.9019 (2017-06-07)
+
+- Modify format of NEWS file. Issue \#1.
+
+# Changes in Version 0.1.0.9018 (2017-06-06)
+
+- Check issues addressed:
+  - Depends R \>= 2.1.0
+  - no visible global function definition (multiple)
+  - Add to Imports; graphics, grDevices, stats, utils
+- Check issues not addressed:
+  - data_CoOccur, non-ASCII characters in column names.
+  - Undocumented object “cluster” in getChemDataSubsets
+  - no visible binding for global variable (multiple)
+- SSDplot
+  - Add second dataset and example.
+  - Modify text; font size and justification
+
+# Changes in Version 0.1.0.9017 (2017-06-06)
+
+- Update functions for package dependencies, e.g., readOGR to
+  rgdal::readOGR.
+  - getSiteInfo; rgdal
+  - getChemDataSubsets; reshape
+  - getStressorList; dplyr
+
+# Changes in Version 0.1.0.9016 (2017-06-06)
+
+- Rename SSD function to SSDplot due to conflict with stats::SSD.
+- Update CASTfxn.R for function name change.
+
+# Changes in Version 0.1.0.9015 (2017-06-06)
+
+- Fix StressorList return value. Issue \#2.
+
+# Changes in Version 0.1.0.9014 (2017-06-06)
+
+- Fix SSD function. Issue \#3.
+
+# Changes in Version 0.1.0.9013 (2017-06-06)
+
+- Add CASTfxn.R so the package has a help file.
+
+# Changes in Version 0.1.0.9012 (2017-06-06)
+
+- Add function getStressorSpecificRegressions.
+
+# Changes in Version 0.1.0.9011 (2017-06-06)
+
+- Add function getAlgStressorResponses.
+
+# Changes in Version 0.1.0.9010 (2017-06-06)
+
+- Add function getBMIStressorResponses.
+
+# Changes in Version 0.1.0.9009 (2017-06-06)
+
+- Add function getBMImatches.
+
+# Changes in Version 0.1.0.9008 (2017-06-06)
+
+- Add function getStressorList.
+
+# Changes in Version 0.1.0.9007 (2017-06-06)
+
+- Add function getClusterInfo.
+- SSD.R
+  - Remove “conf=0.95” from qnorm function.
+
+# Changes in Version 0.1.0.9006 (2017-06-06)
+
+- Add function getChemDataSubsets.
+
+# Changes in Version 0.1.0.9005 (2017-06-06)
+
+- Add function getSiteInfo.
+- Add Imports to DESCRIPTION.
+  - maps
+  - maptools
+  - raster
+  - RColorBrewer
+  - reshape
+  - rgdal
+  - rgeos
+  - RgoogleMaps
+
+# Changes in Version 0.1.0.9004 (2017-06-06)
+
+- CoOccur function.
+  - Update example. Remove 2nd Stressors line.
+  - Update details from Sue Norton presentation 2017-06-05.
+
+# Changes in Version 0.1.0.9003 (2017-06-05)
+
+- SSD function, non-functional at this point
+  - raw data
+  - Process raw data script
+  - data_SSD.rda in data folder
+  - SSD function script
+  - data.R, add description of data
+- Remove hello function
+- Add CoOccur function.
+  - raw data
+  - process raw data script
+  - data_CoOccur in data folder
+  - CoOccur script
+  - data.R, add description of data
+
+# Changes in Version 0.1.0.9002 (2017-05-27)
+
+- Knit README.RMD so README.md will display on GitHub.
+
+# Changes in Version 0.1.0.9001 (2017-05-27)
+
+- Added basic package structure.
+  - Folders (data, data-raw, inst/doc, inst/extdata, man, R, vignettes)
+  - NEWS, README
+- Update DESCRIPTION, NEWS, and README
+
+# Changes in Version 0.1.0 (2017-05-27)
+
+- Initial commit on GitHub.

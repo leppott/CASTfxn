@@ -37,6 +37,13 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9018 (2025-12-19)
+
+* refactor: Add cluster fig to report_results_full
+* refactor: Edits to CASTool.R for use with Shiny app
+* refactor: Edit to Report_Results_full.rmd
+    + region to regionName to match getReport parameters
+
 ## Changes in version 0.2.3.9017 (2025-12-16)
 
 * docs: Add packages to DESCRIPTION

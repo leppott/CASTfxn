@@ -66,7 +66,7 @@ System (CADDIS), which can be consulted for additional information on
 causal assessment.
 
 # **Target Site: `r TargetSiteID`**
-## **Region: `r region`**
+## **Region: `r regionName`**
 
 ## **Parameterization**
 
@@ -294,6 +294,20 @@ Comparator sites will depend upon several factors:
 Comparator samples have a quality associated with them, that differs
 based on the biological community index used. For these, please see the
 biological community comparator samples section.
+
+```{r echo=FALSE, out.width = "80%"}
+# cluster figure
+dir_clust_fig <- file.path(dir_results, TargetSiteID, dir.sub, "Photos")
+# not in metadata, created in Check Files
+path_clust_fig <- file.path(dir_clust_fig, "cluster_graphic.png")
+
+if (file.exists(path_clust_fig) == TRUE) {
+  knitr::include_graphics(path_clust_fig)
+} else {
+  cat("No file exists; cluster figure.\n")
+}
+```
+
 
 ### *Watershed stressor summaries*
 

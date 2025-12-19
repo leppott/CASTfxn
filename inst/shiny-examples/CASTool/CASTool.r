@@ -18,7 +18,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2025-09-24, Erik, start mods for updated Shiny App
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+tic <- Sys.time()
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, Start ####
 # external/CASTool.R
@@ -76,7 +76,7 @@ if (boo_Shiny == TRUE) {
   ### 00, Initialize----
   prog_cnt <- 0
   # Number of increments
-  prog_n <- 22
+  prog_n <- 23
   prog_sleep <- 0.25
   #
   prog_det <- "Set up"
@@ -879,7 +879,7 @@ for (site in seq_along(1:nrow(df_targets))) {
   # Create site map
   boundary <- readRDS(file.path(out.dir, dn_checked_sk, "boundary.rds"))
   reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) %>%
-    dplyr::mutate(COMID = as.character(COMID))
+    dplyr::mutate(COMID = as.character(COMID)) 
   flowline <- reaches %>%
     dplyr::left_join(data_cluster %>%
                        dplyr::mutate(COMID = as.character(COMID),
@@ -1504,38 +1504,77 @@ for (site in seq_along(1:nrow(df_targets))) {
   #
   # Shiny add ons
   if (boo_Shiny == TRUE) {
-    report_type <- "summary" # summary preliminary
+    report_type <- "full" # summary preliminary full
+    # browser()
+    # getwd()
+    # list.files()
+    
+    # copy RMD so works in Shiny
+    ## render switches working directory to location of RMD
+    rmd2copy <- list.files(file.path(system.file(package = "CASTfxn"), "rmd"),
+                           pattern = "^Report_Results_.*\\.rmd$",
+                           full.names = TRUE)
+    file.copy(rmd2copy, ".", overwrite = TRUE)
+    
+    # region not found
+    
+    ## report
+    # getReport(TargetSiteID,
+    #           biocommlist    = biocommlist,
+    #           regionName     = region,
+    #           primeIndex     = bmiIndexGp,
+    #           removeOutliers = removeOutliers,
+    #           samplim        = samplim,
+    #           r2_cutoff      = r2_cutoff,
+    #           p.val_cutoff   = p.val_cutoff,
+    #           useBC          = useBC,
+    #           lagdays        = lagdays,
+    #           DOlim          = DOlim,
+    #           pHlimLow       = pHlimLow,
+    #           pHlimHigh      = pHlimHigh,
+    #           bmiIndex       = bmiIndexGp,
+    #           algIndex       = algIndexGp,
+    #           fishIndex      = fishIndexGp,
+    #           useBMI         = useBMI,
+    #           useAlg         = useAlg,
+    #           useFish        = useFish,
+    #           dir_data       = normalizePath(dir_data),
+    #           dir_results    = normalizePath(dir_results),
+    #           report_type    = report_type, # full, preliminary, summary
+    #           report_format  = "html",
+    #           dir_rmd = ".", # added for Shiny after copy RMD
+    #           boo.WS = boo.WS)
+    
   } else {
-    report_type <- "summary"
+    report_type <- "full"
+    
+    getReport(TargetSiteID,
+              biocommlist    = biocommlist,
+              regionName     = region,
+              primeIndex     = bmiIndexGp,
+              removeOutliers = removeOutliers,
+              samplim        = samplim,
+              r2_cutoff      = r2_cutoff,
+              p.val_cutoff   = p.val_cutoff,
+              useBC          = useBC,
+              lagdays        = lagdays,
+              DOlim          = DOlim,
+              pHlimLow       = pHlimLow,
+              pHlimHigh      = pHlimHigh,
+              bmiIndex       = bmiIndexGp,
+              algIndex       = algIndexGp,
+              fishIndex      = fishIndexGp,
+              useBMI         = useBMI,
+              useAlg         = useAlg,
+              useFish        = useFish,
+              dir_data       = normalizePath(dir_data),
+              dir_results    = normalizePath(dir_results),
+              report_type    = "full",
+              report_format  = "html",
+              boo.WS = boo.WS)
+    
   }## IF ~ boo_Shiny
-browser()
-# getwd()
-# list.files()
-  getReport(TargetSiteID,
-            biocommlist    = biocommlist,
-            regionName     = region,
-            primeIndex     = bmiIndexGp,
-            removeOutliers = removeOutliers,
-            samplim        = samplim,
-            r2_cutoff      = r2_cutoff,
-            p.val_cutoff   = p.val_cutoff,
-            useBC          = useBC,
-            lagdays        = lagdays,
-            DOlim          = DOlim,
-            pHlimLow       = pHlimLow,
-            pHlimHigh      = pHlimHigh,
-            bmiIndex       = bmiIndexGp,
-            algIndex       = algIndexGp,
-            fishIndex      = fishIndexGp,
-            useBMI         = useBMI,
-            useAlg         = useAlg,
-            useFish        = useFish,
-            dir_data       = normalizePath(dir_data),
-            dir_results    = normalizePath(dir_results),
-            report_type    = "full",
-            report_format  = "html",
-            boo.WS = boo.WS)
-browser()
+
   dfGaps <- read.table(file.path(dir_results, 
                                  TargetSiteID,
                                  paste0(TargetSiteID, "_datagaps.tab")),
@@ -1554,6 +1593,36 @@ browser()
 # FOR ~ site ~ END ####
 
 rm(site)
+
+toc <- Sys.time()
+msg <- paste0("report time (min): ", 
+              round(difftime(toc, tic, units = "min"), 2))
+message(msg)
+
+# 23, Clean Up ----
+# Clean up operations
+if (boo_Shiny == TRUE) {
+  prog_det <- "Clean Up"
+  prog_cnt <- prog_cnt + 1
+  prog_msg <- paste0("Step ", prog_cnt)
+  prog_inc <- 1 / prog_n
+  incProgress(prog_inc, message = prog_msg, detail = prog_det)
+  Sys.sleep(prog_sleep)
+  message(paste(prog_msg, prog_det, sep = "; "))
+}## IF ~ boo_Shiny ~ END
+
+# siteDetectsAll needed for Shiny app
+fn_detects_all <- file.path(dir_results, 
+                            TargetSiteID, 
+                            paste0(TargetSiteID, 
+                                   "_DetectsAll.tab"))
+df_detects_all <- data.frame(Detects_All = siteDetectsAll)
+write.table(df_detects_all, 
+            fn_detects_all, 
+            append = FALSE, 
+            col.names = TRUE,
+            row.names = FALSE, 
+            sep = "\t")
 
 # 23 getSummaryAllSites 
 # Progress, 29

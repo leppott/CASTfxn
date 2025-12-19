@@ -71,7 +71,7 @@ getReport(
 
 \item{dir_data}{Absolute path to data.  Default = /Data}
 
-\item{dir_results}{Absoluthe path with subfolders named by SiteID.  Default = Results folder in working directory.}
+\item{dir_results}{Absolute path with subfolders named by SiteID.  Default = Results folder in working directory.}
 
 \item{report_type}{Requested report type (all or summary).  Default = summary}
 
