@@ -48,7 +48,10 @@ if(boo_Shiny == FALSE){
     pak::pak("laura-naslund/CASToolBaseDataPckg")
   }
   library(CASToolBaseDataPckg)
-}
+} else {
+  # Shiny 
+  out.dir  <- file.path(dn_results)
+}## IF ~ boo_Shiny
 
 # define pipe
 `%>%` <- dplyr::`%>%`
@@ -107,6 +110,8 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
+  
+  out.dir  <- file.path(dn_results)
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
@@ -131,7 +136,7 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-
+browser()
 out.dir <- file.path(out.dir, region)
 
 ## Load CASTool_Metadata ####

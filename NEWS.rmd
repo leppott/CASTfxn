@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9022 (2025-12-22)
+
+* refactor: Update CASTool.r
+    + Add out.dir
+
 ## Changes in version 0.2.3.9021 (2025-12-22)
 
 * files: Remove files for download by Shiny app as needs to be on a public repo
