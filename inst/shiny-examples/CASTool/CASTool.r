@@ -1544,6 +1544,12 @@ for (site in seq_along(1:nrow(df_targets))) {
                            full.names = TRUE)
     file.copy(rmd2copy, ".", overwrite = TRUE)
     
+    # need graphic as well
+    svg2copy <- list.files(file.path(system.file(package = "CASTfxn"), "rmd"),
+                           pattern = "\\.svg$",
+                           full.names = TRUE)
+    file.copy(svg2copy, ".", overwrite = TRUE)
+    
     # browser()
     # not found, added to function call
     
