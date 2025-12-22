@@ -29,7 +29,13 @@ getReport(
   report_type = "full",
   report_format = "html",
   dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
-  boo.WS
+  boo.WS,
+  data_sampSummary,
+  data_bmiMetrics,
+  data_algMetrics,
+  data_fishMetrics,
+  data_stressInfo,
+  siteDetectsAll
 )
 }
 \arguments{
@@ -80,6 +86,18 @@ getReport(
 \item{dir_rmd}{Directory with template RMD for report.  Default = package rmd folder.}
 
 \item{boo.WS}{x}
+
+\item{data_sampSummary}{x}
+
+\item{data_bmiMetrics}{x description}
+
+\item{data_algMetrics}{x}
+
+\item{data_fishMetrics}{description}
+
+\item{data_stressInfo}{description}
+
+\item{siteDetectsAll}{x}
 }
 \value{
 A report for the provided SiteID in the provided format (html or word)

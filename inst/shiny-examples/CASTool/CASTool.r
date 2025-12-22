@@ -1512,38 +1512,46 @@ for (site in seq_along(1:nrow(df_targets))) {
     # copy RMD so works in Shiny
     ## render switches working directory to location of RMD
     rmd2copy <- list.files(file.path(system.file(package = "CASTfxn"), "rmd"),
-                           pattern = "^Report_Results_.*\\.rmd$",
+                           pattern = "\\.rmd$",
                            full.names = TRUE)
     file.copy(rmd2copy, ".", overwrite = TRUE)
     
-    # region not found
+    # browser()
+    # not found, added to function call
     
-    ## report
-    # getReport(TargetSiteID,
-    #           biocommlist    = biocommlist,
-    #           regionName     = region,
-    #           primeIndex     = bmiIndexGp,
-    #           removeOutliers = removeOutliers,
-    #           samplim        = samplim,
-    #           r2_cutoff      = r2_cutoff,
-    #           p.val_cutoff   = p.val_cutoff,
-    #           useBC          = useBC,
-    #           lagdays        = lagdays,
-    #           DOlim          = DOlim,
-    #           pHlimLow       = pHlimLow,
-    #           pHlimHigh      = pHlimHigh,
-    #           bmiIndex       = bmiIndexGp,
-    #           algIndex       = algIndexGp,
-    #           fishIndex      = fishIndexGp,
-    #           useBMI         = useBMI,
-    #           useAlg         = useAlg,
-    #           useFish        = useFish,
-    #           dir_data       = normalizePath(dir_data),
-    #           dir_results    = normalizePath(dir_results),
-    #           report_type    = report_type, # full, preliminary, summary
-    #           report_format  = "html",
-    #           dir_rmd = ".", # added for Shiny after copy RMD
-    #           boo.WS = boo.WS)
+    # report
+    getReport(TargetSiteID,
+              biocommlist    = biocommlist,
+              regionName     = region,
+              primeIndex     = bmiIndexGp,
+              removeOutliers = removeOutliers,
+              samplim        = samplim,
+              r2_cutoff      = r2_cutoff,
+              p.val_cutoff   = p.val_cutoff,
+              useBC          = useBC,
+              lagdays        = lagdays,
+              DOlim          = DOlim,
+              pHlimLow       = pHlimLow,
+              pHlimHigh      = pHlimHigh,
+              bmiIndex       = bmiIndexGp,
+              algIndex       = algIndexGp,
+              fishIndex      = fishIndexGp,
+              useBMI         = useBMI,
+              useAlg         = useAlg,
+              useFish        = useFish,
+              dir_data       = normalizePath(dir_data),
+              dir_results    = normalizePath(dir_results),
+              report_type    = report_type, # full, preliminary, summary
+              report_format  = "html",
+              dir_rmd = ".", # added for Shiny after copy RMD
+              boo.WS = boo.WS,
+              data_sampSummary = data_sampSummary,
+              data_bmiMetrics = data_bmiMetrics,
+              data_algMetrics = data_algMetrics,
+              data_fishMetrics = data_fishMetrics,
+              data_stressInfo = data_stressInfo,
+              siteDetectsAll = siteDetectsAll
+              )
     
   } else {
     report_type <- "full"
@@ -1571,7 +1579,14 @@ for (site in seq_along(1:nrow(df_targets))) {
               dir_results    = normalizePath(dir_results),
               report_type    = "full",
               report_format  = "html",
-              boo.WS = boo.WS)
+              boo.WS = boo.WS,
+              data_sampSummary = data_sampSummary,
+              data_bmiMetrics = data_bmiMetrics,
+              data_algMetrics = data_algMetrics,
+              data_fishMetrics = data_fishMetrics,
+              data_stressInfo = data_stressInfo,
+              siteDetectsAll = siteDetectsAll
+              )
     
   }## IF ~ boo_Shiny
 

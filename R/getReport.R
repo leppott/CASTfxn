@@ -44,6 +44,13 @@
 #' @param report_format Requested report output format (html or word).  Default = html
 #' @param dir_rmd Directory with template RMD for report.  Default = package rmd folder.
 #' @param boo.WS x
+#' @param data_sampSummary x
+#' @param data_bmiMetrics x description
+#' @param data_algMetrics x
+#' @param data_fishMetrics description
+#' @param data_stressInfo description
+#' @param siteDetectsAll x
+#' 
 #'
 # @param probsHigh Default = 0.75
 # @param probsLow Default = 0.25
@@ -88,7 +95,13 @@ getReport <- function(TargetSiteID,
                       report_type = "full",
                       report_format = "html",
                       dir_rmd = file.path(system.file(package = "CASTfxn"), "rmd"),
-                      boo.WS
+                      boo.WS,
+                      data_sampSummary,
+                      data_bmiMetrics,
+                      data_algMetrics,
+                      data_fishMetrics,
+                      data_stressInfo,
+                      siteDetectsAll
                       ) { ##FUNCTION.START
   # Global Bindings
   #biocommlist <- regionName <- fn.cluster <- NULL
