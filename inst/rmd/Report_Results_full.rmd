@@ -156,9 +156,9 @@ if (length(fn_all) > 0) {##IF.Media
 
 The table below lists any samples collected from `r TargetSiteID` over
 time. Index scores are followed by their biological quality for benthic
-macroinvertebrates (`r ifelse(!is.null(bmiIndexGp), bmiIndexGp, "N/A")`),
-algae (`r ifelse(!is.null(algIndexGp), algIndexGp, "N/A")`), or fish
-(`r ifelse(!is.null(fishIndexGp), fishIndexGp, "N/A")`).
+macroinvertebrates (`r ifelse(!is.null(bmiIndex), bmiIndex, "N/A")`),
+algae (`r ifelse(!is.null(algIndex), algIndex, "N/A")`), or fish
+(`r ifelse(!is.null(fishIndex), fishIndex, "N/A")`).
 
 ```{r sampsummary, echo = FALSE}
 
@@ -205,7 +205,7 @@ if (nrow(dfSamps) > 0) {# Samples exist for target site
   if (!is.null(data_bmiMetrics)) {
     origcol <- which(colnames(dfSamps) == "BMI Sample ID")
     dfbmi <- dplyr::filter(data_bmiMetrics, StationID == TargetSiteID) %>%
-      dplyr::select(RespSampleID, all_of(bmiIndexGp), Quality)
+      dplyr::select(RespSampleID, all_of(bmiIndex), Quality)
     dfSamps <- merge(dfSamps, dfbmi, by.x = "BMI Sample ID", by.y = "RespSampleID",
                      all.x = TRUE)
     dfSamps <- dplyr::rename(dfSamps, `BMI Quality` = Quality)
@@ -294,20 +294,6 @@ Comparator sites will depend upon several factors:
 Comparator samples have a quality associated with them, that differs
 based on the biological community index used. For these, please see the
 biological community comparator samples section.
-
-```{r echo=FALSE, out.width = "80%"}
-# cluster figure
-dir_clust_fig <- file.path(dir_results, TargetSiteID, dir.sub, "Photos")
-# not in metadata, created in Check Files
-path_clust_fig <- file.path(dir_clust_fig, "cluster_graphic.png")
-
-if (file.exists(path_clust_fig) == TRUE) {
-  knitr::include_graphics(path_clust_fig)
-} else {
-  cat("No file exists; cluster figure.\n")
-}
-```
-
 
 ### *Watershed stressor summaries*
 

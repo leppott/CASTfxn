@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-16 10:31:59.574047
+    #> Last Update: 2025-12-22 07:13:47.921641
 
 # Planned Updates
 
@@ -25,17 +25,36 @@ NEWS
 
 # Version History
 
-## Changes in version 0.2.3.9016 (2025-12-16)
+## Changes in version 0.2.3.9019 (2025-12-22)
 
-- fix: Update CASTool.r for step 8 and 9
+- fix: Update report files to use getReport parameters not globla
+  - Report_Results_full
+  - ALG
+  - BMI
+  - FISH
+
+## Changes in version 0.2.3.9018 (2025-12-19)
+
+- refactor: Add cluster fig to report_results_full
+- refactor: Edits to CASTool.R for use with Shiny app
+- refactor: Edit to Report_Results_full.rmd
+  - region to regionName to match getReport parameters
+
+## Changes in version 0.2.3.9017 (2025-12-16)
+
 - docs: Add packages to DESCRIPTION
   - CASToolClusterPckg,
   - CASToolWSStressorPckg
   - CASToolBaseDataPckg
+- refactor: Updates to CASTool.r for use in Shiny
+
+## Changes in version 0.2.3.9016 (2025-12-16)
+
+fix: getBioStressorResponses file paths
 
 ## Changes in version 0.2.3.9015 (2025-12-16)
 
-fix: getBioStressorResponses file paths
+- fix: Update CASTool.r for step 8 and 9
 
 ## Changes in version 0.2.3.9014 (2025-12-15)
 

@@ -37,6 +37,14 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9019 (2025-12-22)
+
+* fix: Update report files to use getReport parameters not globla
+    + Report_Results_full
+    + ALG
+    + BMI
+    + FISH
+
 ## Changes in version 0.2.3.9018 (2025-12-19)
 
 * refactor: Add cluster fig to report_results_full

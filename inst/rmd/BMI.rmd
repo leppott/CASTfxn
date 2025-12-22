@@ -416,22 +416,22 @@ for (s in seq_along(paramName)) {
       cat("\nSufficiency image is not available.\n\n")
     }
     
-    if (length(all.img[grepl(paste0(bmiIndexGp, "_GI.png$"), all.img)]) == 1) {
-      fn <- all.img[grep(paste0(bmiIndexGp, "_GI.png$"), all.img)]
+    if (length(all.img[grepl(paste0(bmiIndex, "_GI.png$"), all.img)]) == 1) {
+      fn <- all.img[grep(paste0(bmiIndex, "_GI.png$"), all.img)]
       cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nBiological gradient inside-the-case image is not available.\n\n")
     }
     
-    if (length(all.img[grepl(paste0(bmiIndexGp, "_GO.png$"), all.img)]) == 1) {
-      fn <- all.img[grep(paste0(bmiIndexGp, "_GO.png$"), all.img)]
+    if (length(all.img[grepl(paste0(bmiIndex, "_GO.png$"), all.img)]) == 1) {
+      fn <- all.img[grep(paste0(bmiIndex, "_GO.png$"), all.img)]
       cat(paste0("<img src='", fn, "'><br>"))
     } else {
       cat("\nBiological gradient outside-the-case image is not available.\n\n")
     }
     
-    # if (length(all.img[grepl(paste0(bmiIndexGp, "_TS.png$"), all.img)]) == 1) {
-    #   fn <- all.img[grep(paste0(bmiIndexGp, "_TS.png$"), all.img)]
+    # if (length(all.img[grepl(paste0(bmiIndex, "_TS.png$"), all.img)]) == 1) {
+    #   fn <- all.img[grep(paste0(bmiIndex, "_TS.png$"), all.img)]
     #   cat(paste0("<img src='", fn, "'><br>"))
     # } else {
     #   cat("Time sequence image is not available.\n\n")
