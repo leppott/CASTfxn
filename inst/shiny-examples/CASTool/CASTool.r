@@ -51,6 +51,20 @@ if(boo_Shiny == FALSE){
 } else {
   # Shiny 
   out.dir  <- file.path(dn_results)
+  #
+  # open metadata
+  data_CASTmeta_temp <- readRDS(file.path(tempdir(), 
+                                          dn_checked_sk, 
+                                          "CASTmetadata.rds"))
+  # get region
+  data_region <- data_CASTmeta_temp |>
+    dplyr::filter(Variable == "region") |>
+    dplyr::pull(Value)
+  # path
+  path_check_sk <- file.path(dn_results, 
+                             data_region,
+                             dn_checked_sk)
+  #
   region <- data_region
   #
   boo_Shiny <- TRUE

@@ -37,6 +37,11 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.2.3.9024 (2025-12-22)
+
+* refactor: Update CASTool.r
+    + more variable edits
+    
 ## Changes in version 0.2.3.9023 (2025-12-22)
 
 * refactor: Update CASTool.r
