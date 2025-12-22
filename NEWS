@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-22 09:58:39.288452
+    #> Last Update: 2025-12-22 10:18:02.0733
 
 # Planned Updates
 
@@ -24,6 +24,13 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3.9021 (2025-12-22)
+
+- files: Remove files for download by Shiny app as needs to be on a
+  public repo
+  - CASTool_UserGuide.pdf
+  - CASTool_Templates.zip
 
 ## Changes in version 0.2.3.9020 (2025-12-22)
 
