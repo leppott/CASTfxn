@@ -49,30 +49,31 @@ if(boo_Shiny == FALSE){
   }
   library(CASToolBaseDataPckg)
 } else {
+
   # Shiny 
-  out.dir  <- file.path(dn_results)
-  #
-  # open metadata
-  data_CASTmeta_temp <- readRDS(file.path(tempdir(), 
-                                          dn_checked_sk, 
-                                          "CASTmetadata.rds"))
-  # get region
-  data_region <- data_CASTmeta_temp |>
-    dplyr::filter(Variable == "region") |>
-    dplyr::pull(Value)
-  # path
-  path_check_sk <- file.path(dn_results, 
-                             data_region,
-                             dn_checked_sk)
-  #
-  region <- data_region
-  #
-  boo_Shiny <- TRUE
-  in.dir   <- file.path(path_check_sk)
-  boo.plot.user <- TRUE
-  wd <- getwd()
-  dir_rmd <- system.file("rmd", 
-                         package = "CASTfxn")
+  # out.dir  <- file.path(dn_results)
+  # #
+  # # open metadata
+  # data_CASTmeta_temp <- readRDS(file.path(tempdir(), 
+  #                                         dn_checked_sk, 
+  #                                         "CASTmetadata.rds"))
+  # # get region
+  # data_region <- data_CASTmeta_temp |>
+  #   dplyr::filter(Variable == "region") |>
+  #   dplyr::pull(Value)
+  # # path
+  # path_check_sk <- file.path(dn_results, 
+  #                            data_region,
+  #                            dn_checked_sk)
+  # #
+  # region <- data_region
+  # #
+  # boo_Shiny <- TRUE
+  # in.dir   <- file.path(path_check_sk)
+  # boo.plot.user <- TRUE
+  # wd <- getwd()
+  # dir_rmd <- system.file("rmd", 
+  #                        package = "CASTfxn")
 }## IF ~ boo_Shiny
 
 # define pipe
@@ -158,7 +159,7 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
-browser()
+
 out.dir <- file.path(out.dir, region)
 
 ## Load CASTool_Metadata ####
