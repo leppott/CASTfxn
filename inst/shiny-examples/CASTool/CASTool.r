@@ -51,6 +51,14 @@ if(boo_Shiny == FALSE){
 } else {
   # Shiny 
   out.dir  <- file.path(dn_results)
+  region <- data_region
+  #
+  boo_Shiny <- TRUE
+  in.dir   <- file.path(path_check_sk)
+  boo.plot.user <- TRUE
+  wd <- getwd()
+  dir_rmd <- system.file("rmd", 
+                         package = "CASTfxn")
 }## IF ~ boo_Shiny
 
 # define pipe

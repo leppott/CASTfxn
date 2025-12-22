@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-22 13:27:44.127246
+    #> Last Update: 2025-12-22 13:54:59.77515
 
 # Planned Updates
 
@@ -24,6 +24,16 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3.9023 (2025-12-22)
+
+- refactor: Update CASTool.r
+  - region
+  - in.dir
+  - boo.plot.user
+  - wd
+  - dir_rmd
+  - boo_Shiny
 
 ## Changes in version 0.2.3.9022 (2025-12-22)
 
