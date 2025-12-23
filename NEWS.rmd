@@ -37,6 +37,10 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.3.0 (2025-12-23)
+
+* docs: Bump version as task complete and code is working
+
 ## Changes in version 0.2.3.9027 (2025-12-23)
 
 * refactor: Add abiotic clustering graphic to 'full' report RMD
