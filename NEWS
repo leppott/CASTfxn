@@ -4,7 +4,7 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2025-12-22 15:25:58.902927
+    #> Last Update: 2025-12-23 15:40:37.836027
 
 # Planned Updates
 
@@ -24,6 +24,10 @@ NEWS
   - Add stressor response plot from getCoOccur
 
 # Version History
+
+## Changes in version 0.2.3.9027 (2025-12-23)
+
+- refactor: Add abiotic clustering graphic to ‘full’ report RMD
 
 ## Changes in version 0.2.3.9026 (2025-12-22)
 

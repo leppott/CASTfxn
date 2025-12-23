@@ -295,6 +295,24 @@ Comparator samples have a quality associated with them, that differs
 based on the biological community index used. For these, please see the
 biological community comparator samples section.
 
+```{r cluster_fig, echo=FALSE, results='asis', fig.align='center', out.width="80%", fig.cap=caps}
+# replicate then modify code from Setup tab (display_images_StressSumm.Rmd)
+
+# includes caption (set in chunk header)
+# images 80% (set in chunk header)
+
+img_dir <- file.path(
+  dir_results, # from render call (includes region), dn_results in global 
+  dn_checked_sk # from global
+)
+
+fn_png <- "cluster_graphic.png"
+
+# output image with caption (set in chunk header)
+knitr::include_graphics(normalizePath(file.path(img_dir, fn_png)))
+caps = "Abiotic clustering."
+```
+
 ### *Watershed stressor summaries*
 
 The downloadable zip file contains figures summarizing watershed
