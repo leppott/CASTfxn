@@ -35,34 +35,54 @@ if(boo_Shiny == FALSE){
   in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Data" # File path of data directory
   out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Results" # File path of results directory
   region <- "Washington" # Name of region
-  #
-  devtools::load_all()
-  #
-  # Packages ----
+
+  # Helper packages
+
+  pakInd <- setdiff("pak", .packages(all.available = TRUE))
+  if(rlang::is_empty(pakInd)==FALSE){
+    install.packages("pak")
+  }
+
   baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
+  wsDataInd <- setdiff("CASToolWSStressorPckg", .packages(all.available = TRUE))
+  clustDataInd <- setdiff("CASToolClusterPckg", .packages(all.available = TRUE))
+
   if(rlang::is_empty(baseDataInd)==FALSE){
-    pakInd <- setdiff("pak", .packages(all.available = TRUE))
-    if(rlang::is_empty(pakInd)==FALSE){
-      install.packages("pak")
-    }
+    message("Installing CASToolBaseDataPckg")
     pak::pak("laura-naslund/CASToolBaseDataPckg")
   }
+
+  if(rlang::is_empty(wsDataInd)==FALSE){
+      message("Installing CASToolWSStressorPckg")
+      pak::pak("laura-naslund/CASToolWSStressorPckg")
+  }
+  if(rlang::is_empty(clustDataInd)==FALSE){
+    message("Installing CASToolClusterPckg")
+    pak::pak("laura-naslund/CASToolClusterPckg")
+  }
+
+  library(CASToolWSStressorPckg)
   library(CASToolBaseDataPckg)
+  library(CASToolClusterPckg)
+
+  # Source all functions
+  devtools::load_all()
+
 } else {
 
-  # Shiny 
+  # Shiny
   # out.dir  <- file.path(dn_results)
   # #
   # # open metadata
-  # data_CASTmeta_temp <- readRDS(file.path(tempdir(), 
-  #                                         dn_checked_sk, 
+  # data_CASTmeta_temp <- readRDS(file.path(tempdir(),
+  #                                         dn_checked_sk,
   #                                         "CASTmetadata.rds"))
   # # get region
   # data_region <- data_CASTmeta_temp |>
   #   dplyr::filter(Variable == "region") |>
   #   dplyr::pull(Value)
   # # path
-  # path_check_sk <- file.path(dn_results, 
+  # path_check_sk <- file.path(dn_results,
   #                            data_region,
   #                            dn_checked_sk)
   # #
@@ -72,7 +92,7 @@ if(boo_Shiny == FALSE){
   # in.dir   <- file.path(path_check_sk)
   # boo.plot.user <- TRUE
   # wd <- getwd()
-  # dir_rmd <- system.file("rmd", 
+  # dir_rmd <- system.file("rmd",
   #                        package = "CASTfxn")
 }## IF ~ boo_Shiny
 
@@ -133,8 +153,8 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
-  
-  out.dir  <- file.path(dn_results)
+
+  #out.dir  <- file.path(dn_results)
   list.Tables <- checkInputs(dir.uploaded = in.dir,
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
@@ -454,19 +474,6 @@ if (boo.WS == TRUE & helperImport == FALSE) {
 
 } else if(boo.WS == TRUE & helperImport == TRUE){
 
-  ## get cluster package if necessary
-  if(boo_Shiny == FALSE){
-    wsDataInd <- setdiff("CASToolWSStressorPckg", .packages(all.available = TRUE))
-    if(rlang::is_empty(wsDataInd)==FALSE){
-      pakInd <- setdiff("pak", .packages(all.available = TRUE))
-      if(rlang::is_empty(pakInd)==FALSE){
-        install.packages("pak")
-      }
-      pak::pak("laura-naslund/CASToolWSStressorPckg")
-    }
-    library(CASToolWSStressorPckg)
-  }
-
   ## check that region available
   utils::data("available_regions", package = "CASToolBaseDataPckg")
   regionAvailable <- region %in% available_regions$Region
@@ -679,7 +686,7 @@ df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
 ## Use this for debugging
 if (boo_Shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$si_checked_sites_targ,
-                           "Chosen by" = NA, 
+                           "Chosen by" = NA,
                            "Comment" = NA)
   names(df_targets)[2] <- "Chosen by"
   # ok since Shiny only works on 1 sites
@@ -907,7 +914,7 @@ for (site in seq_along(1:nrow(df_targets))) {
   # Create site map
   boundary <- readRDS(file.path(out.dir, dn_checked_sk, "boundary.rds"))
   reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) %>%
-    dplyr::mutate(COMID = as.character(COMID)) 
+    dplyr::mutate(COMID = as.character(COMID))
   flowline <- reaches %>%
     dplyr::left_join(data_cluster %>%
                        dplyr::mutate(COMID = as.character(COMID),
@@ -1536,23 +1543,23 @@ for (site in seq_along(1:nrow(df_targets))) {
     # browser()
     # getwd()
     # list.files()
-    
+
     # copy RMD so works in Shiny
     ## render switches working directory to location of RMD
     rmd2copy <- list.files(file.path(system.file(package = "CASTfxn"), "rmd"),
                            pattern = "\\.rmd$",
                            full.names = TRUE)
     file.copy(rmd2copy, ".", overwrite = TRUE)
-    
+
     # need graphic as well
     svg2copy <- list.files(file.path(system.file(package = "CASTfxn"), "rmd"),
                            pattern = "\\.svg$",
                            full.names = TRUE)
     file.copy(svg2copy, ".", overwrite = TRUE)
-    
+
     # browser()
     # not found, added to function call
-    
+
     # report
     getReport(TargetSiteID,
               biocommlist    = biocommlist,
@@ -1586,10 +1593,10 @@ for (site in seq_along(1:nrow(df_targets))) {
               data_stressInfo = data_stressInfo,
               siteDetectsAll = siteDetectsAll
               )
-    
+
   } else {
     report_type <- "full"
-    
+
     getReport(TargetSiteID,
               biocommlist    = biocommlist,
               regionName     = region,
@@ -1621,20 +1628,20 @@ for (site in seq_along(1:nrow(df_targets))) {
               data_stressInfo = data_stressInfo,
               siteDetectsAll = siteDetectsAll
               )
-    
+
   }## IF ~ boo_Shiny
 
-  dfGaps <- read.table(file.path(dir_results, 
+  dfGaps <- read.table(file.path(dir_results,
                                  TargetSiteID,
                                  paste0(TargetSiteID, "_datagaps.tab")),
-                       header = TRUE, 
+                       header = TRUE,
                        sep = "\t")
   dfGaps <- unique(dfGaps)
-  write.table(dfGaps, file.path(dir_results, 
+  write.table(dfGaps, file.path(dir_results,
                                 TargetSiteID,
                                 paste0(TargetSiteID, "_datagaps.tab")),
-              append = FALSE, 
-              col.names = TRUE, 
+              append = FALSE,
+              col.names = TRUE,
               row.names = FALSE,
               sep = "\t")
 
@@ -1644,7 +1651,7 @@ for (site in seq_along(1:nrow(df_targets))) {
 rm(site)
 
 toc <- Sys.time()
-msg <- paste0("report time (min): ", 
+msg <- paste0("report time (min): ",
               round(difftime(toc, tic, units = "min"), 2))
 message(msg)
 
@@ -1661,19 +1668,19 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 # siteDetectsAll needed for Shiny app
-fn_detects_all <- file.path(dir_results, 
-                            TargetSiteID, 
-                            paste0(TargetSiteID, 
+fn_detects_all <- file.path(dir_results,
+                            TargetSiteID,
+                            paste0(TargetSiteID,
                                    "_DetectsAll.tab"))
 df_detects_all <- data.frame(Detects_All = siteDetectsAll)
-write.table(df_detects_all, 
-            fn_detects_all, 
-            append = FALSE, 
+write.table(df_detects_all,
+            fn_detects_all,
+            append = FALSE,
             col.names = TRUE,
-            row.names = FALSE, 
+            row.names = FALSE,
             sep = "\t")
 
-# 23 getSummaryAllSites 
+# 23 getSummaryAllSites
 # Progress, 29
 # if (boo_Shiny == TRUE) {
 #   prog_det <- "getSummaryAllSites"
