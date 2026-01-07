@@ -1,6 +1,7 @@
 ---
 title: "CASTool"
 subtitle: "Full Report"
+pagetitle: "`r paste0('CASTool Report: ', TargetSiteID)`"
 author: "`r Sys.getenv('USERNAME')`"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:

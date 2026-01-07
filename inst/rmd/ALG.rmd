@@ -1,5 +1,5 @@
 ---
-title: "Benthic Macroinvertebrates"
+title: "Algae"
 author: "`r Sys.getenv('USERNAME')`"
 date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 output:

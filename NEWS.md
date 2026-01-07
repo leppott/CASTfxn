@@ -4,31 +4,15 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2026-01-07 08:48:10.444542
-
-# Planned Updates
-
-- None at this time.
-
-# Future Updates
-
-- Convert site map to ggplot.
-
-- input file data.SSTV.totabund for the function
-  getStressorSpecificRegressions.
-
-- StreamCat data. Boxplots with jitter points.
-
-- getBioStressorResponses
-
-  - Add stressor response plot from getCoOccur
+    #> Last Update: 2026-01-07 08:54:02.397044
 
 # Version History
 
-## Changes in version 0.3.0.9001 (2026-01-07)
+## Changes in version 0.3.0.9002 (2026-01-07)
 
 - refactor: Add page title to full report RMD
 - refactor: Update title of ALG report
+- docs: Remove planned and future updates from NEWS
 
 ## Changes in version 0.3.0.9001 (2026-01-05)
 
