@@ -32,13 +32,9 @@ boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  # in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Data" # File path of data directory
-  # out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Results" # File path of results directory
-  # region <- "Washington" # Name of region
-
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
-  region <- "DEPied" # Name of region
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Data" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Results" # File path of results directory
+  region <- "Washington" # Name of region
 
   # Helper packages
 
