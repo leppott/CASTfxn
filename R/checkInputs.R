@@ -130,49 +130,51 @@ checkInputs <- function(dir.uploaded,
       col <- obj.cols[c]
       col.class <- class(df.obj[[col]])
 
-      if (col %in% accept.blank.cols && all(is.na(df.obj[[col]]))) {
-        # object col type matches
+      if (col %in% accept.blank.cols && all(is.na(df.obj[[col]]))) { # if it's blank and expected move on
         errors <- "pass"
-      } else if(col %in% geo.cols){ # don't check class of geometry column TODO: improvement
+      } else if (col %in% geo.cols){ # don't check class of geometry column TODO: improvement
         errors <- "pass"
-      } else if (col.class %in% c("integer", "numeric") && col %in% num.cols) {
-        # object col type matches
-        errors <- "pass"
-      } else if (col.class == "character" && col %in% text.cols){
-        errors <- "pass"
-      }  else {
-        # By default, either a number or a date stored as text, possibly erroneously
-        if (col %in% num.cols) {
-          message(paste0(col, " is expected to be numeric, but is not"))
-          errors <- "column is not numeric"
-        } else {
-          # TODO: check this thoroughly!
-          result <- tryCatch(
-            {
-              df.obj <- df.obj |>
-                # dplyr::mutate({{col}} := lubridate::parse_date_time(dplyr::.data[[col]],
-                #                                                     orders = c("ymd", "mdy", "dmy")) |>
-                dplyr::mutate({{col}} := lubridate::parse_date_time(get(col),
-                                         orders = c("ymd", "mdy", "dmy")) |> # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date.
-                            lubridate::date())
-            },
-            error = function(e) {
-              message(e$message)
-              return("Column cannot be converted to date.")
-            }
-          )
+      } else if (col %in% num.cols) {
 
-          if (is.character(result)) {
-            message(paste0(col, " cannot be converted to date"))
-            errors <- "column cannot be converted to date"
-          } else {
-            df.obj <- result
-            errors <- "column can be converted to date"
-          }
+        if(col.class %in% c("integer", "numeric")){
+          errors <- "pass"
+        } else{
+          errors <- paste0(col, " is expected to be numeric but is ", col.class)
+        }
+
+      } else if (col %in% text.cols){
+
+        if(col.class == "character"){
+          errors <- "pass"
+        } else{
+          errors <- paste0(col, " is expected to be character but is ", col.class)
+        }
+
+      } else if(col %in% date.cols){
+
+        # LCN note: we may want to accomodate date times in the future, but for now we can instruct users to only include date.
+        result <- tryCatch({
+                  df.obj <- df.obj |>
+                    dplyr::mutate({{col}} := lubridate::parse_date_time(get(col),
+                                             orders = c("ymd", "mdy", "dmy")) |>
+                                lubridate::date())
+                },
+                error = function(e) {
+                  message(e$message)
+                  return("Column cannot be converted to date.")
+                }
+              )
+
+        if (is.character(result)) {
+          message(paste0(col, " cannot be converted to date"))
+          errors <- "column cannot be converted to date"
+        } else {
+          df.obj <- result
+          errors <- "pass"
         }
       }
       df.coltypechecks <- rbind(df.coltypechecks, cbind(object, col, errors))
-    } # end for cols
+    }
 
     return(df.coltypechecks)
 
@@ -182,8 +184,8 @@ checkInputs <- function(dir.uploaded,
   df.relational.checks <- data.frame("FileOne" = as.character(),
                                      "FileTwo" = as.character(),
                                      "JoinCols" = as.character(),
-                                     "IntegrityIssues" = as.character(),
-                                     "OtherConditions" = as.character())
+                                     "FileOneCondition" = as.character(),
+                                     "FileTwoCondition" = as.character())
 
   # Read inputcheck and CASTool_Metadata files ----
   # input_check includes variables meant to hold filenames (without paths),
@@ -623,22 +625,22 @@ checkInputs <- function(dir.uploaded,
   nsites.not.target <- length(sites.not.target)
 
   if (ntarg.not.sites == 0) {
-    pk.issues <- "All StationIDs are in FileTwo"
+    fk.issues <- "All StationIDs are in FileTwo"
   } else {
-    pk.issues <- paste0(ntarg.not.sites, " StationIDs are not in FileTwo")
+    fk.issues <- paste0(ntarg.not.sites, " StationIDs are not in FileTwo")
   }
   if (nsites.not.target == 0) {
-    fk.issues <- "All StationIDs are in FileOne"
+    pk.issues <- "All StationIDs are in FileOne"
   } else {
-    fk.issues <- paste0(nsites.not.target, " StationIDs are not in FileOne")
+    pk.issues <- paste0(nsites.not.target, " StationIDs are not in FileOne (expected)")
   }
 
   df.relational.checks <- rbind(df.relational.checks,
                                 cbind("FileOne" = "df_Targets",
                                       "FileTwo" = "data_Sites",
                                       "JoinCols" = "StationID",
-                                      "IntegrityIssues" = pk.issues,
-                                      "OtherConditions" = fk.issues))
+                                      "FileOneCondition" = pk.issues,
+                                      "FileTwoCondition" = fk.issues))
   rm(ntarg.not.sites, nsites.not.target, targ.not.sites, sites.not.target)
 
   # All COMIDs in sites file should be in cluster file
@@ -677,8 +679,8 @@ checkInputs <- function(dir.uploaded,
                                 cbind("FileOne" = "data_cluster",
                                       "FileTwo" = "data_Sites",
                                       "JoinCols" = "COMID",
-                                      "IntegrityIssues" = pk.issues,
-                                      "OtherConditions" = fk.issues))
+                                      "FileOneCondition" = pk.issues,
+                                      "FileTwoCondition" = fk.issues))
   rm(nsite.COMIDs.not.COMIDs, nCOMIDs.not.site.COMIDs, site.COMIDs.not.COMIDs,
      COMIDs.not.site.COMIDs)
 
@@ -735,8 +737,8 @@ checkInputs <- function(dir.uploaded,
   #                                 cbind("FileOne" = "data_stressorWS",
   #                                       "FileTwo" = "data_Sites",
   #                                       "JoinCols" = "COMID",
-  #                                       "IntegrityIssues" = pk.issues,
-  #                                       "OtherConditions" = fk.issues))
+  #                                       "FileOneCondition" = pk.issues,
+  #                                       "FileTwoCondition" = fk.issues))
   #   rm(nsites.not.WS.data, nWS.data.not.sites, sites.not.WS.data,
   #      WS.data.not.sites)
   #
@@ -762,8 +764,8 @@ checkInputs <- function(dir.uploaded,
   #                                 cbind("FileOne" = "data_stressorWS",
   #                                       "FileTwo" = "data_stressorinfoWS",
   #                                       "JoinCols" = "StreamCat variable",
-  #                                       "IntegrityIssues" = pk.issues,
-  #                                       "OtherConditions" = fk.issues))
+  #                                       "FileOneCondition" = pk.issues,
+  #                                       "FileTwoCondition" = fk.issues))
   #   rm(nSCvars.data.not.meta, nSCvars.meta.not.data, SCvars.data.not.meta,
   #      SCvars.meta.not.data)
   #
@@ -821,8 +823,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_chemAll",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nmeas.data.not.sites, nsites.not.meas.data, meas.data.not.sites,
        sites.not.meas.data)
 
@@ -838,7 +840,7 @@ checkInputs <- function(dir.uploaded,
       pk.issues <- paste0(nmeas.param.not.meta, " StdParamNames are not in FileOne")
     }
     if (nmeta.param.not.meas == 0) {
-      fk.issues <- "All StdParamNames are in File Two"
+      fk.issues <- "All StdParamNames are in FileTwo"
     } else {
       fk.issues <- paste0(nmeta.param.not.meas, " StdParamNames are not in FileTwo")
     }
@@ -847,8 +849,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_chemInfo",
                                         "FileTwo" = "data_chemAll",
                                         "JoinCols" = "StdParamName",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nmeas.param.not.meta, nmeta.param.not.meas, meas.param.not.meta,
        meta.param.not.meas)
   }
@@ -903,8 +905,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_modelAll",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nmod.data.not.sites, nsites.not.mod.data, mod.data.not.sites,
        sites.not.mod.data)
 
@@ -920,7 +922,7 @@ checkInputs <- function(dir.uploaded,
       pk.issues <- paste0(nmod.param.not.meta, " StdParamNames are not in FileOne")
     }
     if (nmeta.param.not.mod == 0) {
-      fk.issues <- "All StdParamNames are in File Two"
+      fk.issues <- "All StdParamNames are in FileTwo"
     } else {
       fk.issues <- paste0(nmeta.param.not.mod, " StdParamNames are not in FileTwo")
     }
@@ -929,8 +931,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_modelInfo",
                                         "FileTwo" = "data_modelAll",
                                         "JoinCols" = "StdParamName",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nmod.param.not.meta, nmeta.param.not.mod, mod.param.not.meta,
        meta.param.not.mod)
   }
@@ -992,8 +994,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_bmiMetrics",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nbmi.data.not.sites, nsites.not.bmi.data, bmi.data.not.sites,
        sites.not.bmi.data)
 
@@ -1018,8 +1020,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_bmiMetricsInfo",
                                         "FileTwo" = "data_bmiMetrics",
                                         "JoinCols" = "MetricName",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nbmi.data.not.meta, nbmi.meta.not.data, bmi.data.not.meta,
        bmi.meta.not.data)
   }
@@ -1072,8 +1074,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_bmiCounts",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nbmi.count.not.sites, nsites.not.bmi.count, bmi.count.not.sites,
        sites.not.bmi.count)
 
@@ -1097,8 +1099,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_bmiMasterTaxa",
                                         "FileTwo" = "data_bmiCounts",
                                         "JoinCols" = "TaxonID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nbmi.count.not.mt, nbmi.mt.not.count, bmi.count.not.mt, bmi.mt.not.count)
   }
 
@@ -1155,8 +1157,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_algMetrics",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nalg.data.not.sites, nsites.not.alg.data, alg.data.not.sites,
        sites.not.alg.data)
 
@@ -1181,8 +1183,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_algMetricsInfo",
                                         "FileTwo" = "data_algMetrics",
                                         "JoinCols" = "MetricName",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nalg.data.not.meta, nalg.meta.not.data, alg.data.not.meta,
        alg.meta.not.data)
   }
@@ -1237,8 +1239,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_algCounts",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nalg.count.not.sites, nsites.not.alg.count, alg.count.not.sites,
        sites.not.alg.count)
 
@@ -1263,8 +1265,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_algMasterTaxa",
                                         "FileTwo" = "data_algCounts",
                                         "JoinCols" = "TaxonID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nalg.count.not.mt, nalg.mt.not.count, alg.count.not.mt, alg.mt.not.count)
   }
 
@@ -1323,8 +1325,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_fishMetrics",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nfish.data.not.sites, nsites.not.fish.data, fish.data.not.sites,
        sites.not.fish.data)
 
@@ -1349,8 +1351,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_fishMetricsInfo",
                                         "FileTwo" = "data_fishMetrics",
                                         "JoinCols" = "MetricName",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nfish.data.not.meta, nfish.meta.not.data, fish.data.not.meta,
        fish.meta.not.data)
   }
@@ -1404,8 +1406,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_Sites",
                                         "FileTwo" = "data_fishCounts",
                                         "JoinCols" = "StationID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nfish.count.not.sites, nsites.not.fish.count, fish.count.not.sites,
        sites.not.fish.count)
 
@@ -1430,8 +1432,8 @@ checkInputs <- function(dir.uploaded,
                                   cbind("FileOne" = "data_fishMasterTaxa",
                                         "FileTwo" = "data_fishCounts",
                                         "JoinCols" = "TaxonID",
-                                        "IntegrityIssues" = pk.issues,
-                                        "OtherConditions" = fk.issues))
+                                        "FileOneCondition" = pk.issues,
+                                        "FileTwoCondition" = fk.issues))
     rm(nfish.count.not.mt, nfish.mt.not.count, fish.count.not.mt,
        fish.mt.not.count)
   }

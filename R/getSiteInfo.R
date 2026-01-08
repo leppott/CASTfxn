@@ -238,11 +238,11 @@ getSiteInfo <- function(TargetSiteID,
       bioMetricData <- df_BMIMetrics
       bioSampleID <- "BMISampleID"
     } else if (bioComm == "alg") {
-      bioIndexGp <- algIndexGp
+      bioIndexGp <- ALGIndexGp
       bioMetricData <- df_ALGMetrics
       bioSampleID <- "AlgSampleID"
     } else if (bioComm == "fish") {
-      bioIndexGp <- fishIndexGp
+      bioIndexGp <- FishIndexGp
       bioMetricData <- df_FishMetrics
       bioSampleID <- "FishSampleID"
     } else {
