@@ -4,9 +4,21 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2026-01-07 12:42:54.428405
+    #> Last Update: 2026-01-09 12:04:40.755325
 
 # Version History
+
+## Changes in version 0.3.0.9006 (2026-01-09)
+
+- refactor: Update skelelton code for boo_Shiny as TRUE
+
+## Changes in version 0.3.0.9005 (2026-01-08)
+
+- Delete second file paths used for testing
+
+## Changes in version 0.3.0.9004 (2026-01-08)
+
+- getSiteInfo bug fix; checkInputs changes
 
 ## Changes in version 0.3.0.9003 (2026-01-07)
 
