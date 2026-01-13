@@ -22,35 +22,36 @@
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 readCASToolData <- function(fn, NAs) {##FUNCTION.START
 
   if (tolower(tools::file_ext(fn)) == "csv" ) {
-    df <- utils::read.csv(fn, 
+    df <- utils::read.csv(fn,
                           header = TRUE,
-                          na.strings = NAs, 
+                          na.strings = NAs,
                           strip.white = TRUE,
                           stringsAsFactors = FALSE)
     return(df)
   } else if (tolower(tools::file_ext(fn)) %in% c("txt", "tab")) {
-    df <- utils::read.delim(fn, 
-                            header = TRUE, 
-                            na.strings = NAs, 
+    df <- utils::read.delim(fn,
+                            header = TRUE,
+                            na.strings = NAs,
                             strip.white = TRUE,
                             stringsAsFactors = FALSE)
     return(df)
   } else if (tolower(tools::file_ext(fn) %in% c("xls", "xlsx"))) {
-    df <- readxl::read_excel(fn, 
-                             col_names = TRUE, 
-                             skip = 0, 
+    df <- readxl::read_excel(fn,
+                             col_names = TRUE,
+                             skip = 0,
                              trim_ws = TRUE,
                              na = NAs)
     return(df)
   } else if (tolower(tools::file_ext(fn)) == "rda"){
-    load(fn, envir = .GlobalEnv)
+    #load(fn, envir = .GlobalEnv)
+    load(fn, envir = parent.frame())
   } else if(tolower(tools::file_ext(fn)) %in% c("png", "jpg", "jpeg")){
-    df <- magick::image_read(fn) 
+    df <- magick::image_read(fn)
     return(df)
   } else {
     message("File format not recognized.")

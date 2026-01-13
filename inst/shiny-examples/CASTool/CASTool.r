@@ -32,9 +32,9 @@ boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Data" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataWithHelper/Results" # File path of results directory
-  region <- "Washington" # Name of region
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
+  region <- "DEPied" # Name of region
 
   # Helper packages
 
@@ -449,28 +449,16 @@ if (boo.meas && boo.model) {
 
 # If using, get WS stressor data
 if (boo.WS == TRUE & helperImport == FALSE) {
-  # data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
-  # data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
-  #                                          "data_stressorinfoWS.rds"))
+  data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
+  data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
+                                           "data_stressorinfoWS.rds"))
 
-  fn.WSstressor.Data <- as.character(dplyr::select(data_CASTmeta, fn.WSstressor.Data))
-  fn.WSstressor.Info <- as.character(dplyr::select(data_CASTmeta, fn.WSstressor.Info))
-
-  if(file.exists(file.path(in.dir, fn.WSstressor.Data))){
-    data_stressorWS <- readCASToolData(file.path(in.dir, fn.WSstressor.Data), NAs = c("", "NA"))
+  if(exists("data_stressorWS") & exists("data_stressorinfoWS")){
+    message("Watershed stressor data provided by user loaded.")
   } else{
-    message("Watershed stressor data not found in input files")
+    message("Watershed stressor data provided by user not found.")
   }
 
-  if(file.exists(file.path(in.dir, fn.WSstressor.Info))){
-    data_stressorinfoWS <- readCASToolData(file.path(in.dir, fn.WSstressor.Info), NAs = c("", "NA"))
-  } else{
-    message("Watershed stressor metdata not found in input files")
-  }
-
-  if("comid" %in% names(data_stressorWS)){
-    data_stressorWS <- data_stressorWS %>% dplyr::rename("COMID" = "comid")
-  }
 
 } else if(boo.WS == TRUE & helperImport == TRUE){
 
