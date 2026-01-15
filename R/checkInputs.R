@@ -118,7 +118,8 @@ checkInputs <- function(dir.uploaded,
                    "InclusiveIndicator", "StreamCatVar")
     num.cols <- c("COMID", "Latitude", "Longitude", "RefSiteFlag", "ClusterID",
                   "WatershedValue", "Year", "LogTransf", "UseInStressorID",
-                  "ResultValue", "NumInd", "CutoffValue", "WatershedValue", "Year")
+                  "ResultValue", "NumInd", "CutoffValue", "WatershedValue")
+    flex.cols <- c("COMID", "ClusterID", "Year", "TargetSiteID", "StationID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish", "StressSampleID", "RespSampleID")
     date.cols <- c("StressSampleDate", "RespSampleDate")
     geo.cols <- c("geometry", "GEOMETRY", "Geometry")
     accept.blank.cols <- c( "SSIndex", "SSTVname.bmi",
@@ -134,6 +135,12 @@ checkInputs <- function(dir.uploaded,
         errors <- "pass"
       } else if (col %in% geo.cols){ # don't check class of geometry column TODO: improvement
         errors <- "pass"
+      } else if(col %in% flex.cols){
+        if(col.class %in% c("character","integer", "numeric")){
+          errors <- "pass"
+        } else{
+          errors <- paste0(col, " is expected to be character or numeric but is ", col.class)
+        }
       } else if (col %in% num.cols) {
 
         if(col.class %in% c("integer", "numeric")){

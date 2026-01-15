@@ -99,18 +99,18 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   dir_path <- file.path(dir_results, TargetSiteID, dir_sub)
 
   # LCN 9/23/25 patch fix to remove dependency on hard coded data_bmiCoOccur
-  if(useBC == TRUE){
-    comp.reaches <- comp.reaches
-  } else{
-    TargetSiteCluster <- df_Sites %>%
-      dplyr::filter(StationID == TargetSiteID) %>%
-      dplyr::pull(IncaseCol)
-
-    comp.reaches <- df_Sites %>%
-      dplyr::filter(IncaseCol == TargetSiteCluster) %>%
-      dplyr::distinct(COMID) %>%
-      dplyr::pull(COMID)
-  }
+  # if(useBC == TRUE){
+  #   comp.reaches <- comp.reaches
+  # } else{
+  #   TargetSiteCluster <- df_Sites %>%
+  #     dplyr::filter(StationID == TargetSiteID) %>%
+  #     dplyr::pull(IncaseCol)
+  #
+  #   comp.reaches <- df_Sites %>%
+  #     dplyr::filter(IncaseCol == TargetSiteCluster) %>%
+  #     dplyr::distinct(COMID) %>%
+  #     dplyr::pull(COMID)
+  # }
 
   # get sampling info (dates of samples)
   mySamps <- dplyr::filter(df_SampSummary, StationID == TargetSiteID) %>%
@@ -159,16 +159,23 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
           # If useAllCompReaches == T & useBC == T, this means use all
           # outside-the-case reaches because filtering happens on a site basis,
           # meaning that inside the case is by definition reaches having sites.
+          # Will not work 1/15/26
           outcaseID <- mySiteInfo$OutcaseCol
           data_compbkgd <- df_WSData[df_WSData$ClusterID == outcaseID, ]
         } else { # useBC == FALSE; cluster ID is the inside the case ID
-          incaseID <- mySiteInfo$IncaseCol # this represents cluster ID
-          data_compbkgd <- df_WSData[df_WSData$ClusterID == incaseID, ]
+          # incaseID <- mySiteInfo$IncaseCol # this represents cluster ID
+          # data_compbkgd <- df_WSData[df_WSData$ClusterID == incaseID, ]
+
+          data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches,]
         }
         str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
                               "distribution of values for all comparator reaches")
       } else { # use only comparator reaches having sites
-        data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches, ]
+          comp.reaches_sites <- df_Sites %>%
+            dplyr::filter(COMID %in% comp.reaches) %>%
+            dplyr::pull(COMID)
+
+        data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches_sites, ]
         str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
                               "distribution of values for all comparator sites' reaches")
       }
