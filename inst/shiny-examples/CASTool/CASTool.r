@@ -391,7 +391,7 @@ if (boo.meas && boo.model) {
   chemMetaNames   <- colnames(data_chemInfo)
   modelMetaNames  <- colnames(data_modelInfo)
   extraNames      <- chemMetaNames[!(chemMetaNames %in% modelMetaNames)]
-  for (e in 1:length(extraNames)) {
+  for (e in seq_len(length(extraNames))) {
     newCol        <- extraNames[e]
     data_modelInfo[[newCol]] <- NA
   }
@@ -699,16 +699,27 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 
+status_df <- data.frame(TargetSiteID = character(), status = character(), reason = character())
+
 # FOR ~ site ~ START ####
-for (site in seq_along(1:nrow(df_targets))) {
+for (site in seq_len(nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
 
   if (is.na(TargetSiteID)) {
+    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID is NA")
+    status_df <- status_df %>% dplyr::bind_rows(temp_status)
     next
   } else if(data_Sites %>% dplyr::filter(StationID == TargetSiteID) %>% nrow() == 0){ # LCN added 20250917
-    msg <- "TargetSiteID not found in the sites file. Skipping to the next TargetSiteID."
+    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID not found in Sites file")
+    status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
+    msg <- "TargetSiteID not found in the Sites file."
+    message(msg)
     next
   } else if (is.na(data_Sites$IncaseCol[data_Sites$StationID == TargetSiteID])) {
+    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID not assigned an inside-the-case identifier")
+    status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
     msg <- "No inside-the-case identifier available"
     message(msg)
     next
@@ -1633,8 +1644,35 @@ for (site in seq_along(1:nrow(df_targets))) {
               row.names = FALSE,
               sep = "\t")
 
+  # siteDetectsAll needed for Shiny app
+  fn_detects_all <- file.path(dir_results,
+                              TargetSiteID,
+                              paste0(TargetSiteID,
+                                     "_DetectsAll.tab"))
+  df_detects_all <- data.frame(Detects_All = siteDetectsAll)
+  write.table(df_detects_all,
+              fn_detects_all,
+              append = FALSE,
+              col.names = TRUE,
+              row.names = FALSE,
+              sep = "\t")
+
+# status
+  temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Passed", reason = "")
+  status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
 } ### End TargetSite loop # not used in Shiny
 # FOR ~ site ~ END ####
+
+fn_status <- file.path(dir_results,
+                       paste0("TargetSiteID_Status_",
+                              format(Sys.Date(),"%Y%m%d"),
+                              "_",
+                              format(Sys.time(),"%H%M%S"),
+                              ".csv"))
+write.csv(status_df,
+          fn_status,
+          row.names = FALSE)
 
 rm(site)
 
@@ -1656,17 +1694,17 @@ if (boo_Shiny == TRUE) {
 }## IF ~ boo_Shiny ~ END
 
 # siteDetectsAll needed for Shiny app
-fn_detects_all <- file.path(dir_results,
-                            TargetSiteID,
-                            paste0(TargetSiteID,
-                                   "_DetectsAll.tab"))
-df_detects_all <- data.frame(Detects_All = siteDetectsAll)
-write.table(df_detects_all,
-            fn_detects_all,
-            append = FALSE,
-            col.names = TRUE,
-            row.names = FALSE,
-            sep = "\t")
+# fn_detects_all <- file.path(dir_results,
+#                             TargetSiteID,
+#                             paste0(TargetSiteID,
+#                                    "_DetectsAll.tab"))
+# df_detects_all <- data.frame(Detects_All = siteDetectsAll)
+# write.table(df_detects_all,
+#             fn_detects_all,
+#             append = FALSE,
+#             col.names = TRUE,
+#             row.names = FALSE,
+#             sep = "\t")
 
 # 23 getSummaryAllSites
 # Progress, 29
