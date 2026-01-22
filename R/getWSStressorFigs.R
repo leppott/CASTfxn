@@ -136,6 +136,10 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     data_sitebkgdata <- dplyr::filter(data_sitebkgdata, !is.na(WatershedValue))
     vars.site <- unique(data_sitebkgdata$StreamCatVar[!is.na(data_sitebkgdata$WatershedValue)])
 
+    # Limit variables evaluated to only those in the WS stressor metadata
+    vars.site <- intersect(vars.site, df_WSInfo$StreamCatVar)
+    naVars.site <- intersect(naVars.site, df_WSInfo$StreamCatVar)
+
     if (length(naVars.site) > 0) { # if any NA values, then missing data for site
       # Missing one or more values in StreamCat for the target reach.
       naVars.site <- paste(naVars.site, collapse = "; ")
