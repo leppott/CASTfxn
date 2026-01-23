@@ -990,6 +990,9 @@ for (site in seq_len(nrow(df_targets))) {
     write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
                 row.names = FALSE, sep = "\t")
 
+    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = msg)
+    status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
     next
 
   } ### End no stressors statement GO TO NEXT SITE
@@ -1250,6 +1253,9 @@ for (site in seq_len(nrow(df_targets))) {
 
       # No identified stressors may be a data gap, but may not be, either
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      gapcomment <- paste0("All candidate causes were eliminated by the co-occurrence line of evidence for ",
+                           TargetSiteID)
+
       gaps    <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
       fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
       fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
