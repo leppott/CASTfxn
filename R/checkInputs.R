@@ -111,20 +111,38 @@ checkInputs <- function(dir.uploaded,
 
     text.cols <- c("TargetSiteID", "StationID", "StreamCatVar", "Label",
                    "StdParamName", "SourceGroup", "SSIndex", "SSTVname.bmi",
-                   "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
-                   "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish",
-                   "DirIncStress", "StressSampleID", "RespSampleID", "TaxonID",
+                   "SSTVname.alg", "SSTVname.fish",  "DirIncStress", "StressSampleID",
+                   "RespSampleID", "TaxonID",
                    "MetricName", "MetricLabel", "IndexYN", "UseYN", "TrendWIncStress",
                    "InclusiveIndicator", "StreamCatVar")
-    num.cols <- c("COMID", "Latitude", "Longitude", "RefSiteFlag", "ClusterID",
+    num.cols <- c("COMID", "Latitude", "Longitude", "RefSiteFlag",
                   "WatershedValue", "Year", "LogTransf", "UseInStressorID",
-                  "ResultValue", "NumInd", "CutoffValue", "WatershedValue")
-    flex.cols <- c("COMID", "ClusterID", "Year", "TargetSiteID", "StationID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish", "StressSampleID", "RespSampleID")
+                  "ResultValue", "NumInd", "CutoffValue")
+    flex.cols <- c("ClusterID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish")
     date.cols <- c("StressSampleDate", "RespSampleDate")
     geo.cols <- c("geometry", "GEOMETRY", "Geometry")
     accept.blank.cols <- c( "SSIndex", "SSTVname.bmi",
                             "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
                             "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish")
+
+    # text.cols <- c("TargetSiteID", "StationID", "StreamCatVar", "Label",
+    #                "StdParamName", "SourceGroup", "SSIndex", "SSTVname.bmi",
+    #                "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
+    #                "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish",
+    #                "DirIncStress", "StressSampleID", "RespSampleID", "TaxonID",
+    #                "MetricName", "MetricLabel", "IndexYN", "UseYN", "TrendWIncStress",
+    #                "InclusiveIndicator", "StreamCatVar")
+    # num.cols <- c("COMID", "Latitude", "Longitude", "RefSiteFlag", "ClusterID",
+    #               "WatershedValue", "Year", "LogTransf", "UseInStressorID",
+    #               "ResultValue", "NumInd", "CutoffValue", "WatershedValue")
+    # flex.cols <- c("ClusterID", "Year", "TargetSiteID", "StationID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish", "StressSampleID", "RespSampleID")
+    # date.cols <- c("StressSampleDate", "RespSampleDate")
+    # geo.cols <- c("geometry", "GEOMETRY", "Geometry")
+    # accept.blank.cols <- c( "SSIndex", "SSTVname.bmi",
+    #                         "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
+    #                         "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish")
+
+
 
     for (c in seq_along(obj.cols)) {
 
@@ -364,7 +382,7 @@ checkInputs <- function(dir.uploaded,
     if(tolower(tools::file_ext(fn)) != "rda"){
       assign(object, readCASToolData(file.path(dir.uploaded, fn),
                                      NAs = c("", "NA", "na", "N/A", "n/a")))
-    } else{
+    } else {
       readCASToolData(file.path(dir.uploaded, fn))
     }
 
@@ -407,6 +425,14 @@ checkInputs <- function(dir.uploaded,
       df.reqd.coltypes <- rbind(df.reqd.coltypes, df.coltypes.tmp)
     }
 
+    # add missing columns
+    temp_missing <- setdiff(reqd.cols, act.cols)
+
+    if(length(temp_missing)>0){
+      tempdf <- get(object)
+      tempdf[temp_missing] <- replicate(length(temp_missing), NA)
+      assign(object, tempdf)
+    }
   }
 
   ### Setup for loop over files as needed ----

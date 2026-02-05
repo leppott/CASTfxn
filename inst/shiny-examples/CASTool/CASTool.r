@@ -125,7 +125,7 @@ if (boo_Shiny == TRUE) {
   prog_n <- 23
   prog_sleep <- 0.25
   #
-  prog_det <- "Set up"
+  prog_det <- "Set up output structure"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -145,7 +145,7 @@ if (boo_Shiny == TRUE) {
 # Progress, 02
 
 if (boo_Shiny == TRUE) {
-  prog_det <- "Data, Model"
+  prog_det <- "Check input data files"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -171,7 +171,7 @@ if (boo_Shiny == TRUE) {
 # 03, Select region variables ####
 # Progress, 03
 if (boo_Shiny == TRUE) {
-  prog_det <- "Select Region Variables"
+  prog_det <- "Pull values from metadata"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -298,7 +298,7 @@ rm(b, bio)
 # 04, Site data files ####
 # Progress, 04
 if (boo_Shiny == TRUE) {
-  prog_det <- "Load Site Data Files"
+  prog_det <- "Load site data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -322,7 +322,7 @@ rm(list.SiteData)
 # 05, Measured data and metadata ####
 # Progress, 05
 if (boo_Shiny == TRUE) {
-  prog_det <- "Data, Chem"
+  prog_det <- "Load measured stressor data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -348,7 +348,7 @@ if (boo.meas) {
 # 06, Modeled data and metadata ####
 # Progress, 06
 if (boo_Shiny == TRUE) {
-  prog_det <- "Data, Model"
+  prog_det <- "Load modeled stressor data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -376,7 +376,7 @@ if (boo.model) {
 # 07, Combine stressor data ####
 # Progress, 07
 if (boo_Shiny == TRUE) {
-  prog_det <- "Data, Combine stressor data and metadata"
+  prog_det <- "Combine stressor data and metadata"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -493,7 +493,7 @@ for (b in seq_along(biocommlist)) {
   # 08, Bio response data ####
   # Progress, 08-10
   if (boo_Shiny == TRUE) {
-    prog_det <- paste0("Data, ", bio, ", Response data")
+    prog_det <- paste0("Load ", bio, ", response data")
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
     prog_inc <- 1 / prog_n
@@ -633,7 +633,7 @@ rm(b, bio, boo.bmi, boo.alg, boo.fish)
 # Progress, 11
 # NOTE: This must use all of the data, including outliers
 if (boo_Shiny == TRUE) {
-  prog_det <- "Data, Sample Summary"
+  prog_det <- "Generate summary of sample types"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -659,7 +659,7 @@ rm(data_respTrim)
 # 10, Target site selection ####
 # Progress, 12
 if (boo_Shiny == TRUE) {
-  prog_det <- "Site Selection"
+  prog_det <- "Select target site"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -690,7 +690,7 @@ if (boo_Shiny == TRUE) {
 # 11, Main Code ####
 # Progress, 13
 if (boo_Shiny == TRUE) {
-  prog_det <- "Main Code Start"
+  prog_det <- "Check target site data availability"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
   prog_inc <- 1 / prog_n
@@ -747,7 +747,7 @@ for (site in seq_len(nrow(df_targets))) {
   # 12, getComparators ####
   ## Progress, 14
   if (boo_Shiny == TRUE) {
-    prog_det <- "getComparators"
+    prog_det <- "Get comparator site data"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
     prog_inc <- 1 / prog_n
@@ -850,7 +850,7 @@ for (site in seq_len(nrow(df_targets))) {
   # 13, getSiteInfo, getSiteMap, writeOutliers ####
   # Progress, 15
   if (boo_Shiny == TRUE) {
-    prog_det <- "getSiteInfo, getSiteMap, writeOutliers"
+    prog_det <- "Generate index boxplots and create site map"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
     prog_inc <- 1 / prog_n
@@ -943,7 +943,7 @@ for (site in seq_len(nrow(df_targets))) {
   # 14, getAvailableDataTypes ####
   # Progress, 17
   if (boo_Shiny == TRUE) {
-    prog_det <- "getAvailableDataTypes"
+    prog_det <- "Identify outliers"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
     prog_inc <- 1 / prog_n
@@ -1127,7 +1127,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 15, getQualSites ####
     # Progress, 18
     if (boo_Shiny == TRUE) {
-      prog_det <- paste0(bioComm, "; getQualSites")
+      prog_det <- paste0(bioComm, "; summarize index values")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1205,7 +1205,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 16, getCoOccur ####
     # Progress, 21
     if (boo_Shiny == TRUE) {
-      prog_det <- "getCoOccur"
+      prog_det <-  paste0(bioComm, "; run co-occurrence line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1275,7 +1275,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 17, getTimeSeq ####
     # Progress, 20
     if (boo_Shiny == TRUE) {
-      prog_det <- "getTimeSeq"
+      prog_det <- paste0(bioComm, "; run time sequence line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1312,7 +1312,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 18, getSufficiency ####
     # Progress, 24
     if (boo_Shiny == TRUE) {
-      prog_det <- "getSufficiency"
+      prog_det <-  paste0(bioComm, "; run sufficiency line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1351,7 +1351,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 19, getBioStressorResponses ####
     # Progress, 25
     if (boo_Shiny == TRUE) {
-      prog_det <- "getBioStressorResponses"
+      prog_det <-  paste0(bioComm, "; run biological gradient line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1393,7 +1393,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 20, getVerifiedPredictions ####
     # Progress, 26
     if (boo_Shiny == TRUE) {
-      prog_det <- "getVerifiedPredictions"
+      prog_det <-  paste0(bioComm, "; verified predictions lines of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1504,7 +1504,7 @@ for (site in seq_len(nrow(df_targets))) {
     ## 21, getWOE ####
     # Progress, 27
     if (boo_Shiny == TRUE) { # needs updating
-      prog_det <- "getWOE"
+      prog_det <-  paste0(bioComm, "; get weight of evidence table")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
@@ -1533,7 +1533,7 @@ for (site in seq_len(nrow(df_targets))) {
   ## 22, getReport ####
   # Progress, 28
   if (boo_Shiny == TRUE) {
-    prog_det <- "getReport"
+    prog_det <- "Get report"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
     prog_inc <- 1 / prog_n
