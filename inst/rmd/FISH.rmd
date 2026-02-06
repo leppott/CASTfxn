@@ -180,10 +180,10 @@ A note of caution:
       dplyr::mutate(Blank1 = NA) %>%
       dplyr::rename(BioGradIn = Gradient..inside., 
                     BioGradOut = Gradient..outside.) %>%
-      dplyr::select(Stressor, StressSampleID, StressSampleDate, CO, Suff, 
+      dplyr::select(Stressor, RespSampleID, RespSampleDate, CO, Suff, 
                     BioGradIn, TS, VP_SSTV, VP_SSIbox, VP_SSIlog, Blank1, 
                     BioGradOut) %>%
-      dplyr::arrange(Stressor, StressSampleDate)
+      dplyr::arrange(Stressor, RespSampleDate)
     
     if (report_format == "html") {
       
@@ -251,7 +251,7 @@ A note of caution:
                                                      list(className = 'dt-bottom',
                                                           targets = "_all")))) %>%
         DT::formatStyle(columns = colnames(dfLoEbyStressor), fontSize = '80%') %>%
-        DT::formatStyle("StressSampleID", "white-space" = "nowrap")
+        DT::formatStyle("RespSampleID", "white-space" = "nowrap")
       
     } else {
       
@@ -283,9 +283,9 @@ This table provides an indication of the consistency of the evidence for a candi
                                  header = TRUE, strip.white = TRUE,
                                  stringsAsFactors = FALSE)
    dfLoESummary <- dfLoESummary %>%
-     dplyr::select(Stressor, StressSampleID, StressSampleDate, NumSupport,
+     dplyr::select(Stressor, RespSampleID, RespSampleDate, NumSupport,
                    NumRefute, NumIndeterminate, NumNotEvaluated) %>%
-     dplyr::arrange(Stressor, StressSampleDate)
+     dplyr::arrange(Stressor, RespSampleDate)
 
    if (report_format == "html") {
 
@@ -343,7 +343,7 @@ This table provides an indication of the consistency of the evidence for a candi
                                                     list(className = 'dt-bottom',
                                                          targets = "_all")))) %>%
        DT::formatStyle(columns = colnames(dfLoESummary), fontSize = '80%') %>%
-       DT::formatStyle("StressSampleID", "white-space" = "nowrap")
+       DT::formatStyle("RespSampleID", "white-space" = "nowrap")
 
    } else {
 
