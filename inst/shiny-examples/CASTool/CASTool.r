@@ -668,7 +668,8 @@ if (boo_Shiny == TRUE) {
   message(paste(prog_msg, prog_det, sep = "; "))
 }## IF ~ boo_Shiny ~ END
 #
-df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
+df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds")) |>
+  mutate(TargetSiteID = stringr::str_replace_all(TargetSiteID, "[:punct:]", "_"))
 
 ### Evaluate each target site
 ## Use this for debugging
