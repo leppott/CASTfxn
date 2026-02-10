@@ -22,6 +22,54 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.3.0.9019 (2026-02-10)
+
+* docs: Update NEWS
+* docs: Updates from check, DESCRIPTION packages
+    + Update depends for R to v 4.1.0
+        - native pipe
+    + Add packages to Imports if used
+        - grid
+    + Move packages from Suggests to Imports
+        - readr
+    + Move unused packages in Suggests to bottom
+        - CASToolWSStressorPckg
+        - corrplot
+        - data.table
+        - DT
+        - ggrepel
+        - ggthemes
+        - graphics
+        - gridExtra
+        - imager
+        - leaflet
+        - maps
+        - nhdplusTools
+        - pak
+        - raster
+        - RColorBrewer
+        - reshape
+        - shinyFiles
+        - shinyjs
+        - tcltk
+        - testthat
+        - wrapr
+        - grDevices
+    + Move vignette builder package to Suggests
+        - knitr
+
+## Changes in version 0.3.0.9018 (2026-02-10)
+
+* Merge branch 'main' of https://github.com/leppott/CASTfxn
+
+## Changes in version 0.3.0.9017 (2026-02-10)
+
+* Add explicit function call
+
+## Changes in version 0.3.0.9016 (2026-02-10)
+
+* Replace TargetSiteID punctuation with _ as in all other prep functions.
+
 ## Changes in version 0.3.0.9015 (2026-02-10)
 
 * docs: Update NEWS
