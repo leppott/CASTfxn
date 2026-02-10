@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Causal Assessment Screening Tool (CAST)
 Description: Functions and other tools associated with the Causal Assessment 
     Screening Tool.  Used to more quickly assess stressors to a list of sites.
-Version: 0.3.0.9015
+Version: 0.3.0.9019
 Author@R: c(
   person("Erik W.", "Leppo", email="Erik.Leppo@tetratech.com", role=c("aut","cre")),
   person("Ann","Roseberry Lincoln", role="ctb"),
@@ -20,58 +20,60 @@ LazyData: true
 VignetteBuilder: knitr
 URL: https://github.com/leppott/CASTfxn
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 Imports: 
   dplyr,
-  elevatr,
-  fuzzyjoin,
   ggplot2, 
   lubridate,
-  psych,
-  rmarkdown, 
-  shiny, 
-  sp,
   stats,
   stringr,
   tidyr, 
   utils, 
-  StreamCatTools,
-  forcats,
-  purrr, 
-  scales, 
+  readr,
   sf,
-  tibble, 
   tmap,
+  rlang,
+  grid,
+  tools,
+  tidyselect,
+  purrr,
+  psych,
+  elevatr,
+  CASToolClusterPckg,
+  CASToolBaseDataPckg,
+  StreamCatTools,
+  shiny, 
+  fuzzyjoin,
+  tibble, 
+  rmarkdown, 
+  scales, 
+  forcats,
   viridis,
   magick,
-  rlang,
-  CASToolClusterPckg,
-  CASToolBaseDataPckg
-Suggests: 
-  imager,
   readxl, 
-  testthat,
-  data.table,
-  readr,
-  tidyselect,
-  DT,
-  RColorBrewer,
+  sp
+Suggests: 
+  knitr,
+  CASToolWSStressorPckg,
   corrplot,
+  data.table,
+  DT,
   ggrepel,
   ggthemes,
-  grDevices,
   graphics,
   gridExtra,
-  knitr,
+  imager,
   leaflet,
   maps,
   nhdplusTools,
   pak,
   raster,
+  RColorBrewer,
   reshape,
   shinyFiles,
   shinyjs,
   tcltk,
+  testthat,
   wrapr,
-  CASToolWSStressorPckg
+  grDevices
 RoxygenNote: 7.3.3
