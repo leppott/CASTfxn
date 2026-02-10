@@ -22,6 +22,64 @@ cat(paste0("Last Update: ",Sys.time()))
 
 # Version History
 
+## Changes in version 0.3.0.9015 (2026-02-10)
+
+* docs: Update NEWS
+* docs: Update package version
+* docs: Run check and apply updates
+    + getBioStressorResponse
+        - add dir_plots to param
+        - remove ss from param
+    + getCoOccur
+        - add incaseLabel to param
+    + getReport
+        - add regionName to param
+    + getWoE
+        - rename param dir_WOE to dir_WoE
+    + getWSStressorFigs
+        - add description to param dir_results
+        - declare data_sampSummary as NULL
+        - add data_sampSummary as default for df_SampSummary in param
+    + DESCRIPTION, add packages from CASToolWSStressorPckg to Suggests
+        - data.table
+        - readr
+        - tidyselect
+    + DESCRIPTION, move unused package to Suggests
+        - CASToolWSStressorPkg
+    + Add shortcut file to both .gitignore and .buildignore
+
+## Changes in version 0.3.0.9014 (2026-02-06)
+
+* Change WOE and WOE summary tables to use response not stressor sample ids and dates
+
+## Changes in version 0.3.0.9013 (2026-02-05)
+
+* Change progress messages, incorporate explicit column type imports, add missing columns in check inputs to prevent crashes
+
+## Changes in version 0.3.0.9012 (2026-01-23)
+
+* Deal with all candidate causes eliminated or no data for candidate causes
+
+## Changes in version 0.3.0.9011 (2026-01-22)
+
+* Alter getWSStressorFigs to only generate figures for variables in the WS stressor metadata
+
+## Changes in version 0.3.0.9010 (2026-01-15)
+
+* Fix WSStressor comid filtering, remove ClusterID as required data_WSStressor column, add flexibility for class for some columns
+
+## Changes in version 0.3.0.9009 (2026-01-15)
+
+* Move siteDetectsAll inside the biocomm loop. Add TargetSite status dataframe.
+
+## Changes in version 0.3.0.9008 (2026-01-13)
+
+* Merge branch 'main' of https://github.com/leppott/CASTfxn
+
+## Changes in version 0.3.0.9007 (2026-01-13)
+
+* Fix readCASToolDataFile paths for RDA files. Pull in custom WS stressor data as rds
+
 ## Changes in version 0.3.0.9006 (2026-01-09)
 
 * refactor: Update skelelton code for boo_Shiny as TRUE

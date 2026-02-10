@@ -10,6 +10,7 @@ CASTfxn_LibraryCreation.nb.html
 ^.*\.Rproj$
 .Rbuildignore
 NEWS.rmd
+inst/shiny-examples/CASTool/CASTool - Shortcut.lnk
 ^vignettes/Results
 ^Results$
 Results/

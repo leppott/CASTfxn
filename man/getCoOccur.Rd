@@ -70,6 +70,8 @@ Default = data_plotvars.}
 \item{dir_sub}{Subdirectory for outputs from this function.  Default = "CoOccurrence"}
 
 \item{boo_plot}{Boolean value to save plots.  Default = TRUE.}
+
+\item{incaseLabel}{xyz}
 }
 \value{
 Writes individual plots as pngs, and a tab-delimited text file with

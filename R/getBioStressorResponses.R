@@ -34,8 +34,9 @@
 #' @param plotH standardized height for all plots
 #' @param plotW standardized width for all plots
 #' @param plotunits stardardized units for all plots
-#' @param ss Directory to save plots. Default = working directory and Results.
+# @param ss Directory to save plots. Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function. Default = "StressorResponse"
+#' @param dir_plots Directory to save plots. Default = working directory and Results.
 #' @param boo_pred_warn Should warnings for prediction be suppressed. Default = TRUE.
 #' @param boo_plot Boolean value to save plots. Default = TRUE.
 #'

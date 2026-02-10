@@ -21,7 +21,7 @@
 #'              stressor and sample in long form.
 #' @param dfStress x
 #' @param dir_results Directory to save tables. Default = working directory and Results.
-#' @param dir_WOE x
+#' @param dir_WoE x
 #' @param plotdpi x
 #' @param plotH x
 #' @param plotW x
