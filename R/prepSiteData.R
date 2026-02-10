@@ -35,8 +35,8 @@ prepSiteData <- function(out.dir,
 
   data_Sites <- readRDS(file.path(out.dir, "data_Sites.rds"))
   data_cluster <- readRDS(file.path(out.dir, "data_cluster.rds"))
-  data_Sites <- data_Sites %>%
-    dplyr::mutate(StationID = stringr::str_replace_all(.data$StationID, "[:punct:]", "_"))
+  # data_Sites <- data_Sites %>%
+  #   dplyr::mutate(StationID = stringr::str_replace_all(.data$StationID, "[:punct:]", "_"))
 
   if (!("ClusterID" %in% colnames(data_Sites))) {
     data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)

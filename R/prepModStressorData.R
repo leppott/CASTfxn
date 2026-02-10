@@ -34,16 +34,16 @@ prepModStressorData <- function(in.dir,
                                 removeOutliers,
                                 sub.dir = "_Histograms") {
   # Global Bindings
-  UseInStressorID <- StdParamName <- data_measOutliers <- StationID <- 
-    StressSampleID <- StressSampleDate <- TransfResult <- IQRmethod <- 
+  UseInStressorID <- StdParamName <- data_measOutliers <- StationID <-
+    StressSampleID <- StressSampleDate <- TransfResult <- IQRmethod <-
     SDmethod <- Outlier <- data_model_all <- NULL
-  
+
   # Debug
   boo.debug = TRUE
   if (boo.debug) {
     sub.dir = "_Histograms"
   }
-  
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 
@@ -105,8 +105,8 @@ prepModStressorData <- function(in.dir,
   data_modelAll <- data_modelAll %>%
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
                   TransfResult) %>%
-    dplyr::mutate(StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
-                  StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
+    # dplyr::mutate(StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
+    #               StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
     dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
     dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE)) %>%
     dplyr::filter(!is.na(TransfResult))

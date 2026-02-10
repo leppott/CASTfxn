@@ -90,8 +90,9 @@ prepRespData <- function(out.dir,
     dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
                                       orders = c("ymd", "mdy", "dmy")) %>%
                     lubridate::date(),
-                  RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
-                  StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+                  # RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                  # StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")
+                  )
   data_bioMetrics <- unique(data_bioMetrics)
 
   # Get BIO metric info ----
@@ -165,8 +166,9 @@ prepRespData <- function(out.dir,
       dplyr::mutate(RespSampleDate = lubridate::parse_date_time(RespSampleDate,
                                           orders = c("ymd", "mdy", "dmy")) %>%
                       lubridate::date(),
-                    RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
-                    StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))
+                    # RespSampleID = stringr::str_replace_all(RespSampleID, "[:punct:]", "_"),
+                    # StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")
+                    )
 
     if (calcRelAbund == TRUE) {     # Only write this column if needed
       data_bioCounts <- data_bioCounts %>%

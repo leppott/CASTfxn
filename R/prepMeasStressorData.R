@@ -27,7 +27,7 @@
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 prepMeasStressorData <- function(in.dir,
                                  out.dir,
@@ -36,15 +36,15 @@ prepMeasStressorData <- function(in.dir,
                                  removeOutliers,
                                  sub.dir = "_Histograms") {
   # Global Bindings
-  UseInStressorID <- StdParamName <- StationID <- StressSampleID <- 
+  UseInStressorID <- StdParamName <- StationID <- StressSampleID <-
     StressSampleDate <- TransfResult <- IQRmethod <- SDmethod <- Outlier <- NULL
-                                                 
+
   # Debug
   boo.debug = TRUE
   if (boo.debug) {
     sub.dir = "_Histograms"
   }
-  
+
   # define pipe
   `%>%` <- dplyr::`%>%`
 
@@ -112,8 +112,9 @@ prepMeasStressorData <- function(in.dir,
     dplyr::mutate(StressSampleDate = lubridate::parse_date_time(StressSampleDate,
                                               orders = c("ymd", "mdy", "dmy")) %>%
                     lubridate::date(),
-                  StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
-                  StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
+                  # StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
+                  # StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")
+                  ) %>%
     dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
     dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE)) %>%
     dplyr::filter(!is.na(TransfResult))
