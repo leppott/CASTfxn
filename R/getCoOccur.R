@@ -66,6 +66,7 @@
 #' @param dir_plots Directory to save plots.  Default = working directory and Results.
 #' @param dir_sub Subdirectory for outputs from this function.  Default = "CoOccurrence"
 #' @param boo_plot Boolean value to save plots.  Default = TRUE.
+#' @param incaseLabel xyz
 #'
 #' @return Writes individual plots as pngs, and a tab-delimited text file with
 #'         scores for each line of evidence (co-occurrence & sufficiency) to a

@@ -22,6 +22,7 @@
 #'
 #' @param TargetSiteID SiteID
 #' @param biocommlist x
+#' @param regionName x
 #' @param primeIndex x
 #' @param removeOutliers Default = TRUE
 #' @param samplim x

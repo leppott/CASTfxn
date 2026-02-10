@@ -43,6 +43,8 @@ getReport(
 
 \item{biocommlist}{x}
 
+\item{regionName}{x}
+
 \item{primeIndex}{x}
 
 \item{removeOutliers}{Default = TRUE}

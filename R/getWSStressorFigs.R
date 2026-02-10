@@ -14,7 +14,7 @@
 #' @param useBC xyz
 #' @param dir_sub Subdirectory for outputs from this function.
 #' Default = "SiteInfo"
-#' @param df_SampSummary xyz
+#' @param df_SampSummary default = data_sampSummary
 #' @param biocommlist xyz
 #' @param boo_plot Flag declaring whether the plots should be saved or not.
 #' Default = TRUE.
@@ -22,7 +22,7 @@
 #' @param plotH standardized plot height. Default = 6
 #' @param plotW standardized plot width. Default = 8
 #' @param plotunits units for plot height and width. Default = "in"
-#' @param dir_results
+#' @param dir_results xyz
 #'
 #' @return xyz
 #'
@@ -52,7 +52,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   data_stressorWS <- data_stressorinfoWS <-
     StationID <- SampleDate <- SampleType <- COMID <- WatershedValue <-
     mySiteInfo <- StreamCatVar <- TargetValue <- Year <- WatershedValueMedian <-
-    yLoc <- Label <- TargetAboveMedian <- list.CompSites <-
+    yLoc <- Label <- TargetAboveMedian <- list.CompSites <- data_sampSummary <-
     data_Sites <- IncaseCol <- NULL
 
   # Debug

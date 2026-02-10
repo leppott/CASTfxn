@@ -30,6 +30,8 @@ stressor and sample in long form.}
 
 \item{dir_results}{Directory to save tables. Default = working directory and Results.}
 
+\item{dir_WoE}{x}
+
 \item{plotdpi}{x}
 
 \item{plotH}{x}
@@ -39,8 +41,6 @@ stressor and sample in long form.}
 \item{plotunits}{x}
 
 \item{boo_plot}{x}
-
-\item{dir_WOE}{x}
 }
 \value{
 Two tab-delimited tables containing weight of evidence information:

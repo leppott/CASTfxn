@@ -44,7 +44,7 @@ getWSStressorFigs(
 \item{dir_sub}{Subdirectory for outputs from this function.
 Default = "SiteInfo"}
 
-\item{df_SampSummary}{xyz}
+\item{df_SampSummary}{default = data_sampSummary}
 
 \item{biocommlist}{xyz}
 
@@ -59,7 +59,7 @@ Default = TRUE.}
 
 \item{plotunits}{units for plot height and width. Default = "in"}
 
-\item{dir_results}{}
+\item{dir_results}{xyz}
 }
 \value{
 xyz
