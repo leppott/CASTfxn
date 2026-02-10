@@ -153,7 +153,7 @@ getVPSSI <- function(TargetSiteID,
     }
 
     # Loop over SSIndices ----
-    for (i in nrow(info.ssi)) { # QC for nrow == 0?
+    for (i in 1:nrow(info.ssi)) { # QC for nrow == 0?
 
       ssi.name <- info.ssi$MetricName[i]
       ssi.label <- stringr::str_to_title(info.ssi$MetricLabel[i])
