@@ -704,6 +704,7 @@ status_df <- data.frame(TargetSiteID = character(), status = character(), reason
 # FOR ~ site ~ START ####
 for (site in seq_len(nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
+  dir_results <- out.dir
 
   if (is.na(TargetSiteID)) {
     temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID is NA")
@@ -731,7 +732,7 @@ for (site in seq_len(nrow(df_targets))) {
   ## Biocomm-independent functions ####
 
   # Create high-level results folder structure
-  dir_results <- out.dir
+  #dir_results <- out.dir
   dir_sub2 <- TargetSiteID
   ifelse(!dir.exists(file.path(dir_results, dir_sub2)) == TRUE,
          dir.create(file.path(dir_results, dir_sub2)), FALSE)
