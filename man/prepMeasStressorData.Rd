@@ -43,5 +43,5 @@ dir_data and dir_results should be absolute and not relative paths.
 The function `normalizePath` can be used to convert from relative to absolute path.
 }
 \examples{
-# None at this time 
+# None at this time
 }

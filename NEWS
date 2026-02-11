@@ -4,9 +4,25 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2026-02-10 14:43:04.506848
+    #> Last Update: 2026-02-11 09:08:07.221697
 
 # Version History
+
+## Changes in version 0.3.0.9023 (2026-02-11)
+
+- docs: Update NEWS
+
+## Changes in version 0.3.0.9022 (2026-02-10)
+
+- Remove automated punctuation replacement
+
+## Changes in version 0.3.0.9021 (2026-02-10)
+
+- Merge branch ‘main’ of <https://github.com/leppott/CASTfxn>
+
+## Changes in version 0.3.0.9020 (2026-02-10)
+
+- Fix getVPSSI bug
 
 ## Changes in version 0.3.0.9019 (2026-02-10)
 
