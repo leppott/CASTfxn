@@ -98,6 +98,9 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
 
   dir_path <- file.path(dir_results, TargetSiteID, dir_sub)
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   # LCN 9/23/25 patch fix to remove dependency on hard coded data_bmiCoOccur
   # if(useBC == TRUE){
   #   comp.reaches <- comp.reaches
@@ -142,16 +145,27 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
 
     if (length(naVars.site) > 0) { # if any NA values, then missing data for site
       # Missing one or more values in StreamCat for the target reach.
-      naVars.site <- paste(naVars.site, collapse = "; ")
-      gapcomment <- paste0("Missing background data for site ",
-                           TargetSiteID, "on reach with COMID = ", TargetCOMID)
-      gaps <- cbind.data.frame("getSiteInfo", "Background Data", naVars.site,
-                               gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
+
+      gap.statement <- data.frame(
+        fxnname = "getWSStressorFigs",
+        condition = "Missing WS stressor data",
+        result = naVars.site,
+        comment = paste0("Missing background data for site ",
+                         TargetSiteID, "on reach with COMID = ", TargetCOMID)
+      )
+
+      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+
+      # naVars.site <- paste(naVars.site, collapse = "; ")
+      # gapcomment <- paste0("Missing background data for site ",
+      #                      TargetSiteID, "on reach with COMID = ", TargetCOMID)
+      # gaps <- cbind.data.frame("getSiteInfo", "Background Data", naVars.site,
+      #                          gapcomment)
+      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+      # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+      # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      #             row.names = FALSE, sep = "\t")
     }
 
     if (length(vars.site) > 0) { # Wastershed-scale stressor data exists
@@ -376,4 +390,5 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
 
   utils::write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
 
+  return(list(df_gap = df_gap))
 } # End FUN

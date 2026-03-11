@@ -269,8 +269,8 @@ getSufficiency <- function(TargetSiteID,
 
       legendtitle <- "Samples"
       ylabel <- "Relative probability of degraded condition"
-      maintitleSR <- paste0(TargetSiteID, ": Stressor-response (logistic regression) line of evidence")
-      subtitleSR <-"Are stressor levels sufficient to explain the observed impairment?"
+      maintitleSR <- paste0(TargetSiteID, ": Sufficiency (logistic regression) line of evidence")
+      subtitleSR <-"Is the target sample stressor value associated with a higher probability of biological impairment?"
       subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
       captionSR <- paste(paste0("All inside-the-case samples (n=", n_cc_df_plot, ")."),

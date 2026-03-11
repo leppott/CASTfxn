@@ -341,6 +341,7 @@ if (boo.meas) {
   data_chemInfo     <- list.measStress$data_chemInfo
   data_chemRaw      <- list.measStress$data_chemRaw
   data_measoutliers <- list.measStress$data_measoutliers
+
   rm(list.measStress)
 }
 
@@ -537,11 +538,14 @@ for (b in seq_along(biocommlist)) {
     # Read alg data files
     message("Reading alg data files")
     boo.alg <- TRUE
+    useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
+    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
     list.algData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                  bio      = "alg",
                                  loaded   = loaded,
                                  useBC    = useBC,
-                                 bioIndex = algIndexGp)
+                                 bioIndex = algIndexGp,
+                                 calcRelAbund = calcRelAbund)
     data_algMetrics     <- list.algData$data_bioMetrics
     data_algMetricsInfo <- list.algData$data_bioMetricsInfo
     data_algCounts      <- list.algData$data_bioCounts
@@ -563,11 +567,14 @@ for (b in seq_along(biocommlist)) {
     # Read fish data files
     message("Reading fish data files")
     boo.fish <- TRUE
+    useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
+    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
     list.fishData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
                                   bio      = "fish",
                                   loaded   = loaded,
                                   useBC    = useBC,
-                                  bioIndex = fishIndexGp)
+                                  bioIndex = fishIndexGp,
+                                  calcRelAbund = calcRelAbund)
     data_fishMetrics     <- list.fishData$data_bioMetrics
     data_fishMetricsInfo <- list.fishData$data_bioMetricsInfo
     data_fishCounts      <- list.fishData$data_bioCounts
@@ -740,10 +747,14 @@ for (site in seq_len(nrow(df_targets))) {
   # Define datagaps data frame ####
   gaps    <- data.frame(fxnname = character(), condition = character(),
                         result = character(), comment = character())
-  fn.gaps <- file.path(dir_results, TargetSiteID,
-                       paste0(TargetSiteID, "_datagaps.tab"))
-  write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
-              row.names = FALSE, sep = "\t")
+  # fn.gaps <- file.path(dir_results, TargetSiteID,
+  #                      paste0(TargetSiteID, "_datagaps.tab"))
+  # write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
+  #             row.names = FALSE, sep = "\t")
+  # fn.gaps <- file.path(dir_results, TargetSiteID,
+  #                      paste0(TargetSiteID, "_datagaps.csv"))
+  # write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
+  #             row.names = FALSE, sep = ",")
 
   # 12, getComparators ####
   ## Progress, 14
@@ -779,6 +790,7 @@ for (site in seq_len(nrow(df_targets))) {
                                        df_cluster = data_cluster,
                                        df_bioCoOccur = data_bmiCoOccur,
                                        bioIndex = bmiIndexGp,
+                                       bio = bio,
                                        useBC = useBC,
                                        df_bcdist = data_BCdist,
                                        bc_cutoff = 0.05,
@@ -797,6 +809,7 @@ for (site in seq_len(nrow(df_targets))) {
                                            df_cluster = data_cluster,
                                            df_bioCoOccur = data_algCoOccur,
                                            bioIndex = algIndexGp,
+                                           bio = bio,
                                            useBC = useBC,
                                            df_bcdist = data_BCdist,
                                            bc_cutoff = 0.05,
@@ -815,6 +828,7 @@ for (site in seq_len(nrow(df_targets))) {
                                            df_cluster = data_cluster,
                                            df_bioCoOccur = data_fishCoOccur,
                                            bioIndex = fishIndexGp,
+                                           bio = bio,
                                            useBC = useBC,
                                            df_bcdist = data_BCdist,
                                            bc_cutoff = 0.05,
@@ -863,7 +877,7 @@ for (site in seq_len(nrow(df_targets))) {
 
   # Create site info folder with watershed-scale stressor boxplots,
   # boxplots for bio indices, and folder for photos
-  getSiteInfo(TargetSiteID   = TargetSiteID,
+  list.SiteInfo <- getSiteInfo(TargetSiteID   = TargetSiteID,
               TargetCOMID    = list.CompSites$TargetCOMID,
               df_Sites       = data_Sites,
               df_SampSummary = data_sampSummary,
@@ -891,7 +905,7 @@ for (site in seq_len(nrow(df_targets))) {
               boo_plot       = TRUE)
 
   if (boo.WS) {
-    getWSStressorFigs(TargetSiteID      = TargetSiteID,
+    list.WSStressorFigs <- getWSStressorFigs(TargetSiteID      = TargetSiteID,
                       df_WSData         = data_stressorWS,
                       df_WSInfo         = data_stressorinfoWS,
                       df_Sites          = data_Sites,
@@ -970,7 +984,7 @@ for (site in seq_len(nrow(df_targets))) {
   useAlg         <- list.AvailData$useAlg
   useFish        <- list.AvailData$useFish
   siteDetectsAll <- list.AvailData$siteDetectsAll
-  rm(list.AvailData)
+  #rm(list.AvailData)
 
   if ((noStressors == TRUE) | (noResponses == TRUE)) {
 
@@ -984,12 +998,24 @@ for (site in seq_len(nrow(df_targets))) {
                                 TargetSiteID)))
     message(msg)
 
-    gaps <- cbind.data.frame("getAvailData", "Number detects/responses", 0, msg)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
+    gap.statement <- data.frame(
+      fxnname = "getAvailableDataTypes",
+      condition = "Number of stressor/response samples",
+      result = "0",
+      comment = msg
+    )
+
+    gaps <- gaps |> dplyr::bind_rows(gap.statement)
+
+    # gaps <- cbind.data.frame("getAvailData", "Number detects/responses", 0, msg)
+    # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+    # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+    # fn.gaps <- paste0(TargetSiteID, "_datagaps.csv")
+    # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+    # # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+    # #             row.names = FALSE, sep = "\t")
+    # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+    #             row.names = FALSE, sep = ",")
 
     temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = msg)
     status_df <- status_df %>% dplyr::bind_rows(temp_status)
@@ -1001,7 +1027,7 @@ for (site in seq_len(nrow(df_targets))) {
 
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
-  writeOutliers(TargetSiteID  = TargetSiteID,
+  list.Outliers <- writeOutliers(TargetSiteID  = TargetSiteID,
                 df_outliers   = data_stressoutliers,
                 df_stressInfo = data_stressInfo,
                 df_Sites      = data_Sites,
@@ -1100,6 +1126,7 @@ for (site in seq_len(nrow(df_targets))) {
     # If no paired stressors, write to data gaps file and output to runstats file
     # Proceed to next target site
     if (noPairedSamps == TRUE) {
+
       msg <- paste0("No paired stressor-response samples for", TargetSiteID,
                     " for the ", bioComm, " community within specified lag days.")
 
@@ -1107,15 +1134,28 @@ for (site in seq_len(nrow(df_targets))) {
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
       gapcomment <- paste0("No stressor samples are available for ", TargetSiteID,
                            " within ", lagdays[1], " days before, and ", lagdays[2],
-                           " after the ", biocomm, " sample(s) was(were) obtained.")
-      gaps       <- cbind.data.frame("getCoOccurDataset",
-                                     paste0("Paired stressor-", bioComm, " data"),
-                                     0, gapcomment)
+                           " after the ", bioComm, " sample(s) was(were) obtained.")
 
-      fn.gaps    <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps    <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
+      gap.statement <- data.frame(
+        fxnname = "getCoOccurDataset",
+        condition = paste0("Paired stressor-", bioComm, " data"),
+        result = "0",
+        comment = gapcomment
+      )
+
+      gaps <- gaps |> dplyr::bind_rows(gap.statement)
+
+      # gaps       <- cbind.data.frame("getCoOccurDataset",
+      #                                paste0("Paired stressor-", bioComm, " data"),
+      #                                0, gapcomment)
+      #
+      # # fn.gaps    <- paste0(TargetSiteID,"_datagaps.tab")
+      # fn.gaps    <- paste0(TargetSiteID,"_datagaps.csv")
+      # fn.gaps    <- file.path(dir_results,TargetSiteID,fn.gaps)
+      # # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      # #             row.names = FALSE, sep = "\t")
+      # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      #             row.names = FALSE, sep = ",")
 
       msg <- paste0(msg, "\nProceeding to next response community or site, ",
                     "as appropriate.")
@@ -1145,7 +1185,7 @@ for (site in seq_len(nrow(df_targets))) {
     # IMPORTANT
     # This step adds "RefSiteFlag", BetterThan", "IncaseYN", and "OutcaseYN" to
     # the dataframe, data_bioCoOccur, allowing subsets to be created as needed.
-    df_PairedStressResp <- getQualSites(TargetSiteID = TargetSiteID,
+     list.QualSites <- getQualSites(TargetSiteID = TargetSiteID,
                                         biocomm      = bioComm,
                                         df_qual      = data_bioCoOccur,
                                         colBio       = bioIndexGp,
@@ -1155,6 +1195,8 @@ for (site in seq_len(nrow(df_targets))) {
                                         stressors    = siteDetectsAll,
                                         dir_results  = dir_results,
                                         dir_sub      = "SiteInfo")
+
+    df_PairedStressResp <- list.QualSites$df_qual
     # Returns: df_PairedStressResp, a dataframe with the following columns:
     # [1] "StationID"          "IncaseCol"          "OutcaseCol"         "StressSampleDate"
     # [5] "RespSampleDate"     "StressSampleID"     "RespSampleID"       "BioComm"
@@ -1182,21 +1224,33 @@ for (site in seq_len(nrow(df_targets))) {
     rm(df_PairedStressResp.stats)
 
     # Write these to data gaps file
-    if (length(insuffSamples) == 0) {
+    if (length(insuffSamples) != 0) { # changed 3/10/26 LCN was previously == 0, which is incorrect
       for (i in seq_along(insuffSamples)) {
         str <- insuffSamples[i]
-        msg <- paste0("Insufficient numbers of samples are available for ", str, ".")
+        msg <- paste0(gap.statement, ": Insufficient numbers of samples are available for ", str, ". This stressor will not be evaluated")
         message(msg)
 
-        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        gapcomment <- "This stressor will not be evaluated."
-        gaps       <- cbind.data.frame("samplim comparison", str,
-                                       paste0("<", samplim), gapcomment)
+        gap.statement <- data.frame(
+          fxnname = "getQualSites",
+          condition = str,
+          result = paste0("<", samplim),
+          comment = msg)
 
-        fn.gaps    <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps    <- file.path(dir_results,TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        gaps <- gaps |>
+          dplyr::bind_rows(gap.statement)
+
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # gapcomment <- "This stressor will not be evaluated."
+        # gaps       <- cbind.data.frame("samplim comparison", str,
+        #                                paste0("<", samplim), gapcomment)
+
+        # # fn.gaps    <- paste0(TargetSiteID,"_datagaps.tab")
+        # fn.gaps    <- paste0(TargetSiteID,"_datagaps.csv")
+        # fn.gaps    <- file.path(dir_results,TargetSiteID,fn.gaps)
+        # # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
+        # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = ",")
       } #End loop over stressors
     } #End if
 
@@ -1254,14 +1308,26 @@ for (site in seq_len(nrow(df_targets))) {
 
       # No identified stressors may be a data gap, but may not be, either
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      gapcomment <- paste0("All candidate causes were eliminated by the co-occurrence line of evidence for ",
+      gapcomment <- paste0(bioComm, ": All candidate causes were eliminated by the co-occurrence line of evidence for ",
                            TargetSiteID)
 
-      gaps    <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
-      fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-      fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
+      gap.statement <- data.frame(
+        fxnname = "getCoOccur",
+        condition = msg,
+        result = as.character(0),
+        comment = gapcomment)
+
+      gaps <- gaps |>
+        dplyr::bind_rows(gap.statement)
+
+      # gaps    <- cbind.data.frame("getCoOccur", msg, 0, gapcomment)
+      # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+      # fn.gaps <- paste0(TargetSiteID, "_datagaps.csv")
+      # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+      # # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      # #             row.names = FALSE, sep = "\t")
+      # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      #             row.names = FALSE, sep = ",")
       next
     }
 
@@ -1362,7 +1428,7 @@ for (site in seq_len(nrow(df_targets))) {
     }## IF ~ boo_Shiny ~ END
 
     # Get Stressor Responses inside (comparators) and outside (all) the case
-    df_gradscores <- getBioStressorResponses(TargetSiteID  = TargetSiteID,
+    list.BioStressorResponses <- getBioStressorResponses(TargetSiteID  = TargetSiteID,
                                              df_stressinfo = df_stressorMetadata,
                                              df_respinfo   = bioMetricInfo,
                                              df_respdata   = bioMetricData,
@@ -1382,6 +1448,8 @@ for (site in seq_len(nrow(df_targets))) {
                                              dir_sub       = "_WoE",
                                              boo_pred_warn = TRUE,
                                              boo_plot      = boo.plot.user)
+
+    df_gradscores <- list.BioStressorResponses$df.scores
 
     if (nrow(df_gradscores != 0)) {
       df_LoE <- rbind(df_LoE, df_gradscores)
@@ -1410,20 +1478,33 @@ for (site in seq_len(nrow(df_targets))) {
 
     if (length(stressors.ssi) == 0 & length(stressors.sstv) == 0) {
 
-      msg <- "No site stressors have stressor-specific tolerance values or stressor-specific indices."
+      msg <- paste0(bioComm, ": No site stressors have stressor-specific tolerance values or indices.")
       message(msg)
-      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      gaps    <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-      write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
+
+      gap.statement <- data.frame(
+        fxnname = "getVerifiedPredictions",
+        condition = "Stressor-specific tolerance values and indices",
+        result = "0",
+        comment = msg
+      )
+
+      gaps <- gaps |>
+        dplyr::bind_rows(gap.statement)
+
+      # msg <- "No site stressors have stressor-specific tolerance values or stressor-specific indices."
+      # message(msg)
+      # # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+      # gaps    <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
+      # # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+      # fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+      # # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      # #             row.names = FALSE, sep = "\t")
 
     } else {
 
       if (length(stressors.sstv) > 0) { # one or more stressors.sstv
 
-        df_VPscores <- getVerifiedPredictions(TargetSiteID   = TargetSiteID,
+        list.VerifiedPredictions <- getVerifiedPredictions(TargetSiteID   = TargetSiteID,
                                               stressors.sstv = stressors.sstv,
                                               df_stressinfo  = df_stressorMetadata,
                                               df_paired      = df_PairedStressResp,
@@ -1440,6 +1521,8 @@ for (site in seq_len(nrow(df_targets))) {
                                               dir_sub        = "_WoE",
                                               boo_plot       = boo.plot.user)
 
+        df_VPscores <- list.VerifiedPredictions$df.scores
+
         if (nrow(df_VPscores)!= 0) { # LCN changed 20250917
           df_LoE <- rbind(df_LoE, df_VPscores)
         }
@@ -1450,18 +1533,28 @@ for (site in seq_len(nrow(df_targets))) {
         msg <- "No site stressors have stressor specific tolerance values"
         message(msg)
 
+        gap.statement <- data.frame(
+          fxnname = "getVerifiedPredictions",
+          condition = TargetSiteID,
+          result = "0",
+          comment = msg
+        )
+
+        gaps <- gaps |>
+          dplyr::bind_rows(gap.statement)
+
         # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        gaps    <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
-        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        # gaps    <- cbind.data.frame("getVerifiedPredictions", TargetSiteID, 0, msg)
+        # # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        # fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+        # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
 
       }
 
       if (length(stressors.ssi) > 0) { # one or more stressors.ssi
 
-        df_VPSSIscores <- getVPSSI(TargetSiteID     = TargetSiteID,
+        list.VPSSIscores <- getVPSSI(TargetSiteID     = TargetSiteID,
                                    stressors.ssi    = stressors.ssi,
                                    df_stressinfo    = df_stressorMetadata,
                                    df_paired        = df_PairedStressResp,
@@ -1478,6 +1571,8 @@ for (site in seq_len(nrow(df_targets))) {
                                    dir_sub          = "_WoE",
                                    boo_plot         = boo.plot.user)
 
+        df_VPSSIscores <- list.VPSSIscores$df.scores
+
         if (nrow(df_VPSSIscores) != 0) { # LCN changed 20250917
           df_LoE <- rbind(df_LoE, df_VPSSIscores)
         }
@@ -1488,12 +1583,22 @@ for (site in seq_len(nrow(df_targets))) {
         msg <- "No site stressors have stressor specific indices"
         message(msg)
 
+        gap.statement <- data.frame(
+          fxnname = "getVPSSIscores",
+          condition = TargetSiteID,
+          result = "0",
+          comment = msg
+        )
+
+        gaps <- gaps |>
+          dplyr::bind_rows(gap.statement)
+
         # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        gaps    <- cbind.data.frame("getVPSSIscores", TargetSiteID, 0, msg)
-        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
-        write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        # gaps    <- cbind.data.frame("getVPSSIscores", TargetSiteID, 0, msg)
+        # # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        # fn.gaps <- file.path(dir_results,TargetSiteID,fn.gaps)
+        # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
 
       }
 
@@ -1513,6 +1618,9 @@ for (site in seq_len(nrow(df_targets))) {
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
     }## IF ~ boo_Shiny ~ END
+
+    # LCN addition 3/10/26 to get rid of observations with only BioGrad scores
+    df_LoE <- df_LoE |> dplyr::filter(is.na(StressorValue)==FALSE)
 
     getWoE(TargetSiteID = TargetSiteID,
            biocomm      = bioComm,
@@ -1637,19 +1745,40 @@ for (site in seq_len(nrow(df_targets))) {
 
   }## IF ~ boo_Shiny
 
-  dfGaps <- read.table(file.path(dir_results,
-                                 TargetSiteID,
-                                 paste0(TargetSiteID, "_datagaps.tab")),
-                       header = TRUE,
-                       sep = "\t")
-  dfGaps <- unique(dfGaps)
-  write.table(dfGaps, file.path(dir_results,
+  gaps <- gaps |>
+    dplyr::bind_rows(tryCatch(list.CompSites.alg$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.CompSites.fish$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.CompSites.bmi$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.SiteInfo$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.WSStressorFigs$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.AvailData$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.Outliers$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.QualSites$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.StressorMetadata$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.BioStressorResponses$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.VerifiedPredictions$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.VPSSI$df_gap, error = function(e) NULL))
+
+  write.csv(gaps, file.path(dir_results,
                                 TargetSiteID,
-                                paste0(TargetSiteID, "_datagaps.tab")),
-              append = FALSE,
-              col.names = TRUE,
-              row.names = FALSE,
-              sep = "\t")
+                                paste0(TargetSiteID, "_datagaps.csv")),
+              row.names = FALSE)
+
+  # dfGaps <- read.table(file.path(dir_results,
+  #                                TargetSiteID,
+  #                                paste0(TargetSiteID, "_datagaps.tab")),
+  #                      header = TRUE,
+  #                      sep = "\t")
+
+  # dfGaps <- unique(dfGaps)
+  # write.table(dfGaps, file.path(dir_results,
+  #                               TargetSiteID,
+  #                               paste0(TargetSiteID, "_datagaps.tab")),
+  #             append = FALSE,
+  #             col.names = TRUE,
+  #             row.names = FALSE,
+  #             sep = "\t")
+
 
   # siteDetectsAll needed for Shiny app
   fn_detects_all <- file.path(dir_results,

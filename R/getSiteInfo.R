@@ -154,6 +154,9 @@ getSiteInfo <- function(TargetSiteID,
     }
   }
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   ## Plot colors, sizes, etc  ----
   # Switched around to account for showing reference ND & D with 2 boxes for
   # inside-the-case and outside-the-case (for fill, col, & alpha)
@@ -333,23 +336,27 @@ getSiteInfo <- function(TargetSiteID,
       dplyr::select(StationID, RespSampleID, RespSampleDate, Quality, Index,
                     Score, Case, Samples)
 
-    goodBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Not degraded")
-    badBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Degraded")
-    myBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Target")
-
-    gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBioMetrics),
-                                 "Not degraded comparator samples available.")
-    colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
-    gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBioMetrics),
-                                "Degraded comparator samples available.")
-    colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
-    gap.comps <- rbind(gap.good, gap.bad)
-    rm(gap.good, gap.bad, goodBioMetrics, badBioMetrics)
-
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    utils::write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
+    # LCN 3/10/26 commented out because duplicative of the Comparator sample summary table and not strictly a gap
+    # goodBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Not degraded")
+    # badBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Degraded")
+    # myBioMetrics <- dplyr::filter(compBioMetrics, Quality=="Target")
+    #
+    # gap.good <- cbind.data.frame("getSiteInfo", "quality", nrow(goodBioMetrics),
+    #                              "Not degraded comparator samples available.")
+    # colnames(gap.good) <- c("fxnname", "condition", "result", "comment")
+    # gap.bad <- cbind.data.frame("getSiteInfo", "quality", nrow(badBioMetrics),
+    #                             "Degraded comparator samples available.")
+    # colnames(gap.bad) <- c("fxnname", "condition", "result", "comment")
+    # gap.comps <- rbind(gap.good, gap.bad)
+    # rm(gap.good, gap.bad, goodBioMetrics, badBioMetrics)
+    #
+    # # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    # fn.gaps <- paste0(TargetSiteID,"_datagaps.csv")
+    # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+    # # utils::write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
+    # #                    row.names = FALSE, sep = "\t")
+    # utils::write.table(gap.comps, fn.gaps, append = TRUE, col.names = FALSE,
+    #                    row.names = FALSE, sep = ",")
 
     # ## Plot, Variables, Strings, other Aesthetics
     myBioSamps <- dplyr::filter(mySamps, !is.na(bioSampleID))
@@ -441,19 +448,32 @@ getSiteInfo <- function(TargetSiteID,
   if (!have.photos) {
     message(paste0("No site photos are available for ", TargetSiteID))
 
-    gap.photos <- cbind.data.frame("getSiteInfo", "photos", 0,
-                                   "Site photos are not available.")
-    colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
+    gap.statement <- data.frame(
+      fxnname = "getSiteInfo",
+      condition = "Photos",
+      result = "0",
+      comment = "Site photos are not available"
+    )
 
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    utils::write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
+    df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+
+    # gap.photos <- cbind.data.frame("getSiteInfo", "photos", 0,
+    #                                "Site photos are not available.")
+    # colnames(gap.photos) <- c("fxnname", "condition", "result", "comment")
+
+    # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    # fn.gaps <- paste0(TargetSiteID,"_datagaps.csv")
+    # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+    # # utils::write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
+    # #             row.names = FALSE, sep = "\t")
+    # utils::write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
+    #                    row.names = FALSE, sep = ",")
   }## IF ~ !have.photos ~ END
 
   message("Completed transferring any available site files.")
 
-  # nothing returned; only graphics written to "SiteInfo" folder
+  # only gap df return; graphics written to "SiteInfo" folder
+  return(list(df_gap = df_gap))
 
 }
 

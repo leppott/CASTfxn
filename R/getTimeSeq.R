@@ -111,27 +111,27 @@ getTimeSeq <- function(TargetSiteID,
   #   tidyr::pivot_wider(names_from = "StdParamName", values_from = "TransfResult") %>%
   #   dplyr::select(StationID, StressSampleID, StressSampleDate, dplyr::all_of(stressors))
 
-  if (any(is.na(df_stress$StressSampleDate))) {
-    msg <- "NA values in Sample Date indicative of modeled stressor data."
-    message(msg)
-    df_NAs <- as.data.frame(dplyr::filter(df_stress, is.na(StressSampleDate)))
-
-    # TODO: Fix this!
-    for (i in 1:nrow(df_NAs)) {
-      stressNA <- df_NAs$variable[i]
-      gapcomment <- "No date is available for modeled stressors."
-      df.temp <- cbind.data.frame("getTimeSeq", stressNA, 0, gapcomment)
-      if (i == 1) {
-        gaps <- df.temp
-      } else {
-        gaps <- rbind(gaps, df.temp)
-      }
-    }
-    fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
-  } # End modeled data write to data gaps
+  # if (any(is.na(df_stress$StressSampleDate))) {
+  #   msg <- "NA values in Sample Date indicative of modeled stressor data."
+  #   message(msg)
+  #   df_NAs <- as.data.frame(dplyr::filter(df_stress, is.na(StressSampleDate)))
+  #
+  #   # TODO: Fix this!
+  #   for (i in 1:nrow(df_NAs)) {
+  #     stressNA <- df_NAs$variable[i]
+  #     gapcomment <- "No date is available for modeled stressors."
+  #     df.temp <- cbind.data.frame("getTimeSeq", stressNA, 0, gapcomment)
+  #     if (i == 1) {
+  #       gaps <- df.temp
+  #     } else {
+  #       gaps <- rbind(gaps, df.temp)
+  #     }
+  #   }
+  #   fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+  #   fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+  #   utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+  #               row.names = FALSE, sep = "\t")
+  # } # End modeled data write to data gaps
 
   data_paired <- df_paired %>%
     dplyr::filter(StationID == TargetSiteID) %>%
@@ -245,7 +245,8 @@ getTimeSeq <- function(TargetSiteID,
                                            date_labels = "%Y-%m-%d",
                                            date_breaks = "3 months")
       p_ts <- p_ts + ggplot2::labs(title = paste(TargetSiteID,
-                                                 "Stressor/Response Time Series"),
+                                                 "Time sequence line of evidence"),
+                                   subtitle = "Does elevated stress precede the biological response?",
                                    x = "Sample Date", y = "Value")
 
       if(boo_plot){

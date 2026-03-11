@@ -106,18 +106,21 @@ getVPSSI <- function(TargetSiteID,
     }
   }
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   # Identify data gaps (missing SSIs)
   # SSI data gaps ----
   if (length(stressors.ssi) == 0) {
     # This should never occur!
-    gapcomment <- paste0("No stressor-specific indices are available.")
-    gaps <- cbind.data.frame("getVPSSI", "No SSI available", 0
-                             , gapcomment)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-    fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
-                , row.names = FALSE, sep = "\t")
+    # gapcomment <- paste0("No stressor-specific indices are available.")
+    # gaps <- cbind.data.frame("getVPSSI", "No SSI available", 0
+    #                          , gapcomment)
+    # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+    # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+    # fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+    # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE
+    #             , row.names = FALSE, sep = "\t")
 
   } else {
 
@@ -178,14 +181,24 @@ getVPSSI <- function(TargetSiteID,
       if (ssi.name %in% colnames(df_bioMetricData) == FALSE) {
 
         notInData <- TRUE
-        gapcomment <- paste0(ssi.name, " not in ", biocomm, " metric data.")
-        gaps <- cbind.data.frame("getVPSSI", "No SSI data available", 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+
+        gap.statement <- data.frame(
+          fxnname = "getVPSSI",
+          condition = "No SSI data available",
+          result = "0",
+          comment = paste0(ssi.name, " not in ", biocomm, " metric data.")
+        )
+
+        df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- paste0(ssi.name, " not in ", biocomm, " metric data.")
+        # gaps <- cbind.data.frame("getVPSSI", "No SSI data available", 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
         next
 
       } #END check for ssi in metric data
@@ -386,8 +399,8 @@ getVPSSI <- function(TargetSiteID,
           legendtitle <- "Samples"
           ylabel <- paste0("Relative probability of degraded condition (", ssi.name, ")")
           maintitleSR <- paste0(TargetSiteID,
-                                ": Verified prediction (logistic regression) line of evidence")
-          subtitleSR <-"Are stressor-specific index levels sufficient to explain the observed impairment?"
+                                ": Stressor-specific index - Sufficiency line of evidence")
+          subtitleSR <-"Is the target sample stressor-specific index value associated with a higher probability of biological impairment?"
           subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
           captionSR <- paste(paste0("All inside-the-case samples (n = ", n_cc_df_plot, ")."),
@@ -589,17 +602,13 @@ getVPSSI <- function(TargetSiteID,
       }
 
       ### Create boxplot ----
-      str_title <- paste0(TargetSiteID, ": Verified prediction line of evidence ",
+      str_title <- paste0(TargetSiteID, ": Stressor-specific index - Co-occurrence line of evidence ",
                           "for ", ssi.label)
       str_title <- stringr::str_wrap(str_title, 100)
       if (ssi.dir == "Dec") { # metric has lower values with increased stress
-        str_subtitle <- paste0("Do the data support the prediction that the ",
-                               "stressor-specific index value will be ",
-                               "lower than that observed at ", str_comp, "?")
+        str_subtitle <- paste0("Is the target sample stressor-specific index depressed compared to those from unimpaired, comparator samples?")
       } else { # metric has higher values with increased stress
-        str_subtitle <- paste0("Do the data support the prediction that the ",
-                               "stressor-specific index value will be ",
-                               "higher than that observed at ", str_comp, "?")
+        str_subtitle <- paste0("Is the target sample stressor-specific index elevated compared to those from unimpaired, comparator samples?")
       }
       str_subtitle <- stringr::str_wrap(str_subtitle, 100)
       legendtitle <- "Samples*"
@@ -622,8 +631,11 @@ getVPSSI <- function(TargetSiteID,
       p1 <- ggplot2::ggplot(df_plot1, ggplot2::aes(y = SSIValue,
                                                    x = IncaseCol,
                                                    group = IncaseCol)) +
-        ggplot2::geom_boxplot(data = df_plot1_nottarget, outliers = TRUE,
-                              outlier.size = 0.5, na.rm = TRUE, staplewidth = 0.5) +
+        ggplot2::geom_boxplot(data = df_plot1_nottarget,
+                              outliers = FALSE,
+                              # outliers = TRUE,
+                              # outlier.size = 0.5,
+                              na.rm = TRUE, staplewidth = 0.5) +
         ggplot2::coord_flip() +
         ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
                             lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
@@ -737,6 +749,7 @@ getVPSSI <- function(TargetSiteID,
     df.scores <- rbind(df.scores, df.scores.log)
   }
 
-  return(df.scores)
+  return(list(df.scores = df.scores,
+              df_gap = df_gap))
 
 } ##FUNCTION.END

@@ -88,6 +88,9 @@ getQualSites <- function(TargetSiteID,
   # Define pipe
   `%>%` <- dplyr::`%>%`
 
+  # Initialize gaps df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   # Declare name of column to hold biodegradation flag value
   biocomm <- tolower(biocomm)
 
@@ -179,18 +182,29 @@ getQualSites <- function(TargetSiteID,
   numcompsfinal <- as.numeric(df_qualstats[1, "InsideCaseSamples"])
 
   if (numcompsfinal < length(compSites)) {
-    gapcomment <- paste0("Inside case sites do not have paired ",
-                         "stressor-response data for comparison.")
-    gaps <- cbind.data.frame("getQualSites", "Number of inside case samples",
-                             length(compSites) - numcompsfinal,
-                             gapcomment)
-    colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-    fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                row.names = FALSE, sep = "\t")
+    gap.statement <- data.frame(
+      fxnname = "getQualSites",
+      condition = "Number of inside case samples",
+      result = as.character(length(compSites) - numcompsfinal),
+      comment = paste0(biocomm, ": ", length(compSites) - numcompsfinal, " inside-the-case_sites do not have paired stressor-response data.")
+    )
+
+    df_gap <- df_gap |>
+      dplyr::bind_rows(gap.statement)
+
+    # gapcomment <- paste0("Inside case sites do not have paired ",
+    #                      "stressor-response data for comparison.")
+    # gaps <- cbind.data.frame("getQualSites", "Number of inside case samples",
+    #                          length(compSites) - numcompsfinal,
+    #                          gapcomment)
+    # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+    # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+    # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+    # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+    #             row.names = FALSE, sep = "\t")
   }
 
-  return(df_qual)
+  return(list(df_qual = df_qual,
+              df_gap = df_gap))
 
 }

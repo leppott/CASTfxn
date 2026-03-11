@@ -152,6 +152,9 @@ getCoOccur <- function(TargetSiteID,
     }
   }
 
+  # Initialize gaps df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   ## Plot, Variables
   # Define generic plot variables ----
   plotvars  <- plotvars %>%
@@ -358,8 +361,9 @@ getCoOccur <- function(TargetSiteID,
 
     legendtitle <- "Samples"
     maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
-    subtitleCO <- paste0("Are the observed stressor levels consistent with ",
-                         "impairment where and when it occurs?")
+    # subtitleCO <- paste0("Are the observed stressor levels consistent with ",
+    #                      "impairment where and when it occurs?")
+    subtitleCO <- "Is the target sample stressor value elevated compared to those unimpaired, comparator samples?"
     subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
     # plot1, ggplot ####
@@ -376,7 +380,10 @@ getCoOccur <- function(TargetSiteID,
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = get(stressname),
                                                   x = IncaseCol,
                                                   group = IncaseCol)) +
-      ggplot2::geom_boxplot(outliers = TRUE, outlier.size = 0.5, na.rm = TRUE,
+      ggplot2::geom_boxplot(outliers = FALSE,
+                            #outliers = TRUE,
+                            #outlier.size = 0.5,
+                            #na.rm = TRUE,
                             staplewidth = 0.5) +
       ggplot2::coord_flip() +
       ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
@@ -453,7 +460,7 @@ getCoOccur <- function(TargetSiteID,
   # prevents a stressor identified by 1 sample from appearing in the
   # "notstressors" vector
 
-  # if notstressors has more than one row, write data to data gaps
+  # if notstressors has rows, write data to data gaps
   if (length(notstressors) > 0) {
     for (s in seq_along(notstressors)) {
       notstress <- notstressors[s]
@@ -466,11 +473,21 @@ getCoOccur <- function(TargetSiteID,
                                paste0(notstress, " score for ", bioComm,
                                       " refutes"), -1, msg)
 
+      gap.statement <- data.frame(
+        fxnname = "getCoOccur",
+        condition = paste0(notstress, " score for ", bioComm,
+                           " refutes"),
+        result = as.character(-1),
+        comment = msg)
+
+      df_gap <- df_gap |>
+        dplyr::bind_rows(df_gap)
+
       # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_path, fn.gaps)
-      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
+      # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+      # fn.gaps <- file.path(dir_path, fn.gaps)
+      # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+      #             row.names = FALSE, sep = "\t")
     }
     df.NE <- as.data.frame(notstressors)
     names(df.NE) <- paste0(biocomm, "_NotEvaluated")
@@ -507,6 +524,7 @@ getCoOccur <- function(TargetSiteID,
 
   return(list(df_stressorMetadata = df.stressorMetadata,
               notEvaluated = notstressors,
-              df_COscores = df.scores))
+              df_COscores = df.scores,
+              df_gap = df_gap))
 
 }##FUNCTION.END

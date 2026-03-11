@@ -50,7 +50,7 @@
 #'
 #' @keywords internal
 #' @examples
-#' # None at this time 
+#' # None at this time
 #' @export
 getComparators<- function(TargetSiteID,
                           df_sites,
@@ -66,11 +66,12 @@ getComparators<- function(TargetSiteID,
                           df_bcdist = NULL,
                           bc_cutoff = 0.05,
                           dir_results,
-                          dir_sub = "SiteInfo") {##FUNCTION.START
-  
+                          dir_sub = "SiteInfo",
+                          bio) {##FUNCTION.START
+
   # Global Bindings
   data_Sites <- data_cluster <- data_bmiCoOccur <- bmiIndex <- StationID <-
-    OutcaseCol <- IncaseCol <- RespSampleID <- RespSampleDate <- Quality <- 
+    OutcaseCol <- IncaseCol <- RespSampleID <- RespSampleDate <- Quality <-
     NULL
 
   # For QC purposes
@@ -115,6 +116,9 @@ getComparators<- function(TargetSiteID,
     }
   }
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   TargetCOMID <- df_sites$COMID[df_sites$StationID == TargetSiteID]
 
   if (useBC == TRUE) { # UseBC == TRUE (not tested) ----
@@ -144,7 +148,7 @@ getComparators<- function(TargetSiteID,
     }
 
     df_bcdist <- df_bcdist[, c("StationID", TargetColName)]
-    df_bcdist <- df_bcdist %>% 
+    df_bcdist <- df_bcdist %>%
       dplyr::filter(StationID %in% outcaseSites)
     df_bcdist <- as.data.frame(df_bcdist[order(df_bcdist[, TargetColName]), ])
     df_bcdist.temp <- df_bcdist[df_bcdist[, TargetColName] <= bc_cutoff, ]
@@ -157,21 +161,42 @@ getComparators<- function(TargetSiteID,
     num.good <- nrow(df_bcdist.temp) - 1
     if (num.good < 30) {
       df_bcdist.temp <- dplyr::top_n(df_bcdist, -31)
-      gap.statement <- cbind.data.frame("getComparators",
-                                        paste0("bc.dist <= ", bc_cutoff),
-                                        num.good,
-                                        paste("max bc.dist for ",
-                                              nrow(df_bcdist.temp) - 1,
-                                              "comparators = ",
-                                              max(df_bcdist.temp[, TargetColName])))
-      colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
+
+      gap.statement <- data.frame(
+        fxnname = paste0("getComparators ", bio),
+        condition = paste0("bc.dist <= ", bc_cutoff),
+        result = num.good,
+        comment = paste("max bc.dist for ",
+                        nrow(df_bcdist.temp) - 1,
+                        "comparators = ",
+                        max(df_bcdist.temp[, TargetColName]))
+        )
+
+      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+      # gap.statement <- cbind.data.frame("getComparators",
+      #                                   paste0("bc.dist <= ", bc_cutoff),
+      #                                   num.good,
+      #                                   paste("max bc.dist for ",
+      #                                         nrow(df_bcdist.temp) - 1,
+      #                                         "comparators = ",
+      #                                         max(df_bcdist.temp[, TargetColName])))
+      # colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     } else {
-      gap.statement <- cbind.data.frame("getComparators",
-                                        paste0("bc.dist <= ", bc_cutoff),
-                                        num.good,
-                                        paste("max bc.dist = ",
-                                              round(max(df_bcdist.temp[, TargetColName]), 4)))
-      colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
+      gap.statement <- data.frame(
+        fxnname = paste0("getComparators ", bio),
+        condition = paste0("bc.dist <= ", bc_cutoff),
+        result = num.good,
+        comment = paste("max bc.dist = ",
+                        round(max(df_bcdist.temp[, TargetColName]), 4))
+        )
+
+      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+      # gap.statement <- cbind.data.frame("getComparators",
+      #                                   paste0("bc.dist <= ", bc_cutoff),
+      #                                   num.good,
+      #                                   paste("max bc.dist = ",
+      #                                         round(max(df_bcdist.temp[, TargetColName]), 4)))
+      # colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
     }
 
     bc_cutofftxt <- ifelse((bc_cutoff * 100) < 10, paste0(0, bc_cutoff * 100),
@@ -229,17 +254,17 @@ getComparators<- function(TargetSiteID,
     all.reaches <- unique(as.vector(df_sites$COMID[df_sites$StationID %in% all.sites]))
     statement <- paste0("All '", incaseLabel, "=", incaseValue, "' sites from '",
                         outcaseLabel, "' are used as comparators.")
-    gap.statement <- cbind.data.frame("getComparators",
-                                      "bc.dist not used",
-                                      paste0("Inside the case: ", incaseLabel,
-                                             " = ", length(incaseSites)),
-                                      paste(statement))
-    gap.statement <- cbind.data.frame("getComparators",
-                                      "bc.dist not used",
-                                      paste0("Outside the case: ", outcaseLabel,
-                                             " = ", length(outcaseSites)),
-                                      paste(statement))
-    colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
+    # gap.statement <- cbind.data.frame("getComparators",
+    #                                   "bc.dist not used",
+    #                                   paste0("Inside the case: ", incaseLabel,
+    #                                          " = ", length(incaseSites)),
+    #                                   paste(statement))
+    # gap.statement <- cbind.data.frame("getComparators",
+    #                                   "bc.dist not used",
+    #                                   paste0("Outside the case: ", outcaseLabel,
+    #                                          " = ", length(outcaseSites)),
+    #                                   paste(statement))
+    # colnames(gap.statement) <- c("fxnname", "condition", "result", "comment")
 
     # Write comparators table (station id, sample id, sample date, index value,
     # and quality)
@@ -253,10 +278,10 @@ getComparators<- function(TargetSiteID,
 
   }
 
-  fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-  fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-  utils::write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
-              row.names = FALSE, sep = "\t")
+  # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+  # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
+  # utils::write.table(gap.statement, fn.gaps, append = TRUE, col.names = FALSE,
+  #             row.names = FALSE, sep = "\t")
 
 
   CompMsg2 <- paste("Using final number of comparators = ", length(comp.sites) - 1)
@@ -268,7 +293,8 @@ getComparators<- function(TargetSiteID,
                       all.sites = all.sites,
                       all.reaches = all.reaches,
                       incaseID = incaseValue,
-                      outcaseID = outcaseValue)
+                      outcaseID = outcaseValue,
+                      df_gap = df_gap)
 
   return(myCompSites)
 

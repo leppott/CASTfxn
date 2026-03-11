@@ -117,6 +117,9 @@ getBioStressorResponses <- function(TargetSiteID,
   not_all_na <- function(x) {!all(is.na(x))}
   `%>%` <- dplyr::`%>%`
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   # Write results directory ----
   #out.dir <- dirname(dir_plots)
   #out.folders <- c(out.dir, basename(dir_plots), TargetSiteID, biocomm, dir_sub)
@@ -266,47 +269,82 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_all <- df_plot_all[stats::complete.cases(df_plot_all), ]
 
       # QC
-      if (nrow(df_plot_all) < min_cases) {
+      if ((nrow(df_plot_all) > 0) == FALSE) {
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "No stressor-response data available for any sites in the outside-the-case dataset."
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- "No stressor data available for any sites in the outside-the-case dataset."
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
+      } else if (nrow(df_plot_all) < min_cases) {
         txt.score <- paste0("< ", min_cases, " cases")
-        # msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
-        #                      " (", p, "/", p.len, "), ", respName, " (", q,
-        #                      "/", q.len, "); score = ", txt.score)
-        # message(msg.status)
-        gapcomment <- txt.score
-        gaps <- cbind.data.frame("getBioStressorResponse",
-                                 paste0("Number of complete cases (outside case); stressor: ",
-                                        stressName,
-                                        "; response: ",
-                                        respName),
-                                 nrow(df_plot_all),
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps) # LCN changed 20250917 to accomodate change in file structure
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
+                             " (", p, "/", p.len, "), ", respName, " (", q,
+                             "/", q.len, "); score = ", txt.score)
+        message(msg.status)
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste0("Number of outside-the-case samples; stressor: ",
+                             stressName,
+                             "; response: ",
+                             respName),
+          result = nrow(df_plot_all),
+          comment = txt.score
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- txt.score
+        # gaps <- cbind.data.frame("getBioStressorResponse",
+        #                          paste0("Number of complete cases (outside case); stressor: ",
+        #                                 stressName,
+        #                                 "; response: ",
+        #                                 respName),
+        #                          nrow(df_plot_all),
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps) # LCN changed 20250917 to accommodate change in file structure
+        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
         #next
-      } else if (sum(is.na(df_plot_all[[stressName]])) == nrow(df_plot_all)) {
-        txt.score <- "stressors all NA or NAN"
-        # msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
-        #                      " (", p, "/", p.len, "), ", respName, " (", q,
-        #                      "/", q.len, "); score = ", txt.score)
-        # message(msg.status)
-        gapcomment <- txt.score
-        gaps <- cbind.data.frame("getBioStressorResponse",
-                                 paste0("No stressor data (outside case)",
-                                        stressName,
-                                        "; response: ",
-                                        respName),
-                                 nrow(df_plot_all),
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+
+      } #else if (sum(is.na(df_plot_all[[stressName]])) == nrow(df_plot_all)) { # LCN commented out because should never evaluate true with prior call to complete cases
+
+        # txt.score <- "stressors all NA or NAN"
+        # # msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
+        # #                      " (", p, "/", p.len, "), ", respName, " (", q,
+        # #                      "/", q.len, "); score = ", txt.score)
+        # # message(msg.status)
+        # gapcomment <- txt.score
+        # gaps <- cbind.data.frame("getBioStressorResponse",
+        #                          paste0("No stressor data (outside case)",
+        #                                 stressName,
+        #                                 "; response: ",
+        #                                 respName),
+        #                          nrow(df_plot_all),
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
         #next
-      }
+      #}
 
       df_plot_all_ref <- df_plot_all %>%
         dplyr::filter(RefSiteFlag == 1) %>%
@@ -334,73 +372,128 @@ getBioStressorResponses <- function(TargetSiteID,
       df_plot_site <- df_plot_site[stats::complete.cases(df_plot_site), ]
 
       # Check for missing data and write to data gaps file
-      if ((nrow(df_plot_all) > 0) == FALSE) {
-        gapcomment <- "No stressor data available for any sites in the outside-the-case dataset."
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
-      }
       if ((nrow(df_plot_all_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for reference",
-                             " sites in the outside-the-case dataset")
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "No stressor-response data available for reference sites in the outside-the-case dataset"
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- paste0("No stressor data available for reference sites in the outside-the-case dataset")
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
       }
       if ((nrow(df_plot_cl) > 0) == FALSE) { # SHOULD NEVER HAPPEN
-        gapcomment <- "No stressor data available for any inside-the-case sites."
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "No stressor-response data available for any sites in the inside-the-case dataset."
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- "No stressor data available for any inside-the-case sites."
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
+      } else if (nrow(df_plot_cl) < min_cases) {
+        txt.score <- paste0("< ", min_cases, " cases")
+        msg.status <- paste0("Item (", pq, "/", pq.len, "), ", stressName,
+                             " (", p, "/", p.len, "), ", respName, " (", q,
+                             "/", q.len, "); score = ", txt.score)
+        message(msg.status)
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste0("Number of inside-the-case samples; stressor: ",
+                             stressName,
+                             "; response: ",
+                             respName),
+          result = nrow(df_plot_all),
+          comment = txt.score
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
       }
       if ((nrow(df_plot_cl_ref) > 0) == FALSE) {
-        gapcomment <- paste0("No stressor data available for reference",
-                             " inside-the-case sites.")
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "No stressor-response data available for reference sites in the inside-the-case dataset"
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+
+        # gapcomment <- paste0("No stressor data available for reference",
+        #                      " inside-the-case sites.")
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
       }
-      if ((nrow(df_plot_site) > 0) == FALSE) { # SHOULD NEVER HAPPEN
-        gapcomment <- "No stressor data available for the target site."
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName,
-                                 0, gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+      if ((nrow(df_plot_site) > 0) == FALSE) {
+
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "No stressor-response data available for the target site."
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+
+        # gapcomment <- "No stressor data available for the target site."
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName,
+        #                          0, gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
       }
 
       # QC for NA/NAN/Inf
-      if (nrow(df_plot_all) > 0) { # SHOULD NEVER HAPPEN
+      if (nrow(df_plot_all) > 0) {
         df_plot_all[!is.finite(df_plot_all[, stressName]), stressName]         <- NA
       }
       if (nrow(df_plot_all_ref) > 0) {
         df_plot_all_ref[!is.finite(df_plot_all_ref[, stressName]), stressName] <- NA
       }
-      if (nrow(df_plot_cl) > 0) { # SHOULD NEVER HAPPEN
+      if (nrow(df_plot_cl) > 0) {
         df_plot_cl[!is.finite(df_plot_cl[, stressName]), stressName]           <- NA
       }
       if (nrow(df_plot_cl_ref) > 0) {
         df_plot_cl_ref[!is.finite(df_plot_cl_ref[, stressName]), stressName]   <- NA
       }
-      if (nrow(df_plot_site) > 0) { # SHOULD NEVER HAPPEN
+      if (nrow(df_plot_site) > 0) {
         df_plot_site[!is.finite(df_plot_site[, stressName]), stressName]       <- NA
       }
 
@@ -411,30 +504,50 @@ getBioStressorResponses <- function(TargetSiteID,
         if (stats::sd(df_plot_cl[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_corr <- FALSE
 
-          gapcomment <- paste0("Stressor data in the inside-the-case sample set ",
-                               "have a standard deviation of zero: ",
-                               "all values are equal.")
-          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                   gapcomment)
-          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-          fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                      row.names = FALSE, sep = "\t")
+          gap.statement <- data.frame(
+            fxnname = "getBioStressorResponse",
+            condition = paste(stressName, respName, sep = ":"),
+            result = "0",
+            comment = "Stressor data in the inside-the-case sample set have a standard deviation of zero: all values are equal"
+          )
+
+          df_gap <- df_gap |>
+            dplyr::bind_rows(gap.statement)
+
+          # gapcomment <- paste0("Stressor data in the inside-the-case sample set ",
+          #                      "have a standard deviation of zero: ",
+          #                      "all values are equal.")
+          # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+          #                          gapcomment)
+          # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+          # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+          # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          #             row.names = FALSE, sep = "\t")
 
         } else if (stats::sd(df_plot_cl[, respName], na.rm = TRUE) == 0) { # Horizontal line
           boo_corr <- FALSE
 
-          gapcomment <- paste0("Response data in the inside-the-case sample set ",
-                               "have a standard deviation of zero: ",
-                               "all values are equal.")
-          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                   gapcomment)
-          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-          fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                      row.names = FALSE, sep = "\t")
+          gap.statement <- data.frame(
+            fxnname = "getBioStressorResponse",
+            condition = paste(stressName, respName, sep = ":"),
+            result = "0",
+            comment = "Response data in the inside-the-case sample set have a standard deviation of zero: all values are equal"
+          )
+
+          df_gap <- df_gap |>
+            dplyr::bind_rows(gap.statement)
+
+          # gapcomment <- paste0("Response data in the inside-the-case sample set ",
+          #                      "have a standard deviation of zero: ",
+          #                      "all values are equal.")
+          # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+          #                          gapcomment)
+          # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+          # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+          # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          #             row.names = FALSE, sep = "\t")
         } else {  # SD <> 0 along vertical and horizontal
 
           # 20190228, QC for no data
@@ -481,15 +594,25 @@ getBioStressorResponses <- function(TargetSiteID,
         boo_corr <- FALSE
         n_str_cl <- nrow(df_plot_cl)
 
-        gapcomment <- paste0("Only two paired stressor-response samples ",
-                             "are available for the inside-the-case sample set.")
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "Only two paired stressor-response samples are available for the inside-the-case sample set. Cannot calculate a biological gradient score."
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- paste0("Only two paired stressor-response samples ",
+        #                      "are available for the inside-the-case sample set.")
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
 
       }##IF~nrow(df_plot_cl)~END
 
@@ -499,28 +622,50 @@ getBioStressorResponses <- function(TargetSiteID,
 
         if(stats::sd(df_plot_all[, stressName], na.rm = TRUE) == 0) { # Vertical line
           boo_all <- FALSE
-          gapcomment <- paste0("Stressor data across all sites in the ",
-                               "outside-the-case sample set have a standard ",
-                               "deviation of zero: all values are equal.")
-          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                   gapcomment)
-          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-          fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                      row.names = FALSE, sep = "\t")
+
+          gap.statement <- data.frame(
+            fxnname = "getBioStressorResponse",
+            condition = paste(stressName, respName, sep = ":"),
+            result = "0",
+            comment = "Stressor data in the outside-the-case sample set have a standard deviation of zero: all values are equal"
+          )
+
+          df_gap <- df_gap |>
+            dplyr::bind_rows(gap.statement)
+
+          # gapcomment <- paste0("Stressor data across all sites in the ",
+          #                      "outside-the-case sample set have a standard ",
+          #                      "deviation of zero: all values are equal.")
+          # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+          #                          gapcomment)
+          # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+          # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+          # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          #             row.names = FALSE, sep = "\t")
         } else if(stats::sd(df_plot_all[, respName], na.rm = TRUE) == 0) {
           boo_all <- FALSE
-          gapcomment <- paste0("Response data across all sites in the ",
-                               "outside-the-case sample set have a standard ",
-                               "deviation of zero: all values are equal.")
-          gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                   gapcomment)
-          colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-          fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-          fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-          utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                      row.names = FALSE, sep = "\t")
+
+          gap.statement <- data.frame(
+            fxnname = "getBioStressorResponse",
+            condition = paste(stressName, respName, sep = ":"),
+            result = "0",
+            comment = "Response data in the outside-the-case sample set have a standard deviation of zero: all values are equal"
+          )
+
+          df_gap <- df_gap |>
+            dplyr::bind_rows(gap.statement)
+
+          # gapcomment <- paste0("Response data across all sites in the ",
+          #                      "outside-the-case sample set have a standard ",
+          #                      "deviation of zero: all values are equal.")
+          # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+          #                          gapcomment)
+          # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+          # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+          # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+          # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+          #             row.names = FALSE, sep = "\t")
         } else {  # SD <> 0
           # 20190228, QC for no data
           boo_all <- TRUE
@@ -566,16 +711,26 @@ getBioStressorResponses <- function(TargetSiteID,
         boo_all <- FALSE
         n_str_all <- nrow(df_plot_all)
 
-        gapcomment <- paste0("Only two or fewer paired stressor-response samples ",
-                             "are available for all sites in the outside-the-case ",
-                             "sample set.")
-        gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
-                                 gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        gap.statement <- data.frame(
+          fxnname = "getBioStressorResponse",
+          condition = paste(stressName, respName, sep = ":"),
+          result = "0",
+          comment = "Only two paired stressor-response samples are available for the inside-the-case sample set. Cannot calculate a biological gradient score."
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- paste0("Only two or fewer paired stressor-response samples ",
+        #                      "are available for all sites in the outside-the-case ",
+        #                      "sample set.")
+        # gaps <- cbind.data.frame("getBioStressorResponse", stressName, 0,
+        #                          gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        # #             row.names = FALSE, sep = "\t")
 
       }##IF~nrow(df_plot_all)~END
 
@@ -743,9 +898,9 @@ getBioStressorResponses <- function(TargetSiteID,
                                 TRUE, FALSE)
 
       ## Plot, Variables, Strings
-      str_title <- paste0(TargetSiteID, ": Stressor-response (linear regression) line of evidence")
-      str_subtitle1.in <- "Is there evidence of a biological gradient from inside the case?\n"
-      str_subtitle1.out <- "Is there evidence of a biological gradient from outside the case?\n"
+      str_title <- paste0(TargetSiteID, ": Biological gradient (linear regression) line of evidence")
+      str_subtitle1.in <- "Is there a linear relationship between the stressor and biological response from inside the case?\n"
+      str_subtitle1.out <- "Is there a linear relationship between the stressor and biological response from outside the case?\n"
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
       str_subtitle.in <- paste0(str_subtitle1.in, str_subtitle2)
       str_subtitle.out <- paste0(str_subtitle1.out, str_subtitle2)
@@ -1146,6 +1301,7 @@ getBioStressorResponses <- function(TargetSiteID,
                   RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                   Stressor, StressorValue, LoE, Score)
 
-  return(df.scores)
+  return(list(df.scores = df.scores,
+              df_gap = df_gap))
 
 } ##FUNCTION.END

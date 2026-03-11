@@ -110,20 +110,23 @@ getVerifiedPredictions <- function(TargetSiteID,
     }
   }
 
+  # Initialize gap df
+  df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
+
   # Create vector of stressors (to identify data gaps)
   stressors <- as.vector(unlist(df_stressinfo$Stressor))
 
   # SSTV data gaps ----
-  if (length(stressors.sstv) == 0) {
-      gapcomment <- paste0("No stressor-specific tolerance values.")
-      gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data",
-                               0, gapcomment)
-      colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-      utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                  row.names = FALSE, sep = "\t")
-  }
+  # if (length(stressors.sstv) == 0) { # duplicative of gap comment written in skeleton code
+  #     gapcomment <- paste0("No stressor-specific tolerance values.")
+  #     gaps <- cbind.data.frame("getVerifiedPredictions", "No SSTV data",
+  #                              0, gapcomment)
+  #     colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+  #     fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
+  #     fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
+  #     utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+  #                 row.names = FALSE, sep = "\t")
+  # }
 
   # Outer loop over stressors with SSTVs
   if (length(stressors.sstv) > 0) {
@@ -158,14 +161,25 @@ getVerifiedPredictions <- function(TargetSiteID,
         }
       } else {
         # no taxa in MT taxa are assigned tol values for this stressor
-        gapcomment <- paste0("No ", biocomm, " taxa have tolerance ",
-                             "values available for this SSTV.")
-        gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
-        colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-                    row.names = FALSE, sep = "\t")
+        gap.statement <- data.frame(
+          fxnname = "getVerifiedPredictions",
+          condition = SSTVlabel,
+          result = "0",
+          comment = paste0("No ", biocomm, " taxa have tolerance ",
+                           "values available for this SSTV.")
+        )
+
+        df_gap <- df_gap |>
+          dplyr::bind_rows(gap.statement)
+
+        # gapcomment <- paste0("No ", biocomm, " taxa have tolerance ",
+        #                      "values available for this SSTV.")
+        # gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
+        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
+        # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
+        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
+        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
+        #             row.names = FALSE, sep = "\t")
         if (exists("deleteSSTVname")) {
           deleteSSTVnames <- c(deleteSSTVnames, name)
         } else {
@@ -542,13 +556,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         bio_alpha   <- rev(unlist(plotvars$Alpha)) # Degraded, Not degraded, Target
 
         # Prepare labels
-        str_title <- paste0(TargetSiteID, ": Verified prediction "
-                            ,"line of evidence for ", stressorLabel)
+        str_title <- paste0(TargetSiteID, ": Stressor-specific tolerance values line of evidence for ", stressorLabel)
         str_title <- stringr::str_wrap(str_title, 100)
-        str_subtitle <- paste0("Do the data support the prediction that ",
-                               "the abundance and richness of sensitive ",
-                               "taxa will be lower than that observed in ",
-                               "not degraded inside-the-case samples?")
+        str_subtitle <- "Does the target sample have a lower number of individuals, percent of individuals, number of taxa, and percent of all sensitive and the most sensitive taxa compared to unimpaired, comparator samples?"
         str_subtitle <- stringr::str_wrap(str_subtitle, 100)
         legendtitle <- "Samples"
         str_xlab  <- ""
@@ -560,8 +570,11 @@ getVerifiedPredictions <- function(TargetSiteID,
 
         p_tv <- ggplot2::ggplot(data = df_tv.incase,
                                 ggplot2::aes(x = Label, y = value, group = Label)) +
-          ggplot2::geom_boxplot(data = df_tv.incase, outliers = TRUE,
-                                outlier.size = 0.5, na.rm = TRUE,
+          ggplot2::geom_boxplot(data = df_tv.incase,
+                                outliers = FALSE,
+                                #outliers = TRUE,
+                                #outlier.size = 0.5,
+                                na.rm = TRUE,
                                 staplewidth = 0.5, linewidth = 0.25) +
           ggplot2::geom_jitter(data = df_tv.notTarget,
                                ggplot2::aes(color = Quality, shape = Quality,
@@ -574,8 +587,11 @@ getVerifiedPredictions <- function(TargetSiteID,
                                na.rm = TRUE, width = 0.2, height = 0.01,
                                size = 1.5) +
           ggplot2::geom_boxplot(data = df_tv.incase,
-                                ggplot2::aes(group = Label), outliers = TRUE,
-                                outlier.size = 0.5, na.rm = TRUE,
+                                ggplot2::aes(group = Label),
+                                outliers = FALSE,
+                                # outliers = TRUE,
+                                # outlier.size = 0.5,
+                                na.rm = TRUE,
                                 staplewidth = 0.5, linewidth = 0.25, fill = NA) +
           ggplot2::coord_flip() +
           ggplot2::facet_wrap(. ~ variable, scales = "free") +
@@ -659,7 +675,8 @@ getVerifiedPredictions <- function(TargetSiteID,
 
   }## IF ~ SSTV ~ END
 
-  return(df.scores)
+  return(list(df.scores = df.scores,
+              df_gap = df_gap))
 
 }##FUNCTION.END
 
