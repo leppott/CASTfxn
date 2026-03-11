@@ -4,9 +4,21 @@ NEWS
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2026-02-11 09:08:07.221697
+    #> Last Update: 2026-02-11 16:26:33.793144
 
 # Version History
+
+## Changes in version 0.3.0.9026 (2026-02-11)
+
+- docs: Update NEWS
+
+## Changes in version 0.3.0.9025 (2026-02-11)
+
+- Merge branch ‘main’ of <https://github.com/leppott/CASTfxn>
+
+## Changes in version 0.3.0.9024 (2026-02-11)
+
+- Ensure failed TargetSiteIDs still write out status df
 
 ## Changes in version 0.3.0.9023 (2026-02-11)
 
