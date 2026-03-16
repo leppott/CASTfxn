@@ -141,28 +141,28 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   )
 
   # Build a legend-only plot
-  legend_plot_yrs <- ggplot(legend_items_yrs, aes(x = label, y = 1)) +
-    geom_point(aes(color = label, shape = label), size = 1) +
-    scale_color_manual(
+  legend_plot_yrs <- ggplot2::ggplot(legend_items_yrs, ggplot2::aes(x = label, y = 1)) +
+    ggplot2::geom_point(ggplot2::aes(color = label, shape = label), size = 1) +
+    ggplot2::scale_color_manual(
       name   = "",
       values = setNames(legend_items_yrs$color, legend_items_yrs$label)
     ) +
-    scale_shape_manual(
+    ggplot2::scale_shape_manual(
       name   = "",
       values = setNames(legend_items_yrs$shape, legend_items_yrs$label)
     ) +
-    guides(
-      color = guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
-      shape = guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
+    ggplot2::guides(
+      color = ggplot2::guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
+      shape = ggplot2::guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
     ) +
-    theme_void() +
-    theme(
+    ggplot2::theme_void() +
+    ggplot2::theme(
       legend.position  = "bottom",
       legend.direction = "horizontal",
-      legend.text      = element_text(size = 10),
-      legend.background    = element_rect(fill = "white", colour = NA),
-      legend.key           = element_rect(fill = "white", colour = NA),
-      legend.box.background= element_rect(fill = "white", colour = NA)
+      legend.text      = ggplot2::element_text(size = 10),
+      legend.background    = ggplot2::element_rect(fill = "white", colour = NA),
+      legend.key           = ggplot2::element_rect(fill = "white", colour = NA),
+      legend.box.background= ggplot2::element_rect(fill = "white", colour = NA)
     )
 
   # Extract the legend as a grob
@@ -174,28 +174,28 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     dplyr::filter(label != "Biological community sample")
 
   # Build a legend-only plot
-  legend_plot_single <- ggplot(legend_items_single, aes(x = label, y = 1)) +
-    geom_point(aes(color = label, shape = label), size = 1) +
-    scale_color_manual(
+  legend_plot_single <- ggplot2::ggplot(legend_items_single, ggplot2::aes(x = label, y = 1)) +
+    ggplot2::geom_point(ggplot2::aes(color = label, shape = label), size = 1) +
+    ggplot2::scale_color_manual(
       name   = "",
       values = setNames(legend_items_single$color, legend_items_single$label)
     ) +
-    scale_shape_manual(
+    ggplot2::scale_shape_manual(
       name   = "",
       values = setNames(legend_items_single$shape, legend_items_single$label)
     ) +
-    guides(
-      color = guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
-      shape = guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
+    ggplot2::guides(
+      color = ggplot2::guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
+      shape = ggplot2::guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
     ) +
-    theme_void() +
-    theme(
+    ggplot2::theme_void() +
+    ggplot2::theme(
       legend.position  = "bottom",
       legend.direction = "horizontal",
-      legend.text      = element_text(size = 10),
-      legend.background    = element_rect(fill = "white", colour = NA),
-      legend.key           = element_rect(fill = "white", colour = NA),
-      legend.box.background= element_rect(fill = "white", colour = NA)
+      legend.text      = ggplot2::element_text(size = 10),
+      legend.background    = ggplot2::element_rect(fill = "white", colour = NA),
+      legend.key           = ggplot2::element_rect(fill = "white", colour = NA),
+      legend.box.background= ggplot2::element_rect(fill = "white", colour = NA)
     )
 
   # Extract the legend as a grob
@@ -422,7 +422,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
               ncol = 1,
               rel_heights = c(1, 0.05)
             )) +
-            theme(plot.background = element_rect(fill = "white", color = NA))
+            ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white", color = NA))
 
 
           if (boo_plot) {
@@ -481,7 +481,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
               ncol = 1,
               rel_heights = c(1, 0.05)
             )) +
-            theme(plot.background = element_rect(fill = "white", color = NA))
+            ggplot2::theme(plot.background = ggplot2::element_rect(fill = "white", color = NA))
 
           if(boo_plot){
             ggplot2::ggsave(filename = fn.bkgplot,
