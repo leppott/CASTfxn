@@ -131,6 +131,77 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
 
   allRespSampTypes <- unique(myRespSampDates$SampleType)
 
+  ## Initialize multi-year legend
+  legend_items_yrs <- data.frame(
+    # label = factor(c("Target reach", "Comparator reach", "Biological community sample"),
+    #                levels= c("Target reach", "Comparator reach", "Biological community sample")),
+    label = c("Target reach", "Comparator reach", "Biological community sample"),
+    color = c("red", "cyan4", "black"),
+    shape = c(17, 16, 16)
+  )
+
+  # Build a legend-only plot
+  legend_plot_yrs <- ggplot(legend_items_yrs, aes(x = label, y = 1)) +
+    geom_point(aes(color = label, shape = label), size = 1) +
+    scale_color_manual(
+      name   = "",
+      values = setNames(legend_items_yrs$color, legend_items_yrs$label)
+    ) +
+    scale_shape_manual(
+      name   = "",
+      values = setNames(legend_items_yrs$shape, legend_items_yrs$label)
+    ) +
+    guides(
+      color = guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
+      shape = guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
+    ) +
+    theme_void() +
+    theme(
+      legend.position  = "bottom",
+      legend.direction = "horizontal",
+      legend.text      = element_text(size = 10),
+      legend.background    = element_rect(fill = "white", colour = NA),
+      legend.key           = element_rect(fill = "white", colour = NA),
+      legend.box.background= element_rect(fill = "white", colour = NA)
+    )
+
+  # Extract the legend as a grob
+  legend_grob_yrs <- cowplot::get_legend(legend_plot_yrs)
+
+  ## Initialize a single year legend
+  # Initialize single year legend
+  legend_items_single <- legend_items_yrs |>
+    dplyr::filter(label != "Biological community sample")
+
+  # Build a legend-only plot
+  legend_plot_single <- ggplot(legend_items_single, aes(x = label, y = 1)) +
+    geom_point(aes(color = label, shape = label), size = 1) +
+    scale_color_manual(
+      name   = "",
+      values = setNames(legend_items_single$color, legend_items_single$label)
+    ) +
+    scale_shape_manual(
+      name   = "",
+      values = setNames(legend_items_single$shape, legend_items_single$label)
+    ) +
+    guides(
+      color = guide_legend(nrow = 1, byrow = TRUE,  override.aes = list(size = 4), reverse = TRUE),  # horizontal
+      shape = guide_legend(nrow = 1, byrow = TRUE, reverse = TRUE)
+    ) +
+    theme_void() +
+    theme(
+      legend.position  = "bottom",
+      legend.direction = "horizontal",
+      legend.text      = element_text(size = 10),
+      legend.background    = element_rect(fill = "white", colour = NA),
+      legend.key           = element_rect(fill = "white", colour = NA),
+      legend.box.background= element_rect(fill = "white", colour = NA)
+    )
+
+  # Extract the legend as a grob
+  legend_grob_single <- cowplot::get_legend(legend_plot_single)
+
+
   if (!is.null(df_WSData)) {
     # Get background data from df_WSData; use COMID to select single reach
     data_compbkgd <- dplyr::filter(df_WSData, COMID %in% comp.reaches)
@@ -186,21 +257,19 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
 
           data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches,]
         }
-        str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
-                              "distribution of values for all comparator reaches")
+        str_sub <- paste0("Watershed summaries: target (", TargetCOMID, ") and all comparator reaches")
       } else { # use only comparator reaches having sites
           comp.reaches_sites <- df_Sites %>%
             dplyr::filter(COMID %in% comp.reaches) %>%
             dplyr::pull(COMID)
 
         data_compbkgd <- df_WSData[df_WSData$COMID %in% comp.reaches_sites, ]
-        str_caption <- paste0("Target reach (", TargetCOMID, ") relative to ",
-                              "distribution of values for all comparator sites' reaches")
+        str_sub <- paste0("Watershed summaries: target (", TargetCOMID, ") and comparator reaches with sampled sites")
       }
 
       ## Draw boxplots ----
       # Prepare boxplot main elements
-      str_title <- paste0(TargetSiteID, ": Site watershed-scale stressors")
+
 
       high_stress <- NULL # LCN added 20250918
 
@@ -209,11 +278,13 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
         plotvar <- vars.site[i]
         fn.bkgplot <- file.path(dir_path, paste0(TargetSiteID, "_WSstress_",
                                                  plotvar, ".png"))
-        if (plotvar == "wsareasqkm") {
-          str_sub <- "Watershed area, km2"
-        } else {
-          str_sub <- unique(df_WSInfo$Label[df_WSInfo$StreamCatVar == plotvar])
-        }
+        # if (plotvar == "wsareasqkm") {
+        #   str_sub <- "Watershed area, km2"
+        # } else {
+        #   str_sub <- unique(df_WSInfo$Label[df_WSInfo$StreamCatVar == plotvar])
+        # }
+
+        str_title <- paste(TargetSiteID, unique(df_WSInfo$Label[df_WSInfo$StreamCatVar == plotvar]), sep = ": ")
 
         df.plot.comp <- dplyr::filter(data_compbkgd, StreamCatVar == plotvar) %>%
           dplyr::filter(!is.na(WatershedValue))
@@ -247,7 +318,13 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
           for (t in 1:numTypes) {
             type <- allRespSampTypes[t]
 
-            if(ymin >= 0){
+            if(ymin == 0 & ymax == 0){
+              myRespSampDates <- myRespSampDates %>%
+                dplyr::mutate(yLoc = ifelse(SampleType == type,
+                                            -0.05 * t,
+                                            yLoc))
+            }
+            else if(ymin >= 0){
               myRespSampDates <- myRespSampDates %>%
                 dplyr::mutate(yLoc = ifelse(SampleType == type,
                                             -0.05 * ymax * t,
@@ -269,57 +346,84 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                                   staplewidth = 0.5, linewidth = 0.1) +
             ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0,
                                  ggplot2::aes(x = Year, y = WatershedValue),
-                                 size = 0.25, na.rm = TRUE, color = "cyan4") +
+                                 size = 1, na.rm = TRUE, color = "cyan4") +
             ggplot2::scale_x_continuous( #limits = c(xmin, xmax),
                                         breaks = scales::breaks_width(1)) +
             ggplot2::labs(title = str_title, subtitle = str_sub) +
             ggplot2::ylab("Watershed Value") +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
+            ggplot2::theme_classic() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
+                                                              size = 15),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5,
+                                                                 size = 12),
                            plot.caption = ggplot2::element_text(size = 5)) +
             ggplot2::theme(axis.text.x = ggplot2::element_text(color = "black",
-                                                               size = 6,
+                                                               size = 10,
                                                                angle = 90,
                                                                vjust = 0.6,
                                                                hjust = 0.5),
                            axis.text.y = ggplot2::element_text(color = "black",
-                                                               size = 6),
+                                                               size = 10),
                            axis.title.x = ggplot2::element_blank(),
                            axis.title.y = ggplot2::element_text(color = "black",
-                                                                size = 8),
+                                                                size = 14),
                            legend.position = "none")
 
           p.box <- p.box +
             ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
                                 ggplot2::aes(x = Year, y = WatershedValue, group = Year),
-                                color = "red", shape = 17) +
-            ggplot2::geom_label(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                               ggplot2::aes(x = Year, y = WatershedValue,
-                                            group = Year,
-                                            label = round(WatershedValue,
-                                                            digits = 1)),
-                               size = 2.1, color = "red", nudge_x = 0,
-                               nudge_y = 0.02 * ymax) #0.75)
+                                color = "red", shape = 17, size = 3) #+
+            # ggplot2::geom_label(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
+            #                    ggplot2::aes(x = Year, y = WatershedValue,
+            #                                 group = Year,
+            #                                 label = round(WatershedValue,
+            #                                                 digits = 1)),
+            #                    size = 2.1, color = "red", nudge_x = 0,
+            #                    nudge_y = 0.02 * ymax) #0.75)
 
           p.boxtime <- p.box +
             ggplot2::geom_point(data = myRespSampDates, inherit.aes = FALSE,
                                 ggplot2::aes(x = lubridate::decimal_date(SampleDate),
-                                             y = yLoc), size = 1) #+
+                                             y = yLoc), size = 2)
+
           for (l in 1:numTypes) {
             p.boxtime <- p.boxtime +
               ggplot2::geom_hline(color = "black",
-                                  yintercept = ifelse(ymin >= 0,
-                                                      (-0.05 * ymax * l),
-                                                      (ymin + (-0.05 * ymax * l))),
+                                  yintercept = dplyr::case_when(
+                                    (ymin == 0 & ymax == 0) ~ (-0.05 * l),
+                                    ymin >= 0 ~ (-0.05 * ymax * l),
+                                    TRUE ~  (ymin + (-0.05 * ymax * l))
+                                  ),
+
+
+
+                                    # ifelse(ymin >= 0,
+                                    #                   (-0.05 * ymax * l),
+                                    #                   (ymin + (-0.05 * ymax * l))),
                                   linewidth = 0.2) +
               ggplot2::geom_text(x = xmin,
-                                 y = ifelse(ymin >= 0,
-                                            (-0.05 * ymax * l),
-                                            (ymin + (-0.05 * ymax * l))) ,
+                                 y = dplyr::case_when(
+                                     (ymin == 0 & ymax == 0) ~ (-0.05 * l),
+                                     ymin >= 0 ~ (-0.05 * ymax * l),
+                                     TRUE ~  (ymin + (-0.05 * ymax * l))
+                                   ),
+
+                                   # ifelse(ymin >= 0,
+                                   #          (-0.05 * ymax * l),
+                                   #          (ymin + (-0.05 * ymax * l))) ,
                                  label = allRespSampTypes[l],
-                                 size = 2)
+                                 size = 5)
           }
+
+          p.boxtime <- cowplot::ggdraw() +
+            cowplot::draw_plot(cowplot::plot_grid(
+              p.boxtime,
+              legend_grob_yrs,
+              ncol = 1,
+              rel_heights = c(1, 0.05)
+            )) +
+            theme(plot.background = element_rect(fill = "white", color = NA))
+
 
           if (boo_plot) {
             ggplot2::ggsave(filename = fn.bkgplot,
@@ -340,34 +444,45 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                                   staplewidth = 0.5, linewidth = 0.1) +
             ggplot2::geom_jitter(data = df.plot.comp, width = 0.1, height = 0,
                                  ggplot2::aes(x = StreamCatVar, y = WatershedValue),
-                                 size = 0.25, na.rm = TRUE, color = "cyan4") +
-            ggplot2::labs(title = str_title, subtitle = str_sub,
-                          caption = str_caption) +
+                                 size = 1, na.rm = TRUE, color = "cyan4") +
+            ggplot2::labs(title = str_title, subtitle = str_sub) +
             ggplot2::ylab("Watershed Value")
 
           p.box <- p.box +
-            ggplot2::theme_bw() +
-            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5),
+            ggplot2::theme_classic() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
+                                                              size = 15),
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5,
+                                                                 size = 12),
                            plot.caption = ggplot2::element_text(size = 5)) +
             ggplot2::theme(axis.text.x = ggplot2::element_blank(),
                            axis.text.y = ggplot2::element_text(color = "black",
-                                                               size = 6),
+                                                               size = 10),
                            axis.title.x = ggplot2::element_blank(),
                            axis.title.y = ggplot2::element_text(color = "black",
-                                                                size = 8),
+                                                                size = 12),
                            legend.position = "none")
 
           p.box <- p.box +
             ggplot2::geom_point(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
                                 ggplot2::aes(x = StreamCatVar, y = WatershedValue),
-                                color = "red", shape = 17) +
-            ggplot2::geom_label(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
-                               ggplot2::aes(x = StreamCatVar, y = WatershedValue,
-                                            label = round(WatershedValue,
-                                                            digits = 1)),
-                               size = 2.3, color = "red", nudge_y = ymax * 0.02,
-                               nudge_x = 0)
+                                color = "red", shape = 17, size = 3) #+
+            # ggplot2::geom_label(data = dplyr::filter(df.plot.comp, COMID == TargetCOMID),
+            #                    ggplot2::aes(x = StreamCatVar, y = WatershedValue,
+            #                                 label = round(WatershedValue,
+            #                                                 digits = 1)),
+            #                    size = 2.3, color = "red", nudge_y = ymax * 0.02,
+            #                    nudge_x = 0)
+
+          p.box <- cowplot::ggdraw() +
+            cowplot::draw_plot(cowplot::plot_grid(
+              p.box,
+              legend_grob_single,
+              ncol = 1,
+              rel_heights = c(1, 0.05)
+            )) +
+            theme(plot.background = element_rect(fill = "white", color = NA))
+
           if(boo_plot){
             ggplot2::ggsave(filename = fn.bkgplot,
                             plot = p.box,
