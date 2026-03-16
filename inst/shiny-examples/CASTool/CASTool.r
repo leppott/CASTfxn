@@ -25,16 +25,21 @@ tic <- Sys.time()
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
-  region <- "DEPied" # Name of region
+  # in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
+  # out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
+  # region <- "DEPied" # Name of region
+
+  in.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Output" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Results" # File path of results directory
+  region <- "Rhode Island" # Name of region
+
 
   # Helper packages
 
@@ -159,11 +164,11 @@ if (boo_Shiny == TRUE) {
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
 
-  write.table(TableOne, file.path(out.dir, region, "TableOne.tab"),
-              sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
+  write.csv(TableOne, file.path(out.dir, region, "TableOne.csv"),
+              col.names = TRUE, row.names = FALSE, append = FALSE)
   TableTwo    <- list.Tables$TableTwo
-  write.table(TableTwo, file.path(out.dir, region, "TableTwo.tab"),
-              sep = "\t", col.names = TRUE, row.names = FALSE, append = FALSE)
+  write.csv(TableTwo, file.path(out.dir, region, "TableTwo.csv"),
+             col.names = TRUE, row.names = FALSE, append = FALSE)
   #rm(list.Tables, TableOne, TableTwo)
 }## IF ~ boo_Shiny ~ END
 
@@ -1784,14 +1789,13 @@ for (site in seq_len(nrow(df_targets))) {
   fn_detects_all <- file.path(dir_results,
                               TargetSiteID,
                               paste0(TargetSiteID,
-                                     "_DetectsAll.tab"))
+                                     "_DetectsAll.csv"))
   df_detects_all <- data.frame(Detects_All = siteDetectsAll)
-  write.table(df_detects_all,
+  write.csv(df_detects_all,
               fn_detects_all,
               append = FALSE,
               col.names = TRUE,
-              row.names = FALSE,
-              sep = "\t")
+              row.names = FALSE)
 
 # status
   temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Passed", reason = "")

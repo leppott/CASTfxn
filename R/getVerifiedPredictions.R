@@ -211,7 +211,7 @@ getVerifiedPredictions <- function(TargetSiteID,
 
       # 20190513, remove scores file if exists
       fn_scores <-  file.path(dir.path, paste0(TargetSiteID, "_", biocomm,
-                                               "_VP_SSTV_Scores.tab"))
+                                               "_VP_SSTV_Scores.csv"))
       if (file.exists(fn_scores)) { file.remove(fn_scores) }
 
       # Filter for inside case sites & trim unnecessary columns
@@ -668,8 +668,8 @@ getVerifiedPredictions <- function(TargetSiteID,
                       RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                       Stressor, StressorValue, LoE, Score)
 
-      utils::write.table(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
-                  sep = "\t", append = FALSE)
+      write.csv(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
+                  append = FALSE)
 
     }## IF ~ boo_continue ~ END
 

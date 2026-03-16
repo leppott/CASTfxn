@@ -103,9 +103,9 @@ getWoE <- function(TargetSiteID,
                      .groups = "drop_last") %>%
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
-  utils::write.table(dfLoE_summary,
-              file.path(dir.path, paste0(TargetSiteID, "_LoESummary.tab")),
-              col.names = TRUE, row.names = FALSE, sep = "\t")
+  write.csv(dfLoE_summary,
+              file.path(dir.path, paste0(TargetSiteID, "_LoESummary.csv")),
+              col.names = TRUE, row.names = FALSE)
 
 
   dfLoESummary_pivot <- dfLoE_summary %>%
@@ -117,10 +117,13 @@ getWoE <- function(TargetSiteID,
     tidyr::pivot_longer(cols = c("Support", "Refute", "Indeterminate"), names_to = "Evidence", values_to = "Count") %>%
     dplyr::mutate(Evidence = forcats::fct_relevel(as.factor(Evidence), "Support", "Refute", "Indeterminate")) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(Stressor = stringr::str_wrap(Stressor, width = 40),
-                  StressSampleID = dplyr::if_else(nchar(StressSampleID)>20,
-                                           paste0(stringr::str_sub(StressSampleID, 1, ceiling(nchar(StressSampleID)/2)), "\n", stringr::str_sub(StressSampleID, ceiling(nchar(StressSampleID)/2) + 1, nchar(StressSampleID)), "\n"),
-                  StressSampleID))
+    dplyr::mutate(
+      StressSampleID = as.character(StressSampleID),
+      Stressor = stringr::str_wrap(Stressor, width = 40),
+      StressSampleID = dplyr::if_else(nchar(StressSampleID)>20,
+                                      paste0(stringr::str_sub(StressSampleID, 1, ceiling(nchar(StressSampleID)/2)), "\n",
+                                             stringr::str_sub(StressSampleID, ceiling(nchar(StressSampleID)/2) + 1, nchar(StressSampleID)), "\n"),
+                                      StressSampleID))
 
 
   stressor_order <- dfLoESummary_pivot %>%
@@ -185,8 +188,8 @@ getWoE <- function(TargetSiteID,
     #                                                        "NE"))
     dplyr::arrange(StationID, Stressor, StressSampleDate)
 
-  utils::write.table(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.tab")),
-              col.names = TRUE, row.names = FALSE, sep = "\t")
+  write.csv(dfLoE, file.path(dir.path, paste0(TargetSiteID, "_LoEs.csv")),
+              col.names = TRUE, row.names = FALSE)
 
 }
 

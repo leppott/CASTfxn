@@ -111,16 +111,16 @@ checkInputs <- function(dir.uploaded,
 
     text.cols <- c("TargetSiteID", "StationID", "StreamCatVar", "Label",
                    "StdParamName", "SourceGroup", "SSIndex", "SSTVname.bmi",
-                   "SSTVname.alg", "SSTVname.fish",  "DirIncStress", "StressSampleID",
-                   "RespSampleID", "TaxonID",
+                   "SSTVname.alg", "SSTVname.fish",  "DirIncStress", "TaxonID",
                    "MetricName", "MetricLabel", "IndexYN", "UseYN", "TrendWIncStress",
                    "InclusiveIndicator", "StreamCatVar")
     num.cols <- c("COMID", "Latitude", "Longitude", "RefSiteFlag",
                   "WatershedValue", "Year", "LogTransf", "UseInStressorID",
                   "ResultValue", "NumInd", "CutoffValue")
-    flex.cols <- c("ClusterID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish")
+    flex.cols <- c("ClusterID", "SensMax.bmi", "SensMin.bmi","SensMax.alg", "SensMin.alg", "SensMax.fish", "SensMin.fish", "StressSampleID",
+                   "RespSampleID")
     date.cols <- c("StressSampleDate", "RespSampleDate")
-    geo.cols <- c("geometry", "GEOMETRY", "Geometry")
+    geo.cols <- c("geometry", "GEOMETRY", "Geometry", "Shape", "SHAPE", "shape")
     accept.blank.cols <- c( "SSIndex", "SSTVname.bmi",
                             "SensMax.bmi", "SensMin.bmi", "SSTVname.alg", "SensMax.alg",
                             "SensMin.alg", "SSTVname.fish", "SensMax.fish", "SensMin.fish")

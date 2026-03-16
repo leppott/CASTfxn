@@ -385,9 +385,8 @@ getSufficiency <- function(TargetSiteID,
                   StressorValue, n, SRpred_Deg, Sc_SRlog)
 
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                          "_Suff_Scores.tab"))
-  utils::write.table(df.scores, file = fn.scores, append = FALSE,
-                     col.names = TRUE, row.names = FALSE, sep = "\t")
+                                          "_Suff_Scores.csv"))
+  write.csv(df.scores, file = fn.scores, row.names = FALSE)
 
   df_SuffScores <- df.scores %>%
     dplyr::rename(bioComm = BioComm, bioIndex = dplyr::all_of(colBio),

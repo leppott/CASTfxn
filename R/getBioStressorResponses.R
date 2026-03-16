@@ -183,7 +183,7 @@ getBioStressorResponses <- function(TargetSiteID,
   q.len <- length(BioResp)
 
   # Create scores dataframe ####
-  fn_scores <- paste0(TargetSiteID, "_", biocomm, "_BG_Scores.tab")
+  fn_scores <- paste0(TargetSiteID, "_", biocomm, "_BG_Scores.csv")
   fp_scores <- file.path(dir_path, fn_scores)
 
   df.sc.sr <- as.data.frame(cbind("StationID" = as.character(),
@@ -197,6 +197,9 @@ getBioStressorResponses <- function(TargetSiteID,
                                   "SRLin_Score_inside" = as.numeric(),
                                   "n_out" = as.numeric(),
                                   "SRLin_Score_outside" = as.numeric()))
+
+  # Initialize df.CorrTable
+  df.CorrTable <- NULL
 
   # FOR.p ####
   for (p in 1:length(stressors)) {
@@ -738,23 +741,25 @@ getBioStressorResponses <- function(TargetSiteID,
       # # Create results data frame
       # ~~~ Check QC of Corr Table at end of code ~~~~
       if (boo_corr == TRUE) { ##IF~boo_corr~START
-        if (varFlag == 1) {  #First time through loop
-          df.CorrTable <- df.corr_cl
-        } else {
-          df.CorrTable <- rbind(df.CorrTable, df.corr_cl) # if not first iteration then append
-        } # IF, END
-        boo.Append    <- TRUE
-        boo.col.names <- FALSE
-        if (pq==1) { ##IF~pq~START
-          boo.Append    <- !boo.Append
-          boo.col.names <- !boo.col.names
-        } ##IF~pq~END
+        df.CorrTable <- df.CorrTable |> dplyr::bind_rows(df.corr_cl)
 
-        fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.tab")
-        utils::write.table(df.CorrTable,
-                           file.path(dir_path, fn_corr),
-                           sep = "\t", quote = FALSE, row.names = FALSE,
-                           col.names = boo.col.names, append = boo.Append)
+        # if (varFlag == 1) {  #First time through loop
+        #   df.CorrTable <- df.corr_cl
+        # } else {
+        #   df.CorrTable <- rbind(df.CorrTable, df.corr_cl) # if not first iteration then append
+        # } # IF, END
+        # boo.Append    <- TRUE
+        # boo.col.names <- FALSE
+        # if (pq==1) { ##IF~pq~START
+        #   boo.Append    <- !boo.Append
+        #   boo.col.names <- !boo.col.names
+        # } ##IF~pq~END
+        #
+        # fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.csv")
+        # write.csv(df.CorrTable,
+        #                    file.path(dir_path, fn_corr),
+        #                    quote = FALSE, row.names = FALSE,
+        #                    col.names = boo.col.names, append = boo.Append)
         pval.corr = signif(c1S_cl$p.value, 2)
       }##IF~boo_corr~END
       #
@@ -1182,6 +1187,12 @@ getBioStressorResponses <- function(TargetSiteID,
 
   } ##FOR.p.END
 
+  # Write InsideCorrs table
+  fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.csv")
+  write.csv(df.CorrTable,
+            file.path(dir_path, fn_corr),
+            quote = FALSE, row.names = FALSE)
+
   ## Finalize scores dataframe ####
   # Change NA values to "NE"
   df.sc.sr$SRLin_Score_outside <- ifelse(!is.na(df.sc.sr$SRLin_Score_outside),
@@ -1224,27 +1235,26 @@ getBioStressorResponses <- function(TargetSiteID,
                   SRLin_Score_inside, SRLin_Score_outside)
 
   ## Write Scores ####
-  utils::write.table(df.sc.sr, fp_scores, sep = "\t", quote = FALSE,
-                     row.names = FALSE, col.names = TRUE, append = FALSE)
+  write.csv(df.sc.sr, fp_scores, quote = FALSE, row.names = FALSE)
 
   ## END LR plots ####
   #
   # CorrPlot ####
   ## read
   if (boo_corr==TRUE) {
-    fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.tab")
+    fn_corr <- paste0(TargetSiteID, "_", biocomm, "_BG_InsideCorrs.csv")
     fp_corr <- file.path(dir_path, fn_corr)
 
     if (file.exists(fp_corr)==TRUE) {
-      df_corr <- utils::read.delim(fp_corr)
+      df_corr <- read.csv(fp_corr)
 
       # Columns: c("StationID", "biocomm", "stressName", "respName",
       # "n", "statistic", "p.value", "estimate", "r2")
       cn_cor_x    <- colnames(df_corr)
       cn_cor_match <- sum(cn_cor_x %in% cn_cor_pref)
       if (cn_cor_match != length(cn_cor_pref)) { ##IF~length~START
-        df_corr <- utils::read.delim(fp_corr, header = FALSE, col.names = cn_cor_pref)
-        utils::write.table(df_corr, fp_corr, sep = "\t", quote = FALSE, row.names = FALSE)
+        df_corr <- read.csv(fp_corr, header = FALSE, col.names = cn_cor_pref)
+        write.csv(df_corr, fp_corr, quote = FALSE, row.names = FALSE)
       } ##IF~length~END
 
       df_corr <- unique(df_corr) %>% dplyr::rename(Estimate = estimate)

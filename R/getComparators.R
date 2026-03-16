@@ -99,7 +99,7 @@ getComparators<- function(TargetSiteID,
   `%>%` <- dplyr::`%>%`
 
   fn.compsites <- file.path(dir_results, TargetSiteID, dir_sub,
-                            paste0(TargetSiteID, "_COMPARATORS.tab"))
+                            paste0(TargetSiteID, "_COMPARATORS.csv"))
 
   # Write results directory ----
   out.dir <- dirname(dir_results)
@@ -212,8 +212,8 @@ getComparators<- function(TargetSiteID,
                                            bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = dplyr::all_of(TargetColName))
-    utils::write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
-                row.names = FALSE, sep = "\t")
+    write.csv(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+                row.names = FALSE)
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)
@@ -273,8 +273,8 @@ getComparators<- function(TargetSiteID,
       dplyr::select(StationID, RespSampleID, RespSampleDate,
                       dplyr::all_of(bioIndex), Quality)
     comp.samps <- unique(comp.samps)
-    utils::write.table(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
-                row.names = FALSE, sep = "\t")
+    write.csv(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
+                row.names = FALSE)
 
   }
 

@@ -363,7 +363,13 @@ getCoOccur <- function(TargetSiteID,
     maintitleCO <- paste0(TargetSiteID, ": Co-occurrence line of evidence")
     # subtitleCO <- paste0("Are the observed stressor levels consistent with ",
     #                      "impairment where and when it occurs?")
-    subtitleCO <- "Is the target sample stressor value elevated compared to those unimpaired, comparator samples?"
+
+    if(colInvScore == "Inc"){
+      subtitleCO <- "Is the target sample stressor value elevated compared to unimpaired, comparator samples?"
+    } else if(colInvScore == "Dec"){
+      subtitleCO <- "Is the target sample stressor value depressed compared to unimpaired, comparator samples?"
+    }
+
     subtitleCO <- stringr::str_wrap(subtitleCO, 100)
 
     # plot1, ggplot ####
@@ -450,9 +456,8 @@ getCoOccur <- function(TargetSiteID,
 
   # Identify stressors ####
   fn.scores <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                          "_CO_Scores.tab"))
-  utils::write.table(df.scores, file = fn.scores, col.names = TRUE,
-                     row.names = FALSE, sep = "\t", append = FALSE)
+                                          "_CO_Scores.csv"))
+  write.csv(df.scores, file = fn.scores, row.names = FALSE)
 
   stressors <- unique(df.scores$Stressor[df.scores$Sc_Box != -1])
   notstressors <- unique(df.scores$Stressor[df.scores$Sc_Box == -1])
@@ -492,14 +497,14 @@ getCoOccur <- function(TargetSiteID,
     df.NE <- as.data.frame(notstressors)
     names(df.NE) <- paste0(biocomm, "_NotEvaluated")
     fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                        "_DetectsNotEvalFurther.tab"))
-    utils::write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
+                                        "_DetectsNotEvalFurther.csv"))
+    write.csv(df.NE, fn.NE, row.names = FALSE)
   } else{
     df.NE <- data.frame("temp" = character())
     names(df.NE) <- paste0(biocomm, "_NotEvaluated")
     fn.NE <- file.path(dir_path, paste0(TargetSiteID, "_", biocomm,
-                                        "_DetectsNotEvalFurther.tab"))
-    utils::write.table(df.NE, fn.NE, sep = "\t", col.names = TRUE, row.names = FALSE)
+                                        "_DetectsNotEvalFurther.csv"))
+    write.csv(df.NE, fn.NE, row.names = FALSE)
   } ### End no stressors statement
 
   # Prep df.scores for export to include in df_LoEs

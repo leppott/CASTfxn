@@ -706,15 +706,15 @@ getVPSSI <- function(TargetSiteID,
     } ##FOR.SSI END
 
     if (exists("df.scores.log")) {
-      fn.scores.log <- paste(TargetSiteID, biocomm, "VPSSILog", "Scores.tab", sep = "_")
-      utils::write.table(df.scores.log, file.path(dir.path, fn.scores.log), append = FALSE,
-                  col.names = TRUE, row.names = FALSE, sep = "\t")
+      fn.scores.log <- paste(TargetSiteID, biocomm, "VPSSILog", "Scores.csv", sep = "_")
+      write.csv(df.scores.log, file.path(dir.path, fn.scores.log), append = FALSE,
+                  col.names = TRUE, row.names = FALSE)
     }
 
     if (exists("df.scores.box")) {
-      fn.scores.box <- paste(TargetSiteID, biocomm, "VPSSIBox", "Scores.tab", sep = "_")
-      utils::write.table(df.scores.box, file.path(dir.path, fn.scores.box), append = FALSE,
-                  col.names = TRUE, row.names = FALSE, sep = "\t")
+      fn.scores.box <- paste(TargetSiteID, biocomm, "VPSSIBox", "Scores.csv", sep = "_")
+      write.csv(df.scores.box, file.path(dir.path, fn.scores.box), append = FALSE,
+                  col.names = TRUE, row.names = FALSE)
     }
 
   } ## END SSIs > 0

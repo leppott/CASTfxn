@@ -46,7 +46,7 @@ which may differ between biological communities.
   
 ```{r algComparators, echo = FALSE}
 
-  mycomps <- paste0(TargetSiteID, "_ALG_SiteQualities.tab")
+  mycomps <- paste0(TargetSiteID, "_ALG_SiteQualities.csv")
   fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
   msg_info <- paste0("Comparator site information, including a list ",
                      "of comparator sites, can be found in the '",
@@ -55,7 +55,7 @@ which may differ between biological communities.
 
   if (file.exists(fn_comps) == TRUE) {
     
-    dfcomps <- read.delim(fn_comps, header = TRUE, sep = "\t")
+    dfcomps <- read.csv(fn_comps, header = TRUE)
     dfcomps <- dplyr::select(dfcomps, -BioComm) %>%
       dplyr::rename(`Inside-the-case samples` = InsideCaseSamples,
                     `Outside-the-case samples` = OutsideCaseSamples,
@@ -112,11 +112,11 @@ Stressors identified for initial evaluation include any that are detected at the
 ```{r algElimStressors, echo = FALSE}
 
   dir.sub3 <- "_WoE"
-  fnNE <- paste0(TargetSiteID, "_ALG_DetectsNotEvalFurther.tab")
+  fnNE <- paste0(TargetSiteID, "_ALG_DetectsNotEvalFurther.csv")
   fnNE <- file.path(dir_results, TargetSiteID, "ALG", dir.sub3, fnNE)
   
   if (file.exists(fnNE)) {
-    notEvaluated <- read.table(fnNE, header = TRUE, sep = "\t")
+    notEvaluated <- read.csv(fnNE, header = TRUE)
     NE <- merge(notEvaluated, data_stressInfo, by.x = "ALG_NotEvaluated", 
                 by.y = "StdParamName", all.x = TRUE) %>%
       dplyr::select(Label)
@@ -152,7 +152,7 @@ A note of caution:
 
 ```{r algLoEscores, echo = FALSE}
   
-  fnLoEbyStressor <- paste0(TargetSiteID, "_LoEs.tab")
+  fnLoEbyStressor <- paste0(TargetSiteID, "_LoEs.csv")
   fnLoEbyStressor <- file.path(dir_results, TargetSiteID, "ALG", "_WoE", 
                                fnLoEbyStressor)
   
@@ -163,7 +163,7 @@ A note of caution:
     
   } else {# WoE file exists
     
-    dfLoEbyStressor <- read.table(fnLoEbyStressor, sep = "\t", na.strings = "NA",
+    dfLoEbyStressor <- read.csv(fnLoEbyStressor, na.strings = "NA",
                                   header = TRUE, strip.white = TRUE,
                                   stringsAsFactors = FALSE)
     if(!"VP_SSTV" %in% names(dfLoEbyStressor)){ # added LCN 20250916, otherwise report fails in no SSTVS or SSIs
@@ -269,7 +269,7 @@ This table provides an indication of the consistency of the evidence for a candi
 
 ```{r algLoESummary, echo = FALSE}
 
-  fnLoESummary <- paste0(TargetSiteID, "_LoESummary.tab")
+  fnLoESummary <- paste0(TargetSiteID, "_LoESummary.csv")
   fnLoESummary <- file.path(dir_results, TargetSiteID, "ALG", "_WoE", fnLoESummary)
 
  if (!file.exists(fnLoESummary)) {# No WoE file
@@ -279,7 +279,7 @@ This table provides an indication of the consistency of the evidence for a candi
 
  } else {# WoE file exists
 
-   dfLoESummary <- read.table(fnLoESummary, sep = "\t", na.strings = "NA",
+   dfLoESummary <- read.csv(fnLoESummary, na.strings = "NA",
                                  header = TRUE, strip.white = TRUE,
                                  stringsAsFactors = FALSE)
    if(!"VP_SSTV" %in% names(dfLoEbyStressor)){ # added LCN 20250916, otherwise report fails in no SSTVS or SSIs

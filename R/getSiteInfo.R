@@ -388,7 +388,7 @@ getSiteInfo <- function(TargetSiteID,
     pBiobyCase <- ggplot2::ggplot(allsamplesByCase,
                                   ggplot2::aes(y = round(Score, 3), x = Case,
                                                group = Case)) +
-      ggplot2::geom_boxplot(na.rm = TRUE, staplewidth = 0.5) +
+      ggplot2::geom_boxplot(outliers = FALSE, na.rm = TRUE, staplewidth = 0.5) +
       ggplot2::geom_jitter(width = 0.2, height = 0.05, na.rm = TRUE,
                            ggplot2::aes(color = Samples, fill = Samples,
                                         shape = Samples, alpha = Samples,
