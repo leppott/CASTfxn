@@ -233,8 +233,10 @@ getTimeSeq <- function(TargetSiteID,
       p_ts <- p_ts + ggplot2::geom_col(col = "black", fill = "black",
                                        linewidth = 0.2, alpha = 0.5)
       p_ts <- p_ts + ggplot2::geom_label(ggplot2::aes(x = SampleDate,
-                                                      y = as.numeric(Value)/2,
-                                                      label = Value))
+                                                      y = as.numeric(Value),
+                                                      #y = as.numeric(Value)/2,
+                                                      label = Value,
+                                                      vjust = 1))
       p_ts <- p_ts + ggplot2::facet_wrap(~type, ncol = 1, scales = "free_y")
       p_ts <- p_ts + ggplot2::theme_bw()
       p_ts <- p_ts + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,

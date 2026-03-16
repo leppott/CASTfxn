@@ -304,7 +304,7 @@ getBioStressorResponses <- function(TargetSiteID,
                              stressName,
                              "; response: ",
                              respName),
-          result = nrow(df_plot_all),
+          result = as.character(nrow(df_plot_all)),
           comment = txt.score
         )
 
@@ -429,7 +429,7 @@ getBioStressorResponses <- function(TargetSiteID,
                              stressName,
                              "; response: ",
                              respName),
-          result = nrow(df_plot_all),
+          result = as.character(nrow(df_plot_all)),
           comment = txt.score
         )
 
