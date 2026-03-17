@@ -330,7 +330,7 @@ if(boo.WS == TRUE){
   fn_WSStressorSum <- file.path(dir_results, TargetSiteID, "SiteInfo", paste0(TargetSiteID, "WSStressHigh.csv"))
 
 WSStressorSum <- read.csv(fn_WSStressorSum) %>% 
-  dplyr::mutate(Comparator.Median = round(Comparator.Median, 3), Target.Site.Value = round(Target.Site.Value, 3)) %>% 
+  #dplyr::mutate(Comparator.Median = round(Comparator.Median, 3), Target.Site.Value = round(Target.Site.Value, 3)) %>% 
   dplyr::rename("Watershed Stressor" = "Watershed.Stressor",
                 "Comparator Median" = "Comparator.Median",
                 "Target Site Value" = "Target.Site.Value")

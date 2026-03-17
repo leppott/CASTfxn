@@ -496,14 +496,49 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     } # End background data portion
   } # End WS data check
 
-  high_stress <- high_stress %>%
-    dplyr::left_join(df_WSInfo, by = c("StreamCatVar", "Year")) %>%
-    dplyr::select(Label, Year, WatershedValueMedian, TargetValue, TargetAboveMedian) %>%
-    dplyr::rename("Watershed Stressor" = "Label", "Comparator Median" = "WatershedValueMedian", "Target Site Value" = "TargetValue") %>%
-    dplyr::filter(TargetAboveMedian == TRUE) %>%
-    dplyr::select(-TargetAboveMedian)
+  # high_stress <- high_stress %>%
+  #   dplyr::left_join(df_WSInfo, by = c("StreamCatVar", "Year")) %>%
+  #   dplyr::select(Label, Year, WatershedValueMedian, TargetValue, TargetAboveMedian) %>%
+  #   dplyr::rename("Watershed Stressor" = "Label", "Comparator Median" = "WatershedValueMedian", "Target Site Value" = "TargetValue") %>%
+  #   dplyr::filter(TargetAboveMedian == TRUE) %>%
+  #   dplyr::select(-TargetAboveMedian)
 
-  utils::write.csv(high_stress, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
+  temp <- high_stress %>%
+    dplyr::left_join(df_WSInfo, by = c("StreamCatVar", "Year"))
+
+  elev_ws <- temp |>
+    dplyr::group_by(StreamCatVar) |>
+    dplyr::summarize(TargSum = sum(TargetAboveMedian)) |>
+    dplyr::filter(TargSum > 0) |>
+    dplyr::pull(StreamCatVar)
+
+  elev_yr <- temp |>
+    dplyr::filter(StreamCatVar %in% elev_ws, is.na(Year)==FALSE) |>
+    dplyr::group_by(StreamCatVar) |>
+    dplyr::summarize(
+      Year_Min = min(Year),
+      Year_Max = max(Year),
+      WatershedValueMedian_Min = min(WatershedValueMedian) |> round(3),
+      WatershedValueMedian_Max = max(WatershedValueMedian) |> round(3),
+      TargetValue_Min = min(TargetValue) |> round(3),
+      TargetValue_Max = max(TargetValue)|> round(3)) |>
+    dplyr::mutate(Year = paste0("(", Year_Min, " - ", Year_Max, ")"),
+                  WatershedValueMedian = paste0("(", WatershedValueMedian_Min, " - ", WatershedValueMedian_Max, ")"),
+                  TargetValue = paste0("(", TargetValue_Min, " - ", TargetValue_Max, ")")) |>
+    dplyr::select(StreamCatVar, Year, WatershedValueMedian, TargetValue)
+
+  elev_no_yr <- temp |>
+    dplyr::filter(StreamCatVar %in% elev_ws, is.na(Year)==TRUE) |>
+    dplyr::select(StreamCatVar, Year, WatershedValueMedian, TargetValue) |>
+    dplyr::mutate(across(everything(), as.character))
+
+  high_stress_ret <- elev_yr |>
+    dplyr::bind_rows(elev_no_yr) |>
+    dplyr::left_join(df_WSInfo |> dplyr::distinct(StreamCatVar, Label), by = c("StreamCatVar")) |>
+    dplyr::rename("Watershed Stressor" = "Label", "Comparator Median" = "WatershedValueMedian", "Target Site Value" = "TargetValue") |>
+    dplyr::select('Watershed Stressor', Year, 'Comparator Median', 'Target Site Value')
+
+  utils::write.csv(high_stress_ret, file.path(dir_path, paste0(TargetSiteID, "WSStressHigh.csv")), row.names = FALSE)
 
   return(list(df_gap = df_gap))
 } # End FUN
