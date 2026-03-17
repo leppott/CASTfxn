@@ -69,7 +69,7 @@ causal assessment.
 # **Target Site: `r TargetSiteID`**
 ## **Region: `r regionName`**
 
-## **Parameterization**
+## **User-defined values**
 
 ```{r report_date, echo = FALSE}
 
@@ -86,7 +86,7 @@ causal assessment.
 
   cat(paste("**Biological communities evaluated:** ", biocomms, "\n\n", sep = ""))
   cat(paste("**Remove outliers:** ", removeOutliers, "\n\n", sep = ""))
-  cat(paste("**Use expected biological similarity filter:** ", useBC, "\n\n", sep = ""))
+  #cat(paste("**Use expected biological similarity filter:** ", useBC, "\n\n", sep = ""))
   cat(paste("**Minimum number of samples to identify candidate causes:** ", samplim, 
             "\n\n", sep = ""))
   cat(paste("**Number of allowable lag days between stressor and response measurements:** -",
@@ -115,43 +115,43 @@ if (file.exists(fn_img) == TRUE) {
 
 ```
 
-```{r photos, out.width = "50%", echo = FALSE}
-
-header_name <- "<h3><em>Site photo(s)</em></h3>"
-
-dir.sub <- "SiteInfo"
-dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub, "Photos")
-fn_all  <- list.files(path = dir_SiteID, full.names = TRUE,
-                      pattern = ".jpg|.png|.mp4")
-
-txt_grp_msg <- "media"
-#
-if (length(fn_all) > 0) {##IF.Media
-
-  cat(header_name)
-  
-  msg_files <- paste0("All media ", txt_grp_msg," files are in the '",
-                      paste0("Results/", TargetSiteID, "/", dir.sub, "/Photos"), 
-                      "' folder.\n", "Static photos are shown here.\n\n")
-  cat(msg_files)
-  
-  fn_Photos_jpg <- fn_all[grep("[.jpg|.png]", fn_all)]
-  
-  for (p in seq_along(fn_Photos_jpg)) {
-    fn <- fn_Photos_jpg[p]
-    cat(paste0("<img src = ", fn, " />"))
-  }
-  
-} else {
-
-  cat(header_name)
-  
-  msg_files <- paste0("No ", txt_grp_msg," files exist.\n")
-  cat(msg_files)
-  
-}##IF.Media.END
-
-```
+<!-- # ```{r photos, out.width = "50%", echo = FALSE} -->
+<!-- #  -->
+<!-- # header_name <- "<h3><em>Site photo(s)</em></h3>" -->
+<!-- #  -->
+<!-- # dir.sub <- "SiteInfo" -->
+<!-- # dir_SiteID <- file.path(dir_results, TargetSiteID, dir.sub, "Photos") -->
+<!-- # fn_all  <- list.files(path = dir_SiteID, full.names = TRUE, -->
+<!-- #                       pattern = ".jpg|.png|.mp4") -->
+<!-- #  -->
+<!-- # txt_grp_msg <- "media" -->
+<!-- # # -->
+<!-- # if (length(fn_all) > 0) {##IF.Media -->
+<!-- #  -->
+<!-- #   cat(header_name) -->
+<!-- #    -->
+<!-- #   msg_files <- paste0("All media ", txt_grp_msg," files are in the '", -->
+<!-- #                       paste0("Results/", TargetSiteID, "/", dir.sub, "/Photos"),  -->
+<!-- #                       "' folder.\n", "Static photos are shown here.\n\n") -->
+<!-- #   cat(msg_files) -->
+<!-- #    -->
+<!-- #   fn_Photos_jpg <- fn_all[grep("[.jpg|.png]", fn_all)] -->
+<!-- #    -->
+<!-- #   for (p in seq_along(fn_Photos_jpg)) { -->
+<!-- #     fn <- fn_Photos_jpg[p] -->
+<!-- #     cat(paste0("<img src = ", fn, " />")) -->
+<!-- #   } -->
+<!-- #    -->
+<!-- # } else { -->
+<!-- #  -->
+<!-- #   cat(header_name) -->
+<!-- #    -->
+<!-- #   msg_files <- paste0("No ", txt_grp_msg," files exist.\n") -->
+<!-- #   cat(msg_files) -->
+<!-- #    -->
+<!-- # }##IF.Media.END -->
+<!-- #  -->
+<!-- # ``` -->
 
 ### *Target site sample summary*
 
@@ -289,8 +289,8 @@ Comparator sites will depend upon several factors:
 -   which version of the regional clustering file is used
 -   whether or not an alternate method is used to assign comparator
     sites
--   whether or not a Bray-Curtis dissimilarity distance matrix is
-    included in the evaluation
+<!-- -   whether or not a Bray-Curtis dissimilarity distance matrix is -->
+<!--     included in the evaluation -->
 
 Comparator samples have a quality associated with them, that differs
 based on the biological community index used. For these, please see the

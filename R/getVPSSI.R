@@ -53,7 +53,8 @@ getVPSSI <- function(TargetSiteID,
                      plotunits = "in",
                      dir_plots = file.path(getwd(), "Results"),
                      dir_sub = "_WoE",
-                     boo_plot = TRUE) {
+                     boo_plot = TRUE,
+                     targetSampleLabels = targetSampleLabels) {
 
   # Global Bindings
   df_stressorMetadata <- df_PairedStressResp <- bioComm <- bioMetricData <-
@@ -415,7 +416,7 @@ getVPSSI <- function(TargetSiteID,
           xmax <- max(df_plot.log$x, na.rm = TRUE)
           xseg <- xmax + (0.02 * xmax)
 
-          target.vals <- unique(df_plot.log_target$StressorValue)
+          target.vals <- df_plot.log_target$StressorValue
 
           msg <- paste0("printing logistic regression for ", str, " against ", ssi.name)
           message(msg)
@@ -463,6 +464,15 @@ getVPSSI <- function(TargetSiteID,
                            plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
             ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
                           caption = captionSR)
+
+          if(targetSampleLabels == TRUE){
+            temp_df <- data.frame(xval = target.vals, yval = 0.9, labelval = df_plot.log_target$RespSampleID)
+
+            p2 <- p2 +
+              ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,
+                                        size = 8/ggplot2::.pt)
+
+          }
 
           ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p2),
                           plot = p2, dpi = plotdpi, width = plotW,
@@ -623,6 +633,7 @@ getVPSSI <- function(TargetSiteID,
       message(msg)
 
       targetvals <- as.numeric(unlist(df.scores.i[, "SSIValue"]))
+      targetlabs <- unlist(df.scores.i[, "RespSampleID"])
       i.Group <- as.numeric(unique(df.scores.i$IncaseCol))
       str_ylab <- paste0("Inside-the-case samples selected from ", incaseLabel,
                          " = ", i.Group)
@@ -676,6 +687,14 @@ getVPSSI <- function(TargetSiteID,
         ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                        axis.ticks.y = ggplot2::element_blank())
 
+      if(targetSampleLabels == TRUE){
+        temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs)
+
+        p1 <- p1+
+          ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,
+                                    size = 8/ggplot2::.pt)
+      }
+
       for (j in seq_along(ssi.stressors)) {
 
         str <- ssi.stressors[j]
@@ -707,14 +726,12 @@ getVPSSI <- function(TargetSiteID,
 
     if (exists("df.scores.log")) {
       fn.scores.log <- paste(TargetSiteID, biocomm, "VPSSILog", "Scores.csv", sep = "_")
-      write.csv(df.scores.log, file.path(dir.path, fn.scores.log), append = FALSE,
-                  col.names = TRUE, row.names = FALSE)
+      write.csv(df.scores.log, file.path(dir.path, fn.scores.log), row.names = FALSE)
     }
 
     if (exists("df.scores.box")) {
       fn.scores.box <- paste(TargetSiteID, biocomm, "VPSSIBox", "Scores.csv", sep = "_")
-      write.csv(df.scores.box, file.path(dir.path, fn.scores.box), append = FALSE,
-                  col.names = TRUE, row.names = FALSE)
+      write.csv(df.scores.box, file.path(dir.path, fn.scores.box), row.names = FALSE)
     }
 
   } ## END SSIs > 0

@@ -97,7 +97,8 @@ getCoOccur <- function(TargetSiteID,
                        dir_plots,
                        dir_sub = "_WoE",
                        boo_plot = TRUE,
-                       incaseLabel = NULL) {
+                       incaseLabel = NULL,
+                       targetSampleLabels = FALSE) {
 
   `:=` <- data.table::`:=`
 
@@ -377,8 +378,12 @@ getCoOccur <- function(TargetSiteID,
     lab.sub <- paste0("Paired stressor/response samples considered not degraded ",
                       "from inside the case (", lab.N, ").\n", lab.Score, ".")
 
+
     targetvals <- as.numeric(unlist(df.j[, "StressorValue"]))
+    targetlabs <- unlist(df.j[, "RespSampleID"])
     xseg <- i.Group + 0.5
+
+    temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs)
 
 # p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
 #                                                 x = IncaseCol,
@@ -396,6 +401,7 @@ getCoOccur <- function(TargetSiteID,
                           lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
       # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
       #                     lty = 2, na.rm = TRUE) +
+      #ggplot2::geom_label(ggplot2::aes(x = i.Group, y = targetvals, label = targetlabs, vjust = 0.1), size = 8, size.unit = "pt")
       ggplot2::geom_jitter(ggplot2::aes(color = Quality, shape = Quality,
                                            fill = Quality), alpha = 0.5,
                               na.rm = TRUE, width = 0.25, height = 0.01) +
@@ -429,6 +435,12 @@ getCoOccur <- function(TargetSiteID,
                      plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                      axis.ticks.y = ggplot2::element_blank())
+
+      if(targetSampleLabels == TRUE){
+        p1 <- p1 +
+          ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,
+                                    size = 8/ggplot2::.pt)
+      }
 
     # if (grepl("^pH_a", stressname)) {
     #   if (pHlimLow >= minVal) {

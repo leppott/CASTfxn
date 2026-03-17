@@ -177,9 +177,14 @@ getSiteInfo <- function(TargetSiteID,
                  plotvars$Alpha[plotvars$Type == "outsideD"])
   bio_size <- c(plotvars$Size[plotvars$Type == "target"]*1.8,
                 plotvars$Size[plotvars$Type == "insideND"]*1.5,
-                plotvars$Size[plotvars$Type == "insideD"]+0.2,
-                plotvars$Size[plotvars$Type == "outsideND"],
-                plotvars$Size[plotvars$Type == "outsideD"])
+                plotvars$Size[plotvars$Type == "insideD"]*1.2,
+                plotvars$Size[plotvars$Type == "outsideND"]*1.5,
+                plotvars$Size[plotvars$Type == "outsideD"]*1.2)
+  # bio_size <- c(plotvars$Size[plotvars$Type == "target"]*1.8,
+  #               plotvars$Size[plotvars$Type == "insideND"]*1.5,
+  #               plotvars$Size[plotvars$Type == "insideD"]+0.2,
+  #               plotvars$Size[plotvars$Type == "outsideND"],
+  #               plotvars$Size[plotvars$Type == "outsideD"])
   bio_col <- c(plotvars$Fill[plotvars$Type == "target"],
                plotvars$Fill[plotvars$Type == "outsideND"],
                plotvars$Fill[plotvars$Type == "outsideD"],
@@ -407,13 +412,14 @@ getSiteInfo <- function(TargetSiteID,
                     y = str_ylab) +
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5,
-                                                        size = ggplot2::rel(0.8)),
+                                                        size = ggplot2::rel(1.5)), # 0.8
                      plot.subtitle = ggplot2::element_text(hjust = 0.5,
-                                                           size = ggplot2::rel(0.5)),
-                     plot.caption = ggplot2::element_text(size = ggplot2::rel(0.6)),
-                     legend.title = ggplot2::element_text(size = ggplot2::rel(0.6)),
-                     legend.text = ggplot2::element_text(size = ggplot2::rel(0.5))) +
-      ggplot2::theme(axis.text.y = ggplot2::element_text(color = "black"),
+                                                           size = ggplot2::rel(0.9)), # 0.5
+                     plot.caption = ggplot2::element_text(size = ggplot2::rel(0.9)), # 0.6
+                     legend.title = ggplot2::element_text(size = ggplot2::rel(1.2)), # 0.6
+                     legend.text = ggplot2::element_text(size = ggplot2::rel(0.8))) + # 0.5
+      ggplot2::theme(axis.text = ggplot2::element_text(color = "black", size = ggplot2::rel(1.2)),
+                     axis.title.y = ggplot2::element_text(size = ggplot2::rel(1.2)),
                      axis.ticks.y = ggplot2::element_blank(),
                      axis.title.x = ggplot2::element_blank())
     if (boo_plot) {

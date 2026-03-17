@@ -212,8 +212,7 @@ getComparators<- function(TargetSiteID,
                                            bioIndex, "Quality", "RespSampFlag")]
     comp.samps <- merge(comp.sites.info, df_bioCoOccurTrim)
     comp.samps <- dplyr::rename(comp.samps, BCdistance = dplyr::all_of(TargetColName))
-    write.csv(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
-                row.names = FALSE)
+    write.csv(comp.samps, fn.compsites, row.names = FALSE)
 
     # Convert to vector that can be returned in the list generated
     comp.sites <- as.vector(df_bcdist.temp$StationID)
@@ -273,8 +272,7 @@ getComparators<- function(TargetSiteID,
       dplyr::select(StationID, RespSampleID, RespSampleDate,
                       dplyr::all_of(bioIndex), Quality)
     comp.samps <- unique(comp.samps)
-    write.csv(comp.samps, fn.compsites, append = FALSE, col.names = TRUE,
-                row.names = FALSE)
+    write.csv(comp.samps, fn.compsites, row.names = FALSE)
 
   }
 

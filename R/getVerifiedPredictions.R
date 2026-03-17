@@ -51,7 +51,8 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    plotunits = "in",
                                    dir_plots = file.path(getwd(), "Results"),
                                    dir_sub = "_WoE",
-                                   boo_plot = TRUE) {##FUNCTION.START
+                                   boo_plot = TRUE,
+                                   targetSampleLabels = targetSampleLabels) {##FUNCTION.START
 
   `:=` <- data.table::`:=`
 
@@ -645,6 +646,20 @@ getVerifiedPredictions <- function(TargetSiteID,
           #                    ggplot2::aes(x = Label, y = segPos, label = aLabPos,
           #                                 color = "orange"))
 
+
+
+
+        # if(targetSampleLabels == TRUE){
+        #   p_tv +
+        #     ggplot2::geom_jitter(data = df_tv.target,
+        #                          ggplot2::aes(color = Quality, shape = Quality,
+        #                                       fill = Quality, alpha = Quality),
+        #                          na.rm = TRUE, width = 0.2, height = 0.01,
+        #                          size = 1.5) +
+        #     ggrepel::geom_label_repel(data = df_tv.target, ggplot2::aes(label = RespSampleID, color = Quality), size = 3)
+        # }
+        #
+
         if (boo_plot) {
           ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),
                           plot = p_tv, dpi = plotdpi, width = plotW,
@@ -668,8 +683,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                       RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
                       Stressor, StressorValue, LoE, Score)
 
-      write.csv(df.scores, file = fn_scores, col.names = TRUE, row.names = FALSE,
-                  append = FALSE)
+      write.csv(df.scores, file = fn_scores, row.names = FALSE)
 
     }## IF ~ boo_continue ~ END
 

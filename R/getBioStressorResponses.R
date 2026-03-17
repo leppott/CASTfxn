@@ -67,7 +67,8 @@ getBioStressorResponses <- function(TargetSiteID,
                                     dir_plots,
                                     dir_sub = "_WoE",
                                     boo_pred_warn = TRUE,
-                                    boo_plot = TRUE) {##FUNCTION.START
+                                    boo_plot = TRUE,
+                                    targetSampleLabels = targetSampleLabels) {##FUNCTION.START
 
   `:=` <- data.table::`:=`
 
@@ -889,7 +890,7 @@ getBioStressorResponses <- function(TargetSiteID,
           dplyr::select(StationID, Stressor, Response, Quality, lwr, upr)
         df_plot_site <- dplyr::rename(df_plot_site, Stressor = {{stressName}},
                                       Response = {{respName}}) %>%
-          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag)
+          dplyr::select(StationID, Stressor, Response, Quality, RefSiteFlag, RespSampleID)
 
         boo_plot_cl     <- ifelse(nrow(df_plot_cl[!is.na(df_plot_cl$Stressor), ]) > 0,
                                   TRUE, FALSE)
@@ -1007,12 +1008,25 @@ getBioStressorResponses <- function(TargetSiteID,
         # } ##IF~boo_plot_ref~END
         #
         if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
-          p_SR_all <- p_SR_all +
-            ggplot2::geom_point(data=df_plot_site,
-                                ggplot2::aes(x = Stressor, y = Response),
-                                color = "black", shape = bio_shape_out[3],
-                                fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
-                                na.rm = TRUE)
+
+          if(targetSampleLabels == TRUE){
+            p_SR_all <- p_SR_all +
+              ggplot2::geom_point(data=df_plot_site,
+                                  ggplot2::aes(x = Stressor, y = Response),
+                                  color = "black", shape = bio_shape_out[3],
+                                  fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
+                                  na.rm = TRUE)+
+              ggrepel::geom_label_repel(data = df_plot_site,
+                                        ggplot2::aes(x = Stressor, y = Response, label = RespSampleID), color = bio_fill_out[3],
+                                        size = 8/ggplot2::.pt)
+          } else{
+            p_SR_all <- p_SR_all +
+              ggplot2::geom_point(data=df_plot_site,
+                                  ggplot2::aes(x = Stressor, y = Response),
+                                  color = "black", shape = bio_shape_out[3],
+                                  fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
+                                  na.rm = TRUE)
+          }
         } else {
           p_SR_all <- p_SR_all +
             ggplot2::geom_blank(ggplot2::aes(color = bio_fill_out[3],
@@ -1121,12 +1135,26 @@ getBioStressorResponses <- function(TargetSiteID,
           # } ##IF~boo_plot_cl_ref~END
           #
           if (boo_plot_targ == TRUE) { ##IF~boo_plot_targ~START
-            p_SR_cl <- p_SR_cl +
-              ggplot2::geom_point(data=df_plot_site,
-                                  ggplot2::aes(x = Stressor, y = Response),
-                                  color = "black", shape = bio_shape_in[3],
-                                  fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
-                                  na.rm = TRUE)
+
+            if(targetSampleLabels == TRUE){
+              p_SR_cl <- p_SR_cl +
+                ggplot2::geom_point(data=df_plot_site,
+                                    ggplot2::aes(x = Stressor, y = Response),
+                                    color = "black", shape = bio_shape_in[3],
+                                    fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
+                                    na.rm = TRUE) +
+              ggrepel::geom_label_repel(data = df_plot_site,
+                                        ggplot2::aes(x = Stressor, y = Response, label = RespSampleID), color = bio_fill_out[3],
+                                        size = 8/ggplot2::.pt)
+            } else{
+              p_SR_cl <- p_SR_cl +
+                ggplot2::geom_point(data=df_plot_site,
+                                    ggplot2::aes(x = Stressor, y = Response),
+                                    color = "black", shape = bio_shape_in[3],
+                                    fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
+                                    na.rm = TRUE)
+            }
+
           } else {
             p_SR_cl <- p_SR_cl +
               ggplot2::geom_blank(ggplot2::aes(color = "black",
@@ -1265,22 +1293,40 @@ getBioStressorResponses <- function(TargetSiteID,
       str_xlab  <- "Responses"
       wrap_length <- 28
       # Create plot
+      # p_cp <- ggplot2::ggplot(df_corr, ggplot2::aes(x = stringr::str_wrap(respLabel, wrap_length),
+      #                                  y = stringr::str_wrap(stressLabel, wrap_length),
+      #                                  fill = Estimate)) +
+      #   ggplot2::geom_tile(color = "black", lwd = 1, linetype = 1) +
+      #   ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.25) +
+      #   ggplot2::scale_fill_gradient2(low = "blue", high = "red", midpoint = 0,
+      #                                 limits = c(-1, 1), guide = "colorbar") +
+      #   ggplot2::coord_flip() +
+      #   ggplot2::theme_bw() +
+      #   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
+      #                  legend.title = ggplot2::element_text(size = 8),
+      #                  legend.text = ggplot2::element_text(size = 6),
+      #                  axis.title = ggplot2::element_text(size = 10),
+      #                  axis.text.x = ggplot2::element_text(size = 5, angle = 45,
+      #                                                      hjust = 1),
+      #                  axis.text.y = ggplot2::element_text(size = 5, angle = 30)) +
+      #   ggplot2::labs(title = str_title, x = str_xlab, y = str_ylab)
+
       p_cp <- ggplot2::ggplot(df_corr, ggplot2::aes(x = stringr::str_wrap(respLabel, wrap_length),
-                                       y = stringr::str_wrap(stressLabel, wrap_length),
-                                       fill = Estimate)) +
+                                                    y = stringr::str_wrap(stressLabel, wrap_length),
+                                                    fill = Estimate)) +
         ggplot2::geom_tile(color = "black", lwd = 1, linetype = 1) +
-        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.25) +
+        ggplot2::geom_text(ggplot2::aes(label = Estimate), color = "black", size = 2.5) +
         ggplot2::scale_fill_gradient2(low = "blue", high = "red", midpoint = 0,
                                       limits = c(-1, 1), guide = "colorbar") +
         ggplot2::coord_flip() +
         ggplot2::theme_bw() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 12),
-                       legend.title = ggplot2::element_text(size = 8),
-                       legend.text = ggplot2::element_text(size = 6),
-                       axis.title = ggplot2::element_text(size = 10),
-                       axis.text.x = ggplot2::element_text(size = 5, angle = 45,
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = ggplot2::rel(1.5)),
+                       legend.title = ggplot2::element_text(size = ggplot2::rel(1)),
+                       legend.text = ggplot2::element_text(size = ggplot2::rel(0.8)),
+                       axis.title = ggplot2::element_text(size = ggplot2::rel(1.5)),
+                       axis.text.x = ggplot2::element_text(color = "black", size = ggplot2::rel(1), angle = 45,
                                                            hjust = 1),
-                       axis.text.y = ggplot2::element_text(size = 5, angle = 30)) +
+                       axis.text.y = ggplot2::element_text(color = "black", size = ggplot2::rel(1), angle = 30)) +
         ggplot2::labs(title = str_title, x = str_xlab, y = str_ylab)
 
       # Save correlation plot

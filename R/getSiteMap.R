@@ -189,12 +189,12 @@ getSiteMap <- function(sp_outline,
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD27") {
-    sp_sites <- sf::st_as_sf(df_sites, crs = 5069,
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4267, # changed from 5069 which is wrong
                              coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
   } else if (datum == "NAD83") {
-    sp_sites <- sf::st_as_sf(df_sites, crs = 5070,
+    sp_sites <- sf::st_as_sf(df_sites, crs = 4269, # changed from 5070 which is wrong
                              coords = c("Longitude", "Latitude")) %>%
       dplyr::mutate(lon = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[1]]),
                     lat = purrr::map_dbl(geometry, ~sf::st_centroid(.x)[[2]]))
@@ -273,6 +273,7 @@ getSiteMap <- function(sp_outline,
                           shape = c(outsideShape, insideShape, 21, targetShape),
                           labels = c("Outside the case", "Inside the case"
                                        , "Reference", "Target site"),
+                          size = c(0.5,0.5,0.5,0.5),
                           title = "", orientation = "portrait", reverse = TRUE)
   } else {
     state.map <- state.map +
@@ -281,6 +282,7 @@ getSiteMap <- function(sp_outline,
                           shape = c(outsideShape, insideShape, targetShape),
                           title = "Sites", orientation = "portrait",
                           labels = c("Outside case ", "Inside case", "Target site"),
+                          size = c(0.5,0.5,0.5,0.5),
                           reverse = TRUE)
   }
   state.map <- state.map  +
@@ -290,7 +292,7 @@ getSiteMap <- function(sp_outline,
     tmap::tm_shape(sp_outline) +
     tmap::tm_borders(col = "black", lwd = 1) +
     tmap::tm_layout(frame = FALSE, legend.show = TRUE, legend.text.size = 0.5,
-                    legend.title.size = 0.8, legend.stack = "horizontal",
+                    legend.title.size = 0.8, legend.stack = "vertical",
                     legend.outside = TRUE, legend.outside.position = "bottom") +
     tmap::tm_title(region)
 

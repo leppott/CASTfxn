@@ -86,7 +86,8 @@ getSufficiency <- function(TargetSiteID,
                            plotunits = "in",
                            dir_plots = file.path(getwd(), "Results"),
                            dir_sub = "_WoE",
-                           boo_plot = TRUE) {##FUNCTION.START
+                           boo_plot = TRUE,
+                           targetSampleLabels = TRUE) {##FUNCTION.START
 
   `:=` <- data.table::`:=`
 
@@ -358,6 +359,14 @@ getSufficiency <- function(TargetSiteID,
                        plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
         ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
                       caption = captionSR)
+
+      if(targetSampleLabels == TRUE){
+        temp_df <- data.frame(xval = targ_vals, yval = 0.9, labelval = df_target$RespSampleID)
+
+        p1 <- p1 +
+          ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,
+                                    size = 8/ggplot2::.pt)
+      }
 
       if ((boo_plot) == TRUE) {
         ggplot2::ggsave(filename = file.path(dir_path_stress, fn_png_p1),

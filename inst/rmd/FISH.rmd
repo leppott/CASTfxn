@@ -86,55 +86,135 @@ which may differ between biological communities.
 
 #### Stressor(s) initially evaluated
 
-Stressors identified for initial evaluation include any that are detected at the target site *and* marked as 'use in stressor id' in the stressor metadata.
+*Stressors marked as 'use in stressor id' in the stressor metadata.*
 
 ```{r fishInitStressors, echo = FALSE}  
 
   bullet <- "\U2022"
 
-  siteDetects <- data_stressInfo %>%
-    dplyr::filter(StdParamName %in% siteDetectsAll) %>%
-    dplyr::select(Label)
-  siteDetects <- unlist(siteDetects)
+  # siteDetects <- data_stressInfo %>%
+  #   dplyr::filter(StdParamName %in% siteDetectsAll) %>%
+  #   dplyr::select(Label)
+  # siteDetects <- unlist(siteDetects)
+  # 
+  # if (length(siteDetects) > 0) {
+  #   for (s in siteDetects) {
+  #     cat(paste0(bullet, " ", s, "<br>"))
+  #   }
+  # } else {
+  #   cat("No stressors were detected in any samples from the target site.")
+  # }
+  
+  fn_init <- file.path(dir_results, TargetSiteID, paste(TargetSiteID, "InitialStressors.csv", sep = "_"))
+initial_stressors <- read.csv(fn_init) |> dplyr::pull(Label)
+
+  if (length(initial_stressors) > 0) {
+    for (s in initial_stressors) {
+      cat(paste0(bullet, " ", s, "<br>"))
+    }
+  } else {
+    cat(paste0(bullet, " ", "No stressors were detected in any samples from the target site.", "<br>"))
+  }
+```
+  
+#### Stressor(s) eliminated: Not measured at the target site
+```{r fishElimStressorsNotMeas, echo = FALSE}
+fn_elim <- file.path(dir_results, TargetSiteID, paste(TargetSiteID, "StressorsEliminated.csv", sep = "_"))
+df_elim_fish <- read.csv(fn_elim) |> 
+  dplyr::filter(is.na(Biocomm) | Biocomm == "fish")
+
+elim_not_meas <- df_elim_fish |> 
+  dplyr::filter(Reason == "Not measured at target site") |> 
+  dplyr::pull(Label)
+
+  if (length(elim_not_meas) > 0) {
+    for (s in elim_not_meas) {
+      cat(paste0(bullet, " ", s, "<br>"))
+    }
+  } else {
+    cat(paste0(bullet, " ", "No stressors were eliminated because they were not detected at the target site.", "<br>"))
+  }
+```
+
+#### Stressor(s) eliminated: Insufficient paired stressor-response samples across all comparator sites
+
+*Stressors with fewer paired stressor-response samples across all comparator sites than the user-specified sample limit*
+
+```{r fishElimStressorsInsuff, echo = FALSE}
+elim_insuff <- df_elim_fish  |>  
+  dplyr::filter(Reason == "Insufficient paired samples") |> 
+  dplyr::pull(Label)
+
+  if (length(elim_insuff) > 0) {
+    for (s in elim_insuff) {
+      cat(paste0(bullet, " ", s, "<br>"))
+    }
+  } else {
+    cat(paste0(bullet, " ", "No stressors were eliminated because there were insufficient paired stressor-fish response samples at all sites.", "<br>"))
+  }
+```
+
+#### Stressor(s) eliminated: By the comparison of target and unimpaired comparator sample values
+
+*Stressors eliminated by the co-occurrence line of evidence*
+
+```{r fishElimStressorsCO, echo = FALSE}
+elim_co <- df_elim_fish |> 
+    dplyr::filter(Reason == "Co-occurrence") |> 
+    dplyr::pull(Label)
+
+  if (length(elim_co) > 0) {
+    for (s in elim_co) {
+      cat(paste0(bullet, " ", s, "<br>"))
+    }
+  } else {
+    cat(paste0(bullet, " ", "No stressors were eliminated by the comparison of target and unimpaired comparator sample values (fish).", "<br>"))
+  }
+```
+
+#### Stressors remaining
+```{r}
+stressors_elim_any <- df_elim_fish |> 
+  dplyr::distinct(Label) |> 
+  dplyr::pull(Label)
+
+siteDetects <- setdiff(initial_stressors, stressors_elim_any)
 
   if (length(siteDetects) > 0) {
     for (s in siteDetects) {
       cat(paste0(bullet, " ", s, "<br>"))
     }
   } else {
-    cat("No stressors were detected in any samples from the target site.")
+    cat(paste0(bullet, " ", "No stressors remaining (fish).", "<br>"))
   }
-  
 ```
-  
-#### Stressor(s) eliminated
 
-```{r fishElimStressors, echo = FALSE}
-
-  dir.sub3 <- "_WoE"
-  fnNE <- paste0(TargetSiteID, "_FISH_DetectsNotEvalFurther.csv")
-  fnNE <- file.path(dir_results, TargetSiteID, "FISH", dir.sub3, fnNE)
-  
-  if (file.exists(fnNE)) {
-    notEvaluated <- read.csv(fnNE, header = TRUE)
-    NE <- merge(notEvaluated, data_stressInfo, by.x = "FISH_NotEvaluated", 
-                by.y = "StdParamName", all.x = TRUE) %>%
-      dplyr::select(Label)
-    NE <- unlist(NE)
-
-    if (length(NE) > 0) {
-      for (s in NE) {
-        cat(paste0(bullet, " ", s, "<br>"))
-      }
-    } else {
-      cat("No stressors were eliminated from the evaluation.")
-    }
-    
-  } else {
-    cat(paste("The file", fnNE, "is not accessible."))
-  }
-  
-```
+# ```{r fishElimStressors, echo = FALSE}
+# 
+#   dir.sub3 <- "_WoE"
+#   fnNE <- paste0(TargetSiteID, "_FISH_DetectsNotEvalFurther.csv")
+#   fnNE <- file.path(dir_results, TargetSiteID, "FISH", dir.sub3, fnNE)
+#   
+#   if (file.exists(fnNE)) {
+#     notEvaluated <- read.csv(fnNE, header = TRUE)
+#     NE <- merge(notEvaluated, data_stressInfo, by.x = "FISH_NotEvaluated", 
+#                 by.y = "StdParamName", all.x = TRUE) %>%
+#       dplyr::select(Label)
+#     NE <- unlist(NE)
+# 
+#     if (length(NE) > 0) {
+#       for (s in NE) {
+#         cat(paste0(bullet, " ", s, "<br>"))
+#       }
+#     } else {
+#       cat("No stressors were eliminated from the evaluation.")
+#     }
+#     
+#   } else {
+#     cat(paste("The file", fnNE, "is not accessible."))
+#   }
+#   
+# ```
 
 ### *Weight of evidence*
 #### Detailed lines of evidence scores
@@ -221,7 +301,7 @@ A note of caution:
                     container = sketch,
                     extensions = 'FixedColumns',
                     class = 'striped hover row-border',
-                    filter = 'none',
+                    filter = 'top',
                     rownames = FALSE,
                     escape = FALSE,
                     options = list(layout = list(topStart = 'pageLength',
@@ -313,7 +393,7 @@ This table provides an indication of the consistency of the evidence for a candi
                    container = sketch,
                    extensions = 'FixedColumns',
                    class = 'striped hover row-border',
-                   filter = 'none',
+                   filter = 'top',
                    rownames = FALSE,
                    escape = FALSE,
                    options = list(layout = list(topStart = 'pageLength',
@@ -373,8 +453,9 @@ are displayed below. Figures for other indices are available in the downloadable
 
 ```{r fish.LoE.graphics, echo = FALSE, out.width = "75%", fig.align = "left"}
 
-stressors <- setdiff(siteDetects, NE)
-paramName <- data_stressInfo$StdParamName[data_stressInfo$Label %in% stressors]
+#stressors <- setdiff(siteDetects, NE)
+stressors <- siteDetects
+#paramName <- data_stressInfo$StdParamName[data_stressInfo$Label %in% stressors]
 df.SSINames <- data_stressInfo[data_stressInfo$Label %in% stressors, ] %>%
   dplyr::filter(!is.na(SSIndex)) %>%
   dplyr::select(StdParamName, SSIndex)
@@ -389,7 +470,8 @@ cat(msg_files)
 for (s in seq_along(paramName)) {
   
   stressLabel <- stressors[s]
-  stressName <- paramName[s]
+  #stressName <- paramName[s]
+  stressName <- data_stressInfo |> dplyr::filter(Label == stressLabel) |> dplyr::pull(StdParamName)
   stressLabel <- sub("(mg/l)", "mg/L", stressLabel)
   stressLabel <- sub("(PCT)", "%", stressLabel)
   stressLabel <- sub("(u)g/m3", htmltools::HTML("\u00b5"), stressLabel)

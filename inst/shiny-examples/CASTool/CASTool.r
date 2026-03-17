@@ -25,16 +25,24 @@ tic <- Sys.time()
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
-  region <- "DEPied" # Name of region
+  # in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
+  # out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
+  # region <- "DEPied" # Name of region
+
+  # in.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Output" # File path of data directory
+  # out.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Results"
+  # region <- "Rhode Island" # Name of region
+
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/WA"
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/WA_Results"
+  region <- "Washington"
 
   # Helper packages
 
@@ -159,11 +167,9 @@ if (boo_Shiny == TRUE) {
                              dir.out = out.dir)
   TableOne    <- list.Tables$TableOne
 
-  write.csv(TableOne, file.path(out.dir, region, "TableOne.csv"),
-              col.names = TRUE, row.names = FALSE, append = FALSE)
+  write.csv(TableOne, file.path(out.dir, region, "TableOne.csv"), row.names = FALSE)
   TableTwo    <- list.Tables$TableTwo
-  write.csv(TableTwo, file.path(out.dir, region, "TableTwo.csv"),
-             col.names = TRUE, row.names = FALSE, append = FALSE)
+  write.csv(TableTwo, file.path(out.dir, region, "TableTwo.csv"), row.names = FALSE)
   #rm(list.Tables, TableOne, TableTwo)
 }## IF ~ boo_Shiny ~ END
 
@@ -198,6 +204,10 @@ helperImport <- ifelse(is.na(helperImport), FALSE, helperImport)
 ### WS boolean
 boo.WS <- data_CASTmeta %>% dplyr::pull(exploreWSStressor) %>% as.logical()
 boo.WS <- ifelse(is.na(boo.WS), FALSE, boo.WS)
+
+## Target sample boolean
+targetSampleLabels <- data_CASTmeta %>% dplyr::pull(targetSampleLabels) %>% as.logical()
+targetSampleLabels <- ifelse(is.na(targetSampleLabels), FALSE, targetSampleLabels)
 
 # Set up booleans for different data types available
 boo.meas  <- FALSE
@@ -270,6 +280,13 @@ if (boo.meas) {
       )
   )
 }## IF ~ boo.meas
+
+# Initialize stressor elimination data frame
+df_stressorElim <- data.frame(
+  Stressor = character(),
+  Biocomm = character(),
+  Reason = character()
+)
 
 # if (boo.WS) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
@@ -984,6 +1001,32 @@ for (site in seq_len(nrow(df_targets))) {
   useAlg         <- list.AvailData$useAlg
   useFish        <- list.AvailData$useFish
   siteDetectsAll <- list.AvailData$siteDetectsAll
+
+  stressUse <- data_stressInfo |>
+    dplyr::filter(UseInStressorID == 1) |>
+    dplyr::pull(StdParamName)
+
+  initialStress <- data_Stress |>
+    dplyr::filter(is.na(TransfResult)==FALSE) |>
+    dplyr::filter(StdParamName %in% stressUse) |>
+    dplyr::distinct(StdParamName) |>
+    dplyr::pull(StdParamName)
+
+  df_initialStress <- data.frame(Stressor = initialStress) |>
+    dplyr::left_join(data_stressInfo |> dplyr::select(StdParamName, Label), by = c("Stressor" = "StdParamName"))
+
+  targNotMeasStress <- setdiff(initialStress, siteDetectsAll)
+
+  if(length(targNotMeasStress) > 0){
+    tempElim <- data.frame(Stressor = targNotMeasStress,
+                           Biocomm = NA,
+                           Reason = "Not measured at target site")
+
+    df_stressorElim <- df_stressorElim |>
+      dplyr::bind_rows(tempElim)
+  }
+
+
   #rm(list.AvailData)
 
   if ((noStressors == TRUE) | (noResponses == TRUE)) {
@@ -1226,7 +1269,7 @@ for (site in seq_len(nrow(df_targets))) {
     # Write these to data gaps file
     if (length(insuffSamples) != 0) { # changed 3/10/26 LCN was previously == 0, which is incorrect
       for (i in seq_along(insuffSamples)) {
-        str <- insuffSamples[i]
+        str <- paste(bioComm, insuffSamples[i], sep = ": ")
         msg <- paste0(gap.statement, ": Insufficient numbers of samples are available for ", str, ". This stressor will not be evaluated")
         message(msg)
 
@@ -1251,6 +1294,13 @@ for (site in seq_len(nrow(df_targets))) {
         # #             row.names = FALSE, sep = "\t")
         # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
         #             row.names = FALSE, sep = ",")
+
+        tempElim <- data.frame(Stressor = insuffSamples[i],
+                               Biocomm = bioComm,
+                               Reason = "Insufficient paired samples")
+
+        df_stressorElim <- df_stressorElim |>
+          dplyr::bind_rows(tempElim)
       } #End loop over stressors
     } #End if
 
@@ -1294,11 +1344,19 @@ for (site in seq_len(nrow(df_targets))) {
                                           dir_plots     = dir_results,
                                           dir_sub       = "_WoE",
                                           boo_plot      = boo.plot.user,
-                                          incaseLabel   = incaseLabel)
+                                          incaseLabel   = incaseLabel,
+                                          targetSampleLabels = targetSampleLabels)
 
       df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
       notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
       df_COscores  <- list.StressorMetaData$df_COscores
+
+      tempElim <- data.frame(Stressor = list.StressorMetaData$notEvaluated,
+                             Biocomm = bioComm,
+                             Reason = "Co-occurrence")
+
+      df_stressorElim <- df_stressorElim |>
+        dplyr::bind_rows(tempElim)
     }
 
     if (nrow(df_stressorMetadata) == 0) {
@@ -1405,7 +1463,8 @@ for (site in seq_len(nrow(df_targets))) {
                                     plotunits     = plot_units,
                                     dir_plots     = dir_results,
                                     dir_sub       = "_WoE",
-                                    boo_plot      = boo.plot.user)
+                                    boo_plot      = boo.plot.user,
+                                    targetSampleLabels = targetSampleLabels)
 
     if (nrow(df_SuffScores) != 0) {
       df_LoE <- rbind(df_LoE, df_SuffScores)
@@ -1447,7 +1506,8 @@ for (site in seq_len(nrow(df_targets))) {
                                              dir_plots     = dir_results,
                                              dir_sub       = "_WoE",
                                              boo_pred_warn = TRUE,
-                                             boo_plot      = boo.plot.user)
+                                             boo_plot      = boo.plot.user,
+                                             targetSampleLabels = targetSampleLabels)
 
     df_gradscores <- list.BioStressorResponses$df.scores
 
@@ -1519,7 +1579,8 @@ for (site in seq_len(nrow(df_targets))) {
                                               plotunits      = plot_units,
                                               dir_plots      = dir_results,
                                               dir_sub        = "_WoE",
-                                              boo_plot       = boo.plot.user)
+                                              boo_plot       = boo.plot.user,
+                                              targetSampleLabels = targetSampleLabels)
 
         df_VPscores <- list.VerifiedPredictions$df.scores
 
@@ -1569,7 +1630,8 @@ for (site in seq_len(nrow(df_targets))) {
                                    plotunits        = plot_units,
                                    dir_plots        = dir_results,
                                    dir_sub          = "_WoE",
-                                   boo_plot         = boo.plot.user)
+                                   boo_plot         = boo.plot.user,
+                                   targetSampleLabels = targetSampleLabels)
 
         df_VPSSIscores <- list.VPSSIscores$df.scores
 
@@ -1651,6 +1713,24 @@ for (site in seq_len(nrow(df_targets))) {
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
   #
+
+  df_stressorElim <- df_stressorElim |>
+    dplyr::left_join(data_stressInfo |> dplyr::select(StdParamName, Label), by = c("Stressor" = "StdParamName"))
+
+  write.csv(df_stressorElim,
+            file.path(dir_results,
+                      TargetSiteID,
+                      paste0(TargetSiteID,
+                             "_StressorsEliminated.csv")),
+            row.names = FALSE)
+
+  write.csv(df_initialStress,
+            file.path(dir_results,
+                      TargetSiteID,
+                      paste0(TargetSiteID,
+                             "_InitialStressors.csv")),
+            row.names = FALSE)
+
   # Shiny add ons
   if (boo_Shiny == TRUE) {
     report_type <- "full" # summary preliminary full
@@ -1675,7 +1755,7 @@ for (site in seq_len(nrow(df_targets))) {
     # not found, added to function call
 
     # report
-    getReport(TargetSiteID,
+    getReport(TargetSiteID = TargetSiteID,
               biocommlist    = biocommlist,
               regionName     = region,
               primeIndex     = bmiIndexGp,
@@ -1711,7 +1791,7 @@ for (site in seq_len(nrow(df_targets))) {
   } else {
     report_type <- "full"
 
-    getReport(TargetSiteID,
+    getReport(TargetSiteID = TargetSiteID,
               biocommlist    = biocommlist,
               regionName     = region,
               primeIndex     = bmiIndexGp,
@@ -1780,17 +1860,19 @@ for (site in seq_len(nrow(df_targets))) {
   #             sep = "\t")
 
 
-  # siteDetectsAll needed for Shiny app
-  fn_detects_all <- file.path(dir_results,
-                              TargetSiteID,
-                              paste0(TargetSiteID,
-                                     "_DetectsAll.csv"))
-  df_detects_all <- data.frame(Detects_All = siteDetectsAll)
-  write.csv(df_detects_all,
-              fn_detects_all,
-              append = FALSE,
-              col.names = TRUE,
-              row.names = FALSE)
+
+
+  # # siteDetectsAll needed for Shiny app
+  # fn_detects_all <- file.path(dir_results,
+  #                             TargetSiteID,
+  #                             paste0(TargetSiteID,
+  #                                    "_DetectsAll.csv"))
+  # df_detects_all <- data.frame(Detects_All = siteDetectsAll)
+  # write.csv(df_detects_all,
+  #             fn_detects_all,
+  #             append = FALSE,
+  #             col.names = TRUE,
+  #             row.names = FALSE)
 
 # status
   temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Passed", reason = "")
