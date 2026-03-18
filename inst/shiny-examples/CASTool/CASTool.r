@@ -25,24 +25,17 @@ tic <- Sys.time()
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 # Define global variables
-boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+boo_Shiny <- TRUE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
 boo.debug <- FALSE # Whether to run the code in debug mode
 dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
 boo.plot.user <- TRUE # Whether to generate line of evidence plots
 
 if(boo_Shiny == FALSE){
   # User edits these lines
-  # in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
-  # out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
-  # region <- "DEPied" # Name of region
+  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
+  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
+  region <- "DEPied" # Name of region
 
-  # in.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Output" # File path of data directory
-  # out.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Results"
-  # region <- "Rhode Island" # Name of region
-
-  in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/WA"
-  out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/WA_Results"
-  region <- "Washington"
 
   # Helper packages
 
@@ -1015,18 +1008,6 @@ for (site in seq_len(nrow(df_targets))) {
   df_initialStress <- data.frame(Stressor = initialStress) |>
     dplyr::left_join(data_stressInfo |> dplyr::select(StdParamName, Label), by = c("Stressor" = "StdParamName"))
 
-  targNotMeasStress <- setdiff(initialStress, siteDetectsAll)
-
-  if(length(targNotMeasStress) > 0){
-    tempElim <- data.frame(Stressor = targNotMeasStress,
-                           Biocomm = NA,
-                           Reason = "Not measured at target site")
-
-    df_stressorElim <- df_stressorElim |>
-      dplyr::bind_rows(tempElim)
-  }
-
-
   #rm(list.AvailData)
 
   if ((noStressors == TRUE) | (noResponses == TRUE)) {
@@ -1166,6 +1147,7 @@ for (site in seq_len(nrow(df_targets))) {
       }
     }
 
+
     # If no paired stressors, write to data gaps file and output to runstats file
     # Proceed to next target site
     if (noPairedSamps == TRUE) {
@@ -1206,7 +1188,25 @@ for (site in seq_len(nrow(df_targets))) {
 
       next
     } ### End no stressors statement
-    rm(dfTarget)
+
+    possibleStressors <- intersect(initialStress, names(dfTarget))
+    targMeasStress <- dfTarget |>
+      dplyr::select(dplyr::all_of(possibleStressors)) |>
+      tidyr::pivot_longer(cols = everything()) |>
+      dplyr::filter(is.na(value)==FALSE) |>
+      dplyr::pull(name)
+
+    targNotMeasStress <- setdiff(initialStress, targMeasStress)
+
+    if(length(targNotMeasStress) > 0){
+      tempElim <- data.frame(Stressor = targNotMeasStress,
+                             Biocomm = NA,
+                             Reason = "Not measured at target site")
+
+      df_stressorElim <- df_stressorElim |>
+        dplyr::bind_rows(tempElim)
+    }
+
 
     ## 15, getQualSites ####
     # Progress, 18
@@ -1235,7 +1235,8 @@ for (site in seq_len(nrow(df_targets))) {
                                         refSites     = refSites,
                                         compSites    = list.CompSites$comp.sites, # inside the case
                                         allSites     = list.CompSites$all.sites, # outside the case
-                                        stressors    = siteDetectsAll,
+                                        #stressors    = siteDetectsAll,
+                                        stressors = targMeasStress,
                                         dir_results  = dir_results,
                                         dir_sub      = "SiteInfo")
 
@@ -1253,7 +1254,10 @@ for (site in seq_len(nrow(df_targets))) {
       dplyr::filter(StationID %in% list.CompSites$comp.sites) %>%
       dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleDate,
                     RespSampleDate, StressSampleID, RespSampleID, BioComm,
-                    all_of(bioIndexGp), Quality, all_of(siteDetectsAll)) %>%
+                    all_of(bioIndexGp), Quality,
+                    #all_of(siteDetectsAll)
+                    all_of(targMeasStress)
+                    ) %>%
       tidyr::pivot_longer(cols = !(StationID:Quality), names_to = "Stressor",
                           values_to = "StressorValue", values_drop_na = TRUE) %>%
       dplyr::group_by(Stressor) %>%
@@ -1328,7 +1332,8 @@ for (site in seq_len(nrow(df_targets))) {
 
       list.StressorMetaData <- getCoOccur(TargetSiteID  = TargetSiteID,
                                           df_data       = df_PairedStressResp,
-                                          detects       = siteDetectsAll,
+                                          #detects       = siteDetectsAll, # needed to change this because possible a stressor was measured but not matched to response
+                                          detects = targMeasStress,
                                           df_stressinfo = data_stressInfo,
                                           compsites     = list.CompSites$comp.sites,
                                           biocomm       = bioComm,
@@ -1785,7 +1790,8 @@ for (site in seq_len(nrow(df_targets))) {
               data_algMetrics = data_algMetrics,
               data_fishMetrics = data_fishMetrics,
               data_stressInfo = data_stressInfo,
-              siteDetectsAll = siteDetectsAll
+              #siteDetectsAll = siteDetectsAll,
+              siteDetectsAll = targMeasStress
               )
 
   } else {
@@ -1820,7 +1826,8 @@ for (site in seq_len(nrow(df_targets))) {
               data_algMetrics = data_algMetrics,
               data_fishMetrics = data_fishMetrics,
               data_stressInfo = data_stressInfo,
-              siteDetectsAll = siteDetectsAll
+              #siteDetectsAll = siteDetectsAll,
+              siteDetectsAll = targMeasStress
               )
 
   }## IF ~ boo_Shiny
@@ -1878,7 +1885,6 @@ for (site in seq_len(nrow(df_targets))) {
   temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Passed", reason = "")
   status_df <- status_df %>% dplyr::bind_rows(temp_status)
 
-} ### End TargetSite loop # not used in Shiny
 # FOR ~ site ~ END ####
 
 fn_status <- file.path(dir_results,

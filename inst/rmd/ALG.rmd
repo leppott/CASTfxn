@@ -118,7 +118,10 @@ initial_stressors <- read.csv(fn_init) |> dplyr::pull(Label)
 
 ```
 
-#### Stressor(s) eliminated: Not measured at the target site
+#### Stressor(s) eliminated: No paired-stressor response sample at the target site
+
+*Stressors that were either never measured at the target site or not measured within the user-specified time window from a response sample*
+
 ```{r algElimStressorsNotMeas, echo = FALSE}
 fn_elim <- file.path(dir_results, TargetSiteID, paste(TargetSiteID, "StressorsEliminated.csv", sep = "_"))
 df_elim_alg <- read.csv(fn_elim) |> 
@@ -133,7 +136,7 @@ elim_not_meas <- df_elim_alg |>
       cat(paste0(bullet, " ", s, "<br>"))
     }
   } else {
-    cat(paste0(bullet, " ", "No stressors were eliminated because they were not detected at the target site.", "<br>"))
+    cat(paste0(bullet, " ", "No stressors were eliminated because there were no paired stressor-response samples at the target site (algae).", "<br>"))
   }
 ```
 
@@ -151,7 +154,7 @@ elim_insuff <- df_elim_alg  |>
       cat(paste0(bullet, " ", s, "<br>"))
     }
   } else {
-    cat(paste0(bullet, " ", "No stressors were eliminated because there were insufficient paired stressor-algae response samples at all sites.", "<br>"))
+    cat(paste0(bullet, " ", "No stressors were eliminated because there were insufficient paired stressor-response samples at all comparator sites (algae).", "<br>"))
   }
 ```
 
