@@ -404,6 +404,10 @@ getVerifiedPredictions <- function(TargetSiteID,
             dplyr::select(dplyr::all_of(cols2use))
         } # This creates missing data for all stressor samples (with paired responses)
 
+
+        # LCN 3/18/26 I think this was intended to handle when there are all sensitive but not most sensitive
+        # But failing if one sample has all sensitive taxa and another has none. After changing metadata, see if you need to update this.
+
         # ASSUMPTION: Most sensitive will disappear prior to all sensitive
         if (nrow(df_tv.target) %% nTargetSamples != 0) {
           # Identify missing sample

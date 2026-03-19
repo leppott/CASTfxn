@@ -408,7 +408,14 @@ checkInputs <- function(dir.uploaded,
                        reqd.cols)
     }
     act.cols <- colnames(get(object))
+
+    if(length(intersect(act.cols, c("GEOMETRY", "Geometry", "Shape", "SHAPE", "shape")))>0){
+      act.cols <- c(act.cols, "geometry")
+    }
+
     reqd.v.act.cols <- compare.colnames(reqd.cols, act.cols)
+
+
     if (object %in% c("data_stressorWS", "data_stressorinfoWS")) {
       df.coltypes.tmp <- cbind("object" = object,
                                "col" = "all columns",

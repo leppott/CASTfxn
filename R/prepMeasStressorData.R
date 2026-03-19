@@ -121,16 +121,29 @@ prepMeasStressorData <- function(in.dir,
   data_chemAll_dups <- data_chemAll[duplicated(data_chemAll),]
   data_chemAll <- unique(data_chemAll) # should be unique, long-form sample/analyte
 
-  # Duplicate all pH values, one to use for alkaline environments (higher is better)
-  # and one to use for acidic environments (lower is better)
-  data_pHAcid <- data_chemAll %>%
-    dplyr::filter(StdParamName == "pH") %>%
-    dplyr::mutate(StdParamName = "pH_acidicEnv")
+  # Duplicate all pH values, one to use for high pH as a stressor and one for low pH as a stressor
+  data_pHHigh <- data_chemAll %>%
+    dplyr::filter(stringr::str_detect(tolower(StdParamName), "^ph$") == TRUE) |>
+    dplyr::mutate(StdParamName = "pH_high")
   data_chemAll <- data_chemAll %>%
-    dplyr::mutate(StdParamName = ifelse(StdParamName == "pH", "pH_alkEnv",
+    dplyr::mutate(StdParamName = ifelse(stringr::str_detect(tolower(StdParamName), "^ph$") == TRUE, "pH_low",
                                         StdParamName))
-  data_chemRaw <- rbind(data_chemAll, data_pHAcid)
-  rm(data_pHAcid)
+  data_chemRaw <- rbind(data_chemAll, data_pHHigh)
+  rm(data_pHHigh)
+
+  # Replace metadata pH with pH_low and pH_high
+  pH_meta <- data_chemInfo |>
+    dplyr::filter(stringr::str_detect(tolower(StdParamName), "^ph$"))
+
+  if(nrow(pH_meta)>0){
+    pH_metaHigh <- pH_meta |> dplyr::mutate(StdParamName = "pH_high", Label = "pH (high)", DirIncStress = "Inc")
+    pH_metaLow <- pH_meta |> dplyr::mutate(StdParamName = "pH_low", Label = "pH (low)", DirIncStress = "Dec")
+
+    data_chemInfo <- data_chemInfo |>
+      dplyr::filter(stringr::str_detect(tolower(StdParamName), "^ph$") == FALSE) |>
+      dplyr::bind_rows(pH_metaHigh) |>
+      dplyr::bind_rows(pH_metaLow)
+  }
 
   # Adjust dates for samples collected on multiple dates with the same ID
   analytes <- unique(as.character(data_chemRaw$StdParamName))

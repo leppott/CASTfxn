@@ -36,7 +36,6 @@ if(boo_Shiny == FALSE){
   out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
   region <- "DEPied" # Name of region
 
-
   # Helper packages
 
   pakInd <- setdiff("pak", .packages(all.available = TRUE))
@@ -274,12 +273,7 @@ if (boo.meas) {
   )
 }## IF ~ boo.meas
 
-# Initialize stressor elimination data frame
-df_stressorElim <- data.frame(
-  Stressor = character(),
-  Biocomm = character(),
-  Reason = character()
-)
+
 
 # if (boo.WS) {
   useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
@@ -765,6 +759,13 @@ for (site in seq_len(nrow(df_targets))) {
   #                      paste0(TargetSiteID, "_datagaps.csv"))
   # write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
   #             row.names = FALSE, sep = ",")
+
+  # Initialize stressor elimination data frame
+  df_stressorElim <- data.frame(
+    Stressor = character(),
+    Biocomm = character(),
+    Reason = character()
+  )
 
   # 12, getComparators ####
   ## Progress, 14
@@ -1274,7 +1275,7 @@ for (site in seq_len(nrow(df_targets))) {
     if (length(insuffSamples) != 0) { # changed 3/10/26 LCN was previously == 0, which is incorrect
       for (i in seq_along(insuffSamples)) {
         str <- paste(bioComm, insuffSamples[i], sep = ": ")
-        msg <- paste0(gap.statement, ": Insufficient numbers of samples are available for ", str, ". This stressor will not be evaluated")
+        msg <- paste0("Insufficient number of samples are available for ", str, ". This stressor will not be evaluated")
         message(msg)
 
         gap.statement <- data.frame(
@@ -1308,6 +1309,17 @@ for (site in seq_len(nrow(df_targets))) {
       } #End loop over stressors
     } #End if
 
+    if(length(setdiff(initialStress, df_stressorElim$Stressor)) == 0){
+      temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID),
+                                status = "Failed",
+                                reason = "No stressors remaining after removing stressors with no paired stressor-response samples at the target site and stressors with insufficient number of samples at comparator sites. ")
+      status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
+      next
+    }
+
+    stressorMeasSuff <- setdiff(initialStress, df_stressorElim$Stressor)
+
     msg <- paste0("getQualSites is complete for ", bioComm, ".")
     message(msg)
 
@@ -1333,7 +1345,7 @@ for (site in seq_len(nrow(df_targets))) {
       list.StressorMetaData <- getCoOccur(TargetSiteID  = TargetSiteID,
                                           df_data       = df_PairedStressResp,
                                           #detects       = siteDetectsAll, # needed to change this because possible a stressor was measured but not matched to response
-                                          detects = targMeasStress,
+                                          detects = stressorMeasSuff,
                                           df_stressinfo = data_stressInfo,
                                           compsites     = list.CompSites$comp.sites,
                                           biocomm       = bioComm,
@@ -1353,7 +1365,7 @@ for (site in seq_len(nrow(df_targets))) {
                                           targetSampleLabels = targetSampleLabels)
 
       df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
-      notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
+      #notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
       df_COscores  <- list.StressorMetaData$df_COscores
 
       tempElim <- data.frame(Stressor = list.StressorMetaData$notEvaluated,
@@ -1391,6 +1403,12 @@ for (site in seq_len(nrow(df_targets))) {
       # #             row.names = FALSE, sep = "\t")
       # write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
       #             row.names = FALSE, sep = ",")
+
+      temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID),
+                                status = "Failed",
+                                reason = "No stressors remaining after removing stressors with no paired stressor-response samples at the target site,  stressors with insufficient number of samples at comparator sites, and co-occurrence screening. ")
+      status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
       next
     }
 
@@ -1884,6 +1902,8 @@ for (site in seq_len(nrow(df_targets))) {
 # status
   temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Passed", reason = "")
   status_df <- status_df %>% dplyr::bind_rows(temp_status)
+
+  } # End TargetSite loop
 
 # FOR ~ site ~ END ####
 

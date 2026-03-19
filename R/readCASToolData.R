@@ -63,7 +63,13 @@ readCASToolData <- function(fn, NAs) {##FUNCTION.START
       SSIndex = readr::col_character(),
       SSTVname.bmi = readr::col_character(),
       SSTVname.alg = readr::col_character(),
-      SSTVname.fish = readr::col_character()
+      SSTVname.fish = readr::col_character(),
+      SensMax.bmi = readr::col_character(),
+      SensMin.bmi = readr::col_character(),
+      SensMax.alg = readr::col_character(),
+      SensMin.alg = readr::col_character(),
+      SensMax.fish = readr::col_character(),
+      SensMin.fish = readr::col_character()
     ))
     return(df)
   } else if (tolower(tools::file_ext(fn)) %in% c("txt", "tab")) {
@@ -103,7 +109,13 @@ readCASToolData <- function(fn, NAs) {##FUNCTION.START
       SSIndex = readr::col_character(),
       SSTVname.bmi = readr::col_character(),
       SSTVname.alg = readr::col_character(),
-      SSTVname.fish = readr::col_character()
+      SSTVname.fish = readr::col_character(),
+      SensMax.bmi = readr::col_character(),
+      SensMin.bmi = readr::col_character(),
+      SensMax.alg = readr::col_character(),
+      SensMin.alg = readr::col_character(),
+      SensMax.fish = readr::col_character(),
+      SensMin.fish = readr::col_character()
     ))
     return(df)
   } else if (tolower(tools::file_ext(fn) %in% c("xls", "xlsx"))) {
@@ -143,7 +155,13 @@ readCASToolData <- function(fn, NAs) {##FUNCTION.START
       SSIndex = readr::col_character(),
       SSTVname.bmi = readr::col_character(),
       SSTVname.alg = readr::col_character(),
-      SSTVname.fish = readr::col_character()
+      SSTVname.fish = readr::col_character(),
+      SensMax.bmi = readr::col_character(),
+      SensMin.bmi = readr::col_character(),
+      SensMax.alg = readr::col_character(),
+      SensMin.alg = readr::col_character(),
+      SensMax.fish = readr::col_character(),
+      SensMin.fish = readr::col_character()
     ))
     return(df)
   } else if (tolower(tools::file_ext(fn)) == "rda"){
