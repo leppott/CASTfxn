@@ -152,13 +152,29 @@ getVPSSI <- function(TargetSiteID,
     info.ssi <- df_bioMetricInfo %>%
       dplyr::filter(MetricName %in% unique(info.stress$SSIndex))
 
-    if(nrow(info.ssi)==0){
-      return(data.frame())
+    # if(nrow(info.ssi)==0){
+    #   return(data.frame())
+    # }
+    if(length(setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)) != 0){
+      missing_metrics <- setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)
+
+      msg <- paste0(paste(missing_metrics, collapse = ", "), " listed as stressor-specific index in stressor metadata but not found as metric to be included in ", bioComm, " metadata.")
+      message(msg)
+
+      gap.statement <- data.frame(
+        fxnname = "getVPSSI",
+        condition = "Missing stressor-specific index",
+        result = "0",
+        comment = msg
+      )
+
+      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
     }
 
-    # Loop over SSIndices ----
-    for (i in 1:nrow(info.ssi)) { # QC for nrow == 0?
 
+    # Loop over SSIndices ----
+    # for (i in 1:nrow(info.ssi)) { # QC for nrow == 0?
+    for (i in seq_len(nrow(info.ssi))) {
       ssi.name <- info.ssi$MetricName[i]
       ssi.label <- stringr::str_to_title(info.ssi$MetricLabel[i])
       ssi.dir <- info.ssi$TrendWIncStress[i]
@@ -346,6 +362,9 @@ getVPSSI <- function(TargetSiteID,
           j_VPlog_score <- cut(j_VPlog_predict,
                                breaks = c(0, 0.2, 0.5, 1),
                                labels = c(-1, 0, 1))
+          j_VPlog_score_text <- ifelse(j_VPlog_score == "1", "1 (Supporting)",
+                                       ifelse(j_VPlog_score == "0", "0 (Indeterminate)",
+                                              ifelse(j_VPlog_score == "-1", "-1 (Refuting)", "NA")))
 
           j_values_scores <- cbind(j_values, j_VPlog_predict, j_VPlog_score) %>%
             dplyr::rename(StressorValue = x,
@@ -402,10 +421,10 @@ getVPSSI <- function(TargetSiteID,
           maintitleSR <- paste0(TargetSiteID,
                                 ": Stressor-specific index - Sufficiency line of evidence")
           subtitleSR <-"Is the target sample stressor-specific index value associated with a higher probability of biological impairment?"
-          subtitleSR <- stringr::str_wrap(subtitleSR, 100)
+          subtitleSR <- stringr::str_wrap(subtitleSR, 75)
 
           captionSR <- paste(paste0("All inside-the-case samples (n = ", n_cc_df_plot, ")."),
-                             paste0("Score = ", paste(j_VPlog_score, collapse = ", "), "."),
+                             paste0("Score = ", paste(j_VPlog_score_text, collapse = ", "), "."),
                              sep = "\n")
 
           # Annotation values
@@ -420,6 +439,8 @@ getVPSSI <- function(TargetSiteID,
 
           msg <- paste0("printing logistic regression for ", str, " against ", ssi.name)
           message(msg)
+
+          temp_df <- data.frame(xval = target.vals, yval = 0.9, labelval = df_plot.log_target$RespSampleID, Case = "Target sample value(s)")
 
           p2 <- ggplot2::ggplot(df_plot.log, ggplot2::aes(x = x, y = y.name)) +
             ggplot2::geom_point(ggplot2::aes(color = "black", shape = SSIqual,
@@ -439,9 +460,10 @@ getVPSSI <- function(TargetSiteID,
             ggplot2::scale_size_manual(name = legendtitle,
                                        breaks = c("Not degraded", "Degraded"),
                                        values = bio_size[2:3], drop = FALSE) +
-            ggplot2::geom_vline(xintercept = target.vals, color = targ_line_col,
-                                lty = targ_line_lty, lwd = targ_line_lwd,
+            ggplot2::geom_vline(data = temp_df, ggplot2::aes(xintercept = xval, lty = Case), color = targ_line_col,
+                               lwd = targ_line_lwd,
                                 na.rm = TRUE) +
+            ggplot2::scale_linetype_manual(name = "", values =  targ_line_lty)+
             ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black"
                                 , lty = 2, na.rm = TRUE) +
             ggplot2::annotate("segment", y = negStart, yend = negEnd, x = xseg,
@@ -466,7 +488,7 @@ getVPSSI <- function(TargetSiteID,
                           caption = captionSR)
 
           if(targetSampleLabels == TRUE){
-            temp_df <- data.frame(xval = target.vals, yval = 0.9, labelval = df_plot.log_target$RespSampleID)
+
 
             p2 <- p2 +
               ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,
@@ -577,7 +599,11 @@ getVPSSI <- function(TargetSiteID,
       }##IF~j_in_InvSc~END
 
       scores <- unlist(as.vector(df.scores.i$Sc_VPSSI_box))
-      lab.Score <- paste0("Score = ", paste0(scores, collapse = ", "))
+      scores.text <- ifelse(is.na(scores), "NE",
+                            ifelse(scores == 1, "1 (Supporting)",
+                                   ifelse(scores == 0, "0 (Indeterminate)",
+                                          ifelse(scores == -1, "-1 (Refuting)", "NA"))))
+      lab.Score <- paste0("Score = ", paste0(scores.text, collapse = ", "))
 
       df.scores.i <- merge(df.scores.i, df.targetdata,
                            by = c("StationID", "StressSampleID", "StressSampleDate",
@@ -614,7 +640,7 @@ getVPSSI <- function(TargetSiteID,
       ### Create boxplot ----
       str_title <- paste0(TargetSiteID, ": Stressor-specific index - Co-occurrence line of evidence ",
                           "for ", ssi.label)
-      str_title <- stringr::str_wrap(str_title, 100)
+      str_title <- stringr::str_wrap(str_title, 75)
       if (ssi.dir == "Dec") { # metric has lower values with increased stress
         str_subtitle <- paste0("Is the target sample stressor-specific index depressed compared to those from unimpaired, comparator samples?")
       } else { # metric has higher values with increased stress
@@ -639,6 +665,8 @@ getVPSSI <- function(TargetSiteID,
                          " = ", i.Group)
       xseg <- i.Group + 0.5
 
+      temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, Case = "Target sample value(s)")
+
       p1 <- ggplot2::ggplot(df_plot1, ggplot2::aes(y = SSIValue,
                                                    x = IncaseCol,
                                                    group = IncaseCol)) +
@@ -648,8 +676,17 @@ getVPSSI <- function(TargetSiteID,
                               # outlier.size = 0.5,
                               na.rm = TRUE, staplewidth = 0.5) +
         ggplot2::coord_flip() +
-        ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
-                            lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
+
+        ggplot2::geom_hline(data = temp_df, ggplot2::aes(yintercept = yval, lty = Case), color = targ_line_col,
+                            lwd = targ_line_lwd, na.rm = TRUE, show.legend = FALSE) +
+        # dummy line to get orientation correct for legend
+        ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample value(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
+        ggplot2::guides(linetype = ggplot2::guide_legend(order = 1, override.aes = list( alpha = 1, colour = targ_line_col, linewidth = targ_line_lwd )))+
+        ggplot2::scale_linetype_manual(name = "", values = targ_line_lty)+
+
+        #
+        # ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
+        #                     lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
         # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
         #                     lty = 2, na.rm = TRUE) +
         ggplot2::geom_jitter(ggplot2::aes(color = "black", shape = Quality,
@@ -688,7 +725,7 @@ getVPSSI <- function(TargetSiteID,
                        axis.ticks.y = ggplot2::element_blank())
 
       if(targetSampleLabels == TRUE){
-        temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs)
+
 
         p1 <- p1+
           ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,

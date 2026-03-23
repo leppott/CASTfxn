@@ -451,17 +451,19 @@ getSiteInfo <- function(TargetSiteID,
     message(msg)
   }## IF ~ dir.exists(dir_photo)==TRUE & length(list.files(dir_photo)) > 0 ~ END
 
-  if (!have.photos) {
-    message(paste0("No site photos are available for ", TargetSiteID))
+  # LCN 3/23/26 commenting out since we removed site photos from the report
 
-    gap.statement <- data.frame(
-      fxnname = "getSiteInfo",
-      condition = "Photos",
-      result = "0",
-      comment = "Site photos are not available"
-    )
-
-    df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+  # if (!have.photos) {
+  #   message(paste0("No site photos are available for ", TargetSiteID))
+  #
+  #   gap.statement <- data.frame(
+  #     fxnname = "getSiteInfo",
+  #     condition = "Photos",
+  #     result = "0",
+  #     comment = "Site photos are not available"
+  #   )
+  #
+  #   df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
     # gap.photos <- cbind.data.frame("getSiteInfo", "photos", 0,
     #                                "Site photos are not available.")
@@ -474,7 +476,7 @@ getSiteInfo <- function(TargetSiteID,
     # #             row.names = FALSE, sep = "\t")
     # utils::write.table(gap.photos, fn.gaps, append = TRUE, col.names = FALSE,
     #                    row.names = FALSE, sep = ",")
-  }## IF ~ !have.photos ~ END
+  #}## IF ~ !have.photos ~ END
 
   message("Completed transferring any available site files.")
 

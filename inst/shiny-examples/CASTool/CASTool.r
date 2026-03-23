@@ -37,7 +37,6 @@ if(boo_Shiny == FALSE){
   region <- "DEPied" # Name of region
 
   # Helper packages
-
   pakInd <- setdiff("pak", .packages(all.available = TRUE))
   if(rlang::is_empty(pakInd)==FALSE){
     install.packages("pak")
@@ -68,6 +67,7 @@ if(boo_Shiny == FALSE){
   # Source all functions
   devtools::load_all()
 
+  useBC <- FALSE
 } else {
 
   # Shiny
@@ -238,7 +238,7 @@ for (b in seq_along(biocommlist)) {
   calcRelAbund       <- as.logical(dplyr::select(data_CASTmeta, calcRelAbund))
   if (bio == "bmi") {
     bmiIndexGp       <- data_CASTmeta %>% dplyr::pull(bmiIndexGp) %>% stringr::str_split(", |,") %>% unlist()
-    useBC            <- as.logical(dplyr::select(data_CASTmeta, useBC))
+    #useBC            <- as.logical(dplyr::select(data_CASTmeta, useBC))
   }
   if (bio == "alg") {
     algIndexGp       <- data_CASTmeta %>% dplyr::pull(algIndexGp) %>% stringr::str_split(", |,") %>% unlist()
@@ -507,6 +507,10 @@ for (b in seq_along(biocommlist)) {
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
 
+  responsesOutput <- data.frame(MetricName = character(),
+                                MetricLabel = character(),
+                                BioComm = character())
+
   if (bio == "bmi") {
     # Read bmi data files
     message("Reading BMI data files")
@@ -523,6 +527,11 @@ for (b in seq_along(biocommlist)) {
     data_bmiMetricsInfo <- list.bmiData$data_bioMetricsInfo
     data_bmiCounts      <- list.bmiData$data_bioCounts
     data_bmiMasterTaxa  <- list.bmiData$data_bioMasterTaxa
+
+    responsesOutput <- responsesOutput |>
+      dplyr::bind_rows(data_bmiMetricsInfo |>
+                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::mutate(BioComm = bio))
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     data_bmiCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
@@ -555,6 +564,11 @@ for (b in seq_along(biocommlist)) {
     data_algCounts      <- list.algData$data_bioCounts
     data_algMasterTaxa  <- list.algData$data_bioMasterTaxa
 
+    responsesOutput <- responsesOutput |>
+      dplyr::bind_rows(data_algMetricsInfo |>
+                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::mutate(BioComm = bio))
+
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     data_algCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
                                          df_stress = data_Stress,
@@ -583,6 +597,11 @@ for (b in seq_along(biocommlist)) {
     data_fishMetricsInfo <- list.fishData$data_bioMetricsInfo
     data_fishCounts      <- list.fishData$data_bioCounts
     data_fishMasterTaxa  <- list.fishData$data_bioMasterTaxa
+
+    responsesOutput <- responsesOutput |>
+      dplyr::bind_rows(data_fishMetricsInfo |>
+                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::mutate(BioComm = bio))
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
     data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites,
@@ -1614,7 +1633,7 @@ for (site in seq_len(nrow(df_targets))) {
 
       } else { # no sstvs
 
-        msg <- "No site stressors have stressor specific tolerance values"
+        msg <- "No site stressors have stressor-specific tolerance values"
         message(msg)
 
         gap.statement <- data.frame(
@@ -1638,34 +1657,59 @@ for (site in seq_len(nrow(df_targets))) {
 
       if (length(stressors.ssi) > 0) { # one or more stressors.ssi
 
-        list.VPSSIscores <- getVPSSI(TargetSiteID     = TargetSiteID,
-                                   stressors.ssi    = stressors.ssi,
-                                   df_stressinfo    = df_stressorMetadata,
-                                   df_paired        = df_PairedStressResp,
-                                   biocomm          = bioComm,
-                                   df_bioMetricData = bioMetricData,
-                                   df_bioMetricInfo = bioMetricInfo,
-                                   colBio           = bioIndexGp,
-                                   plotvars         = data_plotvars,
-                                   plotdpi          = plot_dpi,
-                                   plotH            = plot_H,
-                                   plotW            = plot_W,
-                                   plotunits        = plot_units,
-                                   dir_plots        = dir_results,
-                                   dir_sub          = "_WoE",
-                                   boo_plot         = boo.plot.user,
-                                   targetSampleLabels = targetSampleLabels)
+        info.stress.ssi <- df_stressorMetadata %>%
+          dplyr::filter(Stressor %in% stressors.ssi) %>%
+          dplyr::select(Stressor, SSIndex, Label, LogTransf)
 
-        df_VPSSIscores <- list.VPSSIscores$df.scores
+        info.ssi <- bioMetricInfo %>%
+          dplyr::filter(MetricName %in% unique(info.stress.ssi$SSIndex))
 
-        if (nrow(df_VPSSIscores) != 0) { # LCN changed 20250917
-          df_LoE <- rbind(df_LoE, df_VPSSIscores)
+        if(nrow(info.ssi)==0){
+          msg <- paste0(paste(unique(info.stress.ssi$SSIndex), collapse = ", "), " listed as stressor-specific index in stressor metadata not found as metric to be included in ", bioComm, " response metadata.")
+          message(msg)
+
+          gap.statement <- data.frame(
+            fxnname = "getVPSSIscores",
+            condition = TargetSiteID,
+            result = "0",
+            comment = msg
+          )
+
+          gaps <- gaps |>
+            dplyr::bind_rows(gap.statement)
+
+        } else{
+          list.VPSSIscores <- getVPSSI(TargetSiteID     = TargetSiteID,
+                                       stressors.ssi    = stressors.ssi,
+                                       df_stressinfo    = df_stressorMetadata,
+                                       df_paired        = df_PairedStressResp,
+                                       biocomm          = bioComm,
+                                       df_bioMetricData = bioMetricData,
+                                       df_bioMetricInfo = bioMetricInfo,
+                                       colBio           = bioIndexGp,
+                                       plotvars         = data_plotvars,
+                                       plotdpi          = plot_dpi,
+                                       plotH            = plot_H,
+                                       plotW            = plot_W,
+                                       plotunits        = plot_units,
+                                       dir_plots        = dir_results,
+                                       dir_sub          = "_WoE",
+                                       boo_plot         = boo.plot.user,
+                                       targetSampleLabels = targetSampleLabels)
+
+          df_VPSSIscores <- list.VPSSIscores$df.scores
+
+          if (nrow(df_VPSSIscores) != 0) { # LCN changed 20250917
+            df_LoE <- rbind(df_LoE, df_VPSSIscores)
+          }
+          rm(df_VPSSIscores)
         }
-        rm(df_VPSSIscores)
+
+
 
       } else { # no ssis
 
-        msg <- "No site stressors have stressor specific indices"
+        msg <- "No site stressors have stressor-specific indices"
         message(msg)
 
         gap.statement <- data.frame(
@@ -1752,6 +1796,13 @@ for (site in seq_len(nrow(df_targets))) {
                       TargetSiteID,
                       paste0(TargetSiteID,
                              "_InitialStressors.csv")),
+            row.names = FALSE)
+
+  write.csv(responsesOutput,
+            file.path(dir_results,
+                      TargetSiteID,
+                      paste0(TargetSiteID,
+                             "_Responses.csv")),
             row.names = FALSE)
 
   # Shiny add ons
@@ -1862,7 +1913,7 @@ for (site in seq_len(nrow(df_targets))) {
     dplyr::bind_rows(tryCatch(list.StressorMetadata$df_gap, error = function(e) NULL)) |>
     dplyr::bind_rows(tryCatch(list.BioStressorResponses$df_gap, error = function(e) NULL)) |>
     dplyr::bind_rows(tryCatch(list.VerifiedPredictions$df_gap, error = function(e) NULL)) |>
-    dplyr::bind_rows(tryCatch(list.VPSSI$df_gap, error = function(e) NULL))
+    dplyr::bind_rows(tryCatch(list.VPSSIscores$df_gap, error = function(e) NULL))
 
   write.csv(gaps, file.path(dir_results,
                                 TargetSiteID,

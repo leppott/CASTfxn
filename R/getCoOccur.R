@@ -284,14 +284,14 @@ getCoOccur <- function(TargetSiteID,
     ## Score samples ####
     ## Use different criteria for some parameters (Specifically pH and DO)
     ## Score pH in both directions
-    if (stressname == "pH_alkEnv") { # pH is a decreaser in alkaline environments
-      # Parameter is pH; need two scores, one for acid environments & one for alkaline
+    if (stressname == "pH_low") {
+      # Parameter is pH; need two scores, one for low pH and one for high
       df.j <- df.j %>%
         dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue < pHlimLow ~ 1,
                                                 StressorValue < q25 ~ 1,
                                                 StressorValue > q50 ~ -1,
                                                 TRUE ~ 0))
-    } else if (stressname == "pH_acidicEnv") {
+    } else if (stressname == "pH_high") {
       df.j <- df.j %>%
         dplyr::mutate(Sc_Box = dplyr::case_when(StressorValue > pHlimHigh ~ 1,
                                                 StressorValue > q75 ~ 1,
@@ -329,7 +329,11 @@ getCoOccur <- function(TargetSiteID,
 
     ## Box Plot of Not Degraded Comparator sites
     scores <- unlist(as.vector(df.j$Sc_Box))
-    scores.text <- tidyr::replace_na(scores, "NE")
+    #scores.text <- tidyr::replace_na(scores, "NE")
+    scores.text <- ifelse(is.na(scores), "NE",
+                          ifelse(scores == 1, "1 (Supporting)",
+                                 ifelse(scores == 0, "0 (Indeterminate)",
+                                        ifelse(scores == -1, "-1 (Refuting)", "NA"))))
     lab.Score <- paste0("Score = ", paste0(scores.text, collapse = ", "))
     lab.N <- paste0("n = ", unique(df.j$n) - n.target.samps)
 
@@ -383,7 +387,7 @@ getCoOccur <- function(TargetSiteID,
     targetlabs <- unlist(df.j[, "RespSampleID"])
     xseg <- i.Group + 0.5
 
-    temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs)
+    temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, case = "Target sample value(s)")
 
 # p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
 #                                                 x = IncaseCol,
@@ -397,11 +401,14 @@ getCoOccur <- function(TargetSiteID,
                             #na.rm = TRUE,
                             staplewidth = 0.5) +
       ggplot2::coord_flip() +
-      ggplot2::geom_hline(yintercept = targetvals, color = targ_line_col,
-                          lty = targ_line_lty, lwd = targ_line_lwd, na.rm = TRUE) +
+      ggplot2::geom_hline(data = temp_df, ggplot2::aes(yintercept = yval, lty = case), color = targ_line_col,
+                           lwd = targ_line_lwd, na.rm = TRUE, show.legend = FALSE) +
+      # dummy line to get orientation correct for legend
+      ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample value(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
+      ggplot2::guides(linetype = ggplot2::guide_legend(order = 1, override.aes = list( alpha = 1, colour = targ_line_col, linewidth = targ_line_lwd )))+
+      ggplot2::scale_linetype_manual(name = "", values = targ_line_lty)+
       # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
       #                     lty = 2, na.rm = TRUE) +
-      #ggplot2::geom_label(ggplot2::aes(x = i.Group, y = targetvals, label = targetlabs, vjust = 0.1), size = 8, size.unit = "pt")
       ggplot2::geom_jitter(ggplot2::aes(color = Quality, shape = Quality,
                                            fill = Quality), alpha = 0.5,
                               na.rm = TRUE, width = 0.25, height = 0.01) +

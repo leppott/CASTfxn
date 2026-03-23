@@ -261,6 +261,9 @@ getSufficiency <- function(TargetSiteID,
       j_SR_score <- cut(j_SR_predict,
                         breaks = c(0, 0.2, 0.5, 1),
                         labels = c(-1, 0, 1))
+      j_SR_score_txt <- ifelse(j_SR_score == "1", "1 (Supporting)",
+                               ifelse(j_SR_score == "0", "0 (Indeterminate)",
+                                      ifelse(j_SR_score == "-1", "-1 (Refuting)", "NA")))
 
       # plot ####
       # File Names
@@ -275,7 +278,7 @@ getSufficiency <- function(TargetSiteID,
       subtitleSR <- stringr::str_wrap(subtitleSR, 100)
 
       captionSR <- paste(paste0("All inside-the-case samples (n=", n_cc_df_plot, ")."),
-                         paste0("Score = ", paste(j_SR_score, collapse = ", "), "."),
+                         paste0("Score = ", paste(j_SR_score_txt, collapse = ", "), "."),
                          sep = "\n")
 
       # Annotation values
@@ -298,6 +301,8 @@ getSufficiency <- function(TargetSiteID,
                       StressorCode,
                       StressorValue, n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
+      temp_df <- data.frame(xval = targ_vals, yval = 0.9, labelval = df_target$RespSampleID, case = "Target sample value(s)")
+
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
         ggplot2::geom_point(ggplot2::aes(color = "black", shape = Quality,
@@ -312,9 +317,13 @@ getSufficiency <- function(TargetSiteID,
         ggplot2::scale_shape_manual(name = legendtitle,
                                     breaks = c("Degraded", "Not degraded"),
                                     values = bio_shape, drop = FALSE) +
-        ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col,
-                            lty = targ_line_lty, lwd = targ_line_lwd,
+        # ggplot2::geom_vline(xintercept = targ_vals, color = targ_line_col,
+        #                     lty = targ_line_lty, lwd = targ_line_lwd,
+        #                     na.rm = TRUE) +
+        ggplot2::geom_vline(data = temp_df, ggplot2::aes(xintercept = xval, lty = case), color = targ_line_col,
+                           lwd = targ_line_lwd,
                             na.rm = TRUE) +
+        ggplot2::scale_linetype_manual(name = "", values = targ_line_lty)+
         ggplot2::geom_hline(yintercept = c(0.2, 0.5), color = "black",
                             lty = 2, na.rm = TRUE) +
         ggplot2::annotate("segment", y = negStart, yend = negEnd, x = xseg,
@@ -361,7 +370,7 @@ getSufficiency <- function(TargetSiteID,
                       caption = captionSR)
 
       if(targetSampleLabels == TRUE){
-        temp_df <- data.frame(xval = targ_vals, yval = 0.9, labelval = df_target$RespSampleID)
+
 
         p1 <- p1 +
           ggrepel::geom_label_repel(data = temp_df, ggplot2::aes(x = xval, y = yval, label = labelval, group = NA), color = targ_line_col,

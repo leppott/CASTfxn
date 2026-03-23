@@ -775,17 +775,30 @@ getBioStressorResponses <- function(TargetSiteID,
                 (abs(pval.corr_cl) <= p.val_cutoff) && (r2_cl >= r2_cutoff)) { ##IF~length~START
               # print to console p (stressName) and q (respName)
               if (slope.dir_cl == exp.dir) {
-                txt.score_cl <- "1"
+                #txt.score_cl <- "1"
+                txt.score_cl <- paste0("1 (Supporting): slope has expected sign, R2 >= ", r2_cutoff, ", p-value <= ", p.val_cutoff)
                 sr.score_cl = 1
               } else if (slope.dir_cl != exp.dir) {
-                txt.score_cl <- "-1"
+                #txt.score_cl <- "-1"
+                txt.score_cl <- paste0("-1 (Refuting): slope does not have expected sign, R2 >= ", r2_cutoff, ", p-value <= ", p.val_cutoff)
                 sr.score_cl = -1
               } else {
                 txt.score_cl <- "inconclusive"
                 sr.score_cl = 0
               }
             } else {
-              txt.score_cl <- "0"
+              if(r2_cl < r2_cutoff){
+                text_r2_cl <- paste0("R2 < ", r2_cutoff)
+              } else{
+                text_r2_cl <- paste0("R2 >= ", r2_cutoff)
+              }
+              if(abs(pval.corr_cl) > p.val_cutoff){
+                text_pval_cl <- paste0(", p-value > ", p.val_cutoff)
+              } else{
+                text_pval_cl <- paste0(", p-value <= ", p.val_cutoff)
+              }
+              #txt.score_cl <- "0"
+              txt.score_cl <- paste0("0 (Indeterminate): ", text_r2_cl, text_pval_cl)
               sr.score_cl = 0
             }##IF~length~START
           } else { # <=2 sites in cluster; cannot be scored
@@ -799,17 +812,31 @@ getBioStressorResponses <- function(TargetSiteID,
                 (abs(pval.corr_all) <= p.val_cutoff) && (r2_all >= r2_cutoff)) { ##IF~length~START
               # print to console p (stressName) and q (respName)
               if (slope.dir_all == exp.dir) {
-                txt.score_all <-  "1"
+                #txt.score_all <-  "1"
+                txt.score_all <- paste0("1 (Supporting): slope has expected sign, R2 >= ", r2_cutoff, ", p-value <= ", p.val_cutoff)
                 sr.score_all = 1
               } else if (slope.dir_all != exp.dir) {
-                txt.score_all <- "-1"
+                #txt.score_all <- "-1"
+                txt.score_all <- paste0("-1 (Refuting): slope does not have expected sign, R2 >= ", r2_cutoff, ", p-value <= ", p.val_cutoff)
                 sr.score_all = -1
               } else {
                 txt.score_all <- "inconclusive"
                 sr.score_all = 0
               }
             } else {
-              txt.score_all <- "0"
+              #txt.score_all <- "0"
+              if(r2_all < r2_cutoff){
+                text_r2_all <- paste0("R2 < ", r2_cutoff)
+              } else{
+                text_r2_all <- paste0("R2 >= ", r2_cutoff)
+              }
+              if(abs(pval.corr_all) > p.val_cutoff){
+                text_pval_all <- paste0(", p-value > ", p.val_cutoff)
+              } else{
+                text_pval_all <- paste0(", p-value <= ", p.val_cutoff)
+              }
+              #txt.score_cl <- "0"
+              txt.score_all <- paste0("0 (Indeterminate): ", text_r2_all, text_pval_all)
               sr.score_all = 0
             }##IF~length~START
           } else { # boo_all == FALSE
@@ -917,10 +944,10 @@ getBioStressorResponses <- function(TargetSiteID,
         ##IF.equation.START
         str_caption_cl <- paste(paste0("Regression (inside-the-case samples): ",
                                        "y = ", slope_cl, " x + ", intercept_cl),
-                                paste0("r2 = ", r2_cl),
+                                paste0("R2 = ", r2_cl),
                                 paste0("p-value = ", pval.corr_cl),
                                 paste0("n = ", n_str_cl),
-                                paste0("score = ", txt.score_cl),
+                                paste0("\nscore = ", txt.score_cl),
                                 sep = " ~ ")
       } else {
         str_caption_cl <- paste0("Regression (inside-the-case samples): ",
@@ -931,10 +958,10 @@ getBioStressorResponses <- function(TargetSiteID,
         ##IF.equation.START
         str_caption_all <- paste(paste0("Regression (outside-the-case samples): ",
                                         "y = ", slope_all, " x + ", intercept_all),
-                                 paste0("r2 = ", r2_all),
+                                 paste0("R2 = ", r2_all),
                                  paste0("p-value = ", pval.corr_all),
                                  paste0("n = ", n_str_all),
-                                 paste0("score = ", txt.score_all),
+                                 paste0("\nscore = ", txt.score_all),
                                  sep = " ~ ")
       } else {
         str_caption_all <- "Regression (outside-the-case): Fewer than 3 samples."
@@ -1011,21 +1038,31 @@ getBioStressorResponses <- function(TargetSiteID,
 
           if(targetSampleLabels == TRUE){
             p_SR_all <- p_SR_all +
-              ggplot2::geom_point(data=df_plot_site,
-                                  ggplot2::aes(x = Stressor, y = Response),
+              # ggplot2::geom_point(data=df_plot_site|>
+              #                       dplyr::mutate(Case = "Target sample value(s)"),
+              #                     ggplot2::aes(x = Stressor, y = Response),
+              #                     color = "black", shape = bio_shape_out[3],
+              #                     fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
+              #                     na.rm = TRUE)+
+              ggplot2::geom_point(data=df_plot_site|>
+                                    dplyr::mutate(Case = "Target sample value(s)"),
+                                  ggplot2::aes(x = Stressor, y = Response, size = Case),
                                   color = "black", shape = bio_shape_out[3],
-                                  fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
+                                  fill = bio_fill_out[3],
                                   na.rm = TRUE)+
+              ggplot2::scale_size_manual(name = "", values = bio_size_out[3]*1.5)+
               ggrepel::geom_label_repel(data = df_plot_site,
                                         ggplot2::aes(x = Stressor, y = Response, label = RespSampleID), color = bio_fill_out[3],
                                         size = 8/ggplot2::.pt)
           } else{
             p_SR_all <- p_SR_all +
-              ggplot2::geom_point(data=df_plot_site,
-                                  ggplot2::aes(x = Stressor, y = Response),
+              ggplot2::geom_point(data=df_plot_site|>
+                                    dplyr::mutate(Case = "Target sample value(s)"),
+                                  ggplot2::aes(x = Stressor, y = Response, size = Case),
                                   color = "black", shape = bio_shape_out[3],
-                                  fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
-                                  na.rm = TRUE)
+                                  fill = bio_fill_out[3],
+                                  na.rm = TRUE)+
+              ggplot2::scale_size_manual(name = "", values = bio_size_out[3]*1.5)
           }
         } else {
           p_SR_all <- p_SR_all +
@@ -1138,21 +1175,25 @@ getBioStressorResponses <- function(TargetSiteID,
 
             if(targetSampleLabels == TRUE){
               p_SR_cl <- p_SR_cl +
-                ggplot2::geom_point(data=df_plot_site,
-                                    ggplot2::aes(x = Stressor, y = Response),
-                                    color = "black", shape = bio_shape_in[3],
-                                    fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
-                                    na.rm = TRUE) +
+                ggplot2::geom_point(data=df_plot_site|>
+                                      dplyr::mutate(Case = "Target sample value(s)"),
+                                    ggplot2::aes(x = Stressor, y = Response, size = Case),
+                                    color = "black", shape = bio_shape_out[3],
+                                    fill = bio_fill_out[3],
+                                    na.rm = TRUE)+
+                ggplot2::scale_size_manual(name = "", values = bio_size_out[3]*1.5)+
               ggrepel::geom_label_repel(data = df_plot_site,
                                         ggplot2::aes(x = Stressor, y = Response, label = RespSampleID), color = bio_fill_out[3],
                                         size = 8/ggplot2::.pt)
             } else{
               p_SR_cl <- p_SR_cl +
-                ggplot2::geom_point(data=df_plot_site,
-                                    ggplot2::aes(x = Stressor, y = Response),
-                                    color = "black", shape = bio_shape_in[3],
-                                    fill = bio_fill_in[3], size = bio_size_in[3]*1.5,
-                                    na.rm = TRUE)
+                ggplot2::geom_point(data=df_plot_site|>
+                                      dplyr::mutate(Case = "Target sample value(s)"),
+                                    ggplot2::aes(x = Stressor, y = Response, size = Case),
+                                    color = "black", shape = bio_shape_out[3],
+                                    fill = bio_fill_out[3],
+                                    na.rm = TRUE)+
+                ggplot2::scale_size_manual(name = "", values = bio_size_out[3]*1.5)
             }
 
           } else {
@@ -1320,10 +1361,10 @@ getBioStressorResponses <- function(TargetSiteID,
                                       limits = c(-1, 1), guide = "colorbar") +
         ggplot2::coord_flip() +
         ggplot2::theme_bw() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = ggplot2::rel(1.5)),
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = ggplot2::rel(1.3)),
                        legend.title = ggplot2::element_text(size = ggplot2::rel(1)),
                        legend.text = ggplot2::element_text(size = ggplot2::rel(0.8)),
-                       axis.title = ggplot2::element_text(size = ggplot2::rel(1.5)),
+                       axis.title = ggplot2::element_text(size = ggplot2::rel(1.3)),
                        axis.text.x = ggplot2::element_text(color = "black", size = ggplot2::rel(1), angle = 45,
                                                            hjust = 1),
                        axis.text.y = ggplot2::element_text(color = "black", size = ggplot2::rel(1), angle = 30)) +

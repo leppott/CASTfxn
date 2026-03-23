@@ -261,12 +261,15 @@ A note of caution:
     }
     
     dfLoEbyStressor <- dfLoEbyStressor %>%
-      dplyr::mutate(Blank1 = NA) %>%
+      #dplyr::mutate(Blank1 = NA) %>%
       dplyr::rename(BioGradIn = Gradient..inside., 
                     BioGradOut = Gradient..outside.) %>%
       dplyr::select(Stressor, RespSampleID, RespSampleDate, CO, Suff, 
-                    BioGradIn, TS, VP_SSTV, VP_SSIbox, VP_SSIlog, Blank1, 
+                    BioGradIn, TS, VP_SSTV, VP_SSIbox, VP_SSIlog,
                     BioGradOut) %>%
+           # dplyr::select(Stressor, RespSampleID, RespSampleDate, CO, Suff, 
+           #          BioGradIn, TS, VP_SSTV, VP_SSIbox, VP_SSIlog, Blank1, 
+           #          BioGradOut) %>%
       dplyr::arrange(Stressor, RespSampleDate)
     
     if (report_format == "html") {
@@ -275,37 +278,97 @@ A note of caution:
                            "stressor and sample.</strong></h5>")
       cat(tblCaption)
 
-      sketch <- htmltools::withTags(table(
-        class = 'display',
-        thead(
-          tr(
-            th(rowspan = 3, 'Stressor'),
-            th(rowspan = 3, 'Sample ID'),
-            th(rowspan = 3, 'Sample Date'),
-            th(colspan = 7, 'Inside-the-Case'),
-            th(rowspan = 3, ''),
-            th(rowspan = 1, 'Outside the Case')
-          ),
-          tr(
-            th(rowspan = 2, 'Co-Occurrence'),
-            th(rowspan = 2, 'Sufficiency'),
-            th(rowspan = 2, 'Biological Gradient'),
-            th(rowspan = 2, 'Time Sequence'),
-            th(colspan = 3, 'Verified Prediction'),
-            th(rowspan = 2, 'Biological Gradient')
-          ),
-          tr(
-            lapply(c('SSTolVals', 'SSI Co-Occurrence', 'SSI Sufficiency'), th)
-          )
-        )
-      ))
+      # sketch <- htmltools::withTags(table(
+      #   class = 'display',
+      #   thead(
+      #     tr(
+      #       th(rowspan = 3, 'Stressor'),
+      #       th(rowspan = 3, 'Sample ID'),
+      #       th(rowspan = 3, 'Sample Date'),
+      #       th(colspan = 7, 'Inside-the-Case'),
+      #       th(rowspan = 3, ''),
+      #       th(rowspan = 1, 'Outside the Case')
+      #     ),
+      #     tr(
+      #       th(rowspan = 2, 'Co-Occurrence'),
+      #       th(rowspan = 2, 'Sufficiency'),
+      #       th(rowspan = 2, 'Biological Gradient'),
+      #       th(rowspan = 2, 'Time Sequence'),
+      #       th(colspan = 3, 'Verified Prediction'),
+      #       th(rowspan = 2, 'Biological Gradient')
+      #     ),
+      #     tr(
+      #       lapply(c('SSTolVals', 'SSI Co-Occurrence', 'SSI Sufficiency'), th)
+      #     )
+      #   )
+      # ))
+      # 
+      # DT::datatable(dfLoEbyStressor,
+      #               # caption = tblCaption,
+      #               container = sketch,
+      #               extensions = 'FixedColumns',
+      #               class = 'striped hover row-border',
+      #               filter = 'none',
+      #               rownames = FALSE,
+      #               escape = FALSE,
+      #               options = list(layout = list(topStart = 'pageLength',
+      #                                            topEnd = 'search',
+      #                                            bottomStart = 'info',
+      #                                            bottomEnd = 'paging'),
+      #                              # caption = list(captionSide = 'top',
+      #                              #                padding = '12px',
+      #                              #                fontWeight = 'bold'),
+      #                              pageLength = 10,
+      #                              bSort = FALSE,
+      #                              scrollX = TRUE,
+      #                              fixedColumns = list(leftColumns = 1),
+      #                              autoWidth = FALSE,
+      #                              menu = ifelse(nrow(dfLoEbyStressor) > 10,
+      #                                            c(10, 25, 50, 100), 10),
+      #                              columnDefs = list(#list(width = '280px',
+      #                                                #      targets = 0),
+      #                                                # list(width = '140px',
+      #                                                #      targets = 1),
+      #                                                # list(className = 'dt-left',
+      #                                                #      targets = 1:2),
+      #                                                # list(className = 'dt-head-center',
+      #                                                #      targets = 4:ncol(dfLoEbyStressor)),
+      #                                                # list(className = 'dt-center',
+      #                                                #      targets = 3:12),
+      #                                                list(className = 'dt-bottom',
+      #                                                     targets = "_all")))) %>%
+      #   DT::formatStyle(columns = colnames(dfLoEbyStressor), fontSize = '80%') %>%
+      #   DT::formatStyle("RespSampleID", "white-space" = "nowrap")
+      
+     sketch <- htmltools::withTags(table(class = 'display', thead(
+        tr(
+          th(colspan = 3, ''),
+          th(colspan = 7, 'Inside-the-Case'),
+          th(colspan = 1, 'Outside the Case')
+        ),
+        tr(
+          th(rowspan = 2, 'Stressor'),
+          th(rowspan = 2, 'Sample ID'),
+          th(rowspan = 2, 'Sample Date'),
+          th(rowspan = 2, 'Co-Occurrence'),
+          th(rowspan = 2, 'Sufficiency'),
+          th(rowspan = 2, 'Biological Gradient'),
+          th(rowspan = 2, 'Time Sequence'),
+          th(colspan = 3, 'Stressor-Specific'),
+          th(rowspan = 2, 'Biological Gradient')
+        ),
+        tr(lapply(
+          c('SSTolVals', 'SSI Co-Occurrence', 'SSI Sufficiency'), th
+        ))
+      )))
+
 
       DT::datatable(dfLoEbyStressor,
                     # caption = tblCaption,
                     container = sketch,
                     extensions = 'FixedColumns',
                     class = 'striped hover row-border',
-                    filter = 'top',
+                    filter = 'none', 
                     rownames = FALSE,
                     escape = FALSE,
                     options = list(layout = list(topStart = 'pageLength',
@@ -316,7 +379,9 @@ A note of caution:
                                    #                padding = '12px',
                                    #                fontWeight = 'bold'),
                                    pageLength = 10,
-                                   bSort = FALSE,
+                                   #bSort = TRUE,
+                                   ordering = TRUE, 
+                                   orderCellsTop = FALSE,
                                    scrollX = TRUE,
                                    fixedColumns = list(leftColumns = 1),
                                    autoWidth = FALSE,
@@ -335,6 +400,7 @@ A note of caution:
                                                      list(className = 'dt-bottom',
                                                           targets = "_all")))) %>%
         DT::formatStyle(columns = colnames(dfLoEbyStressor), fontSize = '80%') %>%
+        DT::formatStyle(columns = colnames(dfLoEbyStressor), `text-align` = "left") |> 
         DT::formatStyle("RespSampleID", "white-space" = "nowrap")
       
     } else {
@@ -407,7 +473,7 @@ This table provides an indication of the consistency of the evidence for a candi
                    container = sketch,
                    extensions = 'FixedColumns',
                    class = 'striped hover row-border',
-                   filter = 'top',
+                   filter = 'none',
                    rownames = FALSE,
                    escape = FALSE,
                    options = list(layout = list(topStart = 'pageLength',
