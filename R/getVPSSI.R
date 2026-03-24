@@ -155,21 +155,21 @@ getVPSSI <- function(TargetSiteID,
     # if(nrow(info.ssi)==0){
     #   return(data.frame())
     # }
-    if(length(setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)) != 0){
-      missing_metrics <- setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)
-
-      msg <- paste0(paste(missing_metrics, collapse = ", "), " listed as stressor-specific index in stressor metadata but not found as metric to be included in ", bioComm, " metadata.")
-      message(msg)
-
-      gap.statement <- data.frame(
-        fxnname = "getVPSSI",
-        condition = "Missing stressor-specific index",
-        result = "0",
-        comment = msg
-      )
-
-      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
-    }
+    # if(length(setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)) != 0){
+    #   missing_metrics <- setdiff(unique(info.stress$SSIndex), info.ssi$MetricName)
+    #
+    #   msg <- paste0(paste(missing_metrics, collapse = ", "), " listed as stressor-specific index in stressor metadata but not found as metric to be included in ", bioComm, " metadata.")
+    #   message(msg)
+    #
+    #   gap.statement <- data.frame(
+    #     fxnname = "getVPSSI",
+    #     condition = "Missing stressor-specific index",
+    #     result = "0",
+    #     comment = msg
+    #   )
+    #
+    #   df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+    # }
 
 
     # Loop over SSIndices ----
@@ -201,21 +201,13 @@ getVPSSI <- function(TargetSiteID,
 
         gap.statement <- data.frame(
           fxnname = "getVPSSI",
-          condition = "No SSI data available",
-          result = "0",
+          condition = "No stressor-specific index data available",
+          result = ssi.name,
           comment = paste0(ssi.name, " not in ", biocomm, " metric data.")
         )
 
         df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
-        # gapcomment <- paste0(ssi.name, " not in ", biocomm, " metric data.")
-        # gaps <- cbind.data.frame("getVPSSI", "No SSI data available", 0,
-        #                          gapcomment)
-        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-        # fn.gaps <- file.path(dir_plots, TargetSiteID,fn.gaps)
-        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-        #             row.names = FALSE, sep = "\t")
         next
 
       } #END check for ssi in metric data

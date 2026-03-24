@@ -86,7 +86,7 @@ which may differ between biological communities.
 
 #### Stressor(s) initially evaluated
 
-*Stressors marked as 'use in stressor id' in the stressor metadata.*
+*Stressors marked as 'use in stressor id' in the stressor metadata and present in the stressor data.*
 
 ```{r bmiInitStressors, echo = FALSE}  
 

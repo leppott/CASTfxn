@@ -173,14 +173,6 @@ getVerifiedPredictions <- function(TargetSiteID,
         df_gap <- df_gap |>
           dplyr::bind_rows(gap.statement)
 
-        # gapcomment <- paste0("No ", biocomm, " taxa have tolerance ",
-        #                      "values available for this SSTV.")
-        # gaps <- cbind.data.frame("getVerifiedPredictions", SSTVlabel, 0, gapcomment)
-        # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-        # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-        # fn.gaps <- file.path(dir_plots, TargetSiteID, fn.gaps)
-        # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-        #             row.names = FALSE, sep = "\t")
         if (exists("deleteSSTVname")) {
           deleteSSTVnames <- c(deleteSSTVnames, name)
         } else {

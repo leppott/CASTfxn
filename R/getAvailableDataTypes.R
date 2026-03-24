@@ -63,11 +63,6 @@ getAvailableDataTypes <- function(TargetSiteID,
   # Initialize gaps df
   df_gap <- data.frame(fxnname = character(), condition = character(), result = character(), comment = character())
 
-  # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-  # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-  # gapsCols <- c("fxnname", "condition", "result", "comment")
-  # gaps <- as.data.frame(matrix(ncol = 4, nrow = 0, dimnames = list(NULL, gapsCols)))
-
   # ID stressor samples ----
   avail.data <- df_SampSummary %>%
     dplyr::filter(StationID == TargetSiteID) %>%
@@ -83,19 +78,14 @@ getAvailableDataTypes <- function(TargetSiteID,
   missingStressSamps <- setdiff(missingStressSamps, core.resp.colnames)
 
   if (length(missingStressSamps) > 0) {
-    # Write missing stressors as data gaps (if any)
+    # Write missing categories stressors as data gaps (if any)
     for (m in seq_along(missingStressSamps)) {
       missing <- missingStressSamps[m]
 
-      # gap.missing <- cbind.data.frame("general", missing, 0, "No samples available.")
-      # colnames(gap.missing) <- c("fxnname", "condition", "result", "comment")
-      # gaps <- rbind(gaps, gap.missing)
-      # rm(gap.missing)
-
       gap.statement <- data.frame(
         fxnname = "getAvailableDataTypes",
-        condition = missing,
-        result = "0",
+        condition = "Missing category of target site stressor data",
+        result = missing,
         comment = paste0("No ", missing, " samples available for ", TargetSiteID)
       )
 
@@ -117,17 +107,19 @@ getAvailableDataTypes <- function(TargetSiteID,
       dplyr::pull(StdParamName)
 
     if(length(siteDetectsAll) == 0){
-      msg <- paste("No stressor observations identified for", TargetSiteID)
-      message(msg)
+      # LCN removed 3/23/26 duplicative of gap message generated in skeleton code
 
-      gap.statement <- data.frame(
-        fxnname = "getAvailableDataTypes",
-        condition = "Number of stressor observations",
-        result = "0",
-        comment = msg
-      )
-
-      df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
+      # msg <- paste("No stressor observations identified for", TargetSiteID)
+      # message(msg)
+      #
+      # gap.statement <- data.frame(
+      #   fxnname = "getAvailableDataTypes",
+      #   condition = "Number of stressor observations",
+      #   result = "0",
+      #   comment = msg
+      # )
+      #
+      # df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
       noStressors <- TRUE
     }
@@ -169,15 +161,11 @@ getAvailableDataTypes <- function(TargetSiteID,
           fxnname = "getAvailableDataTypes",
           condition = "BMISampleID",
           result = "0",
-          comment = "No samples available"
+          comment = paste0("No benthic macroinvertebrate samples available at ", TargetSiteID)
         )
 
         df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
-        # gap.bmi.rsp <- rbind(cbind("general", "BMISampleID", 0, "No data available."))
-        # colnames(gap.bmi.rsp) <- c("fxnname", "condition", "result", "comment")
-        # gaps <- rbind(gaps, gap.bmi.rsp)
-        # rm(gap.bmi.rsp)
       }
     }
     if (bio == "alg") {
@@ -190,15 +178,11 @@ getAvailableDataTypes <- function(TargetSiteID,
           fxnname = "getAvailableDataTypes",
           condition = "AlgSampleID",
           result = "0",
-          comment = "No samples available"
+          comment = paste0("No algae samples available at ", TargetSiteID)
         )
 
         df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
-        # gap.alg.rsp <- cbind.data.frame("general", "AlgSampleID", 0, "No data available.")
-        # colnames(gap.alg.rsp) <- c("fxnname", "condition", "result", "comment")
-        # gaps <- rbind(gaps, gap.alg.rsp)
-        # rm(gap.alg.rsp)
       }
     }
     if (bio == "fish") {
@@ -211,36 +195,14 @@ getAvailableDataTypes <- function(TargetSiteID,
           fxnname = "getAvailableDataTypes",
           condition = "FishSampleID",
           result = "0",
-          comment = "No samples available"
+          comment = paste0("No fish samples available at ", TargetSiteID)
         )
 
         df_gap <- df_gap |> dplyr::bind_rows(gap.statement)
 
-        # gap.fish.rsp <- cbind.data.frame("general", "FishSampleID", 0, "No data available.")
-        # colnames(gap.fish.rsp) <- c("fxnname", "condition", "result", "comment")
-        # gaps <- rbind(gaps, gap.fish.rsp)
-        # rm(gap.fish.rsp)
       }
     }
   }
-
-  # if (nrow(gaps) > 0) {
-  #   # fn.gaps <- file.path(dir_results, TargetSiteID,
-  #   #                      paste0(TargetSiteID, "_datagaps.tab"))
-  #   fn.gaps <- file.path(dir_results, TargetSiteID,
-  #                        paste0(TargetSiteID, "_datagaps.csv"))
-  #   if (file.exists(fn.gaps)) {
-  #     # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-  #     #             row.names = FALSE, sep = "\t")
-  #     utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-  #                        row.names = FALSE, sep = ",")
-  #   } else {
-  #     # utils::write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
-  #     #             row.names = FALSE, sep = "\t")
-  #     utils::write.table(gaps, fn.gaps, append = FALSE, col.names = TRUE,
-  #                        row.names = FALSE, sep = ",")
-  #   }
-  # }
 
   if (!exists("useBMI")) {
     useBMI <- FALSE

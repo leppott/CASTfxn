@@ -493,10 +493,6 @@ getCoOccur <- function(TargetSiteID,
       message(msg)
 
       # No identified stressors may be a data gap, but may not be, either
-      gaps <- cbind.data.frame("getCoOccur",
-                               paste0(notstress, " score for ", bioComm,
-                                      " refutes"), -1, msg)
-
       gap.statement <- data.frame(
         fxnname = "getCoOccur",
         condition = paste0(notstress, " score for ", bioComm,
@@ -507,11 +503,6 @@ getCoOccur <- function(TargetSiteID,
       df_gap <- df_gap |>
         dplyr::bind_rows(df_gap)
 
-      # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-      # fn.gaps <- paste0(TargetSiteID,"_datagaps.tab")
-      # fn.gaps <- file.path(dir_path, fn.gaps)
-      # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-      #             row.names = FALSE, sep = "\t")
     }
     df.NE <- as.data.frame(notstressors)
     names(df.NE) <- paste0(biocomm, "_NotEvaluated")

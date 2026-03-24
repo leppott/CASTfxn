@@ -86,7 +86,7 @@ which may differ between biological communities.
 
 #### Stressor(s) initially evaluated
 
-*Stressors marked as 'use in stressor id' in the stressor metadata.*
+*Stressors marked as 'use in stressor id' in the stressor metadata and present in the stressor data.*
 
 ```{r fishInitStressors, echo = FALSE}  
 
@@ -192,32 +192,32 @@ siteDetects <- setdiff(initial_stressors, stressors_elim_any)
   }
 ```
 
-# ```{r fishElimStressors, echo = FALSE}
-# 
-#   dir.sub3 <- "_WoE"
-#   fnNE <- paste0(TargetSiteID, "_FISH_DetectsNotEvalFurther.csv")
-#   fnNE <- file.path(dir_results, TargetSiteID, "FISH", dir.sub3, fnNE)
-#   
-#   if (file.exists(fnNE)) {
-#     notEvaluated <- read.csv(fnNE, header = TRUE)
-#     NE <- merge(notEvaluated, data_stressInfo, by.x = "FISH_NotEvaluated", 
-#                 by.y = "StdParamName", all.x = TRUE) %>%
-#       dplyr::select(Label)
-#     NE <- unlist(NE)
-# 
-#     if (length(NE) > 0) {
-#       for (s in NE) {
-#         cat(paste0(bullet, " ", s, "<br>"))
-#       }
-#     } else {
-#       cat("No stressors were eliminated from the evaluation.")
-#     }
-#     
-#   } else {
-#     cat(paste("The file", fnNE, "is not accessible."))
-#   }
-#   
-# ```
+<!-- # ```{r fishElimStressors, echo = FALSE} -->
+<!-- #  -->
+<!-- #   dir.sub3 <- "_WoE" -->
+<!-- #   fnNE <- paste0(TargetSiteID, "_FISH_DetectsNotEvalFurther.csv") -->
+<!-- #   fnNE <- file.path(dir_results, TargetSiteID, "FISH", dir.sub3, fnNE) -->
+<!-- #    -->
+<!-- #   if (file.exists(fnNE)) { -->
+<!-- #     notEvaluated <- read.csv(fnNE, header = TRUE) -->
+<!-- #     NE <- merge(notEvaluated, data_stressInfo, by.x = "FISH_NotEvaluated",  -->
+<!-- #                 by.y = "StdParamName", all.x = TRUE) %>% -->
+<!-- #       dplyr::select(Label) -->
+<!-- #     NE <- unlist(NE) -->
+<!-- #  -->
+<!-- #     if (length(NE) > 0) { -->
+<!-- #       for (s in NE) { -->
+<!-- #         cat(paste0(bullet, " ", s, "<br>")) -->
+<!-- #       } -->
+<!-- #     } else { -->
+<!-- #       cat("No stressors were eliminated from the evaluation.") -->
+<!-- #     } -->
+<!-- #      -->
+<!-- #   } else { -->
+<!-- #     cat(paste("The file", fnNE, "is not accessible.")) -->
+<!-- #   } -->
+<!-- #    -->
+<!-- # ``` -->
 
 ### *Weight of evidence*
 #### Detailed lines of evidence scores
@@ -536,7 +536,7 @@ msg_files <- paste0("All stressor graphics are in the '",
                     "Selected images are shown here.\n\n")
 cat(msg_files)
 
-for (s in seq_along(paramName)) {
+for (s in seq_along(stressors)) {
   
   stressLabel <- stressors[s]
   #stressName <- paramName[s]

@@ -186,22 +186,12 @@ getQualSites <- function(TargetSiteID,
       fxnname = "getQualSites",
       condition = "Number of inside case samples",
       result = as.character(length(compSites) - numcompsfinal),
-      comment = paste0(biocomm, ": ", length(compSites) - numcompsfinal, " inside-the-case_sites do not have paired stressor-response data.")
+      comment = paste0(biocomm, ": ", length(compSites) - numcompsfinal, " inside-the-case sites do not have paired stressor-response data.")
     )
 
     df_gap <- df_gap |>
       dplyr::bind_rows(gap.statement)
 
-    # gapcomment <- paste0("Inside case sites do not have paired ",
-    #                      "stressor-response data for comparison.")
-    # gaps <- cbind.data.frame("getQualSites", "Number of inside case samples",
-    #                          length(compSites) - numcompsfinal,
-    #                          gapcomment)
-    # colnames(gaps) <- c("fxnname", "condition", "result", "comment")
-    # fn.gaps <- paste0(TargetSiteID, "_datagaps.tab")
-    # fn.gaps <- file.path(dir_results, TargetSiteID, fn.gaps)
-    # utils::write.table(gaps, fn.gaps, append = TRUE, col.names = FALSE,
-    #             row.names = FALSE, sep = "\t")
   }
 
   return(list(df_qual = df_qual,
