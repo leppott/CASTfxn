@@ -518,10 +518,10 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     dplyr::summarize(
       Year_Min = min(Year),
       Year_Max = max(Year),
-      WatershedValueMedian_Min = min(WatershedValueMedian) |> round(2),
-      WatershedValueMedian_Max = max(WatershedValueMedian) |> round(2),
-      TargetValue_Min = min(TargetValue) |> round(2),
-      TargetValue_Max = max(TargetValue)|> round(2)) |>
+      WatershedValueMedian_Min = min(WatershedValueMedian) |> round(2) |> format(big.mark = ","),
+      WatershedValueMedian_Max = max(WatershedValueMedian) |> round(2) |> format(big.mark = ","),
+      TargetValue_Min = min(TargetValue) |> round(2)|> format(big.mark = ","),
+      TargetValue_Max = max(TargetValue)|> round(2)|> format(big.mark = ",")) |>
     dplyr::mutate(Year = paste0("(", Year_Min, " - ", Year_Max, ")"),
                   WatershedValueMedian = paste0("(", WatershedValueMedian_Min, " - ", WatershedValueMedian_Max, ")"),
                   TargetValue = paste0("(", TargetValue_Min, " - ", TargetValue_Max, ")")) |>
@@ -530,6 +530,8 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
   elev_no_yr <- temp |>
     dplyr::filter(StreamCatVar %in% elev_ws, is.na(Year)==TRUE) |>
     dplyr::select(StreamCatVar, Year, WatershedValueMedian, TargetValue) |>
+    dplyr::mutate(WatershedValueMedian = WatershedValueMedian |> round(2) |> format(big.mark = ","),
+                  TargetValue = TargetValue |> round(2) |> format(big.mark = ",")) |>
     dplyr::mutate(across(everything(), as.character))
 
   high_stress_ret <- elev_yr |>
