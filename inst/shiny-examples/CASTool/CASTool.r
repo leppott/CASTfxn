@@ -1688,8 +1688,14 @@ for (site in seq_len(nrow(df_targets))) {
                              "_InitialStressors.csv")),
             row.names = FALSE)
 
-  responsesOutput <- responsesOutput |>
-    dplyr::mutate(SSI = dplyr::if_else(MetricName %in% info.ssi$MetricName, "Y", "N"))
+  if(exists(info.ssi)){
+    responsesOutput <- responsesOutput |>
+      dplyr::mutate(SSI = dplyr::if_else(MetricName %in% info.ssi$MetricName, "Y", "N"))
+  } else{
+    responsesOutput <- responsesOutput |>
+      dplyr::mutate(SSI = "N")
+  }
+
 
   write.csv(responsesOutput,
             file.path(dir_results,
