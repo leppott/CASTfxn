@@ -474,7 +474,8 @@ for (b in seq_along(biocommlist)) {
 
   responsesOutput <- data.frame(MetricName = character(),
                                 MetricLabel = character(),
-                                BioComm = character())
+                                BioComm = character(),
+                                IndexYN = character())
 
   if (bio == "bmi") {
     # Read bmi data files
@@ -495,7 +496,7 @@ for (b in seq_along(biocommlist)) {
 
     responsesOutput <- responsesOutput |>
       dplyr::bind_rows(data_bmiMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
                          dplyr::mutate(BioComm = bio))
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
@@ -531,7 +532,7 @@ for (b in seq_along(biocommlist)) {
 
     responsesOutput <- responsesOutput |>
       dplyr::bind_rows(data_algMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
                          dplyr::mutate(BioComm = bio))
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
@@ -565,7 +566,7 @@ for (b in seq_along(biocommlist)) {
 
     responsesOutput <- responsesOutput |>
       dplyr::bind_rows(data_fishMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel) |>
+                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
                          dplyr::mutate(BioComm = bio))
 
     # Generate co-occurrence data set (same day samples; modeled data match any day)
