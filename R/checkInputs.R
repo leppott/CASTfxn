@@ -465,13 +465,60 @@ checkInputs <- function(dir.uploaded,
   # Import files from helper packages
   region <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "region"])
 
+  # if(helperImport == TRUE){
+  #   rm(available_regions) # LCN jury rigged solution for clearing warning about global bindings
+  #   utils::data("available_regions", package = "CASToolBaseDataPckg")
+  #   regionAvailable <- region %in% available_regions$Region
+  #
+  #   if(regionAvailable == TRUE){
+  #     msg <- "Downloading files for requested region from the CASTool helper packages."
+  #
+  #     clusterNum <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "clusterNumber"])
+  #     if(is.na(clusterNum) == TRUE){
+  #       msg <- "Number of clusters requested from the CASTool helper packages is required. Please add to metadata"
+  #       stop(msg)
+  #     }
+  #
+  #     boundary <- CASToolBaseDataPckg::retrieve_boundary(region)
+  #     reaches <- CASToolBaseDataPckg::retrieve_reaches(region)
+  #     data_cluster <- CASToolClusterPckg::retrieve_clust_data(region, clusterNum)
+  #     cluster_graphic <- CASToolClusterPckg::retrieve_clust_fig(region, clusterNum)
+  #
+  #     extra.coltypes <- data.frame(
+  #       object = c(
+  #         "boundary",
+  #         "reaches",
+  #         "data_cluster",
+  #         "data_cluster",
+  #         "cluster_graphic"
+  #       ),
+  #       col = c("geometry", "geometry", "COMID", "ClusterID", NA),
+  #       errors = rep("pass", 5)
+  #     )
+  #
+  #     df.reqd.coltypes <- df.reqd.coltypes %>% dplyr::bind_rows(extra.coltypes)
+  #
+  #     extra.objcols <- data.frame(
+  #       object = c("boundary", "reaches", "data_cluster", "cluster_graphic"),
+  #       reqd.v.act.cols = rep("Missing columns: ", 4)
+  #     )
+  #
+  #     df.reqd.obj.cols <- df.reqd.obj.cols %>% dplyr::bind_rows(extra.objcols)
+  #
+  #     message(msg)
+  #   } else{
+  #     msg <- "Requested region is not available in the CASTool helper packages. Check that region name is identical to a value in https://github.com/laura-naslund/CASToolBaseDataPckg?tab=readme-ov-file#currently-available-regions. If the region is not available, please provide a boundary, reaches, cluster, and cluster graphic file."
+  #     stop(msg)
+  #   }
+  #
+  # }
   if(helperImport == TRUE){
-    rm(available_regions) # LCN jury rigged solution for clearing warning about global bindings
-    utils::data("available_regions", package = "CASToolBaseDataPckg")
-    regionAvailable <- region %in% available_regions$Region
+    conusStates <- setdiff(state.name, c("Alaska", "Hawaii"))
+
+    regionAvailable <- region %in% conusStates
 
     if(regionAvailable == TRUE){
-      msg <- "Downloading files for requested region from the CASTool helper packages."
+      msg <- "Downloading files for requested region from the CASTool helper package."
 
       clusterNum <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "clusterNumber"])
       if(is.na(clusterNum) == TRUE){
@@ -479,10 +526,10 @@ checkInputs <- function(dir.uploaded,
         stop(msg)
       }
 
-      boundary <- CASToolBaseDataPckg::retrieve_boundary(region)
-      reaches <- CASToolBaseDataPckg::retrieve_reaches(region)
-      data_cluster <- CASToolClusterPckg::retrieve_clust_data(region, clusterNum)
-      cluster_graphic <- CASToolClusterPckg::retrieve_clust_fig(region, clusterNum)
+      boundary <- CASToolHelperPckg::getBoundary(region)
+      reaches <- CASToolHelperPckg::getReaches(region)
+      data_cluster <- CASToolHelperPckg::getClusterData(region, clusterNum)
+      cluster_graphic <- CASToolHelperPckg::getClusterFig(region, clusterNum)
 
       extra.coltypes <- data.frame(
         object = c(
@@ -1567,8 +1614,16 @@ checkInputs <- function(dir.uploaded,
               file.path(dir.out, "cluster_graphic.png"))
   } else{
 
-    file.copy(CASToolClusterPckg::retrieve_clust_fig(region, clusterNum),
-              file.path(dir.out, "cluster_graphic.png"))
+    # file.copy(CASToolClusterPckg::retrieve_clust_fig(region, clusterNum),
+    #           file.path(dir.out, "cluster_graphic.png"))
+
+    dest <- file.path(dir.out, "cluster_graphic.png")
+
+    aws.s3::save_object(
+      object = cluster_graphic,
+      bucket = "dmap-data-commons-ow",
+      file = dest
+    )
   }
 
   myTables <- list(TableOne = df.TableOne, TableTwo = df.TableTwo)

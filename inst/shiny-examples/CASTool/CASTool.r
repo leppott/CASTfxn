@@ -42,27 +42,36 @@ if(boo_Shiny == FALSE){
     install.packages("pak")
   }
 
-  baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
-  wsDataInd <- setdiff("CASToolWSStressorPckg", .packages(all.available = TRUE))
-  clustDataInd <- setdiff("CASToolClusterPckg", .packages(all.available = TRUE))
+  # baseDataInd <- setdiff("CASToolBaseDataPckg", .packages(all.available = TRUE))
+  # wsDataInd <- setdiff("CASToolWSStressorPckg", .packages(all.available = TRUE))
+  # clustDataInd <- setdiff("CASToolClusterPckg", .packages(all.available = TRUE))
+  #
+  # if(rlang::is_empty(baseDataInd)==FALSE){
+  #   message("Installing CASToolBaseDataPckg")
+  #   pak::pak("laura-naslund/CASToolBaseDataPckg")
+  # }
+  #
+  # if(rlang::is_empty(wsDataInd)==FALSE){
+  #     message("Installing CASToolWSStressorPckg")
+  #     pak::pak("laura-naslund/CASToolWSStressorPckg")
+  # }
+  # if(rlang::is_empty(clustDataInd)==FALSE){
+  #   message("Installing CASToolClusterPckg")
+  #   pak::pak("laura-naslund/CASToolClusterPckg")
+  # }
+  #
+  # library(CASToolWSStressorPckg)
+  # library(CASToolBaseDataPckg)
+  # library(CASToolClusterPckg)
 
-  if(rlang::is_empty(baseDataInd)==FALSE){
-    message("Installing CASToolBaseDataPckg")
-    pak::pak("laura-naslund/CASToolBaseDataPckg")
+  helperInd <- setdiff("CASToolHelperPckg", .packages(all.available = TRUE))
+
+  if(rlang::is_empty(helperInd)==FALSE){
+    message("Installing CASToolHelperPckg")
+    pak::pak("laura-naslund/CASToolHelperPckg")
   }
 
-  if(rlang::is_empty(wsDataInd)==FALSE){
-      message("Installing CASToolWSStressorPckg")
-      pak::pak("laura-naslund/CASToolWSStressorPckg")
-  }
-  if(rlang::is_empty(clustDataInd)==FALSE){
-    message("Installing CASToolClusterPckg")
-    pak::pak("laura-naslund/CASToolClusterPckg")
-  }
-
-  library(CASToolWSStressorPckg)
-  library(CASToolBaseDataPckg)
-  library(CASToolClusterPckg)
+  library(CASToolHelperPckg)
 
   # Source all functions
   devtools::load_all()
@@ -432,15 +441,22 @@ if (boo.WS == TRUE & helperImport == FALSE) {
 
 } else if(boo.WS == TRUE & helperImport == TRUE){
 
-  ## check that region available
-  utils::data("available_regions", package = "CASToolBaseDataPckg")
-  regionAvailable <- region %in% available_regions$Region
+  # ## check that region available
+  # utils::data("available_regions", package = "CASToolBaseDataPckg")
+  # regionAvailable <- region %in% available_regions$Region
+
+  conusStates <- setdiff(state.name, c("Alaska", "Hawaii"))
+
+  regionAvailable <- region %in% conusStates
 
   if(regionAvailable == TRUE){
     message("Downloading watershed stressor data from helper package.")
 
-    data_stressorWS <- retrieve_stressor_data(region)
-    data_stressorinfoWS <- retrieve_stressor_info(region)
+    # data_stressorWS <- retrieve_stressor_data(region)
+    # data_stressorinfoWS <- retrieve_stressor_info(region)
+
+    data_stressorWS <- CASToolHelperPckg::getWSStressorData(region)
+    data_stressorinfoWS <- CASToolHelperPckg::getWSStressorInfo()
 
     if("comid" %in% names(data_stressorWS)){
       data_stressorWS <- data_stressorWS %>% dplyr::rename("COMID" = "comid")
