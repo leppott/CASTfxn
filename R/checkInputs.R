@@ -465,6 +465,80 @@ checkInputs <- function(dir.uploaded,
   # Import files from helper packages
   region <- as.character(CASTmetadata$Value[CASTmetadata$Variable == "region"])
 
+  ### Check potential file path lengths
+
+  longest_siteid <- data_Sites |>
+    dplyr::mutate(char_no = nchar(StationID)) |>
+    dplyr::arrange(desc(char_no)) |>
+    dplyr::slice(1) |>
+    dplyr::pull(StationID)
+
+  stressor_metadata <- loaded |>
+    dplyr::filter(FilePath %in% c("fn.meas.info", "fn.model.info"))
+
+  stressors_df <- data.frame(stressor = character())
+  for(i in seq_len(nrow(stressor_metadata))){
+    temp_stress <- get(stressor_metadata$Object[i]) |>
+      dplyr::filter(UseInStressorID == 1) |>
+      dplyr::rename("stressor" = "StdParamName") |>
+      dplyr::select(stressor)
+
+      stressors_df <- stressors_df |>
+        dplyr::bind_rows(temp_stress)
+  }
+
+  responses_metadata <- loaded |>
+    dplyr::filter(FilePath %in% c("fn.alg.metrics.info", "fn.bmi.metrics.info", "fn.fish.metrics.info"))
+
+  responses_df <- data.frame(response_metric = character(), biocomm = character())
+  for(i in seq_len(nrow(responses_metadata))){
+    temp_responses <- get(responses_metadata$Object[i]) |>
+      dplyr::filter(UseYN == "Y") |>
+      dplyr::mutate(biocomm = responses_metadata$FilePath[i] |>
+                      stringr::str_extract("(?<=fn\\.)\\w+(?=\\.metrics.info)") |>
+                      toupper()) |>
+      dplyr::rename("response_metric" = "MetricName") |>
+      dplyr::select(response_metric, biocomm)
+
+    responses_df <- responses_df |>
+      dplyr::bind_rows(temp_responses)
+  }
+
+
+  prob_fp_df <- dplyr::cross_join(responses_df, stressors_df) |>
+    dplyr::mutate(dir.out = dir.out,
+           region = region,
+           siteid = longest_siteid,
+           file_path = paste(dir.out,
+                             region,
+                             longest_siteid,
+                             biocomm,
+                             stressor,
+                             paste(longest_siteid,
+                                   stressor,
+                                   biocomm,
+                                   response_metric,
+                                   "GI.png",
+                                   sep = "_"),
+                             sep = "/")) |>
+    dplyr::mutate(num_char = nchar(file_path)) |>
+    dplyr::arrange(desc(num_char)) |>
+    dplyr::filter(num_char > 245)
+
+  fp_problem <- file.path(dir.out, region, "Potential_Problem_FilePath.csv")
+  write.csv(prob_fp_df, fp_problem, row.names = FALSE)
+
+  n_problem_fp <- prob_fp_df |>
+    nrow()
+
+  msg <- paste0("Number of potentially problematic file path lengths: ", n_problem_fp)
+  message(msg)
+
+  if(n_problem_fp > 0){
+    msg <- paste0("Review ", fp_problem, " for potentially problematic file paths. Follow directions in the user guide to shorten file paths.")
+    message(msg)
+  }
+
   # if(helperImport == TRUE){
   #   rm(available_regions) # LCN jury rigged solution for clearing warning about global bindings
   #   utils::data("available_regions", package = "CASToolBaseDataPckg")
