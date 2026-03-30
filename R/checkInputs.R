@@ -383,7 +383,8 @@ checkInputs <- function(dir.uploaded,
       assign(object, readCASToolData(file.path(dir.uploaded, fn),
                                      NAs = c("", "NA", "na", "N/A", "n/a")))
     } else {
-      readCASToolData(file.path(dir.uploaded, fn))
+      readCASToolData(file.path(dir.uploaded, fn),
+                      NAs = c("", "NA", "na", "N/A", "n/a"))
     }
 
     ## Check required columns ----
@@ -524,6 +525,11 @@ checkInputs <- function(dir.uploaded,
     dplyr::mutate(num_char = nchar(file_path)) |>
     dplyr::arrange(desc(num_char)) |>
     dplyr::filter(num_char > 245)
+
+  # Write region directory ----
+  if(dir.exists(file.path(dir.out, region))==FALSE){
+    dir.create(file.path(dir.out, region))
+  }
 
   fp_problem <- file.path(dir.out, region, "Potential_Problem_FilePath.csv")
   write.csv(prob_fp_df, fp_problem, row.names = FALSE)
@@ -1655,7 +1661,7 @@ checkInputs <- function(dir.uploaded,
 
   rm(input_check)
 
-  # Write results directory ----
+  # # Write results directory ----
   out.folders <- c(dir.out, region, "_CheckedInputs")
 
   for (i in 1:length(out.folders)) {
