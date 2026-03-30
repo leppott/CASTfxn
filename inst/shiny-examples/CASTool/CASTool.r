@@ -117,7 +117,8 @@ if (boo_Shiny == TRUE) {
   #
   prog_cnt <- 0
   # Number of increments
-  prog_n <- 23 * n_biocomm_prog
+  #prog_n <- 23 * n_biocomm_prog
+  prog_n <- 16 + (7 * n_biocomm_prog)
   prog_sleep <- 0.25
 
   prog_det <- "Set up output structure"
@@ -480,6 +481,11 @@ boo.alg <- FALSE
 boo.fish <- FALSE
 data_respTrim <- data.frame()
 
+responsesOutput <- data.frame(MetricName = character(),
+                              MetricLabel = character(),
+                              BioComm = character(),
+                              IndexYN = character())
+
 for (b in seq_along(biocommlist)) {
   bio <- tolower(biocommlist[b])
   #~~~~~~~~~~~~~~~~~~~~~~~
@@ -494,11 +500,6 @@ for (b in seq_along(biocommlist)) {
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
   }## IF ~ boo_Shiny ~ END
-
-  responsesOutput <- data.frame(MetricName = character(),
-                                MetricLabel = character(),
-                                BioComm = character(),
-                                IndexYN = character())
 
   if (bio == "bmi") {
     # Read bmi data files

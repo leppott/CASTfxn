@@ -292,9 +292,9 @@ Comparator sites will depend upon several factors:
 <!-- -   whether or not a Bray-Curtis dissimilarity distance matrix is -->
 <!--     included in the evaluation -->
 
-Comparator samples have a quality associated with them, that differs
-based on the biological community index used. For these, please see the
-biological community comparator samples section.
+<!-- Comparator samples have a quality associated with them, that differs -->
+<!-- based on the biological community index used. For these, please see the -->
+<!-- biological community comparator samples section. -->
 
 ```{r cluster_fig, echo=FALSE, results='asis', fig.align='center', out.width="80%", fig.cap=caps}
 # replicate then modify code from Setup tab (display_images_StressSumm.Rmd)
@@ -322,8 +322,8 @@ These figures may provide additional insight into causes of stream
 impairment. For example, if nitrogen species were not measured and
 provided to the CASTool, a relatively high agricultural surplus of nitrogen may indicate that
 nitrogen pollution merits additional scrutiny as a potential candidate
-cause of impairment.The variables for which the targe site value exceeded the median 
-of comparator sites are outlined below. 
+cause of impairment. The variables for which the target site value exceeded the median 
+of comparator sites for any year are outlined below. Values are reported in this table as ranges across all years of available data.
 
 ```{r ws stressor, echo = FALSE}
 if(boo.WS == TRUE){

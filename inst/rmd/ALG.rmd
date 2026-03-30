@@ -41,8 +41,8 @@ editor_options:
 ### *Comparator sample summary*
 Comparator samples are also called 'inside-the-case' samples. In
 contrast, 'outside-the-case' samples may be all the samples in the
-region or a subset thereof. The following table includes sample quality,
-which may differ between biological communities.
+region or a subset thereof. The following table includes whether a sample is considered degraded or not degraded
+based on the cutoff value for the corresponding biological community index.
   
 ```{r algComparators, echo = FALSE}
 
