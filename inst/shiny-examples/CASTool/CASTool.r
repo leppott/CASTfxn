@@ -103,9 +103,21 @@ plot_units <- "in"
 ## Shiny ----
 if (boo_Shiny == TRUE) {
   ### 00, Initialize----
+  # need biocomm first
+  dir_rmd     <- file.path(system.file(package = "CASTfxn"), "rmd")
+  wd          <- getwd()
+  dir_data    <- dn_data
+  dir_results <- dn_results
+  data_CASTmeta_prog <- readRDS(file.path(dir_data, dn_checked_sk, "CASTmetadata.rds"))
+  data_CASTmeta_prog <- data_CASTmeta_prog %>%
+    tidyr::pivot_wider(names_from = Variable, values_from = Value)
+  biocommlist_prog <- data_CASTmeta_prog %>% dplyr::pull(biocommlist) %>% stringr::str_split(", |,") %>% unlist()
+  n_biocomm_prog <- length(biocommlist_prog)
+
+  #
   prog_cnt <- 0
   # Number of increments
-  prog_n <- 23
+  prog_n <- 23 * n_biocomm_prog
   prog_sleep <- 0.25
 
   prog_det <- "Set up output structure"
@@ -115,12 +127,7 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-
-  dir_rmd     <- file.path(system.file(package = "CASTfxn"), "rmd")
-  wd          <- getwd()
-  dir_data    <- dn_data
-  dir_results <- dn_results
-}
+} # IF ~ boo_Shiny ~ END
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####

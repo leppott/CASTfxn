@@ -269,7 +269,8 @@ getSiteInfo <- function(TargetSiteID,
     } else{
       allBioMetrics <- bioMetricData %>%
         dplyr::left_join(df_Sites %>% dplyr::select(StationID, IncaseCol)) %>%
-        dplyr::filter(is.na(IncaseCol) | IncaseCol != myIncaseID) %>%
+        #dplyr::filter(is.na(IncaseCol) | IncaseCol != myIncaseID) %>%
+        dplyr::filter(IncaseCol != myIncaseID) %>%
         dplyr::select(-IncaseCol)
     }
 

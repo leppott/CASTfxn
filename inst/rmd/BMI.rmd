@@ -48,10 +48,10 @@ which may differ between biological communities.
 
   mycomps <- paste0(TargetSiteID, "_BMI_SiteQualities.csv")
   fn_comps <- file.path(dir_results, TargetSiteID, dir.sub3, mycomps)
-  msg_info <- paste0("Comparator site information, including a list ",
-                     "of comparator sites, can be found in the '",
-                     paste0(paste0("Results/", TargetSiteID, "/", dir.sub3),
-                            "' folder."), "\n\n")
+  # msg_info <- paste0("Comparator site information, including a list ",
+  #                    "of comparator sites, can be found in the '",
+  #                    paste0(paste0("Results/", TargetSiteID, "/", dir.sub3),
+  #                           "' folder."), "\n\n")
 
   if (file.exists(fn_comps) == TRUE) {
     
@@ -62,7 +62,7 @@ which may differ between biological communities.
                     `Reference samples` = ReferenceSamples,
                     `Total samples` = AllSamples)
     
-    cat(msg_info)
+    # cat(msg_info)
     
     tcomps <- knitr::kable(dfcomps, format = report_format,
                            colnames = colnames(dfcomps))
