@@ -432,7 +432,7 @@ getVPSSI <- function(TargetSiteID,
           msg <- paste0("printing logistic regression for ", str, " against ", ssi.name)
           message(msg)
 
-          temp_df <- data.frame(xval = target.vals, yval = 0.9, labelval = df_plot.log_target$RespSampleID, Case = "Target sample value(s)")
+          temp_df <- data.frame(xval = target.vals, yval = 0.9, labelval = df_plot.log_target$RespSampleID, Case = "Target sample(s)")
 
           p2 <- ggplot2::ggplot(df_plot.log, ggplot2::aes(x = x, y = y.name)) +
             ggplot2::geom_point(ggplot2::aes(color = "black", shape = SSIqual,
@@ -475,7 +475,7 @@ getVPSSI <- function(TargetSiteID,
             ggplot2::labs(y = ylabel, x = slab) +
             ggplot2::theme_bw() +
             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                           plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+                           plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)) +
             ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
                           caption = captionSR)
 
@@ -657,7 +657,7 @@ getVPSSI <- function(TargetSiteID,
                          " = ", i.Group)
       xseg <- i.Group + 0.5
 
-      temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, Case = "Target sample value(s)")
+      temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, Case = "Target sample(s)")
 
       p1 <- ggplot2::ggplot(df_plot1, ggplot2::aes(y = SSIValue,
                                                    x = IncaseCol,
@@ -672,7 +672,7 @@ getVPSSI <- function(TargetSiteID,
         ggplot2::geom_hline(data = temp_df, ggplot2::aes(yintercept = yval, lty = Case), color = targ_line_col,
                             lwd = targ_line_lwd, na.rm = TRUE, show.legend = FALSE) +
         # dummy line to get orientation correct for legend
-        ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample value(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
+        ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
         ggplot2::guides(linetype = ggplot2::guide_legend(order = 1, override.aes = list( alpha = 1, colour = targ_line_col, linewidth = targ_line_lwd )))+
         ggplot2::scale_linetype_manual(name = "", values = targ_line_lty)+
 

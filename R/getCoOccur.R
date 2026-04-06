@@ -387,7 +387,7 @@ getCoOccur <- function(TargetSiteID,
     targetlabs <- unlist(df.j[, "RespSampleID"])
     xseg <- i.Group + 0.5
 
-    temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, case = "Target sample value(s)")
+    temp_df <- data.frame(xval = i.Group - 0.5, yval = targetvals, labelval = targetlabs, case = "Target sample(s)")
 
 # p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(y = dplyr::.data[[stressname]],
 #                                                 x = IncaseCol,
@@ -404,7 +404,7 @@ getCoOccur <- function(TargetSiteID,
       ggplot2::geom_hline(data = temp_df, ggplot2::aes(yintercept = yval, lty = case), color = targ_line_col,
                            lwd = targ_line_lwd, na.rm = TRUE, show.legend = FALSE) +
       # dummy line to get orientation correct for legend
-      ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample value(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
+      ggplot2::geom_vline(data = data.frame(xintercept = i.Group - 0.5, lab = "Target sample(s)"), ggplot2::aes(xintercept = xintercept, linetype = lab), inherit.aes = FALSE, alpha = 0) +
       ggplot2::guides(linetype = ggplot2::guide_legend(order = 1, override.aes = list( alpha = 1, colour = targ_line_col, linewidth = targ_line_lwd )))+
       ggplot2::scale_linetype_manual(name = "", values = targ_line_lty)+
       # ggplot2::geom_hline(yintercept = c(box_qLO, box_qHI), color = "black",
@@ -439,7 +439,7 @@ getCoOccur <- function(TargetSiteID,
                     caption = lab.sub, y = stresslabel, x = lab_comp) +
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                     plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+                     plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)) +
       ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                      axis.ticks.y = ggplot2::element_blank())
 

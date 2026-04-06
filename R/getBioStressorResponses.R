@@ -792,8 +792,8 @@ getBioStressorResponses <- function(TargetSiteID,
 
       ## Plot, Variables, Strings
       str_title <- paste0(TargetSiteID, ": Biological gradient (linear regression) line of evidence")
-      str_subtitle1.in <- "Is there a linear relationship between the stressor and biological response from inside the case?\n"
-      str_subtitle1.out <- "Is there a linear relationship between the stressor and biological response from outside the case?\n"
+      str_subtitle1.in <- "Is there a linear relationship between stressor and biological response from inside the case?\n"
+      str_subtitle1.out <- "Is there a linear relationship between stressor and biological response from outside the case?\n"
       str_subtitle2 <- "Linear regression with 75th percentile prediction interval"
       str_subtitle.in <- paste0(str_subtitle1.in, str_subtitle2)
       str_subtitle.out <- paste0(str_subtitle1.out, str_subtitle2)
@@ -899,13 +899,13 @@ getBioStressorResponses <- function(TargetSiteID,
           if(targetSampleLabels == TRUE){
             p_SR_all <- p_SR_all +
               # ggplot2::geom_point(data=df_plot_site|>
-              #                       dplyr::mutate(Case = "Target sample value(s)"),
+              #                       dplyr::mutate(Case = "Target sample(s)"),
               #                     ggplot2::aes(x = Stressor, y = Response),
               #                     color = "black", shape = bio_shape_out[3],
               #                     fill = bio_fill_out[3], size = bio_size_out[3]*1.5,
               #                     na.rm = TRUE)+
               ggplot2::geom_point(data=df_plot_site|>
-                                    dplyr::mutate(Case = "Target sample value(s)"),
+                                    dplyr::mutate(Case = "Target sample(s)"),
                                   ggplot2::aes(x = Stressor, y = Response, size = Case),
                                   color = "black", shape = bio_shape_out[3],
                                   fill = bio_fill_out[3],
@@ -917,7 +917,7 @@ getBioStressorResponses <- function(TargetSiteID,
           } else{
             p_SR_all <- p_SR_all +
               ggplot2::geom_point(data=df_plot_site|>
-                                    dplyr::mutate(Case = "Target sample value(s)"),
+                                    dplyr::mutate(Case = "Target sample(s)"),
                                   ggplot2::aes(x = Stressor, y = Response, size = Case),
                                   color = "black", shape = bio_shape_out[3],
                                   fill = bio_fill_out[3],
@@ -1036,7 +1036,7 @@ getBioStressorResponses <- function(TargetSiteID,
             if(targetSampleLabels == TRUE){
               p_SR_cl <- p_SR_cl +
                 ggplot2::geom_point(data=df_plot_site|>
-                                      dplyr::mutate(Case = "Target sample value(s)"),
+                                      dplyr::mutate(Case = "Target sample(s)"),
                                     ggplot2::aes(x = Stressor, y = Response, size = Case),
                                     color = "black", shape = bio_shape_out[3],
                                     fill = bio_fill_out[3],
@@ -1048,7 +1048,7 @@ getBioStressorResponses <- function(TargetSiteID,
             } else{
               p_SR_cl <- p_SR_cl +
                 ggplot2::geom_point(data=df_plot_site|>
-                                      dplyr::mutate(Case = "Target sample value(s)"),
+                                      dplyr::mutate(Case = "Target sample(s)"),
                                     ggplot2::aes(x = Stressor, y = Response, size = Case),
                                     color = "black", shape = bio_shape_out[3],
                                     fill = bio_fill_out[3],

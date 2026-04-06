@@ -301,7 +301,7 @@ getSufficiency <- function(TargetSiteID,
                       StressorCode,
                       StressorValue, n, SRpred_Deg, Sc_SRlog, BioComm, Label)
 
-      temp_df <- data.frame(xval = targ_vals, yval = 0.9, labelval = df_target$RespSampleID, case = "Target sample value(s)")
+      temp_df <- data.frame(xval = targ_vals, yval = 0.9, labelval = df_target$RespSampleID, case = "Target sample(s)")
 
       # plot1, ggplot ####
       p1 <- ggplot2::ggplot(df.plot, ggplot2::aes(x = x, y = y.name)) +
@@ -365,7 +365,7 @@ getSufficiency <- function(TargetSiteID,
 
       p1 <- p1 + ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
-                       plot.subtitle = ggplot2::element_text(hjust = 0.5)) +
+                       plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 10)) +
         ggplot2::labs(title = maintitleSR, subtitle = subtitleSR,
                       caption = captionSR)
 
