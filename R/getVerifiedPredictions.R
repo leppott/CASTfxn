@@ -396,44 +396,53 @@ getVerifiedPredictions <- function(TargetSiteID,
             dplyr::select(dplyr::all_of(cols2use))
         } # This creates missing data for all stressor samples (with paired responses)
 
+        if(nrow(df_tv.target) != (nTargetSamples * 2)){
+          dummy_df <- df_stress.sstv |>
+            dplyr::filter(StationID == TargetSiteID) |>
+            dplyr::slice(rep(dplyr::row_number(), each = 2)) |>
+            dplyr::mutate(Group = tolval, Label = rep(c("All sensitive", "Most sensitive"), nTargetSamples))
+
+          int_names <- setdiff(names(df_tv.target), c("NumInds", "PctInds", "NumTaxa", "PctTaxa"))
+
+          df_tv.target <- dummy_df |> dplyr::full_join(df_tv.target, by = int_names)
+        }
 
         # LCN 3/18/26 I think this was intended to handle when there are all sensitive but not most sensitive
-        # But failing if one sample has all sensitive taxa and another has none. After changing metadata, see if you need to update this.
-
-        # ASSUMPTION: Most sensitive will disappear prior to all sensitive
-        if (nrow(df_tv.target) %% nTargetSamples != 0) {
-          # Identify missing sample
-          df_tv.target.qc1 <- df_tv.target %>%
-            dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
-                          StressSampleID, StressSampleDate, BioComm,
-                          dplyr::all_of(colBio), RefSiteFlag, Quality, BetterThan,
-                          dplyr::all_of(stressor), Group, Label, NumInds, PctInds,
-                          NumTaxa, PctTaxa) %>%
-            dplyr::group_by(StationID, RespSampleID, RespSampleDate, IncaseCol,
-                            StressSampleID, StressSampleDate, BioComm, Group) %>%
-            dplyr::summarize(n = dplyr::n(), .groups = "drop_last") %>%
-            dplyr::filter(n != 2)
-
-          # Identify missing label
-          df_tv.target.qc2 <- merge(df_tv.target.qc1, df_tv.target)
-          allLabels <- unique(df_tv$Label[df_tv$Group == tolval])
-          currentLabel <- unique(df_tv.target.qc2$Label)
-          newLabel <- setdiff(allLabels, currentLabel)
-          newLabel <- newLabel[!is.na(newLabel)]
-
-          df_tv.target.qc2 <- df_tv.target.qc2 %>%
-            dplyr::select(!n) %>%
-            dplyr::mutate(Label = newLabel,
-                          NumInds = 0,
-                          PctInds = 0,
-                          NumTaxa = 0,
-                          PctTaxa = 0) %>%
-            dplyr::select(dplyr::all_of(cols2use))
-
-          df_tv.target <- rbind(df_tv.target, df_tv.target.qc2)
-
-          rm(df_tv.target.qc1, df_tv.target.qc2)
-        } # End if
+        # But failing if one sample has neither.
+        # # ASSUMPTION: Most sensitive will disappear prior to all sensitive
+        # if (nrow(df_tv.target) %% nTargetSamples != 0) {
+        #   # Identify missing sample
+        #   df_tv.target.qc1 <- df_tv.target %>%
+        #     dplyr::select(StationID, RespSampleID, RespSampleDate, IncaseCol,
+        #                   StressSampleID, StressSampleDate, BioComm,
+        #                   dplyr::all_of(colBio), RefSiteFlag, Quality, BetterThan,
+        #                   dplyr::all_of(stressor), Group, Label, NumInds, PctInds,
+        #                   NumTaxa, PctTaxa) %>%
+        #     dplyr::group_by(StationID, RespSampleID, RespSampleDate, IncaseCol,
+        #                     StressSampleID, StressSampleDate, BioComm, Group) %>%
+        #     dplyr::summarize(n = dplyr::n(), .groups = "drop_last") %>%
+        #     dplyr::filter(n != 2)
+        #
+        #   # Identify missing label
+        #   df_tv.target.qc2 <- merge(df_tv.target.qc1, df_tv.target)
+        #   allLabels <- unique(df_tv$Label[df_tv$Group == tolval])
+        #   currentLabel <- unique(df_tv.target.qc2$Label)
+        #   newLabel <- setdiff(allLabels, currentLabel)
+        #   newLabel <- newLabel[!is.na(newLabel)]
+        #
+        #   df_tv.target.qc2 <- df_tv.target.qc2 %>%
+        #     dplyr::select(!n) %>%
+        #     dplyr::mutate(Label = newLabel,
+        #                   NumInds = 0,
+        #                   PctInds = 0,
+        #                   NumTaxa = 0,
+        #                   PctTaxa = 0) %>%
+        #     dplyr::select(dplyr::all_of(cols2use))
+        #
+        #   df_tv.target <- rbind(df_tv.target, df_tv.target.qc2)
+        #
+        #   rm(df_tv.target.qc1, df_tv.target.qc2)
+        # } # End if
 
         df_tv.target <- df_tv.target %>%
           dplyr::filter(!is.na(get(stressor))) %>% # Exclude samples ND for stressor
@@ -524,7 +533,7 @@ getVerifiedPredictions <- function(TargetSiteID,
           dplyr::select(Label, variable, Min, Max, q25, q50, RespSampleDate, Score) %>%
           dplyr::arrange(Label, variable, Min, Max, RespSampleDate) %>%
           dplyr::group_by(Label, variable, Min, Max, q25, q50) %>%
-          dplyr::summarise(Scores = toString(Score),
+          dplyr::summarise(Scores = toString(Score) |> stringr::str_replace_all("NA", "NE"),
                            .groups = "drop_last") %>%
           dplyr::mutate(#min = -10,
                         segNeg = ((q25 - Min) / 2) + Min,
@@ -677,7 +686,9 @@ getVerifiedPredictions <- function(TargetSiteID,
         dplyr::mutate(LoE = "VP_SSTV", bioIndexName = colBio) %>%
         dplyr::select(StationID, StressSampleID, StressSampleDate, RespSampleID,
                       RespSampleDate, bioComm, bioIndexName, bioIndex, Quality,
-                      Stressor, StressorValue, LoE, Score)
+                      Stressor, StressorValue, LoE, Score) |>
+        dplyr::mutate(Score = as.character(Score)) |>
+        dplyr::mutate(Score = dplyr::if_else(Score == "NaN", "NE", Score))
 
       write.csv(df.scores, file = fn_scores, row.names = FALSE)
 
