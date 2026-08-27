@@ -17,22 +17,23 @@
 #' dir_data and dir_results should be absolute and not relative paths.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
-#' @param in.dir x
-#' @param out.dir directory where all rds files are stored
-#' @param fn.data x
-#' @param fn.meta x
+#' @param in_dir x
+#' @param out_dir directory where all rds files are stored
+#' @param fn_data x
+#' @param fn_meta x
 #' @param removeOutliers x
-#' @param sub.dir x
+#' @param sub_dir x
 #'
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
 #' @export
-prepModStressorData <- function(in.dir,
-                                out.dir,
-                                fn.data,
-                                fn.meta,
+prepModStressorData <- function(in_dir,
+                                out_dir,
+                                fn_data,
+                                fn_meta,
+                                config = NULL,
                                 removeOutliers,
-                                sub.dir = "_Histograms") {
+                                sub_dir = "_Histograms") {
   # Global Bindings
   UseInStressorID <- StdParamName <- data_measOutliers <- StationID <-
     StressSampleID <- StressSampleDate <- TransfResult <- IQRmethod <-
@@ -41,14 +42,20 @@ prepModStressorData <- function(in.dir,
   # Debug
   boo.debug = TRUE
   if (boo.debug) {
-    sub.dir = "_Histograms"
+    sub_dir = "_Histograms"
   }
 
-  # define pipe
-  `%>%` <- dplyr::`%>%`
+  if(is.null(config) == FALSE){
+    in_dir <- file.path(config$out_dir, config$dn_checked_sk)
+    out_dir <- config$out_dir
+  }
+
+  # if(is.null(meta) == FALSE){
+  #   removeOutliers <- meta$removeOutliers
+  # }
 
   # Create output folder
-  out.folders <- c(out.dir, sub.dir)
+  out.folders <- c(out_dir, sub_dir)
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
@@ -60,14 +67,14 @@ prepModStressorData <- function(in.dir,
       dir.create(dir.path)
     }
   }
-  out.dir <- dir.path
+  out_dir <- dir.path
 
   # Load RDS files
-  data_modelInfo <- readRDS(file.path(in.dir, fn.meta))
-  data_modelAll  <- readRDS(file.path(in.dir, fn.data))
+  data_modelInfo <- readRDS(file.path(in_dir, fn_meta))
+  data_modelAll  <- readRDS(file.path(in_dir, fn_data))
 
   ## Get metadata for all measured stressors
-  data_modelInfo   <- data_modelInfo %>%
+  data_modelInfo   <- data_modelInfo  |>
     dplyr::filter(UseInStressorID == 1)
 
   ## Get measured stressor values to use in the stressor id
@@ -78,7 +85,7 @@ prepModStressorData <- function(in.dir,
   ## IQRmethod, SDmethod, Outlier
   data_modelOutliers <- getOutliers(df_data   = data_modelAll,
                                     df_meta   = data_modelInfo,
-                                    dir_plots = out.dir)
+                                    dir_plots = out_dir)
   ## Merge outlier flags with raw data by sample ID
   data_modelAll <- merge(data_modelAll, data_measOutliers,
                         by.x = c("StationID", "StressSampleID", "StressSampleDate",
@@ -86,7 +93,7 @@ prepModStressorData <- function(in.dir,
                         by.y = c("StationID", "StressSampleID", "StressSampleDate",
                                  "StdParamName", "ResultValue"),
                         all.x = TRUE)
-  data_modelAll <- data_modelAll %>%
+  data_modelAll <- data_modelAll  |>
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
                   TransfResult, IQRmethod, SDmethod, Outlier)
   # Clean up
@@ -94,27 +101,29 @@ prepModStressorData <- function(in.dir,
 
   ## Average duplicate data -- remove outliers first, if desired
   if (removeOutliers) {
-    data_modeloutliers <- data_modelAll %>%
+    data_modeloutliers <- data_modelAll  |>
       dplyr::filter(Outlier == "Outlier")
-    data_modelAll <- data_modelAll %>%
+    data_modelAll <- data_modelAll  |>
       dplyr::filter(Outlier %in% c("Good", "NE"))
   } else {
     data_modeloutliers <- NULL
   }
 
-  data_modelAll <- data_modelAll %>%
+  data_modelAll <- data_modelAll  |>
     dplyr::select(StationID, StressSampleID, StressSampleDate, StdParamName,
-                  TransfResult) %>%
+                  TransfResult)  |>
     # dplyr::mutate(StressSampleID = stringr::str_replace_all(StressSampleID, "[:punct:]", "_"),
-    #               StationID = stringr::str_replace_all(StationID, "[:punct:]", "_")) %>%
-    dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName) %>%
-    dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE)) %>%
+    #               StationID = stringr::str_replace_all(StationID, "[:punct:]", "_"))  |>
+    dplyr::group_by(StationID, StressSampleID, StressSampleDate, StdParamName)  |>
+    dplyr::mutate(TransfResult = mean(TransfResult, na.rm = TRUE))  |>
     dplyr::filter(!is.na(TransfResult))
   data_model_all_dups <- data_model_all[duplicated(data_modelAll),]
   data_modelAll <- unique(data_modelAll) # should be unique, long-form sample/analyte
 
   mymodelData <- list(data_modelInfo    = data_modelInfo,
-                     data_modelRaw      = data_modelAll,
+                     data_modelRaw      = data_modelAll |>
+                       dplyr::mutate(StressSampleDate = NA) |>
+                       dplyr::select(StationID, StressSampleID, StressSampleDate, TransfValue),
                      data_modeloutliers = data_modeloutliers)
 
   return(mymodelData)

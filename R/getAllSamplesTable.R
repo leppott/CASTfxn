@@ -15,16 +15,16 @@
 #'
 #' Requires packages dplyr, tidyr
 #'
-#' @param df.stress dataframe containing stressor data for all sites, including
+#' @param df_stress dataframe containing stressor data for all sites, including
 #'                  measured or observed quantitative water chemistry and quality,
 #'                  physical habitat data, and modeled data.
-#' @param df.stressInfo dataframe containing stressor metadata, including stressor
+#' @param df_stressInfo dataframe containing stressor metadata, including stressor
 #'                      names, labels, whether the stressor should be evaluated, if
 #'                      it should be log-transformed, and whether or not there are
 #'                      associated stressor-specific tolerance values or indices.
-#' @param df.resp dataframe containing all response samples obtained from a site,
+#' @param df_resp dataframe containing all response samples obtained from a site,
 #'                including multiple biological communities, if sampled.
-#' @param df.sites dataframe containing StationID, COMID, IncaseCol, and OutcaseCol
+#' @param df_sites dataframe containing StationID, COMID, IncaseCol, and OutcaseCol
 #' @param incaseColName Name of column in the sites file that indicates a site
 #'   is inside the case
 #'
@@ -39,10 +39,10 @@
 #' @examples
 #' # None at this time
 #' @export
-getAllSamplesTable <- function(df.stress = NULL,
-                               df.stressInfo = NULL,
-                               df.resp = NULL,
-                               df.sites = NULL,
+getAllSamplesTable <- function(df_stress = NULL,
+                               df_stressInfo = NULL,
+                               df_resp = NULL,
+                               df_sites = NULL,
                                incaseColName = NULL) {
 
   # Global Bindings
@@ -54,10 +54,10 @@ getAllSamplesTable <- function(df.stress = NULL,
   boo.debug = FALSE
 
   if (boo.debug) {
-    df.stress <- data_Stress
-    df.stressInfo <- data_stressInfo
-    df.resp <- data_respTrim
-    df.sites <- data_Sites
+    df_stress <- data_Stress
+    df_stressInfo <- data_stressInfo
+    df_resp <- data_respTrim
+    df_sites <- data_Sites
   }
 
   # define pipe
@@ -65,15 +65,15 @@ getAllSamplesTable <- function(df.stress = NULL,
 
   # Prepare stressor data
   # Identify dated stressor types
-  df.meas <- dplyr::filter(df.stress, !is.na(StressSampleDate))
+  df.meas <- dplyr::filter(df_stress, !is.na(StressSampleDate))
   # Identify undated stressor types
-  df.model <- dplyr::filter(df.stress, is.na(StressSampleDate))
+  df.model <- dplyr::filter(df_stress, is.na(StressSampleDate))
 
   # Obtain dated stressor sample IDs ----
   if (nrow(df.meas) > 0) {
     df.sampSummary <- unique(df.meas[, c("StationID", "StressSampleID",
                                          "StdParamName", "StressSampleDate")])
-    df.sampSummary <- merge(df.sampSummary, df.stressInfo, by = "StdParamName")
+    df.sampSummary <- merge(df.sampSummary, df_stressInfo, by = "StdParamName")
     df.sampSummary <- df.sampSummary %>%
       dplyr::select(StationID, StressSampleID, SourceGroup, StdParamName,
                     StressSampleDate, Label) %>%
@@ -88,18 +88,18 @@ getAllSamplesTable <- function(df.stress = NULL,
   }
 
   # Identify response samples ----
-  df.resp <- df.resp %>%
+  df_resp <- df_resp %>%
     tidyr::pivot_wider(id_cols = c(StationID, RespSampleDate), names_from = biocomm,
                        values_from = RespSampleID, values_fill = NA)
-  df.resp <- unique(df.resp)
-  respsamptypes <- colnames(dplyr::select(df.resp, dplyr::ends_with("SampleID")))
+  df_resp <- unique(df_resp)
+  respsamptypes <- colnames(dplyr::select(df_resp, dplyr::ends_with("SampleID")))
 
   # Combine with response data types
-  df.sampSummary <- merge(df.sampSummary, df.resp,
+  df.sampSummary <- merge(df.sampSummary, df_resp,
                           by.x = c("StationID", "StressSampleDate"),
                           by.y = c("StationID", "RespSampleDate"),
                           all = TRUE)
-  rm(df.resp)
+  rm(df_resp)
 
   # Add undated stressor data ----
   if (nrow(df.model) > 0) {
@@ -123,11 +123,11 @@ getAllSamplesTable <- function(df.stress = NULL,
   }
 
   if (is.na(incaseColName)) {
-    df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol")],
+    df.sampSummary <- merge(df_sites[, c("StationID", "COMID", "OutcaseCol")],
                             df.sampSummary, by = "StationID", all.y = TRUE)
     df.sampSummary <- unique(df.sampSummary)
   } else {
-    df.sampSummary <- merge(df.sites[, c("StationID", "COMID", "OutcaseCol",
+    df.sampSummary <- merge(df_sites[, c("StationID", "COMID", "OutcaseCol",
                                          "IncaseCol")], df.sampSummary,
                             by = "StationID", all.y = TRUE)
     df.sampSummary <- unique(df.sampSummary)

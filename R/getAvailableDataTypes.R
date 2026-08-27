@@ -219,9 +219,9 @@ getAvailableDataTypes <- function(TargetSiteID,
     noResponses <- FALSE
   }
 
-  myAvailData <- list(useBMI = useBMI,
-                      useAlg = useAlg,
-                      useFish = useFish,
+  myAvailData <- list(use_bmi = useBMI,
+                      use_alg = useAlg,
+                      use_fish = useFish,
                       noStressors = noStressors,
                       noResponses = noResponses,
                       siteDetectsAll = siteDetectsAll,

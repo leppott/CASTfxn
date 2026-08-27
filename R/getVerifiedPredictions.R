@@ -43,6 +43,7 @@ getVerifiedPredictions <- function(TargetSiteID,
                                    biocomm,
                                    df_bioTaxaData,
                                    df_MasterTaxa,
+                                   config = NULL,
                                    colBio,
                                    plotvars,
                                    plotdpi = 600,
@@ -89,6 +90,15 @@ getVerifiedPredictions <- function(TargetSiteID,
     dir_sub = "_WoE"
     boo_plot = boo.plot.user
   }##IF.boo.DEBUG.END
+
+  if(is.null(config) == FALSE){
+    plotvars       <- config$data_plotvars
+    plotdpi        <- config$plot_dpi
+    plotH          <- config$plot_H
+    plotW          <- config$plot_W
+    plotunits      <- config$plot_units
+    boo_plot       <- config$boo_plot
+  }
 
   # define pipe
   `%>%` <- dplyr::`%>%`

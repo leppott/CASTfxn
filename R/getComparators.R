@@ -67,7 +67,8 @@ getComparators<- function(TargetSiteID,
                           bc_cutoff = 0.05,
                           dir_results,
                           dir_sub = "SiteInfo",
-                          bio) {##FUNCTION.START
+                          bio,
+                          config = NULL) {##FUNCTION.START
 
   # Global Bindings
   data_Sites <- data_cluster <- data_bmiCoOccur <- bmiIndex <- StationID <-
@@ -93,6 +94,10 @@ getComparators<- function(TargetSiteID,
     bc_cutoff = 0.05
     dir_results = dir_results
     dir_sub = "SiteInfo"
+  }
+
+  if(is.null(config)==FALSE){
+    useBC <- config$useBC
   }
 
   # define pipe

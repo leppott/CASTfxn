@@ -10,7 +10,7 @@
 #'
 #' @details Retrieves saved site and cluster objects from their respective rds files.
 #'
-#' @param out.dir directory where all rds files are stored
+#' @param out_dir directory where all rds files are stored
 #' @param outcaseLabel x
 #' @param incaseColName x
 #' @param useBC x
@@ -24,19 +24,27 @@
 #' @importFrom rlang .data
 #' @export
 #'
-prepSiteData <- function(out.dir,
+prepSiteData <- function(out_dir = NULL,
+                         config = NULL,
+                         # meta = NULL,
                          outcaseLabel = NULL,
                          incaseColName = NULL,
                          useBC = NULL,
                          outcaseColName = NULL) {
 
-  # define pipe
-  `%>%` <- dplyr::`%>%`
+  if(is.null(config) == FALSE){
+    useBC <- config$useBC
+    out_dir = file.path(config$out_dir, config$dn_checked_sk)
+  }
 
-  data_Sites <- readRDS(file.path(out.dir, "data_Sites.rds"))
-  data_cluster <- readRDS(file.path(out.dir, "data_cluster.rds"))
-  # data_Sites <- data_Sites %>%
-  #   dplyr::mutate(StationID = stringr::str_replace_all(.data$StationID, "[:punct:]", "_"))
+  # if(is.null(meta) == FALSE){
+  #   outcaseLabel <- meta$outcaseLabel
+  #   incaseColName <- meta$incaseColName
+  #   outcaseColName <- meta$outcaseColName
+  # }
+
+  data_Sites <- readRDS(file.path(out_dir, "data_Sites.rds"))
+  data_cluster <- readRDS(file.path(out_dir, "data_cluster.rds"))
 
   if (!("ClusterID" %in% colnames(data_Sites))) {
     data_Sites <- merge(data_Sites, data_cluster, by = "COMID", all.x = TRUE)
@@ -57,7 +65,7 @@ prepSiteData <- function(out.dir,
                   outcaseLabel, "'.")
     message(msg)
     data_Sites <- dplyr::mutate(data_Sites, OutcaseCol = outcaseLabel)
-    outcaseColName <- "OutcaseCol"
+    #outcaseColName <- "OutcaseCol"
   }
 
   # Rename IncaseCol in sites file or send error message

@@ -17,7 +17,7 @@
 #' dir_data and dir_results should be absolute and not relative paths.
 #' The function `normalizePath` can be used to convert from relative to absolute path.
 #'
-#' @param out.dir directory where all rds files are stored
+#' @param out_dir directory where all rds files are stored
 #' @param bio x
 #' @param loaded x
 #' @param useBC x
@@ -27,18 +27,32 @@
 #' @return A list containing data_Sites and data_cluster to be used in the CASTool.
 #'
 #' @export
-prepRespData <- function(out.dir,
+prepRespData <- function(out_dir,
                          bio,
                          loaded,
                          useBC,
                          bioIndex,
-                         calcRelAbund) {
+                         calcRelAbund,
+                         #meta = NULL,
+                         config = NULL) {
   # Global Bindings
   bioIndexGp <- not_all_na <- RespSampleDate <- RespSampleID <- StationID <-
     UseYN <- MetricName <- MetricLabel <- IndexYN <- TrendWIncStress <-
     CutoffValue <- InclusiveIndicator <-NumInd <-
     SampleTotAbund <- NumTaxa <- RelAbund <- SampleTotTaxa <- TaxonID <-
     PctInd <- PctTaxa <- NULL
+
+  if(is.null(config) == FALSE){
+    out_dir <- file.path(config$out_dir, config$dn_checked_sk)
+    useBC    <- config$useBC
+  }
+
+  # if(is.null(meta) == FALSE){
+  #   loaded   <- meta$loaded
+  #   bioIndex <- meta[[paste0(bio, "IndexGp")]]
+  #   calcRelAbund <- meta$calcRelAbund
+  # }
+
 
   not_all_na <- function(x) {!all(is.na(x))}
 
@@ -55,32 +69,32 @@ prepRespData <- function(out.dir,
   `%>%` <- dplyr::`%>%`
 
   if (bio == "bmi") {
-    data_bioMetrics       <- readRDS(file.path(out.dir, "data_bmiMetrics.rds"))
-    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_bmiMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out_dir, "data_bmiMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out_dir, "data_bmiMetricsInfo.rds"))
     if (("data_bmiMasterTaxa" %in% loaded) && ("data_bmiCounts" %in% loaded)) {
-      data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_bmiMasterTaxa.rds"))
-      data_bioCounts      <- readRDS(file.path(out.dir, "data_bmiCounts.rds"))
+      data_bioMasterTaxa  <- readRDS(file.path(out_dir, "data_bmiMasterTaxa.rds"))
+      data_bioCounts      <- readRDS(file.path(out_dir, "data_bmiCounts.rds"))
     }
     if (useBC == TRUE) {
-      data_BCdist         <- readRDS(file.path(out.dir, "data_BCdist.rds"))
+      data_BCdist         <- readRDS(file.path(out_dir, "data_BCdist.rds"))
     } else {
       data_BCdist         <- NULL
     }
   }
   if (bio == "alg") {
-    data_bioMetrics       <- readRDS(file.path(out.dir, "data_algMetrics.rds"))
-    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_algMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out_dir, "data_algMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out_dir, "data_algMetricsInfo.rds"))
     if (("data_algMasterTaxa" %in% loaded) && ("data_algCounts" %in% loaded)) {
-      data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_algMasterTaxa.rds"))
-      data_bioCounts      <- readRDS(file.path(out.dir, "data_algCounts.rds"))
+      data_bioMasterTaxa  <- readRDS(file.path(out_dir, "data_algMasterTaxa.rds"))
+      data_bioCounts      <- readRDS(file.path(out_dir, "data_algCounts.rds"))
     }
   }
   if (bio == "fish") {
-    data_bioMetrics       <- readRDS(file.path(out.dir, "data_fishMetrics.rds"))
-    data_bioMetricsInfo   <- readRDS(file.path(out.dir, "data_fishMetricsInfo.rds"))
+    data_bioMetrics       <- readRDS(file.path(out_dir, "data_fishMetrics.rds"))
+    data_bioMetricsInfo   <- readRDS(file.path(out_dir, "data_fishMetricsInfo.rds"))
     if (("data_fishMasterTaxa" %in% loaded) && ("data_fishCounts" %in% loaded)) {
-      data_bioMasterTaxa  <- readRDS(file.path(out.dir, "data_fishMasterTaxa.rds"))
-      data_bioCounts      <- readRDS(file.path(out.dir, "data_fishCounts.rds"))
+      data_bioMasterTaxa  <- readRDS(file.path(out_dir, "data_fishMasterTaxa.rds"))
+      data_bioCounts      <- readRDS(file.path(out_dir, "data_fishCounts.rds"))
     }
   }
 

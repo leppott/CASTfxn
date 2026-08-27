@@ -53,6 +53,7 @@ getBioStressorResponses <- function(TargetSiteID,
                                     df_respinfo,
                                     df_respdata,
                                     df_datapaired,
+                                    config = NULL,
                                     biocomm,
                                     bioindex,
                                     min_cases = samplim,
@@ -106,6 +107,16 @@ getBioStressorResponses <- function(TargetSiteID,
     dir_sub = "_WoE"
     boo_pred_warn = TRUE
     boo_plot = TRUE
+  }
+
+  if(is.null(config) == FALSE){
+    plotvars      = config$data_plotvars
+    refOutline    = config$refOutline_col
+    plotdpi       = config$plot_dpi
+    plotH         = config$plot_H
+    plotW         = config$plot_W
+    plotunits     = config$plot_units
+    boo_plot      = config$boo_plot
   }
 
   # Correlation file output header row

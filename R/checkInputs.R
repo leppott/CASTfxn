@@ -21,8 +21,8 @@
 #' The function `normalizePath` can be used to convert from relative to absolute
 #' path.
 #'
-#' @param dir.uploaded directory of input files to be checked
-#' @param dir.out directory for output
+#' @param dir_uploaded directory of input files to be checked
+#' @param dir_out directory for output
 #' @param fn.inputcheck path filename for the MSExcel file describing required
 #' files, columns, types, and relationships.
 #' Default is extdata/CASTool_InputCheck.xlsx
@@ -31,8 +31,8 @@
 #' @examples
 #' # None at this time
 #' @export
-checkInputs <- function(dir.uploaded,
-                        dir.out,
+checkInputs <- function(dir_uploaded,
+                        dir_out,
                         fn.inputcheck = system.file("extdata",
                                                     "CASTool_InputCheck.xlsx",
                                                     package = "CASTfxn")) {
@@ -54,23 +54,23 @@ checkInputs <- function(dir.uploaded,
   debug <- FALSE
   if (debug) {
     # Uploaded files
-    dir.uploaded <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/UploadedData_Test"
+    dir_uploaded <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/UploadedData_Test"
     # Output dir
-    dir.out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
+    dir_out <- "C:/Users/ann.lincoln/Documents/CASTool_DATA/WA/Results/_CheckedInputs"
     # Included functions
     dir.git <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/R"
     source(file.path(dir.git, "readCASToolData.R"))
   }## IF ~ debug
 
   # QC----
-  qc_dir_uploaded <- !dir.exists(dir.uploaded)
+  qc_dir_uploaded <- !dir.exists(dir_uploaded)
   if (qc_dir_uploaded) {
-    stop("ERROR: 'dir.uploaded' does not exist.")
+    stop("ERROR: 'dir_uploaded' does not exist.")
   } ## IF ~ qc_dir_uploaded
   #
-  qc_dir_out <- !dir.exists(dir.out)
+  qc_dir_out <- !dir.exists(dir_out)
   if (qc_dir_out) {
-    stop("ERROR: 'dir.out' does not exist.")
+    stop("ERROR: 'dir_out' does not exist.")
   } ## IF ~ qc_dir_out
   #
   qc_inputcheck <- !file.exists(fn.inputcheck)
@@ -83,7 +83,7 @@ checkInputs <- function(dir.uploaded,
   #   stop("ERROR: 'df_targets' does not exist.")
   # } ## IF ~ qc_df_targets
 
-  # dir.uploaded <- in.dir
+  # dir_uploaded <- in.dir
 
   # Declare internal functions ----
   compare.fk.pk <- function(fk, pk) {
@@ -218,7 +218,7 @@ checkInputs <- function(dir.uploaded,
   # Regardless of whether or not the file is required, if it is provided, certain
   # columns are required. These are included in input_check, too. Relationships
   # are sort of included in input_check, but mostly that logic is in this code.
-  # fn.inputcheck <- file.path(dir.uploaded, "CASTool_InputCheck.xlsx")
+  # fn.inputcheck <- file.path(dir_uploaded, "CASTool_InputCheck.xlsx")
   #    defined in input of function
   input_check <- readxl::read_xlsx(fn.inputcheck, sheet = "data", na = "")
   paired_check <- readxl::read_xlsx(fn.inputcheck, sheet = "paired", na = "") |>
@@ -227,7 +227,7 @@ checkInputs <- function(dir.uploaded,
   # CASTmetadata contains the expected filenames. Either this file should
   # be available in the region's data folder (if running at the command-line),
   # or it will be uploaded in zip format along with all other data files.
-  fn.metadata <- file.path(dir.uploaded, "_CASTool_Metadata.xlsx")
+  fn.metadata <- file.path(dir_uploaded, "_CASTool_Metadata.xlsx")
   if (file.exists(fn.metadata)) {
     CASTmetadata <- readCASToolData(fn = fn.metadata, NAs = c("", "NA"))
     pf.cols.CASTmeta <- compare.colnames(c("Variable", "Value"),
@@ -278,7 +278,7 @@ checkInputs <- function(dir.uploaded,
   input_check <- dplyr::filter(input_check, !is.na(Value)) # Minus not defined
   for (i in 1:nrow(input_check)) {
     fn <- input_check$Value[i]
-    if (file.exists(file.path(dir.uploaded, fn))) {
+    if (file.exists(file.path(dir_uploaded, fn))) {
       input_check$Uploaded[i] <- 1
       loaded <- rbind(loaded, dplyr::filter(input_check, Value == fn))
     } else {
@@ -380,10 +380,10 @@ checkInputs <- function(dir.uploaded,
     desc <- loaded$Description[j]
 
     if(tolower(tools::file_ext(fn)) != "rda"){
-      assign(object, readCASToolData(file.path(dir.uploaded, fn),
+      assign(object, readCASToolData(file.path(dir_uploaded, fn),
                                      NAs = c("", "NA", "na", "N/A", "n/a")))
     } else {
-      readCASToolData(file.path(dir.uploaded, fn),
+      readCASToolData(file.path(dir_uploaded, fn),
                       NAs = c("", "NA", "na", "N/A", "n/a"))
     }
 
@@ -507,10 +507,10 @@ checkInputs <- function(dir.uploaded,
 
 
   prob_fp_df <- dplyr::cross_join(responses_df, stressors_df) |>
-    dplyr::mutate(dir.out = dir.out,
+    dplyr::mutate(dir_out = dir_out,
            region = region,
            siteid = longest_siteid,
-           file_path = paste(dir.out,
+           file_path = paste(dir_out,
                              region,
                              longest_siteid,
                              biocomm,
@@ -527,11 +527,11 @@ checkInputs <- function(dir.uploaded,
     dplyr::filter(num_char > 245)
 
   # Write region directory ----
-  if(dir.exists(file.path(dir.out, region))==FALSE){
-    dir.create(file.path(dir.out, region))
+  if(dir.exists(file.path(dir_out, region))==FALSE){
+    dir.create(file.path(dir_out, region))
   }
 
-  fp_problem <- file.path(dir.out, region, "Potential_Problem_FilePath.csv")
+  fp_problem <- file.path(dir_out, region, "Potential_Problem_FilePath.csv")
   write.csv(prob_fp_df, fp_problem, row.names = FALSE)
 
   n_problem_fp <- prob_fp_df |>
@@ -1662,7 +1662,7 @@ checkInputs <- function(dir.uploaded,
   rm(input_check)
 
   # # Write results directory ----
-  out.folders <- c(dir.out, region, "_CheckedInputs")
+  out.folders <- c(dir_out, region, "_CheckedInputs")
 
   for (i in 1:length(out.folders)) {
     if (i == 1) {
@@ -1675,29 +1675,29 @@ checkInputs <- function(dir.uploaded,
     }
   }
 
-  dir.out <- dir.path
+  dir_out <- dir.path
 
   # Save objects ----
-  saveRDS(CASTmetadata, file.path(dir.out, "CASTmetadata.rds"))
-  saveRDS(loaded, file.path(dir.out, "loaded.rds"))
+  saveRDS(CASTmetadata, file.path(dir_out, "CASTmetadata.rds"))
+  saveRDS(loaded, file.path(dir_out, "loaded.rds"))
 
   objects <- setdiff(df.TableOne$Object, "cluster_graphic")
 
   for (o in seq_along(unique(objects))) {
     objName <- objects[o]
     fn <- paste0(objName, ".rds")
-    saveRDS(get(objName), file.path(dir.out, fn))
+    saveRDS(get(objName), file.path(dir_out, fn))
   }
 
   if(is.na(cluster_graphic.fn)==FALSE){
-    file.copy(file.path(dir.uploaded, cluster_graphic.fn),
-              file.path(dir.out, "cluster_graphic.png"))
+    file.copy(file.path(dir_uploaded, cluster_graphic.fn),
+              file.path(dir_out, "cluster_graphic.png"))
   } else{
 
     # file.copy(CASToolClusterPckg::retrieve_clust_fig(region, clusterNum),
-    #           file.path(dir.out, "cluster_graphic.png"))
+    #           file.path(dir_out, "cluster_graphic.png"))
 
-    dest <- file.path(dir.out, "cluster_graphic.png")
+    dest <- file.path(dir_out, "cluster_graphic.png")
 
     aws.s3::save_object(
       object = cluster_graphic,

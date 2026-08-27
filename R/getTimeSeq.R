@@ -42,6 +42,7 @@
 getTimeSeq <- function(TargetSiteID,
                        biocomm,
                        bioindex,
+                       config = NULL,
                        df_stress,
                        df_resp,
                        df_respinfo,
@@ -78,6 +79,14 @@ getTimeSeq <- function(TargetSiteID,
     plotunits = "in"
     dir_results = dir_results
     dir_sub = "_WoE"
+  }
+
+  if(is.null(config) == FALSE){
+    plotdpi       <- config$plot_dpi
+    plotH         <- config$plot_H
+    plotW         <- config$plot_W
+    plotunits     <- config$plot_units
+    boo_plot      <- config$boo_plot
   }
 
   # Define pipe

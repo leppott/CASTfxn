@@ -49,6 +49,7 @@
 #' @export
 getSiteMap <- function(sp_outline,
                        sp_flowline,
+                       config = NULL,
                        region,
                        datum,
                        df_sites,
@@ -85,6 +86,13 @@ getSiteMap <- function(sp_outline,
     dir_results <- dir_results
     dir_sub <- "SiteInfo"
     dir_map_rmd <- "C:/Users/ann.lincoln/Documents/GitHub/CASTfxn/inst/rmd/"
+  }
+
+  if(is.null(config) == FALSE){
+    region       <- config$region
+    useBC        <- config$useBC
+    plotvars     <- config$data_plotvars
+    refOutline   <- config$refOutline_col
   }
 
   # define pipe

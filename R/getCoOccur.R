@@ -85,6 +85,7 @@ getCoOccur <- function(TargetSiteID,
                        df_stressinfo,
                        compsites,
                        biocomm,
+                       config = NULL,
                        colBio,
                        pHlimLow = 5,
                        pHlimHigh = 9,
@@ -131,6 +132,15 @@ getCoOccur <- function(TargetSiteID,
     dir_plots = dir_plots
     dir_sub = "_WoE"
     boo_plot = TRUE
+  }
+
+  if(is.null(config) == FALSE){
+    plotvars      <- config$data_plotvars
+    plotdpi       <- config$plot_dpi
+    plotH         <- config$plot_H
+    plotW         <- config$plot_W
+    plotunits     <- config$plot_units
+    boo_plot      <- config$boo_plot
   }
 
   # define pipe

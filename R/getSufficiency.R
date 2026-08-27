@@ -79,6 +79,7 @@ getSufficiency <- function(TargetSiteID,
                            df_stressinfo,
                            biocomm,
                            colBio,
+                           config = NULL,
                            plotvars,
                            plotdpi = 600,
                            plotH = 6,
@@ -117,6 +118,15 @@ getSufficiency <- function(TargetSiteID,
     dir_plots = dir_results
     dir_sub = "_WoE"
     boo_plot = boo_plot_user
+  }
+
+  if(is.null(config) == FALSE){
+    plotvars      <- config$data_plotvars
+    plotdpi       <- config$plot_dpi
+    plotH         <- config$plot_H
+    plotW         <- config$plot_W
+    plotunits     <- config$plot_units
+    boo_plot      <- config$boo_plot
   }
 
   # define pipe

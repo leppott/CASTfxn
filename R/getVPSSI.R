@@ -45,6 +45,7 @@ getVPSSI <- function(TargetSiteID,
                      biocomm,
                      df_bioMetricData,
                      df_bioMetricInfo,
+                     config = cfg,
                      colBio,
                      plotvars,
                      plotdpi = 600,
@@ -87,6 +88,14 @@ getVPSSI <- function(TargetSiteID,
     dir_sub = "_WoE"
     boo_plot = boo_plot_user
   }##IF.boo.DEBUG.END
+
+  if(is.null(config) == FALSE){
+    plotvars         <- config$data_plotvars
+    plotdpi          <- config$plot_dpi
+    plotH            <- config$plot_H
+    plotW            <- config$plot_W
+    plotunits        <- config$plot_units
+  }
 
   # define pipe; standardize biocomm
   `%>%` <- dplyr::`%>%`

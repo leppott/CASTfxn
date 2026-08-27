@@ -44,6 +44,7 @@ getWoE <- function(TargetSiteID,
                    dfStress,
                    dir_results,
                    dir_WoE = "_WoE",
+                   config = NULL,
                    plotdpi,
                    plotH,
                    plotW,
@@ -66,6 +67,14 @@ getWoE <- function(TargetSiteID,
     dfStress = df_stressorMetadata
     dir_results = dir_results
     dir_WoE = "_WoE"
+  }
+
+  if(is.null(config) == FALSE){
+    plotdpi <- config$plot_dpi
+    plotH <- config$plot_H
+    plotW <- config$plot_W
+    plotunits <- config$plot_units
+    boo_plot <- config$boo_plot
   }
 
   # define pipe

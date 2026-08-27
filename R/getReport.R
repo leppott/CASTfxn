@@ -51,7 +51,7 @@
 #' @param data_fishMetrics description
 #' @param data_stressInfo description
 #' @param siteDetectsAll x
-#' 
+#'
 #'
 # @param probsHigh Default = 0.75
 # @param probsLow Default = 0.25
@@ -102,7 +102,8 @@ getReport <- function(TargetSiteID,
                       data_algMetrics,
                       data_fishMetrics,
                       data_stressInfo,
-                      siteDetectsAll
+                      siteDetectsAll,
+                      dn_checked_sk
                       ) { ##FUNCTION.START
   # Global Bindings
   #biocommlist <- regionName <- fn.cluster <- NULL
@@ -189,7 +190,8 @@ getReport <- function(TargetSiteID,
                                     fishIndex      = fishIndex,
                                     #clusterfile    = basename(fn.cluster),
                                     dir_results    = dir_results,
-                                    boo.WS         = boo.WS),
+                                    boo.WS         = boo.WS,
+                                    dn_checked_sk = dn_checked_sk),
                       quiet = TRUE)
   } else {
     Msg.Line0 <- "~~~~~~~~~~~~~~~~~~~~~~~~~~\n"

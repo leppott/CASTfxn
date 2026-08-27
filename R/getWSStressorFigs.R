@@ -37,6 +37,7 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
                               comp.reaches = list.CompSites$comp.reaches,
                               TargetCOMID = list.CompSites$TargetCOMID,
                               useAllCompReaches = useAllCompReaches,
+                              config = NULL,
                               useBC = FALSE,
                               dir_sub = "SiteInfo",
                               df_SampSummary = data_sampSummary,
@@ -74,6 +75,16 @@ getWSStressorFigs <- function(TargetSiteID = TargetSiteID,
     plotH             <- 6
     plotW             <- 8
     plotunits         <- "in"
+  }
+
+  if(is.null(config) == FALSE){
+    useBC <- config$useBC
+    boo_lot <- config$boo_plot
+    plotdpi <- config$plot_dpi
+    plotH   <- config$plot_H
+    plotW   <- config$plot_W
+    plotunits <- config$plot_units
+    dir_results <- config$out_dir
   }
 
   # define pipe

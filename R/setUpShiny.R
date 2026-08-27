@@ -1,0 +1,6 @@
+setUpShiny <- function(){
+
+  return(
+    list()
+  )
+}

@@ -15,54 +15,37 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2026-04-07, Laura, clean up
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tic <- Sys.time()
+# 2026-07-27, Laura, additional clean up
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, Start ####
-# external/CASTool.R
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+tic <- Sys.time()
 
 # 01, Set up ####
 ## Define global variables ####
-boo_Shiny <- FALSE # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
-boo.debug <- FALSE # Whether to run the code in debug mode
-dn_checked_sk <- "_CheckedInputs" # Name of checked inputs folder
-boo.plot.user <- TRUE # Whether to generate line of evidence plots
+cfg <- setGlobals(
+  boo_shiny = FALSE, # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+  boo_debug = FALSE # Whether to run the code in debug mode
+)
 
 ## R console program set up ####
-if(boo_Shiny == FALSE){
-  # User edits these lines
-  # in.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Data" # File path of data directory
-  # out.dir <- "C:/Users/lnaslund/Documents/CASTool_Data/DataNoHelper/Results" # File path of results directory
-  # region <- "DEPied" # Name of region
+if(cfg$boo_shiny == FALSE) {
 
-  in.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Output" # File path of data directory
-  out.dir <- "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Results"
-  region <- "Rhode Island" # Name of region
-
-  # Helper package
-  pakInd <- setdiff("pak", .packages(all.available = TRUE))
-  if(rlang::is_empty(pakInd)==FALSE){
-    install.packages("pak")
-  }
-
-  helperInd <- setdiff("CASToolHelperPckg", .packages(all.available = TRUE))
-
-  if(rlang::is_empty(helperInd)==FALSE){
-    message("Installing CASToolHelperPckg")
-    pak::pak("laura-naslund/CASToolHelperPckg")
-  }
-
-  library(CASToolHelperPckg)
-
-  # Source all functions
-  devtools::load_all()
-
-  # Set global variable
-  useBC <- FALSE
+  cfg <- setUpRConsole(
+      # File path of data directory
+      in_dir = "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Output",
+      # File path of results directory
+      out_dir = "C:/Users/lnaslund/OneDrive - Environmental Protection Agency (EPA)/Profile/Documents/3-projects/14-biocriteria/Bioindicator_Workshop/CASTool Results",
+      region = "Rhode Island"
+    ) |>
+    append(cfg, values = _)
 }
 
 ## Shiny set up----
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
 
   dir_rmd     <- file.path(system.file(package = "CASTfxn"), "rmd")
   wd          <- getwd()
@@ -92,32 +75,14 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-} # IF ~ boo_Shiny ~ END
+} # IF ~ cfg$boo_shiny ~ END
 
-## Color assignments ####
-# Based on ito_seven from ggpubfigs
-data_plotvars <- data.frame("Type" = c("target", "insideND", "insideD", "outsideND", "outsideD"),
-                            "Fill" = c("#CC79A7", "#56B4E9", "#E69F00", "#0072B2", "#D55E00"),
-                            "Shape" = c(24, 21, 25, 21, 25),
-                            "Size" = c(1.75, 0.8, 1, 0.8, 1),
-                            "Alpha" = c(1, 0.5, 0.7, 0.5, 0.7))
-refOutline_col <- "#000000"
-
-## Other plot variables ####
-plot_dpi <- 600
-plot_H <- 6
-plot_W <- 8
-plot_units <- "in"
-
-## Define pipe
-`%>%` <- dplyr::`%>%`
-`:=` <- data.table::`:=`
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
 # Progress, 02
 
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Check input data files"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -126,20 +91,17 @@ if (boo_Shiny == TRUE) {
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
 } else {
-  list.Tables <- checkInputs(dir.uploaded = in.dir,
-                             dir.out = out.dir)
+  list.Tables <- checkInputs(dir_uploaded = cfg$in_dir,
+                             dir_out = cfg$out_dir)
 
-  TableOne    <- list.Tables$TableOne
-  write.csv(TableOne, file.path(out.dir, region, "TableOne.csv"), row.names = FALSE)
-
-  TableTwo    <- list.Tables$TableTwo
-  write.csv(TableTwo, file.path(out.dir, region, "TableTwo.csv"), row.names = FALSE)
-}## IF ~ boo_Shiny ~ END
+  write.csv(list.Tables$TableOne, file.path(cfg$out_dir, cfg$region, "TableOne.csv"), row.names = FALSE)
+  write.csv(list.Tables$TableTwo, file.path(cfg$out_dir, cfg$region, "TableTwo.csv"), row.names = FALSE)
+}## IF ~ cfg$boo_shiny ~ END
 
 #~~~~~~~~~~~~~~~~~~~~~~~
-# 03, Select region variables ####
+# 03, Get metadata params ####
 # Progress, 03
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Pull values from metadata"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -147,123 +109,16 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
-out.dir <- file.path(out.dir, region)
+cfg$out_dir <- file.path(cfg$out_dir, cfg$region)
 
-## Load CASTool_Metadata ####
-data_CASTmeta <- readRDS(file.path(out.dir, dn_checked_sk, "CASTmetadata.rds"))
-data_CASTmeta <- data_CASTmeta |>
-  tidyr::pivot_wider(names_from = Variable, values_from = Value)
-
-## Read loaded.rds ####
-### Describes which input files have been loaded
-data_loaded <- readRDS(file.path(out.dir, dn_checked_sk, "loaded.rds"))
-loaded      <- as.character(data_loaded$Object)
-
-## Set up booleans ####
-### Helper import boolean
-helperImport <- data_CASTmeta |> dplyr::pull(helperImport) |>  as.logical()
-helperImport <- ifelse(is.na(helperImport), FALSE, helperImport)
-
-### WS boolean
-boo.WS <- data_CASTmeta |> dplyr::pull(exploreWSStressor) |> as.logical()
-boo.WS <- ifelse(is.na(boo.WS), FALSE, boo.WS)
-
-### Target sample label boolean
-targetSampleLabels <- data_CASTmeta |> dplyr::pull(targetSampleLabels)|>  as.logical()
-targetSampleLabels <- ifelse(is.na(targetSampleLabels), FALSE, targetSampleLabels)
-
-boo.meas  <- FALSE
-boo.model <- FALSE
-
-# LCN could be condensed
-# Sets up booleans for measured and modeled data and creates meta.meas/mod and data.meas/mod with object names for measured and modeled (meta)data
-for (l in seq_along(loaded)) {
-  msg <- paste0("booleans, ", l, "/", length(loaded))
-  message(msg)
-  object <- loaded[l]
-  if (grepl("chem", object) == TRUE)  {
-    boo.meas  <- TRUE
-    if (grepl("Info", object) == TRUE) {
-      meta.meas <- object
-    } else {
-      data.meas <- object
-    }
-  }
-  if (grepl("model", object) == TRUE) {
-    boo.model <- TRUE
-    if (grepl("Info", object) == TRUE) {
-      meta.mod <- object
-    } else {
-      data.mod <- object
-    }
-  }
-}
-rm(l, object, data_loaded)
-
-## Get variables ####
-### Response data ####
-biocommlist <- data_CASTmeta |> dplyr::pull(biocommlist) |> stringr::str_split(", |,") |> unlist()
-
-# Define the metric to use as the index for each biocommunity
-for (b in seq_along(biocommlist)) {
-  bio <- tolower(biocommlist[b])
-  calcRelAbund       <- as.logical(dplyr::select(data_CASTmeta, calcRelAbund))
-  if (bio == "bmi") {
-    bmiIndexGp       <- data_CASTmeta |> dplyr::pull(bmiIndexGp) |> stringr::str_split(", |,") |> unlist()
-  }
-  if (bio == "alg") {
-    algIndexGp       <- data_CASTmeta |> dplyr::pull(algIndexGp) |> stringr::str_split(", |,") |> unlist()
-  }
-  if (bio == "fish") {
-    fishIndexGp       <- data_CASTmeta |> dplyr::pull(fishIndexGp) |> stringr::str_split(", |,") |> unlist()
-  }
-}## FOR ~ b
-
-### Stressor data ####
-removeOutliers  <- as.logical(dplyr::select(data_CASTmeta, removeOutliers))
-samplim         <- as.integer(dplyr::select(data_CASTmeta, samplim))
-r2_cutoff       <- as.numeric(dplyr::select(data_CASTmeta, r2_cutoff))
-p.val_cutoff    <- as.numeric(dplyr::select(data_CASTmeta, p.val_cutoff))
-
-if (boo.meas) {
-  DOlim         <- as.numeric(dplyr::select(data_CASTmeta, DOlim))
-  pHlimLow      <- as.numeric(dplyr::select(data_CASTmeta, pHlimLow))
-  pHlimHigh     <- as.numeric(dplyr::select(data_CASTmeta, pHlimHigh))
-
-  lagdays <- dplyr::pull(data_CASTmeta, lagdays) |>
-    stringr::str_split(",") |>
-    unlist() |>
-    stringr::str_trim() |>
-    as.integer()
-
-}## IF ~ boo.meas
-
-useAllCompReaches  <- as.logical(dplyr::select(data_CASTmeta, useAllCompReaches))
-
-### Site variables ####
-# if (boo_Shiny) {
-#   # should be single entries so should be ok
-  datum          <- as.character(dplyr::pull(data_CASTmeta, datum))
-  outcaseColName <- as.character(dplyr::pull(data_CASTmeta, outcaseColName))
-  outcaseLabel   <- as.character(dplyr::pull(data_CASTmeta, outcaseLabel))
-  incaseColName  <- as.character(dplyr::pull(data_CASTmeta, incaseColName))
-  incaseLabel    <- as.character(dplyr::pull(data_CASTmeta, incaseLabel))
-# } else {
-#   datum          <- as.character(dplyr::select(data_CASTmeta, datum))
-#   outcaseColName <- as.character(dplyr::select(data_CASTmeta, outcaseColName))
-#   outcaseLabel   <- as.character(dplyr::select(data_CASTmeta, outcaseLabel))
-#   incaseColName  <- as.character(dplyr::select(data_CASTmeta, incaseColName))
-#   incaseLabel    <- as.character(dplyr::select(data_CASTmeta, incaseLabel))
-# }## IF ~ boo_Shiny
-
-rm(b, bio)
+meta <- getMetadataParams(config = cfg)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 04, Site data files ####
 # Progress, 04
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Load site data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -271,23 +126,17 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
-list.SiteData <- prepSiteData(out.dir = file.path(out.dir, dn_checked_sk),
-                              outcaseLabel = outcaseLabel,
-                              incaseColName = incaseColName,
-                              useBC = useBC,
-                              outcaseColName = outcaseColName)
-
-data_Sites    <- list.SiteData$site
-data_cluster  <- list.SiteData$cluster
-refSites      <- list.SiteData$refSites
-rm(list.SiteData)
+list.SiteData <- prepSiteData(outcaseLabel = meta$outcaseLabel,
+                              incaseColName = meta$incaseColName,
+                              outcaseColName = meta$outcaseColName,
+                              config = cfg)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 05, Measured data and metadata ####
 # Progress, 05
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Load measured stressor data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -295,26 +144,20 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
-if (boo.meas) {
-  list.measStress   <- prepMeasStressorData(in.dir = file.path(out.dir, dn_checked_sk),
-                                            out.dir = out.dir,
-                                            fn.data = paste0(data.meas, ".rds"),
-                                            fn.meta = paste0(meta.meas, ".rds"),
-                                            removeOutliers = removeOutliers,
-                                            sub.dir = "_Histograms")
-  data_chemInfo     <- list.measStress$data_chemInfo
-  data_chemRaw      <- list.measStress$data_chemRaw
-  data_measoutliers <- list.measStress$data_measoutliers
-
-  rm(list.measStress)
-}
+if (isTRUE(meta$boo_meas)) {
+  list.measStress   <- prepMeasStressorData(fn_data = "data_chemAll.rds",
+                                            fn_meta = "data_chemInfo.rds",
+                                            sub_dir = "_Histograms",
+                                            removeOutliers = meta$removeOutliers,
+                                            config = cfg)
+} else {list.measStress <- NULL}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 06, Modeled data and metadata ####
 # Progress, 06
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Load modeled stressor data"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -322,27 +165,20 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
-if (boo.model) {
-  list.modStress     <- prepModStressorData(in.dir = file.path(out.dir, dn_checked_sk),
-                                            out.dir = out.dir,
-                                            fn.data = paste0(data.meas, ".rds"),
-                                            fn.meta = paste0(meta.meas, ".rds"),
-                                            removeOutliers = removeOutliers,
-                                            sub.dir = "_Histograms")
-  data_modelInfo     <- list.modStress$data_modelInfo
-  data_modelRaw      <- list.modStress$data_modelAll |>
-    dplyr::mutate(StressSampleDate = NA) |>
-    dplyr::select(StationID, StressSampleID, StressSampleDate, TransfValue)
-  data_modeloutliers <- list.modStress$data_modeloutliers
-  rm(list.modStress)
-}
+if (isTRUE(meta$boo_model)) {
+  list.modStress     <- prepModStressorData(fn_data = "data_modelAll.rds",
+                                            fn_meta = "data_modelInfo.rds",
+                                            sub_dir = "_Histograms",
+                                            removeOutliers = meta$removeOutliers,
+                                            config = cfg)
+} else {list.modStress <- NULL}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 07, Combine stressor data ####
 # Progress, 07
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Combine stressor data and metadata"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -350,121 +186,37 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
-# remove outliers
-# Combine metadata for all stressors into one datafile
-if (boo.meas && boo.model) {
-  # Combine metadata
-  chemMetaNames   <- colnames(data_chemInfo)
-  modelMetaNames  <- colnames(data_modelInfo)
-  extraNames      <- chemMetaNames[!(chemMetaNames %in% modelMetaNames)]
-  for (e in seq_len(length(extraNames))) {
-    newCol        <- extraNames[e]
-    data_modelInfo[[newCol]] <- NA
-  }
-  data_modelInfo  <- data_modelInfo[, chemMetaNames]
-  data_stressInfo <- rbind(data_chemInfo, data_modelInfo)
-  rm(data_chemInfo, data_modelInfo)
-  rm(chemMetaNames, modelMetaNames, extraNames, newCol, e)
+}## IF ~ cfg$boo_shiny ~ END
 
-  data_stressInfo <- dplyr::distinct(data_stressInfo,
-                                     StdParamName,
-                                     Label,
-                                     LogTransf,
-                                     UseInStressorID,
-                                     DirIncStress,
-                                     SSTVname.bmi,
-                                     SensMax.bmi,
-                                     SensMin.bmi,
-                                     SSTVname.alg,
-                                     SensMax.alg,
-                                     SensMin.alg,
-                                     SSTVname.fish,
-                                     SensMax.fish,
-                                     SensMin.fish,
-                                     SSIndex,
-                                     SourceGroup)
-  # Combine data
-  data_Stress     <- rbind(data_chemRaw, data_modelRaw)
-  rm(data_chemRaw, data_modelRaw)
-  # Combine outliers
-  if (removeOutliers) {
-    data_stressoutliers <- rbind(data_measoutliers, data_modeloutliers)
-    rm(data_measoutliers, data_modeloutliers)
-  }
-} else if (boo.meas) {
-  data_stressInfo <- data_chemInfo
-  data_Stress     <- data_chemRaw
-  rm(data_chemInfo, data_chemRaw)
-  if (!is.na(removeOutliers) & removeOutliers) {
-    data_stressoutliers <- data_measoutliers
-    rm(data_measoutliers)
-  } else {
-    data_stressoutliers <- NULL
-  }## IF ~ removeOutliers
-} else {
-  data_stressInfo <- data_modelInfo
-  data_Stress     <- data_modelRaw
-  rm(data_modelInfo, data_modelRaw)
-  if (!is.na(removeOutliers) & removeOutliers) {
-    data_stressoutliers <- data_modeloutliers
-    rm(data_modeloutliers)
-  } else {
-    data_stressoutliers <- NULL
-  }## IF ~ removeOutliers
-}
+list.Stress <- combineStressData(meas_stress = list.measStress,
+                                 mod_stress = list.modStress,
+                                 boo_meas = meta$boo_meas,
+                                 boo_model = meta$boo_model,
+                                 boo_outliers = meta$removeOutliers)
 
-# 08, Get WS stressor data, if using ####
-if (boo.WS == TRUE & helperImport == FALSE) {
-  data_stressorWS     <- readRDS(file.path(out.dir, dn_checked_sk, "data_stressorWS.rds"))
-  data_stressorinfoWS <- readRDS(file.path(out.dir, dn_checked_sk,
-                                           "data_stressorinfoWS.rds"))
+rm(list.measStress, list.modStress)
 
-  if(exists("data_stressorWS") & exists("data_stressorinfoWS")){
-    message("Watershed stressor data provided by user loaded.")
-  } else{
-    message("Watershed stressor data provided by user not found.")
-  }
+# 08, Get WS stressor data ####
+list.WSStress <- getWSStressData(boo_ws = meta$exploreWSStressor,
+                                 boo_helper = meta$helperImport,
+                                 config = cfg)
 
-
-} else if(boo.WS == TRUE & helperImport == TRUE){
-
-  conusStates <- setdiff(state.name, c("Alaska", "Hawaii"))
-
-  regionAvailable <- region %in% conusStates
-
-  if(regionAvailable == TRUE){
-    message("Downloading watershed stressor data from helper package.")
-
-    data_stressorWS <- CASToolHelperPckg::getWSStressorData(region)
-    data_stressorinfoWS <- CASToolHelperPckg::getWSStressorInfo()
-
-    if("comid" %in% names(data_stressorWS)){
-      data_stressorWS <- data_stressorWS |> dplyr::rename("COMID" = "comid")
-    }
-
-  } else{
-    message("Watershed stressor data not available for the specified region. ")
-  }
-}
-
-# Bio responses
-boo.bmi <- FALSE
-boo.alg <- FALSE
-boo.fish <- FALSE
+# 09, Bio response data ####
 data_respTrim <- data.frame()
 
 responsesOutput <- data.frame(MetricName = character(),
                               MetricLabel = character(),
                               BioComm = character(),
                               IndexYN = character())
+list.bmiData <- list()
+list.algData <- list()
+list.fishData <- list()
 
-for (b in seq_along(biocommlist)) {
-  bio <- tolower(biocommlist[b])
+for (b in seq_along(meta$biocommlist)) {
+  bio <- meta$biocommlist[b]
   #~~~~~~~~~~~~~~~~~~~~~~~
-  # 09, Bio response data ####
-  # Progress, 08-10
-  if (boo_Shiny == TRUE) {
+
+  if (cfg$boo_shiny == TRUE) {
     prog_det <- paste0("Load ", bio, ", response data")
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
@@ -472,160 +224,49 @@ for (b in seq_along(biocommlist)) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
+  }## IF ~ cfg$boo_shiny ~ END
 
-  if (bio == "bmi") {
-    # Read bmi data files
-    message("Reading BMI data files")
-    boo.bmi <- TRUE
-    useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
-    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
-    list.bmiData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
-                                 bio      = "bmi",
-                                 loaded   = loaded,
-                                 useBC    = useBC,
-                                 bioIndex = bmiIndexGp,
-                                 calcRelAbund = calcRelAbund)
-    data_bmiMetrics     <- list.bmiData$data_bioMetrics
-    data_bmiMetricsInfo <- list.bmiData$data_bioMetricsInfo
-    data_bmiCounts      <- list.bmiData$data_bioCounts
-    data_bmiMasterTaxa  <- list.bmiData$data_bioMasterTaxa
+  message(paste0("Reading ", bio, " data files"))
+  meta[[paste0("boo_", bio)]] <- TRUE
 
-    responsesOutput <- responsesOutput |>
-      dplyr::bind_rows(data_bmiMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
-                         dplyr::mutate(BioComm = bio))
+  temp <- prepRespData(bio      = bio,
+                       loaded   = meta$loaded,
+                       bioIndex = meta[[paste0(bio, "IndexGp")]],
+                       calcRelAbund = meta$calcRelAbund,
+                       config   = cfg)
 
-    # Generate co-occurrence data set (same day samples; modeled data match any day)
-    data_bmiCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
-                                         df_stress = data_Stress,
-                                         biocomm   = "BMI",
-                                         df_resp   = data_bmiMetrics,
-                                         index     = bmiIndexGp,
-                                         lagdays   = lagdays)
-    data_respTrim <- rbind(data_respTrim,
-                           data_bmiCoOccur[, c("StationID",
-                                               "RespSampleID",
-                                               "RespSampleDate",
-                                               "BioComm")] |>
-                             dplyr::mutate(biocomm = "BMISampleID"))
-  } # end BMI
-  if (bio == "alg") {
-    # Read alg data files
-    message("Reading alg data files")
-    boo.alg <- TRUE
-    useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
-    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
-    list.algData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
-                                 bio      = "alg",
-                                 loaded   = loaded,
-                                 useBC    = useBC,
-                                 bioIndex = algIndexGp,
-                                 calcRelAbund = calcRelAbund)
-    data_algMetrics     <- list.algData$data_bioMetrics
-    data_algMetricsInfo <- list.algData$data_bioMetricsInfo
-    data_algCounts      <- list.algData$data_bioCounts
-    data_algMasterTaxa  <- list.algData$data_bioMasterTaxa
+  assign(paste0("list.", bio, "Data"), temp)
 
-    responsesOutput <- responsesOutput |>
-      dplyr::bind_rows(data_algMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
-                         dplyr::mutate(BioComm = bio))
+  responsesOutput <- responsesOutput |>
+    dplyr::bind_rows(get(paste0("list.", bio, "Data"))[["data_bioMetricsInfo"]] |>
+                       dplyr::select(MetricName, MetricLabel, IndexYN) |>
+                       dplyr::mutate(BioComm = bio))
 
-    # Generate co-occurrence data set (same day samples; modeled data match any day)
-    data_algCoOccur <- getCoOccurDataset(df_sites  = data_Sites,
-                                         df_stress = data_Stress,
-                                         biocomm   = "alg",
-                                         df_resp   = data_algMetrics, # LCN 9/22/25 changed from data_bmiMetrics
-                                         index     = algIndexGp,
-                                         lagdays   = lagdays)
-    data_respTrim <- rbind(data_respTrim,
-                           data_algCoOccur[, c("StationID", "RespSampleID",
-                                               "RespSampleDate", "BioComm")]|>
-                             dplyr::mutate(biocomm = "AlgSampleID"))
-  } # end ALG
-  if (bio == "fish") {
-    # Read fish data files
-    message("Reading fish data files")
-    boo.fish <- TRUE
-    useBC <- ifelse(is.na(useBC), FALSE, useBC)# QC
-    calcRelAbund <- ifelse(is.na(calcRelAbund), FALSE, calcRelAbund)# QC
-    list.fishData <- prepRespData(out.dir  = file.path(out.dir, dn_checked_sk),
-                                  bio      = "fish",
-                                  loaded   = loaded,
-                                  useBC    = useBC,
-                                  bioIndex = fishIndexGp,
-                                  calcRelAbund = calcRelAbund)
-    data_fishMetrics     <- list.fishData$data_bioMetrics
-    data_fishMetricsInfo <- list.fishData$data_bioMetricsInfo
-    data_fishCounts      <- list.fishData$data_bioCounts
-    data_fishMasterTaxa  <- list.fishData$data_bioMasterTaxa
+  ## Perform stressor-response observation matching
+  temp <- getCoOccurDataset(df_sites  = list.SiteData$site,
+                            df_stress = list.Stress$data_stress,
+                            biocomm   = bio,
+                            df_resp   = get(paste0("list.", bio, "Data"))[["data_bioMetrics"]],
+                            index     = meta[[paste0(bio, "IndexGp")]],
+                            lagdays   = meta$lagdays)
 
-    responsesOutput <- responsesOutput |>
-      dplyr::bind_rows(data_fishMetricsInfo |>
-                         dplyr::select(MetricName, MetricLabel, IndexYN) |>
-                         dplyr::mutate(BioComm = bio))
+  assign(paste0("data_", bio, "CoOccur"), temp)
 
-    # Generate co-occurrence data set (same day samples; modeled data match any day)
-    data_fishCoOccur <- getCoOccurDataset(df_sites = data_Sites,
-                                         df_stress = data_Stress,
-                                         biocomm   = "FISH", # TODO make sure this is ok capitalized
-                                         df_resp   = data_fishMetrics, # LCN 9/22/25 changed from data_bmiMetrics
-                                         index     = fishIndexGp,
-                                         lagdays   = lagdays)
+  ## Generate summary of biological response samples for later use in getAllSamplesTable
+  data_respTrim <- rbind(data_respTrim,
+                         temp[, c("StationID",
+                                  "RespSampleID",
+                                  "RespSampleDate",
+                                  "BioComm")] |>
+                           dplyr::mutate(biocomm = paste0(toupper(bio), "SampleID"))) # TODO change this name if possible
 
-    data_respTrim <- rbind(data_respTrim,
-                           data_fishCoOccur[, c("StationID", "RespSampleID",
-                                                "RespSampleDate", "BioComm")] |>
-                             dplyr::mutate(biocomm = "FishSampleID"))
-  } # end FISH
-
+  rm(temp)
 }## FOR ~ b
-
-# QC, 20251215
-# fails, if not all col names present
-col2check_data_respTrim <- c("StationID",
-                             "RespSampleID",
-                             "RespSampleDate",
-                             "biocomm")
-if(sum(col2check_data_respTrim %in% names(data_respTrim)) ==
-   length(col2check_data_respTrim)) {
-  data_respTrim <- data_respTrim |>
-  dplyr::distinct(StationID, RespSampleID, RespSampleDate, biocomm)
-}## IF ~ col2check_data_respTrim
-
-if (boo.bmi == FALSE) {
-  message("No BMI data available")
-  bmiResp <- NULL
-  bmiIndexGp <- NULL
-  data_bmiMetrics <- NULL
-  data_bmiMetricsInfo <- NULL
-  data_bmiCoOccur <- NULL
-}
-if (boo.alg == FALSE) {
-  message("No algae data available")
-  algResp <- NULL
-  algIndexGp <- NULL
-  data_algMetrics <- NULL
-  data_algMetricsInfo <- NULL
-  data_algCoOccur <- NULL
-}
-if (boo.fish == FALSE) {
-  message("No fish data available")
-  fishResp <- NULL
-  fishIndexGp <- NULL
-  data_fishMetrics <- NULL
-  data_fishMetricsInfo <- NULL
-  data_fishCoOccur <- NULL
-}
-# Clean up
-rm(b, bio, boo.bmi, boo.alg, boo.fish)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 10, Sample summary ####
 # Progress, 11
-# NOTE: This must use all of the data, including outliers
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Generate summary of sample types"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -633,16 +274,13 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
-data_sampSummary <- getAllSamplesTable(df.stress     = data_Stress,
-                                       df.stressInfo = data_stressInfo,
-                                       df.resp       = data_respTrim,
-                                       df.sites      = data_Sites,
-                                       incaseColName = incaseColName)
-# Returns: data_sampSummary (df.sampSummary)
-# Colnames include: StationID, COMID, OutcaseCol, IncaseCol, SampleDate,
-# ChemistrySampleID, FieldSampleID, HabitatSampleID, ModeledSampleID,
-# BMISampleID, AlgSampleID, FishSampleID (assuming all sample types are available)
+}## IF ~ cfg$boo_shiny ~ END
+
+data_sampSummary <- getAllSamplesTable(df_stress     = list.Stress$data_stress,
+                                       df_stressInfo = list.Stress$data_stressInfo,
+                                       df_resp       = data_respTrim,
+                                       df_sites      = list.SiteData$site,
+                                       incaseColName = meta$incaseColName)
 rm(data_respTrim)
 # Data prep completed
 #~~~~~~~~~~~~~~~~~~~~~~~
@@ -651,7 +289,7 @@ rm(data_respTrim)
 # RUN CASTool ####
 # 11, Target site selection ####
 # Progress, 12
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Select target site"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -659,13 +297,13 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 #
-df_targets <- readRDS(file.path(out.dir, dn_checked_sk, "df_targets.rds"))
+df_targets <- readRDS(file.path(cfg$out_dir, cfg$dn_checked_sk, "df_targets.rds"))
 
 ### Evaluate each target site
 ## Use this for debugging
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   df_targets <- data.frame("TargetSiteID" = input$si_checked_sites_targ,
                            "Chosen by" = NA,
                            "Comment" = NA)
@@ -676,7 +314,7 @@ if (boo_Shiny == TRUE) {
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 12, Main Code ####
 # Progress, 13
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Check target site data availability"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -684,37 +322,30 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
-status_df <- data.frame(TargetSiteID = character(), status = character(), reason = character())
+status_df <- data.frame(TargetSiteID = character(),
+                        status = character(),
+                        reason = character())
 
-# FOR ~ site ~ START ####
+# Site loop ####
 for (site in seq_len(nrow(df_targets))) {
   TargetSiteID <- df_targets$TargetSiteID[site]
-  dir_results <- out.dir
+  dir_results <- cfg$out_dir
 
-  if (is.na(TargetSiteID)) {
-    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID is NA")
-    status_df <- status_df |> dplyr::bind_rows(temp_status)
-    next
-  } else if(data_Sites |> dplyr::filter(StationID == TargetSiteID) |> nrow() == 0){ # LCN added 20250917
-    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID not found in Sites file")
-    status_df <- status_df |> dplyr::bind_rows(temp_status)
+  ## Check TargetSiteID
+  temp_status <- checkTargetSite(TargetSiteID = TargetSiteID,
+                                 SiteData = list.SiteData$sites)
 
-    msg <- "TargetSiteID not found in the Sites file."
-    message(msg)
-    next
-  } else if (is.na(data_Sites$IncaseCol[data_Sites$StationID == TargetSiteID])) {
-    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = "TargetSiteID not assigned an inside-the-case identifier")
-    status_df <- status_df |> dplyr::bind_rows(temp_status)
-
-    msg <- "No inside-the-case identifier available"
-    message(msg)
+  if(nrow(temp_status)!= 0){
+    status_df <- rbind(status_df, temp_status)
     next
   }
+
   msg <- paste0("Evaluating site: ", TargetSiteID)
   message(msg)
 
+  rm(temp_status)
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## Biocomm-independent functions ####
 
@@ -725,8 +356,10 @@ for (site in seq_len(nrow(df_targets))) {
          dir.create(file.path(dir_results, dir_sub2)), FALSE)
 
   # Define datagaps data frame ####
-  gaps    <- data.frame(fxnname = character(), condition = character(),
-                        result = character(), comment = character())
+  gaps    <- data.frame(fxnname = character(),
+                        condition = character(),
+                        result = character(),
+                        comment = character())
 
   # Initialize stressor elimination data frame
   df_stressorElim <- data.frame(
@@ -737,7 +370,7 @@ for (site in seq_len(nrow(df_targets))) {
 
   # 13, getComparators ####
   ## Progress, 14
-  if (boo_Shiny == TRUE) {
+  if (cfg$boo_shiny == TRUE) {
     prog_det <- "Get comparator site data"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
@@ -745,105 +378,45 @@ for (site in seq_len(nrow(df_targets))) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
-  #
-  # Identify comparator sites & write # comparators to data gaps file
-  # This is predicated on the fact that BC distance is calculated based on
-  # expected benthic macroinvertebrate taxa. If there are ever different
-  # BC matrices for different biocomms, then this must move into the biocomm
-  # loop or it needs to be run more than once for each biocomm here, since
-  # it's used in getSiteInfo immediately afterward.
+  }## IF ~ cfg$boo_shiny ~ END
 
   compSitesList <- list()
 
-  for(b in seq_along(biocommlist)){
-    bio <- tolower(biocommlist[b])
+  for(b in seq_along(meta$biocommlist)){
+    bio <- tolower(meta$biocommlist[b])
 
-    if(bio == "bmi"){
-      # QC
-      if (!exists("data_BCdist")) {
-        data_BCdist <- NULL
-      }## IF ~ exists(data_BCdist)
-      list.CompSites.bmi <- getComparators(TargetSiteID = TargetSiteID,
-                                       df_sites = data_Sites,
-                                       df_cluster = data_cluster,
-                                       df_bioCoOccur = data_bmiCoOccur,
-                                       bioIndex = bmiIndexGp,
-                                       bio = bio,
-                                       useBC = useBC,
-                                       df_bcdist = data_BCdist,
-                                       bc_cutoff = 0.05,
-                                       outcaseColName = outcaseColName,
-                                       outcaseLabel = outcaseLabel,
-                                       incaseColName = incaseColName,
-                                       incaseLabel = incaseLabel,
-                                       useAllCompReaches = useAllCompReaches,
-                                       dir_results = dir_results,
-                                       dir_sub = "SiteInfo")
-      compSitesList[[bio]] <- list.CompSites.bmi
-    }
-    if(bio == "alg"){
-      list.CompSites.alg <- getComparators(TargetSiteID = TargetSiteID,
-                                           df_sites = data_Sites,
-                                           df_cluster = data_cluster,
-                                           df_bioCoOccur = data_algCoOccur,
-                                           bioIndex = algIndexGp,
-                                           bio = bio,
-                                           useBC = useBC,
-                                           df_bcdist = data_BCdist,
-                                           bc_cutoff = 0.05,
-                                           outcaseColName = outcaseColName,
-                                           outcaseLabel = outcaseLabel,
-                                           incaseColName = incaseColName,
-                                           incaseLabel = incaseLabel,
-                                           useAllCompReaches = useAllCompReaches,
-                                           dir_results = dir_results,
-                                           dir_sub = "SiteInfo")
-      compSitesList[[bio]] <- list.CompSites.alg
-    }
-    if(bio == "fish"){
-      list.CompSites.fish <- getComparators(TargetSiteID = TargetSiteID,
-                                           df_sites = data_Sites,
-                                           df_cluster = data_cluster,
-                                           df_bioCoOccur = data_fishCoOccur,
-                                           bioIndex = fishIndexGp,
-                                           bio = bio,
-                                           useBC = useBC,
-                                           df_bcdist = data_BCdist,
-                                           bc_cutoff = 0.05,
-                                           outcaseColName = outcaseColName,
-                                           outcaseLabel = outcaseLabel,
-                                           incaseColName = incaseColName,
-                                           incaseLabel = incaseLabel,
-                                           useAllCompReaches = useAllCompReaches,
-                                           dir_results = dir_results,
-                                           dir_sub = "SiteInfo")
-      compSitesList[[bio]] <- list.CompSites.fish
-    }
+    temp_list <- getComparators(TargetSiteID = TargetSiteID,
+                                df_sites =list.SiteData$site,
+                                df_cluster =list.SiteData$cluster,
+                                df_bioCoOccur = get(paste0("data_", bio, "CoOccur")),
+                                bioIndex = meta[[paste0(bio, "IndexGp")]],
+                                bio = bio,
+                                outcaseColName = meta$outcaseColName,
+                                outcaseLabel = meta$outcaseLabel,
+                                incaseColName = meta$incaseColName,
+                                incaseLabel = meta$incaseLabel,
+                                useAllCompReaches = meta$useAllCompReaches,
+                                dir_results = dir_results,
+                                dir_sub = "SiteInfo",
+                                config = cfg)
+
+    assign(paste0("list.CompSites.", bio), temp_list)
+    rm(temp_list)
+
+    compSitesList[[bio]] <- get(paste0("list.CompSites.", bio))
   }
 
-  # just chooses the first biocomm as list.CompSites, which shouldn't matter unless potentially useBC = TRUE
+  ## Choose first biocomm list for purposes of plotting non-biological community specific figures (e.g., map)
+  ## Shouldn't matter which selected unless potentially useBC = TRUE
   list.CompSites <- compSitesList[[1]]
+  rm(compSitesList)
 
-  # Returns: list.CompSites$TargetCOMID (Reach on which target site is located)
-  #          list.CompSites$comp.sites (vector of unique inside-the-case sites
-  #          regardless of useBC)
-  #          list.CompSites$comp.reaches (vector of unique inside-the-case reaches
-  #          having sites on them if useAllReaches == FALSE, else all
-  #          inside-the-case reaches)
-  #          list.CompSites$all.sites (vector of unique outside-the-case sites,
-  #          regardless of useBC)
-  #          list.CompSites$all.reaches (vector of unique outside-the-case reaches
-  #          having sites on them)
-  #          list.CompSites$incaseID (inside-the-case identifier, NULL if useBC
-  #          is TRUE)
-  #          list.CompSites$outcaseID (outside-the-case identifier)
   msg <- "getComparators is complete."
   message(msg)
 
   # 14, getSiteInfo, getSiteMap, writeOutliers ####
   # Progress, 15
-  if (boo_Shiny == TRUE) {
+  if (cfg$boo_shiny == TRUE) {
     prog_det <- "Generate index boxplots and create site map"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
@@ -851,92 +424,74 @@ for (site in seq_len(nrow(df_targets))) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
+  }## IF ~ cfg$boo_shiny ~ END
   # Get site information for general use (map, sample summary, etc)
 
   # Create site info folder with watershed-scale stressor boxplots,
   # boxplots for bio indices, and folder for photos
   list.SiteInfo <- getSiteInfo(TargetSiteID   = TargetSiteID,
-              TargetCOMID    = list.CompSites$TargetCOMID,
-              df_Sites       = data_Sites,
-              df_SampSummary = data_sampSummary,
-              biocommlist    = biocommlist,
-              df_BMIMetrics  = data_bmiMetrics,
-              BMIIndexGp     = bmiIndexGp,
-              df_ALGMetrics  = data_algMetrics,
-              ALGIndexGp     = algIndexGp,
-              df_FishMetrics = data_fishMetrics,
-              FishIndexGp    = fishIndexGp,
-              comp.sites     = list.CompSites$comp.sites,
-              all.sites      = list.CompSites$all.sites,
-              IncaseLabel    = incaseLabel,
-              OutcaseLabel   = outcaseLabel,
-              useBC          = useBC,
-              plotvars       = data_plotvars,
-              refSiteCol     = refOutline_col,
-              plotdpi        = plot_dpi,
-              plotH          = plot_H,
-              plotW          = plot_W,
-              plotunits      = plot_units,
-              dir_photo      = file.path(in.dir, region, "Photos"),
-              dir_results    = out.dir,
-              dir_sub        = "SiteInfo",
-              boo_plot       = TRUE)
+                              TargetCOMID    = list.CompSites$TargetCOMID,
+                              df_Sites       = list.SiteData$site,
+                              df_SampSummary = data_sampSummary,
+                              biocommlist    = meta$biocommlist,
+                              df_BMIMetrics  = list.bmiData$data_bioMetrics,
+                              df_ALGMetrics  = list.algData$data_bioMetrics,
+                              df_FishMetrics = list.fishData$data_bioMetrics,
+                              comp.sites     = list.CompSites$comp.sites,
+                              all.sites      = list.CompSites$all.sites,
+                              BMIIndexGp     = meta$bmiIndexGp,
+                              ALGIndexGp     = meta$algIndexGp,
+                              FishIndexGp    = meta$fishIndexGp,
+                              IncaseLabel    = meta$incaseLabel,
+                              OutcaseLabel   = meta$outcaseLabel,
+                              config         = cfg,
+                              dir_sub        = "SiteInfo")
 
-  if (boo.WS) {
+  if (meta$exploreWSStressor) {
     list.WSStressorFigs <- getWSStressorFigs(TargetSiteID      = TargetSiteID,
-                      df_WSData         = data_stressorWS,
-                      df_WSInfo         = data_stressorinfoWS,
-                      df_Sites          = data_Sites,
+                      df_WSData         = list.WSStress$data_stressorWS,
+                      df_WSInfo         = list.WSStress$data_stressorinfoWS,
+                      df_Sites          = list.SiteData$site,
                       comp.reaches      = list.CompSites$comp.reaches,
                       TargetCOMID       = list.CompSites$TargetCOMID,
-                      useAllCompReaches = useAllCompReaches,
-                      useBC             = useBC,
+                      biocommlist       = meta$biocommlist,
+                      useAllCompReaches = meta$useAllCompReaches,
                       dir_sub           = "SiteInfo",
                       df_SampSummary    = data_sampSummary,
-                      biocommlist       = biocommlist,
-                      boo_plot          = TRUE,
-                      plotdpi           = plot_dpi,
-                      plotH             = plot_H,
-                      plotW             = plot_W,
-                      plotunits         = plot_units,
-                      dir_results       = out.dir)
+                      config = cfg)
   }
 
 
   # Create site map
-  boundary <- readRDS(file.path(out.dir, dn_checked_sk, "boundary.rds"))
-  reaches <- readRDS(file.path(out.dir, dn_checked_sk, "reaches.rds")) |>
+  boundary <- readRDS(file.path(cfg$out_dir, cfg$dn_checked_sk, "boundary.rds"))
+  reaches <- readRDS(file.path(cfg$out_dir, cfg$dn_checked_sk, "reaches.rds")) |>
     dplyr::mutate(COMID = as.character(COMID))
   flowline <- reaches |>
-    dplyr::left_join(data_cluster |>
+    dplyr::left_join(list.SiteData$cluster |>
                        dplyr::mutate(COMID = as.character(COMID),
                               ClusterID = as.factor(ClusterID)),
                      by = "COMID")
 
-
   getSiteMap(sp_outline   = boundary,
              sp_flowline  = flowline,
-             region       = region,
-             datum        = datum,
-             df_sites     = data_Sites,
+             config       = cfg,
+             datum        = meta$datum,
+             df_sites     = list.SiteData$site,
              allSites     = list.CompSites$all.sites,
              compSites    = list.CompSites$comp.sites,
              TargetSiteID = TargetSiteID,
-             useBC        = useBC,
-             plotvars     = data_plotvars,
-             refOutline   = refOutline_col,
              dir_results  = dir_results,
              dir_sub      = "SiteInfo",
              dir_map_rmd  = file.path(system.file(package = "CASTfxn"), "rmd"))
-  # Prints static map (.png)
+
+  rm(boundary, reaches, flowline)
 
   msg <- "getSiteInfo, getWSstressorFigs, and getSiteMap are complete."
   message(msg)
 
   # 15, getAvailableDataTypes ####
   # Progress, 17
-  if (boo_Shiny == TRUE) {
+  if (cfg$boo_shiny == TRUE) {
     prog_det <- "Identify outliers"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
@@ -944,128 +499,56 @@ for (site in seq_len(nrow(df_targets))) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
+  }## IF ~ cfg$boo_shiny ~ END
   #
   # Prepare flags for types of stressor and response data to use
   list.AvailData <- getAvailableDataTypes(TargetSiteID   = TargetSiteID,
-                                          df_stress      = data_Stress,
+                                          df_stress      = list.Stress$data_stress,
                                           df_SampSummary = data_sampSummary,
-                                          biocommlist    = biocommlist,
+                                          biocommlist    = meta$biocommlist,
                                           dir_results    = dir_results)
 
-  noStressors    <- list.AvailData$noStressors
-  noResponses    <- list.AvailData$noResponses
-  useBMI         <- list.AvailData$useBMI
-  useAlg         <- list.AvailData$useAlg
-  useFish        <- list.AvailData$useFish
-  siteDetectsAll <- list.AvailData$siteDetectsAll
+  list.StressorElim <- getInitialStressors(stress_info    = list.Stress$data_stressInfo,
+                                           stress_data    = list.Stress$data_stress)
 
-  stressUse <- data_stressInfo |>
-    dplyr::filter(UseInStressorID == 1) |>
-    dplyr::pull(StdParamName)
+  list.StressorElim <-  reportNoStressResponse(TargetSiteID = TargetSiteID,
+                                               avail_list = list.AvailData)|>
+    append(list.StressorElim, values = _)
 
-  initialStress <- data_Stress |>
-    dplyr::filter(is.na(TransfResult)==FALSE) |>
-    dplyr::filter(StdParamName %in% stressUse) |>
-    dplyr::distinct(StdParamName) |>
-    dplyr::pull(StdParamName)
-
-  df_initialStress <- data.frame(Stressor = initialStress) |>
-    dplyr::left_join(data_stressInfo |> dplyr::select(StdParamName, Label), by = c("Stressor" = "StdParamName"))
-
-  #rm(list.AvailData)
-
-  if ((noStressors == TRUE) | (noResponses == TRUE)) {
-
-   if(noStressors == TRUE){
-      cond <- "Number of stressor samples"
-      msg <- paste0("No stressor data are available for ",
-                    TargetSiteID)
-    }
-    if(noResponses == TRUE){
-      cond <- "Number of response samples"
-      msg <- paste0("No response data are available for ",
-                    TargetSiteID)
-    }
-
-    message(msg)
-
-    gap.statement <- data.frame(
-      fxnname = "getAvailableDataTypes",
-      condition = cond,
-      result = "0",
-      comment = msg
-    )
-
-    gaps <- gaps |> dplyr::bind_rows(gap.statement)
-
-    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID), status = "Failed", reason = msg)
+  # If there is no stressor or response data
+  if(is.null(list.StressorElim$msg_no_sr)==FALSE){
+    temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID),
+                              status = "Failed",
+                              reason = list.StressorElim$msg_no_sr)
     status_df <- status_df |> dplyr::bind_rows(temp_status)
-
     next
-
-  } ### End no stressors statement GO TO NEXT SITE
-  rm(noStressors, noResponses)
+  }
 
   # Write target site outliers, comparator site outliers (inside the case),
   # and all outliers (outside the case)
   list.Outliers <- writeOutliers(TargetSiteID  = TargetSiteID,
-                df_outliers   = data_stressoutliers,
-                df_stressInfo = data_stressInfo,
-                df_Sites      = data_Sites,
-                useBC         = FALSE,
-                siteDetectsAll= siteDetectsAll,
+                df_outliers   = list.Stress$data_stressOutliers,
+                df_stressInfo = list.Stress$data_stressInfo,
+                df_Sites      = list.SiteData$site,
+                siteDetectsAll= list.AvailData$siteDetectsAll,
                 compSites     = list.CompSites$comp.sites,
                 allSites      = list.CompSites$all.sites,
                 dir_results   = dir_results)
-  # Writes outliers to data gaps file
 
   msg <- "getAvailableDataTypes and writeOutliers are complete."
   message(msg)
 
-  # FOR ~ b ~ START ####
-  # if (boo.debug == TRUE & debug.person == "Erik") {
-  #   # 1 = bmi, 2 = alg, 3 = fish
-  #   biocommlist <- "alg"
-  # }
-
-  for (b in seq_along(biocommlist)) {
+  # Biocomm loop ####
+  for (b in seq_along(meta$biocommlist)) {
 
     # Define biocomm data
-    bioComm <- tolower(biocommlist[b])
-    if ((bioComm == "bmi") && (useBMI == TRUE)) {
-      data_bioCoOccur <- data_bmiCoOccur
-      bioIndexGp      <- bmiIndexGp
-      bioMetricData   <- data_bmiMetrics
-      bioMetricInfo   <- data_bmiMetricsInfo
-      bioTaxaData     <- data_bmiCounts
-      bioMasterTaxa   <- data_bmiMasterTaxa
+    bioComm <- tolower(meta$biocommlist[b])
 
-      list.CompSites <- list.CompSites.bmi
-
-      # colBio <- bmiIndex
-    } else if ((bioComm == "alg") && (useAlg == TRUE)) {
-      data_bioCoOccur <- data_algCoOccur
-      bioIndexGp      <- algIndexGp
-      bioMetricData   <- data_algMetrics
-      bioMetricInfo   <- data_algMetricsInfo
-      bioTaxaData     <- data_algCounts
-      bioMasterTaxa   <- data_algMasterTaxa
-
-      list.CompSites <- list.CompSites.alg
-
-      # colBio <- algIndex
-    } else if ((bioComm == "fish") && (useFish == TRUE)) {
-      data_bioCoOccur <- data_fishCoOccur
-      bioIndexGp      <- fishIndexGp
-      bioMetricData   <- data_fishMetrics
-      bioMetricInfo   <- data_fishMetricsInfo
-      bioTaxaData     <- data_fishCounts
-      bioMasterTaxa   <- data_fishMasterTaxa
-
-      list.CompSites <- list.CompSites.fish
-
-      # colBio <- fishIndex
+    if(list.AvailData[[paste0("use_", bioComm)]]){
+      currentDataList <- get(paste0("list.", bioComm, "Data"))
+      data_bioCoOccur <- get(paste0("data_", bioComm, "CoOccur"))
+      bioIndexGp      <- meta[[paste0(bioComm, "IndexGp")]]
+      list.CompSites <- get(paste0("list.CompSites.", bioComm))
     } else {
       msg <- paste0(bioComm, " is not a valid biological community.")
       message(msg)
@@ -1088,73 +571,33 @@ for (site in seq_len(nrow(df_targets))) {
                          Score            = character(),
                          stringsAsFactors = FALSE)
 
-    # Site-specific paired SR
-    # If no paired stressor-response samples for target site, no eval possible
-    # First 10 colnames of data_bioCoOccur are:
-    # "StationID", "IncaseCol", "OutcaseCol", "StressSampleDate", "RespSampleDate",
-    # "StressSampleID", "RespSampleID, "BioComm", bioIndex, "Quality"
-    # Remaining columns (11:ncol) are stressors/responses
-    if (!(TargetSiteID %in% data_bioCoOccur$StationID)) { # Not in data_bioCoOccur
-      noPairedSamps = TRUE
-    } else {
-      dfTarget <- dplyr::filter(data_bioCoOccur, StationID == TargetSiteID)
-      if (all(is.na(dfTarget[, siteDetectsAll]))) { # In data_bioCoOccur but all values NA
-        noPairedSamps = TRUE
-      } else {
-        noPairedSamps = FALSE
-      }
-    }
+    # Evaluate if site has no stressor-response data
+    list.StressorElim <- reportNoSiteStressResponse(TargetSiteID = TargetSiteID,
+                                                    avail_list = list.AvailData,
+                                                    data_bioCoOccur = data_bioCoOccur,
+                                                    lagdays = meta$lagdays,
+                                                    bioComm = bioComm) |>
+      append(list.StressorElim, values = _)
 
-    # If no paired stressors, write to data gaps file and output to runstats file
-    # Proceed to next target site
-    if (noPairedSamps == TRUE) {
-
-      msg <- paste0("No paired stressor-response samples for", TargetSiteID,
-                    " for the ", bioComm, " community within specified lag days.")
-
-      gapcomment <- paste0("No stressor samples are available for ", TargetSiteID,
-                           " within ", lagdays[1], " days before, and ", lagdays[2],
-                           " after the ", bioComm, " sample(s) was(were) obtained.")
-
-      gap.statement <- data.frame(
-        fxnname = "getCoOccurDataset",
-        condition = paste0("Paired stressor-", bioComm, " data"),
-        result = "0",
-        comment = gapcomment
-      )
-
-      gaps <- gaps |> dplyr::bind_rows(gap.statement)
-
-      msg <- paste0(msg, "\nProceeding to next response community or site, ",
-                    "as appropriate.")
-      message(msg)
-
+    if(is.null(list.StressorElim$msg_no_site_sr)==FALSE){
       next
-    } ### End no stressors statement
-
-    possibleStressors <- intersect(initialStress, names(dfTarget))
-    targMeasStress <- dfTarget |>
-      dplyr::select(dplyr::all_of(possibleStressors)) |>
-      tidyr::pivot_longer(cols = everything()) |>
-      dplyr::filter(is.na(value)==FALSE) |>
-      dplyr::distinct(name) |>
-      dplyr::pull(name)
-
-    targNotMeasStress <- setdiff(initialStress, targMeasStress)
-
-    if(length(targNotMeasStress) > 0){
-      tempElim <- data.frame(Stressor = targNotMeasStress,
-                             Biocomm = bioComm,
-                             Reason = "Not measured at target site")
-
-      df_stressorElim <- df_stressorElim |>
-        dplyr::bind_rows(tempElim)
     }
 
+    # Create dataframe with paired stressor response data at target site
+    data_target <- dplyr::filter(data_bioCoOccur, StationID == TargetSiteID)
+
+    # Evaluate stressors not measured at target site
+    list.StressorElim <- getTargetNotMeas(stress_elim = list.StressorElim,
+                                          data_target = data_target,
+                                          bioComm = bioComm) |>
+      append(list.StressorElim, values = _)
+
+    df_stressorElim <- df_stressorElim |>
+      dplyr::bind_rows(list.StressorElim$df_notMeasElim)
 
     ## 16, getQualSites ####
     # Progress, 18
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <- paste0(bioComm, "; summarize index values")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1162,91 +605,49 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
 
     # Run analyses
-    # Identify "quality" samples using different definitions
-    # These are identified only from paired stressor-response samples
-    # Data gaps statements from getSiteInfo aren't necessarily paired
-
-    # IMPORTANT
-    # This step adds "RefSiteFlag", BetterThan", "IncaseYN", and "OutcaseYN" to
-    # the dataframe, data_bioCoOccur, allowing subsets to be created as needed.
      list.QualSites <- getQualSites(TargetSiteID = TargetSiteID,
                                         biocomm      = bioComm,
                                         df_qual      = data_bioCoOccur,
                                         colBio       = bioIndexGp,
-                                        refSites     = refSites,
+                                        refSites     = list.SiteData$refSite,
                                         compSites    = list.CompSites$comp.sites, # inside the case
                                         allSites     = list.CompSites$all.sites, # outside the case
-                                        #stressors    = siteDetectsAll,
-                                        stressors = targMeasStress,
+                                        stressors = list.StressorElim$targMeasStress,
                                         dir_results  = dir_results,
                                         dir_sub      = "SiteInfo")
 
     df_PairedStressResp <- list.QualSites$df_qual
-    # Returns: df_PairedStressResp, a dataframe with the following columns:
-    # [1] "StationID"          "IncaseCol"          "OutcaseCol"         "StressSampleDate"
-    # [5] "RespSampleDate"     "StressSampleID"     "RespSampleID"       "BioComm"
-    # [9] "RefSiteFlag"        "IncaseYN"           "OutcaseYN"          "BetterThan"
-    # [13] colBio              "Quality"            all_of(stressors)
-    # The rows in this dataframe may be subset as desired to either inside-the-case or
-    # outside-the-case with the boolean columns "IncaseYN" and "OutcaseYN"
 
     # Remove any stressors with fewer than samplim comparator samples
-    df_PairedStressResp.stats <- df_PairedStressResp |>
-      dplyr::filter(StationID %in% list.CompSites$comp.sites) |>
-      dplyr::select(StationID, IncaseCol, OutcaseCol, StressSampleDate,
-                    RespSampleDate, StressSampleID, RespSampleID, BioComm,
-                    all_of(bioIndexGp), Quality,
-                    #all_of(siteDetectsAll)
-                    all_of(targMeasStress)
-                    ) |>
-      tidyr::pivot_longer(cols = !(StationID:Quality), names_to = "Stressor",
-                          values_to = "StressorValue", values_drop_na = TRUE) |>
-      dplyr::group_by(Stressor) |>
-      dplyr::summarise(n = dplyr::n(), .groups = "drop_last")
-
-    insuffSamples <- df_PairedStressResp.stats$Stressor[which(df_PairedStressResp.stats$n < samplim)]
+    list.StressorElim <- reportInsuffStress(df_PairedStressResp = df_PairedStressResp,
+                                           list.CompSites = list.CompSites,
+                                           bioIndexGp = bioIndexGp,
+                                           stress_elim = list.StressorElim,
+                                           samplim = meta$samplim,
+                                           bioComm = bioComm,
+                                           targMeasStress = list.StressorElim$targMeasStress) |>
+    append(list.StressorElim, values = _)
 
     df_PairedStressResp <- df_PairedStressResp |>
-      dplyr::select(!all_of(insuffSamples))
+      dplyr::select(!all_of(list.StressorElim$insuffSamples))
 
-    rm(df_PairedStressResp.stats)
-
-    # Write these to data gaps file
-    if (length(insuffSamples) != 0) { # changed 3/10/26 LCN was previously == 0, which is incorrect
-      for (i in seq_along(insuffSamples)) {
-        str <- paste(bioComm, insuffSamples[i], sep = ": ")
-        msg <- paste0("Insufficient number of paired ", bioComm, " samples are available for ", str, ". This stressor will not be evaluated.")
-        message(msg)
-
-        gap.statement <- data.frame(
-          fxnname = "getQualSites",
-          condition = str,
-          result = paste0("<", samplim),
-          comment = msg)
-
-        gaps <- gaps |>
-          dplyr::bind_rows(gap.statement)
-
-        tempElim <- data.frame(Stressor = insuffSamples[i],
-                               Biocomm = bioComm,
-                               Reason = "Insufficient paired samples")
-
-        df_stressorElim <- df_stressorElim |>
-          dplyr::bind_rows(tempElim)
-      } #End loop over stressors
-    } #End if
+    df_stressorElim <- df_stressorElim |>
+             dplyr::bind_rows(list.StressorElim$df_suffElim)
 
     priorElim <- df_stressorElim |>
       dplyr::filter(Biocomm == bioComm) |>
       dplyr::distinct(Stressor) |>
       dplyr::pull(Stressor)
 
-    stressorMeasSuff <- setdiff(initialStress, priorElim)
+    list.StressorElim$stressorMeasSuff <- setdiff(list.StressorElim$initialStress, priorElim)
 
-    if(length(stressorMeasSuff) == 0){
+    rm(priorElim)
+
+    # Exit loop if no remaining stressors
+    if(length(list.StressorElim$stressorMeasSuff) == 0){
       temp_status <- data.frame(TargetSiteID = as.character(TargetSiteID),
                                 status = "Failed",
                                 reason = "No stressors remaining after removing stressors with no paired stressor-response samples at the target site and stressors with insufficient number of samples at comparator sites. ")
@@ -1260,7 +661,7 @@ for (site in seq_len(nrow(df_targets))) {
 
     ## 17, getCoOccur ####
     # Progress, 21
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <-  paste0(bioComm, "; run co-occurrence line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1268,40 +669,29 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
 
     # Get Co-occurrence from comparator samples with not degraded samples
-    # Answers the question: "Are the observed stressor levels consistent
-    # with impairment where and when it occurs"?
-    if (TargetSiteID %in% unique(data_bioCoOccur$StationID)) {
       msg <- "Starting Co-occurrence"
       message(msg)
 
       list.StressorMetaData <- getCoOccur(TargetSiteID  = TargetSiteID,
                                           df_data       = df_PairedStressResp,
-                                          #detects       = siteDetectsAll, # needed to change this because possible a stressor was measured but not matched to response
-                                          detects = stressorMeasSuff,
-                                          df_stressinfo = data_stressInfo,
+                                          detects       = list.StressorElim$stressorMeasSuff,
+                                          df_stressinfo = list.Stress$data_stressInfo,
                                           compsites     = list.CompSites$comp.sites,
                                           biocomm       = bioComm,
                                           colBio        = bioIndexGp,
-                                          pHlimLow      = pHlimLow,
-                                          pHlimHigh     = pHlimHigh,
-                                          DOlim         = DOlim,
-                                          plotvars      = data_plotvars,
-                                          plotdpi       = plot_dpi,
-                                          plotH         = plot_H,
-                                          plotW         = plot_W,
-                                          plotunits     = plot_units,
+                                          config        = cfg,
+                                          pHlimLow      = meta$pHlimLow,
+                                          pHlimHigh     = meta$pHlimHigh,
+                                          DOlim         = meta$DOlim,
+                                          incaseLabel   = meta$incaseLabel,
+                                          targetSampleLabels = meta$targetSampleLabels,
                                           dir_plots     = dir_results,
-                                          dir_sub       = "_WoE",
-                                          boo_plot      = boo.plot.user,
-                                          incaseLabel   = incaseLabel,
-                                          targetSampleLabels = targetSampleLabels)
+                                          dir_sub       = "_WoE")
 
-      df_stressorMetadata <- list.StressorMetaData$df_stressorMetadata
-      #notEvaluated <- c(insuffSamples, list.StressorMetaData$notEvaluated)
-      df_COscores  <- list.StressorMetaData$df_COscores
+      list.StressorElim$coOccurElim <- list.StressorMetaData$notEvaluated
 
       if(length(list.StressorMetaData$notEvaluated)>0){
         tempElim <- data.frame(Stressor = list.StressorMetaData$notEvaluated,
@@ -1310,11 +700,12 @@ for (site in seq_len(nrow(df_targets))) {
 
         df_stressorElim <- df_stressorElim |>
           dplyr::bind_rows(tempElim)
+
+        rm(tempElim)
       }
 
-    }
 
-    if (nrow(df_stressorMetadata) == 0) {
+    if (nrow(list.StressorMetaData$df_stressorMetadata) == 0) {
       msg <- paste0("No candidate causes to evaluate further for ",
                     TargetSiteID, " for the ", bioComm, " community.")
       message(msg)
@@ -1340,42 +731,36 @@ for (site in seq_len(nrow(df_targets))) {
       next
     }
 
-    if (nrow(df_COscores) != 0) {
-      df_LoE <- df_COscores
+    if (nrow(list.StressorMetaData$df_COscores) != 0) {
+      df_LoE <- list.StressorMetaData$df_COscores
     }
-    rm(df_COscores, list.StressorMetaData)
 
     msg <- paste0("getCoOccur for ", bioComm, " is complete.")
     message(msg)
 
     ## 18, getTimeSeq ####
     # Progress, 20
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <- paste0(bioComm, "; run time sequence line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
       prog_inc <- 1 / prog_n
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
     #
     # Create time sequence graphics for ONLY target site
     # Uses all site stressor and response data, but not necessarily paired
     df_TS_scores <- getTimeSeq(TargetSiteID,
                                biocomm       = bioComm,
                                bioindex      = bioIndexGp,
-                               df_stress     = data_Stress,
-                               df_resp       = bioMetricData[bioMetricData$StationID == TargetSiteID, ],
-                               df_respinfo   = bioMetricInfo,
-                               df_stressinfo = df_stressorMetadata,
+                               df_stress     = list.Stress$data_stress,
+                               df_resp       = currentDataList$data_bioMetrics[currentDataList$data_bioMetrics$StationID == TargetSiteID, ],
+                               df_respinfo   = currentDataList$data_bioMetricsInfo,
+                               df_stressinfo = list.StressorMetaData$df_stressorMetadata,
                                df_paired     = df_PairedStressResp,
-                               plotdpi       = plot_dpi,
-                               plotH         = plot_H,
-                               plotW         = plot_W,
-                               plotunits     = plot_units,
                                dir_results   = dir_results,
-                               dir_sub       = "_WoE",
-                               boo_plot      = boo.plot.user)
+                               dir_sub       = "_WoE")
 
     if (nrow(df_TS_scores) != 0) {
       df_LoE <- rbind(df_LoE, df_TS_scores)
@@ -1387,7 +772,7 @@ for (site in seq_len(nrow(df_targets))) {
 
     ## 19, getSufficiency ####
     # Progress, 24
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <-  paste0(bioComm, "; run sufficiency line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1395,7 +780,7 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
 
     # Get stressors sufficient to cause biological impairment using all comparator samples
     msg <- "Starting Sufficiency"
@@ -1404,18 +789,13 @@ for (site in seq_len(nrow(df_targets))) {
     df_SuffScores <- getSufficiency(TargetSiteID  = TargetSiteID,
                                     df_data       = df_PairedStressResp,
                                     compSites     = list.CompSites$comp.sites,
-                                    df_stressinfo = df_stressorMetadata,
+                                    df_stressinfo = list.StressorMetaData$df_stressorMetadata,
                                     biocomm       = bioComm,
                                     colBio        = bioIndexGp,
-                                    plotvars      = data_plotvars,
-                                    plotdpi       = plot_dpi,
-                                    plotH         = plot_H,
-                                    plotW         = plot_W,
-                                    plotunits     = plot_units,
+                                    config        = cfg,
                                     dir_plots     = dir_results,
                                     dir_sub       = "_WoE",
-                                    boo_plot      = boo.plot.user,
-                                    targetSampleLabels = targetSampleLabels)
+                                    targetSampleLabels = meta$targetSampleLabels)
 
     if (nrow(df_SuffScores) != 0) {
       df_LoE <- rbind(df_LoE, df_SuffScores)
@@ -1427,7 +807,7 @@ for (site in seq_len(nrow(df_targets))) {
 
     ## 20, getBioStressorResponses ####
     # Progress, 25
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <-  paste0(bioComm, "; run biological gradient line of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1435,30 +815,24 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
 
     # Get Stressor Responses inside (comparators) and outside (all) the case
     list.BioStressorResponses <- getBioStressorResponses(TargetSiteID  = TargetSiteID,
-                                             df_stressinfo = df_stressorMetadata,
-                                             df_respinfo   = bioMetricInfo,
-                                             df_respdata   = bioMetricData,
+                                             df_stressinfo = list.StressorMetaData$df_stressorMetadata,
+                                             df_respinfo   = currentDataList$data_bioMetricsInfo, #bioMetricInfo,
+                                             df_respdata   = currentDataList$data_bioMetrics, #bioMetricData,
                                              df_datapaired = df_PairedStressResp,
+                                             config        = cfg,
                                              biocomm       = bioComm,
                                              bioindex      = bioIndexGp,
-                                             min_cases     = samplim,
-                                             p.val_cutoff  = p.val_cutoff,
-                                             r2_cutoff     = r2_cutoff,
-                                             plotvars      = data_plotvars,
-                                             refOutline    = refOutline_col,
-                                             plotdpi       = plot_dpi,
-                                             plotH         = plot_H,
-                                             plotW         = plot_W,
-                                             plotunits     = plot_units,
+                                             min_cases     = meta$samplim,
+                                             p.val_cutoff  = meta$p.val_cutoff,
+                                             r2_cutoff     = meta$r2_cutoff,
                                              dir_plots     = dir_results,
                                              dir_sub       = "_WoE",
                                              boo_pred_warn = TRUE,
-                                             boo_plot      = boo.plot.user,
-                                             targetSampleLabels = targetSampleLabels)
+                                             targetSampleLabels = meta$targetSampleLabels)
 
     df_gradscores <- list.BioStressorResponses$df.scores
 
@@ -1472,7 +846,7 @@ for (site in seq_len(nrow(df_targets))) {
 
     ## 21, getVerifiedPredictions ####
     # Progress, 26
-    if (boo_Shiny == TRUE) {
+    if (cfg$boo_shiny == TRUE) {
       prog_det <-  paste0(bioComm, "; verified predictions lines of evidence")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1480,54 +854,39 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
     #
     # Get Stressor-specific regressions using comparator sites
     sstv.name      <- paste0("SSTVname.", bioComm)
-    stressors.sstv <- as.vector(unlist(df_stressorMetadata$Stressor[!is.na(df_stressorMetadata[[sstv.name]])]))
-    stressors.ssi  <- as.vector(unlist(df_stressorMetadata$Stressor[!is.na(df_stressorMetadata$SSIndex)]))
 
-    # if (length(stressors.ssi) == 0 & length(stressors.sstv) == 0) {
-    #
-    #   msg <- paste0(bioComm, ": No site stressors have stressor-specific tolerance values or indices.")
-    #   message(msg)
-    #
-    #   gap.statement <- data.frame(
-    #     fxnname = "getVerifiedPredictions",
-    #     condition = "Stressor-specific tolerance values and indices",
-    #     result = "0",
-    #     comment = msg
-    #   )
-    #
-    #   gaps <- gaps |>
-    #     dplyr::bind_rows(gap.statement)
-    #
-    # } else {
+    stressors.sstv <- list.StressorMetaData$df_stressorMetadata |> # I think you could add split on delimiter here
+      dplyr::filter(!is.na(.data[[sstv.name]])) |>
+      dplyr::pull(Stressor)
+
+    stressors.ssi  <- list.StressorMetaData$df_stressorMetadata |>
+      dplyr::filter(!is.na(SSIndex)) |>
+      dplyr::pull(Stressor)
+
     if (length(stressors.ssi) != 0 | length(stressors.sstv) != 0) {
 
       if (length(stressors.sstv) > 0) { # one or more stressors.sstv
 
         list.VerifiedPredictions <- getVerifiedPredictions(TargetSiteID   = TargetSiteID,
                                               stressors.sstv = stressors.sstv,
-                                              df_stressinfo  = df_stressorMetadata,
+                                              df_stressinfo  = list.StressorMetaData$df_stressorMetadata,
                                               df_paired      = df_PairedStressResp,
                                               biocomm        = bioComm,
-                                              df_bioTaxaData = bioTaxaData,
-                                              df_MasterTaxa  = bioMasterTaxa,
+                                              df_bioTaxaData = currentDataList$data_bioCounts,
+                                              df_MasterTaxa  = currentDataList$data_bioMasterTaxa,
                                               colBio         = bioIndexGp,
-                                              plotvars       = data_plotvars,
-                                              plotdpi        = plot_dpi,
-                                              plotH          = plot_H,
-                                              plotW          = plot_W,
-                                              plotunits      = plot_units,
+                                              config         = cfg,
                                               dir_plots      = dir_results,
                                               dir_sub        = "_WoE",
-                                              boo_plot       = boo.plot.user,
-                                              targetSampleLabels = targetSampleLabels)
+                                              targetSampleLabels = meta$targetSampleLabels)
 
         df_VPscores <- list.VerifiedPredictions$df.scores
 
-        if (nrow(df_VPscores)!= 0) { # LCN changed 20250917
+        if (nrow(df_VPscores)!= 0) {
           df_LoE <- rbind(df_LoE, df_VPscores)
         }
         rm(df_VPscores)
@@ -1551,7 +910,7 @@ for (site in seq_len(nrow(df_targets))) {
 
       if (length(stressors.ssi) > 0) { # one or more stressors.ssi
 
-        info.stress.ssi <- df_stressorMetadata |>
+        info.stress.ssi <- list.StressorMetaData$df_stressorMetadata |>
           dplyr::filter(Stressor %in% stressors.ssi) |>
           dplyr::select(Stressor, SSIndex, Label, LogTransf)
 
@@ -1575,21 +934,16 @@ for (site in seq_len(nrow(df_targets))) {
         } else{
           list.VPSSIscores <- getVPSSI(TargetSiteID     = TargetSiteID,
                                        stressors.ssi    = stressors.ssi,
-                                       df_stressinfo    = df_stressorMetadata,
+                                       df_stressinfo    = list.StressorMetaData$df_stressorMetadata,
                                        df_paired        = df_PairedStressResp,
                                        biocomm          = bioComm,
-                                       df_bioMetricData = bioMetricData,
-                                       df_bioMetricInfo = bioMetricInfo,
+                                       df_bioMetricData = currentDataList$data_bioMetrics,
+                                       df_bioMetricInfo = currentDataList$data_bioMetricsInfo,
                                        colBio           = bioIndexGp,
-                                       plotvars         = data_plotvars,
-                                       plotdpi          = plot_dpi,
-                                       plotH            = plot_H,
-                                       plotW            = plot_W,
-                                       plotunits        = plot_units,
+                                       config           = cfg,
                                        dir_plots        = dir_results,
                                        dir_sub          = "_WoE",
-                                       boo_plot         = boo.plot.user,
-                                       targetSampleLabels = targetSampleLabels)
+                                       targetSampleLabels = meta$targetSampleLabels)
 
           df_VPSSIscores <- list.VPSSIscores$df.scores
 
@@ -1625,7 +979,7 @@ for (site in seq_len(nrow(df_targets))) {
 
     ## 22, getWOE ####
     # Progress, 27
-    if (boo_Shiny == TRUE) { # needs updating
+    if (cfg$boo_shiny == TRUE) { # needs updating
       prog_det <-  paste0(bioComm, "; get weight of evidence table")
       prog_cnt <- prog_cnt + 1
       prog_msg <- paste0("Step ", prog_cnt)
@@ -1633,7 +987,7 @@ for (site in seq_len(nrow(df_targets))) {
       incProgress(prog_inc, message = prog_msg, detail = prog_det)
       Sys.sleep(prog_sleep)
       message(paste(prog_msg, prog_det, sep = "; "))
-    }## IF ~ boo_Shiny ~ END
+    }## IF ~ cfg$boo_shiny ~ END
 
     # LCN addition 3/10/26 to get rid of observations with only BioGrad scores
     df_LoE <- df_LoE |> dplyr::filter(is.na(StressorValue)==FALSE)
@@ -1641,14 +995,10 @@ for (site in seq_len(nrow(df_targets))) {
     getWoE(TargetSiteID = TargetSiteID,
            biocomm      = bioComm,
            dfLoE        = df_LoE,
-           dfStress     = df_stressorMetadata,
+           dfStress     = list.StressorMetaData$df_stressorMetadata,
            dir_results  = dir_results,
-           dir_WoE      = "_WoE",
-           plotdpi = plot_dpi,
-           plotH = plot_H,
-           plotW = plot_W,
-           plotunits = plot_units,
-           boo_plot = boo.plot.user)
+           config       = cfg,
+           dir_WoE      = "_WoE")
     msg <- paste0("getWoE for ", bioComm, " is complete.")
     message(msg)
 
@@ -1657,7 +1007,7 @@ for (site in seq_len(nrow(df_targets))) {
 
   ## 23, getReport ####
   # Progress, 28
-  if (boo_Shiny == TRUE) {
+  if (cfg$boo_shiny == TRUE) {
     prog_det <- "Get report"
     prog_cnt <- prog_cnt + 1
     prog_msg <- paste0("Step ", prog_cnt)
@@ -1665,11 +1015,13 @@ for (site in seq_len(nrow(df_targets))) {
     incProgress(prog_inc, message = prog_msg, detail = prog_det)
     Sys.sleep(prog_sleep)
     message(paste(prog_msg, prog_det, sep = "; "))
-  }## IF ~ boo_Shiny ~ END
+  }## IF ~ cfg$boo_shiny ~ END
   #
 
   df_stressorElim <- df_stressorElim |>
-    dplyr::left_join(data_stressInfo |> dplyr::select(StdParamName, Label), by = c("Stressor" = "StdParamName"))
+    dplyr::left_join(list.Stress$data_stressInfo |>
+                       dplyr::select(StdParamName, Label),
+                     by = c("Stressor" = "StdParamName"))
 
   write.csv(df_stressorElim,
             file.path(dir_results,
@@ -1678,7 +1030,7 @@ for (site in seq_len(nrow(df_targets))) {
                              "_StressorsEliminated.csv")),
             row.names = FALSE)
 
-  write.csv(df_initialStress,
+  write.csv(list.StressorElim$df_initialStress,
             file.path(dir_results,
                       TargetSiteID,
                       paste0(TargetSiteID,
@@ -1702,7 +1054,7 @@ for (site in seq_len(nrow(df_targets))) {
             row.names = FALSE)
 
   # Shiny add ons
-  if (boo_Shiny == TRUE) {
+  if (cfg$boo_shiny == TRUE) {
     report_type <- "full" # summary preliminary full
     # browser()
     # getwd()
@@ -1726,74 +1078,75 @@ for (site in seq_len(nrow(df_targets))) {
 
     # report
     getReport(TargetSiteID = TargetSiteID,
-              biocommlist    = biocommlist,
-              regionName     = region,
-              primeIndex     = bmiIndexGp,
-              removeOutliers = removeOutliers,
-              samplim        = samplim,
-              r2_cutoff      = r2_cutoff,
-              p.val_cutoff   = p.val_cutoff,
-              useBC          = useBC,
-              lagdays        = lagdays,
-              DOlim          = DOlim,
-              pHlimLow       = pHlimLow,
-              pHlimHigh      = pHlimHigh,
-              bmiIndex       = bmiIndexGp,
-              algIndex       = algIndexGp,
-              fishIndex      = fishIndexGp,
-              useBMI         = useBMI,
-              useAlg         = useAlg,
-              useFish        = useFish,
+              biocommlist    = meta$biocommlist,
+              regionName     = cfg$region,
+              primeIndex     = meta$bmiIndexGp,
+              removeOutliers = meta$removeOutliers,
+              samplim        = meta$samplim,
+              r2_cutoff      = meta$r2_cutoff,
+              p.val_cutoff   = meta$p.val_cutoff,
+              useBC          = cfg$useBC,
+              lagdays        = meta$lagdays,
+              DOlim          = meta$DOlim,
+              pHlimLow       = meta$meta$pHlimLow,
+              pHlimHigh      = meta$pHlimHigh,
+              bmiIndex       = meta$bmiIndexGp,
+              algIndex       = meta$algIndexGp,
+              fishIndex      = meta$fishIndexGp,
+              useBMI         = list.AvailData$use_bmi,
+              useAlg         = list.AvailData$use_alg,
+              useFish        = list.AvailData$use_fish,
               dir_data       = normalizePath(dir_data),
               dir_results    = normalizePath(dir_results),
               report_type    = report_type, # full, preliminary, summary
               report_format  = "html",
               dir_rmd = ".", # added for Shiny after copy RMD
-              boo.WS = boo.WS,
+              boo.WS = meta$exploreWSStressor,
               data_sampSummary = data_sampSummary,
-              data_bmiMetrics = data_bmiMetrics,
-              data_algMetrics = data_algMetrics,
-              data_fishMetrics = data_fishMetrics,
-              data_stressInfo = data_stressInfo,
-              siteDetectsAll = targMeasStress
+              data_bmiMetrics = list.bmiData$data_bioMetrics,
+              data_algMetrics = list.algData$data_bioMetrics,
+              data_fishMetrics = list.fishData$data_bioMetrics,
+              data_stressInfo = list.Stress$data_stressInfo,
+              siteDetectsAll = list.StressorElim$targMeasStress # TODO see if this right
               )
 
   } else {
     report_type <- "full"
 
     getReport(TargetSiteID = TargetSiteID,
-              biocommlist    = biocommlist,
-              regionName     = region,
-              primeIndex     = bmiIndexGp,
-              removeOutliers = removeOutliers,
-              samplim        = samplim,
-              r2_cutoff      = r2_cutoff,
-              p.val_cutoff   = p.val_cutoff,
-              useBC          = useBC,
-              lagdays        = lagdays,
-              DOlim          = DOlim,
-              pHlimLow       = pHlimLow,
-              pHlimHigh      = pHlimHigh,
-              bmiIndex       = bmiIndexGp,
-              algIndex       = algIndexGp,
-              fishIndex      = fishIndexGp,
-              useBMI         = useBMI,
-              useAlg         = useAlg,
-              useFish        = useFish,
-              dir_data       = normalizePath(dir_data),
+              biocommlist    = meta$biocommlist,
+              regionName     = cfg$region,
+              primeIndex     = meta$bmiIndexGp,
+              removeOutliers = meta$removeOutliers,
+              samplim        = meta$samplim,
+              r2_cutoff      = meta$r2_cutoff,
+              p.val_cutoff   = meta$p.val_cutoff,
+              useBC          = cfg$useBC,
+              lagdays        = meta$lagdays,
+              DOlim          = meta$DOlim,
+              pHlimLow       = meta$pHlimLow,
+              pHlimHigh      = meta$pHlimHigh,
+              bmiIndex       = meta$bmiIndexGp,
+              algIndex       = meta$algIndexGp,
+              fishIndex      = meta$fishIndexGp,
+              useBMI         = list.AvailData$use_bmi,
+              useAlg         = list.AvailData$use_alg,
+              useFish        = list.AvailData$use_fish,
+              dir_data       = normalizePath(cfg$in_dir),
               dir_results    = normalizePath(dir_results),
               report_type    = "full",
               report_format  = "html",
-              boo.WS = boo.WS,
+              boo.WS = meta$exploreWSStressor,
               data_sampSummary = data_sampSummary,
-              data_bmiMetrics = data_bmiMetrics,
-              data_algMetrics = data_algMetrics,
-              data_fishMetrics = data_fishMetrics,
-              data_stressInfo = data_stressInfo,
-              siteDetectsAll = targMeasStress
+              data_bmiMetrics = list.bmiData$data_bioMetrics,
+              data_algMetrics = list.algData$data_bioMetrics,
+              data_fishMetrics = list.fishData$data_bioMetrics,
+              data_stressInfo = list.Stress$data_stressInfo,
+              siteDetectsAll = list.StressorElim$targMeasStress,
+              dn_checked_sk = cfg$dn_checked_sk
               )
 
-  }## IF ~ boo_Shiny
+  }## IF ~ cfg$boo_shiny
 
   gaps <- gaps |>
     dplyr::bind_rows(tryCatch(list.CompSites.alg$df_gap, error = function(e) NULL)) |>
@@ -1807,7 +1160,9 @@ for (site in seq_len(nrow(df_targets))) {
     dplyr::bind_rows(tryCatch(list.StressorMetadata$df_gap, error = function(e) NULL)) |>
     dplyr::bind_rows(tryCatch(list.BioStressorResponses$df_gap, error = function(e) NULL)) |>
     dplyr::bind_rows(tryCatch(list.VerifiedPredictions$df_gap, error = function(e) NULL)) |>
-    dplyr::bind_rows(tryCatch(list.VPSSIscores$df_gap, error = function(e) NULL))
+    dplyr::bind_rows(tryCatch(list.VPSSIscores$df_gap, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.StressorElim$gap_no_sr, error = function(e) NULL)) |>
+    dplyr::bind_rows(tryCatch(list.StressorElim$gap_no_site_sr, error = function(e) NULL))
 
   write.csv(gaps, file.path(dir_results,
                                 TargetSiteID,
@@ -1841,7 +1196,7 @@ message(msg)
 
 # 24, Clean Up ----
 # Clean up operations
-if (boo_Shiny == TRUE) {
+if (cfg$boo_shiny == TRUE) {
   prog_det <- "Clean Up"
   prog_cnt <- prog_cnt + 1
   prog_msg <- paste0("Step ", prog_cnt)
@@ -1849,7 +1204,7 @@ if (boo_Shiny == TRUE) {
   incProgress(prog_inc, message = prog_msg, detail = prog_det)
   Sys.sleep(prog_sleep)
   message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ boo_Shiny ~ END
+}## IF ~ cfg$boo_shiny ~ END
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # Skeleton, END ####

@@ -81,12 +81,13 @@ getSiteInfo <- function(TargetSiteID,
                         IncaseLabel = NULL,
                         OutcaseLabel = NULL,
                         useBC = FALSE,
+                        config = NULL,
                         plotvars,
                         refSiteCol,
-                        plotdpi = 600,
-                        plotH = 6,
-                        plotW = 8,
-                        plotunits = "in",
+                        plotdpi,
+                        plotH,
+                        plotW,
+                        plotunits,
                         dir_photo = file.path(getwd(), "Data", "Photos"),
                         dir_results = file.path(getwd(), "Results"),
                         dir_sub = "SiteInfo",
@@ -131,6 +132,20 @@ getSiteInfo <- function(TargetSiteID,
     dir_results    = dir_results
     dir_sub        = "SiteInfo"
     boo_plot       = TRUE
+  }
+
+  # pull plotting vars from config
+  if(is.null(config) == FALSE){
+    plotvars <- config$data_plotvars
+    refSiteCol <- config$refOutline_col
+    plotdpi <- config$plot_dpi
+    plotH <- config$plot_H
+    plotW <- config$plot_W
+    plotunits <- config$plot_units
+    boo_plot <- config$boo_plot
+    dir_results <- config$out_dir
+    useBC <- config$useBC
+    dir_photo <- file.path(config$in_dir, config$region, "Photos")
   }
 
   # define pipe
