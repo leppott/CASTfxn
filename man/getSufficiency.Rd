@@ -11,6 +11,7 @@ getSufficiency(
   df_stressinfo,
   biocomm,
   colBio,
+  config = NULL,
   plotvars,
   plotdpi = 600,
   plotH = 6,
@@ -18,7 +19,8 @@ getSufficiency(
   plotunits = "in",
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
-  boo_plot = TRUE
+  boo_plot = TRUE,
+  targetSampleLabels = TRUE
 )
 }
 \arguments{

@@ -5,26 +5,27 @@
 \title{prepSiteData}
 \usage{
 prepMeasStressorData(
-  in.dir,
-  out.dir,
-  fn.data,
-  fn.meta,
-  removeOutliers,
-  sub.dir = "_Histograms"
+  config = NULL,
+  in_dir = NULL,
+  out_dir = NULL,
+  fn_data,
+  fn_meta,
+  removeOutliers = NULL,
+  sub_dir = "_Histograms"
 )
 }
 \arguments{
-\item{in.dir}{x}
+\item{in_dir}{x}
 
-\item{out.dir}{directory where all rds files are stored}
+\item{out_dir}{directory where all rds files are stored}
 
-\item{fn.data}{x}
+\item{fn_data}{x}
 
-\item{fn.meta}{x}
+\item{fn_meta}{x}
 
 \item{removeOutliers}{x}
 
-\item{sub.dir}{x}
+\item{sub_dir}{x}
 }
 \value{
 A list containing data_Sites and data_cluster to be used in the CASTool.

@@ -19,7 +19,9 @@ getComparators(
   df_bcdist = NULL,
   bc_cutoff = 0.05,
   dir_results,
-  dir_sub = "SiteInfo"
+  dir_sub = "SiteInfo",
+  bio,
+  config = NULL
 )
 }
 \arguments{
@@ -83,6 +85,6 @@ Obtains the cluster members for the cluster containing the target
 Uses the library dplyr, stringr
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}

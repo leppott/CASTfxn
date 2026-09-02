@@ -12,6 +12,7 @@ getVerifiedPredictions(
   biocomm,
   df_bioTaxaData,
   df_MasterTaxa,
+  config = NULL,
   colBio,
   plotvars,
   plotdpi = 600,
@@ -20,7 +21,8 @@ getVerifiedPredictions(
   plotunits = "in",
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
-  boo_plot = TRUE
+  boo_plot = TRUE,
+  targetSampleLabels = targetSampleLabels
 )
 }
 \arguments{

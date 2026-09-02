@@ -11,6 +11,7 @@ getCoOccur(
   df_stressinfo,
   compsites,
   biocomm,
+  config = NULL,
   colBio,
   pHlimLow = 5,
   pHlimHigh = 9,
@@ -23,7 +24,8 @@ getCoOccur(
   dir_plots,
   dir_sub = "_WoE",
   boo_plot = TRUE,
-  incaseLabel = NULL
+  incaseLabel = NULL,
+  targetSampleLabels = FALSE
 )
 }
 \arguments{

@@ -76,4 +76,4 @@ Suggests:
   testthat,
   wrapr,
   grDevices
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

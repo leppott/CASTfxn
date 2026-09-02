@@ -5,27 +5,27 @@
 \title{Sample Summary}
 \usage{
 getAllSamplesTable(
-  df.stress = NULL,
-  df.stressInfo = NULL,
-  df.resp = NULL,
-  df.sites = NULL,
+  df_stress = NULL,
+  df_stressInfo = NULL,
+  df_resp = NULL,
+  df_sites = NULL,
   incaseColName = NULL
 )
 }
 \arguments{
-\item{df.stress}{dataframe containing stressor data for all sites, including
+\item{df_stress}{dataframe containing stressor data for all sites, including
 measured or observed quantitative water chemistry and quality,
 physical habitat data, and modeled data.}
 
-\item{df.stressInfo}{dataframe containing stressor metadata, including stressor
+\item{df_stressInfo}{dataframe containing stressor metadata, including stressor
 names, labels, whether the stressor should be evaluated, if
 it should be log-transformed, and whether or not there are
 associated stressor-specific tolerance values or indices.}
 
-\item{df.resp}{dataframe containing all response samples obtained from a site,
+\item{df_resp}{dataframe containing all response samples obtained from a site,
 including multiple biological communities, if sampled.}
 
-\item{df.sites}{dataframe containing StationID, COMID, IncaseCol, and OutcaseCol}
+\item{df_sites}{dataframe containing StationID, COMID, IncaseCol, and OutcaseCol}
 
 \item{incaseColName}{Name of column in the sites file that indicates a site
 is inside the case}

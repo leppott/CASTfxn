@@ -1,3 +1,13 @@
+#' Get metadata parameters
+#'
+#' @param out_dir
+#' @param dn_checked_sk
+#' @param config
+#'
+#' @return
+#' @export
+#'
+#' @examples
 getMetadataParams <- function(out_dir = NULL,
                               dn_checked_sk = NULL,
                               config = NULL){

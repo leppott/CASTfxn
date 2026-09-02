@@ -5,15 +5,15 @@
 \title{checkInputs}
 \usage{
 checkInputs(
-  dir.uploaded,
-  dir.out,
+  dir_uploaded,
+  dir_out,
   fn.inputcheck = system.file("extdata", "CASTool_InputCheck.xlsx", package = "CASTfxn")
 )
 }
 \arguments{
-\item{dir.uploaded}{directory of input files to be checked}
+\item{dir_uploaded}{directory of input files to be checked}
 
-\item{dir.out}{directory for output}
+\item{dir_out}{directory for output}
 
 \item{fn.inputcheck}{path filename for the MSExcel file describing required
 files, columns, types, and relationships.

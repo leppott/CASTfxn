@@ -12,6 +12,7 @@ getWSStressorFigs(
   comp.reaches = list.CompSites$comp.reaches,
   TargetCOMID = list.CompSites$TargetCOMID,
   useAllCompReaches = useAllCompReaches,
+  config = NULL,
   useBC = FALSE,
   dir_sub = "SiteInfo",
   df_SampSummary = data_sampSummary,

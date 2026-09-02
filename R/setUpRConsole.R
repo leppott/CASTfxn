@@ -1,3 +1,16 @@
+#' Set up R console
+#'
+#' @param in_dir
+#' @param out_dir
+#' @param region
+#' @param useBC
+#' @param install_missing
+#' @param load_local
+#'
+#' @return
+#' @export
+#'
+#' @examples
 setUpRConsole <- function(
     in_dir,
     out_dir,

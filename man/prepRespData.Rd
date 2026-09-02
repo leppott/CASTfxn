@@ -4,10 +4,18 @@
 \alias{prepRespData}
 \title{prepSiteData}
 \usage{
-prepRespData(out.dir, bio, loaded, useBC, bioIndex, calcRelAbund)
+prepRespData(
+  out_dir,
+  bio,
+  loaded,
+  useBC,
+  bioIndex,
+  calcRelAbund,
+  config = NULL
+)
 }
 \arguments{
-\item{out.dir}{directory where all rds files are stored}
+\item{out_dir}{directory where all rds files are stored}
 
 \item{bio}{x}
 

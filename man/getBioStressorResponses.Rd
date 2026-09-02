@@ -10,6 +10,7 @@ getBioStressorResponses(
   df_respinfo,
   df_respdata,
   df_datapaired,
+  config = NULL,
   biocomm,
   bioindex,
   min_cases = samplim,
@@ -24,7 +25,8 @@ getBioStressorResponses(
   dir_plots,
   dir_sub = "_WoE",
   boo_pred_warn = TRUE,
-  boo_plot = TRUE
+  boo_plot = TRUE,
+  targetSampleLabels = targetSampleLabels
 )
 }
 \arguments{

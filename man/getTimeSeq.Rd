@@ -8,6 +8,7 @@ getTimeSeq(
   TargetSiteID,
   biocomm,
   bioindex,
+  config = NULL,
   df_stress,
   df_resp,
   df_respinfo,

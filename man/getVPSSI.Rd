@@ -12,6 +12,7 @@ getVPSSI(
   biocomm,
   df_bioMetricData,
   df_bioMetricInfo,
+  config = cfg,
   colBio,
   plotvars,
   plotdpi = 600,
@@ -20,7 +21,8 @@ getVPSSI(
   plotunits = "in",
   dir_plots = file.path(getwd(), "Results"),
   dir_sub = "_WoE",
-  boo_plot = TRUE
+  boo_plot = TRUE,
+  targetSampleLabels = targetSampleLabels
 )
 }
 \arguments{

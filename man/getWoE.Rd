@@ -11,6 +11,7 @@ getWoE(
   dfStress,
   dir_results,
   dir_WoE = "_WoE",
+  config = NULL,
   plotdpi,
   plotH,
   plotW,

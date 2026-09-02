@@ -35,7 +35,8 @@ getReport(
   data_algMetrics,
   data_fishMetrics,
   data_stressInfo,
-  siteDetectsAll
+  siteDetectsAll,
+  dn_checked_sk
 )
 }
 \arguments{

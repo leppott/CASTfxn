@@ -1,3 +1,24 @@
+#' Set global parameters
+#'
+#' @param boo_shiny
+#' @param boo_debug
+#' @param dn_checked_sk
+#' @param boo_plot
+#' @param pt_type
+#' @param pt_fill
+#' @param pt_shape
+#' @param pt_size
+#' @param pt_alpha
+#' @param refOutline_col
+#' @param plot_dpi
+#' @param plot_units
+#' @param plot_H
+#' @param plot_W
+#'
+#' @return
+#' @export
+#'
+#' @examples
 setGlobals <- function(boo_shiny = FALSE,
                        boo_debug = FALSE,
                        dn_checked_sk = "_CheckedInputs",

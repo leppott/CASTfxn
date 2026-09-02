@@ -7,6 +7,7 @@
 getSiteMap(
   sp_outline,
   sp_flowline,
+  config = NULL,
   region,
   datum,
   df_sites,

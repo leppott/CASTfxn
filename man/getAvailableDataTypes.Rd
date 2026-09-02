@@ -19,8 +19,6 @@ getAvailableDataTypes(
 at the target site, organized by sample date (rows) and
 type (columns)}
 
-\item{df_stress}{}
-
 \item{biocommlist}{vector of biocommunity data expected.}
 
 \item{dir_results}{Directory containing all results.}
@@ -40,6 +38,6 @@ sample data. Sample ID column names are required to end with "SampleID".
 Uses the library dplyr
 }
 \examples{
-# None at this time 
+# None at this time
 }
 \keyword{internal}

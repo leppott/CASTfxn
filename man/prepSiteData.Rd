@@ -5,7 +5,8 @@
 \title{prepSiteData}
 \usage{
 prepSiteData(
-  out.dir,
+  out_dir = NULL,
+  config = NULL,
   outcaseLabel = NULL,
   incaseColName = NULL,
   useBC = NULL,
@@ -13,7 +14,7 @@ prepSiteData(
 )
 }
 \arguments{
-\item{out.dir}{directory where all rds files are stored}
+\item{out_dir}{directory where all rds files are stored}
 
 \item{outcaseLabel}{x}
 
