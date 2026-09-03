@@ -74,13 +74,15 @@ if (cfg$boo_shiny == TRUE) {
   prog_n <- 16 + (7 * n_biocomm_prog)
   prog_sleep <- 0.25
 
-  prog_det <- "Set up output structure"
-  prog_cnt <- prog_cnt + 1
-  prog_msg <- paste0("Step ", prog_cnt)
-  prog_inc <- 1 / prog_n
-  incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(prog_sleep)
-  message(paste(prog_msg, prog_det, sep = "; "))
+  # prog_det <- "Set up output structure"
+  # prog_cnt <- prog_cnt + 1
+  # prog_msg <- paste0("Step ", prog_cnt)
+  # prog_inc <- 1 / prog_n
+  # incProgress(prog_inc, message = prog_msg, detail = prog_det)
+  # Sys.sleep(prog_sleep)
+  # message(paste(prog_msg, prog_det, sep = "; "))
+
+  prog_cnt <- stepProgress(cfg, "Set up output structure", prog_cnt, prog_n, prog_sleep)
 } # IF ~ cfg$boo_shiny ~ END
 
 
@@ -89,13 +91,15 @@ if (cfg$boo_shiny == TRUE) {
 # Progress, 02
 
 if (cfg$boo_shiny == TRUE) {
-  prog_det <- "Check input data files"
-  prog_cnt <- prog_cnt + 1
-  prog_msg <- paste0("Step ", prog_cnt)
-  prog_inc <- 1 / prog_n
-  incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(prog_sleep)
-  message(paste(prog_msg, prog_det, sep = "; "))
+  # prog_det <- "Check input data files"
+  # prog_cnt <- prog_cnt + 1
+  # prog_msg <- paste0("Step ", prog_cnt)
+  # prog_inc <- 1 / prog_n
+  # incProgress(prog_inc, message = prog_msg, detail = prog_det)
+  # Sys.sleep(prog_sleep)
+  # message(paste(prog_msg, prog_det, sep = "; "))
+  prog_cnt <- stepProgress(cfg, "Check input data files", prog_cnt, prog_n, prog_sleep)
+
 } else {
   list.Tables <- checkInputs(dir_uploaded = cfg$in_dir,
                              dir_out = cfg$out_dir)
@@ -107,15 +111,17 @@ if (cfg$boo_shiny == TRUE) {
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 03, Get metadata params ####
 # Progress, 03
-if (cfg$boo_shiny == TRUE) {
-  prog_det <- "Pull values from metadata"
-  prog_cnt <- prog_cnt + 1
-  prog_msg <- paste0("Step ", prog_cnt)
-  prog_inc <- 1 / prog_n
-  incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  Sys.sleep(prog_sleep)
-  message(paste(prog_msg, prog_det, sep = "; "))
-}## IF ~ cfg$boo_shiny ~ END
+# if (cfg$boo_shiny == TRUE) {
+#   prog_det <- "Pull values from metadata"
+#   prog_cnt <- prog_cnt + 1
+#   prog_msg <- paste0("Step ", prog_cnt)
+#   prog_inc <- 1 / prog_n
+#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
+#   Sys.sleep(prog_sleep)
+#   message(paste(prog_msg, prog_det, sep = "; "))
+# }## IF ~ cfg$boo_shiny ~ END
+
+prog_cnt <- stepProgress(cfg, "Pull values from metadata", prog_cnt, prog_n, prog_sleep)
 
 cfg$out_dir <- file.path(cfg$out_dir, cfg$region)
 
