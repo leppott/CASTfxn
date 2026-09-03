@@ -27,7 +27,7 @@ tic <- Sys.time()
 # 01, Set up ####
 ## Define global variables ####
 cfg <- setGlobals(
-  boo_shiny = FALSE, # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
+  boo_shiny = TRUE, # Whether to run the code in Shiny mode (set to FALSE if running script outside of the app)
   boo_debug = FALSE # Whether to run the code in debug mode
 )
 
