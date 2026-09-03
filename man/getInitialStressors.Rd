@@ -2,13 +2,10 @@
 % Please edit documentation in R/stressorElimination.R
 \name{getInitialStressors}
 \alias{getInitialStressors}
-\title{Get initial stressors}
+\title{Title}
 \usage{
 getInitialStressors(stress_info, stress_data)
 }
-\value{
-A list with a vector of standard parameter names initially considered and a data frame with standard parameter names and labels
-}
 \description{
-Get initial stressors
+Title
 }
