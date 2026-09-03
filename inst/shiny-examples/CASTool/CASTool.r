@@ -65,6 +65,8 @@ if (cfg$boo_shiny == TRUE) {
   cfg[["in_dir"]] <- dir_data
   cfg[["out_dir"]] <- dir_results
   cfg[["region"]] <- data_CASTmeta_prog$region
+  cfg[["useBC"]] <- FALSE
+  cfg[["dn_checked_sk"]] <- dn_checked_sk
 
   prog_cnt <- 0
 
@@ -1111,7 +1113,8 @@ for (site in seq_len(nrow(df_targets))) {
               data_algMetrics = list.algData$data_bioMetrics,
               data_fishMetrics = list.fishData$data_bioMetrics,
               data_stressInfo = list.Stress$data_stressInfo,
-              siteDetectsAll = list.StressorElim$targMeasStress # TODO see if this right
+              siteDetectsAll = list.StressorElim$targMeasStress, # TODO see if this right
+              dn_checked_sk = cfg$dn_checked_sk
               )
 
   } else {

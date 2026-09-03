@@ -1,9 +1,12 @@
-#' Get initial stressors
+#' Title
 #'
 #' @param stress_info
 #' @param stress_data
 #'
-#' @return A list with a vector of standard parameter names initially considered and a data frame with standard parameter names and labels
+#' @return
+#' @export
+#'
+#' @examples
 getInitialStressors <- function(stress_info,
                                 stress_data){
 
