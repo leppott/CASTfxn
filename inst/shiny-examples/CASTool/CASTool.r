@@ -52,26 +52,31 @@ if (cfg$boo_shiny == TRUE) {
   dir_data    <- dn_data
   dir_results <- dn_results
 
-  data_CASTmeta_prog <- readRDS(file.path(dir_data, dn_checked_sk, "CASTmetadata.rds"))
-  data_CASTmeta_prog <- data_CASTmeta_prog |>
-    tidyr::pivot_wider(names_from = Variable, values_from = Value)
+  cfg <- setUpShiny(dir_data = dir_data,
+                    dir_results = dir_results,
+                    dn_checked_sk = dn_checked_sk) |>
+    append(cfg, values = _)
 
-  biocommlist_prog <- data_CASTmeta_prog |>
-    dplyr::pull(biocommlist) |>
-    stringr::str_split(", |,")  |>
-    unlist()
-  n_biocomm_prog <- length(biocommlist_prog)
-
-  cfg[["in_dir"]] <- dir_data
-  cfg[["out_dir"]] <- dir_results
-  cfg[["region"]] <- data_CASTmeta_prog$region
-  cfg[["useBC"]] <- FALSE
-  cfg[["dn_checked_sk"]] <- dn_checked_sk
+  # data_CASTmeta_prog <- readRDS(file.path(dir_data, dn_checked_sk, "CASTmetadata.rds"))
+  # data_CASTmeta_prog <- data_CASTmeta_prog |>
+  #   tidyr::pivot_wider(names_from = Variable, values_from = Value)
+  #
+  # biocommlist_prog <- data_CASTmeta_prog |>
+  #   dplyr::pull(biocommlist) |>
+  #   stringr::str_split(", |,")  |>
+  #   unlist()
+  # n_biocomm_prog <- length(biocommlist_prog)
+  #
+  # cfg[["in_dir"]] <- dir_data
+  # cfg[["out_dir"]] <- dir_results
+  # cfg[["region"]] <- data_CASTmeta_prog$region
+  # cfg[["useBC"]] <- FALSE
+  # cfg[["dn_checked_sk"]] <- dn_checked_sk
 
   prog_cnt <- 0
 
   # Number of increments
-  prog_n <- 16 + (7 * n_biocomm_prog)
+  prog_n <- 16 + (7 * cfg$n_biocomm_prog)
   prog_sleep <- 0.25
 
   prog_cnt <- stepProgress(cfg, "Set up output structure", prog_cnt, prog_n, prog_sleep)
