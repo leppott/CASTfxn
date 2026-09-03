@@ -74,53 +74,23 @@ if (cfg$boo_shiny == TRUE) {
   prog_n <- 16 + (7 * n_biocomm_prog)
   prog_sleep <- 0.25
 
-  # prog_det <- "Set up output structure"
-  # prog_cnt <- prog_cnt + 1
-  # prog_msg <- paste0("Step ", prog_cnt)
-  # prog_inc <- 1 / prog_n
-  # incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  # Sys.sleep(prog_sleep)
-  # message(paste(prog_msg, prog_det, sep = "; "))
-
   prog_cnt <- stepProgress(cfg, "Set up output structure", prog_cnt, prog_n, prog_sleep)
-} # IF ~ cfg$boo_shiny ~ END
-
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 02, Check inputs ####
-# Progress, 02
-
 if (cfg$boo_shiny == TRUE) {
-  # prog_det <- "Check input data files"
-  # prog_cnt <- prog_cnt + 1
-  # prog_msg <- paste0("Step ", prog_cnt)
-  # prog_inc <- 1 / prog_n
-  # incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  # Sys.sleep(prog_sleep)
-  # message(paste(prog_msg, prog_det, sep = "; "))
   prog_cnt <- stepProgress(cfg, "Check input data files", prog_cnt, prog_n, prog_sleep)
-
 } else {
   list.Tables <- checkInputs(dir_uploaded = cfg$in_dir,
                              dir_out = cfg$out_dir)
 
   write.csv(list.Tables$TableOne, file.path(cfg$out_dir, cfg$region, "TableOne.csv"), row.names = FALSE)
   write.csv(list.Tables$TableTwo, file.path(cfg$out_dir, cfg$region, "TableTwo.csv"), row.names = FALSE)
-}## IF ~ cfg$boo_shiny ~ END
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 03, Get metadata params ####
-# Progress, 03
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Pull values from metadata"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Pull values from metadata", prog_cnt, prog_n, prog_sleep)
 
 cfg$out_dir <- file.path(cfg$out_dir, cfg$region)
@@ -129,17 +99,6 @@ meta <- getMetadataParams(config = cfg)
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 04, Site data files ####
-# Progress, 04
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Load site data"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Load site data", prog_cnt, prog_n, prog_sleep)
 
 list.SiteData <- prepSiteData(outcaseLabel = meta$outcaseLabel,
@@ -149,17 +108,6 @@ list.SiteData <- prepSiteData(outcaseLabel = meta$outcaseLabel,
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 05, Measured data and metadata ####
-# Progress, 05
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Load measured stressor data"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Load measured stressor data", prog_cnt, prog_n, prog_sleep)
 
 if (isTRUE(meta$boo_meas)) {
@@ -172,17 +120,6 @@ if (isTRUE(meta$boo_meas)) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 06, Modeled data and metadata ####
-# Progress, 06
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Load modeled stressor data"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Load modeled stressor data", prog_cnt, prog_n, prog_sleep)
 
 if (isTRUE(meta$boo_model)) {
@@ -195,17 +132,6 @@ if (isTRUE(meta$boo_model)) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 07, Combine stressor data ####
-# Progress, 07
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Combine stressor data and metadata"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Combine stressor data and metadata", prog_cnt, prog_n, prog_sleep)
 
 list.Stress <- combineStressData(meas_stress = list.measStress,
@@ -234,17 +160,6 @@ list.fishData <- list()
 
 for (b in seq_along(meta$biocommlist)) {
   bio <- meta$biocommlist[b]
-  #~~~~~~~~~~~~~~~~~~~~~~~
-
-  # if (cfg$boo_shiny == TRUE) {
-  #   prog_det <- paste0("Load ", bio, ", response data")
-  #   prog_cnt <- prog_cnt + 1
-  #   prog_msg <- paste0("Step ", prog_cnt)
-  #   prog_inc <- 1 / prog_n
-  #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  #   Sys.sleep(prog_sleep)
-  #   message(paste(prog_msg, prog_det, sep = "; "))
-  # }## IF ~ cfg$boo_shiny ~ END
 
   prog_cnt <- stepProgress(cfg, paste0("Load ", bio, ", response data"), prog_cnt, prog_n, prog_sleep)
 
@@ -287,17 +202,6 @@ for (b in seq_along(meta$biocommlist)) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 10, Sample summary ####
-# Progress, 11
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Generate summary of sample types"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Generate summary of sample types", prog_cnt, prog_n, prog_sleep)
 
 data_sampSummary <- getAllSamplesTable(df_stress     = list.Stress$data_stress,
@@ -312,17 +216,6 @@ rm(data_respTrim)
 #~~~~~~~~~~~~~~~~~~~~~~~
 # RUN CASTool ####
 # 11, Target site selection ####
-# Progress, 12
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Select target site"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-# #
 prog_cnt <- stepProgress(cfg, "Select target site", prog_cnt, prog_n, prog_sleep)
 
 df_targets <- readRDS(file.path(cfg$out_dir, cfg$dn_checked_sk, "df_targets.rds"))
@@ -339,17 +232,6 @@ if (cfg$boo_shiny == TRUE) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~
 # 12, Main Code ####
-# Progress, 13
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Check target site data availability"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
-
 prog_cnt <- stepProgress(cfg, "Check target site data availability", prog_cnt, prog_n, prog_sleep)
 
 status_df <- data.frame(TargetSiteID = character(),
@@ -397,17 +279,6 @@ for (site in seq_len(nrow(df_targets))) {
   )
 
   # 13, getComparators ####
-  ## Progress, 14
-  # if (cfg$boo_shiny == TRUE) {
-  #   prog_det <- "Get comparator site data"
-  #   prog_cnt <- prog_cnt + 1
-  #   prog_msg <- paste0("Step ", prog_cnt)
-  #   prog_inc <- 1 / prog_n
-  #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  #   Sys.sleep(prog_sleep)
-  #   message(paste(prog_msg, prog_det, sep = "; "))
-  # }## IF ~ cfg$boo_shiny ~ END
-
   prog_cnt <- stepProgress(cfg, "Get comparator site data", prog_cnt, prog_n, prog_sleep)
 
   compSitesList <- list()
@@ -445,18 +316,6 @@ for (site in seq_len(nrow(df_targets))) {
   message(msg)
 
   # 14, getSiteInfo, getSiteMap, writeOutliers ####
-  # Progress, 15
-  # if (cfg$boo_shiny == TRUE) {
-  #   prog_det <- "Generate index boxplots and create site map"
-  #   prog_cnt <- prog_cnt + 1
-  #   prog_msg <- paste0("Step ", prog_cnt)
-  #   prog_inc <- 1 / prog_n
-  #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  #   Sys.sleep(prog_sleep)
-  #   message(paste(prog_msg, prog_det, sep = "; "))
-  # }## IF ~ cfg$boo_shiny ~ END
-  # # Get site information for general use (map, sample summary, etc)
-
   prog_cnt <- stepProgress(cfg, "Generate index boxplots and create site map", prog_cnt, prog_n, prog_sleep)
 
   # Create site info folder with watershed-scale stressor boxplots,
@@ -522,17 +381,6 @@ for (site in seq_len(nrow(df_targets))) {
   message(msg)
 
   # 15, getAvailableDataTypes ####
-  # Progress, 17
-  # if (cfg$boo_shiny == TRUE) {
-  #   prog_det <- "Identify outliers"
-  #   prog_cnt <- prog_cnt + 1
-  #   prog_msg <- paste0("Step ", prog_cnt)
-  #   prog_inc <- 1 / prog_n
-  #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  #   Sys.sleep(prog_sleep)
-  #   message(paste(prog_msg, prog_det, sep = "; "))
-  # }## IF ~ cfg$boo_shiny ~ END
-  # #
   prog_cnt <- stepProgress(cfg, "Identify outliers", prog_cnt, prog_n, prog_sleep)
 
   # Prepare flags for types of stressor and response data to use
@@ -630,17 +478,6 @@ for (site in seq_len(nrow(df_targets))) {
       dplyr::bind_rows(list.StressorElim$df_notMeasElim)
 
     ## 16, getQualSites ####
-    # Progress, 18
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <- paste0(bioComm, "; summarize index values")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; summarize index values"), prog_cnt, prog_n, prog_sleep)
 
     # Run analyses
@@ -696,17 +533,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 17, getCoOccur ####
-    # Progress, 21
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <-  paste0(bioComm, "; run co-occurrence line of evidence")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; run co-occurrence line of evidence"), prog_cnt, prog_n, prog_sleep)
 
     # Get Co-occurrence from comparator samples with not degraded samples
@@ -777,16 +603,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 18, getTimeSeq ####
-    # Progress, 20
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <- paste0(bioComm, "; run time sequence line of evidence")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-    # #
     prog_cnt <- stepProgress(cfg,  paste0(bioComm, "; run time sequence line of evidence"), prog_cnt, prog_n, prog_sleep)
 
     # Create time sequence graphics for ONLY target site
@@ -811,17 +627,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 19, getSufficiency ####
-    # Progress, 24
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <-  paste0(bioComm, "; run sufficiency line of evidence")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; run sufficiency line of evidence"), prog_cnt, prog_n, prog_sleep)
 
     # Get stressors sufficient to cause biological impairment using all comparator samples
@@ -848,17 +653,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 20, getBioStressorResponses ####
-    # Progress, 25
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <-  paste0(bioComm, "; run biological gradient line of evidence")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-    #
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; run biological gradient line of evidence"), prog_cnt, prog_n, prog_sleep)
 
     # Get Stressor Responses inside (comparators) and outside (all) the case
@@ -889,17 +683,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 21, getVerifiedPredictions ####
-    # Progress, 26
-    # if (cfg$boo_shiny == TRUE) {
-    #   prog_det <-  paste0(bioComm, "; verified predictions lines of evidence")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-    #
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; verified predictions lines of evidence"), prog_cnt, prog_n, prog_sleep)
 
     # Get Stressor-specific regressions using comparator sites
@@ -1024,17 +807,6 @@ for (site in seq_len(nrow(df_targets))) {
     message(msg)
 
     ## 22, getWOE ####
-    # Progress, 27
-    # if (cfg$boo_shiny == TRUE) { # needs updating
-    #   prog_det <-  paste0(bioComm, "; get weight of evidence table")
-    #   prog_cnt <- prog_cnt + 1
-    #   prog_msg <- paste0("Step ", prog_cnt)
-    #   prog_inc <- 1 / prog_n
-    #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-    #   Sys.sleep(prog_sleep)
-    #   message(paste(prog_msg, prog_det, sep = "; "))
-    # }## IF ~ cfg$boo_shiny ~ END
-
     prog_cnt <- stepProgress(cfg, paste0(bioComm, "; get weight of evidence table"), prog_cnt, prog_n, prog_sleep)
 
     # LCN addition 3/10/26 to get rid of observations with only BioGrad scores
@@ -1054,18 +826,6 @@ for (site in seq_len(nrow(df_targets))) {
   ## FOR ~ b ~ END ####
 
   ## 23, getReport ####
-  # Progress, 28
-  # if (cfg$boo_shiny == TRUE) {
-  #   prog_det <- "Get report"
-  #   prog_cnt <- prog_cnt + 1
-  #   prog_msg <- paste0("Step ", prog_cnt)
-  #   prog_inc <- 1 / prog_n
-  #   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-  #   Sys.sleep(prog_sleep)
-  #   message(paste(prog_msg, prog_det, sep = "; "))
-  # }## IF ~ cfg$boo_shiny ~ END
-  # #
-
   prog_cnt <- stepProgress(cfg, "Get report", prog_cnt, prog_n, prog_sleep)
 
   df_stressorElim <- df_stressorElim |>
@@ -1106,9 +866,6 @@ for (site in seq_len(nrow(df_targets))) {
   # Shiny add ons
   if (cfg$boo_shiny == TRUE) {
     report_type <- "full" # summary preliminary full
-    # browser()
-    # getwd()
-    # list.files()
 
     # copy RMD so works in Shiny
     ## render switches working directory to location of RMD
@@ -1122,9 +879,6 @@ for (site in seq_len(nrow(df_targets))) {
                            pattern = "\\.svg$",
                            full.names = TRUE)
     file.copy(svg2copy, ".", overwrite = TRUE)
-
-    # browser()
-    # not found, added to function call
 
     # report
     getReport(TargetSiteID = TargetSiteID,
@@ -1246,16 +1000,6 @@ msg <- paste0("report time (min): ",
 message(msg)
 
 # 24, Clean Up ----
-# Clean up operations
-# if (cfg$boo_shiny == TRUE) {
-#   prog_det <- "Clean Up"
-#   prog_cnt <- prog_cnt + 1
-#   prog_msg <- paste0("Step ", prog_cnt)
-#   prog_inc <- 1 / prog_n
-#   incProgress(prog_inc, message = prog_msg, detail = prog_det)
-#   Sys.sleep(prog_sleep)
-#   message(paste(prog_msg, prog_det, sep = "; "))
-# }## IF ~ cfg$boo_shiny ~ END
 
 prog_cnt <- stepProgress(cfg, "Clean Up", prog_cnt, prog_n, prog_sleep)
 
