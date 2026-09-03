@@ -18,9 +18,9 @@ getWSStressData <- function(boo_ws = NULL,
   # }
 
   if(is.null(config) == FALSE){
-    out_dir <- cfg$out_dir
-    dn_checked_sk <- cfg$dn_checked_sk
-    region <- cfg$region
+    out_dir <- config$out_dir
+    dn_checked_sk <- config$dn_checked_sk
+    region <- config$region
   }
 
   if(boo_ws == FALSE){

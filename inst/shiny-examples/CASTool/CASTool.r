@@ -62,6 +62,10 @@ if (cfg$boo_shiny == TRUE) {
     unlist()
   n_biocomm_prog <- length(biocommlist_prog)
 
+  cfg[["in_dir"]] <- dir_data
+  cfg[["out_dir"]] <- dir_results
+  cfg[["region"]] <- data_CASTmeta_prog$region
+
   prog_cnt <- 0
 
   # Number of increments
