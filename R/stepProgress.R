@@ -15,7 +15,7 @@ stepProgress <- function(config, msg, prog_cnt, prog_n, prog_sleep){
     prog_cnt <- prog_cnt + 1
     incProgress(1/prog_n, message = paste0("Step ", prog_cnt), detail = msg)
     Sys.sleep(prog_sleep)
-    message("Step: ", prog_cnt, ";", msg)
+    message("Step: ", prog_cnt, "; ", msg)
   }
   return(prog_cnt)
 }
